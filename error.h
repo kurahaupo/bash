@@ -25,10 +25,10 @@ extern char *get_name_for_error ();
 extern void file_error ();
 
 /* Report a programmer's error, and abort.  Pass REASON, and ARG1 ... ARG5. */
-extern void programming_error ();
+extern void programming_error (char const*, ...);
 
 /* General error reporting.  Pass FORMAT and ARG1 ... ARG5. */
-extern void report_error ();
+extern void report_error (char const*, ...);
 
 /* Report an unrecoverable error and exit.  Pass FORMAT and ARG1 ... ARG5. */
-extern void fatal_error ();
+extern void fatal_error (char const*, ...);

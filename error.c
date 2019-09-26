@@ -22,7 +22,7 @@
 #include <fcntl.h>
 
 #if defined (HAVE_VFPRINTF)
-#include <varargs.h>
+#include <stdarg.h>
 #endif
 
 #include <errno.h>
@@ -121,17 +121,15 @@ internal_error (format, arg1, arg2, arg3, arg4, arg5)
 #else /* We have VARARGS support, so use it. */
 
 void
-programming_error (va_alist)
-     va_dcl
+programming_error (char const *format, ...)
 {
   va_list args;
-  char *format;
 
 #if defined (JOB_CONTROL)
   give_terminal_to (shell_pgrp);
 #endif /* JOB_CONTROL */
 
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -144,14 +142,12 @@ programming_error (va_alist)
 }
 
 void
-report_error (va_alist)
-     va_dcl
+report_error (char const *format, ...)
 {
   va_list args;
-  char *format;
 
   fprintf (stderr, "%s: ", get_name_for_error ());
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -162,14 +158,12 @@ report_error (va_alist)
 }
 
 void
-fatal_error (va_alist)
-     va_dcl
+fatal_error (char const *format, ...)
 {
   va_list args;
-  char *format;
 
   fprintf (stderr, "%s: ", get_name_for_error ());
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -179,14 +173,12 @@ fatal_error (va_alist)
 }
 
 void
-internal_error (va_alist)
-     va_dcl
+internal_error (char const *format, ...)
 {
   va_list args;
-  char *format;
 
   fprintf (stderr, "%s: ", get_name_for_error ());
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -194,14 +186,13 @@ internal_error (va_alist)
   va_end (args);
 }
 
-itrace (va_alist)
-     va_dcl
+void
+itrace (char const *format, ...)
 {
   va_list args;
-  char *format;
 
   fprintf(stderr, "TRACE: pid %d: ", getpid());
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -214,11 +205,10 @@ itrace (va_alist)
 #if 0
 /* A trace function for silent debugging -- doesn't require a control
    terminal. */
-trace (va_alist)
-     va_dcl
+trace (char const *format, ...)
 {
   va_list args;
-  char *format;
+  
   static FILE *tracefp = (FILE *)NULL;
 
   if (tracefp == NULL)
@@ -231,7 +221,7 @@ trace (va_alist)
 
   fprintf(tracefp, "TRACE: pid %d: ", getpid());
 
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vfprintf (tracefp, format, args);
   fprintf (tracefp, "\n");

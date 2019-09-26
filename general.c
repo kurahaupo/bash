@@ -898,7 +898,7 @@ strerror (e)
      int e;
 {
   extern int sys_nerr;
-  extern char *sys_errlist[];
+  extern char const *const sys_errlist[];
   static char emsg[40];
 
   if (e > 0 && e < sys_nerr)

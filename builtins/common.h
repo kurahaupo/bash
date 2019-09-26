@@ -23,7 +23,7 @@
 
 #define ISOPTION(s, c)	(s[0] == '-' && !s[2] && s[1] == c)
 
-extern void builtin_error ();
+extern void builtin_error (char const*,...);
 extern void bad_option ();
 
 extern int get_numeric_arg ();

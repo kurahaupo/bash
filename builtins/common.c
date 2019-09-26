@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include "../posixstat.h"
 #if defined (HAVE_VFPRINTF)
-#include <varargs.h>
+#include <stdarg.h>
 #endif /* VFPRINTF */
 
 #if defined (HAVE_STRING_H)
@@ -114,17 +114,14 @@ get_numeric_arg (list)
    shell. */
 #if defined (HAVE_VFPRINTF)
 void
-builtin_error (va_alist)
-     va_dcl
+builtin_error (char const *format, ...)
 {
-  char *format;
   va_list args;
 
   if (this_command_name && *this_command_name)
     fprintf (stderr, "%s: ", this_command_name);
 
-  va_start (args);
-  format = va_arg (args, char *);
+  va_start (args, format);
   vfprintf (stderr, format, args);
   va_end (args);
   fprintf (stderr, "\n");

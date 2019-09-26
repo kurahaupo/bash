@@ -30,7 +30,7 @@
 #if !defined (Solaris) && !defined (Linux) && !defined (__BSD_4_4__) && \
 	!defined (Minix) && !defined (NetBSD) && !defined (FreeBSD) && \
 	!defined (BSD_OS)
-extern char *sys_siglist[];
+extern const char *const sys_siglist[];
 #endif /* !Solaris && !Linux && !__BSD_4_4__ && !Minix && !NetBSD && !FreeBSD && !BSD_OS */
 
 #if !defined (strsignal) && !defined (Solaris) && !defined (NetBSD)

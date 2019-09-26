@@ -6,19 +6,18 @@ export CC
 
 cat > x.c << EOF
 #include <stdio.h>
-#include <varargs.h>
+#include <stdarg.h>
 
-xp(va_alist)
-va_dcl
+xp(char const*fmt, ...)
 {
 	va_list args;
-	va_start (args);
-	vfprintf(stdout, "abcde", args);
+	va_start (args, fmt);
+	vfprintf(stdout, fmt, args);
 }
 
 main()
 {
-	xp();
+	xp("abcde");
 	exit(0);
 }
 EOF

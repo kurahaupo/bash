@@ -1020,13 +1020,11 @@ rl_character_len (c, pos)
    mini-modeline. */
 
 #if defined (HAVE_VARARGS_H)
-rl_message (va_alist)
-     va_dcl
+rl_message (char const *format, ...)
 {
-  char *format;
   va_list args;
 
-  va_start (args);
+  va_start (args, format);
   format = va_arg (args, char *);
   vsprintf (msg_buf, format, args);
   va_end (args);
