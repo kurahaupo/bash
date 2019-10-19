@@ -48,6 +48,8 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#include <malloc.h>
+
 #define pointer_to_int(x) (int)((long)(x))
 
 #if !defined (savestring)

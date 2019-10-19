@@ -54,6 +54,8 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#include <malloc.h>
+
 /* Not all systems declare ERRNO in errno.h... and some systems #define it! */
 #if !defined (errno)
 extern int errno;

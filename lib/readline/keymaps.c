@@ -38,6 +38,8 @@
 #include "vi_keymap.c"
 #endif
 
+#include <malloc.h>
+
 extern int rl_do_lowercase_version ();
 extern int rl_rubout (), rl_insert ();
 

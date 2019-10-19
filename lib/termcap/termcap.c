@@ -42,6 +42,8 @@ char *realloc ();
 
 #endif /* not HAVE_CONFIG_H */
 
+#include <malloc.h>
+
 #ifndef NULL
 #define NULL (char *) 0
 #endif

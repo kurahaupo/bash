@@ -35,6 +35,8 @@
 #include <sys/types.h>
 #include <pwd.h>
 
+#include <malloc.h>
+
 #if defined (USG) && !defined (HAVE_GETPW_DECLS)
 extern struct passwd *getpwuid (), *getpwnam ();
 #endif /* USG && !defined (HAVE_GETPW_DECLS) */

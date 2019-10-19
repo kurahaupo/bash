@@ -28,6 +28,8 @@
 #include "flags.h"
 #include <readline/history.h>
 
+#include <malloc.h>
+
 /* Declarations of bash history variables. */
 /* Non-zero means to remember lines typed to the shell on the history
    list.  This is different than the user-controlled behaviour; this

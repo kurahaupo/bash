@@ -61,6 +61,8 @@ extern int errno;
 #include "readline.h"
 #include "history.h"
 
+#include <malloc.h>
+
 /* NOTE: Functions and variables prefixed with `_rl_' are
    pseudo-global: they are global so they can be shared
    between files in the readline library, but are not intended

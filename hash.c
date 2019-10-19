@@ -36,6 +36,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "shell.h"
 #include "hash.h"
 
+#include <malloc.h>
+
 HASH_TABLE *hashed_filenames;
 
 #define FILENAME_HASH_BUCKETS 107

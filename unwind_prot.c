@@ -32,6 +32,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "unwind_prot.h"
 #include "quit.h"
 
+#include <malloc.h>
+
 /* If CLEANUP is null, then ARG contains a tag to throw back to. */
 typedef struct _uwp {
   struct _uwp *next;

@@ -33,6 +33,8 @@
 #include "general.h"
 #include "input.h"
 
+#include <malloc.h>
+
 #if !defined (errno)
 extern int errno;
 #endif /* !errno */

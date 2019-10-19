@@ -34,6 +34,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "input.h"
 #include "externs.h"
 
+#include <malloc.h>
+
 #if defined (JOB_CONTROL)
 #include "jobs.h"
 #endif

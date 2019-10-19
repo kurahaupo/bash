@@ -65,6 +65,8 @@
 #include "bashansi.h"
 #include "shell.h"
 
+#include <malloc.h>
+
 #define variable_starter(c) (isletter(c) || (c == '_'))
 #define variable_character(c) (isletter(c) || (c == '_') || digit(c))
 

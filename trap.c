@@ -33,6 +33,8 @@
 #include "shell.h"
 #include "signames.h"
 
+#include <malloc.h>
+
 /* Flags which describe the current handling state of a signal. */
 #define SIG_INHERITED   0x0	/* Value inherited from parent. */
 #define SIG_TRAPPED     0x1	/* Currently trapped. */

@@ -33,6 +33,8 @@
 #include "shell.h"
 #include <readline/readline.h>
 
+#include <malloc.h>
+
 /* Find greatest common prefix of two strings. */
 static int
 string_gcd (s1, s2)

@@ -44,6 +44,8 @@
 #  include "../bashhist.h"
 #endif
 
+#include <malloc.h>
+
 extern int no_symbolic_links, interactive, interactive_shell;
 extern int indirection_level, startup_state;
 extern int last_command_exit_value;

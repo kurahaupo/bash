@@ -63,6 +63,10 @@ extern "C"
 #define	ptrdiff_t	int
 #endif
 
+#define malloc  bash__malloc
+#define calloc  bash__calloc
+#define realloc bash__realloc
+#define free    bash__free
 
 /* Allocate SIZE bytes of memory.  */
 extern __ptr_t malloc __P ((size_t __size));

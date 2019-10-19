@@ -63,6 +63,8 @@
 
 #include <tilde/tilde.h>
 
+#include <malloc.h>
+
 #if defined (USG) && !defined (HAVE_GETPW_DECLS)
 extern struct passwd *getpwuid ();
 #endif /* USG && !HAVE_GETPW_DECLS */

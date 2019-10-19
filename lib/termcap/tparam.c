@@ -24,6 +24,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #define bcopy(s, d, n) memcpy ((d), (s), (n))
 #endif
 
+#include <malloc.h>
+
 #ifdef STDC_HEADERS
 #include <stdlib.h>
 #include <string.h>

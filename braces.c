@@ -38,6 +38,8 @@
 #include "general.h"
 #define brace_whitespace(c) (!(c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
 
+#include <malloc.h>
+
 /* Basic idea:
 
    Segregate the text into 3 sections: preamble (stuff before an open brace),

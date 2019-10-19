@@ -33,6 +33,8 @@
 #include "builtins/common.h"
 #include <tilde/tilde.h>
 
+#include <malloc.h>
+
 /* Variables used here and defined in other files. */
 extern int posixly_correct;
 extern int variable_context, line_number;

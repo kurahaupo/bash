@@ -36,6 +36,8 @@
 #  include "alias.h"
 #endif
 
+#include <malloc.h>
+
 #if defined (BRACE_EXPANSION)
 #  define BRACE_COMPLETION
 #endif /* BRACE_EXPANSION */

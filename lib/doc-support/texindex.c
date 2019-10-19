@@ -59,6 +59,8 @@ extern char *sys_errlist[];
 #  define SEEK_END 2
 #endif /* !SEEK_SET */
 
+#include <malloc.h>
+
 /* When sorting in core, this structure describes one line
    and the position and length of its first keyfield.  */
 struct lineinfo

@@ -99,6 +99,8 @@ extern void bcopy ();
 #  endif /* !SHELL */
 #endif /* OPENDIR_NOT_ROBUST */
 
+#include <malloc.h>
+
 #if !defined (HAVE_STDLIB_H)
 extern char *malloc (), *realloc ();
 extern void free ();

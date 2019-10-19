@@ -28,6 +28,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "execute_cmd.h"
 #include <tilde/tilde.h>
 
+#include <malloc.h>
+
 #ifndef NOW
 #define NOW ((time_t)time ((time_t *)0))
 #endif

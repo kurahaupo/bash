@@ -20,6 +20,8 @@
 
 #include "shell.h"
 
+#include <malloc.h>
+
 /* Dispose of the command structure passed. */
 void
 dispose_command (command)

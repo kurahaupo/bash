@@ -27,6 +27,8 @@
 #include "hash.h"
 #include "alias.h"
 
+#include <malloc.h>
+
 static int qsort_alias_compare ();
 
 /* Non-zero means expand all words on the line.  Otherwise, expand

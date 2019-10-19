@@ -25,6 +25,8 @@
 #include "config.h"
 #endif
 
+#include <malloc.h>
+
 /* If compiling with GCC 2, this file's not needed.  */
 #if !defined (__GNUC__) || __GNUC__ < 2
 

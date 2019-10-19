@@ -64,6 +64,8 @@ extern int errno;
 #  include "input.h"
 #endif
 
+#include <malloc.h>
+
 extern int posixly_correct;
 extern int breaking, continuing, loop_level;
 extern int interactive, interactive_shell, login_shell;

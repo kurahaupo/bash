@@ -44,6 +44,8 @@ lose
 #endif /* static */
 #endif /* emacs */
 
+#include <malloc.h>
+
 #ifdef X3J11
 typedef void	*pointer;		/* generic pointer type */
 #else

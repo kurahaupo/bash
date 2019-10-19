@@ -24,6 +24,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "posixstat.h"
 #include <stdio.h>
 
+#include <malloc.h>
+
 char *progname;
 char *dir;
 

@@ -46,6 +46,8 @@
 #include <sys/times.h>
 #include "maxpath.h"
 
+#include <malloc.h>
+
 #if !defined (errno)
 extern int errno;
 #endif /* !errno */

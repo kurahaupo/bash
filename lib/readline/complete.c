@@ -70,6 +70,8 @@ extern struct passwd *getpwent ();
 /* Some standard library routines. */
 #include "readline.h"
 
+#include <malloc.h>
+
 /* Possible values for do_replace in rl_complete_internal. */
 #define NO_MATCH	0
 #define SINGLE_MATCH	1

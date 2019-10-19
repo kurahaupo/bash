@@ -120,6 +120,77 @@ internal_error (format, arg1, arg2, arg3, arg4, arg5)
 
 #else /* We have VARARGS support, so use it. */
 
+#ifdef AVOID_STDIO_ON_ERROR
+# define fprintf  bash_fprintf
+# define vfprintf bash_vfprintf
+# define fflush(x) (void)0
+
+void bash_vfprintf (FILE *ignore, char const *format, va_list args)
+{
+    char nbuf[40]; /* enough space to convert any kind of integer */
+    char *ptr;
+    int num;
+    int o=0;
+    while (*format) {
+        size_t l = strcspn (format+o, "%")+o;
+        if (l>0)
+        {
+            write (2, format, l);
+            format += l;
+        }
+        o=0;
+            if (*format != '%') return;
+            if (format[1] == '%')
+            {
+                ++format;
+                l = strcspn (format+1, "%")+1;
+            }
+        ++format; /* skip '%' */
+        switch (*format++)
+        {
+            case 0: return;
+            case '%': o=1; break;
+            case 'd':
+                num = va_arg(args, int);
+            {
+                int sgn = 0;
+                if (num < 0)
+                {
+                    num = -num;
+                    sgn = -1;
+                }
+                ptr = &nbuf[sizeof nbuf];
+                do {
+                    *--ptr = '0' + num % 10;
+                    num /= 10;
+                } while (num != 0);
+                if (sgn)
+                    *--ptr = '-';
+                write(2, ptr, &nbuf[sizeof nbuf] - ptr);
+                break;
+            } break;
+            case 'c':
+                nbuf[0] = va_arg(args, int); 
+                write(2, nbuf, 1);
+                break;
+            case 's':
+                ptr = va_arg(args, char*);
+                write(2, ptr, strlen(ptr));
+                break;
+        }
+    }
+}
+
+void bash_fprintf(FILE *ignore, char const *format, ...)
+{
+  va_list args;
+  va_start (args, format);
+  bash_vfprintf (stderr, format, args);
+  va_end (args);
+}
+#endif
+
+
 void
 programming_error (char const *format, ...)
 {
@@ -130,7 +201,6 @@ programming_error (char const *format, ...)
 #endif /* JOB_CONTROL */
 
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
   va_end (args);
@@ -148,7 +218,6 @@ report_error (char const *format, ...)
 
   fprintf (stderr, "%s: ", get_name_for_error ());
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
 
@@ -164,7 +233,6 @@ fatal_error (char const *format, ...)
 
   fprintf (stderr, "%s: ", get_name_for_error ());
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
 
@@ -179,7 +247,6 @@ internal_error (char const *format, ...)
 
   fprintf (stderr, "%s: ", get_name_for_error ());
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
 
@@ -193,7 +260,6 @@ itrace (char const *format, ...)
 
   fprintf(stderr, "TRACE: pid %d: ", getpid());
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
 
@@ -222,7 +288,6 @@ trace (char const *format, ...)
   fprintf(tracefp, "TRACE: pid %d: ", getpid());
 
   va_start (args, format);
-  format = va_arg (args, char *);
   vfprintf (tracefp, format, args);
   fprintf (tracefp, "\n");
 

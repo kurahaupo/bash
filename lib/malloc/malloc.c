@@ -94,6 +94,8 @@ what you give them.   Help stamp out software-hoarding!  */
 #  include <sys/resource.h>
 #endif /* HAVE_RESOURCE */
 
+#include <malloc.h>
+
 /* Check for the needed symbols.  If they aren't present, this
    system's <sys/resource.h> isn't very useful to us. */
 #if !defined (RLIMIT_DATA)
@@ -193,7 +195,7 @@ static struct mhead *nextf[30];
 
 /* busy[i] is nonzero while allocation of block size i is in progress.  */
 
-static char busy[30];
+static volatile char busy[30];
 
 /* Number of bytes of writable memory we can expect to be able to get */
 static unsigned int lim_data;
@@ -382,6 +384,12 @@ malloc (n)		/* get a block */
   register unsigned int nbytes;
   register int nunits = 0;
 
+#ifdef malloc
+#undef malloc
+  extern __ptr_t malloc __P ((size_t __size));
+  return malloc(n);
+#endif
+
   /* Figure out how many bytes are required, rounding up to the nearest
      multiple of 4, then figure out which nextf[] area to use */
   nbytes = (n + sizeof *p + EXTRA + 3) & ~3;
@@ -448,6 +456,11 @@ free (mem)
      char *mem;
 {
   register struct mhead *p;
+#ifdef free
+#undef free
+  extern void free __P ((__ptr_t __ptr));
+  free(mem);
+#endif
   {
     register char *ap = mem;
 
@@ -512,6 +525,12 @@ realloc (mem, n)
   register unsigned int tocopy;
   register unsigned int nbytes;
   register int nunits;
+
+#ifdef realloc
+#undef realloc
+  extern __ptr_t realloc __P ((__ptr_t __ptr, size_t __size));
+  return realloc(mem, n);
+#endif
 
   if ((p = (struct mhead *) mem) == 0)
     return malloc (n);

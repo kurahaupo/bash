@@ -34,6 +34,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include "stdc.h"
 #include "builtins/common.h"
 
+#include <malloc.h>
+
 #if defined (__GNUC__) || defined (ardent)
 extern int printf __P((const char *, ...));	/* Yuck.  Double yuck. */
 #endif

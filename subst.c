@@ -52,6 +52,8 @@ extern int errno;
 #include <glob/fnmatch.h>
 #include "builtins/getopt.h"
 
+#include <malloc.h>
+
 /* The size that strings change by. */
 #define DEFAULT_ARRAY_SIZE 512
 

@@ -34,6 +34,8 @@
 #include "externs.h"
 #include "error.h"
 
+#include <malloc.h>
+
 #if defined (BUFFERED_INPUT)
 #  include "input.h"
 #endif

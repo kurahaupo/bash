@@ -37,6 +37,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#include <malloc.h>
+
 #define DOCFILE "builtins.texi"
 
 static char *xmalloc (), *xrealloc ();

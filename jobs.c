@@ -108,6 +108,8 @@
 #include "builtins/builtext.h"
 #include "builtins/common.h"
 
+#include <malloc.h>
+
 /* Not all systems declare errno in errno.h... and some systems #define it! */
 #if !defined (errno)
 extern int errno;

@@ -47,6 +47,8 @@
 #include "readline.h"
 #include "history.h"
 
+#include <malloc.h>
+
 #if !defined (strchr) && !defined (__STDC__)
 extern char *strchr (), *strrchr ();
 #endif /* !strchr && !__STDC__ */

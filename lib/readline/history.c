@@ -53,6 +53,8 @@ extern int errno;
 #include "memalloc.h"
 #include "history.h"
 
+#include <malloc.h>
+
 #if defined (STATIC_MALLOC)
 static char *xmalloc (), *xrealloc ();
 #else
