@@ -97,7 +97,7 @@ static void print_compopts __P((const char *, COMPSPEC *, int));
 static void print_all_completions __P((void));
 static int print_cmd_completions __P((WORD_LIST *));
 
-static void enumerate_compoptions __P((unsigned long, int))
+static void enumerate_compoptions __P((unsigned long, int));
 static void enumerate_compactions __P((unsigned long));
 static void print_arg __P((const char *, const char *, int));
 static void print_cmd_name __P((const char *));
@@ -106,7 +106,7 @@ static char *Garg, *Warg, *Parg, *Sarg, *Xarg, *Farg, *Carg;
 
 static const struct _compacts {
   const char * const actname;
-  int actflag;
+  unsigned long actflag;    /* cf COMPSPEC.actions */
   int actopt;
 } compacts[] = {
   { "alias",     CA_ALIAS,     'a' },
@@ -139,7 +139,7 @@ static const struct _compacts {
 /* This should be a STRING_INT_ALIST */
 static const struct _compopt {
   const char * const optname;
-  int optflag;
+  unsigned long optflag;    /* cf COMPSPEC.options */
 } compopts[] = {
   { "bashdefault", COPT_BASHDEFAULT },
   { "default",     COPT_DEFAULT },
@@ -488,7 +488,7 @@ enumerate_compoptions(copts, full)
      unsigned long copts;
      int full;
 {
-  struct _compopt *co;
+  const struct _compopt *co;
 
   for (co = compopts; co->optname; co++)
     if (copts & co->optflag)
@@ -502,9 +502,9 @@ static void
 enumerate_compactions(acts)
      unsigned long acts;
 {
-  struct _compacts *ca;
+  const struct _compacts *ca;
 
-  /* simple flags first */
+  /* first the actions that have short names */
   for (ca = compacts; ca->actname; ca++)
     if (ca->actopt)
       if (acts & ca->actflag)
@@ -517,24 +517,22 @@ enumerate_compactions(acts)
         printf ("-A %s ", ca->actname);
 }
 
-static char quotes_not_needed[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
 static void
 print_arg(arg, flag, quote)
      const char *arg, *flag;
      int quote;
 {
-  const char *x;
+  char *x;
 
   if (arg) {
-    if (quote || !*arg || *strspan(arg, quotes_not_needed))
+    if (quote)
       {
-      	x = sh_single_quote (arg); \
-	printf ("%s %s ", flag, x); \
-	free (x); \
+	x = sh_single_quote (arg);
+	printf ("%s %s ", flag, x);
+	free (x);
       }
     else
-      printf ("%s %s ", flag, a);
+      printf ("%s %s ", flag, arg);
   }
 }
 
@@ -548,6 +546,8 @@ print_cmd_name(cmd)
     printf ("-E");
   else if (STREQ (cmd, INITIALWORD))
     printf ("-I");
+  else if (!*cmd)
+    printf ("''");
   else
     printf ("%s", cmd);
 }
