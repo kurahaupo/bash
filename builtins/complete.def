@@ -1,7 +1,7 @@
 This file is complete.def, from which is created complete.c.
 It implements the builtins "complete", "compgen", and "compopt" in Bash.
 
-Copyright (C) 1999-2015 Free Software Foundation, Inc.
+Copyright (C) 1999-2020 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -23,7 +23,7 @@ $PRODUCES complete.c
 $BUILTIN complete
 $DEPENDS_ON PROGRAMMABLE_COMPLETION
 $FUNCTION complete_builtin
-$SHORT_DOC complete [-abcdefgjksuv] [-pr] [-DEI] [-o option] [-A action] [-G globpat] [-W wordlist]  [-F function] [-C command] [-X filterpat] [-P prefix] [-S suffix] [name ...]
+$SHORT_DOC complete [-abcdefgjksuv] [-pr] [-DEI] [-o option] [-A action] [-G globpat] [-W wordlist] [-F function] [-C command] [-X filterpat] [-P prefix] [-S suffix] [name ...]
 Specify how arguments are to be completed by Readline.
 
 For each NAME, specify how arguments are to be completed.  If no options
@@ -31,18 +31,18 @@ are supplied, existing completion specifications are printed in a way that
 allows them to be reused as input.
 
 Options:
-  -p    print existing completion specifications in a reusable format
-  -r    remove a completion specification for each NAME, or, if no
-        NAMEs are supplied, all completion specifications
-  -D    apply the completions and actions as the default for commands
-        without any specific completion defined
-  -E    apply the completions and actions to "empty" commands --
-        completion attempted on a blank line
-  -I    apply the completions and actions to the initial (usually the
-        command) word
+  -p	print existing completion specifications in a reusable format
+  -r	remove a completion specification for each NAME, or, if no
+		NAMEs are supplied, all completion specifications
+  -D	apply the completions and actions as the default for commands
+		without any specific completion defined
+  -E	apply the completions and actions to "empty" commands --
+		completion attempted on a blank line
+  -I	apply the completions and actions to the initial (usually the
+		command) word
 
 When completion is attempted, the actions are applied in the order the
-uppercase-letter options are listed above.  If multiple options are supplied,
+uppercase-letter options are listed above. If multiple options are supplied,
 the -D option takes precedence over -E, and both take precedence over -I.
 
 Exit Status:
@@ -84,29 +84,29 @@ struct _optflags {
   int Iflag;
 };
 
-static int find_compact __P((char *));
-static int find_compopt __P((char *));
+static int find_compact PARAMS((char *));
+static int find_compopt PARAMS((char *));
 
-static int build_actions __P((WORD_LIST *, struct _optflags *, unsigned long *, unsigned long *));
+static int build_actions PARAMS((WORD_LIST *, struct _optflags *, unsigned long *, unsigned long *));
 
-static int remove_cmd_completions __P((WORD_LIST *));
+static int remove_cmd_completions PARAMS((WORD_LIST *));
 
-static int print_one_completion __P((char *, COMPSPEC *));
-static int print_compitem __P((BUCKET_CONTENTS *));
-static void print_compopts __P((const char *, COMPSPEC *, int));
-static void print_all_completions __P((void));
-static int print_cmd_completions __P((WORD_LIST *));
+static int print_one_completion PARAMS((char *, COMPSPEC *));
+static int print_compitem PARAMS((BUCKET_CONTENTS *));
+static void print_compopts PARAMS((const char *, COMPSPEC *, int));
+static void print_all_completions PARAMS((void));
+static int print_cmd_completions PARAMS((WORD_LIST *));
 
-static void enumerate_compoptions __P((unsigned long, int));
-static void enumerate_compactions __P((unsigned long));
-static void print_arg __P((const char *, const char *, int));
-static void print_cmd_name __P((const char *));
+static void print_compoptions PARAMS((unsigned long, int));
+static void print_compactions PARAMS((unsigned long));
+static void print_arg PARAMS((const char *, const char *, int));
+static void print_cmd_name PARAMS((const char *));
 
 static char *Garg, *Warg, *Parg, *Sarg, *Xarg, *Farg, *Carg;
 
 static const struct _compacts {
   const char * const actname;
-  unsigned long actflag;    /* cf COMPSPEC.actions */
+  unsigned long actflag;
   int actopt;
 } compacts[] = {
   { "alias",     CA_ALIAS,     'a' },
@@ -139,17 +139,17 @@ static const struct _compacts {
 /* This should be a STRING_INT_ALIST */
 static const struct _compopt {
   const char * const optname;
-  unsigned long optflag;    /* cf COMPSPEC.options */
+  unsigned long optflag;
 } compopts[] = {
   { "bashdefault", COPT_BASHDEFAULT },
-  { "default",     COPT_DEFAULT },
-  { "dirnames",    COPT_DIRNAMES },
-  { "filenames",   COPT_FILENAMES},
-  { "noquote",     COPT_NOQUOTE },
-  { "nosort",      COPT_NOSORT },
-  { "nospace",     COPT_NOSPACE },
-  { "plusdirs",    COPT_PLUSDIRS },
-  { (char *)NULL,  0 },
+  { "default",	COPT_DEFAULT },
+  { "dirnames", COPT_DIRNAMES },
+  { "filenames",COPT_FILENAMES},
+  { "noquote", COPT_NOQUOTE },
+  { "nosort", COPT_NOSORT },
+  { "nospace",	COPT_NOSPACE },
+  { "plusdirs", COPT_PLUSDIRS },
+  { (char *)NULL, 0 },
 };
 
 static int
@@ -198,6 +198,7 @@ build_actions (list, flagp, actp, optp)
 {
   int opt, ind, opt_given;
   unsigned long acts, copts;
+  WORD_DESC w;
 
   acts = copts = (unsigned long)0L;
   opt_given = 0;
@@ -328,7 +329,13 @@ build_actions (list, flagp, actp, optp)
 	      return (EX_USAGE);
 	    }
 	case 'F':
-	  Farg = list_optarg;
+	  w.word = Farg = list_optarg;
+	  w.flags = 0;
+	  if (check_identifier (&w, posixly_correct) == 0 || strpbrk (Farg, shell_break_chars) != 0)
+	    {
+	      sh_invalidid (Farg);
+	      return (EX_USAGE);
+	    }
 	  break;
 	case 'G':
 	  Garg = list_optarg;
@@ -484,7 +491,7 @@ remove_cmd_completions (list)
 }
 
 static void
-enumerate_compoptions(copts, full)
+print_compoptions (copts, full)
      unsigned long copts;
      int full;
 {
@@ -493,51 +500,45 @@ enumerate_compoptions(copts, full)
   for (co = compopts; co->optname; co++)
     if (copts & co->optflag)
       printf ("-o %s ", co->optname);
-    else
-      if (full)
-        printf ("+o %s ", co->optname);
+    else if (full)
+      printf ("+o %s ", co->optname);
 }
 
 static void
-enumerate_compactions(acts)
+print_compactions (acts)
      unsigned long acts;
 {
   const struct _compacts *ca;
 
-  /* first the actions that have short names */
+  /* simple flags first */
   for (ca = compacts; ca->actname; ca++)
-    if (ca->actopt)
-      if (acts & ca->actflag)
-        printf ("-%c ", ca->actopt);
+    if (ca->actopt && (acts & ca->actflag))
+      printf ("-%c ", ca->actopt);
 
-  /* then the actions that only have long names */
+  /* then the rest of the actions */
   for (ca = compacts; ca->actname; ca++)
-    if (!ca->actopt)
-      if (acts & ca->actflag)
-        printf ("-A %s ", ca->actname);
+    if (ca->actopt == 0 && (acts & ca->actflag))
+      printf ("-A %s ", ca->actname);
 }
 
 static void
-print_arg(arg, flag, quote)
+print_arg (arg, flag, quote)
      const char *arg, *flag;
      int quote;
 {
   char *x;
 
-  if (arg) {
-    if (quote)
-      {
-	x = sh_single_quote (arg);
-	printf ("%s %s ", flag, x);
+  if (arg)
+    {
+      x = quote ? sh_single_quote (arg) : (char *)arg;
+      printf ("%s %s ", flag, x);
+      if (x != arg)
 	free (x);
-      }
-    else
-      printf ("%s %s ", flag, arg);
-  }
+    }
 }
 
 static void
-print_cmd_name(cmd)
+print_cmd_name (cmd)
      const char *cmd;
 {
   if (STREQ (cmd, DEFAULTCMD))
@@ -546,7 +547,7 @@ print_cmd_name(cmd)
     printf ("-E");
   else if (STREQ (cmd, INITIALWORD))
     printf ("-I");
-  else if (!*cmd)
+  else if (*cmd == 0)		/* XXX - can this happen? */
     printf ("''");
   else
     printf ("%s", cmd);
@@ -559,11 +560,10 @@ print_one_completion (cmd, cs)
 {
   printf ("complete ");
 
-  /* First, print the -o options. */
-  enumerate_compoptions(cs->options, 0);
+  print_compoptions (cs->options, 0);
+  print_compactions (cs->actions);
 
   /* now the rest of the arguments */
-  enumerate_compactions(cs->actions);
 
   /* arguments that require quoting */
   print_arg (cs->globpat, "-G", 1);
@@ -574,7 +574,7 @@ print_one_completion (cmd, cs)
 
   print_arg (cs->command, "-C", 1);
 
-  /* simple arguments that don't require normally quoting */
+  /* simple arguments that don't require quoting */
   print_arg (cs->funcname, "-F", 0);
 
   print_cmd_name (cmd);
@@ -591,9 +591,9 @@ print_compopts (cmd, cs, full)
 {
   printf ("compopt ");
 
-  enumerate_compoptions(cs->options, full);
-
+  print_compoptions (cs->options, full);
   print_cmd_name (cmd);
+
   printf ("\n");
 }
 
@@ -642,7 +642,7 @@ print_cmd_completions (list)
 $BUILTIN compgen
 $DEPENDS_ON PROGRAMMABLE_COMPLETION
 $FUNCTION compgen_builtin
-$SHORT_DOC compgen [-abcdefgjksuv] [-o option] [-A action] [-G globpat] [-W wordlist]  [-F function] [-C command] [-X filterpat] [-P prefix] [-S suffix] [word]
+$SHORT_DOC compgen [-abcdefgjksuv] [-o option] [-A action] [-G globpat] [-W wordlist] [-F function] [-C command] [-X filterpat] [-P prefix] [-S suffix] [word]
 Display possible completions depending on the options.
 
 Intended to be used from within a shell function generating possible
