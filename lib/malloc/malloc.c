@@ -27,9 +27,9 @@ what you give them.   Help stamp out software-hoarding!  */
  *
  *	Nov 1983, Mike@BRL, Added support for 4.1C/4.2 BSD.
  *
- * This is a very fast storage allocator.  It allocates blocks of a small 
+ * This is a very fast storage allocator.  It allocates blocks of a small
  * number of different sizes, and keeps free lists of each size.  Blocks
- * that don't exactly fit are passed up to the next larger size.  In this 
+ * that don't exactly fit are passed up to the next larger size.  In this
  * implementation, the available sizes are (2^n)-4 (or -16) bytes long.
  * This is designed for use in a program that uses vast quantities of
  * memory, but bombs when it runs out.  To make it a little better, it
@@ -114,16 +114,16 @@ what you give them.   Help stamp out software-hoarding!  */
 extern char etext;
 
 #if !defined (NO_SBRK_DECL)
-extern char *sbrk ();
+extern __ptr_t sbrk ();
 #endif /* !NO_SBRK_DECL */
 
 /* These two are for user programs to look at, when they are interested.  */
 
-unsigned int malloc_sbrk_used;       /* amount of data space used now */
-unsigned int malloc_sbrk_unused;     /* amount more we can have */
+size_t malloc_sbrk_used;       /* amount of data space used now */
+size_t malloc_sbrk_unused;     /* amount more we can have */
 
 /* start of data space; can be changed by calling init_malloc */
-static char *data_space_start;
+static __ptr_t data_space_start;
 
 static void get_lim_data ();
 
@@ -145,7 +145,7 @@ struct mhead {
 /* Remainder are valid only when block is allocated */
 	unsigned short mh_size;	/* size, if < 0x10000 */
 #ifdef rcheck
-	unsigned mh_nbytes;	/* number of bytes allocated */
+	size_t   mh_nbytes;	/* number of bytes allocated */
 	int      mh_magic4;	/* should be == MAGIC4 */
 #endif /* rcheck */
 };
@@ -198,7 +198,7 @@ static struct mhead *nextf[30];
 static volatile char busy[30];
 
 /* Number of bytes of writable memory we can expect to be able to get */
-static unsigned int lim_data;
+static size_t lim_data;
 
 /* Level number of warnings already issued.
   0 -- no warnings issued.
@@ -214,7 +214,7 @@ static void (*warnfunction) ();
 /* nonzero once initial bunch of free blocks made */
 static int gotpool;
 
-char *_malloc_base;
+__ptr_t _malloc_base;
 
 static void getpool ();
 
@@ -222,7 +222,7 @@ static void getpool ();
   also declare where the end of pure storage is. */
 void
 malloc_init (start, warnfun)
-     char *start;
+     __ptr_t start;
      void (*warnfun) ();
 {
   if (start)
@@ -235,9 +235,9 @@ malloc_init (start, warnfun)
 /* Return the maximum size to which MEM can be realloc'd
    without actually requiring copying.  */
 
-int
+size_t
 malloc_usable_size (mem)
-     char *mem;
+     __ptr_t mem;
 {
   int blocksize = 8 << (((struct mhead *) mem) - 1) -> mh_index;
 
@@ -250,7 +250,7 @@ morecore (nu)			/* ask system for more memory */
 {
   register char *cp;
   register int nblks;
-  register unsigned int siz;
+  register size_t siz;
   int oldmask;
 
 #if defined (BSD4_2)
@@ -272,28 +272,28 @@ morecore (nu)			/* ask system for more memory */
   /* Find current end of memory and issue warning if getting near max */
 
   cp = sbrk (0);
-  siz = cp - data_space_start;
+  siz = (char *)cp - (char *)data_space_start;
   malloc_sbrk_used = siz;
   malloc_sbrk_unused = lim_data - siz;
 
   if (warnfunction)
     switch (warnlevel)
       {
-      case 0: 
+      case 0:
 	if (siz > (lim_data / 4) * 3)
 	  {
 	    warnlevel++;
 	    (*warnfunction) ("Warning: past 75% of memory limit");
 	  }
 	break;
-      case 1: 
+      case 1:
 	if (siz > (lim_data / 20) * 17)
 	  {
 	    warnlevel++;
 	    (*warnfunction) ("Warning: past 85% of memory limit");
 	  }
 	break;
-      case 2: 
+      case 2:
 	if (siz > (lim_data / 20) * 19)
 	  {
 	    warnlevel++;
@@ -376,12 +376,12 @@ getpool ()
     }
 }
 
-char *
+__ptr_t
 malloc (n)		/* get a block */
-     unsigned n;
+     size_t n;
 {
   register struct mhead *p;
-  register unsigned int nbytes;
+  register size_t nbytes;
   register int nunits = 0;
 
 #ifdef malloc
@@ -394,7 +394,7 @@ malloc (n)		/* get a block */
      multiple of 4, then figure out which nextf[] area to use */
   nbytes = (n + sizeof *p + EXTRA + 3) & ~3;
   {
-    register unsigned int   shiftr = (nbytes - 1) >> 2;
+    register size_t   shiftr = (nbytes - 1) >> 2;
 
     while (shiftr >>= 1)
       nunits++;
@@ -453,7 +453,7 @@ malloc (n)		/* get a block */
 
 void
 free (mem)
-     char *mem;
+     __ptr_t mem;
 {
   register struct mhead *p;
 #ifdef free
@@ -516,14 +516,14 @@ free (mem)
   }
 }
 
-char *
+__ptr_t
 realloc (mem, n)
-     char *mem;
-     register unsigned n;
+     __ptr_t mem;
+     register size_t n;
 {
   register struct mhead *p;
-  register unsigned int tocopy;
-  register unsigned int nbytes;
+  register size_t tocopy;
+  register size_t nbytes;
   register int nunits;
 
 #ifdef realloc
@@ -582,9 +582,9 @@ realloc (mem, n)
   }
 }
 
-char *
+__ptr_t
 memalign (alignment, size)
-     unsigned alignment, size;
+     size_t alignment, size;
 {
   register char *ptr = malloc (size + alignment);
   register char *aligned;
@@ -609,8 +609,8 @@ memalign (alignment, size)
 #if !defined (HPUX) && !defined (Multimax) && !defined (Multimax32k)
 /* This runs into trouble with getpagesize on HPUX, and Multimax machines.
    Patching out seems cleaner than the ugly fix needed.  */
-char *
-valloc (size)
+__ptr_t
+valloc (size_t size)
 {
   return memalign (getpagesize (), size);
 }
@@ -665,7 +665,7 @@ extern long ulimit ();
 
 static void
 get_lim_data ()
-{    
+{
   lim_data = ulimit (3, 0);
   lim_data -= (long) data_space_start;
 }
