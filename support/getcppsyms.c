@@ -24,6 +24,8 @@
    we had the foresight to guess at. */
 
 #include <stdio.h>
+#include <stdlib.h>
+int
 main ()
 {
 #if defined (__BSD_4_4__)
