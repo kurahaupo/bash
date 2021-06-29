@@ -1,8 +1,21 @@
-#!/bin/sh
-#
-# This shell script does nothing since Bash doesn't require
-# configuration to be forced on it; it auto-configures.  You can
-# change the location of the source directory with +srcdir.
-#
-echo "Bash is configured to auto configure."
-exit 0
+#!/bin/bash
+
+for ((;$#;)) do
+    case $1 in
+      --prefix=*) sed_args+=( -e "/^prefix/s#.*#prefix = ${1#*=}#" ) ;;
+      *) printf >&2 'Unsupported option "%s"; modify $0 to fix\n' "$1" ; exit 64 ;;
+    esac
+    shift
+done
+
+if (( ${#sed_args[@]} )) ; then
+    for m in *Makefile
+    do
+        echo "Adjusting $m"
+        sed "${sed_args[@]}" <"$m" >"$m.new.$$" && {
+        chown -c --ref="$m" "$m.new.$$"
+        chmod -c --ref="$m" "$m.new.$$"
+        mv -vTb "$m.new.$$" "$m"
+        }
+    done
+fi
