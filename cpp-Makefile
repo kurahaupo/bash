@@ -280,7 +280,8 @@ STRINGH = -DHAVE_STRING_H
 
 #if defined (HAVE_VARARGS_H)
 /**/# This system has /usr/include/varargs.h
-VARARGSH = -DHAVE_VARARGS_H
+/**/#VARARGSH = -DHAVE_VARARGS_H
+VARARGSH = -DHAVE_STDARG_H
 #endif /* HAVE_VARARGS_H */
 
 #if defined (HAVE_STRCHR)

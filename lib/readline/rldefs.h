@@ -149,9 +149,11 @@
 extern char *strchr (), *strrchr ();
 #endif /* !strchr && !__STDC__ */
 
-#if defined (HAVE_VARARGS_H)
+#if defined (HAVE_STDARG_H)
+#  include <stdarg.h>
+#elif defined (HAVE_VARARGS_H)
 #  include <varargs.h>
-#endif /* HAVE_VARARGS_H */
+#endif /* HAVE_STDARG_H / HAVE_VARARGS_H */
 
 /* This is needed to include support for TIOCGWINSZ and window resizing. */
 #if defined (OSF1) || defined (BSD386) || defined (NetBSD) || \

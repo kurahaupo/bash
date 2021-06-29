@@ -415,6 +415,15 @@ if [ -n "$found" ]; then
   echo "#endif /* HAVE_STRING_H */"		>>$sysdefs
 fi
 
+file=stdarg.h
+eval $findf
+if [ -n "$found" ]; then
+  echo ""					>>$sysdefs
+  echo "#if !defined (HAVE_STDARG_H)"		>>$sysdefs
+  echo "#  define HAVE_STDARG_H"		>>$sysdefs
+  echo "#endif /* HAVE_STDARG_H */"		>>$sysdefs
+fi
+
 file=varargs.h
 eval $findf
 if [ -n "$found" ]; then

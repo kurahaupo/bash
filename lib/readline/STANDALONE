@@ -5,6 +5,7 @@ directory.
 NO_SYS_FILE		<sys/file.h> is not present
 HAVE_UNISTD_H		<unistd.h> exists
 HAVE_STDLIB_H		<stdlib.h> exists
+HAVE_STDARG_H		<stdarg.h> exists and is usable
 HAVE_VARARGS_H		<varargs.h> exists and is usable
 HAVE_STRING_H		<string.h> exists
 HAVE_ALLOCA_H		<alloca.h> exists and is needed for alloca()
