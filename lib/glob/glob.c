@@ -553,9 +553,7 @@ glob_filename (pathname)
 
 #if defined (TEST)
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   unsigned int i;
 
@@ -571,6 +569,6 @@ main (argc, argv)
 	  puts (value[i]);
     }
 
-  exit (0);
+  return 0;
 }
 #endif	/* TEST.  */

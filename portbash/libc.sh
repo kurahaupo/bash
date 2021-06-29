@@ -6,10 +6,11 @@ export CC
 cat > x.c <<EOF
 extern char *alloca();
 
-main()
+int main(int argc, char **argv)
 {
 	char *s;
 	s = alloca(20);
+	return 0;
 }
 EOF
 
@@ -24,9 +25,10 @@ cat > x.c << EOF
 #include <sys/types.h>
 #include <sys/param.h>
 extern char *getwd();
-main()
+int main(int argc, char **argv)
 {
 	getwd();
+	return 0;
 }
 EOF
 
@@ -39,9 +41,10 @@ else
 	cat > x.c << EOF
 extern char *getcwd();
 
-main()
+int main(int argc, char **argv)
 {
 	getcwd();
+	return 0;
 }
 EOF
 
@@ -61,10 +64,10 @@ extern int bcopy();
 char x[] = "12345";
 char y[] = "67890";
 
-main()
+int main(int argc, char **argv)
 {
 	bcopy(x, y, 5);
-	exit(strcmp(x, y));
+	return strcmp(x, y);
 }
 EOF
 
@@ -84,9 +87,9 @@ cat > x.c << EOF
 uid_t	u;
 gid_t	g;
 
-main()
+int main(int argc, char **argv)
 {
-	exit(0);
+	return 0;
 }
 EOF
 
@@ -101,13 +104,13 @@ cat > x.c <<EOF
 
 extern char *sys_siglist[];
 
-main()
+int main(int argc, char **argv)
 {
 	char *x;
 
 	x = sys_siglist[3];
 	write(2, x, strlen(x));
-	exit(0);
+	return 0;
 }
 EOF
 
@@ -120,9 +123,9 @@ else
 
 extern char *_sys_siglist[];
 
-main()
+int main(int argc, char **argv)
 {
-	exit(0);
+	return 0;
 }
 EOF
 
@@ -156,10 +159,10 @@ cat > x.c << EOF
 #include $d
 DIR *dir;
 
-main()
+int main(int argc, char **argv)
 {
 	dir = opendir("not_a_directory");
-	exit (dir == 0);
+	return dir == 0;
 }
 EOF
 

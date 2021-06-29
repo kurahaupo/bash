@@ -49,6 +49,7 @@
 #include "filecntl.h"
 #include <sys/ioctl.h>
 #include <sys/param.h>
+#include <stdlib.h>
 
 #if defined (BUFFERED_INPUT)
 #  include "input.h"

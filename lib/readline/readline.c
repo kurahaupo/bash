@@ -3487,7 +3487,7 @@ memory_error_and_abort ()
 
 #if defined (TEST)
 
-main ()
+int main(int argc, char **argv)
 {
   HIST_ENTRY **history_list ();
   char *temp = (char *)NULL;
@@ -3529,6 +3529,7 @@ main ()
 	}
       free (temp);
     }
+    return 0;
 }
 
 #endif /* TEST */

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-main()
+int main(int argc, char**argv)
 {
 	fprintf(stderr, "%d\n", getpid());
-	exit(0);
+	return 0;
 }

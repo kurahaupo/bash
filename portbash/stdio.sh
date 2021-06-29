@@ -15,10 +15,10 @@ xp(char const*fmt, ...)
 	vfprintf(stdout, fmt, args);
 }
 
-main()
+int main(int argc, char **argv)
 {
 	xp("abcde");
-	exit(0);
+	return 0;
 }
 EOF
 
@@ -31,9 +31,10 @@ else
 	cat > x.c << EOF
 #include <stdio.h>
 
-main()
+int main(int argc, char **argv)
 {
 	_doprnt();
+	return 0;
 }
 EOF
 
@@ -46,9 +47,10 @@ fi
 
 cat > x.c << EOF
 #include <stdio.h>
-main()
+int main(int argc, char **argv)
 {
 	setlinebuf(stdout);
+	return 0;
 }
 EOF
 
@@ -64,10 +66,11 @@ else
 	cat > x.c << EOF
 #include <stdio.h>
 
-main()
+int main(int argc, char **argv)
 {
-	setvbuf(stdout, _IOLBF, (char *)0, BUFSIZ);	/* reversed */
-	exit(0);		/* non-reversed systems segv */
+	if (setvbuf(stdout, _IOLBF, (char *)0, BUFSIZ)==0)
+		return 0;	/* reversed systems OK */
+	return 1;		/* non-reversed systems error or SEGV */
 }
 EOF
 

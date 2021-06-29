@@ -46,6 +46,8 @@ extern int errno;
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#include <stdlib.h>
+
 #include "shell.h"
 #include "y.tab.h"
 #include "flags.h"

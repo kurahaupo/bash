@@ -667,9 +667,7 @@ gobble_line (fd, bufp, append_end)
 
 #include <stdio.h>
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char *term;
   char *buf;
@@ -691,6 +689,7 @@ main (argc, argv)
 
   printf ("co: %d\n", tgetnum ("co"));
   printf ("am: %d\n", tgetflag ("am"));
+  return 0;
 }
 
 tprint (cap)

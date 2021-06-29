@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include "../command.h"
 #include "../general.h"
@@ -41,9 +42,7 @@ sigpipe (sig)
   exit (0);
 }
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char buf[128];
   register int i;
@@ -60,4 +59,5 @@ main (argc, argv)
       n = write (1, buf, 128);
       nw += n;
     }
+  return 0;
 }

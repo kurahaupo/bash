@@ -306,9 +306,7 @@ tilde_expand_word (filename)
 #undef NULL
 #include <stdio.h>
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char *result, line[512];
   int done = 0;
@@ -333,7 +331,7 @@ main (argc, argv)
       printf ("  --> %s\n", result);
       free (result);
     }
-  exit (0);
+  return 0;
 }
 
 static void memory_error_and_abort ();

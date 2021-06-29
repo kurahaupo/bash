@@ -19,14 +19,14 @@ extern char *strchr();
 
 char *x = "12345";
 
-main()
+int main(int argc, char **argv)
 {
 	char	*s;
 
 	s = strchr(x, '2');
 	if (s)
-		exit(0);
-	exit(1);
+		return 0;
+	return 1;
 }
 EOF
 
@@ -43,14 +43,14 @@ rm -f x.c x.o a.out
 cat > x.c << EOF
 extern char *strerror();
 
-main()
+int main(int argc, char **argv)
 {
 	char	*s;
 
 	s = strerror(2);
 	if (s)
-		exit(0);
-	exit(1);
+		return 0;
+	return 1;
 }
 EOF
 
@@ -67,11 +67,11 @@ rm -f x.c x.o a.out
 
 cat > x.c << EOF
 
-main()
+int main(int argc, char **argv)
 {
 	if (strcasecmp("abc", "AbC") == 0)
-		exit(0);
-	exit(1);
+		return 0;
+	return 1;
 }
 EOF
 

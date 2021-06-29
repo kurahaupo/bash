@@ -7,14 +7,14 @@ cat > x.c << EOF
  * exit 0 if we have the getgroups system or library call.
  */
 
-main()
+int main(int argc, char **argv)
 {
 	int	g[100], ng;
 
 	ng = getgroups(100, g);
 	if (ng)
-		exit(0);
-	exit(1);
+		return 0;
+	return 1;
 }
 EOF
 if ${CC} x.c > /dev/null 2>&1 && ./a.out ; then
@@ -24,9 +24,9 @@ rm -f x.c x.o a.out
 
 cat > x.c << EOF
 extern int dup2();
-main()
+int main(int argc, char **argv)
 {
-	exit(dup2(1, 2) == -1);
+	return dup2(1, 2) == -1;
 }
 EOF
 
@@ -37,9 +37,10 @@ rm -f a.out x.c x.o
 
 cat > x.c << EOF
 extern int getpageesize();
-main()
+int main(int argc, char **argv)
 {
 	int n = getpagesize();
+        return 0;
 }
 EOF
 
@@ -51,9 +52,10 @@ rm -f a.out x.c x.o
 
 cat > x.c << EOF
 extern int getdtablesize();
-main()
+int main(int argc, char **argv)
 {
 	int n = getdtablesize();
+        return 0;
 }
 EOF
 
@@ -65,9 +67,10 @@ rm -f a.out x.c x.o
 
 cat > x.c << EOF
 extern int setdtablesize();
-main()
+int main(int argc, char **argv)
 {
 	int n = setdtablesize(128);
+        return 0;
 }
 EOF
 

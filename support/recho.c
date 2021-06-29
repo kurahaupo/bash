@@ -1,8 +1,6 @@
 #include <stdio.h>
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int main(int argc, char **argv)
 {
 	register int	i;
 
@@ -11,6 +9,7 @@ char	**argv;
 		strprint(argv[i]);
 		printf(">\n");
 	}
+	return 0;
 }
 
 strprint(str)

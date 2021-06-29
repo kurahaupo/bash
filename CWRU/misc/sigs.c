@@ -5,9 +5,7 @@ extern char	*sys_siglist[];
 
 typedef void	sighandler();
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int main(int argc, char **argv)
 {
 	register int	i;
 	sighandler	*h;
@@ -21,7 +19,5 @@ char	**argv;
 				fprintf(stderr, "%d: caught (%s)\n", i, sys_siglist[i]);
 		}
 	}
-	exit(0);
+	return 0;
 }
-
-		

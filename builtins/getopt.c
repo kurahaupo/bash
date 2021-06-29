@@ -215,10 +215,7 @@ sh_getopt_restore_state (argv)
 /* Compile with -DTEST to make an executable for use in testing
    the above definition of `sh_getopt'.  */
 
-int
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   int c;
   int digit_sh_optind = 0;
@@ -277,7 +274,7 @@ main (argc, argv)
       printf ("\n");
     }
 
-  exit (0);
+  return 0;
 }
 
 #endif /* TEST */

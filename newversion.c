@@ -23,6 +23,7 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include <sys/types.h>
 #include "posixstat.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <malloc.h>
 
@@ -31,9 +32,7 @@ char *dir;
 
 FILE *must_open ();
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   FILE *file;
   float distver = 0.0;
@@ -201,7 +200,7 @@ main (argc, argv)
       fclose (file);
     }
 
-  exit (0);
+  return 0;
 }
 
 char *

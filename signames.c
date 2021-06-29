@@ -259,9 +259,7 @@ write_signames (stream)
   fprintf (stream, "};\n");
 }
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char *stream_name;
   FILE *stream;
@@ -281,17 +279,17 @@ main (argc, argv)
   else
     {
       fprintf (stderr, "Usage: %s [output-file]\n", progname);
-      exit (1);
+      return 1;
     }
 
   if (!stream)
     {
       fprintf (stderr, "%s: %s Cannot be opened or written to.\n",
 	       progname, stream_name);
-      exit (2);
+      return 2;
     }
 
   initialize_signames ();
   write_signames (stream);
-  exit (0);
+  return 0;
 }

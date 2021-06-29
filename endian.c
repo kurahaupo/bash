@@ -20,6 +20,7 @@
 
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "bashansi.h"
 
 /* The name of this program, as taken from argv[0]. */
@@ -37,9 +38,7 @@ char nstring[9];
 /* Stuff "1234" into a long, and compare it against a character string
    "1234".  If the results are EQ, the machine is big endian like a 68000
    or Sparc, otherwise it is little endian, like a Vax, or 386. */
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
 #if defined (__STDC__)
   register size_t i;
@@ -85,14 +84,14 @@ main (argc, argv)
   else
     {
       fprintf (stderr, "Usage: %s [output-file]\n", progname);
-      exit (1);
+      return 1;
     }
 
   if (!stream)
     {
       fprintf (stderr, "%s: %s Cannot be opened or written to.\n",
 	       progname, stream_name);
-      exit (2);
+      return 2;
     }
 
   if (sizeof (long int) == 4)
@@ -118,7 +117,7 @@ main (argc, argv)
       fprintf (stderr,
 	       "%s: sizeof (long int) = %d, which isn't handled here.\n",
 	       progname, sizeof (long int));
-      exit (2);
+      return 2;
     }
 
   for (i = 0; i < sizeof (long); i++)
@@ -144,5 +143,5 @@ main (argc, argv)
   if (stream != stdout)
     fclose (stream);
 
-  exit (0);
+  return 0;
 }

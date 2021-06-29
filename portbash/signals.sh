@@ -6,8 +6,9 @@ export CC
 cat > x.c <<EOF
 #include <signal.h>
 
-main()
+int main(int argc, char **argv)
 {
+	return 0;
 }
 EOF
 
@@ -22,12 +23,13 @@ rm -f x.c x.i
 cat > x.c << EOF
 #include <signal.h>
 sigset_t set, oset;
-main()
+int main(int argc, char **argv)
 {
 	sigemptyset(&set);
 	sigemptyset(&oset);
 	sigaddset(&set, 2);
 	sigprocmask(SIG_BLOCK, &set, &oset);
+	return 0;
 }
 EOF
 if ${CC} x.c >/dev/null 2>&1; then
@@ -35,10 +37,11 @@ if ${CC} x.c >/dev/null 2>&1; then
 else
 	cat > x.c << EOF
 #include <signal.h>
-main()
+int main(int argc, char **argv)
 {
 	long omask = sigblock(sigmask(2));
 	sigsetmask(omask);
+	return 0;
 }
 EOF
 	if ${CC} x.c >/dev/null 2>&1; then
@@ -46,11 +49,12 @@ EOF
 	else
 		cat > x.c << EOF
 #include <signal.h>
-main()
+int main(int argc, char **argv)
 {
 	int n;
 	n = sighold(2);
 	sigrelse(2);
+	return 0;
 }
 EOF
 		if ${CC} x.c >/dev/null 2>&1; then

@@ -25,6 +25,7 @@
 /* #define STANDALONE */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "bashtypes.h"
 
 #if !defined (STANDALONE)

@@ -3,7 +3,7 @@
 #include <sys/file.h>
 #include <stdio.h>
 
-main()
+int main(int argc, char**argv)
 {
 	register int	i;
 
@@ -11,6 +11,6 @@ main()
 		if (fcntl(i, F_GETFD, 0) != -1)
 			fprintf(stderr, "fd %d: open\n", i);
 	}
-	exit(0);
+	return 0;
 }
 

@@ -4,12 +4,13 @@
  */
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdlib.h>
 
 int     pid;
 int     pg1, pg2, pg3, pg4;
 int     ng, np, s, child;
 
-main()
+int main(int argc, char **argv)
 {
 	pid = getpid();
 	pg1 = getpgrp(0);
@@ -43,6 +44,6 @@ main()
 			exit(1);
 	} else {
 		wait(&s);
-		exit(s>>8);
+		return s>>8;
 	}
 }

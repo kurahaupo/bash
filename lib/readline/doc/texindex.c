@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdlib.h>
 #include "getopt.h"
 #include "bashansi.h"
 
@@ -161,10 +162,7 @@ char *tempcopy ();
 
 #define MAX_IN_CORE_SORT 500000
 
-void
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   int i;
 
@@ -225,7 +223,7 @@ main (argc, argv)
     }
 
   flush_tempfiles (tempcount);
-  exit (TI_NO_ERROR);
+  return TI_NO_ERROR;
 }
 
 void

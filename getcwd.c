@@ -326,21 +326,19 @@ getcwd (buf, size)
 
 #if defined (TEST)
 #  include <stdio.h>
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char b[PATH_MAX];
 
   if (getcwd(b, sizeof(b)))
     {
       printf ("%s\n", b);
-      exit (0);
+      return 0;
     }
   else
     {
       perror ("cwd: getcwd");
-      exit (1);
+      return 1;
     }
 }
 #endif /* TEST */

@@ -29,6 +29,7 @@
 #if !defined (errno)
 extern int errno;
 #endif /* !errno */
+#include <stdlib.h>
 
 #include "bashansi.h"
 #include "flags.h"

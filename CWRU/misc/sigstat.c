@@ -14,9 +14,7 @@ char	*progname;
 
 void	sigstat();
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int main(int argc, char **argv)
 {
 	register int	i;
 	char	*t;
@@ -29,11 +27,11 @@ char	**argv;
 	if (argc == 1) {
 		for (i = 1; i < NSIG; i++)
 			sigstat(i);
-		exit(0);
+		return 0;
 	}
 	for (i = 1; i < argc; i++)
 		sigstat(atoi(argv[i]));
-	exit(0);
+	return 0;
 }
 
 void

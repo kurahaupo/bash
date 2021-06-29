@@ -53,6 +53,7 @@ extern int errno;
 #include "builtins/getopt.h"
 
 #include <malloc.h>
+#include <stdlib.h>
 
 /* The size that strings change by. */
 #define DEFAULT_ARRAY_SIZE 512

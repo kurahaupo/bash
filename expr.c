@@ -66,6 +66,7 @@
 #include "shell.h"
 
 #include <malloc.h>
+#include <stdlib.h>
 
 #define variable_starter(c) (isletter(c) || (c == '_'))
 #define variable_character(c) (isletter(c) || (c == '_') || digit(c))
@@ -866,22 +867,20 @@ char *get_string_value () { return 0; }
 
 jmp_buf top_level;
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   register int i;
   long v;
 
   if (setjmp (top_level))
-    exit (0);
+    return 0;
 
   for (i = 1; i < argc; i++)
     {
       v = evalexp (argv[i]);
       printf ("'%s' -> %ld\n", argv[i], v);
     }
-  exit (0);
+  return 0;
 }
 
 int

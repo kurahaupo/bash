@@ -123,8 +123,7 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
     3050*:HI-UX:*:*)
 	sed 's/^	//' << EOF >dummy.c
 	#include <unistd.h>
-	int
-	main ()
+	int main(int argc, char **argv)
 	{
 	  long cpu = sysconf (_SC_CPU_VERSION);
 	  if (CPU_IS_HP_MC68K (cpu))
@@ -140,7 +139,7 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
 		}
 	    }
 	  else puts ("unknown-hitachi-hiuxwe2");
-	  exit (0);
+	  return 0;
 	}
 EOF
 	${CC-cc} dummy.c -o dummy && ./dummy && rm dummy.c dummy && exit 0
@@ -217,7 +216,7 @@ esac
 #echo "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" 1>&2
 
 cat >dummy.c <<EOF
-main()
+int main(int argc, char **argv)
 {
 #if defined (sony)
 #if defined (MIPSEB)
@@ -267,7 +266,7 @@ main()
   printf("i386-sequent-ptx\n"); exit(0);
 #endif
 
-  exit (1);
+  return 1;
 }
 EOF
 

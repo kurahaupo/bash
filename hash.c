@@ -241,7 +241,7 @@ xmalloc (bytes)
   return (result);
 }
 
-main ()
+int main(int argc, char **argv)
 {
   char string[256];
   int count = 0;
@@ -287,7 +287,7 @@ main ()
 
       printf ("%d\n", bcount);
     }
-    exit (0);
+    return 0;
 }
 
 #endif /* TEST_HASHING */

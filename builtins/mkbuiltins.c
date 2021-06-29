@@ -25,6 +25,7 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include "../filecntl.h"
 
 #if defined (HAVE_UNISTD_H)
@@ -123,9 +124,7 @@ static int is_special_builtin ();
 /* For each file mentioned on the command line, process it and
    write the information to STRUCTFILE and EXTERNFILE, while
    creating the production file if neccessary. */
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   int arg_index = 1;
   FILE *structfile, *externfile;
@@ -175,13 +174,13 @@ main (argc, argv)
       else
 	{
 	  fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
-	  exit (2);
+	  return 2;
 	}
     }
 
   /* If there are no files to process, just quit now. */
   if (arg_index == argc)
-    exit (0);
+    return 0;
 
   if (!only_documentation)
     {
@@ -249,7 +248,7 @@ main (argc, argv)
       fclose (documentation_file);
     }
 
-  exit (0);
+  return 0;
 }
 
 /* **************************************************************** */

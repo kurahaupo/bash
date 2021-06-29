@@ -434,9 +434,7 @@ BASH_INPUT bash_input;
 struct stat dsb;		/* can be used from gdb */
 
 /* imitate /bin/cat */
-main(argc, argv)
-int	argc;
-char	**argv;
+int main(int argc, char **argv)
 {
 	register int i;
 	BUFFERED_STREAM *bp;
@@ -444,7 +442,7 @@ char	**argv;
 	if (argc == 1) {
 		bp = fd_to_buffered_stream (0);
 		process(bp);
-		exit(0);
+		return 0;
 	}
 	for (i = 1; i < argc; i++) {
 		if (argv[i][0] == '-' && argv[i][1] == '\0') {
@@ -461,6 +459,6 @@ char	**argv;
 			close_buffered_stream (bp);
 		}
 	}
-	exit(0);
+	return 0;
 }
 #endif

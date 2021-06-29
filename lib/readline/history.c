@@ -2143,7 +2143,7 @@ memory_error_and_abort ()
 /*								    */
 /* **************************************************************** */
 #ifdef TEST
-main ()
+int main(int argc, char **argv)
 {
   char line[1024], *t;
   int done = 0;
@@ -2209,6 +2209,7 @@ main ()
 	    }
 	}
     }
+  return 0;
 }
 
 #endif /* TEST */

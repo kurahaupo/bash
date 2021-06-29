@@ -322,7 +322,9 @@ array_concat (arr1, arr2)
 
 #if defined (TEST)
 #include <stdio.h>
+#include <stdlib.h>
 
+void
 fatal_error (format, arg1, arg2)
      char *format, *arg1, *arg2;
 {
@@ -330,6 +332,7 @@ fatal_error (format, arg1, arg2)
   exit (1);
 }
 
+void
 report_error (format, arg1, arg2)
      char *format, *arg1, *arg2;
 {
@@ -337,7 +340,7 @@ report_error (format, arg1, arg2)
   fprintf (stderr, "\n");
 }
 
-main ()
+int main(int argc, char **argv)
 {
   char example[256];
 
@@ -362,6 +365,7 @@ main ()
 
       free_array (result);
     }
+    return 0;
 }
 
 /*

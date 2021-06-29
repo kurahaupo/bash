@@ -310,9 +310,7 @@ tparam1 (string, outstring, len, up, left, argp)
 
 #ifdef DEBUG
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char buf[50];
   int args[3];

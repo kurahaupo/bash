@@ -1,4 +1,4 @@
-main ()
+int main(int argc, char **argv)
 {
   char line[1024], *t;
   int len, done = 0;
@@ -79,4 +79,5 @@ main ()
             }
         }
     }
+  return 0;
 }

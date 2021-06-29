@@ -406,7 +406,7 @@ following @var{history_expansion_char}.  The default is whitespace and
 The following program demonstrates simple use of the GNU History Library.
 
 @smallexample
-main ()
+int main(int argc, char **argv)
 @{
   char line[1024], *t;
   int len, done = 0;
@@ -485,5 +485,6 @@ main ()
             @}
         @}
     @}
+  return 0;
 @}
 @end smallexample

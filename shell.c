@@ -32,6 +32,8 @@
 */
 #define INSTALL_DEBUG_MODE
 
+#include <stdlib.h>
+
 #include "bashtypes.h"
 #include <stdio.h>
 #include <signal.h>
@@ -42,7 +44,9 @@
 #include "posixstat.h"
 #include "bashansi.h"
 
-#if defined (HAVE_VARARGS_H)
+#if defined (HAVE_STDARG_H)
+#include <stdarg.h>
+#elif defined (HAVE_VARARGS_H)
 #include <varargs.h>
 #endif
 
@@ -241,9 +245,7 @@ static void shell_reinitialize ();
 static void initialize_signals ();
 static void initialize_terminating_signals ();
 
-main (argc, argv, env)
-     int argc;
-     char **argv, **env;
+int main(int argc, char **argv, char **env)
 {
   register int i;
   int arg_index, locally_skip_execution;
@@ -474,7 +476,7 @@ main (argc, argv, env)
 	}
       arg_index++;
     }
-  this_command_name = (char *)NULL;      
+  this_command_name = (char *)NULL;
 
   /* First, let the outside world know about our interactive status.
      A shell is interactive if the `-i' flag was given, or if all of
@@ -752,7 +754,7 @@ main (argc, argv, env)
        pipe or redirected file. */
 #if defined (BUFFERED_INPUT)
     default_buffered_input = fileno (stdin);	/* == 0 */
-#else      
+#else
     setbuf (default_input, (char *)NULL);
 #endif /* !BUFFERED_INPUT */
 
@@ -820,7 +822,7 @@ main (argc, argv, env)
 #endif /* JOB_CONTROL */
 
   /* Always return the exit status of the last command to our parent. */
-  exit (last_command_exit_value);
+  return last_command_exit_value;
 }
 
 #if !defined (SYS_PROFILE)
@@ -1162,7 +1164,7 @@ indirection_level_string ()
 
   if (ps4 == 0 || *ps4 == '\0')
     return (indirection_string);
-    
+
   ps4 = decode_prompt_string (ps4);
 
   for (i = 0; *ps4 && i < indirection_level && i < 99; i++)
@@ -1176,7 +1178,7 @@ indirection_level_string ()
   return (indirection_string);
 }
 
-static sighandler 
+static sighandler
 alrm_catcher(i)
      int i;
 {

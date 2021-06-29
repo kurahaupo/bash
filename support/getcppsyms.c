@@ -25,8 +25,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-int
-main ()
+int main(int argc, char **argv)
 {
 #if defined (__BSD_4_4__)
   printf ("-D__BSD_4_4__");
@@ -426,5 +425,5 @@ main ()
 #endif /* vax */
 
   printf ("\n");
-  exit (0);
+  return 0;
 }

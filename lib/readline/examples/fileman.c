@@ -63,9 +63,7 @@ dupstr (s)
   return (r);
 }
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   char *line, *s;
 
@@ -94,7 +92,7 @@ main (argc, argv)
 
       free (line);
     }
-  exit (0);
+  return 0;
 }
 
 /* Execute a command line. */
