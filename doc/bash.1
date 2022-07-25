@@ -840,18 +840,39 @@ The return status is the exit status of the last command that executes.
 If the expansion of the items following \fBin\fP results in an empty
 list, no commands are executed, and the return status is 0.
 .TP
-\fBfor\fP (( \fIexpr1\fP ; \fIexpr2\fP ; \fIexpr3\fP )) ; \fBdo\fP \fIlist\fP ; \fBdone\fP
-First, the arithmetic expression \fIexpr1\fP is evaluated according
-to the rules described below under
+\fBfor\fP (( [ \fIexpr1\fP ] ; [ \fIexpr2\fP ] ; [ \fIexpr3\fP ] )) [ ; ] \fBdo\fP \fIlist\fP ; \fBdone\fP
+All three arithmetic expressions (\fIexpr1\fP, \fIexpr2\fP, and \fIexpr3\fP)
+are optional and are evaluated according to the rules described below under
 .SM
 .BR "ARITHMETIC EVALUATION" .
-The arithmetic expression \fIexpr2\fP is then evaluated repeatedly
-until it evaluates to zero.
-Each time \fIexpr2\fP evaluates to a non-zero value, \fIlist\fP is
-executed and the arithmetic expression \fIexpr3\fP is evaluated.
-If any expression is omitted, it behaves as if it evaluates to 1.
-The return value is the exit status of the last command in \fIlist\fP
-that is executed, or false if any of the expressions is invalid.
+.if t .sp 0.5
+.if n .sp 1
+First, \fIexpr1\fP, if present, is evaluated. (This is typically used to assign
+starting values.)
+.if t .sp 0.5
+.if n .sp 1
+Then the following sequence is performed repeatedly:
+.RS
+.PD 2
+.if t .sp 1
+.if n .sp 2
+(1) if \fIexpr2\fP is present and evaluates to zero, the loop terminates; otherwise
+.if t .sp 1
+.if n .sp 2
+(2) \fIlist\fP is executed, and then
+.if t .sp 1
+.if n .sp 2
+(3) if present, \fIexpr3\fP is evaluated.
+.RE
+.if t .sp 0.5
+.if n .sp 1
+(This mimics the behavior of the \fBfor\fP keyword in the C language.)
+.if t .sp 0.5
+.if n .sp 1
+The return value is the exit status of the last command in \fIlist\fP that is
+executed (see \fBbreak\fP), or zero if the loop terminates before the first
+execution of \fIlist\fP, or non-zero if any of the expressions is invalid; the
+\fIvalues\fP of the expressions do not affect the loop's return value.
 .TP
 \fBselect\fP \fIname\fP [ \fBin\fP \fIword\fP ] ; \fBdo\fP \fIlist\fP ; \fBdone\fP
 The list of words following \fBin\fP is expanded, generating a list
@@ -2526,7 +2547,7 @@ not already set.
 If this variable is set, and is an array,
 the value of each set element is executed as a command
 prior to issuing each primary prompt.
-If this is set but not an array variable, 
+If this is set but not an array variable,
 its value is used as a command to execute instead.
 .TP
 .B PROMPT_DIRTRIM
@@ -3361,7 +3382,7 @@ The match is performed using the rules described under
 .B Pattern Matching
 below.
 In the first form above, only the first match is replaced.
-If there are two slashes separating \fIparameter\fP and \fIpattern\fP 
+If there are two slashes separating \fIparameter\fP and \fIpattern\fP
 (the second form above), all matches of \fIpattern\fP are
 replaced with \fIstring\fP.
 If \fIpattern\fP is preceded by \fB#\fP (the third form above),
@@ -5253,7 +5274,7 @@ same process group as the terminal, and \fB^C\fP sends
 .B SIGINT
 to all processes in that process group.
 .PP
-When \fBbash\fP is running without job control enabled and receives 
+When \fBbash\fP is running without job control enabled and receives
 .SM
 .B SIGINT
 while waiting for a foreground command, it waits until that foreground
@@ -5918,7 +5939,7 @@ The variables and their default values are:
 .PP
 .PD 0
 .TP
-.B active\-region\-start\-color   
+.B active\-region\-start\-color
 A string variable that controls the text color and background when displaying
 the text in the active region (see the description of
 \fBenable\-active\-region\fP below).
@@ -5930,8 +5951,8 @@ The default value is the string that puts the terminal in standout mode,
 as obtained from the terminal's terminfo description.
 A sample value might be \f(CW"\ee[01;33m"\fP.
 .TP
-.B active\-region\-end\-color     
-A string variable that "undoes" the effects of \fBactive\-region\-start\-color\fP 
+.B active\-region\-end\-color
+A string variable that "undoes" the effects of \fBactive\-region\-start\-color\fP
 and restores "normal" terminal display appearance after displaying text
 in the active region.
 This string must not take up any physical character positions on the display,
@@ -6055,11 +6076,11 @@ non-printing characters, which can be used to embed a terminal control
 sequence into the mode string.
 .TP
 .B enable\-active\-region (On)
-The \fIpoint\fP is the current cursor position, and \fImark\fP refers  
-to a saved cursor position.   
-The text between the point and mark is referred to as the \fIregion\fP.  
+The \fIpoint\fP is the current cursor position, and \fImark\fP refers
+to a saved cursor position.
+The text between the point and mark is referred to as the \fIregion\fP.
 When this variable is set to \fIOn\fP, readline allows certain commands
-to designate the region as \fIactive\fP.  
+to designate the region as \fIactive\fP.
 When the region is active, readline highlights the text in the region using
 the value of the \fBactive\-region\-start\-color\fP, which defaults to the
 string that enables
@@ -7822,7 +7843,7 @@ and
 .B READLINE_MARK
 variables to the current location of the insertion point and the saved
 insertion point (the mark), respectively.
-The shell assigns any numeric argument the user supplied to the     
+The shell assigns any numeric argument the user supplied to the
 .SM
 .B READLINE_ARGUMENT
 variable.
@@ -7860,6 +7881,9 @@ must be \(>= 1.  If
 is greater than the number of enclosing loops, all enclosing loops
 are exited.
 The return value is 0 unless \fIn\fP is not greater than or equal to 1.
+This return value may be inverted by prefacing with \fB!\fP. Since this is the
+last command within the loop, this also becomes the return value of the loop
+itself.
 .TP
 \fBbuiltin\fP \fIshell\-builtin\fP [\fIarguments\fP]
 Execute the specified shell builtin, passing it
@@ -8328,7 +8352,7 @@ It is ignored in all other cases.
 The
 .B \-I
 option causes local variables to inherit the attributes
-(except the \fInameref\fP attribute) 
+(except the \fInameref\fP attribute)
 and value of any existing variable with the same
 \fIname\fP at a surrounding scope.
 If there is no existing variable, the local variable is initially unset.
@@ -11223,7 +11247,7 @@ behavior. It's intended to be a temporary solution.
 This section does not mention behavior that is standard for a particular
 version (e.g., setting \fBcompat32\fP means that quoting the rhs of the regexp
 matching operator quotes special regexp characters in the word, which is
-default behavior in bash-3.2 and above). 
+default behavior in bash-3.2 and above).
 .PP
 If a user enables, say, \fBcompat32\fP, it may affect the behavior of other
 compatibility levels up to and including the current compatibility level.
