@@ -39,7 +39,7 @@
    code path because of how assoc_insert works. */
 typedef struct element_state
 {
-  short type;			/* assoc or indexed, says which fields are valid */  
+  short type;			/* assoc or indexed, says which fields are valid */
   short subtype;		/* `*', `@', or something else */
   arrayind_t ind;
   char *key;			/* can be allocated memory */
