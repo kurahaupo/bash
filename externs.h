@@ -28,6 +28,7 @@
 
 /* Functions from expr.c. */
 #define EXP_EXPANDED	0x01
+#define EXP_UNSIGNED	0x02
 
 extern intmax_t evalexp PARAMS((char *, int, int *));
 

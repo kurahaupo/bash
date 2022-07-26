@@ -177,6 +177,7 @@ static procenv_t evalbuf;
 
 /* set to 1 if the expression has already been run through word expansion */
 static int	already_expanded;
+static int	unsigned_mode;
 
 static struct lvalue curlval = {0, 0, 0, -1};
 static struct lvalue lastlval = {0, 0, 0, -1};
@@ -415,6 +416,7 @@ evalexp (expr, flags, validp)
   val = 0;
   noeval = 0;
   already_expanded = (flags&EXP_EXPANDED);
+  unsigned_mode    = (flags&EXP_UNSIGNED);
 
   FASTCOPY (evalbuf, oevalbuf, sizeof (evalbuf));
 
