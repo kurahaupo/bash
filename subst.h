@@ -41,7 +41,7 @@
 #define Q_QUOTEDNULL	 0x040
 #define Q_DOLBRACE	 0x080
 #define Q_ARITH		 0x100	/* expanding string for arithmetic evaluation */
-#define Q_ARRAYSUB	 0x200	/* expanding indexed array subscript */
+#define Q_SUBSCRIPT	 0x200	/* expanding indexed array subscript */
 
 /* Flag values controlling how assignment statements are treated. */
 #define ASS_APPEND	0x0001

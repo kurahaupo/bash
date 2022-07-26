@@ -434,10 +434,7 @@ assign_array_element_internal (entry, name, vname, sub, sublen, value, flags, es
     }
   else
     {
-      ind = array_expand_index (entry, sub, sublen, 0);
-      /* negative subscripts to indexed arrays count back from end */
-      if (entry && ind < 0)
-	ind = (array_p (entry) ? array_max_index (array_cell (entry)) : 0) + 1 + ind;
+      ind = expand_index (sub, sublen-1, 0, array_size (entry));
       if (ind < 0)
 	{
 	  err_badarraysub (name);
@@ -790,10 +787,7 @@ assign_compound_array_list (var, nlist, flags)
 
 	  if (array_p (var))
 	    {
-	      ind = array_expand_index (var, w + 1, len, 0);
-	      /* negative subscripts to indexed arrays count back from end */
-	      if (ind < 0)
-		ind = array_max_index (array_cell (var)) + 1 + ind;
+	      ind = expand_index (w + 1, len-1, 0, array_size (var));
 	      if (ind < 0)
 		{
 		  err_badarraysub (w);
@@ -1176,10 +1170,7 @@ unbind_array_element (var, sub, flags)
 	    }
 	  /* Fall through for behavior 3 */
 	}
-      ind = array_expand_index (var, sub, strlen (sub) + 1, 0);
-      /* negative subscripts to indexed arrays count back from end */
-      if (ind < 0)
-	ind = array_max_index (array_cell (var)) + 1 + ind;
+      ind = expand_index (sub, strlen (sub), 0, array_size (var));
       if (ind < 0)
 	{
 	  builtin_error ("[%s]: %s", sub, _(bash_badsub_errmsg));
@@ -1192,7 +1183,7 @@ unbind_array_element (var, sub, flags)
   else	/* array_p (var) == 0 && assoc_p (var) == 0 */
     {
       akey = this_command_name;
-      ind = array_expand_index (var, sub, strlen (sub) + 1, 0);
+      ind = expand_index (sub, strlen (sub), 0, array_size (var));
       this_command_name = akey;
       if (ind == 0)
 	{
@@ -1334,29 +1325,83 @@ valid_array_reference (name, flags)
   return tokenize_array_reference ((char *)name, flags, (char **)NULL);
 }
 
+#define FROM_START (-1)
+#define FROM_AUTO  0
+#define FROM_END   1
+
+arrayind_t
+array_size (var)
+     SHELL_VAR *var;
+{
+    if (var && array_p (var))
+      return array_max_index (array_cell (var)) + 1;
+    return 0;
+}
+
 /* Expand the array index beginning at S and extending LEN characters. */
 arrayind_t
-array_expand_index (var, s, len, flags)
-     SHELL_VAR *var;
+expand_index (s, len, flags, a_size)
      char *s;
      int len;
      int flags;
+     arrayind_t a_size;
 {
   char *exp, *t, *savecmd;
-  int expok, eflag;
+  int expok, eflag, from_pos;
   arrayind_t val;
 
-  exp = (char *)xmalloc (len);
-  strncpy (exp, s, len - 1);
-  exp[len - 1] = '\0';
+  /* If the expression starts with `#' then don't make the end-of-array
+   * adjustment conditional on the express value being negative.
+   * - With a single `#', always adjust index to be relative to the end of the
+   *   array:
+   *    ${array[#-1]} gives the last element,
+   *    ${array[#]}   refers to the next-past-last element
+   *    ${array[#+1]} refers to the second-past-last element
+   *    ${array[@]:#-N} gives the last N elements of array, including when N==0
+   * - With a double `##', always take the index to be relative to the start of
+   *   the array (a negative index always causes an error).
+   *
+   * XXX - make special-case handling for negative expressions controllable by
+   * an attribute on the array.
+   */
+  from_pos = FROM_AUTO;
+  if (flags & AV_NOAUTOTAIL)
+    from_pos = FROM_START;
+  if ( s[0] == '#' )
+    {
+      s++;
+      len--;
+      from_pos = FROM_END;
+
+      /* empty expression gives 0, so array[#] will give next-after-last element */
+      if ( len > 0 )
+        {
+          if ( s[0] == '#' )
+            {
+              s++;
+              len--;
+              from_pos = FROM_START;
+            }
+          else if (!( s[0] == '+' || s[0] == '-' ) )
+            goto bad_index;
+          /* FIXME - precedence of array[#-5 == 0 ? 1 : 2] should be give
+           * array[size == 5 ? 1 : 2] rather than array[size + 2]
+           *
+           * Most likely impact on expressions like array[#+1>>1] (which would
+           * take the upper mid-point of an array)
+           */
+        }
+    }
+
+  exp = (char *)xmalloc (len + 1);
+  strncpy (exp, s, len);
+  exp[len] = '\0';
 #if 0	/* TAG: maybe bash-5.2 */
-  if ((flags & AV_NOEXPAND) == 0)
-    t = expand_arith_string (exp, Q_DOUBLE_QUOTES|Q_ARITH|Q_ARRAYSUB);	/* XXX - Q_ARRAYSUB for future use */
-  else
+  if (flags & AV_NOEXPAND)
     t = exp;
-#else
-  t = expand_arith_string (exp, Q_DOUBLE_QUOTES|Q_ARITH|Q_ARRAYSUB);	/* XXX - Q_ARRAYSUB for future use */
+  else
 #endif
+    t = expand_arith_string (exp, Q_DOUBLE_QUOTES|Q_ARITH|Q_SUBSCRIPT);	/* XXX - Q_SUBSCRIPT for future use */
   savecmd = this_command_name;
   this_command_name = (char *)NULL;
   eflag = (shell_compatibility_level > 51) ? 0 : EXP_EXPANDED;
@@ -1366,12 +1411,22 @@ array_expand_index (var, s, len, flags)
   if (t != exp)
     free (t);
   free (exp);
-  if (expok == 0)
+
+  /* negative subscripts to indexed arrays & strings count back from end */
+  if (from_pos == FROM_END ||
+      from_pos == FROM_AUTO && val < 0)
+    val += a_size;
+
+  if (val < 0)
+    return -1;
+
+  if (expok == 0 || val < 0)
     {
+bad_index:
       set_exit_status (EXECUTION_FAILURE);
 
       if (no_longjmp_on_fatal_error)
-	return 0;
+	return -1;
       top_level_cleanup ();
       jump_to_top_level (DISCARD);
     }
@@ -1566,15 +1621,9 @@ array_value_internal (s, quoted, flags, estatep)
 	{
 	  if ((flags & AV_USEIND) == 0 || estatep == 0)
 	    {
-	      ind = array_expand_index (var, t, len, flags);
-	      if (ind < 0)
-		{
-		  /* negative subscripts to indexed arrays count back from end */
-		  if (var && array_p (var))
-		    ind = array_max_index (array_cell (var)) + 1 + ind;
-		  if (ind < 0)
-		    INDEX_ERROR();
-		}
+	      ind = expand_index (t, len, flags, array_size (var));
+              if (ind < 0)
+                INDEX_ERROR();
 	      if (estatep)
 		estatep->ind = ind;
 	    }

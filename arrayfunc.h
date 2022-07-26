@@ -65,6 +65,7 @@ extern int array_expand_once;
 #define AV_NOEXPAND	0x020	/* don't run assoc subscripts through word expansion */
 #define AV_ONEWORD	0x040	/* not used yet */
 #define AV_ATSTARKEYS	0x080	/* accept a[@] and a[*] but use them as keys, not special values */
+#define AV_NOAUTOTAIL   0x100   /* don't treat negative indeces without leading `#' as counting back from the end */
 
 /* Flags for valid_array_reference. Value 1 is reserved for skipsubscript().
    Also used by unbind_array_element, which is currently the only function
@@ -105,7 +106,8 @@ extern int skipsubscript PARAMS((const char *, int, int));
 extern void print_array_assignment PARAMS((SHELL_VAR *, int));
 extern void print_assoc_assignment PARAMS((SHELL_VAR *, int));
 
-extern arrayind_t array_expand_index PARAMS((SHELL_VAR *, char *, int, int));
+extern arrayind_t array_size PARAMS((SHELL_VAR *));
+extern arrayind_t expand_index PARAMS((char *, int, int, arrayind_t));
 extern int valid_array_reference PARAMS((const char *, int));
 extern int tokenize_array_reference PARAMS((char *, int, char **));
 
@@ -130,6 +132,7 @@ extern void flush_eltstate (array_eltstate_t *);
 #define AV_NOEXPAND	0
 #define AV_ONEWORD	0
 #define AV_ATSTARKEYS	0
+#define AV_NOAUTOTAIL   0
 
 #define VA_NOEXPAND	0
 #define VA_ONEWORD	0

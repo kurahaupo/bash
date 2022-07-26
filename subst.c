@@ -333,8 +333,7 @@ static void parameter_brace_expand_error PARAMS((char *, char *, int));
 static int valid_length_expression PARAMS((char *));
 static intmax_t parameter_brace_expand_length PARAMS((char *));
 
-static char *skiparith PARAMS((char *, int));
-static int verify_substring_values PARAMS((SHELL_VAR *, char *, char *, int, intmax_t *, intmax_t *));
+static int evaluate_slice_range PARAMS((SHELL_VAR *, char *, char *, int, intmax_t *, intmax_t *));
 static int get_var_and_type PARAMS((char *, char *, array_eltstate_t *, int, int, SHELL_VAR **, char **));
 static char *mb_substring PARAMS((char *, int, int));
 static char *parameter_brace_substring PARAMS((char *, char *, array_eltstate_t *, char *, int, int, int));
@@ -2168,7 +2167,14 @@ skipsubscript (string, start, flags)
    begin.  This is similar in spirit to strpbrk, but it returns an index into
    STRING and takes a starting index.  This little piece of code knows quite
    a lot of shell syntax.  It's very similar to skip_double_quoted and other
-   functions of that ilk. */
+   functions of that ilk.
+
+   When the SD_ARITHEXP flag is given, do some extra processing to allow for
+   nested expressions:
+	1.  After a `(', skip until matching `)'.
+	2.  After a `?', skip until matching `:'.
+   Don't treat a `:' or `)' as an actual delimiter unless it's unmatched.
+   */
 int
 skip_to_delim (string, start, delims, flags)
      char *string;
@@ -4033,7 +4039,7 @@ expand_arith_string (string, quoted)
 	 expand_string_leave_quoted  */
       td.flags = W_NOPROCSUB|W_NOTILDE;	/* don't want process substitution or tilde expansion */
 #if 0	/* TAG: bash-5.2 */
-      if (quoted & Q_ARRAYSUB)
+      if (quoted & Q_SUBSCRIPT)
 	td.flags |= W_NOCOMSUB;
 #endif
       td.word = savestring (string);
@@ -7271,10 +7277,7 @@ array_length_reference (s)
     }
   else
     {
-      ind = array_expand_index (var, t, len, 0);
-      /* negative subscripts to indexed arrays count back from end */
-      if (var && array_p (var) && ind < 0)
-	ind = array_max_index (array_cell (var)) + 1 + ind;
+      ind = expand_index (t, len-1, 0, array_size (var));
       if (ind < 0)
 	{
 	  err_badarraysub (t);
@@ -8064,76 +8067,62 @@ parameter_brace_expand_length (name)
   return (number);
 }
 
-/* Skip characters in SUBSTR until DELIM.  SUBSTR is an arithmetic expression,
-   so we do some ad-hoc parsing of an arithmetic expression to find
-   the first DELIM, instead of using strchr(3).  Two rules:
-	1.  If the substring contains a `(', read until closing `)'.
-	2.  If the substring contains a `?', read past one `:' for each `?'.
-   The SD_ARITHEXP flag to skip_to_delim takes care of doing this.
-*/
-
-static char *
-skiparith (substr, delim)
-     char *substr;
-     int delim;
-{
-  int i;
-  char delims[2];
-
-  delims[0] = delim;
-  delims[1] = '\0';
-
-  i = skip_to_delim (substr, 0, delims, SD_ARITHEXP);
-  return (substr + i);
-}
-
-/* Verify and limit the start and end of the desired substring.  If
-   VTYPE == 0, a regular shell variable is being used; if it is 1,
-   then the positional parameters are being used; if it is 2, then
-   VALUE is really a pointer to an array variable that should be used.
-   Return value is 1 if both values were OK, 0 if there was a problem
-   with an invalid expression, or -1 if the values were out of range. */
+/* Evaluate and limit the start and end of the desired slice.
+   If VTYPE == 0, a regular shell variable is being used; if it is 1, then the
+   positional parameters are being used; if it is 2, then VALUE is really a
+   pointer to an array variable that should be used. Return value is 1 if both
+   values were OK, 0 if there was a problem with an invalid expression, or -1
+   if the values were out of range. */
 static int
-verify_substring_values (v, value, substr, vtype, e1p, e2p)
+evaluate_slice_range (v, value, substr, vtype, e1p, e2p)
      SHELL_VAR *v;
      char *value, *substr;
      int vtype;
      intmax_t *e1p, *e2p;
 {
-  char *t, *temp1, *temp2;
-  arrayind_t len;
-  int expok, eflag;
+  char part_sep;
+  arrayind_t size;
+  int part1_len;
+  int substr_len;
 #if defined (ARRAY_VARS)
- ARRAY *a;
- HASH_TABLE *h;
+  ARRAY *a;
+  HASH_TABLE *h;
 #endif
 
-  /* duplicate behavior of strchr(3) */
-  t = skiparith (substr, ':');
-  if (*t && *t == ':')
-    *t = '\0';
+  substr_len = strlen(substr);
+
+  /* Find the first `:' or `.' that isn't part of a `?' .. `:' pair, or
+     inside a parenthesized subexpression. */
+  part1_len = skip_to_delim (substr, 0, ":.", SD_ARITHEXP);
+  part_sep = substr[part1_len];
+  if (part_sep == ':' ||
+      part_sep == '.' && substr[part1_len+1] == '.')
+    {
+      #if 1
+      substr[part1_len] = '\0';
+      #endif
+    }
   else
-    t = (char *)0;
+    {
+      if (part1_len != substr_len)
+        {
+          internal_error ("slicing: skip_delim returned %d but strlen returned %d", part1_len, substr_len);
+          return 0;
+        }
+      part_sep = 0;
+    }
 
-  temp1 = expand_arith_string (substr, Q_DOUBLE_QUOTES|Q_ARITH);
-  eflag = (shell_compatibility_level > 51) ? 0 : EXP_EXPANDED;
-
-  *e1p = evalexp (temp1, eflag, &expok);
-  free (temp1);
-  if (expok == 0)
-    return (0);
-
-  len = -1;	/* paranoia */
+  size = -1;	/* paranoia */
   switch (vtype)
     {
     case VT_VARIABLE:
     case VT_ARRAYMEMBER:
-      len = MB_STRLEN (value);
+      size = MB_STRLEN (value);
       break;
     case VT_POSPARMS:
-      len = number_of_args () + 1;
+      size = number_of_args () + 1;
       if (*e1p == 0)
-	len++;		/* add one arg if counting from $0 */
+	size++;		/* add one arg if counting from $0 */
       break;
 #if defined (ARRAY_VARS)
     case VT_ARRAYVAR:
@@ -8143,79 +8132,83 @@ verify_substring_values (v, value, substr, vtype, e1p, e2p)
       if (assoc_p (v))
 	{
 	  h = assoc_cell (v);
-	  len = assoc_num_elements (h) + (*e1p < 0);
+	  size = assoc_num_elements (h) + 1;
 	}
       else
 	{
 	  a = (ARRAY *)value;
-	  len = array_max_index (a) + (*e1p < 0);	/* arrays index from 0 to n - 1 */
+	  size = array_max_index (a) + 1;	/* arrays index from 0 to n - 1 */
 	}
       break;
 #endif
     }
 
-  if (len == -1)	/* paranoia */
-    return -1;
-
-  if (*e1p < 0)		/* negative offsets count from end */
-    *e1p += len;
-
-  if (*e1p > len || *e1p < 0)
-    return (-1);
-
-#if defined (ARRAY_VARS)
-  /* For arrays, the second offset deals with the number of elements. */
-  if (vtype == VT_ARRAYVAR)
-    len = assoc_p (v) ? assoc_num_elements (h) : array_num_elements (a);
-#endif
-
-  if (t)
+  if (size == -1)	/* paranoia */
     {
-      t++;
-      temp2 = savestring (t);
-      temp1 = expand_arith_string (temp2, Q_DOUBLE_QUOTES|Q_ARITH);
-      free (temp2);
-      t[-1] = ':';
-      *e2p = evalexp (temp1, eflag, &expok);
-      free (temp1);
-      if (expok == 0)
-	return (0);
-
-      /* Should we allow positional parameter length < 0 to count backwards
-	 from end of positional parameters? */
-#if 1
-      if ((vtype == VT_ARRAYVAR || vtype == VT_POSPARMS) && *e2p < 0)
-#else /* XXX - postponed; this isn't really a valuable feature */
-      if (vtype == VT_ARRAYVAR && *e2p < 0)
-#endif
-	{
-	  internal_error (_("%s: substring expression < 0"), t);
-	  return (0);
-	}
-#if defined (ARRAY_VARS)
-      /* In order to deal with sparse arrays, push the intelligence about how
-	 to deal with the number of elements desired down to the array-
-	 specific functions.  */
-      if (vtype != VT_ARRAYVAR)
-#endif
-	{
-	  if (*e2p < 0)
-	    {
-	      *e2p += len;
-	      if (*e2p < 0 || *e2p < *e1p)
-		{
-		  internal_error (_("%s: substring expression < 0"), t);
-		  return (0);
-		}
-	    }
-	  else
-	    *e2p += *e1p;		/* want E2 chars starting at E1 */
-	  if (*e2p > len)
-	    *e2p = len;
-	}
+      internal_error (_("slice object has no size"));
+      return 0;
     }
-  else
-    *e2p = len;
+
+  *e1p = expand_index (substr, part1_len, 0, size);
+
+  if (*e1p < 0)
+    {
+      internal_error (_("%.*s: slice start expression < 0"), part1_len, substr);
+      return 0;
+    }
+
+  substr += part1_len;
+  substr_len -= part1_len;
+
+  *e2p = size;
+
+  if (part_sep)
+    {
+      /* If there was a part separator, then we have a second part */
+
+      #if 1
+      *substr = part_sep;
+      #endif
+
+      *substr++;
+      substr_len--;
+
+      arrayind_t endp = size;
+
+      if (part_sep == '.')
+        {
+          /* handle Start..End */
+
+          substr++;  /* skip second `.' */
+          substr_len--;
+
+          endp = expand_index (substr, substr_len, 0, size);
+
+          if (endp < 0)
+            {
+              internal_error (_("%s: slice end expression < 0"), substr);
+              return 0;
+            }
+        }
+      else
+        {
+          /* handle Start:Count */
+
+          arrayind_t nel = expand_index (substr, substr_len, 0, size - *e1p);
+
+          /* negative number of elements always forbidden */
+          if (nel < 0)
+            {
+              internal_error (_("%s: slice length expression < 0"), substr);
+              return 0;
+            }
+
+          endp = nel + *e1p;
+        }
+
+      if (endp < size)
+        *e2p = endp;
+    }
 
   return (1);
 }
@@ -8796,7 +8789,8 @@ parameter_brace_substring (varname, value, estatep, substr, quoted, pflags, flag
   starsub = vtype & VT_STARSUB;
   vtype &= ~VT_STARSUB;
 
-  r = verify_substring_values (v, val, substr, vtype, &e1, &e2);
+  r = evaluate_slice_range (v, val, substr, vtype, &e1, &e2);
+
   this_command_name = oname;
   if (r <= 0)
     {
@@ -8834,13 +8828,13 @@ parameter_brace_substring (varname, value, estatep, substr, quoted, pflags, flag
       else if (assoc_p (v))
 	/* we convert to list and take first e2 elements starting at e1th
 	   element -- officially undefined for now */
-	tt = assoc_subrange (assoc_cell (v), e1, e2, starsub, quoted, pflags);
+	tt = assoc_subrange (assoc_cell (v), e1, e2-e1, starsub, quoted, pflags);
       else
 	/* We want E2 to be the number of elements desired (arrays can be
-	   sparse, so verify_substring_values just returns the numbers
+	   sparse, so evaluate_slice_range just returns the numbers
 	   specified and we rely on array_subrange to understand how to
 	   deal with them). */
-	tt = array_subrange (array_cell (v), e1, e2, starsub, quoted, pflags);
+	tt = array_subrange (array_cell (v), e1, e2-e1, starsub, quoted, pflags);
 #endif
       /* We want to leave this alone in every case where pos_params/
 	 string_list_pos_params quotes the list members */
