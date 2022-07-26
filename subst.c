@@ -677,7 +677,7 @@ unquoted_member (character, string)
 	  break;
 	}
     }
-  return (0);
+  return 0;
 }
 
 /* Return 1 if SUBSTR appears in an unquoted portion of STRING. */
@@ -690,7 +690,7 @@ unquoted_substring (substr, string)
   DECLARE_MBSTATE;
 
   if (substr == 0 || *substr == '\0')
-    return (0);
+    return 0;
 
   slen = strlen (string);
   sublen = strlen (substr);
@@ -720,7 +720,7 @@ unquoted_substring (substr, string)
 	  break;
 	}
     }
-  return (0);
+  return 0;
 }
 #endif
 
@@ -5412,14 +5412,14 @@ match_upattern (string, pat, mtype, sp, ep)
   if (npat != pat)
     free (npat);
   if (c == FNM_NOMATCH)
-    return (0);
+    return 0;
 
   len = STRLEN (string);
   end = string + len;
 
   mlen = umatchlen (pat, len);
   if (mlen > (int)len)
-    return (0);
+    return 0;
 
   switch (mtype)
     {
@@ -5459,11 +5459,11 @@ match_upattern (string, pat, mtype, sp, ep)
 	    }
 	}
 
-      return (0);
+      return 0;
 
     case MATCH_BEG:
       if (match_pattern_char (pat, string, FNMATCH_IGNCASE) == 0)
-	return (0);
+	return 0;
 
       for (p = (mlen == -1) ? end : string + mlen; p >= string; p--)
 	{
@@ -5481,7 +5481,7 @@ match_upattern (string, pat, mtype, sp, ep)
 	    break;
 	}
 
-      return (0);
+      return 0;
 
     case MATCH_END:
       for (p = end - ((mlen == -1) ? len : mlen); p <= end; p++)
@@ -5497,10 +5497,10 @@ match_upattern (string, pat, mtype, sp, ep)
 	    break;
 	}
 
-      return (0);
+      return 0;
     }
 
-  return (0);
+  return 0;
 }
 
 #if defined (HANDLE_MULTIBYTE)
@@ -5572,11 +5572,11 @@ match_wpattern (wstring, indices, wstrlen, wpat, mtype, sp, ep)
   if (nwpat != wpat)
     free (nwpat);
   if (len == FNM_NOMATCH)
-    return (0);
+    return 0;
 
   mlen = wmatchlen (wpat, wstrlen);
   if (mlen > (int)wstrlen)
-    return (0);
+    return 0;
 
 /* itrace("wmatchlen (%ls) -> %d", wpat, mlen); */
   switch (mtype)
@@ -5609,11 +5609,11 @@ match_wpattern (wstring, indices, wstrlen, wpat, mtype, sp, ep)
 	    }
 	}
 
-      return (0);
+      return 0;
 
     case MATCH_BEG:
       if (match_pattern_wchar (wpat, wstring, FNMATCH_IGNCASE) == 0)
-	return (0);
+	return 0;
 
       for (n = (mlen == -1) ? wstrlen : mlen; n >= 0; n--)
 	{
@@ -5631,7 +5631,7 @@ match_wpattern (wstring, indices, wstrlen, wpat, mtype, sp, ep)
 	    break;
 	}
 
-      return (0);
+      return 0;
 
     case MATCH_END:
       for (n = wstrlen - ((mlen == -1) ? wstrlen : mlen); n <= wstrlen; n++)
@@ -5647,10 +5647,10 @@ match_wpattern (wstring, indices, wstrlen, wpat, mtype, sp, ep)
 	    break;
 	}
 
-      return (0);
+      return 0;
     }
 
-  return (0);
+  return 0;
 }
 #undef WFOLD
 #endif /* HANDLE_MULTIBYTE */
@@ -5669,7 +5669,7 @@ match_pattern (string, pat, mtype, sp, ep)
 #endif
 
   if (string == 0 || pat == 0 || *pat == 0)
-    return (0);
+    return 0;
 
 #if defined (HANDLE_MULTIBYTE)
   if (MB_CUR_MAX > 1)
@@ -8210,7 +8210,7 @@ evaluate_slice_range (v, value, substr, vtype, e1p, e2p)
         *e2p = endp;
     }
 
-  return (1);
+  return 1;
 }
 
 /* Return the type of variable specified by VARNAME (simple variable,
