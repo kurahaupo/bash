@@ -4,7 +4,7 @@
 #
 # The bug address depends on the release status of the shell.  Versions
 # with status `devel', `alpha', `beta', or `rc' mail bug reports to
-# chet@cwru.edu and, optionally, to bash-testers@cwru.edu.
+# chet.ramey@case.edu and, optionally, to bash-testers@cwru.edu.
 # Other versions send mail to bug-bash@gnu.org.
 #
 # Copyright (C) 1996-2021 Free Software Foundation, Inc.
@@ -102,7 +102,7 @@ esac
 BASHTESTERS="bash-testers@cwru.edu"
 
 case "$RELSTATUS" in
-alpha*|beta*|devel*|rc*)	BUGBASH=chet@cwru.edu ;;
+alpha*|beta*|devel*|rc*)	BUGBASH=chet.ramey@case.edu ;;
 *)				BUGBASH=bug-bash@gnu.org ;;
 esac
 
