@@ -132,6 +132,10 @@ if [ -z "$DEFEDITOR" ] && [ -z "$EDITOR" ]; then
 		DEFEDITOR=emacs
 	elif [ -x /usr/bin/xemacs ]; then
 		DEFEDITOR=xemacs
+	elif [ -x /usr/bin/vim; then
+		DEFEDITOR=vim
+	elif [ -x /usr/bin/gvim; then
+		DEFEDITOR=gvim
 	elif [ -x /usr/bin/nano ]; then
 		DEFEDITOR=nano
 	elif [ -x /usr/contrib/bin/jove ]; then
