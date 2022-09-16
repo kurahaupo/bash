@@ -146,50 +146,56 @@
 #  define MAX_INT_LEN 32
 #endif
 
-struct lvalue
+typedef struct
 {
-  char *tokstr;		/* possibly-rewritten lvalue if not NULL */
-  intmax_t tokval;	/* expression evaluated value */
-  SHELL_VAR *tokvar;	/* variable described by array or var reference */
-  intmax_t ind;		/* array index if not -1 */
-};
+  char      *lv_tokstr;	/* possibly-rewritten lvalue if not NULL */
+  intmax_t   lv_tokval;	/* expression evaluated value */
+  SHELL_VAR *lv_tokvar;	/* variable described by array or var reference */
+  intmax_t   lv_ind;	/* array index if not -1 */
+} LVALUE;
 
 /* A structure defining a single expression context. */
 typedef struct {
-  int curtok, lasttok;
-  char *expression, *tp, *lasttp;
-  intmax_t tokval;
-  char *tokstr;
-  int noeval;
-  struct lvalue lval;
+  int       ec_cur_tok,
+            ec_last_tok;
+  char     *ec_expression,
+           *ec_tpos,
+           *ec_last_tpos;
+  intmax_t  ec_tokval;
+  char     *ec_tokstr;
+  int       ec_noeval;
+  LVALUE    ec_cur_lval;
 } EXPR_CONTEXT;
 
 static char	*expression;	/* The current expression */
-static char	*tp;		/* token lexical position */
-static char	*lasttp;	/* pointer to last token position */
-static int	curtok;		/* the current token */
-static int	lasttok;	/* the previous token */
+#define tp      EC.ec_tpos	/* token lexical position */
+#define lasttp  EC.ec_last_tpos	/* pointer to last token position */
+#define curtok  EC.ec_cur_tok	/* the current token */
+#define lasttok EC.ec_last_tok	/* the previous token */
 static int	assigntok;	/* the OP in OP= */
-static char	*tokstr;	/* current token string */
-static intmax_t	tokval;		/* current token value */
-static int	noeval;		/* set to 1 if no assignment to be done */
+#define tokstr  EC.ec_tokstr	/* current token string */
+#define tokval  EC.ec_tokval	/* current token value */
+#define noeval  EC.ec_noeval	/* set to 1 if no assignment to be done */
 static procenv_t evalbuf;
 
 /* set to 1 if the expression has already been run through word expansion */
 static int	already_expanded;
 static int	unsigned_mode;
 
-static struct lvalue curlval = {0, 0, 0, -1};
-static struct lvalue lastlval = {0, 0, 0, -1};
+#define curlval  EC.ec_cur_lval
+static EXPR_CONTEXT EC = {
+    .ec_cur_lval = {0, 0, 0, -1}
+};
+static LVALUE lastlval = {0, 0, 0, -1};
 
 static int	_is_arithop PARAMS((int));
 static void	readtok PARAMS((void));	/* lexical analyzer */
 
-static void	init_lvalue PARAMS((struct lvalue *));
-static struct lvalue *alloc_lvalue PARAMS((void));
-static void	free_lvalue PARAMS((struct lvalue *));
+static void	init_lvalue PARAMS((LVALUE *));
+static LVALUE *alloc_lvalue PARAMS((void));
+static void	free_lvalue PARAMS((LVALUE *));
 
-static intmax_t	expr_streval PARAMS((char *, int, struct lvalue *));
+static intmax_t	expr_streval PARAMS((char *, int, LVALUE *));
 static intmax_t	strlong PARAMS((char *));
 static void	evalerror PARAMS((const char *));
 
@@ -229,29 +235,9 @@ static int expr_stack_size;	   /* Number of slots already allocated. */
 extern const char * const bash_badsub_errmsg;
 #endif
 
-#define SAVETOK(X) \
-  do { \
-    (X)->curtok = curtok; \
-    (X)->lasttok = lasttok; \
-    (X)->tp = tp; \
-    (X)->lasttp = lasttp; \
-    (X)->tokval = tokval; \
-    (X)->tokstr = tokstr; \
-    (X)->noeval = noeval; \
-    (X)->lval = curlval; \
-  } while (0)
+#define SAVETOK(X) (*(X) = EC)
 
-#define RESTORETOK(X) \
-  do { \
-    curtok = (X)->curtok; \
-    lasttok = (X)->lasttok; \
-    tp = (X)->tp; \
-    lasttp = (X)->lasttp; \
-    tokval = (X)->tokval; \
-    tokstr = (X)->tokstr; \
-    noeval = (X)->noeval; \
-    curlval = (X)->lval; \
-  } while (0)
+#define RESTORETOK(X) (EC = *(X))
 
 /* Push and save away the contents of the globals describing the
    current expression context. */
@@ -271,7 +257,7 @@ pushexp ()
 
   context = (EXPR_CONTEXT *)xmalloc (sizeof (EXPR_CONTEXT));
 
-  context->expression = expression;
+  context->ec_expression = expression;
   SAVETOK(context);
 
   expr_stack[expr_depth++] = context;
@@ -294,7 +280,7 @@ popexp ()
 
   context = expr_stack[--expr_depth];
 
-  expression = context->expression;
+  expression = context->ec_expression;
   RESTORETOK (context);
 
   free (context);
@@ -305,11 +291,11 @@ expr_unwind ()
 {
   while (--expr_depth > 0)
     {
-      if (expr_stack[expr_depth]->tokstr)
-	free (expr_stack[expr_depth]->tokstr);
+      if (expr_stack[expr_depth]->ec_tokstr)
+	free (expr_stack[expr_depth]->ec_tokstr);
 
-      if (expr_stack[expr_depth]->expression)
-	free (expr_stack[expr_depth]->expression);
+      if (expr_stack[expr_depth]->ec_expression)
+	free (expr_stack[expr_depth]->ec_expression);
 
       free (expr_stack[expr_depth]);
     }
@@ -536,7 +522,7 @@ expassign ()
       /* XXX - watch out for pointer aliasing issues here */
       lhs = savestring (tokstr);
       /* save ind in case rhs is string var and evaluation overwrites it */
-      lind = curlval.ind;
+      lind = curlval.lv_ind;
       readtok ();
       value = expassign ();
 
@@ -609,7 +595,7 @@ expassign ()
 #endif
 	    expr_bind_variable (lhs, rhs);
 	}
-      if (curlval.tokstr && curlval.tokstr == tokstr)
+      if (curlval.lv_tokstr && curlval.lv_tokstr == tokstr)
 	init_lvalue (&curlval);
 
       free (rhs);
@@ -1037,8 +1023,8 @@ exp0 ()
       if (noeval == 0)
 	{
 #if defined (ARRAY_VARS)
-	  if (curlval.ind != -1)
-	    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
+	  if (curlval.lv_ind != -1)
+	    expr_bind_array_element (curlval.lv_tokstr, curlval.lv_ind, vincdec);
 	  else
 #endif
 	    if (tokstr)
@@ -1077,18 +1063,18 @@ exp0 ()
  	  if (stok == POSTINC || stok == POSTDEC)
  	    {
  	      /* restore certain portions of EC */
- 	      tokstr = ec.tokstr;
- 	      noeval = ec.noeval;
- 	      curlval = ec.lval;
- 	      lasttok = STR;	/* ec.curtok */
+ 	      tokstr = ec.ec_tokstr;
+ 	      noeval = ec.ec_noeval;
+ 	      curlval = ec.ec_cur_lval;
+ 	      lasttok = STR;	/* curtok */
 
 	      v2 = val + ((stok == POSTINC) ? 1 : -1);
 	      vincdec = itos (v2);
 	      if (noeval == 0)
 		{
 #if defined (ARRAY_VARS)
-		  if (curlval.ind != -1)
-		    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
+		  if (curlval.lv_ind != -1)
+		    expr_bind_array_element (curlval.lv_tokstr, curlval.lv_ind, vincdec);
 		  else
 #endif
 		    expr_bind_variable (tokstr, vincdec);
@@ -1115,26 +1101,26 @@ exp0 ()
 
 static void
 init_lvalue (lv)
-     struct lvalue *lv;
+     LVALUE *lv;
 {
-  lv->tokstr = 0;
-  lv->tokvar = 0;
-  lv->tokval = lv->ind = -1;
+  lv->lv_tokstr = 0;
+  lv->lv_tokvar = 0;
+  lv->lv_tokval = lv->lv_ind = -1;
 }
 
-static struct lvalue *
+static LVALUE *
 alloc_lvalue ()
 {
-  struct lvalue *lv;
+  LVALUE *lv;
 
-  lv = xmalloc (sizeof (struct lvalue));
+  lv = xmalloc (sizeof (LVALUE));
   init_lvalue (lv);
   return (lv);
 }
 
 static void
 free_lvalue (lv)
-     struct lvalue *lv;
+     LVALUE *lv;
 {
   free (lv);		/* should be inlined */
 }
@@ -1143,7 +1129,7 @@ static intmax_t
 expr_streval (tok, e, lvalue)
      char *tok;
      int e;
-     struct lvalue *lvalue;
+     LVALUE *lvalue;
 {
   SHELL_VAR *v;
   char *value;
@@ -1232,13 +1218,13 @@ expr_streval (tok, e, lvalue)
 
   if (lvalue)
     {
-      lvalue->tokstr = tok;	/* XXX */
-      lvalue->tokval = tval;
-      lvalue->tokvar = v;	/* XXX */
+      lvalue->lv_tokstr = tok;	/* XXX */
+      lvalue->lv_tokval = tval;
+      lvalue->lv_tokvar = v;	/* XXX */
 #if defined (ARRAY_VARS)
-      lvalue->ind = ind;
+      lvalue->lv_ind = ind;
 #else
-      lvalue->ind = -1;
+      lvalue->lv_ind = -1;
 #endif
     }
 
@@ -1313,15 +1299,12 @@ readtok ()
   register char *cp, *xp;
   register unsigned char c, c1;
   register int e;
-  struct lvalue lval;
+  LVALUE lval;
 
   /* Skip leading whitespace. */
   cp = tp;
   c = e = 0;
   while (cp && (c = *cp) && (cr_whitespace (c)))
-    cp++;
-
-  if (c)
     cp++;
 
   if (c == '\0')
@@ -1331,7 +1314,9 @@ readtok ()
       tp = cp;
       return;
     }
-  lasttp = tp = cp - 1;
+
+  lasttp = tp = cp;
+  cp++;
 
   if (legal_variable_starter (c))
     {
@@ -1362,7 +1347,7 @@ readtok ()
 
       *cp = '\0';
       /* XXX - watch out for pointer aliasing issues here */
-      if (curlval.tokstr && curlval.tokstr == tokstr)
+      if (curlval.lv_tokstr && curlval.lv_tokstr == tokstr)
 	init_lvalue (&curlval);
 
       FREE (tokstr);
