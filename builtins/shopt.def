@@ -199,6 +199,9 @@ static struct {
   { "compat42", &shopt_compat42, set_compatibility_level },
   { "compat43", &shopt_compat43, set_compatibility_level },
   { "compat44", &shopt_compat44, set_compatibility_level },
+  { "compat50", &shopt_compat50, set_compatibility_level },
+  { "compat51", &shopt_compat51, set_compatibility_level },
+  { "compat52", &shopt_compat52, set_compatibility_level },
 #if defined (READLINE)
   { "complete_fullquote", &complete_fullquote, (shopt_set_func_t *)NULL},
   { "direxpand", &dircomplete_expand, shopt_set_complete_direxpand },
@@ -375,7 +378,7 @@ reset_shopt_options ()
   source_uses_path = promptvars = 1;
   varassign_redir_autoclose = 0;
   singlequote_translations = 0;
-  patsub_replacement = 1;
+  patsub_replacement = -1;
 
 #if defined (JOB_CONTROL)
   check_jobs_at_exit = 0;

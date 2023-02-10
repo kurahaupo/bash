@@ -189,7 +189,7 @@ int fail_glob_expansion;
 
 /* If non-zero, perform `&' substitution on the replacement string in the
    pattern substitution word expansion. */
-int patsub_replacement = 1;
+int patsub_replacement = -1;
 
 /* Extern functions and variables from different files. */
 extern struct fd_bitmap *current_fds_to_close;
@@ -9177,10 +9177,11 @@ parameter_brace_patsub (varname, value, estatep, patsub, quoted, pflags, flags)
 	 the entire expansion is double-quoted because the parser and string
 	 extraction functions treated quotes in the replacement string as
 	 special.  THIS IS NOT BACKWARDS COMPATIBLE WITH BASH-4.2. */
-      if (shell_compatibility_level > 42 && patsub_replacement == 0)
-	rep = expand_string_if_necessary (rep, quoted & ~(Q_DOUBLE_QUOTES|Q_HERE_DOCUMENT), expand_string_unsplit);
-      else if (shell_compatibility_level > 42 && patsub_replacement)
+      if (patsub_replacement > 0 ||
+	  patsub_replacement < 0 && shell_compatibility_level > 51)
 	rep = expand_string_for_patsub (rep, quoted & ~(Q_DOUBLE_QUOTES|Q_HERE_DOCUMENT));
+      else if (shell_compatibility_level > 42)
+	rep = expand_string_if_necessary (rep, quoted & ~(Q_DOUBLE_QUOTES|Q_HERE_DOCUMENT), expand_string_unsplit);
       /* This is the bash-4.2 code. */      
       else if ((mflags & MATCH_QUOTED) == 0)
 	rep = expand_string_if_necessary (rep, quoted, expand_string_unsplit);
