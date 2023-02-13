@@ -101,7 +101,7 @@ extern int errno;
 #endif
 #include "hash-string.h"
 
-/* Handle multi-threaded applications.  */
+/* Handle multi-threaded applications.	*/
 #ifdef _LIBC
 # include <bits/libc-lock.h>
 # define gl_rwlock_define_initialized __libc_rwlock_define_initialized
@@ -112,7 +112,7 @@ extern int errno;
 # include "lock.h"
 #endif
 
-/* Alignment of types.  */
+/* Alignment of types.	*/
 #if defined __GNUC__ && __GNUC__ >= 2
 # define alignof(TYPE) __alignof__ (TYPE)
 #else
@@ -212,7 +212,7 @@ static void *mempcpy (void *dest, const void *src, size_t n);
 #endif
 
 /* This is the type used for the search tree where known translations
-   are stored.  */
+   are stored.	*/
 struct known_translation_t
 {
   /* Domain in which to search.  */
@@ -245,7 +245,7 @@ struct known_translation_t
   union
     {
       char appended[ZERO];  /* used if domain != NULL */
-      const char *ptr;      /* used if domain == NULL */
+      const char *ptr;	    /* used if domain == NULL */
     }
   msgid;
 };
@@ -255,7 +255,7 @@ gl_rwlock_define_initialized (static, tree_lock)
 /* Root of the search tree with known translations.  */
 static void *root;
 
-/* Function to compare two entries in the table of known translations.  */
+/* Function to compare two entries in the table of known translations.	*/
 static int
 transcmp (const void *p1, const void *p2)
 {
@@ -419,7 +419,7 @@ typedef unsigned char transmem_block_t;
 gl_rwlock_define_initialized (, _nl_state_lock attribute_hidden)
 
 /* Checking whether the binaries runs SUID must be done and glibc provides
-   easier methods therefore we make a difference here.  */
+   easier methods therefore we make a difference here.	*/
 #ifdef _LIBC
 # define ENABLE_SECURE __libc_enable_secure
 # define DETERMINE_SECURE
@@ -448,7 +448,7 @@ static int enable_secure;
     }
 #endif
 
-/* Get the function to evaluate the plural expression.  */
+/* Get the function to evaluate the plural expression.	*/
 #include "eval-plural.h"
 
 /* Look up MSGID in the DOMAINNAME message catalog for the current
@@ -519,7 +519,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
   if (domainname == NULL)
     domainname = _nl_current_default_domain;
 
-  /* OS/2 specific: backward compatibility with older libintl versions  */
+  /* OS/2 specific: backward compatibility with older libintl versions	*/
 #ifdef LC_MESSAGES_COMPAT
   if (category == LC_MESSAGES_COMPAT)
     category = LC_MESSAGES;
@@ -559,7 +559,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 
   if (foundp != NULL && (*foundp)->counter == _nl_msg_cat_cntr)
     {
-      /* Now deal with plural.  */
+      /* Now deal with plural.	*/
       if (plural)
 	retval = plural_lookup ((*foundp)->domain, n, (*foundp)->translation,
 				(*foundp)->translation_length);
@@ -574,7 +574,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
       return retval;
     }
 
-  /* See whether this is a SUID binary or not.  */
+  /* See whether this is a SUID binary or not.	*/
   DETERMINE_SECURE;
 
   /* First find matching binding.  */
@@ -738,7 +738,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 
 
   /* Search for the given string.  This is a loop because we perhaps
-     got an ordered list of languages to consider for the translation.  */
+     got an ordered list of languages to consider for the translation.	*/
   while (1)
     {
       /* Make CATEGORYVALUE point to the next element of the list.  */
@@ -829,7 +829,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	      FREE_BLOCKS (block_list);
 	      if (foundp == NULL)
 		{
-		  /* Create a new entry and add it to the search tree.  */
+		  /* Create a new entry and add it to the search tree.	*/
 		  size_t msgid_len;
 		  size_t size;
 		  struct known_translation_t *newp;
@@ -885,7 +885,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 		}
 	      else
 		{
-		  /* We can update the existing entry.  */
+		  /* We can update the existing entry.	*/
 		  (*foundp)->counter = _nl_msg_cat_cntr;
 		  (*foundp)->domain = domain;
 		  (*foundp)->translation = retval;
@@ -894,7 +894,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 
 	      __set_errno (saved_errno);
 
-	      /* Now deal with plural.  */
+	      /* Now deal with plural.	*/
 	      if (plural)
 		retval = plural_lookup (domain, n, retval, retlen);
 
@@ -939,13 +939,13 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
    freemem_size.  It also protects write accesses to convd->conv_tab.
    It's not worth using a separate lock (such as domain->conversions_lock)
    for this purpose, because when modifying convd->conv_tab, we also need
-   to lock freemem, freemem_size for most of the time.  */
+   to lock freemem, freemem_size for most of the time.	*/
 #ifdef _LIBC
 __libc_lock_define_initialized (static, lock)
 #endif
 
 /* Look up the translation of msgid within DOMAIN_FILE and DOMAINBINDING.
-   Return it if found.  Return NULL if not found or in case of a conversion
+   Return it if found.	Return NULL if not found or in case of a conversion
    failure (problem in the particular message catalog).  Return (char *) -1
    in case of a memory allocation failure during conversion (only if
    ENCODING != NULL resp. CONVERT == true).  */
@@ -1166,9 +1166,9 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 	      char *nullentry;
 	      size_t nullentrylen;
 
-	      /* Get the header entry.  This is a recursion, but it doesn't
+	      /* Get the header entry.	This is a recursion, but it doesn't
 		 reallocate domain->conversions because we pass
-		 encoding = NULL or convert = 0, respectively.  */
+		 encoding = NULL or convert = 0, respectively.	*/
 	      nullentry =
 # ifdef IN_LIBGLOCALE
 		_nl_find_msg (domain_file, domainbinding, NULL, "",
@@ -1178,7 +1178,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 # endif
 
 	      /* Resource problems are fatal.  If we continue onwards we will
-	         only attempt to calloc a new conv_tab and fail later.  */
+		 only attempt to calloc a new conv_tab and fail later.	*/
 	      if (__builtin_expect (nullentry == (char *) -1, 0))
 		{
 # ifndef IN_LIBGLOCALE
@@ -1318,10 +1318,10 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 	  if (convd->conv_tab[act] == NULL)
 	    {
 	      /* We haven't used this string so far, so it is not
-		 translated yet.  Do this now.  */
+		 translated yet.  Do this now.	*/
 	      /* We use a bit more efficient memory handling.
 		 We allocate always larger blocks which get used over
-		 time.  This is faster than many small allocations.   */
+		 time.	This is faster than many small allocations.   */
 # define INITIAL_BLOCK_SIZE	4080
 	      static unsigned char *freemem;
 	      static size_t freemem_size;
@@ -1461,7 +1461,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 		  outbuf = freemem + sizeof (size_t);
 		}
 
-	      /* We have now in our buffer a converted string.  Put this
+	      /* We have now in our buffer a converted string.	Put this
 		 into the table of conversions.  */
 	      *(size_t *) freemem = outbuf - freemem - sizeof (size_t);
 	      convd->conv_tab[act] = (char *) freemem;
@@ -1614,17 +1614,17 @@ guess_category_value (int category, const char *categoryname)
 
   /* We use the settings in the following order:
      1. The value of the environment variable 'LANGUAGE'.  This is a GNU
-        extension.  Its value can be a colon-separated list of locale names.
+	extension.  Its value can be a colon-separated list of locale names.
      2. The value of the environment variable 'LC_ALL', 'LC_xxx', or 'LANG'.
-        More precisely, the first among these that is set to a non-empty value.
-        This is how POSIX specifies it.  The value is a single locale name.
+	More precisely, the first among these that is set to a non-empty value.
+	This is how POSIX specifies it.  The value is a single locale name.
      3. A system-dependent preference list of languages.  Its value can be a
-        colon-separated list of locale names.
+	colon-separated list of locale names.
      4. A system-dependent default locale name.
      This way:
        - System-dependent settings can be overridden by environment variables.
        - If the system provides both a list of languages and a default locale,
-         the former is used.  */
+	 the former is used.  */
 
 #ifndef IN_LIBGLOCALE
   /* Fetch the locale name, through the POSIX method of looking to `LC_ALL',
@@ -1659,12 +1659,12 @@ guess_category_value (int category, const char *categoryname)
      2. The precise output of some programs in the "C" locale is specified
 	by POSIX and should not depend on environment variables like
 	"LANGUAGE" or system-dependent information.  We allow such programs
-        to use gettext().  */
+	to use gettext().  */
   if (strcmp (locale, "C") == 0)
     return locale;
 
   /* The highest priority value is the value of the 'LANGUAGE' environment
-     variable.  */
+     variable.	*/
   language = getenv ("LANGUAGE");
   if (language != NULL && language[0] != '\0')
     return language;
@@ -1675,7 +1675,7 @@ guess_category_value (int category, const char *categoryname)
       /* The next priority value is the default language preferences list. */
       language_default = _nl_language_preferences_default ();
       if (language_default != NULL)
-        return language_default;
+	return language_default;
     }
   /* The least priority value is the locale name, if defaulted.  */
 #endif
@@ -1683,7 +1683,7 @@ guess_category_value (int category, const char *categoryname)
 }
 
 #if (defined _LIBC || HAVE_ICONV) && !defined IN_LIBGLOCALE
-/* Returns the output charset.  */
+/* Returns the output charset.	*/
 static const char *
 internal_function
 get_output_charset (struct binding *domainbinding)
@@ -1698,8 +1698,8 @@ get_output_charset (struct binding *domainbinding)
   else
     {
       /* For speed reasons, we look at the value of OUTPUT_CHARSET only
-	 once.  This is a user variable that is not supposed to change
-	 during a program run.  */
+	 once.	This is a user variable that is not supposed to change
+	 during a program run.	*/
       static char *output_charset_cache;
       static int output_charset_cached;
 

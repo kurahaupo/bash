@@ -116,18 +116,18 @@ static STRINGLIST *gen_action_completions (COMPSPEC *, const char *);
 static STRINGLIST *gen_globpat_matches (COMPSPEC *, const char *);
 static STRINGLIST *gen_wordlist_matches (COMPSPEC *, const char *);
 static STRINGLIST *gen_shell_function_matches (COMPSPEC *, const char *,
-						   const char *,
-						   char *, int, WORD_LIST *,
-						   int, int, int *);
+                                               const char *,
+                                               char *, int, WORD_LIST *,
+                                               int, int, int *);
 static STRINGLIST *gen_command_matches (COMPSPEC *, const char *,
-					    const char *,
-					    char *, int, WORD_LIST *,
-					    int, int);
+                                        const char *,
+                                        char *, int, WORD_LIST *,
+                                        int, int);
 
 static STRINGLIST *gen_progcomp_completions (const char *, const char *,
-						 const char *,
-						 int, int, int *, int *,
-						 COMPSPEC **);
+                                             const char *,
+                                             int, int, int *, int *,
+                                             COMPSPEC **);
 
 static char *pcomp_filename_completion_function (const char *, int);
 
@@ -248,9 +248,9 @@ shouldexp_filterpat (char *s)
   for (p = s; p && *p; p++)
     {
       if (*p == '\\')
-	p++;
+        p++;
       else if (*p == '&')
-	return 1;
+        return 1;
     }
   return 0;
 }
@@ -995,9 +995,9 @@ unbind_compfunc_variables (void *exported)
    as arguments.  When the function or command is invoked,
 
 	$0 == function or command being invoked
-   	$1 == command name
-   	$2 == word to be completed (possibly null)
-   	$3 == previous word
+	$1 == command name
+	$2 == word to be completed (possibly null)
+	$3 == previous word
 
    Functions can access all of the words in the current command line
    with the COMP_WORDS array.  External commands cannot; they have to
@@ -1032,9 +1032,9 @@ build_arg_list (const char *cmd, const char *cname, const char *text, WORD_LIST 
 
 /* Build a command string with
 	$0 == cs->funcname	(function to execute for completion list)
-   	$1 == command name	(command being completed)
-   	$2 = word to be completed (possibly null)
-   	$3 = previous word
+	$1 == command name	(command being completed)
+	$2 = word to be completed (possibly null)
+	$3 = previous word
    and run in the current shell.  The function should put its completion
    list into the array variable COMPREPLY.  We build a STRINGLIST
    from the results and return it.
@@ -1145,7 +1145,7 @@ gen_shell_function_matches (COMPSPEC *cs, const char *cmd, const char *text,
 
 /* Build a command string with
 	$0 == cs->command	(command to execute for completion list)
-   	$1 == command name	(command being completed)
+	$1 == command name	(command being completed)
 	$2 == word to be completed (possibly null)
 	$3 == previous word
    and run it with command substitution.  Parse the results, one word

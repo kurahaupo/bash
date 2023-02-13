@@ -85,7 +85,7 @@ extern int errno;
 #endif
 
 #include "builtins/common.h"
-#include "builtins/builtext.h"	/* list of builtins */
+#include "builtins/builtext.h"  /* list of builtins */
 
 #include "builtins/getopt.h"
 
@@ -149,8 +149,8 @@ static int execute_cond_command (COND_COM *);
 #if defined (COMMAND_TIMING)
 static int mkfmt (char *, int, int, time_t, long);
 static void print_formatted_time (FILE *, char *,
-				      time_t, long, time_t, long,
-				      time_t, long, int);
+                                  time_t, long, time_t, long,
+                                  time_t, long, int);
 static int time_command (COMMAND *, int, int, int, struct fd_bitmap *);
 #endif
 #if defined (ARITH_FOR_COMMAND)
@@ -169,16 +169,16 @@ static int execute_simple_command (SIMPLE_COM *, int, int, int, struct fd_bitmap
 static int execute_builtin (sh_builtin_func_t *, WORD_LIST *, int, int);
 static int execute_function (SHELL_VAR *, WORD_LIST *, int, struct fd_bitmap *, int, int);
 static int execute_builtin_or_function (WORD_LIST *, sh_builtin_func_t *,
-					    SHELL_VAR *,
-					    REDIRECT *, struct fd_bitmap *, int);
+                                        SHELL_VAR *,
+                                        REDIRECT *, struct fd_bitmap *, int);
 static void execute_subshell_builtin_or_function (WORD_LIST *, REDIRECT *,
-						      sh_builtin_func_t *,
-						      SHELL_VAR *,
-						      int, int, int,
-						      struct fd_bitmap *,
-						      int);
+                                                  sh_builtin_func_t *,
+                                                  SHELL_VAR *,
+                                                  int, int, int,
+                                                  struct fd_bitmap *,
+                                                  int);
 static int execute_disk_command (WORD_LIST *, REDIRECT *, char *,
-				      int, int, int, struct fd_bitmap *, int);
+                                 int, int, int, struct fd_bitmap *, int);
 
 static char *getinterp (char *, int, int *);
 static void initialize_subshell (void);
@@ -1226,7 +1226,7 @@ static const int maxvals[] = { 1, 10, 100, 1000, 10000, 100000, 10000000 };
 /* Expand one `%'-prefixed escape sequence from a time format string. */
 /* SEC_FRACTION is in usecs. We normalize and round that based on the
   precision. */
-int
+static int
 mkfmt (char *buf, int prec, int lng, time_t sec, long sec_fraction)
 {
   time_t min;
@@ -1320,8 +1320,8 @@ mkfmt (char *buf, int prec, int lng, time_t sec, long sec_fraction)
    resectively. */
 static void
 print_formatted_time (FILE *fp, char *format,
-		      time_t rs, long rsf, time_t us, long usf, time_t ss, long ssf,
-		      int cpu)
+                      time_t rs, long rsf, time_t us, long usf, time_t ss, long ssf,
+                      int cpu)
 {
   int prec, lng, len;
   char *str, *s, ts[INT_STRLEN_BOUND (time_t) + sizeof ("mSS.FFFF")];
@@ -1563,8 +1563,8 @@ execute_in_subshell (COMMAND *command, int asynchronous, int pipe_in, int pipe_o
 
   subshell_level++;
   should_redir_stdin = (asynchronous && (command->flags & CMD_STDIN_REDIR) &&
-			  pipe_in == NO_PIPE &&
-			  stdin_redirects (command->redirects) == 0);
+			pipe_in == NO_PIPE &&
+			stdin_redirects (command->redirects) == 0);
 
   invert = (command->flags & CMD_INVERT_RETURN) != 0;
   user_subshell = command->type == cm_subshell || ((command->flags & CMD_WANT_SUBSHELL) != 0);
@@ -2492,7 +2492,7 @@ execute_coproc (COMMAND *command, int pipe_in, int pipe_out, struct fd_bitmap *f
   tcmd = make_command_string (command);
 
   sh_openpipe ((int *)&rpipe);	/* 0 = parent read, 1 = child write */
-  sh_openpipe ((int *)&wpipe); /* 0 = child read, 1 = parent write */
+  sh_openpipe ((int *)&wpipe);  /* 0 = child read, 1 = parent write */
 
   BLOCK_SIGNAL (SIGCHLD, set, oset);
 
@@ -6042,7 +6042,7 @@ initialize_subshell (void)
 }
 
 #if defined (HAVE_SETOSTYPE) && defined (_POSIX_SOURCE)
-#  define SETOSTYPE(x)	__setostype(x)
+#  define SETOSTYPE(x)  __setostype(x)
 #else
 #  define SETOSTYPE(x)
 #endif

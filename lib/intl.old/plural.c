@@ -179,10 +179,7 @@ static void yyerror (const char *str);
 /* Allocation of expressions.  */
 
 static struct expression *
-new_exp (nargs, op, args)
-     int nargs;
-     enum operator op;
-     struct expression * const *args;
+new_exp (int nargs, enum operator op, struct expression * const *args)
 {
   int i;
   struct expression *newp;
@@ -211,16 +208,13 @@ new_exp (nargs, op, args)
 }
 
 static inline struct expression *
-new_exp_0 (op)
-     enum operator op;
+new_exp_0 ( enum operator op)
 {
   return new_exp (0, op, NULL);
 }
 
 static inline struct expression *
-new_exp_1 (op, right)
-     enum operator op;
-     struct expression *right;
+new_exp_1 (enum operator op, struct expression *right)
 {
   struct expression *args[1];
 
@@ -229,10 +223,9 @@ new_exp_1 (op, right)
 }
 
 static struct expression *
-new_exp_2 (op, left, right)
-     enum operator op;
-     struct expression *left;
-     struct expression *right;
+new_exp_2 (enum operator op,
+           struct expression *left,
+           struct expression *right)
 {
   struct expression *args[2];
 
@@ -242,11 +235,8 @@ new_exp_2 (op, left, right)
 }
 
 static inline struct expression *
-new_exp_3 (op, bexp, tbranch, fbranch)
-     enum operator op;
-     struct expression *bexp;
-     struct expression *tbranch;
-     struct expression *fbranch;
+new_exp_3 (enum operator op, struct expression *bexp,
+           struct expression *tbranch, struct expression *fbranch)
 {
   struct expression *args[3];
 
@@ -675,15 +665,8 @@ do {								\
 | TOP (included).                                                   |
 `------------------------------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
 static void
 yy_stack_print (short int *bottom, short int *top)
-#else
-static void
-yy_stack_print (bottom, top)
-    short int *bottom;
-    short int *top;
-#endif
 {
   YYFPRINTF (stderr, "Stack now");
   for (/* Nothing. */; bottom <= top; ++bottom)
@@ -702,14 +685,8 @@ do {								\
 | Report that the YYRULE is going to be reduced.  |
 `------------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
 static void
 yy_reduce_print (int yyrule)
-#else
-static void
-yy_reduce_print (yyrule)
-    int yyrule;
-#endif
 {
   int yyi;
   unsigned int yylno = yyrline[yyrule];
@@ -764,12 +741,7 @@ int yydebug;
 #  else
 /* Return the length of YYSTR.  */
 static YYSIZE_T
-#   if defined (__STDC__) || defined (__cplusplus)
 yystrlen (const char *yystr)
-#   else
-yystrlen (yystr)
-     const char *yystr;
-#   endif
 {
   register const char *yys = yystr;
 
@@ -788,13 +760,7 @@ yystrlen (yystr)
 /* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
    YYDEST.  */
 static char *
-#   if defined (__STDC__) || defined (__cplusplus)
 yystpcpy (char *yydest, const char *yysrc)
-#   else
-yystpcpy (yydest, yysrc)
-     char *yydest;
-     const char *yysrc;
-#   endif
 {
   register char *yyd = yydest;
   register const char *yys = yysrc;
@@ -816,16 +782,8 @@ yystpcpy (yydest, yysrc)
 | Print this symbol on YYOUTPUT.  |
 `--------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
 static void
 yysymprint (FILE *yyoutput, int yytype, YYSTYPE *yyvaluep)
-#else
-static void
-yysymprint (yyoutput, yytype, yyvaluep)
-    FILE *yyoutput;
-    int yytype;
-    YYSTYPE *yyvaluep;
-#endif
 {
   /* Pacify ``unused variable'' warnings.  */
   (void) yyvaluep;
@@ -853,16 +811,8 @@ yysymprint (yyoutput, yytype, yyvaluep)
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
-#if defined (__STDC__) || defined (__cplusplus)
 static void
 yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
-#else
-static void
-yydestruct (yymsg, yytype, yyvaluep)
-    const char *yymsg;
-    int yytype;
-    YYSTYPE *yyvaluep;
-#endif
 {
   /* Pacify ``unused variable'' warnings.  */
   (void) yyvaluep;
@@ -883,17 +833,9 @@ yydestruct (yymsg, yytype, yyvaluep)
 /* Prevent warnings from -Wmissing-prototypes.  */
 
 #ifdef YYPARSE_PARAM
-# if defined (__STDC__) || defined (__cplusplus)
 int yyparse (void *YYPARSE_PARAM);
-# else
-int yyparse ();
-# endif
 #else /* ! YYPARSE_PARAM */
-#if defined (__STDC__) || defined (__cplusplus)
 int yyparse (void);
-#else
-int yyparse ();
-#endif
 #endif /* ! YYPARSE_PARAM */
 
 
@@ -906,21 +848,10 @@ int yyparse ();
 `----------*/
 
 #ifdef YYPARSE_PARAM
-# if defined (__STDC__) || defined (__cplusplus)
 int yyparse (void *YYPARSE_PARAM)
-# else
-int yyparse (YYPARSE_PARAM)
-  void *YYPARSE_PARAM;
-# endif
 #else /* ! YYPARSE_PARAM */
-#if defined (__STDC__) || defined (__cplusplus)
 int
 yyparse (void)
-#else
-int
-yyparse ()
-
-#endif
 #endif
 {
   /* The look-ahead symbol.  */
@@ -1499,8 +1430,7 @@ yyreturn:
 
 
 inline void
-FREE_EXPRESSION (exp)
-     struct expression *exp;
+FREE_EXPRESSION (struct expression *exp)
 {
   if (exp == NULL)
     return;
@@ -1526,9 +1456,7 @@ FREE_EXPRESSION (exp)
 
 
 static int
-yylex (lval, pexp)
-     YYSTYPE *lval;
-     const char **pexp;
+yylex (YYSTYPE *lval, const char **pexp)
 {
   const char *exp = *pexp;
   int result;
@@ -1671,8 +1599,7 @@ yylex (lval, pexp)
 
 
 static void
-yyerror (str)
-     const char *str;
+yyerror (const char *str)
 {
   /* Do nothing.  We don't print error messages here.  */
 }

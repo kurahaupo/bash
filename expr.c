@@ -202,24 +202,24 @@ static void	expr_bind_variable (const char *, const char *);
 static void	expr_bind_array_element (const char *, arrayind_t, const char *);
 #endif
 
-static intmax_t subexpr (const char *);
+static intmax_t	subexpr (const char *);
 
 static intmax_t	expcomma (void);
-static intmax_t expassign (void);
+static intmax_t	expassign (void);
 static intmax_t	expcond (void);
-static intmax_t explor (void);
-static intmax_t expland (void);
+static intmax_t	explor (void);
+static intmax_t	expland (void);
 static intmax_t	expbor (void);
 static intmax_t	expbxor (void);
 static intmax_t	expband (void);
-static intmax_t expeq (void);
-static intmax_t expcompare (void);
-static intmax_t expshift (void);
-static intmax_t expaddsub (void);
-static intmax_t expmuldiv (void);
+static intmax_t	expeq (void);
+static intmax_t	expcompare (void);
+static intmax_t	expshift (void);
+static intmax_t	expaddsub (void);
+static intmax_t	expmuldiv (void);
 static intmax_t	exppower (void);
-static intmax_t expunary (void);
-static intmax_t exp0 (void);
+static intmax_t	expunary (void);
+static intmax_t	exp0 (void);
 
 /* Global var which contains the stack of expression contexts. */
 static EXPR_CONTEXT **expr_stack;
@@ -1637,6 +1637,7 @@ char *get_string_value () { return 0; }
 
 procenv_t top_level;
 
+int
 main (int argc, char **argv)
 {
   register int i;
@@ -1658,11 +1659,12 @@ main (int argc, char **argv)
 }
 
 int
-builtin_error (format, arg1, arg2, arg3, arg4, arg5)
-     char *format;
+builtin_error (char *format, ...)
 {
+  va_list va;
+  va_start(va, format);
   fprintf (stderr, "expr: ");
-  fprintf (stderr, format, arg1, arg2, arg3, arg4, arg5);
+  vfprintf (stderr, format, va);
   fprintf (stderr, "\n");
   return 0;
 }

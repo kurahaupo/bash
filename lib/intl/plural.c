@@ -170,7 +170,7 @@ static void yyerror (struct parse_args *arg, const char *str);
 
 static struct expression *
 new_exp (int nargs, enum expression_operator op,
-	 struct expression * const *args)
+         struct expression * const *args)
 {
   int i;
   struct expression *newp;
@@ -215,7 +215,7 @@ new_exp_1 (enum expression_operator op, struct expression *right)
 
 static struct expression *
 new_exp_2 (enum expression_operator op, struct expression *left,
-	   struct expression *right)
+           struct expression *right)
 {
   struct expression *args[2];
 
@@ -226,7 +226,7 @@ new_exp_2 (enum expression_operator op, struct expression *left,
 
 static inline struct expression *
 new_exp_3 (enum expression_operator op, struct expression *bexp,
-	   struct expression *tbranch, struct expression *fbranch)
+           struct expression *tbranch, struct expression *fbranch)
 {
   struct expression *args[3];
 

@@ -85,7 +85,7 @@ extern SHELL_VAR *bind_assoc_variable (SHELL_VAR *, const char *, char *, const 
 
 extern SHELL_VAR *find_or_make_array_variable (const char *, int);
 
-extern SHELL_VAR *assign_array_from_string  (const char *, char *, int);
+extern SHELL_VAR *assign_array_from_string (const char *, char *, int);
 extern SHELL_VAR *assign_array_var_from_word_list (SHELL_VAR *, WORD_LIST *, int);
 
 extern WORD_LIST *expand_compound_array_assignment (SHELL_VAR *, char *, int);

@@ -418,7 +418,7 @@ static const char * const cmd_error_table[] = {
 };
 
 void
-command_error (const char *func, int code, int e, int flags)
+command_error (const char *func, int code, int e, int flags /* unused */)
 {
   if (code > CMDERR_LAST)
     code = CMDERR_DEFAULT;

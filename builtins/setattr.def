@@ -366,7 +366,7 @@ show_all_var_attributes (int v, int nodefs)
   register int i;
 
   variable_list = v ? all_shell_variables () : all_shell_functions ();
-  if (variable_list == 0)  
+  if (variable_list == 0)
     return (EXECUTION_SUCCESS);
 
   for (i = any_failed = 0; var = variable_list[i]; i++)
@@ -374,7 +374,7 @@ show_all_var_attributes (int v, int nodefs)
       /* There is no equivalent `declare -'. */
       if (variable_context && var->context == variable_context && STREQ (var->name, "-"))
 	printf ("local -\n");
-      else  
+      else
 	show_var_attributes (var, READONLY_OR_EXPORT, nodefs);
       if (any_failed = sh_chkwrite (any_failed))
         break;
@@ -393,7 +393,7 @@ show_local_var_attributes (int v, int nodefs)
   register int i;
 
   variable_list = all_local_variables (0);
-  if (variable_list == 0)  
+  if (variable_list == 0)
     return (EXECUTION_SUCCESS);
 
   for (i = any_failed = 0; var = variable_list[i]; i++)
@@ -401,7 +401,7 @@ show_local_var_attributes (int v, int nodefs)
       /* There is no equivalent `declare -'. */
       if (STREQ (var->name, "-"))
 	printf ("local -\n");
-      else  
+      else
 	show_var_attributes (var, READONLY_OR_EXPORT, nodefs);
       if (any_failed = sh_chkwrite (any_failed))
         break;
@@ -640,7 +640,7 @@ set_var_attribute (char *name, int attribute, int undo)
       else
 	{
 	  /* Handle case where var is a temp variable in a function-scope
-	     context, since function_env has been merged into the local 
+	     context, since function_env has been merged into the local
 	     variables table (see below). */
 	  var = find_variable_notempenv (name);
 	  if (var == 0)

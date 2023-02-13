@@ -105,7 +105,7 @@ EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
       plural = strstr (nullentry, "plural=");
       nplurals = strstr (nullentry, "nplurals=");
       if (plural == NULL || nplurals == NULL)
-	goto no_plural;
+        goto no_plural;
       else
 	{
 	  char *endp;
@@ -137,8 +137,8 @@ EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
   else
     {
       /* By default we are using the Germanic form: singular form only
-         for `one', the plural form otherwise.  Yes, this is also what
-         English is using since English is a Germanic language.  */
+	 for `one', the plural form otherwise.  Yes, this is also what
+	 English is using since English is a Germanic language.  */
     no_plural:
       INIT_GERMANIC_PLURAL ();
       *pluralp = &GERMANIC_PLURAL;

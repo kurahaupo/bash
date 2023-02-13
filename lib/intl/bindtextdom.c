@@ -29,7 +29,7 @@
 # include "libgnuintl.h"
 #endif
 
-/* Handle multi-threaded applications.  */
+/* Handle multi-threaded applications.	*/
 #ifdef _LIBC
 # include <bits/libc-lock.h>
 # define gl_rwlock_define __libc_rwlock_define
@@ -120,7 +120,7 @@ set_binding_values (const char *domainname,
 	  const char *dirname = *dirnamep;
 
 	  if (dirname == NULL)
-	    /* The current binding has be to returned.  */
+	    /* The current binding has be to returned.	*/
 	    *dirnamep = binding->dirname;
 	  else
 	    {
@@ -159,7 +159,7 @@ set_binding_values (const char *domainname,
 	  const wchar_t *wdirname = *wdirnamep;
 
 	  if (wdirname == NULL)
-	    /* The current binding has be to returned.  */
+	    /* The current binding has be to returned.	*/
 	    *wdirnamep = binding->wdirname;
 	  else
 	    {
@@ -193,7 +193,7 @@ set_binding_values (const char *domainname,
 	  const char *codeset = *codesetp;
 
 	  if (codeset == NULL)
-	    /* The current binding has be to returned.  */
+	    /* The current binding has be to returned.	*/
 	    *codesetp = binding->codeset;
 	  else
 	    {
@@ -340,7 +340,7 @@ set_binding_values (const char *domainname,
 
       modified = 1;
 
-      /* Here we deal with memory allocation failures.  */
+      /* Here we deal with memory allocation failures.	*/
       if (0)
 	{
 	failed_codeset:
@@ -393,16 +393,16 @@ BINDTEXTDOMAIN (const char *domainname, const char *dirname)
       size_t len = strlen (dirname) + 1;
 
       if (unixroot
-          && unixroot[0] != '\0'
-          && unixroot[1] == ':'
-          && unixroot[2] == '\0'
-          && 2 + len <= _MAX_PATH)
-        {
-          memcpy (dirname_with_drive, unixroot, 2);
-          memcpy (dirname_with_drive + 2, dirname, len);
+	  && unixroot[0] != '\0'
+	  && unixroot[1] == ':'
+	  && unixroot[2] == '\0'
+	  && 2 + len <= _MAX_PATH)
+	{
+	  memcpy (dirname_with_drive, unixroot, 2);
+	  memcpy (dirname_with_drive + 2, dirname, len);
 
-          dirname = dirname_with_drive;
-        }
+	  dirname = dirname_with_drive;
+	}
     }
 #endif
   set_binding_values (domainname, &dirname, NULL, NULL);

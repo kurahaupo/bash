@@ -461,7 +461,6 @@ rd_token (char *string, int start)
 
 /* Return a new line, with any aliases substituted. */
 char *
-
 alias_expand (char *string)
 {
   int i, start;

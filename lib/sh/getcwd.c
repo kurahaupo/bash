@@ -321,9 +321,8 @@ getcwd (char *buf, size_t size)
 
 #if defined (TEST)
 #  include <stdio.h>
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   char b[PATH_MAX];
 

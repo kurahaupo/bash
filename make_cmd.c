@@ -186,7 +186,8 @@ command_connect (COMMAND *com1, COMMAND *com2, int connector)
 }
 
 static COMMAND *
-make_for_or_select (enum command_type type, WORD_DESC *name, WORD_LIST *map_list, COMMAND *action, int lineno)
+make_for_or_select (enum command_type type, WORD_DESC *name,
+                    WORD_LIST *map_list, COMMAND *action, int lineno)
 {
   FOR_COM *temp;
 
@@ -642,7 +643,8 @@ document_done:
    INSTRUCTION is the instruction type, SOURCE is a file descriptor,
    and DEST is a file descriptor or a WORD_DESC *. */
 REDIRECT *
-make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE dest_and_filename, int flags)
+make_redirection (REDIRECTEE source, enum r_instruction instruction,
+                  REDIRECTEE dest_and_filename, int flags)
 {
   REDIRECT *temp;
   WORD_DESC *w;

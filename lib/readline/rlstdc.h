@@ -26,15 +26,7 @@
 
 /* A function can be defined using prototypes and compile on both ANSI C
    and traditional C compilers with something like this:
-	extern char *func PARAMS((char *, char *, int)); */
-
-#if !defined (PARAMS)
-#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus)
-#    define PARAMS(protos) protos
-#  else
-#    define PARAMS(protos) ()
-#  endif
-#endif
+	extern char *func(char *, char *, int); */
 
 #ifndef __attribute__
 #  if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)

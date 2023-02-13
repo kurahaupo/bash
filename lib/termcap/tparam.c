@@ -62,15 +62,14 @@ char *realloc ();
 
 #ifndef emacs
 static void
-memory_out ()
+memory_out (void)
 {
   write (2, "virtual memory exhausted\n", 25);
   exit (1);
 }
 
 static char *
-xmalloc (size)
-     unsigned size;
+xmalloc (unsigned size)
 {
   register char *tem = malloc (size);
 
@@ -80,9 +79,7 @@ xmalloc (size)
 }
 
 static char *
-xrealloc (ptr, size)
-     char *ptr;
-     unsigned size;
+xrealloc (char *ptr, unsigned size)
 {
   register char *tem = realloc (ptr, size);
 
@@ -108,11 +105,7 @@ static char *tparam1 ();
 
 /* VARARGS 2 */
 char *
-tparam (string, outstring, len, arg0, arg1, arg2, arg3)
-     char *string;
-     char *outstring;
-     int len;
-     int arg0, arg1, arg2, arg3;
+tparam (char *string, char *outstring, int len, int arg0, int arg1, int arg2, int arg3)
 {
   int arg[4];
 
@@ -130,9 +123,7 @@ static char tgoto_buf[50];
 
 __private_extern__
 char *
-tgoto (cm, hpos, vpos)
-     char *cm;
-     int hpos, vpos;
+tgoto (char *cm, int hpos, int vpos)
 {
   int args[2];
   if (!cm)
@@ -143,12 +134,7 @@ tgoto (cm, hpos, vpos)
 }
 
 static char *
-tparam1 (string, outstring, len, up, left, argp)
-     char *string;
-     char *outstring;
-     int len;
-     char *up, *left;
-     register int *argp;
+tparam1 (char *string, char *outstring, int len, char *up, char *left, register int *argp)
 {
   register int c;
   register char *p = string;
@@ -328,9 +314,8 @@ tparam1 (string, outstring, len, up, left, argp)
 
 #ifdef DEBUG
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   char buf[50];
   int args[3];

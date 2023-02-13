@@ -83,8 +83,7 @@ static char **array_concat (char **, char **);
 
 #if 0
 static void
-dump_result (a)
-     char **a;
+dump_result (char **a)
 {
   int i;
 
@@ -823,6 +822,7 @@ internal_error (char *format, char *arg1, char *arg2)
   fprintf (stderr, "\n");
 }
 
+int
 main (int c, char **v)
 {
   char example[256];

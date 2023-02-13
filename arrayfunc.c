@@ -380,8 +380,8 @@ assign_array_element (const char *name, const char *value, int flags, array_elts
    initializes ESTATEP, and we set it to the values we compute. */
 static SHELL_VAR *
 assign_array_element_internal (SHELL_VAR *entry, const char *name, char *vname,
-			       char *sub, int sublen, const char *value,
-			       int flags, array_eltstate_t *estatep)
+                               char *sub, int sublen, const char *value,
+                               int flags, array_eltstate_t *estatep)
 {
   char *akey, *nkey;
   arrayind_t ind;
