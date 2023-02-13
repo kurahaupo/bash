@@ -42,8 +42,7 @@
 #endif
 
 int
-setpgid_builtin (list)
-      WORD_LIST *list;
+setpgid_builtin (WORD_LIST *list)
 {
   register WORD_LIST *wl;
   intmax_t pid_arg, pgid_arg;

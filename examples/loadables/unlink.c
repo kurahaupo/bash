@@ -39,8 +39,7 @@ extern int errno;
 #endif
 
 int
-unlink_builtin (list)
-     WORD_LIST *list;
+unlink_builtin (WORD_LIST *list)
 {
   if (list == 0)
     {

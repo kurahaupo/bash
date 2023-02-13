@@ -41,8 +41,7 @@
 
 /* Is FD a socket or network connection? */
 int
-isnetconn (fd)
-     int fd;
+isnetconn (int fd)
 {
 #if defined (HAVE_SYS_SOCKET_H) && defined (HAVE_GETPEERNAME) && !defined (SVR4_2) && !defined (__BEOS__)
   int rv;

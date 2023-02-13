@@ -33,8 +33,7 @@
 #include "bashgetopt.h"
 
 int
-basename_builtin (list)
-     WORD_LIST *list;
+basename_builtin (WORD_LIST *list)
 {
   int slen, sufflen, off;
   char *string, *suffix, *fn;

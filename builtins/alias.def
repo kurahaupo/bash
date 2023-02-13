@@ -63,7 +63,7 @@ $END
 /* Flags for print_alias */
 #define AL_REUSABLE	0x01
 
-static void print_alias PARAMS((alias_t *, int));
+static void print_alias (alias_t *, int);
 
 /* Hack the alias command in a Korn shell way. */
 int

@@ -495,7 +495,7 @@ char *alloca ();
 
 /* Prototypes for local functions.  Needed to ensure compiler checking of
    function argument counts despite of K&R C function definition syntax.  */
-static const char *get_sysdep_segment_value PARAMS ((const char *name));
+static const char *get_sysdep_segment_value (const char *name);
 
 
 /* We need a sign, whether a new catalog was loaded, which can be associated
@@ -506,8 +506,7 @@ int _nl_msg_cat_cntr;
 
 /* Expand a system dependent string segment.  Return NULL if unsupported.  */
 static const char *
-get_sysdep_segment_value (name)
-     const char *name;
+get_sysdep_segment_value (const char *name)
 {
   /* Test for an ISO C 99 section 7.8.1 format string directive.
      Syntax:
@@ -764,10 +763,7 @@ get_sysdep_segment_value (name)
    Return the header entry.  */
 const char *
 internal_function
-_nl_init_domain_conv (domain_file, domain, domainbinding)
-     struct loaded_l10nfile *domain_file;
-     struct loaded_domain *domain;
-     struct binding *domainbinding;
+_nl_init_domain_conv (struct loaded_l10nfile *domain_file, struct loaded_domain *domain, struct binding *domainbinding)
 {
   /* Find out about the character set the file is encoded with.
      This can be found (in textual form) in the entry "".  If this
@@ -831,7 +827,7 @@ _nl_init_domain_conv (domain_file, domain, domainbinding)
 		  outcharset = _NL_CURRENT (LC_CTYPE, CODESET);
 # else
 #  if HAVE_ICONV
-		  extern const char *locale_charset PARAMS ((void));
+		  extern const char *locale_charset (void);
 		  outcharset = locale_charset ();
 #  endif
 # endif
@@ -883,8 +879,7 @@ _nl_init_domain_conv (domain_file, domain, domainbinding)
 /* Frees the codeset dependent parts of an opened message catalog.  */
 void
 internal_function
-_nl_free_domain_conv (domain)
-     struct loaded_domain *domain;
+_nl_free_domain_conv (struct loaded_domain *domain)
 {
   if (domain->conv_tab != NULL && domain->conv_tab != (char **) -1)
     free (domain->conv_tab);
@@ -904,9 +899,7 @@ _nl_free_domain_conv (domain)
    message catalog do nothing.  */
 void
 internal_function
-_nl_load_domain (domain_file, domainbinding)
-     struct loaded_l10nfile *domain_file;
-     struct binding *domainbinding;
+_nl_load_domain (struct loaded_l10nfile *domain_file, struct binding *domainbinding)
 {
   int fd;
   size_t size;
@@ -1313,8 +1306,7 @@ _nl_load_domain (domain_file, domainbinding)
 #ifdef _LIBC
 void
 internal_function
-_nl_unload_domain (domain)
-     struct loaded_domain *domain;
+_nl_unload_domain (struct loaded_domain *domain)
 {
   if (domain->plural != &__gettext_germanic_plural)
     __gettext_free_exp (domain->plural);

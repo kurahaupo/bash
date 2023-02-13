@@ -27,16 +27,16 @@
 #include <signal.h>
 #include <stdio.h>
 
-extern char	*strrchr();
+extern char	*strrchr(const char*, int);
 static char	*signames[NSIG];
 
 char	*progname;
 
-void	sigstat();
+void	sigstat(int);
+void	init_signames(void);
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int
+main(int argc, char **argv)
 {
 	register int	i;
 	char	*t;
@@ -57,8 +57,7 @@ char	**argv;
 }
 
 void
-sigstat(sig)
-int	sig;
+sigstat(int sig)
 {
 	struct sigaction oact;
 	char *signame;
@@ -83,7 +82,8 @@ int	sig;
 		printf("%s: signal is trapped (?)\n", signame);
 }
 
-init_signames()
+void
+init_signames(void)
 {
 	register int i;
 	bzero(signames, sizeof(signames));

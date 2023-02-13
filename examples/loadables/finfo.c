@@ -91,8 +91,7 @@ static int	pmask;
 #define OPTIONS		"acdgiflmnopsuACGMP:U"
 
 static int
-octal(s)
-char	*s;
+octal(char *s)
 {
 	int	r;
 
@@ -103,9 +102,7 @@ char	*s;
 }
 
 static int
-finfo_main(argc, argv)
-int	argc;
-char	**argv;
+finfo_main(int argc, char **argv)
 {
 	register int	i;
 	int	mode, flags, opt;
@@ -157,8 +154,7 @@ char	**argv;
 }
 
 static struct stat *
-getstat(f)
-char	*f;
+getstat(char *f)
 {
 	static struct stat st;
 	int	fd, r;
@@ -185,8 +181,7 @@ char	*f;
 }
 
 static int
-printfinfo(f)
-char	*f;
+printfinfo(char *f)
 {
 	struct stat *st;
 
@@ -195,15 +190,13 @@ char	*f;
 }
 
 static int
-getperm(m)
-int	m;
+getperm(int m)
 {
 	return (m & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID));
 }
 
 static void
-perms(m)
-int	m;
+perms(int m)
 {
 	char ubits[4], gbits[4], obits[4];	/* u=rwx,g=rwx,o=rwx */
 	int i;
@@ -246,8 +239,7 @@ int	m;
 }
 
 static void
-printmode(mode)
-int	mode;
+printmode(int mode)
 {
 	if (S_ISBLK(mode))
 		printf("S_IFBLK ");
@@ -272,8 +264,7 @@ int	mode;
 }
 
 static int
-printst(st)
-struct stat *st;
+printst(struct stat *st)
 {
 	struct passwd	*pw;
 	struct group	*gr;
@@ -309,9 +300,7 @@ struct stat *st;
 }
 
 static int
-printsome(f, flags)
-char	*f;
-int	flags;
+printsome(char *f, int flags)
 {
 	struct stat *st;
 	struct passwd *pw;
@@ -391,8 +380,7 @@ int	flags;
 
 #ifndef NOBUILTIN
 int
-finfo_builtin(list)
-     WORD_LIST *list;
+finfo_builtin(WORD_LIST *list)
 {
   int c, r;
   char **v;
@@ -457,24 +445,22 @@ struct builtin finfo_struct = {
 
 char *this_command_name;
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int
+main(int argc, char **argv)
 {
 	this_command_name = argv[0];
 	exit(finfo_main(argc, argv));
 }
 
 void
-builtin_usage()
+builtin_usage(void)
 {
 	fprintf(stderr, "%s: usage: %s [-%s] [file ...]\n", prog, prog, OPTIONS);
 }
 
 #ifndef HAVE_STRERROR
 char *
-strerror(e)
-int	e;
+strerror(int e)
 {
 	static char	ebuf[40];
 	extern int	sys_nerr;
@@ -488,9 +474,8 @@ int	e;
 }
 #endif
 
-char *
-xmalloc(s)
-size_t	s;
+void *
+xmalloc(size_t s)
 {
 	char	*ret;
 	extern char *malloc();
@@ -503,8 +488,7 @@ size_t	s;
 }
 
 char *
-base_pathname(p)
-char	*p;
+base_pathname(char *p)
 {
 	char	*t;
 
@@ -514,9 +498,7 @@ char	*p;
 }
 
 int
-legal_number (string, result)
-     char *string;
-     long *result;
+legal_number (char *string, long *result)
 {
   int sign;
   long value;
@@ -575,9 +557,7 @@ extern int optind;
 extern char *optarg;
 
 int
-sh_getopt(c, v, o)
-int	c;
-char	**v, *o;
+sh_getopt(int c, char **v, char *o)
 {
 	int	r;
 
@@ -591,31 +571,6 @@ char	**v, *o;
 void
 #if defined (PREFER_STDARG)
 builtin_error (const char *format, ...)
-#else
-builtin_error (format, va_alist)
-     const char *format;
-     va_dcl
-#endif
-{
-  va_list args;
-
-  if (this_command_name && *this_command_name)
-    fprintf (stderr, "%s: ", this_command_name);
-
-#if defined (PREFER_STDARG)
-  va_start (args, format);
-#else
-  va_start (args);
-#endif
-
-  vfprintf (stderr, format, args);
-  va_end (args);
-  fprintf (stderr, "\n");
-}
-#else
-void
-builtin_error (format, arg1, arg2, arg3, arg4, arg5)
-     char *format, *arg1, *arg2, *arg3, *arg4, *arg5;
 {
   if (this_command_name && *this_command_name)
     fprintf (stderr, "%s: ", this_command_name);

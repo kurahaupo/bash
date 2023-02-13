@@ -26,8 +26,7 @@
 
 /* Duplicate S, returning an identical malloc'd string.  */
 char *
-strdup (s)
-     const char *s;
+strdup (const char *s)
 {
   size_t len;
   void *new;

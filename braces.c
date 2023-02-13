@@ -59,7 +59,7 @@ extern int errno;
 
 #define BRACE_SEQ_SPECIFIER	".."
 
-extern int asprintf PARAMS((char **, const char *, ...)) __attribute__((__format__ (printf, 2, 3)));
+extern int asprintf (char **, const char *, ...) __attribute__((__format__ (printf, 2, 3)));
 
 /* Basic idea:
 
@@ -73,26 +73,15 @@ extern int asprintf PARAMS((char **, const char *, ...)) __attribute__((__format
 /* The character which is used to separate arguments. */
 static const int brace_arg_separator = ',';
 
-#if defined (PARAMS)
-static int brace_gobbler PARAMS((char *, size_t, int *, int));
-static char **expand_amble PARAMS((char *, size_t, int));
-static char **expand_seqterm PARAMS((char *, size_t));
-static char **mkseq PARAMS((intmax_t, intmax_t, intmax_t, int, int));
-static char **array_concat PARAMS((char **, char **));
-#else
-static int brace_gobbler ();
-static char **expand_amble ();
-static char **expand_seqterm ();
-static char **mkseq();
-static char **array_concat ();
-#endif
+static int brace_gobbler (char *, size_t, int *, int);
+static char **expand_amble (char *, size_t, int);
+static char **expand_seqterm (char *, size_t);
+static char **array_concat (char **, char **);
 
 #if 0
 static void
-dump_result (a)
-     char **a;
+dump_result (char **a)
 {
-  int i;
 
   for (i = 0; a[i]; i++)
     printf ("dump_result: a[%d] = -%s-\n", i, a[i]);
@@ -101,8 +90,7 @@ dump_result (a)
 
 /* Return an array of strings; the brace expansion of TEXT. */
 char **
-brace_expand (text)
-     char *text;
+brace_expand (char *text)
 {
   register int start;
   size_t tlen;
@@ -282,10 +270,7 @@ add_tack:
    expand each slot which needs it, until there are no more slots which
    need it. */
 static char **
-expand_amble (text, tlen, flags)
-     char *text;
-     size_t tlen;
-     int flags;
+expand_amble (char *text, size_t tlen, int flags)
 {
   char **result, **partial, **tresult;
   char *tem;
@@ -357,9 +342,7 @@ expand_amble (text, tlen, flags)
 #define ST_ZINT	3
 
 static char **
-mkseq (start, end, incr, type, width)
-     intmax_t start, end, incr;
-     int type, width;
+mkseq (intmax_t start, intmax_t end, intmax_t incr, int type, int width)
 {
   intmax_t n, prevn;
   int i, nelem;
@@ -469,9 +452,7 @@ mkseq (start, end, incr, type, width)
 }
 
 static char **
-expand_seqterm (text, tlen)
-     char *text;
-     size_t tlen;
+expand_seqterm (char *text, size_t tlen)
 {
   char *t, *lhs, *rhs;
   int lhs_t, rhs_t, lhs_l, rhs_l, width;
@@ -591,11 +572,7 @@ expand_seqterm (text, tlen)
 	   an inner set of braces.
 */
 static int
-brace_gobbler (text, tlen, indx, satisfy)
-     char *text;
-     size_t tlen;
-     int *indx;
-     int satisfy;
+brace_gobbler (char *text, size_t tlen, int *indx, int satisfy)
 {
   register int i, c, quoted, level, commas, pass_next;
 #if defined (SHELL)
@@ -729,8 +706,7 @@ comsub:
    are free ()'ed.  ARR1 can be NULL, in that case, a new version of ARR2
    is returned. */
 static char **
-array_concat (arr1, arr2)
-     char **arr1, **arr2;
+array_concat (char **arr1, char **arr2)
 {
   register int i, j, len, len1, len2;
   register char **result;
@@ -784,29 +760,26 @@ array_concat (arr1, arr2)
 #include <stdio.h>
 
 void *
-xmalloc(n)
-     size_t n;
+xmalloc(size_t n)
 {
   return (malloc (n));
 }
 
 void *
-xrealloc(p, n)
-     void *p;
-     size_t n;
+xrealloc(void *p, size_t n)
 {
   return (realloc (p, n));
 }
 
 int
-internal_error (format, arg1, arg2)
-     char *format, *arg1, *arg2;
+internal_error (char *format, char *arg1, char *arg2)
 {
   fprintf (stderr, format, arg1, arg2);
   fprintf (stderr, "\n");
 }
 
-main ()
+int
+main (void)
 {
   char example[256];
 

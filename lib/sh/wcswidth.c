@@ -27,9 +27,7 @@
 #include <bashansi.h>
 
 int
-wcswidth(pwcs, n)
-     const wchar_t *pwcs;
-     size_t n;
+wcswidth(const wchar_t *pwcs, size_t n)
 {
   wchar_t wc;
   int len, l;

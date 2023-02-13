@@ -64,8 +64,7 @@ static void uprint();
 static int uname_flags;
 
 int
-uname_builtin (list)
-     WORD_LIST *list;
+uname_builtin (WORD_LIST *list)
 {
   int opt, r;
   struct utsname uninfo;
@@ -134,9 +133,7 @@ uname_builtin (list)
 }
 
 static void
-uprint (flag, info)
-     int flag;
-     char *info;
+uprint (int flag, char *info)
 {
   if (uname_flags & flag)
     {

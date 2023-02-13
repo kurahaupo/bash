@@ -61,8 +61,7 @@ extern int interrupt_immediately;
 extern char *strerror ();
 
 int
-tee_builtin (list)
-     WORD_LIST *list;
+tee_builtin (WORD_LIST *list)
 {
   int opt, append, nointr, rval, fd, fflags;
   int n, nr, nw;

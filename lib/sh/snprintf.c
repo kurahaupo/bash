@@ -129,8 +129,8 @@
 #  define FL_ADDBASE    0x02    /* add base# prefix to converted value */
 #  define FL_HEXUPPER   0x04    /* use uppercase when converting to hex */
 #  define FL_UNSIGNED   0x08    /* don't add any sign */
-extern char *fmtulong PARAMS((unsigned long int, int, char *, size_t, int));
-extern char *fmtullong PARAMS((unsigned long long int, int, char *, size_t, int));
+extern char *fmtulong(unsigned long int, int, char *, size_t, int);
+extern char *fmtullong(unsigned long long int, int, char *, size_t, int);
 #endif
 
 #ifndef FREE
@@ -269,40 +269,18 @@ struct DATA
   char pad;
 };
 
-/* the floating point stuff */
-#ifdef FLOATING_POINT
-static double pow_10 PARAMS((int));
-static int log_10 PARAMS((double));
-static double integral PARAMS((double, double *));
-static char *numtoa PARAMS((double, int, int, char **));
-#endif
-
-static void init_data PARAMS((struct DATA *, char *, size_t, const char *, int));
-static void init_conv_flag PARAMS((struct DATA *));
-
 /* for the format */
-#ifdef FLOATING_POINT
-static void floating PARAMS((struct DATA *, double));
-static void exponent PARAMS((struct DATA *, double));
-#endif
-static void number PARAMS((struct DATA *, unsigned long, int));
-#ifdef HAVE_LONG_LONG_INT
-static void lnumber PARAMS((struct DATA *, unsigned long long, int));
-#endif
-static void pointer PARAMS((struct DATA *, unsigned long));
-static void strings PARAMS((struct DATA *, char *));
-
 #ifdef FLOATING_POINT
 #  define FALLBACK_FMTSIZE	32
 #  define FALLBACK_BASE		4096
 #  define LFALLBACK_BASE	5120
 #  ifdef HAVE_LONG_DOUBLE
-static void ldfallback PARAMS((struct DATA *, const char *, const char *, long double));
+static void ldfallback(struct DATA *, const char *, const char *, long double);
 #  endif
-static void dfallback PARAMS((struct DATA *, const char *, const char *, double));
+static void dfallback(struct DATA *, const char *, const char *, double);
 #endif
 
-static char *groupnum PARAMS((char *));
+static char *groupnum(char *);
 
 #if defined (HAVE_LONG_DOUBLE)
 #  define LONGDOUBLE long double
@@ -331,10 +309,9 @@ static char *groupnum PARAMS((char *));
 #endif
 
 #ifdef DRIVER
-static void memory_error_and_abort ();
-static void *xmalloc PARAMS((size_t));
-static void *xrealloc PARAMS((void *, size_t));
-static void xfree PARAMS((void *));
+static void *xmalloc(size_t);
+static void *xrealloc(void *, size_t);
+static void xfree(void *);
 #else
 #  include <xmalloc.h>
 #endif
@@ -470,8 +447,7 @@ static void xfree PARAMS((void *));
  * Find the nth power of 10
  */
 static double
-pow_10(n)
-     int n;
+pow_10(int n)
 {
   double P;
 
@@ -514,8 +490,7 @@ pow_10(n)
  * NOTE: do not call this with r == 0 -- an infinite loop results.
  */
 static int
-log_10(r)
-     double r;
+log_10(double r)
 {
   int i = 0;
   double result = 1.;
@@ -549,9 +524,7 @@ log_10(r)
  * In many ways it resemble the modf() found on most Un*x
  */
 static double
-integral(real, ip)
-     double real;
-     double *ip;
+integral(double real, double *ip)
 {
   int j;
   double i, s, p;
@@ -598,10 +571,7 @@ integral(real, ip)
  * declare with fix size
  */
 static char *
-numtoa(number, base, precision, fract)
-     double number;
-     int base, precision;
-     char **fract;
+numtoa(double number, int base, int precision, char **fract)
 {
   register int i, j;
   double ip, fp; /* integer and fraction part */
@@ -696,10 +666,7 @@ numtoa(number, base, precision, fract)
  * the representation with the right padding
  */
 static void
-number(p, d, base)
-     struct DATA *p;
-     unsigned long d;
-     int base;
+number(struct DATA *p, unsigned long d, int base)
 {
   char *tmp, *t;
   long sd;
@@ -772,10 +739,7 @@ number(p, d, base)
  * identical to number() but works for `long long'
  */
 static void
-lnumber(p, d, base)
-     struct DATA *p;
-     unsigned long long d;
-     int base;
+lnumber(struct DATA *p, unsigned long long d, int base)
 {
   char *tmp, *t;
   long long sd;
@@ -844,9 +808,7 @@ lnumber(p, d, base)
 #endif
 
 static void
-pointer(p, d)
-     struct DATA *p;
-     unsigned long d;
+pointer(struct DATA *p, unsigned long d)
 {
   char *tmp;
 
@@ -869,9 +831,7 @@ pointer(p, d)
 
 /* %s strings */
 static void
-strings(p, tmp)
-     struct DATA *p;
-     char *tmp;
+strings(struct DATA *p, char *tmp)
 {
   size_t len;
 
@@ -886,9 +846,7 @@ strings(p, tmp)
 #if HANDLE_MULTIBYTE
 /* %ls wide-character strings */
 static void
-wstrings(p, tmp)
-     struct DATA *p;
-     wchar_t *tmp;
+wstrings(struct DATA *p, wchar_t *tmp)
 {
   size_t len;
   mbstate_t mbs;
@@ -927,9 +885,7 @@ wstrings(p, tmp)
 }
 
 static void
-wchars (p, wc)
-     struct DATA *p;
-     wint_t wc;
+wchars (struct DATA *p, wint_t wc)
 {
   char *lbuf, *l;
   mbstate_t mbs;
@@ -952,14 +908,11 @@ wchars (p, wc)
 
 #ifdef FLOATING_POINT
 
-/* Check for [+-]infinity and NaN.  If MODE == 1, we check for Infinity, else
+/* Check for ±Infinity and NaN.  If mode == 1, we check for Infinity, else
    (mode == 2) we check for NaN.  This does the necessary printing.  Returns
    1 if Inf or Nan, 0 if not. */
 static int
-chkinfnan(p, d, mode)
-     struct DATA *p;
-     double d;
-     int mode;		/* == 1 for inf, == 2 for nan */
+chkinfnan(struct DATA *p, double d, int mode)
 {
   int i;
   char *tmp;
@@ -987,9 +940,7 @@ chkinfnan(p, d, mode)
 
 /* %f %F %g %G floating point representation */
 static void
-floating(p, d)
-     struct DATA *p;
-     double d;
+floating(struct DATA *p, double d)
 {
   char *tmp, *tmp2, *t;
   int i;
@@ -1058,9 +1009,7 @@ floating(p, d)
 
 /* %e %E %g %G exponent representation */
 static void
-exponent(p, d)
-     struct DATA *p;
-     double d;
+exponent(struct DATA *p, double d)
 {
   char *tmp, *tmp2;
   int j, i;
@@ -1160,8 +1109,7 @@ exponent(p, d)
    grouping info and thousands separator.  If no grouping should be performed,
    this returns NULL; the caller needs to check for it. */
 static char *
-groupnum (s)
-     char *s;
+groupnum (char *s)
 {
   char *se, *ret, *re, *g;
   int len, slen;
@@ -1221,8 +1169,7 @@ groupnum (s)
 
 /* initialize the conversion specifiers */
 static void
-init_conv_flag (p)
-     struct DATA *p;
+init_conv_flag (struct DATA *p)
 {
   p->flags &= PF_ALLOCBUF;		/* preserve PF_ALLOCBUF flag */
   p->precision = p->width = NOT_FOUND;
@@ -1231,12 +1178,7 @@ init_conv_flag (p)
 }
 
 static void
-init_data (p, string, length, format, mode)
-     struct DATA *p;
-     char *string;
-     size_t length;
-     const char *format;
-     int mode;
+init_data (struct DATA *p, char *string, size_t length, const char *format, int mode)
 {
   p->length = length - 1; /* leave room for '\0' */
   p->holder = p->base = string;
@@ -1249,12 +1191,7 @@ static int
 #if defined (__STDC__)
 vsnprintf_internal(struct DATA *data, char *string, size_t length, const char *format, va_list args)
 #else
-vsnprintf_internal(data, string, length, format, args)
-     struct DATA *data;
-     char *string;
-     size_t length;
-     const char *format;
-     va_list args;
+vsnprintf_internal(struct DATA *data, char *string, size_t length, const char *format, va_list args)
 #endif
 {
   double d; /* temporary holder */
@@ -1639,10 +1576,7 @@ conv_break:
  * at it.  Fall back to sprintf for long double formats.
  */
 static void
-ldfallback (data, fs, fe, ld)
-     struct DATA *data;
-     const char *fs, *fe;
-     long double ld;
+ldfallback (struct DATA *data, const char *fs, const char *fe, long double ld)
 {
   register char *x;
   char fmtbuf[FALLBACK_FMTSIZE], *obuf;
@@ -1672,10 +1606,7 @@ ldfallback (data, fs, fe, ld)
 #ifdef FLOATING_POINT
 /* Used for %a, %A if the libc printf supports them. */
 static void
-dfallback (data, fs, fe, d)
-     struct DATA *data;
-     const char *fs, *fe;
-     double d;
+dfallback (struct DATA *data, const char *fs, const char *fe, double d)
 {
   register char *x;
   char fmtbuf[FALLBACK_FMTSIZE], obuf[FALLBACK_BASE];
@@ -1705,11 +1636,7 @@ int
 #if defined (__STDC__)
 vsnprintf(char *string, size_t length, const char *format, va_list args)
 #else
-vsnprintf(string, length, format, args)
-     char *string;
-     size_t length;
-     const char *format;
-     va_list args;
+vsnprintf(char *string, size_t length, const char *format, va_list args)
 #endif
 {
   struct DATA data;
@@ -1724,10 +1651,7 @@ int
 #if defined(PREFER_STDARG)
 snprintf(char *string, size_t length, const char * format, ...)
 #else
-snprintf(string, length, format, va_alist)
-     char *string;
-     size_t length;
-     const char *format;
+snprintf(char *string, size_t length, const char *format, va_alist)
      va_dcl
 #endif
 {
@@ -1755,10 +1679,7 @@ int
 #if defined (__STDC__)
 vasprintf(char **stringp, const char *format, va_list args)
 #else
-vasprintf(stringp, format, args)
-     char **stringp;
-     const char *format;
-     va_list args;
+vasprintf(char **stringp, const char *format, va_list args)
 #endif
 {
   struct DATA data;
@@ -1776,9 +1697,7 @@ int
 #if defined(PREFER_STDARG)
 asprintf(char **stringp, const char * format, ...)
 #else
-asprintf(stringp, format, va_alist)
-     char **stringp;
-     const char *format;
+asprintf(char **stringp, const char *format, va_alist)
      va_dcl
 #endif
 {
@@ -1801,15 +1720,14 @@ asprintf(stringp, format, va_alist)
 #ifdef DRIVER
 
 static void
-memory_error_and_abort ()
+memory_error_and_abort (void)
 {
   write (2, "out of virtual memory\n", 22);
   abort ();
 }
 
 static void *
-xmalloc(bytes)
-     size_t bytes;
+xmalloc(size_t bytes)
 {
   void *ret;
 
@@ -1820,9 +1738,7 @@ xmalloc(bytes)
 }
 
 static void *
-xrealloc (pointer, bytes)
-     void *pointer;
-     size_t bytes;
+xrealloc (void *pointer, size_t bytes)
 {
   void *ret;
 
@@ -1833,15 +1749,15 @@ xrealloc (pointer, bytes)
 }
 
 static void
-xfree(x)
-     void *x;
+xfree(void *x)
 {
   if (x)
     free (x);
 }
 
 /* set of small tests for snprintf() */
-main()
+int
+main(void)
 {
   char holder[100];
   char *h;

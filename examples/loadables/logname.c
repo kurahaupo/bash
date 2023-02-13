@@ -36,8 +36,7 @@ extern int errno;
 #endif
 
 int
-logname_builtin (list)
-     WORD_LIST *list;
+logname_builtin (WORD_LIST *list)
 {
   char *np;
 

@@ -50,15 +50,13 @@ extern int errno;
 #endif
 
 #ifndef locale_decpoint
-extern int locale_decpoint PARAMS((void));
+extern int locale_decpoint(void);
 #endif
 
 /* Convert NPTR to a double.  If ENDPTR is not NULL, a pointer to the
    character after the last one used in the number is put in *ENDPTR.  */
 double
-strtod (nptr, endptr)
-     const char *nptr;
-     char **endptr;
+strtod (const char *nptr, char **endptr)
 {
   register const char *s;
   short sign;

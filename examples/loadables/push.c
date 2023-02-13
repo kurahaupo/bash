@@ -39,8 +39,7 @@ extern pid_t dollar_dollar_pid;
 extern int last_command_exit_value;
 
 int
-push_builtin (list)
-     WORD_LIST *list;
+push_builtin (WORD_LIST *list)
 {
   pid_t pid;
   int xstatus, opt;

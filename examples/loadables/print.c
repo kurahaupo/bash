@@ -72,8 +72,7 @@ struct builtin print_struct = {
 #endif
 
 int
-print_builtin (list)
-     WORD_LIST *list;
+print_builtin (WORD_LIST *list)
 {
   int c, r, nflag, raw, ofd, sflag;
   intmax_t lfd;
@@ -170,9 +169,7 @@ opt_end:
 }
 
 static int
-printargs (list, ofp)
-     WORD_LIST *list;
-     FILE *ofp;
+printargs (WORD_LIST *list, FILE *ofp)
 {
   WORD_LIST *l;
   char *ostr;

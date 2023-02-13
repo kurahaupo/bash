@@ -26,8 +26,7 @@
 #include "shell.h"
 
 int
-necho_builtin (list)
-WORD_LIST *list;
+necho_builtin (WORD_LIST *list)
 {
 	print_word_list (list, " ");
 	printf("\n");

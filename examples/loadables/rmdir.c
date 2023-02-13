@@ -33,8 +33,7 @@ extern int errno;
 #endif
 
 int
-rmdir_builtin (list)
-     WORD_LIST *list;
+rmdir_builtin (WORD_LIST *list)
 {
   int rval;
   WORD_LIST *l;

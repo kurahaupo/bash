@@ -54,8 +54,8 @@ extern int errno;
 
 extern pid_t dollar_dollar_pid;
 
-static char *get_sys_tmpdir PARAMS((void));
-static char *get_tmpdir PARAMS((int));
+static char *get_sys_tmpdir(void);
+static char *get_tmpdir(int);
 
 static char *sys_tmpdir = (char *)NULL;
 static int ntmpfiles;
@@ -63,7 +63,7 @@ static int tmpnamelen = -1;
 static unsigned long filenum = 1L;
 
 static char *
-get_sys_tmpdir ()
+get_sys_tmpdir (void)
 {
   if (sys_tmpdir)
     return sys_tmpdir;
@@ -92,8 +92,7 @@ get_sys_tmpdir ()
 }
 
 static char *
-get_tmpdir (flags)
-     int flags;
+get_tmpdir (int flags)
 {
   char *tdir;
 
@@ -115,7 +114,7 @@ get_tmpdir (flags)
 }
 
 static void
-sh_seedrand ()
+sh_seedrand (void)
 {
 #if HAVE_RANDOM
   int d;
@@ -132,9 +131,7 @@ sh_seedrand ()
 }
 
 char *
-sh_mktmpname (nameroot, flags)
-     char *nameroot;
-     int flags;
+sh_mktmpname (char *nameroot, int flags)
 {
   char *filename, *tdir, *lroot;
   struct stat sb;
@@ -187,10 +184,7 @@ sh_mktmpname (nameroot, flags)
 }
 
 int
-sh_mktmpfd (nameroot, flags, namep)
-     char *nameroot;
-     int flags;
-     char **namep;
+sh_mktmpfd (char *nameroot, int flags, char **namep)
 {
   char *filename, *tdir, *lroot;
   int fd, tdlen;
@@ -245,10 +239,7 @@ sh_mktmpfd (nameroot, flags, namep)
 }
 
 FILE *
-sh_mktmpfp (nameroot, flags, namep)
-     char *nameroot;
-     int flags;
-     char **namep;
+sh_mktmpfp (char *nameroot, int flags, char **namep)
 {
   int fd;
   FILE *fp;
@@ -263,9 +254,7 @@ sh_mktmpfp (nameroot, flags, namep)
 }
 
 char *
-sh_mktmpdir (nameroot, flags)
-     char *nameroot;
-     int flags;
+sh_mktmpdir (char *nameroot, int flags)
 {
   char *filename, *tdir, *lroot, *dirname;
   int fd, tdlen;

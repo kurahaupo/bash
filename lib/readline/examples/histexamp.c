@@ -32,9 +32,7 @@
 #include <string.h>
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   char line[1024], *t;
   int len, done;

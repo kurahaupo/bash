@@ -82,9 +82,7 @@ usage()
 }
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   char *temp, *prompt;
   struct stat sb;

@@ -46,7 +46,7 @@ $END
 #include "../execute_cmd.h"
 #include "common.h"
 
-static int check_loop_level PARAMS((void));
+static int check_loop_level (void);
 
 /* The depth of while's and until's. */
 int loop_level = 0;

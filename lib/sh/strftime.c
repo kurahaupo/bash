@@ -981,9 +981,7 @@ static char *array[] =
 /* main routine. */
 
 int
-main(argc, argv)
-int argc;
-char **argv;
+main(int argc, char **argv)
 {
 	long time();
 

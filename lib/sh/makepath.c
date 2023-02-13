@@ -45,7 +45,7 @@
 #  define MP_IGNDOT	0x08
 #endif
 
-extern char *get_working_directory PARAMS((char *));
+extern char *get_working_directory(char *);
 
 static char *nullpath = "";
 
@@ -67,9 +67,7 @@ static char *nullpath = "";
   } while (0)
 
 char *
-sh_makepath (path, dir, flags)
-     const char *path, *dir;
-     int flags;
+sh_makepath (const char *path, const char *dir, int flags)
 {
   int dirlen, pathlen;
   char *ret, *xpath, *xdir, *r, *s;

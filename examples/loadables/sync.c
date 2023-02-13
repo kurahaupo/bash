@@ -29,8 +29,7 @@
 #include "bashgetopt.h"
 
 int
-sync_builtin (list)
-     WORD_LIST *list;
+sync_builtin (WORD_LIST *list)
 {
   sync();
   return (EXECUTION_SUCCESS);

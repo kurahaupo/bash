@@ -90,11 +90,11 @@ $END
 #include "builtext.h"
 #include "bashgetopt.h"
 
-static SHELL_VAR *declare_find_variable PARAMS((const char *, int, int));
-static char *declare_build_newname PARAMS((char *, char *, int, char *, int));
-static char *declare_transform_name PARAMS((char *, int, int));
+static SHELL_VAR *declare_find_variable (const char *, int, int);
+static char *declare_build_newname (char *, char *, int, char *, int);
+static char *declare_transform_name (char *, int, int);
 
-static int declare_internal PARAMS((register WORD_LIST *, int));
+static int declare_internal (register WORD_LIST *, int);
 
 /* Declare or change variable attributes. */
 int

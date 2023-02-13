@@ -22,9 +22,7 @@
 
 /* Find the first occurrence of C in S or the final NUL byte.  */
 char *
-strchrnul (s, c_in)
-     const char *s;
-     int c_in;
+strchrnul (const char *s, int c_in)
 {
   char c;
   register char *s1;

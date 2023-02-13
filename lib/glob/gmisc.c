@@ -38,7 +38,7 @@
 #include "glob.h"
 
 /* Make sure these names continue to agree with what's in smatch.c */
-extern char *glob_patscan PARAMS((char *, char *, int));
+extern char *glob_patscan (char *, char *, int);
 
 /* Compile `gm_loop.c' for single-byte characters. */
 #define CHAR	char
@@ -79,9 +79,7 @@ extern char *glob_patscan PARAMS((char *, char *, int));
    is only called when extended_glob is set, so we have to skip over extglob
    patterns x(...) */
 char *
-glob_dirscan (pat, dirsep)
-     char *pat;
-     int dirsep;
+glob_dirscan (char *pat, int dirsep)
 {
   char *p, *d, *pe, *se;
 

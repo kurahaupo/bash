@@ -89,9 +89,9 @@ __libc_rwlock_define (extern, _nl_state_lock attribute_hidden)
 #endif
 
 /* Prototypes for local functions.  */
-static void set_binding_values PARAMS ((const char *domainname,
-					const char **dirnamep,
-					const char **codesetp));
+static void set_binding_values (const char *domainname,
+				const char **dirnamep,
+				const char **codesetp);
 
 /* Specifies the directory name *DIRNAMEP and the output codeset *CODESETP
    to be used for the DOMAINNAME message catalog.
@@ -100,10 +100,7 @@ static void set_binding_values PARAMS ((const char *domainname,
    If DIRNAMEP or CODESETP is NULL, the corresponding attribute is neither
    modified nor returned.  */
 static void
-set_binding_values (domainname, dirnamep, codesetp)
-     const char *domainname;
-     const char **dirnamep;
-     const char **codesetp;
+set_binding_values (const char *domainname, const char **dirnamep, const char **codesetp)
 {
   struct binding *binding;
   int modified;
@@ -350,9 +347,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 /* Specify that the DOMAINNAME message catalog will be found
    in DIRNAME rather than in the system locale data base.  */
 char *
-BINDTEXTDOMAIN (domainname, dirname)
-     const char *domainname;
-     const char *dirname;
+BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 {
   set_binding_values (domainname, &dirname, NULL);
   return (char *) dirname;
@@ -361,9 +356,7 @@ BINDTEXTDOMAIN (domainname, dirname)
 /* Specify the character encoding in which the messages from the
    DOMAINNAME message catalog will be returned.  */
 char *
-BIND_TEXTDOMAIN_CODESET (domainname, codeset)
-     const char *domainname;
-     const char *codeset;
+BIND_TEXTDOMAIN_CODESET (const char *domainname, const char *codeset)
 {
   set_binding_values (domainname, NULL, &codeset);
   return (char *) codeset;

@@ -42,8 +42,7 @@
 static int accept_bind_variable (char *, int);
 
 int
-accept_builtin (list)
-     WORD_LIST *list;
+accept_builtin (WORD_LIST *list)
 {
   SHELL_VAR *v;
   intmax_t iport;
@@ -194,9 +193,7 @@ accept_builtin (list)
 }
 
 static int
-accept_bind_variable (varname, intval)
-     char *varname;
-     int intval;
+accept_bind_variable (char *varname, int intval)
 {
   SHELL_VAR *v;
   char ibuf[INT_STRLEN_BOUND (int) + 1], *p;

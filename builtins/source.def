@@ -80,7 +80,7 @@ $END
 extern int errno;
 #endif /* !errno */
 
-static void maybe_pop_dollar_vars PARAMS((void));
+static void maybe_pop_dollar_vars (void);
 
 /* If non-zero, `.' uses $PATH to look up the script to be sourced. */
 int source_uses_path = 1;

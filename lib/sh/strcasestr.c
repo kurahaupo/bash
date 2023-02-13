@@ -30,9 +30,7 @@
    match in s1.  The compare is case insensitive.  This is a
    case-insensitive strstr(3). */
 char *
-strcasestr (s1, s2)
-     const char *s1;
-     const char *s2;
+strcasestr (const char *s1, const char *s2)
 {
   register int i, l, len, c;
 

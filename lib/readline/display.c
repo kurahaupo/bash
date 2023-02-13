@@ -1648,7 +1648,8 @@ new:	eddie> Oh, my little buggy says to me, as lurgid as
 
    Could be made even smarter, but this works well enough */
 static void
-update_line (char *old, char *old_face, char *new, char *new_face, int current_line, int omax, int nmax, int inv_botlin)
+update_line (char *old, char *old_face, char *new, char *new_face,
+             int current_line, int omax, int nmax, int inv_botlin)
 {
   char *ofd, *ols, *oe, *nfd, *nls, *ne;
   char *ofdf, *nfdf, *olsf, *nlsf;
@@ -3025,8 +3026,7 @@ rl_message (va_alist)
 }
 #else /* !USE_VARARGS */
 int
-rl_message (format, arg1, arg2)
-     char *format;
+rl_message (char *format, arg1, arg2)
 {
   if (msg_buf == 0)
     msg_buf = xmalloc (msg_bufsiz = 128);

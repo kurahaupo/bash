@@ -20,8 +20,7 @@ extern int errno;
 extern char *strerror ();
 
 int
-template_builtin (list)
-     WORD_LIST *list;
+template_builtin (WORD_LIST *list)
 {
   int opt, rval;
 
@@ -45,16 +44,14 @@ template_builtin (list)
 /* Called when `template' is enabled and loaded from the shared object.  If this
    function returns 0, the load fails. */
 int
-template_builtin_load (name)
-     char *name;
+template_builtin_load (char *name)
 {
   return (1);
 }
 
 /* Called when `template' is disabled. */
 void
-template_builtin_unload (name)
-     char *name;
+template_builtin_unload (char *name)
 {
 }
 

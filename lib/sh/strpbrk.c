@@ -31,9 +31,7 @@
 
 /* Find the first occurrence in S of any character in ACCEPT.  */
 char *
-strpbrk (s, accept)
-     register const char *s;
-     register const char *accept;
+strpbrk (register const char *s, register const char *accept)
 {
   while (*s != '\0')
     {

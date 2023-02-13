@@ -74,8 +74,7 @@ static int id_prgroups ();
 static int id_prall ();
 
 int
-id_builtin (list)
-     WORD_LIST *list;
+id_builtin (WORD_LIST *list)
 {
   int opt;
   char *user;
@@ -134,8 +133,7 @@ id_builtin (list)
 }
 
 static int
-inituser (uname)
-     char *uname;
+inituser (char *uname)
 {
   struct passwd *pwd;
 
@@ -162,8 +160,7 @@ inituser (uname)
 
 /* Print the name or value of user ID UID. */
 static int
-id_pruser (uid)
-     int uid;
+id_pruser (int uid)
 {
   struct passwd *pwd = NULL;
   int r;
@@ -186,8 +183,7 @@ id_pruser (uid)
 /* Print the name or value of group ID GID. */
 
 static int
-id_prgrp (gid)
-     int gid;
+id_prgrp (int gid)
 {
   struct group *grp = NULL;
   int r;
@@ -209,8 +205,7 @@ id_prgrp (gid)
 }
 
 static int
-id_prgroups (uname)
-     char *uname;
+id_prgroups (char *uname)
 {
   int *glist, ng, i, r;
 
@@ -243,8 +238,7 @@ id_prgroups (uname)
 }
 
 static int
-id_prall (uname)
-     char *uname;
+id_prall (char *uname)
 {
   int r, i, ng, *glist;
   struct passwd *pwd;

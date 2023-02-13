@@ -28,9 +28,7 @@ extern char *strerror();
 extern int sys_nerr;
 
 int
-main(c, v)
-int	c;
-char	**v;
+main(int argc, char **argv)
 {
 	int	i, n;
 
@@ -46,12 +44,12 @@ char	**v;
 	exit (0);
 }
 
-programming_error(a, b)
-char	*a;
-int	b;
+int
+programming_error(char *a, int b)
 {
 }
 
-fatal_error()
+void
+fatal_error(void)
 {
 }

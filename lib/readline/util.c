@@ -290,8 +290,7 @@ _rl_errmsg (va_alist)
 
 #else /* !USE_VARARGS */
 void
-_rl_ttymsg (format, arg1, arg2)
-     char *format;
+_rl_ttymsg (char *format, arg1, arg2)
 {
   fprintf (stderr, "readline: ");
   fprintf (stderr, format, arg1, arg2);
@@ -301,8 +300,7 @@ _rl_ttymsg (format, arg1, arg2)
 }
 
 void
-_rl_errmsg (format, arg1, arg2)
-     char *format;
+_rl_errmsg (char *format, arg1, arg2)
 {
   fprintf (stderr, "readline: ");
   fprintf (stderr, format, arg1, arg2);

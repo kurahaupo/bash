@@ -33,8 +33,7 @@
 #include "bashgetopt.h"
 
 int
-dirname_builtin (list)
-     WORD_LIST *list;
+dirname_builtin (WORD_LIST *list)
 {
   int slen;
   char *string;

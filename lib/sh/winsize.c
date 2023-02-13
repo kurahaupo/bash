@@ -73,14 +73,12 @@ extern int shell_tty;
 extern int interactive_shell;
 extern int no_line_editing;
 extern int bash_readline_initialized;
-extern void rl_set_screen_size PARAMS((int, int));
+extern void rl_set_screen_size(int, int);
 #endif
-extern void sh_set_lines_and_columns PARAMS((int, int));
+extern void sh_set_lines_and_columns(int, int);
 
 void
-get_new_window_size (from_sig, rp, cp)
-     int from_sig;
-     int *rp, *cp;
+get_new_window_size (int from_sig, int *rp, int *cp)
 {
 #if defined (TIOCGWINSZ)
   struct winsize win;

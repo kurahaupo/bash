@@ -27,7 +27,8 @@
 
 #include <stdio.h>
 
-main()
+int
+main(void)
 {
 	register int	i;
 

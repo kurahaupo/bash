@@ -79,11 +79,11 @@ extern int errno;
 extern const char * const bash_copyright;
 extern const char * const bash_license;
 
-static void show_builtin_command_help PARAMS((void));
-static int open_helpfile PARAMS((char *));
-static void show_desc PARAMS((char *, int));
-static void show_manpage PARAMS((char *, int));
-static void show_longdoc PARAMS((int));
+static void show_builtin_command_help (void);
+static int open_helpfile (char *);
+static void show_desc (char *, int);
+static void show_manpage (char *, int);
+static void show_longdoc (int);
 
 /* Print out a list of the known functions in the shell, and what they do.
    If LIST is supplied, print out the list which matches for each pattern

@@ -33,7 +33,7 @@
 #endif
 
 #if defined (JOB_CONTROL)
-extern int set_job_control PARAMS((int));
+extern int set_job_control (int);
 #endif
 
 /* **************************************************************** */
@@ -208,8 +208,7 @@ const struct flags_alist shell_flags[] = {
 char optflags[NUM_SHELL_FLAGS+4] = { '+' };
 
 int *
-find_flag (name)
-     int name;
+find_flag (int name)
 {
   int i;
   for (i = 0; shell_flags[i].name; i++)
@@ -224,9 +223,7 @@ find_flag (name)
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
    FLAG_ON or FLAG_OFF. */
 int
-change_flag (flag, on_or_off)
-  int flag;
-  int on_or_off;
+change_flag (int flag, int on_or_off)
 {
   int *value, old_value;
 
@@ -327,8 +324,7 @@ get_current_flags ()
 }
 
 void
-set_current_flags (bitmap)
-     const char *bitmap;
+set_current_flags (const char *bitmap)
 {
   int i;
 

@@ -76,9 +76,7 @@ usage()
 }
 
 int
-main (argc, argv)
-     int argc;
-     char **argv;
+main (int argc, char **argv)
 {
   char *temp;
   int opt, Vflag, Nflag;
@@ -134,8 +132,7 @@ main (argc, argv)
 }
 
 static int
-fcopy(fp)
-     FILE *fp;
+fcopy(FILE *fp)
 {
   int c;
   char *x;
@@ -155,9 +152,7 @@ fcopy(fp)
 }
 
 int
-stdcat (argc, argv)
-     int argc;
-     char **argv;
+stdcat (int argc, char **argv)
 {
   int  i, fd, r;
   char *s;

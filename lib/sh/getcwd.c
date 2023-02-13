@@ -73,10 +73,7 @@ extern int errno;
    the inode corresponding to PATH/DIR is identical to THISINO. */
 #if !defined (D_FILENO_AVAILABLE)
 static int
-_path_checkino (dotp, name, thisino)
-     char *dotp;
-     char *name;
-     ino_t thisino;
+_path_checkino (char *dotp, char *name, ino_t thisino)
 {
   char *fullpath;
   int r, e;
@@ -107,9 +104,7 @@ char *
 getcwd (char *buf, size_t size)
 #else /* !__STDC__ */
 char *
-getcwd (buf, size)
-     char *buf;
-     size_t size;
+getcwd (char *buf, size_t size)
 #endif /* !__STDC__ */
 {
   static const char dots[]
@@ -335,9 +330,8 @@ getcwd (buf, size)
 
 #if defined (TEST)
 #  include <stdio.h>
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   char b[PATH_MAX];
 

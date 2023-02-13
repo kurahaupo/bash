@@ -23,16 +23,14 @@
 #endif
 
 /* Evaluate the plural expression and return an index value.  */
-STATIC unsigned long int plural_eval PARAMS ((struct expression *pexp,
-					      unsigned long int n))
+STATIC unsigned long int plural_eval (struct expression *pexp,
+				      unsigned long int n)
      internal_function;
 
 STATIC
 unsigned long int
 internal_function
-plural_eval (pexp, n)
-     struct expression *pexp;
-     unsigned long int n;
+plural_eval (struct expression *pexp, unsigned long int n)
 {
   switch (pexp->nargs)
     {

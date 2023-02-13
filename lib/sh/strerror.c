@@ -49,8 +49,7 @@ extern int errno;
 static char *errbase = "Unknown system error ";
 
 char *
-strerror (e)
-     int e;
+strerror (int e)
 {
   static char emsg[40];
 #if defined (HAVE_SYS_ERRLIST)

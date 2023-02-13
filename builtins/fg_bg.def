@@ -52,7 +52,7 @@ $END
 #include "bashgetopt.h"
 
 #if defined (JOB_CONTROL)
-static int fg_bg PARAMS((WORD_LIST *, int));
+static int fg_bg (WORD_LIST *, int);
 
 /* How to bring a job into the foreground. */
 int

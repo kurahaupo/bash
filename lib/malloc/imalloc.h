@@ -72,14 +72,6 @@
 #  endif /* HAVE_BCOPY */
 #endif /* !__GNUC__ */
 
-#if !defined (PARAMS)
-#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus) || defined (PROTOTYPES)
-#    define PARAMS(protos) protos
-#  else
-#    define PARAMS(protos) ()
-#  endif
-#endif
-
 /* Use Duff's device for good zeroing/copying performance.  DO NOT call the
    Duff's device macros with NBYTES == 0. */
 
@@ -172,7 +164,7 @@ do {									\
 
 #include <signal.h>
 
-extern void _malloc_block_signals PARAMS((sigset_t *, sigset_t *));
-extern void _malloc_unblock_signals PARAMS((sigset_t *, sigset_t *));
+extern void _malloc_block_signals (sigset_t *, sigset_t *);
+extern void _malloc_unblock_signals (sigset_t *, sigset_t *);
 
 #endif /* _IMALLOC_H */

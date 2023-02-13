@@ -398,13 +398,13 @@ extern Coproc sh_coproc;
 
 /* Forward declarations of functions declared in copy_cmd.c. */
 
-extern FUNCTION_DEF *copy_function_def_contents PARAMS((FUNCTION_DEF *, FUNCTION_DEF *));
-extern FUNCTION_DEF *copy_function_def PARAMS((FUNCTION_DEF *));
+extern FUNCTION_DEF *copy_function_def_contents (FUNCTION_DEF *, FUNCTION_DEF *);
+extern FUNCTION_DEF *copy_function_def (FUNCTION_DEF *);
 
-extern WORD_DESC *copy_word PARAMS((WORD_DESC *));
-extern WORD_LIST *copy_word_list PARAMS((WORD_LIST *));
-extern REDIRECT *copy_redirect PARAMS((REDIRECT *));
-extern REDIRECT *copy_redirects PARAMS((REDIRECT *));
-extern COMMAND *copy_command PARAMS((COMMAND *));
+extern WORD_DESC *copy_word (WORD_DESC *);
+extern WORD_LIST *copy_word_list (WORD_LIST *);
+extern REDIRECT *copy_redirect (REDIRECT *);
+extern REDIRECT *copy_redirects (REDIRECT *);
+extern COMMAND *copy_command (COMMAND *);
 
 #endif /* _COMMAND_H_ */

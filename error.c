@@ -52,18 +52,18 @@ extern int errno;
 #  include "bashhist.h"
 #endif
 
-extern int executing_line_number PARAMS((void));
+extern int executing_line_number (void);
 
 #if defined (JOB_CONTROL)
 extern pid_t shell_pgrp;
-extern int give_terminal_to PARAMS((pid_t, int));
+extern int give_terminal_to (pid_t, int);
 #endif /* JOB_CONTROL */
 
 #if defined (ARRAY_VARS)
 extern const char * const bash_badsub_errmsg;
 #endif
 
-static void error_prolog PARAMS((int));
+static void error_prolog (int);
 
 /* The current maintainer of the shell.  You change this in the
    Makefile. */
@@ -76,8 +76,7 @@ const char * const the_current_maintainer = MAINTAINER;
 int gnu_error_format = 0;
 
 static void
-error_prolog (print_lineno)
-     int print_lineno;
+error_prolog (int print_lineno)
 {
   char *ename;
   int line;
@@ -129,8 +128,7 @@ get_name_for_error ()
    sys_error so the filename is not interpreted as a printf-style
    format string. */
 void
-file_error (filename)
-     const char *filename;
+file_error (const char *filename)
 {
   report_error ("%s: %s", filename, strerror (errno));
 }
@@ -390,8 +388,7 @@ parser_error (lineno, format, va_alist)
 #ifdef DEBUG
 /* This assumes ASCII and is suitable only for debugging */
 char *
-strescape (str)
-     const char *str;
+strescape (const char *str)
 {
   char *r, *result;
   unsigned char *s;
@@ -493,9 +490,7 @@ static const char * const cmd_error_table[] = {
 };
 
 void
-command_error (func, code, e, flags)
-     const char *func;
-     int code, e, flags;	/* flags currently unused */
+command_error (const char *func, int code, int e, int flags /* unused */)
 {
   if (code > CMDERR_LAST)
     code = CMDERR_DEFAULT;
@@ -504,8 +499,7 @@ command_error (func, code, e, flags)
 }
 
 char *
-command_errstr (code)
-     int code;
+command_errstr (int code)
 {
   if (code > CMDERR_LAST)
     code = CMDERR_DEFAULT;
@@ -515,23 +509,20 @@ command_errstr (code)
 
 #ifdef ARRAY_VARS
 void
-err_badarraysub (s)
-     const char *s;
+err_badarraysub (const char *s)
 {
   report_error ("%s: %s", s, _(bash_badsub_errmsg));
 }
 #endif
 
 void
-err_unboundvar (s)
-     const char *s;
+err_unboundvar (const char *s)
 {
   report_error (_("%s: unbound variable"), s);
 }
 
 void
-err_readonly (s)
-     const char *s;
+err_readonly (const char *s)
 {
   report_error (_("%s: readonly variable"), s);
 }

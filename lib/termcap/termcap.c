@@ -111,15 +111,14 @@ int bufsize = 128;
 
 #ifndef emacs
 static void
-memory_out ()
+memory_out (void)
 {
   write (2, "virtual memory exhausted\n", 25);
   exit (1);
 }
 
 static char *
-xmalloc (size)
-     unsigned size;
+xmalloc (unsigned size)
 {
   register char *tem = malloc (size);
 
@@ -129,9 +128,7 @@ xmalloc (size)
 }
 
 static char *
-xrealloc (ptr, size)
-     char *ptr;
-     unsigned size;
+xrealloc (char *ptr, unsigned size)
 {
   register char *tem = realloc (ptr, size);
 
@@ -154,8 +151,7 @@ static char *tgetst1 ();
    0 if not found.  */
 
 static char *
-find_capability (bp, cap)
-     register char *bp, *cap;
+find_capability (register char *bp, register char *cap)
 {
   for (; *bp; bp++)
     if (bp[0] == ':'
@@ -167,8 +163,7 @@ find_capability (bp, cap)
 
 __private_extern__
 int
-tgetnum (cap)
-     char *cap;
+tgetnum (char *cap)
 {
   register char *ptr = find_capability (term_entry, cap);
   if (!ptr || ptr[-1] != '#')
@@ -178,8 +173,7 @@ tgetnum (cap)
 
 __private_extern__
 int
-tgetflag (cap)
-     char *cap;
+tgetflag (char *cap)
 {
   register char *ptr = find_capability (term_entry, cap);
   return ptr && ptr[-1] == ':';
@@ -192,9 +186,7 @@ tgetflag (cap)
 
 __private_extern__
 char *
-tgetstr (cap, area)
-     char *cap;
-     char **area;
+tgetstr (char *cap, char **area)
 {
   register char *ptr = find_capability (term_entry, cap);
   if (!ptr || (ptr[-1] != '=' && ptr[-1] != '~'))
@@ -220,9 +212,7 @@ static char esctab[]
    or NULL if PTR is NULL.  */
 
 static char *
-tgetst1 (ptr, area)
-     char *ptr;
-     char **area;
+tgetst1 (char *ptr, char **area)
 {
   register char *p, *r;
   register int c;
@@ -313,10 +303,7 @@ static int speeds[] =
 
 __private_extern__
 int
-tputs (str, nlines, outfun)
-     register char *str;
-     int nlines;
-     register int (*outfun) ();
+tputs (register char *str, int nlines, register int (*outfun) ())
 {
   register int padcount = 0;
   register int speed;
@@ -404,8 +391,7 @@ static int name_match ();
 #include <nam.h>
 
 static int
-valid_filename_p (fn)
-     char *fn;
+valid_filename_p (char *fn)
 {
   struct FAB fab = cc$rms_fab;
   struct NAM nam = cc$rms_nam;
@@ -426,8 +412,7 @@ valid_filename_p (fn)
 
 #ifdef MSDOS /* MW, May 1993 */
 static int
-valid_filename_p (fn)
-     char *fn;
+valid_filename_p (char *fn)
 {
   return *fn == '\\' || *fn == '/' ||
     (*fn >= 'A' && *fn <= 'z' && fn[1] == ':');
@@ -451,8 +436,7 @@ valid_filename_p (fn)
 
 __private_extern__
 int
-tgetent (bp, name)
-     char *bp, *name;
+tgetent (char *bp, char *name)
 {
   register char *termcap_name;
   register int fd;
@@ -618,10 +602,7 @@ tgetent (bp, name)
    or 0 if no entry is found in the file.  */
 
 static int
-scan_file (str, fd, bufp)
-     char *str;
-     int fd;
-     register struct buffer *bufp;
+scan_file (char *str, int fd, register struct buffer *bufp)
 {
   register char *end;
 
@@ -658,8 +639,7 @@ scan_file (str, fd, bufp)
    by termcap entry LINE.  */
 
 static int
-name_match (line, name)
-     char *line, *name;
+name_match (char *line, char *name)
 {
   register char *tem;
 
@@ -674,8 +654,7 @@ name_match (line, name)
 }
 
 static int
-compare_contin (str1, str2)
-     register char *str1, *str2;
+compare_contin (register char *str1, register char *str2)
 {
   register int c1, c2;
   while (1)
@@ -715,10 +694,7 @@ compare_contin (str1, str2)
    thing as one line.  The caller decides when a line is continued.  */
 
 static char *
-gobble_line (fd, bufp, append_end)
-     int fd;
-     register struct buffer *bufp;
-     char *append_end;
+gobble_line (int fd, register struct buffer *bufp, char *append_end)
 {
   register char *end;
   register int nread;
@@ -770,9 +746,8 @@ gobble_line (fd, bufp, append_end)
 
 #include <stdio.h>
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   char *term;
   char *buf;
@@ -796,8 +771,8 @@ main (argc, argv)
   printf ("am: %d\n", tgetflag ("am"));
 }
 
-tprint (cap)
-     char *cap;
+void
+tprint (char *cap)
 {
   char *x = tgetstr (cap, 0);
   register char *y;

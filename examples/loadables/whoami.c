@@ -29,8 +29,7 @@
 #include "common.h"
 
 int
-whoami_builtin (list)
-     WORD_LIST *list;
+whoami_builtin (WORD_LIST *list)
 {
   int opt;
 

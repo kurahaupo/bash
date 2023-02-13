@@ -25,9 +25,8 @@ extern const char	* const sys_siglist[];
 
 typedef void	sighandler();
 
-main(argc, argv)
-int	argc;
-char	**argv;
+int
+main(int argc, char **argv)
 {
 	register int	i;
 	sighandler	*h;

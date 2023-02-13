@@ -31,8 +31,7 @@
 extern char *ttyname ();
 
 int
-tty_builtin (list)
-     WORD_LIST *list;
+tty_builtin (WORD_LIST *list)
 {
   int opt, sflag;
   char *t;

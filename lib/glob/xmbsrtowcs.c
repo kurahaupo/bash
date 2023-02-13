@@ -47,7 +47,7 @@ extern int errno;
 #endif
 
 #if ! HAVE_STRCHRNUL
-extern char *strchrnul PARAMS((const char *, int));
+extern char *strchrnul (const char *, int);
 #endif
 
 /* On some locales (ex. ja_JP.sjis), mbsrtowc doesn't convert 0x5c to U<0x5c>.
@@ -57,11 +57,7 @@ static mbstate_t local_state;
 static int local_state_use = 0;
 
 size_t
-xmbsrtowcs (dest, src, len, pstate)
-    wchar_t *dest;
-    const char **src;
-    size_t len;
-    mbstate_t *pstate;
+xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 {
   mbstate_t *ps;
   size_t mblength, wclength, n;
@@ -146,9 +142,8 @@ xmbsrtowcs (dest, src, len, pstate)
    not required and mbsnrtowcs is available. */
 
 static size_t
-xdupmbstowcs2 (destp, src)
-    wchar_t **destp;	/* Store the pointer to the wide character string */
-    const char *src;	/* Multibyte character string */
+xdupmbstowcs2 (wchar_t **destp,	/* Store the pointer to the wide character string */
+               const char *src)	/* Multibyte character string */
 {
   const char *p;	/* Conversion start position of src */
   wchar_t *wsbuf;	/* Buffer for wide characters. */
@@ -270,10 +265,9 @@ xdupmbstowcs2 (destp, src)
    of DESTP and INDICESP are NULL. */
 
 size_t
-xdupmbstowcs (destp, indicesp, src)
-    wchar_t **destp;	/* Store the pointer to the wide character string */
-    char ***indicesp;	/* Store the pointer to the pointer array. */
-    const char *src;	/* Multibyte character string */
+xdupmbstowcs (wchar_t **destp,	/* Store the pointer to the wide character string */
+              char ***indicesp,	/* Store the pointer to the pointer array. */
+              const char *src)	/* Multibyte character string */
 {
   const char *p;	/* Conversion start position of src */
   wchar_t wc;		/* Created wide character by conversion */

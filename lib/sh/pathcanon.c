@@ -46,8 +46,7 @@ extern int errno;
 #include <sys/cygwin.h>
 
 static int
-_is_cygdrive (path)
-     char *path;
+_is_cygdrive (char *path)
 {
   static char user[MAXPATHLEN];
   static char system[MAXPATHLEN];
@@ -72,8 +71,7 @@ _is_cygdrive (path)
 
 /* Return 1 if PATH corresponds to a directory.  A function for debugging. */
 static int
-_path_isdir (path)
-     char *path;
+_path_isdir (char *path)
 {
   int l;
   struct stat sb;
@@ -101,9 +99,7 @@ _path_isdir (path)
 #define DOUBLE_SLASH(p)	((p[0] == '/') && (p[1] == '/') && p[2] != '/')
 
 char *
-sh_canonpath (path, flags)
-     char *path;
-     int flags;
+sh_canonpath (char *path, int flags)
 {
   char stub_char;
   char *result, *p, *q, *base, *dotdot;

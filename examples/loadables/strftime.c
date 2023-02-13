@@ -37,8 +37,7 @@
 #include "bashgetopt.h"
 
 int
-strftime_builtin (list)
-     WORD_LIST *list;
+strftime_builtin (WORD_LIST *list)
 {
   char *format, *tbuf;
   size_t tbsize, tsize;

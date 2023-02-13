@@ -49,8 +49,7 @@ static int make_path ();
 static int original_umask;
 
 int
-mkdir_builtin (list)
-     WORD_LIST *list;
+mkdir_builtin (WORD_LIST *list)
 {
   int opt, pflag, mflag, omode, rval, nmode, parent_mode;
   char *mode;
@@ -134,10 +133,7 @@ mkdir_builtin (list)
    this changes the process's umask; make sure that all paths leading to a
    return reset it to ORIGINAL_UMASK */
 static int
-make_path (path, user_mode, nmode, parent_mode)
-     char *path;
-     int user_mode;
-     int nmode, parent_mode;
+make_path (char *path, int user_mode, int nmode, int parent_mode)
 {
   int oumask;
   struct stat sb;

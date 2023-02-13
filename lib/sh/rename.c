@@ -39,8 +39,7 @@ extern int errno;
 #endif
 
 int
-rename (from, to)
-     const char *from, *to;
+rename (const char *from, const char *to)
 {
   struct stat fb, tb;
 

@@ -114,8 +114,7 @@ rm_file(const char *fname)
 }
 
 int
-rm_builtin (list)
-     WORD_LIST *list;
+rm_builtin (WORD_LIST *list)
 {
   const char *name;
   WORD_LIST *l;

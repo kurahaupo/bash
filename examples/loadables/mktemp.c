@@ -32,8 +32,7 @@
 #define DEFAULT_PREFIX	"shtmp"
 
 int
-mktemp_builtin (list)
-     WORD_LIST *list;
+mktemp_builtin (WORD_LIST *list)
 {
   WORD_LIST *l;
   int rval, opt, fd, mflags, base_mflags;

@@ -26,15 +26,13 @@
 #include "common.h"
 
 int
-true_builtin (list)
-     WORD_LIST *list;
+true_builtin (WORD_LIST *list)
 {
   return EXECUTION_SUCCESS;
 }
 
 int
-false_builtin (list)
-     WORD_LIST *list;
+false_builtin (WORD_LIST *list)
 {
   return EXECUTION_FAILURE;
 }

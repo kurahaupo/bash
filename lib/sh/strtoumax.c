@@ -45,14 +45,14 @@
 "this configure-time declaration test was not run"
 #endif
 #if !HAVE_DECL_STRTOUL
-extern unsigned long strtoul PARAMS((const char *, char **, int));
+extern unsigned long strtoul(const char *, char **, int);
 #endif
 
 #ifndef HAVE_DECL_STRTOULL
 "this configure-time declaration test was not run"
 #endif
 #if !HAVE_DECL_STRTOULL && HAVE_UNSIGNED_LONG_LONG_INT
-extern unsigned long long strtoull PARAMS((const char *, char **, int));
+extern unsigned long long strtoull(const char *, char **, int);
 #endif
 
 #ifdef strtoumax
@@ -60,10 +60,7 @@ extern unsigned long long strtoull PARAMS((const char *, char **, int));
 #endif
 
 uintmax_t
-strtoumax (ptr, endptr, base)
-     const char *ptr;
-     char **endptr;
-     int base;
+strtoumax (const char *ptr, char **endptr, int base)
 {
 #if HAVE_UNSIGNED_LONG_LONG_INT
   verify (size_is_that_of_unsigned_long_or_unsigned_long_long,
@@ -82,7 +79,7 @@ strtoumax (ptr, endptr, base)
 #ifdef TESTING
 # include <stdio.h>
 int
-main ()
+main (void)
 {
   char *p, *endptr;
   uintmax_t x;

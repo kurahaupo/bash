@@ -34,9 +34,7 @@
 void strprint();
 
 int
-main(argc, argv)
-int	argc;
-char	**argv;
+main(int argc, char **argv)
 {
 	register int	i;
 
@@ -49,8 +47,7 @@ char	**argv;
 }
 
 void
-strprint(str)
-char	*str;
+strprint(char *str)
 {
 	register unsigned char *s;
 

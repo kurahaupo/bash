@@ -28,8 +28,7 @@
 #include <xmalloc.h>
 
 wchar_t *
-wcsdup (ws)
-     const wchar_t *ws;
+wcsdup (const wchar_t *ws)
 {
   wchar_t *ret;
   size_t len;

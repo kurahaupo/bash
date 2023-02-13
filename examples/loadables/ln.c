@@ -42,7 +42,7 @@
 extern int errno;
 #endif
 
-typedef int unix_link_syscall_t PARAMS((const char *, const char *));
+typedef int unix_link_syscall_t (const char *, const char *);
 
 #define LN_SYMLINK 0x01
 #define LN_UNLINK  0x02
@@ -52,8 +52,7 @@ static unix_link_syscall_t *linkfn;
 static int dolink ();
 
 int
-ln_builtin (list)
-     WORD_LIST *list;
+ln_builtin (WORD_LIST *list)
 {
   int rval, opt, flags;
   WORD_LIST *l;
@@ -125,8 +124,7 @@ ln_builtin (list)
 }
 
 static char *
-mkdirpath (dir, file)
-     char *dir, *file;
+mkdirpath (char *dir, char *file)
 {
   int dlen, flen;
   char *ret;
@@ -152,9 +150,7 @@ mkdirpath (dir, file)
 #endif
 
 static int
-dolink (src, dst, flags)
-     char *src, *dst;
-     int flags;
+dolink (char *src, char *dst, int flags)
 {
   struct stat ssb, dsb;
   int exists;

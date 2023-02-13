@@ -47,8 +47,7 @@ extern char **environ;
 static char *last_tempenv_value = (char *)NULL;
 
 char *
-getenv (name)
-     const char *name;
+getenv (const char *name)
 {
   SHELL_VAR *var;
 
@@ -90,8 +89,7 @@ getenv (name)
 
 /* Some versions of Unix use _getenv instead. */
 char *
-_getenv (name)
-     const char *name;
+_getenv (const char *name)
 {
   return (getenv (name));
 }
@@ -154,10 +152,7 @@ _putenv (name)
 #endif
 
 int
-setenv (name, value, rewrite)
-     const char *name;
-     const char *value;
-     int rewrite;
+setenv (const char *name, const char *value, int rewrite)
 {
   SHELL_VAR *var;
   char *v;
@@ -188,10 +183,7 @@ setenv (name, value, rewrite)
 
 #if 0
 int
-_setenv (name, value, rewrite)
-     const char *name;
-     const char *value;
-     int rewrite;
+_setenv (const char *name, const char *value, int rewrite)
 {
   return setenv (name, value, rewrite);
 }
@@ -208,8 +200,7 @@ _setenv (name, value, rewrite)
 #endif
 
 UNSETENV_RETTYPE
-unsetenv (name)
-     const char *name;
+unsetenv (const char *name)
 {
   if (name == 0 || *name == '\0' || strchr (name, '=') != 0)
     {

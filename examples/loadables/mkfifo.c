@@ -47,8 +47,7 @@ extern int parse_symbolic_mode ();
 static int original_umask;
 
 int
-mkfifo_builtin (list)
-     WORD_LIST *list;
+mkfifo_builtin (WORD_LIST *list)
 {
   int opt, mflag, omode, rval, nmode, basemode;
   char *mode;
