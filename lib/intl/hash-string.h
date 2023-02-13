@@ -32,3 +32,4 @@
    [see Aho/Sethi/Ullman, COMPILERS: Principles, Techniques and Tools,
    1986, 1987 Bell Telephone Laboratories, Inc.]  */
 extern unsigned long int __hash_string (const char *str_param);
+

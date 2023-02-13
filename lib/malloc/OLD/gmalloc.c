@@ -302,8 +302,7 @@ static size_t tnegsbrk;
 
 /* Aligned allocation.  */
 static genptr_t
-align (size)
-     size_t size;
+align (size_t size)
 {
   genptr_t result;
   unsigned long int adj;
@@ -326,9 +325,7 @@ align (size)
    Return the address of the space we got.
    If we cannot get space at END, fail and return -1.  */
 static genptr_t
-get_contiguous_space (size, position)
-     ptrdiff_t size;
-     genptr_t position;
+get_contiguous_space (ptrdiff_t size, genptr_t position)
 {
   genptr_t before;
   genptr_t after;
@@ -358,7 +355,7 @@ get_contiguous_space (size, position)
    been set to describe a new info table.  Set up the table
    to describe itself and account for it in the statistics.  */
 inline static void
-register_heapinfo ()
+register_heapinfo (void)
 {
   size_t block, blocks;
 
@@ -379,7 +376,7 @@ register_heapinfo ()
 
 /* Set everything up and remember that we have.  */
 static int
-malloc_initialize ()
+malloc_initialize (void)
 {
   if (malloc_initialized)
     return 0;
@@ -405,8 +402,7 @@ malloc_initialize ()
    and return the start of data space, or NULL on errors.
    If INCREMENT is negative, shrink data space.  */
 static genptr_t
-default_morecore (increment)
-     ptrdiff_t increment;
+default_morecore (ptrdiff_t increment)
 {
   genptr_t result;
 
@@ -428,8 +424,7 @@ static int morecore_recursing;
 /* Get neatly aligned memory, initializing or
    growing the heap info table as necessary. */
 static genptr_t
-morecore (size)
-     size_t size;
+morecore (size_t size)
 {
   genptr_t result;
   malloc_info *newinfo, *oldinfo;
@@ -534,8 +529,7 @@ morecore (size)
 
 /* Allocate memory from the heap.  */
 static genptr_t
-imalloc (size)
-     size_t size;
+imalloc (size_t size)
 {
   genptr_t result;
   size_t block, blocks, lastblocks, start;
@@ -726,8 +720,7 @@ imalloc (size)
 }
 
 genptr_t
-malloc (size)
-     size_t size;
+malloc (size_t size)
 {
 #ifdef RCHECK
   struct hdr *hdr;
@@ -757,8 +750,7 @@ malloc (size)
 
 /* Return memory to the heap. */
 static void
-ifree (ptr)
-     genptr_t ptr;
+ifree (genptr_t ptr)
 {
   int type;
   size_t block, blocks;
@@ -994,8 +986,7 @@ ifree (ptr)
 
 /* Return memory to the heap.  */
 void
-free (ptr)
-     genptr_t ptr;
+free (genptr_t ptr)
 {
 #ifdef RCHECK
   struct hdr *hdr;
@@ -1026,10 +1017,7 @@ free (ptr)
 /* Like bcopy except never gets confused by overlap.  */
 
 static void
-malloc_safe_bcopy (afrom, ato, size)
-     genptr_t afrom;
-     genptr_t ato;
-     size_t size;
+malloc_safe_bcopy (genptr_t afrom, genptr_t ato, size_t size)
 {
   char *from, *to;
 
@@ -1091,9 +1079,7 @@ malloc_safe_bcopy (afrom, ato, size)
    new region.  This module has incestuous knowledge of the
    internals of both free and malloc. */
 static genptr_t
-irealloc (ptr, size)
-     genptr_t ptr;
-     size_t size;
+irealloc (genptr_t ptr, size_t size)
 {
   genptr_t result;
   int type;
@@ -1204,9 +1190,7 @@ irealloc (ptr, size)
 }
 
 genptr_t
-realloc (ptr, size)
-     genptr_t ptr;
-     size_t size;
+realloc (genptr_t ptr, size_t size)
 {
 #ifdef RCHECK
   struct hdr *hdr;
@@ -1243,9 +1227,7 @@ realloc (ptr, size)
 /* Allocate an array of NMEMB elements each SIZE bytes long.
    The entire array is initialized to zeros.  */
 genptr_t
-calloc (nmemb, size)
-     register size_t nmemb;
-     register size_t size;
+calloc (size_t nmemb, size_t size)
 {
   register genptr_t result;
 
@@ -1258,16 +1240,13 @@ calloc (nmemb, size)
 
 /* Define the `cfree' alias for `free'.  */
 void
-cfree (ptr)
-     genptr_t ptr;
+cfree (genptr_t ptr)
 {
   free (ptr);
 }
 
 genptr_t
-memalign (alignment, size)
-     size_t alignment;
-     size_t size;
+memalign (size_t alignment, size_t size)
 {
   genptr_t result;
   unsigned long int adj, lastadj;
@@ -1331,29 +1310,25 @@ memalign (alignment, size)
    and _realloc.  Make them use the GNU functions.  */
 
 genptr_t
-_malloc (size)
-     size_t size;
+_malloc (size_t size)
 {
   return malloc (size);
 }
 
 void
-_free (ptr)
-     genptr_t ptr;
+_free (genptr_t ptr)
 {
   free (ptr);
 }
 
 genptr_t
-_realloc (ptr, size)
-     genptr_t ptr;
-     size_t size;
+_realloc (genptr_t ptr, size_t size)
 {
   return realloc (ptr, size);
 }
 
 struct mstats
-mstats ()
+mstats (void)
 {
   struct mstats result;
 
@@ -1377,10 +1352,7 @@ mstats ()
 /* Standard debugging hooks for `malloc'. */
 
 static void
-zmemset (ptr, val, size)
-     genptr_t ptr;
-     int val;
-     size_t size;
+zmemset (genptr_t ptr, int val, size_t size)
 {
   char *cp = ptr;
 
@@ -1389,8 +1361,7 @@ zmemset (ptr, val, size)
 }
 
 static enum mcheck_status
-checkhdr (hdr)
-     const struct hdr *hdr;
+checkhdr (const struct hdr *hdr)
 {
   enum mcheck_status status;
 
@@ -1415,8 +1386,7 @@ checkhdr (hdr)
 }
 
 #ifndef botch
-botch (msg)
-     char *msg;
+botch (char *msg)
 {
   fprintf (stderr, "mcheck: %s\n", msg);
   fflush (stderr);
@@ -1425,8 +1395,7 @@ botch (msg)
 #endif
 
 static void
-mabort (status)
-     enum mcheck_status status;
+mabort (enum mcheck_status status)
 {
   const char *msg;
 
@@ -1453,8 +1422,7 @@ mabort (status)
 }
 
 enum mcheck_status
-mprobe (ptr)
-     genptr_t ptr;
+mprobe (genptr_t ptr)
 {
   return checkhdr ((struct hdr *)ptr);
 }
@@ -1464,8 +1432,7 @@ mprobe (ptr)
 #endif
 
 void
-print_malloc_stats (s)
-     char *s;
+print_malloc_stats (char *s)
 {
   struct mstats ms;
 

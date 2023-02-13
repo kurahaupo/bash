@@ -703,7 +703,7 @@ uw_maybe_set_sigchld_trap (void *command_string)
 }
 
 /* Temporarily set the SIGCHLD trap string to IMPOSSIBLE_TRAP_HANDLER.  Used
-   as a sentinel in run_sigchld_trap and maybe_set_sigchld_trap to see whether
+   as a sentinel in run_sigchld_trap and uw_maybe_set_sigchld_trap to see whether
    or not a SIGCHLD trap handler reset SIGCHLD disposition to the default. */
 void
 set_impossible_sigchld_trap (void)

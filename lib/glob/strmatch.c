@@ -50,9 +50,7 @@ wcsmatch (wchar_t *wpattern, wchar_t *wstring, int flags)
 #endif
 
 #ifdef TEST
-main (c, v)
-     int c;
-     char **v;
+main (int c, char **v)
 {
   char *string, *pat;
 

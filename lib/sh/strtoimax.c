@@ -79,7 +79,7 @@ strtoimax (const char *ptr, char **endptr, int base)
 #ifdef TESTING
 # include <stdio.h>
 int
-main ()
+main (int argc, char **argv)
 {
   char *p, *endptr;
   intmax_t x;

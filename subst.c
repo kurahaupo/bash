@@ -5479,7 +5479,7 @@ match_upattern (char *string, char *pat, int mtype, char **sp, char **ep)
    character version. */
 static int
 match_wpattern (wchar_t *wstring, char **indices, size_t wstrlen, wchar_t *wpat,
-		int mtype, char **sp, char **ep)
+                int mtype, char **sp, char **ep)
 {
   wchar_t wc, *wp, *nwpat, *wp1;
   size_t len;
@@ -5770,7 +5770,8 @@ parameter_list_remove_pattern (int itype, char *pattern, int patspec, int quoted
 #if defined (ARRAY_VARS)
 /* STARSUB is so we can figure out how it's indexed */
 static char *
-array_remove_pattern (SHELL_VAR *var, char *pattern, int patspec, int starsub, int quoted)
+array_remove_pattern (SHELL_VAR *var, char *pattern, int patspec, int starsub,
+                      int quoted)
 {
   ARRAY *a;
   HASH_TABLE *h;
@@ -5798,8 +5799,8 @@ array_remove_pattern (SHELL_VAR *var, char *pattern, int patspec, int starsub, i
 
 static char *
 parameter_brace_remove_pattern (char *varname, char *value,
-				array_eltstate_t *estatep, char *patstr,
-				int rtype, int quoted, int flags)
+                                array_eltstate_t *estatep, char *patstr,
+                                int rtype, int quoted, int flags)
 {
   int vtype, patspec, starsub;
   char *temp1, *val, *pattern, *oname;
@@ -7642,7 +7643,8 @@ chk_atstar (const char *name, int quoted, int pflags, int *quoted_dollar_atp, in
    the shell, e.g., "@", "$", "*", etc.  QUOTED, if non-zero, means that
    NAME was found inside of a double-quoted expression. */
 static WORD_DESC *
-parameter_brace_expand_word (char *name, int var_is_special, int quoted, int pflags, array_eltstate_t *estatep)
+parameter_brace_expand_word (char *name, int var_is_special, int quoted,
+                             int pflags, array_eltstate_t *estatep)
 {
   WORD_DESC *ret;
   char *temp, *tt;
@@ -7862,7 +7864,9 @@ parameter_brace_find_indir (char *name, int var_is_special, int quoted, int find
 /* Expand an indirect reference to a variable: ${!NAME} expands to the
    value of the variable whose name is the value of NAME. */
 static WORD_DESC *
-parameter_brace_expand_indir (char *name, int var_is_special, int quoted, int pflags, int *quoted_dollar_atp, int *contains_dollar_at)
+parameter_brace_expand_indir (char *name, int var_is_special, int quoted,
+                              int pflags, int *quoted_dollar_atp,
+                              int *contains_dollar_at)
 {
   char *t;
   WORD_DESC *w;
@@ -7945,9 +7949,8 @@ parameter_brace_expand_indir (char *name, int var_is_special, int quoted, int pf
    "-", "+", or "=".  QUOTED is true if the entire brace expression occurs
    between double quotes. */
 static WORD_DESC *
-parameter_brace_expand_rhs (char *name, char *value,
-			    int op, int quoted, int pflags,
-			    int *qdollaratp, int *hasdollarat)
+parameter_brace_expand_rhs (char *name, char *value, int op, int quoted,
+                            int pflags, int *qdollaratp, int *hasdollarat)
 {
   WORD_DESC *w;
   WORD_LIST *l, *tl;
@@ -8375,7 +8378,7 @@ skiparith (char *substr, int delim)
    with an invalid expression, or -1 if the values were out of range. */
 static int
 verify_substring_values (SHELL_VAR *v, char *value, char *substr, int vtype,
-			 intmax_t *e1p, intmax_t *e2p)
+                         intmax_t *e1p, intmax_t *e2p)
 {
   char *t, *temp1, *temp2;
   arrayind_t len;
@@ -8508,8 +8511,8 @@ verify_substring_values (SHELL_VAR *v, char *value, char *substr, int vtype,
    characters in the value are quoted with CTLESC and takes appropriate
    steps.  For convenience, *VALP is set to the dequoted VALUE. */
 static int
-get_var_and_type (char *varname, char *value, array_eltstate_t *estatep, int quoted, int flags,
-		  SHELL_VAR **varp, char **valp)
+get_var_and_type (char *varname, char *value, array_eltstate_t *estatep,
+                  int quoted, int flags, SHELL_VAR **varp, char **valp)
 {
   int vtype, want_indir;
   char *temp, *vname;
@@ -8903,7 +8906,7 @@ valid_parameter_transform (const char *xform)
 
 static char *
 parameter_brace_transform (char *varname, char *value, array_eltstate_t *estatep,
-			   char *xform, int rtype, int quoted, int pflags, int flags)
+                           char *xform, int rtype, int quoted, int pflags, int flags)
 {
   int vtype, xc, starsub;
   char *temp1, *val, *oname;
@@ -9030,7 +9033,7 @@ mb_substring (const char *string, int s, int e)
 
 static char *
 parameter_brace_substring (char *varname, char *value, array_eltstate_t *estatep,
-			   char *substr, int quoted, int pflags, int flags)
+                           char *substr, int quoted, int pflags, int flags)
 {
   intmax_t e1, e2;
   int vtype, r, starsub;
@@ -9342,7 +9345,7 @@ pos_params_pat_subst (char *string, char *pat, char *rep, int mflags)
    the type of quoting currently in effect. */
 static char *
 parameter_brace_patsub (char *varname, char *value, array_eltstate_t *estatep,
-			char *patsub, int quoted, int pflags, int flags)
+                        char *patsub, int quoted, int pflags, int flags)
 {
   int vtype, mflags, starsub, delim;
   char *val, *temp, *pat, *rep, *p, *lpatsub, *tt, *oname;
@@ -9580,7 +9583,8 @@ pos_params_modcase (char *string, char *pat, int modop, int mflags)
    currently in effect. */
 static char *
 parameter_brace_casemod (char *varname, char *value, array_eltstate_t *estatep,
-			 int modspec, char *patspec, int quoted, int pflags, int flags)
+                         int modspec, char *patspec, int quoted, int pflags,
+                         int flags)
 {
   int vtype, starsub, modop, mflags, x;
   char *val, *temp, *pat, *p, *lpat, *tt, *oname;
@@ -10444,8 +10448,8 @@ bad_substitution:
    possibly calling param_expand recursively. */
 static WORD_DESC *
 param_expand (char *string, size_t *sindex, int quoted,
-	      int *expanded_something, int *contains_dollar_at, int *quoted_dollar_at_p,
-	      int *had_quoted_null_p, int pflags)
+              int *expanded_something, int *contains_dollar_at,
+              int *quoted_dollar_at_p, int *had_quoted_null_p, int pflags)
 {
   char *temp, *temp1, uerror[3], *savecmd;
   size_t zindex, t_index;
@@ -11191,7 +11195,8 @@ invalidate_cached_quoted_dollar_at (void)
 #define WHOLLY_QUOTED    2
 
 static WORD_LIST *
-expand_word_internal (WORD_DESC *word, int quoted, int isexp, int *contains_dollar_at, int *expanded_something)
+expand_word_internal (WORD_DESC *word, int quoted, int isexp,
+                      int *contains_dollar_at, int *expanded_something)
 {
   WORD_LIST *list;
   WORD_DESC *tword;
@@ -12376,10 +12381,10 @@ word_list_split (WORD_LIST *list)
       /* pass W_ARRAYREF through for words that are not split and are
 	 identical to the original word. */
       if (tresult && tresult->next == 0 && t->next == 0 && (t->word->flags & W_ARRAYREF) && STREQ (t->word->word, tresult->word->word))
-	tresult->word->flags |= W_ARRAYREF;
+        tresult->word->flags |= W_ARRAYREF;
 #endif
       if (result == 0)
-        result = e = tresult;
+	result = e = tresult;
       else
 	{
 	  e->next = tresult;
@@ -12680,14 +12685,14 @@ brace_expand_word_list (WORD_LIST *tlist, int eflags)
 /*itrace("brace_expand_word_list: %s: W_NOBRACE", tlist->word->word);*/
 	  PREPEND_LIST (tlist, output_list);
 	  continue;
-        }
+	}
 
       if ((tlist->word->flags & (W_COMPASSIGN|W_ASSIGNARG)) == (W_COMPASSIGN|W_ASSIGNARG))
-        {
+	{
 /*itrace("brace_expand_word_list: %s: W_COMPASSIGN|W_ASSIGNARG", tlist->word->word);*/
 	  PREPEND_LIST (tlist, output_list);
 	  continue;
-        }
+	}
 
       /* Only do brace expansion if the word has a brace character.  If
 	 not, just add the word list element to BRACES and continue.  In

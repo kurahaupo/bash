@@ -1556,9 +1556,8 @@ only_filename:
 
 #if defined (TEST)
 
-main (argc, argv)
-     int argc;
-     char **argv;
+int
+main (int argc, char **argv)
 {
   unsigned int i;
 

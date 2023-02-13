@@ -205,11 +205,10 @@ struct mhead {
   (*(struct mhead **) (sizeof (char *) + (char *) (a)))
 
 #if defined (botch)
-extern void botch ();
+extern void botch (const char *s);
 #else
 static void
-botch (s)
-     char *s;
+botch (const char *s)
 {
   fprintf (stderr, "\r\nmalloc: assertion botched: %s\r\n", s);
   (void)fflush (stderr);
@@ -265,8 +264,7 @@ static int pagebucket;	/* bucket for requests a page in size */
    can find two adjacent free blocks.  nextf[NU -1] is assumed to not
    be busy; the caller (morecore()) checks for this. */
 static void
-bcoalesce (nu)
-     register int nu;
+bcoalesce (int nu)
 {
   register struct mhead *mp, *mp1, *mp2;
   register int nfree, nbuck;
@@ -320,8 +318,7 @@ bcoalesce (nu)
    is assumed to be empty.  Must be called with signals blocked (e.g.,
    by morecore()). */
 static void
-bsplit (nu)
-     register int nu;
+bsplit (int nu)
 {
   register struct mhead *mp;
   int nbuck, nblks;
@@ -378,8 +375,7 @@ bsplit (nu)
 }
 
 static void
-morecore (nu)			/* ask system for more memory */
-     register int nu;		/* size index to get more of  */
+morecore (int nu) /* ask system for more memory; size index to get more of  */
 {
   register struct mhead *mp;
   register int nblks;
@@ -634,8 +630,7 @@ malloc (n)		/* get a block */
 }
 
 void
-free (mem)
-     char *mem;
+free (char *mem)
 {
   register struct mhead *p;
   register char *ap;
@@ -688,9 +683,7 @@ free (mem)
 }
 
 char *
-realloc (mem, n)
-     char *mem;
-     register size_t n;
+realloc (char *mem, size_t n)
 {
   register struct mhead *p;
   register u_bits32_t tocopy;
@@ -747,9 +740,7 @@ realloc (mem, n)
 }
 
 char *
-memalign (alignment, size)
-     unsigned int alignment;
-     size_t size;
+memalign (unsigned int alignment, size_t size)
 {
   register char *ptr;
   register char *aligned;
@@ -776,22 +767,16 @@ memalign (alignment, size)
 #if !defined (HPUX)
 /* This runs into trouble with getpagesize on HPUX, and Multimax machines.
    Patching out seems cleaner than the ugly fix needed.  */
-#if defined (__STDC__)
 void *
-#else
-char *
-#endif
-valloc (size)
-     size_t size;
+valloc (size_t size)
 {
   return memalign (getpagesize (), size);
 }
 #endif /* !HPUX */
 
 #ifndef NO_CALLOC
-char *
-calloc (n, s)
-     size_t n, s;
+void *
+calloc (size_t n, size_t s)
 {
   size_t total;
   char *result;
@@ -804,8 +789,7 @@ calloc (n, s)
 }
 
 void
-cfree (p)
-     char *p;
+cfree (void *p)
 {
   free (p);
 }
@@ -814,8 +798,7 @@ cfree (p)
 #ifdef MALLOC_STATS
 
 struct bucket_stats
-malloc_bucket_stats (size)
-     int size;
+malloc_bucket_stats (int size)
 {
   struct bucket_stats v;
   register struct mhead *p;
@@ -863,8 +846,7 @@ malloc_stats ()
 }
 
 void
-print_malloc_stats (s)
-     char *s;
+print_malloc_stats (char *s)
 {
   register int i;
   int totused, totfree;

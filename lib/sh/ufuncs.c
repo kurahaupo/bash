@@ -158,7 +158,7 @@ static int
 ancientsleep(unsigned int sec, unsigned int usec)
 {
   if (usec >= 500000)	/* round */
-   sec++;
+    sec++;
   return (sleep(sec));
 }
 #endif

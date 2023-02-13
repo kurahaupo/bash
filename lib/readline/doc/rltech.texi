@@ -122,7 +122,7 @@ static char *line_read = (char *)NULL;
 /* Read a string, and return a pointer to it.
    Returns NULL on EOF. */
 char *
-rl_gets ()
+rl_gets (void)
 @{
   /* If the buffer has already been allocated,
      return the memory to the free pool. */
@@ -1515,8 +1515,7 @@ the last character changed.
 @example
 /* Invert the case of the COUNT following characters. */
 int
-invert_case_line (count, key)
-     int count, key;
+invert_case_line (int count, int key)
 @{
   register int start, end, i;
 
@@ -2447,18 +2446,18 @@ history list.
 #include <readline/readline.h>
 #include <readline/history.h>
 
-extern char *xmalloc PARAMS((size_t));
+extern char *xmalloc(size_t);
 
 /* The names of functions that actually do the manipulation. */
-int com_list PARAMS((char *));
-int com_view PARAMS((char *));
-int com_rename PARAMS((char *));
-int com_stat PARAMS((char *));
-int com_pwd PARAMS((char *));
-int com_delete PARAMS((char *));
-int com_help PARAMS((char *));
-int com_cd PARAMS((char *));
-int com_quit PARAMS((char *));
+int com_list(char *);
+int com_view(char *);
+int com_rename(char *);
+int com_stat(char *);
+int com_pwd(char *);
+int com_delete(char *);
+int com_help(char *);
+int com_cd(char *);
+int com_quit(char *);
 
 /* A structure which contains information on the commands this program
    can understand. */

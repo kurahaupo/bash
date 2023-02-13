@@ -1254,7 +1254,8 @@ get_self (SHELL_VAR *self)
 /* A generic dynamic array variable initializer.  Initialize array variable
    NAME with dynamic value function GETFUNC and assignment function SETFUNC. */
 static SHELL_VAR *
-init_dynamic_array_var (char *name, sh_var_value_func_t *getfunc, sh_var_assign_func_t *setfunc, int attrs)
+init_dynamic_array_var (char *name, sh_var_value_func_t *getfunc,
+                        sh_var_assign_func_t *setfunc, int attrs)
 {
   SHELL_VAR *v;
 
@@ -1268,7 +1269,8 @@ init_dynamic_array_var (char *name, sh_var_value_func_t *getfunc, sh_var_assign_
 }
 
 static SHELL_VAR *
-init_dynamic_assoc_var (char *name, sh_var_value_func_t *getfunc, sh_var_assign_func_t *setfunc, int attrs)
+init_dynamic_assoc_var (char *name, sh_var_value_func_t *getfunc,
+                        sh_var_assign_func_t *setfunc, int attrs)
 {
   SHELL_VAR *v;
 
@@ -2492,7 +2494,7 @@ get_variable_value (SHELL_VAR *var)
    doesn't exist.  Don't cons a new string.  This is a potential memory
    leak if the variable is found in the temporary environment, but doesn't
    leak in practice.  Since functions and variables have separate name
-   spaces, returns NULL if var_name is a shell function only. */
+   spaces, returns NULL if name is a shell function only. */
 char *
 get_string_value (const char *name)
 {

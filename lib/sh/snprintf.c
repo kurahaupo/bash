@@ -920,7 +920,7 @@ wchars (struct DATA *p, wint_t wc)
 
 #ifdef FLOATING_POINT
 
-/* Check for [+-]infinity and NaN.  If MODE == 1, we check for Infinity, else
+/* Check for ±Infinity and NaN.  If mode == 1, we check for Infinity, else
    (mode == 2) we check for NaN.  This does the necessary printing.  Returns
    1 if Inf or Nan, 0 if not. */
 static int
@@ -1746,6 +1746,7 @@ xfree(void *x)
 }
 
 /* set of small tests for snprintf() */
+int
 main(int c, char **v)
 {
   char holder[100];

@@ -48,7 +48,7 @@
  #pragma alloca
 #   else
 #    ifndef alloca
-char *alloca ();
+char *alloca (size_t);
 #    endif
 #   endif
 #  endif
@@ -692,7 +692,7 @@ get_sysdep_segment_value (const char *name)
     {
 #if defined _LIBC \
     || ((__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)) \
-        && !defined __UCLIBC__)
+	&& !defined __UCLIBC__)
       /* The 'I' flag, in numeric format directives, replaces ASCII digits
 	 with the 'outdigits' defined in the LC_CTYPE locale facet.  This is
 	 used for Farsi (Persian), some Indic languages, and maybe Arabic.  */
@@ -764,7 +764,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       /* Try to open the addressed file.  */
       fd = open (domain_file->filename, O_RDONLY | O_BINARY);
       if (fd == -1)
-        goto out;
+	goto out;
     }
 #if defined _WIN32 && !defined __CYGWIN__
   else if (domain_file->wfilename != NULL)
@@ -772,7 +772,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       /* Try to open the addressed file.  */
       fd = _wopen (domain_file->wfilename, O_RDONLY | O_BINARY);
       if (fd == -1)
-        goto out;
+	goto out;
     }
 #endif
   else
@@ -829,7 +829,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 	      if (nb == -1 && errno == EINTR)
 		continue;
 #endif
-              free (data);
+	      free (data);
 	      goto out;
 	    }
 	  read_ptr += nb;

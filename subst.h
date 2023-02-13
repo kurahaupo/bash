@@ -143,7 +143,7 @@ extern void word_list_remove_quoted_nulls (WORD_LIST *);
    STRING. */
 extern WORD_LIST *list_string (char *, char *, int);
 
-extern char *ifs_firstchar  (int *);
+extern char *ifs_firstchar (int *);
 extern char *get_word_from_string (char **, char *, char **);
 extern char *strip_trailing_ifs_whitespace (char *, char *, int);
 

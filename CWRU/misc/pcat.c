@@ -20,18 +20,20 @@ static char sccsid[] = "@(#)cat.c	5.2 (Berkeley) 12/6/85";
  * Concatenate files.
  */
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
 
 /* #define OPTSIZE BUFSIZ	/* define this only if not 4.2 BSD or beyond */
 
 int	bflg, eflg, nflg, sflg, tflg, uflg, vflg;
 int	spaced, col, lno, inline, ibsize, obsize;
 
-#include <signal.h>
-
-sigpipe()
+static void
+sigpipe(int signum)
 {
 	write(2, "pcat: caught SIGPIPE\n", 21);
 	exit(1);
@@ -142,8 +144,8 @@ main(int argc, char **argv)
 	exit(retval);
 }
 
-copyopt(f)
-	register FILE *f;
+int
+copyopt(FILE *f)
 {
 	register int c;
 
@@ -189,8 +191,8 @@ top:
 	goto top;
 }
 
-fastcat(fd)
-register int fd;
+int
+fastcat(int fd)
 {
 	register int	buffsize, n, nwritten, offset;
 	register char	*buff;

@@ -220,7 +220,7 @@ sh_getopt_restore_state (char **argv)
 }
 
 sh_getopt_state_t *
-sh_getopt_alloc_istate ()
+sh_getopt_alloc_istate (void)
 {
   sh_getopt_state_t *ret;
 

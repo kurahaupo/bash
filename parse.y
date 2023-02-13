@@ -1554,7 +1554,8 @@ initialize_bash_input (void)
 /* Set the contents of the current bash input stream from
    GET, UNGET, TYPE, NAME, and LOCATION. */
 void
-init_yy_io (sh_cget_func_t *get, sh_cunget_func_t *unget, enum stream_type type, const char *name, INPUT_STREAM location)
+init_yy_io (sh_cget_func_t *get, sh_cunget_func_t *unget,
+            enum stream_type type, const char *name, INPUT_STREAM location)
 {
   bash_input.type = type;
   FREE (bash_input.name);

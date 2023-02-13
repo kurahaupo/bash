@@ -38,9 +38,7 @@ void	sigstat(int);
 void	init_signames(void);
 
 int
-main(argc, argv)
-int	argc;
-char	**argv;
+main(int argc, char **argv)
 {
 	register int	i;
 	char	*t;
@@ -61,8 +59,7 @@ char	**argv;
 }
 
 void
-sigstat(sig)
-int	sig;
+sigstat(int sig)
 {
 	struct sigaction oact;
 	char *signame;
@@ -88,7 +85,7 @@ int	sig;
 }
 
 void
-init_signames()
+init_signames(void)
 {
 	register int i;
 	bzero(signames, sizeof(signames));

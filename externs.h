@@ -157,7 +157,7 @@ extern void wlist_walk (WORD_LIST *, sh_icpfunc_t *);
 extern GENERIC_LIST *list_reverse (GENERIC_LIST *);
 extern int list_length (GENERIC_LIST *);
 extern GENERIC_LIST *list_append (GENERIC_LIST *, GENERIC_LIST *);
-extern GENERIC_LIST *list_emove (GENERIC_LIST **, sh_gcp_func_t *, char *); /* unused */
+extern GENERIC_LIST *list_remove (GENERIC_LIST **, sh_gcp_func_t *, char *);
 
 /* Declarations for functions defined in stringlib.c */
 extern int find_string_in_alist (char *, STRING_INT_ALIST *, int);

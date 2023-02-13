@@ -673,7 +673,7 @@ matched:
    first character after the matching DELIM or NULL if the pattern is
    empty or invalid. */
 /*static*/ CHAR *
-PATSCAN (CHAR *string, CHAR *end, INT delim,  int flags)
+PATSCAN (CHAR *string, CHAR *end, INT delim, int flags)
 {
   int pnest, bnest, skip;
   CHAR *s, c, *bfirst, *t;
