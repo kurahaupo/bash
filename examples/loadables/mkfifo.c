@@ -36,10 +36,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #define ISOCTAL(c)	((c) >= '0' && (c) <= '7')
 
 extern int parse_symbolic_mode (char *, mode_t);

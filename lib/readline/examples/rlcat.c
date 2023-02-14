@@ -49,10 +49,6 @@ extern void exit();
 #  include <locale.h>
 #endif
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if defined (READLINE_LIBRARY)
 #  include "readline.h"
 #  include "history.h"

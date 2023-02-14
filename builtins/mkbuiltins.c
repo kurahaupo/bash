@@ -55,10 +55,6 @@
 
 #define DOCFILE "builtins.texi"
 
-#ifndef errno
-extern int errno;
-#endif
-
 static void *xmalloc (size_t);
 static void *xrealloc (void *, size_t);
 

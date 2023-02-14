@@ -28,10 +28,6 @@
 #include "shell.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 int
 rmdir_builtin (WORD_LIST *list)
 {

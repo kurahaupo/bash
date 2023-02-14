@@ -34,10 +34,6 @@
 #include "shell.h"
 #include "common.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 int
 unlink_builtin (WORD_LIST *list)
 {

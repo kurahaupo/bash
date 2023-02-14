@@ -38,10 +38,6 @@
 #include "builtext.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 int print_builtin (WORD_LIST *);
 static int printargs (WORD_LIST *, FILE *);
 

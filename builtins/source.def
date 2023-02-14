@@ -78,10 +78,6 @@ $END
 #include "bashgetopt.h"
 #include "../trap.h"
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 static void uw_maybe_pop_dollar_vars (void *);
 
 /* If non-zero, `.' uses $PATH to look up the script to be sourced when -p is

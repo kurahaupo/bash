@@ -68,10 +68,6 @@
 /* Return the fd from which we are actually getting input. */
 #define input_tty() (shell_tty != -1) ? shell_tty : fileno (stderr)
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 extern void set_original_signal (int, SigHandler *);
 
 volatile pid_t last_made_pid = NO_PID;

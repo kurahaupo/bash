@@ -53,10 +53,6 @@
 #  include "bashline.h"
 #endif
 
-#ifndef errno
-extern int errno;
-#endif
-
 /* Flags which describe the current handling state of a signal. */
 #define SIG_INHERITED   0x0	/* Value inherited from parent. */
 #define SIG_TRAPPED     0x1	/* Currently trapped. */

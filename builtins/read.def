@@ -109,10 +109,6 @@ $END
 #include "shmbutil.h"
 #include "timer.h"
 
-#if !defined(errno)
-extern int errno;
-#endif
-
 struct ttsave
 {
   int fd;

@@ -1972,9 +1972,6 @@ AC_CACHE_VAL(bash_cv_wcontinued_broken,
 #include <errno.h>
 #include <stdlib.h>
 
-#ifndef errno
-extern int errno;
-#endif
 int
 main()
 {

@@ -68,10 +68,6 @@
 #undef free		/* defined in xmalloc.h */
 #endif
 
-#ifndef errno
-extern int errno;
-#endif
-
 #define whitespace(c) (((c) == ' ') || ((c) == '\t'))
 
 /* Flag values that builtins can have. */

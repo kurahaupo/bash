@@ -30,8 +30,6 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include <errno.h>
-
 #include "filecntl.h"
 #include "../bashansi.h"
 
@@ -54,10 +52,6 @@
 
 #include "common.h"
 #include "builtext.h"
-
-#if !defined (errno)
-extern int errno;
-#endif
 
 #define IS_BUILTIN(s)	(builtin_address_internal(s, 0) != (struct builtin *)NULL)
 

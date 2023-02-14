@@ -96,10 +96,6 @@ $END
 #include "pipesize.h"
 #include <chartypes.h>
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* For some reason, HPUX chose to make these definitions visible only if
    _KERNEL is defined, so we define _KERNEL before including <sys/resource.h>
    and #undef it afterward. */

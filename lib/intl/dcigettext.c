@@ -50,9 +50,6 @@ char *alloca ();
 #endif
 
 #include <errno.h>
-#ifndef errno
-extern int errno;
-#endif
 #ifndef __set_errno
 # define __set_errno(val) errno = (val)
 #endif
@@ -927,7 +924,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	_nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural);
     }
 #endif
-  __set_errno (saved_errno);
+  errno = saved_errno;
   return (plural == 0
 	  ? (char *) msgid1
 	  /* Use the Germanic plural rule.  */

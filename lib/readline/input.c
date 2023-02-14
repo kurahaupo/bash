@@ -59,10 +59,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 /* System-specific feature definitions and include files. */
 #include "rldefs.h"
 #include "rlmbutil.h"

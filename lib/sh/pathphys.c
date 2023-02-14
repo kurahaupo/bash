@@ -42,10 +42,6 @@
 #  define MAXSYMLINKS 32
 #endif
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 extern char *get_working_directory (char *);
 
 static inline ssize_t

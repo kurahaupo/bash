@@ -20,14 +20,8 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#include <errno.h>
-
 #include <shmbutil.h>
 #include <shmbchar.h>
-
-#ifndef errno
-extern int errno;
-#endif
 
 #if IS_BASIC_ASCII
 

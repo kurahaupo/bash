@@ -50,10 +50,6 @@ $PRODUCES cd.c
 #include "common.h"
 #include "bashgetopt.h"
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 extern const char * const bash_getcwd_errstr;
 
 static int bindpwd (int);

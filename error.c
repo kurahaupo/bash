@@ -31,9 +31,6 @@
 #include <stdio.h>
 
 #include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 #include "bashansi.h"
 #include "bashintl.h"

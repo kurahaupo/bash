@@ -50,10 +50,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #if !defined (O_NDELAY) && defined (O_NONBLOCK)
 #  define O_NDELAY O_NONBLOCK	/* Posix style */
 #endif

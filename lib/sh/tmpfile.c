@@ -38,10 +38,6 @@
 
 #include <shell.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if defined (HAVE_GETRANDOM) || defined (HAVE_ARC4RANDOM) || defined (HAVE_GETENTROPY)
 #  define USE_URANDOM32
 #endif

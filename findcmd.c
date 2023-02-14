@@ -47,10 +47,6 @@
 
 #include <glob/strmatch.h>
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* Static functions defined and used in this file. */
 static char *_find_user_command_internal (const char *, int);
 static char *find_user_command_internal (const char *, int);

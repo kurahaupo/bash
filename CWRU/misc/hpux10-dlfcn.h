@@ -42,10 +42,6 @@
 #include <dl.h>
 #include <errno.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_NOW BIND_IMMEDIATE
 #define RTLD_GLOBAL DYNAMIC_PATH

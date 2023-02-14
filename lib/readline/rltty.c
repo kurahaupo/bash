@@ -45,10 +45,6 @@
 #include "readline.h"
 #include "rlprivate.h"
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 int _rl_use_tty_xon_xoff = 1;
 
 rl_vintfunc_t *rl_prep_term_function = rl_prep_terminal;

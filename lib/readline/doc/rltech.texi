@@ -1587,6 +1587,7 @@ It understands the EOF character or "exit" to exit the program.
 
 #include <errno.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include <locale.h>
 

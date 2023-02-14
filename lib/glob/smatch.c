@@ -30,12 +30,6 @@
 #include "shmbutil.h"
 #include "xmalloc.h"
 
-#include <errno.h>
-
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if FNMATCH_EQUIV_FALLBACK
 /* We don't include <fnmatch.h> in order to avoid namespace collisions; the
    internal strmatch still uses the FNM_ constants. */

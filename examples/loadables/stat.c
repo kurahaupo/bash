@@ -42,10 +42,6 @@
 #include "common.h"
 #include "bashgetopt.h"
 
-#ifndef errno
-extern int	errno;
-#endif
-
 #define ST_NAME		0
 #define ST_DEV		1
 #define ST_INO		2

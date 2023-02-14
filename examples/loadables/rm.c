@@ -30,10 +30,6 @@
 #include "common.h"
 #include "bashgetopt.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 static int rm_file(const char *fname);
 
 static int force, recursive;

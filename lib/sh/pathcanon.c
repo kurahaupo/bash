@@ -38,10 +38,6 @@
 
 #include "shell.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if defined (__CYGWIN__)
 #include <sys/cygwin.h>
 

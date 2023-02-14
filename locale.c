@@ -39,10 +39,6 @@
 #include "shell.h"
 #include "input.h"	/* For bash_input */
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if defined (HAVE_LOCALE_CHARSET)
 extern const char *locale_charset (void);
 #endif

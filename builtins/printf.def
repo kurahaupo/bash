@@ -90,10 +90,6 @@ $END
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* We free the buffer used by mklong() if it's `too big'. */
 #define PRETURN(value) \
   do \
@@ -137,6 +133,18 @@ extern int errno;
       return (retval); \
     } \
   while (0)
+
+#if defined (PRI_MACROS_BROKEN)
+#  undef PRIdMAX
+#endif
+
+#if !defined (PRIdMAX)
+#  if HAVE_LONG_LONG
+#    define PRIdMAX	"lld"
+#  else
+#    define PRIdMAX	"ld"
+#  endif
+#endif
 
 #define PC(c) \
   do { \
@@ -394,7 +402,7 @@ printf_builtin (WORD_LIST *list)
 	      for (i = 0; i < l; i++, fmt++)
 	        PC (*fmt);
 	      fmt--;	/* for loop will increment it for us again */
-#else	      
+#else
 	      PC (*fmt);
 #endif
 	      continue;
@@ -469,7 +477,7 @@ printf_builtin (WORD_LIST *list)
 	      longform |= *fmt == 'l';
 	      fmt++;
 	    }
-	    
+
 	  if (*fmt == 0)
 	    {
 	      builtin_error (_("`%s': missing format character"), start);
@@ -703,7 +711,7 @@ printf_builtin (WORD_LIST *list)
 			    builtin_error ("%%Q: %s %s", _("string length"), strerror (ERANGE));
 			    precision = -1;
 			  }
-		      }		    
+		      }
 		    /* Use printstr to get fieldwidth and precision right. */
 		    r = printstr (start, xp, slen, fieldwidth, precision);
 		    /* Let PRETURN print the error message. */
@@ -1040,7 +1048,7 @@ printwidestr (char *fmt, wchar_t *wstring, size_t len, int fieldwidth, int preci
   return ((vflag == 0 && ferror (stdout)) ? -1 : 0);
 }
 #endif
-  
+
 /* Convert STRING by expanding the escape sequences specified by the
    POSIX standard for printf's `%b' format string.  If SAWC is non-null,
    perform the processing appropriate for %b arguments.  In particular,
@@ -1132,7 +1140,7 @@ tescape (char *estart, char *cp, int *lenp, int *sawc)
 	  }
 	break;
 #endif
-	
+
       case '\\':	/* \\ -> \ */
 	*cp = c;
 	break;
@@ -1231,7 +1239,7 @@ bexpand (char *string, size_t len, int *sawc, size_t *lenp)
 	*r++ = mbch[mbind];
 #else
       *r++ = c;
-#endif      
+#endif
     }
 
   *r = '\0';
@@ -1301,7 +1309,7 @@ vbprintf (const char *format, ...)
   if  (strlen (vbuf) != vblen)
     internal_error  ("printf:vbprintf: vblen (%zu) != strlen (vbuf) (%zu)", vblen, strlen (vbuf));
 #endif
-  
+
   return (blen);
 }
 
@@ -1433,7 +1441,7 @@ getuintmax (void)
 
   errno = 0;
   ret = strtoumax (garglist->word->word, &ep, 0);
-  
+
   if (*ep)
     {
       sh_invalidnum (garglist->word->word);

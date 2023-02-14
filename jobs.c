@@ -80,10 +80,6 @@
 # include <readline/readline.h>
 #endif
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #if !defined (HAVE_KILLPG)
 extern int killpg (pid_t, int);
 #endif
