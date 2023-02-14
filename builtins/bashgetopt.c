@@ -26,7 +26,6 @@
 
 #include "../bashansi.h"
 #include <chartypes.h>
-#include <errno.h>
 
 #include "../shell.h"
 #include "common.h"

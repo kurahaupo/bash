@@ -54,10 +54,6 @@
 
 #include <tilde/tilde.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #ifdef __CYGWIN__
 #  include <sys/cygwin.h>
 #endif

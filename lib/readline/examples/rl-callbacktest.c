@@ -23,8 +23,6 @@
 #  include <readline/history.h>
 #endif
 
-extern int errno;
-
 static void cb_linehandler (char *);
 static void signandler (int);
 

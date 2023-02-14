@@ -27,12 +27,7 @@
 #  include <unistd.h>
 #endif
 
-#include <errno.h>
 #include "xmalloc.h"
-
-#if !defined (errno)
-extern int errno;
-#endif
 
 extern ssize_t zread(int, char *, size_t);
 extern ssize_t zreadc(int, char *);

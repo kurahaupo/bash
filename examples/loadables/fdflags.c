@@ -114,10 +114,6 @@ static const struct
 
 #define N_FLAGS		(sizeof (file_flags) / sizeof (file_flags[0]))
 
-#ifndef errno
-extern int errno;
-#endif
-
 /* FIX THIS */
 static int
 getallflags ()

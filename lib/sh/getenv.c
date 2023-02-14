@@ -31,10 +31,6 @@
 #include <errno.h>
 #include <shell.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern char **environ;
 
 /* We supply our own version of getenv () because we want library

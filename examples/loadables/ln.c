@@ -38,10 +38,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 typedef int unix_link_syscall_t (const char *, const char *);
 
 #define LN_SYMLINK 0x01

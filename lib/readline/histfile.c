@@ -100,9 +100,6 @@
 #endif /* !__EMX__ && !__CYGWIN__ */
 
 #include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 #include "history.h"
 #include "histlib.h"

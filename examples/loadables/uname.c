@@ -55,10 +55,6 @@ struct utsname {
 
 #define FLAG_ALL	0x1f
 
-#ifndef errno
-extern int errno;
-#endif
-
 static void uprint();
 
 static int uname_flags;

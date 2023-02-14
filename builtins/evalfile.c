@@ -54,10 +54,6 @@
 
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* Flags for _evalfile() */
 #define FEVAL_ENOENTOK		0x001
 #define FEVAL_BUILTIN		0x002

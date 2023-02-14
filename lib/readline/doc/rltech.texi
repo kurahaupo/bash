@@ -1561,6 +1561,7 @@ It understands the EOF character or "exit" to exit the program.
 #include <signal.h>
 
 #include <stdio.h>
+#include <errno.h>
 
 /* Standard readline include files. */
 #include <readline/readline.h>

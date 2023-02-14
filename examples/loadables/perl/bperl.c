@@ -3,15 +3,9 @@
  */
 #include <config.h>
 
-#include <errno.h>
-
 #include "builtins.h"
 #include "shell.h"
 #include "common.h"
-
-#ifndef errno
-extern int errno;
-#endif
 
 extern char **make_builtin_argv (WORD_LIST *, int *);
 extern char **export_env;

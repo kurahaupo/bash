@@ -54,13 +54,6 @@ char *alloca ();
 #endif
 
 #include <errno.h>
-#ifndef errno
-extern int errno;
-#endif
-#ifndef __set_errno
-# define __set_errno(val) errno = (val)
-#endif
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -548,7 +541,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	  dirname = (char *) alloca (path_max + dirname_len);
 	  ADD_BLOCK (block_list, dirname);
 
-	  __set_errno (0);
+	  errno = 0;
 	  ret = getcwd (dirname, path_max);
 	  if (ret != NULL || errno != ERANGE)
 	    break;
@@ -687,7 +680,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 		  (*foundp)->translation_length = retlen;
 		}
 #endif
-	      __set_errno (saved_errno);
+	      errno = saved_errno;
 
 	      /* Now deal with plural.  */
 	      if (plural)
@@ -717,7 +710,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	_nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural);
     }
 #endif
-  __set_errno (saved_errno);
+  errno = saved_errno;
   return (plural == 0
 	  ? (char *) msgid1
 	  /* Use the Germanic plural rule.  */

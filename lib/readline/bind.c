@@ -48,10 +48,6 @@
 
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #include "posixstat.h"
 
 /* System-specific feature definitions and include files. */

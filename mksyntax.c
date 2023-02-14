@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "bashansi.h"
 #include "chartypes.h"
+
 #include <errno.h>
 
 #ifdef HAVE_UNISTD_H
@@ -36,12 +37,10 @@
 extern int optind;
 extern char *optarg;
 
-#ifndef errno
-extern int errno;
-#endif
-
 #ifndef HAVE_STRERROR
 extern char *strerror();
+#else
+#include <string.h>
 #endif
 
 struct wordflag {
@@ -388,7 +387,7 @@ strerror (int e)
   extern int sys_nerr;
   extern char *sys_errlist[];
 
-  if (e > 0 && e < sys_nerr)
+  if (e > 0 && e < sys_nerr && sys_errlist[e])
     return (sys_errlist[e]);
   else
 #endif /* HAVE_SYS_ERRLIST */

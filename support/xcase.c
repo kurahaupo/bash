@@ -31,10 +31,7 @@
 
 #include "bashansi.h"
 #include <errno.h>
-
-#ifndef errno
-extern int errno;
-#endif
+#include <string.h>
 
 extern int optind;
 

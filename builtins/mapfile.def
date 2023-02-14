@@ -86,10 +86,6 @@ $END
 #include "common.h"
 #include "bashgetopt.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if defined (ARRAY_VARS)
 
 static int run_callback (const char *, unsigned int, const char *);

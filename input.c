@@ -41,10 +41,6 @@
 #include "externs.h"
 #include "trap.h"
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #if defined (EAGAIN)
 #  define X_EAGAIN EAGAIN
 #else

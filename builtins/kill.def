@@ -65,11 +65,6 @@ $END
 #include "../jobs.h"
 #include "common.h"
 
-/* Not all systems declare ERRNO in errno.h... and some systems #define it! */
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 static void kill_error (pid_t, int);
 
 #if !defined (CONTINUE_AFTER_KILL_ERROR)

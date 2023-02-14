@@ -39,7 +39,6 @@
 
 #include <fcntl.h>
 #include <stdio.h>
-#include <errno.h>
 
 #if defined (HAVE_STRING_H)
 #  include <string.h>

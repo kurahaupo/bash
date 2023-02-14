@@ -78,10 +78,6 @@
 
 #undef strchr	/* avoid AIX weirdness */
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if defined (SHELL)
 extern char *get_string_value (const char *);
 #endif

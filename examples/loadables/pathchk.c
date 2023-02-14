@@ -65,10 +65,6 @@
 #include "maxpath.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if !defined (_POSIX_PATH_MAX)
 #  define _POSIX_PATH_MAX 255
 #endif

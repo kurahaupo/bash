@@ -59,7 +59,6 @@ $END
 #if ! defined(_MINIX) && defined (HAVE_SYS_FILE_H)
 #  include <sys/file.h>
 #endif
-#include <errno.h>
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -75,10 +74,6 @@ $END
 #include "common.h"
 #include "bashgetopt.h"
 #include "../trap.h"
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 static void maybe_pop_dollar_vars (void);
 

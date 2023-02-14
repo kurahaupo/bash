@@ -31,10 +31,6 @@
 #include "loadables.h"
 #include "bashintl.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if defined (PRI_MACROS_BROKEN)
 #  undef PRIdMAX
 #endif

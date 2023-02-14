@@ -31,10 +31,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern pid_t dollar_dollar_pid;
 extern int last_command_exit_value;
 

@@ -26,7 +26,6 @@
 
 #include "bashtypes.h"
 
-#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 
@@ -37,10 +36,6 @@
 #include "bashgetopt.h"
 #include "builtext.h"
 #include "common.h"
-
-#if !defined (errno)
-extern int errno;
-#endif
 
 int print_builtin ();
 static int printargs ();

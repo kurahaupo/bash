@@ -72,10 +72,6 @@ $END
 #include <glob/strmatch.h>
 #include <glob/glob.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern const char * const bash_copyright;
 extern const char * const bash_license;
 

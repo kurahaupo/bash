@@ -68,10 +68,6 @@
 #undef free		/* defined in xmalloc.h */
 #endif
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if !defined (__STDC__) && !defined (strcpy)
 extern char *strcpy ();
 #endif /* !__STDC__ && !strcpy */

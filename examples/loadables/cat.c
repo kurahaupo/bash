@@ -28,10 +28,6 @@
 #include "builtins.h"
 #include "shell.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern char *strerror ();
 extern char **make_builtin_argv ();
 

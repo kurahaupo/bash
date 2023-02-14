@@ -50,10 +50,6 @@
 
 #include <typemax.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 #define x_digs  "0123456789abcdef"
 #define X_digs  "0123456789ABCDEF"
 

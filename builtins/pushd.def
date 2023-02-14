@@ -131,8 +131,6 @@ $END
 #include "../bashansi.h"
 #include "../bashintl.h"
 
-#include <errno.h>
-
 #include <tilde/tilde.h>
 
 #include "../shell.h"
@@ -143,10 +141,6 @@ $END
 #ifdef LOADABLE_BUILTIN
 #  include "builtins.h"
 #endif
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 /* The list of remembered directories. */
 static char **pushd_directory_list = (char **)NULL;

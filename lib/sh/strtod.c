@@ -25,9 +25,6 @@
 #ifndef HAVE_STRTOD
 
 #include <errno.h>
-#ifndef errno
-extern int errno;
-#endif
 
 #include <chartypes.h>
 #include <math.h>

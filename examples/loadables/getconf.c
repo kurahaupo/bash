@@ -31,10 +31,6 @@
 #include "loadables.h"
 #include "getconf.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 /* Hack to `encode' values wider than long into a conf_variable */
 #define VAL_LLONG_MIN           -1000
 #define VAL_LLONG_MAX           -1001

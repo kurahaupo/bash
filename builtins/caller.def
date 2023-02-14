@@ -51,8 +51,6 @@ $END
 #  include <unistd.h>
 #endif
 
-#include <errno.h>
-
 #include "../bashintl.h"
 
 #include "../shell.h"
@@ -63,10 +61,6 @@ $END
 #ifdef LOADABLE_BUILTIN
 #  include "builtins.h"
 #endif
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 int
 caller_builtin (list)

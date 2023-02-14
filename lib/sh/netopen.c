@@ -58,10 +58,6 @@
 #include <shell.h>
 #include <xmalloc.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 #if !defined (HAVE_INET_ATON)
 extern int inet_aton(const char *, struct in_addr *);
 #endif

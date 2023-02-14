@@ -60,10 +60,6 @@
 #  include "../bashhist.h"
 #endif
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 extern const char * const bash_getcwd_errstr;
 
 /* Used by some builtins and the mainline code. */

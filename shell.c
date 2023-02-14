@@ -97,10 +97,6 @@ extern int get_tty_state (void);
 extern struct passwd *getpwuid ();
 #endif /* !HAVE_GETPW_DECLS */
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #if defined (NO_MAIN_ENV_ARG)
 extern char **environ;	/* used if no third argument to main() */
 #endif

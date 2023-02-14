@@ -101,10 +101,6 @@ $END
 #  endif
 #endif
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #define PC(c) \
   do { \
     char b[2]; \

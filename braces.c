@@ -51,10 +51,6 @@ typedef char **WORD_LIST;
 #include "shmbutil.h"
 #include "chartypes.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 #define brace_whitespace(c) (!(c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
 
 #define BRACE_SEQ_SPECIFIER	".."

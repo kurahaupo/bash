@@ -47,10 +47,6 @@
 #include "common.h"
 #include "getopt.h"
 
-#ifndef errno
-extern int	errno;
-#endif
-
 extern char	**make_builtin_argv ();
 
 static void	perms();

@@ -29,9 +29,6 @@
 #endif
 
 #include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 #if defined (HAVE_SELECT)
 #  include "posixselect.h"

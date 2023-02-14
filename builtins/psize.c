@@ -35,15 +35,10 @@
 #include "../bashtypes.h"
 #endif
 #include <signal.h>
-#include <errno.h>
 
 #include "../command.h"
 #include "../general.h"
 #include "../sig.h"
-
-#ifndef errno
-extern int errno;
-#endif
 
 int nw;
 

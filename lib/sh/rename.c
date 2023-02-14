@@ -34,10 +34,6 @@
 
 #include <stdc.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 int
 rename (const char *from, const char *to)
 {

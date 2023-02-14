@@ -55,10 +55,6 @@
 
 #define DOCFILE "builtins.texi"
 
-#ifndef errno
-extern int errno;
-#endif
-
 static char *xmalloc (), *xrealloc ();
 
 #if !defined (__STDC__) && !defined (strcpy)

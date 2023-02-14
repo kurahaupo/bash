@@ -36,9 +36,6 @@
 #if HANDLE_MULTIBYTE
 
 #include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif
 
 #define WSBUF_INC 32
 
