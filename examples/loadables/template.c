@@ -9,15 +9,8 @@
 #endif
 #include "bashansi.h"
 #include <stdio.h>
-#include <errno.h>
 
 #include "loadables.h"
-
-#if !defined (errno)
-extern int errno;
-#endif
-
-extern char *strerror (int);
 
 int
 template_builtin (WORD_LIST *list)

@@ -31,7 +31,6 @@
 #  include <pwd.h>
 #endif
 #include <signal.h>
-#include <errno.h>
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -72,10 +71,6 @@
 
 #include <tilde/tilde.h>
 #include <glob/strmatch.h>
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 /* The size that strings change by. */
 #define DEFAULT_INITIAL_ARRAY_SIZE 112

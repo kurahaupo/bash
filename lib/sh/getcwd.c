@@ -56,10 +56,6 @@
 
 #include <xmalloc.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #if !defined (HAVE_LSTAT)
 #  define lstat stat
 #endif

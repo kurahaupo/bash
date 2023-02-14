@@ -21,9 +21,8 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <errno.h>
-
-extern char *strerror();
 
 extern int sys_nerr;
 

@@ -52,11 +52,6 @@
 
 #include <stdio.h>
 
-#include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #if defined (HAVE_PWD_H)
 #include <pwd.h>
 #endif

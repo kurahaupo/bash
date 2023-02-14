@@ -38,11 +38,6 @@
 
 #include "timer.h"
 
-#include <errno.h>
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #ifndef FREE
 #define FREE(s)  do { if (s) free (s); } while (0)
 #endif

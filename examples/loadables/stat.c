@@ -42,10 +42,6 @@
 #include "common.h"
 #include "bashgetopt.h"
 
-#ifndef errno
-extern int	errno;
-#endif
-
 #if defined (ARRAY_VARS)
 
 #define ST_NAME		0

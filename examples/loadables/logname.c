@@ -31,10 +31,6 @@
 #include "shell.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 int
 logname_builtin (WORD_LIST *list)
 {

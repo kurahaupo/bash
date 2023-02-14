@@ -29,10 +29,6 @@
 #include <errno.h>
 #include <unistd.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern int optind;
 
 #define LOWER	1

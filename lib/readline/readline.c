@@ -49,11 +49,6 @@
 
 #include <stdio.h>
 #include "posixjmp.h"
-#include <errno.h>
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 /* System-specific feature definitions and include files. */
 #include "rldefs.h"

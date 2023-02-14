@@ -31,8 +31,16 @@
 #include "loadables.h"
 #include "bashintl.h"
 
-#ifndef errno
-extern int errno;
+#if defined (PRI_MACROS_BROKEN)
+#  undef PRIdMAX
+#endif
+
+#if !defined (PRIdMAX)
+#  if HAVE_LONG_LONG
+#    define PRIdMAX     "lld"
+#  else
+#    define PRIdMAX     "ld"
+#  endif
 #endif
 
 #if defined (HAVE_LONG_DOUBLE) && HAVE_DECL_STRTOLD && !defined(STRTOLD_BROKEN)

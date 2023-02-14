@@ -41,10 +41,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 static void
 munge_list (WORD_LIST *list)
 {

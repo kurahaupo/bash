@@ -28,10 +28,6 @@
 
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* Write NB bytes from BUF to file descriptor FD, retrying the write if
    it is interrupted.  We retry three times if we get a zero-length
    write.  Any other signal causes this function to return prematurely. */

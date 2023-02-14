@@ -32,13 +32,9 @@
 #endif
 
 #include <stdio.h>
-#include <errno.h>
+#include <string.h>
 
 #include <shell.h>
-
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
 
 /* Return a string corresponding to the error number E.  From
    the ANSI C spec. */

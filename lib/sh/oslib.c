@@ -47,10 +47,6 @@
 
 #include <shell.h>
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 /* Make the functions strchr and strrchr if they do not exist. */
 #if !defined (HAVE_STRCHR)
 char *

@@ -30,10 +30,6 @@
 #include "builtins.h"
 #include "shell.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 extern char *strerror (int);
 extern char **make_builtin_argv (WORD_LIST *, int *);
 

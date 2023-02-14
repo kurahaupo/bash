@@ -57,10 +57,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#ifndef errno
-extern int	errno;
-#endif
-
 extern char	*sh_realpath(const char *, char *);
 
 int

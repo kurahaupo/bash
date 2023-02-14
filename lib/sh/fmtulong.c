@@ -47,10 +47,6 @@
 
 #include <typemax.h>
 
-#ifndef errno
-extern int errno;
-#endif
-
 static char const x_digs[16] = "0123456789abcdef";
 static char const X_digs[16] = "0123456789ABCDEF";
 

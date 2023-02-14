@@ -64,10 +64,6 @@ extern int rl_done, rl_dispatching;	/* should really include readline.h */
 #  define HISTSIZE_DEFAULT "500"
 #endif
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 static int histignore_item_func (struct ign *);
 static int check_history_control (char *);
 static void hc_erasedups (char *);

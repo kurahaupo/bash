@@ -29,10 +29,6 @@
 #include <signal.h>
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #ifndef SEEK_CUR
 #  define SEEK_CUR 1
 #endif

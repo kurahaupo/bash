@@ -42,10 +42,6 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 typedef struct flist {
   struct flist *next;
   int fd;

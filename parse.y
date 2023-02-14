@@ -143,10 +143,6 @@ extern int dump_translatable_strings, dump_po_strings;
 extern int singlequote_translations;
 #endif /* TRANSLATABLE_STRINGS */
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* **************************************************************** */
 /*								    */
 /*		    "Forward" declarations			    */

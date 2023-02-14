@@ -90,10 +90,6 @@ $END
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* We free the buffer used by mklong() if it's `too big'. */
 #define PRETURN(value) \
   do \
@@ -137,6 +133,18 @@ extern int errno;
       return (retval); \
     } \
   while (0)
+
+#if defined (PRI_MACROS_BROKEN)
+#  undef PRIdMAX
+#endif
+
+#if !defined (PRIdMAX)
+#  if HAVE_LONG_LONG
+#    define PRIdMAX	"lld"
+#  else
+#    define PRIdMAX	"ld"
+#  endif
+#endif
 
 #define PC(c) \
   do { \

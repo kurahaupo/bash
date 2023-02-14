@@ -84,10 +84,6 @@ $END
 #include "bashgetopt.h"
 #include "common.h"
 
-#if !defined (errno)
-extern int errno;
-#endif /* !errno */
-
 #define HIST_INVALID INT_MIN
 #define HIST_ERANGE  INT_MIN+1
 #define HIST_NOTFOUND INT_MIN+2

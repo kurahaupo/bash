@@ -37,10 +37,6 @@
 #include "chartypes.h"
 #include "syntax.h"
 
-#ifndef errno
-extern int errno;
-#endif
-
 struct wordflag {
 	int	flag;
 	char	*fstr;

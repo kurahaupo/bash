@@ -51,10 +51,6 @@
 
 #include "xmalloc.h"
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 /* How big to make the_history when we first allocate it. */
 #define DEFAULT_HISTORY_INITIAL_SIZE	502
 

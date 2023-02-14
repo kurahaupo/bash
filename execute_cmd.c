@@ -53,10 +53,6 @@
 
 #include <errno.h>
 
-#if !defined (errno)
-extern int errno;
-#endif
-
 #define NEED_FPURGE_DECL
 #define NEED_SH_SETLINEBUF_DECL
 #define NEED_CLOCK_FUNCS_DECL
