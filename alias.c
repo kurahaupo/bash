@@ -53,7 +53,7 @@ typedef int sh_alias_map_func_t (alias_t *);
 static void free_alias_data (PTR_T);
 static alias_t **map_over_aliases (sh_alias_map_func_t *);
 static void sort_aliases (alias_t **);
-static int qsort_alias_compare (alias_t **, alias_t **);
+static int qsort_alias_compare (const void *, const void *);
 
 #if defined (READLINE)
 static int skipquotes (char *, int);
@@ -241,8 +241,10 @@ map_over_aliases (sh_alias_map_func_t *function)
 }
 
 static int
-qsort_alias_compare (alias_t **as1, alias_t **as2)
+qsort_alias_compare (const void *av1, const void *av2)
 {
+  const alias_t *const*as1 = av1,
+                *const*as2 = av2;
   int result;
 
   if ((result = (*as1)->name[0] - (*as2)->name[0]) == 0)
@@ -254,7 +256,7 @@ qsort_alias_compare (alias_t **as1, alias_t **as2)
 static void
 sort_aliases (alias_t **array)
 {
-  qsort (array, strvec_len ((char **)array), sizeof (alias_t *), (QSFUNC *)qsort_alias_compare);
+  qsort (array, strvec_len ((char **)array), sizeof (alias_t *), qsort_alias_compare);
 }
 
 /* Return a sorted list of all defined aliases */

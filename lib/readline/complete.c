@@ -1307,7 +1307,7 @@ remove_duplicate_matches (char **matches)
   /* Sort the array without matches[0], since we need it to
      stay in place no matter what. */
   if (i && rl_sort_completion_matches)
-    qsort (matches+1, i-1, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
+    qsort (matches+1, i-1, sizeof (char *), _rl_qsort_string_compare);
 
   /* Remember the lowest common denominator for it may be unique. */
   lowest_common = savestring (matches[0]);
@@ -1469,7 +1469,7 @@ compute_lcd_of_matches (char **match_list, int matches, const char *text)
 
 	  /* sort the list to get consistent answers. */
 	  if (rl_sort_completion_matches)
-	    qsort (match_list+1, matches, sizeof(char *), (QSFUNC *)_rl_qsort_string_compare);
+	    qsort (match_list+1, matches, sizeof(char *), _rl_qsort_string_compare);
 
 	  si = strlen (text);
 	  lx = (si <= low) ? si : low;	/* check shorter of text and matches */
@@ -1635,7 +1635,7 @@ rl_display_match_list (char **matches, int len, int max)
 
   /* Sort the items if they are not already sorted. */
   if (rl_ignore_completion_duplicates == 0 && rl_sort_completion_matches)
-    qsort (matches + 1, len, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
+    qsort (matches + 1, len, sizeof (char *), _rl_qsort_string_compare);
 
   rl_crlf ();
 

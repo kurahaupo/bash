@@ -147,11 +147,15 @@ strvec_copy (char * const *array)
 /* Comparison routine for use by qsort that conforms to the new Posix
    requirements (http://austingroupbugs.net/view.php?id=1070).
 
-   Perform a bytewise comparison if *S1 and *S2 collate equally. */
+   Perform a bytewise comparison if *v1 and *v2 collate equally. */
+static QSFUNC strvec_posixcmp;
+
 int
-strvec_posixcmp (char **s1, char **s2)
+strvec_posixcmp (const void *v1, const void *v2)
 {
   int result;
+  const char *const*s1 = v1,
+             *const*s2 = v2;
 
 #if defined (HAVE_STRCOLL)
    result = strcoll (*s1, *s2);
@@ -167,9 +171,13 @@ strvec_posixcmp (char **s1, char **s2)
 
 /* Comparison routine for use with qsort() on arrays of strings.  Uses
    strcoll(3) if available, otherwise it uses strcmp(3). */
+QSFUNC strvec_strcmp;
+
 int
-strvec_strcmp (char **s1, char **s2)
+strvec_strcmp (const void *v1, const void *v2)
 {
+  const char *const*s1 = v1,
+             *const*s2 = v2;
 #if defined (HAVE_STRCOLL)
    return (strcoll (*s1, *s2));
 #else /* !HAVE_STRCOLL */
@@ -187,9 +195,9 @@ void
 strvec_sort (char **array, int posix)
 {
   if (posix)
-    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *)strvec_posixcmp);
+    qsort (array, strvec_len (array), sizeof (char *), strvec_posixcmp);
   else
-    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *)strvec_strcmp);
+    qsort (array, strvec_len (array), sizeof (char *), strvec_strcmp);
 }
 
 /* Cons up a new array of words.  The words are taken from LIST,

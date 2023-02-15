@@ -149,9 +149,7 @@ static size_t maxmap;
 static size_t read_alias_file (const char *fname, int fname_len)
      internal_function;
 static int extend_alias_table (void);
-static int alias_compare (const struct alias_map *map1,
-			  const struct alias_map *map2);
-
+static QSFUNC alias_compare;
 
 const char *
 _nl_expand_alias (const char *name)
@@ -175,11 +173,7 @@ _nl_expand_alias (const char *name)
       item.alias = name;
 
       if (nmap > 0)
-	retval = (struct alias_map *) bsearch (&item, map, nmap,
-					       sizeof (struct alias_map),
-					       (int (*) (const void *,
-							 const void *)
-						) alias_compare);
+	retval = bsearch (&item, map, nmap, sizeof item, alias_compare);
       else
 	retval = NULL;
 
@@ -417,10 +411,10 @@ extend_alias_table (void)
 /* alias_compare must have both args as “const void*” to be compatible with
  * qsort */
 static int
-alias_compare (const void *left, const void *right)
+alias_compare (const void *v1, const void *v2)
 {
-  const struct alias_map *map1 = left;
-  const struct alias_map *map2 = right;
+  const struct alias_map *map1 = v1,
+                         *map2 = v2;
 #if defined _LIBC || defined HAVE_STRCASECMP
   return strcasecmp (map1->alias, map2->alias);
 #else
