@@ -36,5 +36,5 @@ main()
 		if (fcntl(i, F_GETFD, 0) != -1)
 			fprintf(stderr, "fd %d: open\n", i);
 	}
-	exit(0);
+	return 0;
 }

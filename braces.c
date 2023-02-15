@@ -848,6 +848,8 @@ main (int c, char **v)
 
       strvec_dispose (result);
     }
+
+  return 0;
 }
 
 /*

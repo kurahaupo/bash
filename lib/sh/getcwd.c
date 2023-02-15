@@ -337,6 +337,7 @@ main (argc, argv)
       perror ("cwd: getcwd");
       exit (1);
     }
+  return 0;
 }
 #endif /* TEST */
 #endif /* !HAVE_GETCWD */

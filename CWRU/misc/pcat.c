@@ -37,8 +37,8 @@ sigpipe()
 	exit(1);
 }
 
-main(argc, argv)
-char **argv;
+int
+main(int argc, char **argv)
 {
 	int fflg = 0;
 	register FILE *fi;
