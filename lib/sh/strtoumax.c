@@ -105,6 +105,6 @@ main ()
 
   printf ("%llu %llu %lu\n", x, y, z);
 
-  exit (0);
+  return 0;
 }
 #endif

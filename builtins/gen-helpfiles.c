@@ -124,7 +124,7 @@ main (int argc, char **argv)
 
   write_helpfiles(shell_builtins);
 
-  exit (0);
+  return 0;
 }
 
 /* Write DOCUMENTATION to STREAM, perhaps surrounding it with double-quotes

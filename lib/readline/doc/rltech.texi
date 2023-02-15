@@ -2536,7 +2536,7 @@ main (int argc, char **argv)
 
       free (line);
     @}
-  exit (0);
+  return 0;
 @}
 
 /* Execute a command line. */

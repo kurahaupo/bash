@@ -2121,6 +2121,6 @@ main(int c, char **v)
   printf("%s", holder);
   printf("%s\n", h);
 
-  exit (0);
+  return 0;
 }
 #endif

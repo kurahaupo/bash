@@ -43,7 +43,7 @@ char	**v;
 			printf("%d --> %s\n", n, strerror(n));
 		}
 	}
-	exit (0);
+	return 0;
 }
 
 programming_error(a, b)

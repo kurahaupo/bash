@@ -1574,6 +1574,6 @@ main (argc, argv)
 	  puts (value[i]);
     }
 
-  exit (0);
+  return 0;
 }
 #endif	/* TEST.  */

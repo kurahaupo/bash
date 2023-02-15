@@ -41,5 +41,5 @@ main(int argc, char **argv)
 				fprintf(stderr, "%d: caught (%s)\n", i, sys_siglist[i]);
 		}
 	}
-	exit(0);
+	return 0;
 }

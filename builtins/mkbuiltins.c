@@ -370,7 +370,7 @@ main (int argc, char **argv)
       fclose (documentation_file);
     }
 
-  exit (0);
+  return 0;
 }
 
 /* **************************************************************** */

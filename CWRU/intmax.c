@@ -10,6 +10,7 @@
 #  endif
 #endif
 
+int
 main(int c, char **v)
 {
 	printf ("%d\n", INT_MAX);
