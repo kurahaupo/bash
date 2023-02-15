@@ -1573,6 +1573,6 @@ main (int argc, char **argv)
 	  puts (value[i]);
     }
 
-  exit (0);
+  return 0;
 }
 #endif	/* TEST.  */

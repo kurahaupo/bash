@@ -769,6 +769,8 @@ main (int argc, char **argv)
 
   printf ("co: %d\n", tgetnum ("co"));
   printf ("am: %d\n", tgetflag ("am"));
+
+  return 0;
 }
 
 void

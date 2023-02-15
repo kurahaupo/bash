@@ -105,6 +105,6 @@ main (void)
 
   printf ("%lld %lld %ld\n", x, y, z);
 
-  exit (0);
+  return 0;
 }
 #endif

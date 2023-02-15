@@ -41,7 +41,7 @@ main(int argc, char **argv)
 			printf("%d --> %s\n", n, strerror(n));
 		}
 	}
-	exit (0);
+	return 0;
 }
 
 int

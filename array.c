@@ -1222,6 +1222,8 @@ main(void)
 	printf("\n");
 	array_dispose(a);
 	array_dispose(new_a);
+
+	return 0;
 }
 
 #endif /* TEST_ARRAY */

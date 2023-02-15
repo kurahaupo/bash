@@ -804,6 +804,8 @@ main (void)
 
       strvec_dispose (result);
     }
+
+  return 0;
 }
 
 /*
