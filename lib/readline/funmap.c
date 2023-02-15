@@ -42,7 +42,7 @@
 
 typedef int QSFUNC (const void *, const void *);
 
-extern int _rl_qsort_string_compare (char **, char **);
+extern QSFUNC _rl_qsort_string_compare;
 
 FUNMAP **funmap;
 static size_t funmap_size;
@@ -266,6 +266,6 @@ rl_funmap_names (void)
     }
 
   if (result)
-    qsort (result, result_index, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
+    qsort (result, result_index, sizeof (char *), _rl_qsort_string_compare);
   return (result);
 }
