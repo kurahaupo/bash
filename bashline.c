@@ -3560,7 +3560,7 @@ build_history_completion_array (void)
 
       /* Sort the complete list of tokens. */
       if (dabbrev_expand_active == 0)
-        qsort (history_completion_array, harry_len, sizeof (char *), (QSFUNC *)strvec_strcmp);
+        qsort (history_completion_array, harry_len, sizeof (char *), strvec_strcmp);
     }
 }
 

@@ -28,6 +28,8 @@
 #include "posixjmp.h"	/* defines procenv_t */
 #include "rlmbutil.h"	/* for HANDLE_MULTIBYTE */
 
+typedef int QSFUNC (const void *, const void *);
+
 /*************************************************************************
  *									 *
  * Convenience definitions						 *
@@ -455,7 +457,7 @@ extern int _rl_tropen (void);
 extern int _rl_abort_internal (void);
 extern int _rl_null_function (int, int);
 extern char *_rl_strindex (const char *, const char *);
-extern int _rl_qsort_string_compare (char **, char **);
+extern QSFUNC _rl_qsort_string_compare;
 extern int (_rl_uppercase_p) (int);
 extern int (_rl_lowercase_p) (int);
 extern int (_rl_pure_alphabetic) (int);

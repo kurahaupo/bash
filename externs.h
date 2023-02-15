@@ -29,6 +29,8 @@
 /* Functions from expr.c. */
 #define EXP_EXPANDED	0x01
 
+typedef int QSFUNC (const void *, const void *);
+
 extern intmax_t evalexp (char *, int, int *);
 
 /* Functions from print_cmd.c. */
@@ -414,8 +416,7 @@ extern int strvec_remove (char **, char *);
 extern int strvec_len (char **);
 extern int strvec_search (char **, char *);
 extern char **strvec_copy (char **);
-extern int strvec_posixcmp (char **, char **);
-extern int strvec_strcmp (char **, char **);
+extern QSFUNC strvec_strcmp;
 extern void strvec_sort (char **, int);
 
 extern char **strvec_from_word_list (WORD_LIST *, int, int, int *);

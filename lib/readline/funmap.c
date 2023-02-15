@@ -40,13 +40,9 @@
 
 #include "xmalloc.h"
 
-#ifdef __STDC__
 typedef int QSFUNC (const void *, const void *);
-#else
-typedef int QSFUNC ();
-#endif
 
-extern int _rl_qsort_string_compare (char **, char **);
+extern QSFUNC _rl_qsort_string_compare;
 
 FUNMAP **funmap;
 static int funmap_size;
@@ -268,6 +264,6 @@ rl_funmap_names (void)
       result[result_index + 1] = (char *)NULL;
     }
 
-  qsort (result, result_index, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
+  qsort (result, result_index, sizeof (char *), _rl_qsort_string_compare);
   return (result);
 }

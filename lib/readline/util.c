@@ -371,8 +371,10 @@ _rl_stricmp (const char *string1, const char *string2)
 
 /* Stupid comparison routine for qsort () ing strings. */
 int
-_rl_qsort_string_compare (char **s1, char **s2)
+_rl_qsort_string_compare (void const *left, void const *right)
 {
+  char *const*s1 = left;
+  char *const*s2 = right;
 #if defined (HAVE_STRCOLL)
   return (strcoll (*s1, *s2));
 #else

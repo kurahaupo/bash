@@ -885,9 +885,13 @@ find_special_builtin (char *name)
   			(sh_builtin_func_t *)NULL);
 }
 
+static QSFUNC shell_builtin_compare;  /* confirm type signature */
+
 static int
-shell_builtin_compare (struct builtin *sbp1, struct builtin *sbp2)
+shell_builtin_compare (const void *v1, const void *v2)
 {
+  const struct builtin *sbp1 = v1,
+                       *sbp2 = v2;
   int result;
 
   if ((result = sbp1->name[0] - sbp2->name[0]) == 0)
@@ -902,7 +906,7 @@ void
 initialize_shell_builtins (void)
 {
   qsort (shell_builtins, num_shell_builtins, sizeof (struct builtin),
-    (QSFUNC *)shell_builtin_compare);
+    shell_builtin_compare);
 }
 
 #if !defined (HELP_BUILTIN)
