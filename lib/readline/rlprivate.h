@@ -445,15 +445,9 @@ extern UNDO_LIST *_rl_copy_undo_list (UNDO_LIST *);
 extern void _rl_free_undo_list (UNDO_LIST *);
 
 /* util.c */
-#if defined (USE_VARARGS) && defined (PREFER_STDARG)
 extern void _rl_ttymsg (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 extern void _rl_errmsg (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 extern void _rl_trace (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-#else
-extern void _rl_ttymsg ();
-extern void _rl_errmsg ();
-extern void _rl_trace ();
-#endif
 extern void _rl_audit_tty (char *);
 
 extern int _rl_tropen (void);

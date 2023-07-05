@@ -29,11 +29,7 @@
 #  include <unistd.h>
 #endif
 
-#if defined (PREFER_STDARG)
-#  include <stdarg.h>
-#else
-#  include <varargs.h>
-#endif
+#include <stdarg.h>
 
 #include "bashansi.h"
 #include "bashintl.h"
@@ -56,16 +52,10 @@ extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
 static int indentation;
 static int indentation_amount = 4;
 
-#if defined (PREFER_STDARG)
 typedef void PFUNC (const char *, ...);
 
 static void cprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 static void xprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-#else
-#define PFUNC VFunction
-static void cprintf ();
-static void xprintf ();
-#endif
 
 static void reset_locals (void);
 static void newline (char *);
@@ -1462,19 +1452,14 @@ semicolon (void)
 
 /* How to make the string. */
 static void
-#if defined (PREFER_STDARG)
 cprintf (const char *control, ...)
-#else
-cprintf (const char *control, va_alist)
-     va_dcl
-#endif
 {
   register const char *s;
   char char_arg[2], *argp, intbuf[INT_STRLEN_BOUND (unsigned int) + 1];
   int digit_arg, arg_len, c;
   va_list args;
 
-  SH_VA_START (args, control);
+  va_start (args, control);
 
   arg_len = strlen (control);
   the_printed_command_resize (arg_len + 1);
@@ -1577,16 +1562,11 @@ the_printed_command_resize (int length)
      also available.'' */
 
 static void
-#if defined (PREFER_STDARG)
 xprintf (const char *format, ...)
-#else
-xprintf (const char *format, va_alist)
-     va_dcl
-#endif
 {
   va_list args;
 
-  SH_VA_START (args, format);
+  va_start (args, format);
 
   vfprintf (stdout, format, args);
   va_end (args);

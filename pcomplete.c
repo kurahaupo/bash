@@ -31,11 +31,7 @@
 
 #include <signal.h>
 
-#if defined (PREFER_STDARG)
-#  include <stdarg.h>
-#else
-#  include <varargs.h>
-#endif
+#include <stdarg.h>
 
 #include "posixtime.h"
 
@@ -86,9 +82,7 @@ extern STRING_INT_ALIST word_token_alist[];
 extern char *signal_names[];
 
 #if defined (DEBUG)
-#if defined (PREFER_STDARG)
 static void debug_printf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-#endif
 #endif /* DEBUG */
 
 static int it_init_joblist (ITEMLIST *, int);
@@ -191,19 +185,14 @@ int pcomp_ind;
 #ifdef DEBUG
 /* Debugging code */
 static void
-#if defined (PREFER_STDARG)
 debug_printf (const char *format, ...)
-#else
-debug_printf (const char *format, va_alist)
-     va_dcl
-#endif
 {
   va_list args;
 
   if (progcomp_debug == 0)
     return;
 
-  SH_VA_START (args, format);
+  va_start (args, format);
 
   fprintf (stdout, "DEBUG: ");
   vfprintf (stdout, format, args);

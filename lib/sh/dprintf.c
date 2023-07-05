@@ -28,23 +28,12 @@
 #  include <unistd.h>
 #endif
 
-#if defined (PREFER_STDARG)
-#  include <stdarg.h>
-#else
-#  include <varargs.h>
-#endif
+#include <stdarg.h>
 
 #include <stdio.h>
 
 int
-#if defined (PREFER_STDARG)
 dprintf(int fd, const char *format, ...)
-#else
-dprintf(fd, format, va_alist)
-     int fd;
-     const char *format;
-     va_dcl
-#endif
 {
   FILE *fp;
   int fd2, rc, r2;
@@ -59,7 +48,7 @@ dprintf(fd, format, va_alist)
       return -1;
     }
 
-  SH_VA_START (args, format);
+  va_start (args, format);
   rc = vfprintf (fp, format, args);
   fflush (fp);
   va_end (args);

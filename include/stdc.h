@@ -72,10 +72,4 @@
 #  define INLINE
 #endif
 
-#if defined (PREFER_STDARG)
-#  define SH_VA_START(va, arg)  va_start(va, arg)
-#else
-#  define SH_VA_START(va, arg)  va_start(va)
-#endif
-
 #endif /* !_STDC_H_ */

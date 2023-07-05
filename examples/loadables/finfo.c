@@ -435,13 +435,8 @@ struct builtin finfo_struct = {
 #endif
 
 #ifdef NOBUILTIN
-#if defined (PREFER_STDARG)
-#  include <stdarg.h>
-#else
-#  if defined (PREFER_VARARGS)
-#    include <varargs.h>
-#  endif
-#endif
+
+#include <stdarg.h>
 
 char *this_command_name;
 
@@ -567,9 +562,7 @@ sh_getopt(int c, char **v, char *o)
 	return r;
 }
 
-#if defined (USE_VARARGS)
 void
-#if defined (PREFER_STDARG)
 builtin_error (const char *format, ...)
 {
   if (this_command_name && *this_command_name)
@@ -579,6 +572,5 @@ builtin_error (const char *format, ...)
   fprintf (stderr, "\n");
   fflush (stderr);
 }
-#endif /* !USE_VARARGS */
 
 #endif

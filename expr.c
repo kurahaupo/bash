@@ -1637,15 +1637,6 @@ main (int argc, char **argv)
   exit (0);
 }
 
-int
-builtin_error (char *format, arg1, arg2, arg3, arg4, arg5)
-{
-  fprintf (stderr, "expr: ");
-  fprintf (stderr, format, arg1, arg2, arg3, arg4, arg5);
-  fprintf (stderr, "\n");
-  return 0;
-}
-
 char *
 itos (intmax_t n)
 {

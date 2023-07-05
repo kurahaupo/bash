@@ -2953,29 +2953,15 @@ rl_character_len (int c, int pos)
    mini-modeline. */
 static int msg_saved_prompt = 0;
 
-#if defined (USE_VARARGS)
 int
-#if defined (PREFER_STDARG)
 rl_message (const char *format, ...)
-#else
-rl_message (va_alist)
-     va_dcl
-#endif
 {
   va_list args;
-#if defined (PREFER_VARARGS)
-  char *format;
-#endif
 #if defined (HAVE_VSNPRINTF)
   int bneed;
 #endif
 
-#if defined (PREFER_STDARG)
   va_start (args, format);
-#else
-  va_start (args);
-  format = va_arg (args, char *);
-#endif
 
   if (msg_buf == 0)
     msg_buf = xmalloc (msg_bufsiz = 128);
@@ -2988,12 +2974,7 @@ rl_message (va_alist)
       msg_buf = xrealloc (msg_buf, msg_bufsiz);
       va_end (args);
 
-#if defined (PREFER_STDARG)
       va_start (args, format);
-#else
-      va_start (args);
-      format = va_arg (args, char *);
-#endif
       vsnprintf (msg_buf, msg_bufsiz - 1, format, args);
     }
 #else
@@ -3024,39 +3005,6 @@ rl_message (va_alist)
 
   return 0;
 }
-#else /* !USE_VARARGS */
-int
-rl_message (char *format, arg1, arg2)
-{
-  if (msg_buf == 0)
-    msg_buf = xmalloc (msg_bufsiz = 128);
-
-  sprintf (msg_buf, format, arg1, arg2);
-  msg_buf[msg_bufsiz - 1] = '\0';	/* overflow? */
-
-  rl_display_prompt = msg_buf;
-  if (saved_local_prompt == 0)
-    {
-      rl_save_prompt ();
-      msg_saved_prompt = 1;
-    }
-  else if (local_prompt != saved_local_prompt)
-    {
-      FREE (local_prompt);
-      FREE (local_prompt_prefix);
-      local_prompt = (char *)NULL;
-    }
-  local_prompt = expand_prompt (msg_buf, 0, &prompt_visible_length,
-					    &prompt_last_invisible,
-					    &prompt_invis_chars_first_line,
-					    &prompt_physical_chars);
-  local_prompt_prefix = (char *)NULL;
-  local_prompt_len = local_prompt ? strlen (local_prompt) : 0;
-  (*rl_redisplay_function) ();
-
-  return 0;
-}
-#endif /* !USE_VARARGS */
 
 /* How to clear things from the "echo-area". */
 int

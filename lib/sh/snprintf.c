@@ -77,7 +77,6 @@
 #endif
 #define HAVE_ISINF_IN_LIBC
 #define HAVE_ISNAN_IN_LIBC
-#define PREFER_STDARG
 #define HAVE_STRINGIZE
 #define HAVE_LIMITS_H
 #define HAVE_STDDEF_H
@@ -89,11 +88,7 @@
 
 #include <bashtypes.h>
 
-#if defined(PREFER_STDARG)
-#  include <stdarg.h>
-#else
-#  include <varargs.h>
-#endif
+#include <stdarg.h>
 
 #ifdef HAVE_LIMITS_H
 #  include <limits.h>
@@ -1633,11 +1628,7 @@ dfallback (struct DATA *data, const char *fs, const char *fe, double d)
 #if !HAVE_SNPRINTF
 
 int
-#if defined (__STDC__)
 vsnprintf(char *string, size_t length, const char *format, va_list args)
-#else
-vsnprintf(char *string, size_t length, const char *format, va_list args)
-#endif
 {
   struct DATA data;
 
@@ -1648,18 +1639,13 @@ vsnprintf(char *string, size_t length, const char *format, va_list args)
 }
 
 int
-#if defined(PREFER_STDARG)
 snprintf(char *string, size_t length, const char * format, ...)
-#else
-snprintf(char *string, size_t length, const char *format, va_alist)
-     va_dcl
-#endif
 {
   struct DATA data;
   int rval;
   va_list args;
 
-  SH_VA_START(args, format);
+  va_start(args, format);
 
   if (string == 0 && length != 0)
     return 0;
@@ -1694,17 +1680,12 @@ vasprintf(char **stringp, const char *format, va_list args)
 }
 
 int
-#if defined(PREFER_STDARG)
 asprintf(char **stringp, const char * format, ...)
-#else
-asprintf(char **stringp, const char *format, va_alist)
-     va_dcl
-#endif
 {
   int rval;
   va_list args;
 
-  SH_VA_START(args, format);
+  va_start(args, format);
 
   rval = vasprintf (stringp, format, args);
 
