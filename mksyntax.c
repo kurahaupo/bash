@@ -61,7 +61,7 @@ struct wordflag {
 	{ CSUBSTOP,	"CSUBSTOP" },
 	{ CBLANK,	"CBLANK" },
 };
-	
+
 #define N_WFLAGS	(sizeof (wordflags) / sizeof (wordflags[0]))
 #define SYNSIZE		256
 
@@ -122,7 +122,7 @@ cdesc (int i)
 
   xbuf[0] = '\\';
   xbuf[2] = '\0';
-    
+
   switch (i)
     {
     case '\a': xbuf[1] = 'a'; break;
@@ -135,7 +135,7 @@ cdesc (int i)
     default: sprintf (xbuf, "%d", i); break;
     }
 
-  return xbuf;	
+  return xbuf;
 }
 
 static char *
@@ -164,7 +164,7 @@ addcstr (char *str, int flag)
 	  fstr = getcstr (flag);
 	  fprintf(stderr, "added %s for character %s\n", fstr, cdesc(uc));
 	}
-	
+
       lsyntax[uc] |= flag;
     }
 }
@@ -266,7 +266,7 @@ wcomment (FILE *fp, int i)
   fputs ("\t\t/* ", fp);
 
   fprintf (fp, "%s", cdesc(i));
-      
+
   fputs (" */", fp);
 }
 

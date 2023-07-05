@@ -2043,7 +2043,7 @@ MAKE = make
 #endif /* plexus */
 
 /* ************************ */
-/*			    */   
+/*			    */
 /*     Siemens MX500        */
 /*      (SINIX 5.2x)	    */
 /* ************************ */
@@ -2306,7 +2306,7 @@ MAKE = make
 /* Define GCC_STANDARD if the standard `cc' is gcc and you don't want
    to use the compiler named `gcc' for some reason. */
 /* #  define GCC_STANDARD */
-   
+
 #  if defined (LD_HAS_NO_DASH_L)
 #   undef SEARCH_LIB_NEEDS_SPACE
 #  endif /* LD_HAS_NO_DASH_L */

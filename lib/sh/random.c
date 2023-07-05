@@ -214,7 +214,7 @@ getrandom (void *buf, size_t len, unsigned int flags)
   return -1;
 }
 #endif
-      
+
 u_bits32_t
 get_urandom32 (void)
 {

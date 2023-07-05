@@ -444,7 +444,7 @@ throw_to_top_level (void)
 
   /* This needs to stay because jobs.c:make_child() uses it without resetting
      the signal mask. */
-  restore_sigmask ();  
+  restore_sigmask ();
 
   reset_parser ();
 
@@ -455,7 +455,7 @@ throw_to_top_level (void)
 	rl_cleanup_after_signal ();
       bashline_reset ();
     }
-      
+
 #endif /* READLINE */
 
 #if defined (PROCESS_SUBSTITUTION)
@@ -779,7 +779,7 @@ sigpipe_handler (int sig)
   builtin_catch_sigpipe = 0;
   last_command_exit_value = 128 + sig;
   throw_to_top_level ();
-}  
+}
 
 /* Signal functions used by the rest of the code. */
 #if !defined (HAVE_POSIX_SIGNALS)

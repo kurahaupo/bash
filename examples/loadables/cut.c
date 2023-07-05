@@ -37,7 +37,7 @@
 
 #define NOPOS	-2		/* sentinel for unset startpos/endpos */
 
-#define BOL	0		
+#define BOL	0
 #define EOL	INT_MAX
 #define NORANGE	-1		/* just a position, no range */
 
@@ -126,7 +126,7 @@ getlist (char *arg, struct cutpos **opp)
 	  poslist = (struct cutpos *)xrealloc (poslist, nsize * sizeof (struct cutpos));
 	}
       poslist[npos].startpos = s;
-      poslist[npos].endpos = e; 
+      poslist[npos].endpos = e;
       npos++;
     }
   if (npos == 0)
@@ -173,7 +173,7 @@ cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
   for (i = 0; i < llen; i++)
     if (bmap[i])
       buf[b++] = line[i];
-  buf[b] = 0; 
+  buf[b] = 0;
 
   if (v)
     {
@@ -218,7 +218,7 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
 
   bmap = xmalloc (llen + 1);
   memset (bmap, 0, llen);
-  
+
   for (n = 0; n < ops->npos; n++)
     {
       s = ops->poslist[n].startpos;		/* no translation needed yet */

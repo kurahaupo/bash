@@ -33,7 +33,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-   
+
 #include <locale.h>
 
 #ifndef errno

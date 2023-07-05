@@ -186,7 +186,7 @@ sh_euidaccess (const char *path, int mode)
     setregid (current_user.gid, current_user.egid);
 
   errno = e;
-  return r;  
+  return r;
 }
 #endif
 
@@ -214,7 +214,7 @@ sh_eaccess (const char *path, int mode)
 #else
   if (mode == F_OK)
     return (sh_stataccess (path, mode));
-    
+
 #  if HAVE_DECL_SETREGID
   if (current_user.uid != current_user.euid || current_user.gid != current_user.egid)
     return (sh_euidaccess (path, mode));

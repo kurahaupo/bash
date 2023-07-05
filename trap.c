@@ -548,7 +548,7 @@ set_trap_state (int sig)
   pending_traps[sig]++;
   trapped_signal_received = sig;
 }
-    
+
 sighandler
 trap_handler (int sig)
 {
@@ -619,7 +619,7 @@ trap_handler (int sig)
 
       errno = oerrno;
     }
-  
+
   SIGRETURN (0);
 }
 
@@ -962,7 +962,7 @@ restore_default_signal (int sig)
       change_signal (sig, (char *)DEFAULT_SIG);
       return;
     }
-    
+
   /* If we aren't trapping this signal, don't bother doing anything else. */
   /* We special-case SIGCHLD and IMPOSSIBLE_TRAP_HANDLER (see above) as a
      sentinel to determine whether or not disposition is reset to the default
@@ -1298,7 +1298,7 @@ run_debug_trap (void)
 
       notify_and_cleanup ();
 #endif
-      
+
 #if defined (DEBUGGER)
       /* If we're in the debugger and the DEBUG trap returns 2 while we're in
 	 a function or sourced script, we force a `return'. */

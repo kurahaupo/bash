@@ -142,7 +142,7 @@ main (argc, argv)
 	arg_index++;
 	patch_inc = 0;
       }
-    
+
   if (build && arg_index < argc)
     if (sscanf (argv[arg_index], "%d", &buildver) != 1)
       {
@@ -174,7 +174,7 @@ main (argc, argv)
   file = must_open ("newversion.h", "w");
 
   /* Output the leading comment. */
-  fprintf (file, 
+  fprintf (file,
 "/* Version control for the shell.  This file gets changed when you say\n\
    `make newversion' to the Makefile.  It is created by mkversion. */\n");
 

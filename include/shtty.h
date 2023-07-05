@@ -41,7 +41,7 @@
  * between sys/ioctl.h and termios.h.  Ditto for the test against SunOS4
  * and the undefining of several symbols.
  */
-      
+
 #ifdef TERMIOS_TTY_DRIVER
 #  if (defined (SunOS4) || defined (SunOS5)) && !defined (_POSIX_SOURCE)
 #    define _POSIX_SOURCE

@@ -84,7 +84,7 @@
   (((c) >= 'a' && (c) <= 'f') \
 	? (c)-'a'+10 \
 	: (c) >= 'A' && (c) <= 'F' ? (c)-'A'+10 : (c)-'0')
-                  
+
 #ifndef ISOCTAL
 #  define ISOCTAL(c)	((c) >= '0' && (c) <= '7')
 #endif

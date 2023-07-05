@@ -42,7 +42,7 @@ char *necho_doc[] = {
 	"by space characters and terminated with a newline.",
 	(char *)NULL
 };
-	
+
 struct builtin necho_struct = {
 	"echo",
 	necho_builtin,
@@ -51,4 +51,4 @@ struct builtin necho_struct = {
 	"echo [args]",
 	0
 };
-	
+

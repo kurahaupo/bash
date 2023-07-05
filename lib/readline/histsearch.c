@@ -297,7 +297,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
     xfree (pat);
   return ret;
 }
-	
+
 /* Do a non-anchored search for STRING through the history list in direction
    LISTDIR. */
 int
