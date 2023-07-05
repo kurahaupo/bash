@@ -203,7 +203,7 @@ shtimer_select (sh_timer *t)
 	return -1;
     }
 
-  /* If the timer has already expired, return immediately */    
+  /* If the timer has already expired, return immediately */
   if ((now.tv_sec > t->tmout.tv_sec) ||
 	(now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec))
     {

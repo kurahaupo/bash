@@ -52,7 +52,7 @@
 		ae->prev = new; \
 		new->next = ae; \
 	} while(0)
-	
+
 #define ADD_AFTER(ae, new) \
 	do { \
 		ae->next->prev = new; \
@@ -894,7 +894,7 @@ int	count;
     }
   else
     {
-      /* deleting elements.  it's faster to rebuild the array. */	  
+      /* deleting elements.  it's faster to rebuild the array. */
       array_flush (a);
       for (i = 0; i < count; i++)
 	array_insert (a, i, vec[i]);
@@ -902,7 +902,7 @@ int	count;
 
   return a;
 }
-	
+
 /*
  * Return a string that is the concatenation of the elements in A from START
  * to END, separated by SEP.

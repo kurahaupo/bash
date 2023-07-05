@@ -89,7 +89,7 @@ strlist_flush (sl)
   strvec_flush (sl->list);
   sl->list_len = 0;
 }
-  
+
 void
 strlist_dispose (sl)
      STRINGLIST *sl;
@@ -219,9 +219,9 @@ strlist_prefix_suffix (sl, prefix, suffix)
       sl->list[i] = t;
     }
 
-  return (sl);	 
+  return (sl);
 }
-   
+
 void
 strlist_print (sl, prefix)
      STRINGLIST *sl;
@@ -247,8 +247,8 @@ strlist_walk (sl, func)
   for (i = 0; i < sl->list_len; i++)
     if ((*func)(sl->list[i]) < 0)
       break;
-} 
-     
+}
+
 void
 strlist_sort (sl)
      STRINGLIST *sl;

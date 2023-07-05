@@ -116,7 +116,7 @@ main (argc, argv)
       exit (2);
     }
 
-  /* default behavior */  
+  /* default behavior */
   if (oflags == 0)
     oflags = SFLAG;
 

@@ -760,7 +760,7 @@ make_redirection (source, instruction, dest_and_filename, flags)
 	  else
 	    temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
         }
-          
+
       break;
 
     default:

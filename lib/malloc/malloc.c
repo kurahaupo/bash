@@ -3,7 +3,7 @@
 /*  Copyright (C) 1985-2021 Free Software Foundation, Inc.
 
     This file is part of GNU Bash, the Bourne-Again SHell.
-    
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -27,9 +27,9 @@
  *
  * [VERY] old explanation:
  *
- * This is a very fast storage allocator.  It allocates blocks of a small 
+ * This is a very fast storage allocator.  It allocates blocks of a small
  * number of different sizes, and keeps free lists of each size.  Blocks
- * that don't exactly fit are passed up to the next larger size.  In this 
+ * that don't exactly fit are passed up to the next larger size.  In this
  * implementation, the available sizes are (2^n)-4 (or -16) bytes long.
  * This is designed for use in a program that uses vast quantities of
  * memory, but bombs when it runs out.  To make it a little better, it
@@ -261,7 +261,7 @@ typedef union _malloc_guard {
 /* Future use. */
 #define ERR_DUPFREE		0x01
 #define ERR_UNALLOC		0x02
-#define ERR_UNDERFLOW		0x04	
+#define ERR_UNDERFLOW		0x04
 #define ERR_ASSERT_FAILED	0x08
 
 /* Evaluates to true if NB is appropriate for bucket NU.  NB is adjusted
@@ -392,7 +392,7 @@ xbotch (mem, e, s, file, line)
 
 /* Coalesce two adjacent free blocks off the free list for size NU - 1,
    as long as we can find two adjacent free blocks.  nextf[NU -1] is
-   assumed to not be busy; the caller (morecore()) checks for this. 
+   assumed to not be busy; the caller (morecore()) checks for this.
    BUSY[NU] must be set to 1. */
 static void
 bcoalesce (nu)
@@ -600,7 +600,7 @@ _malloc_unblock_signals (setp, osetp)
 #if defined (USE_LESSCORE)
 /* Return some memory to the system by reducing the break.  This is only
    called with NU > pagebucket, so we're always assured of giving back
-   more than one page of memory. */  
+   more than one page of memory. */
 static void
 lesscore (nu)			/* give system back some memory */
      register int nu;		/* size index we're discarding  */
@@ -620,7 +620,7 @@ lesscore (nu)			/* give system back some memory */
 }
 #endif /* USE_LESSCORE */
 
-/* Ask system for more memory; add to NEXTF[NU].  BUSY[NU] must be set to 1. */  
+/* Ask system for more memory; add to NEXTF[NU].  BUSY[NU] must be set to 1. */
 static void
 morecore (nu)
      register int nu;		/* size index to get more of  */
@@ -712,7 +712,7 @@ morecore (nu)
       goto morecore_done;
     }
 #endif
-	
+
 
 #ifdef MALLOC_STATS
   _mstats.nsbrk++;
@@ -823,7 +823,7 @@ pagealign ()
 
   return 0;
 }
-    
+
 static PTR_T
 internal_malloc (n, file, line, flags)		/* get a block */
      size_t n;
@@ -842,7 +842,7 @@ internal_malloc (n, file, line, flags)		/* get a block */
   if (pagesz == 0)
     if (pagealign () < 0)
       return ((PTR_T)NULL);
- 
+
   /* Figure out how many bytes are required, rounding up to the nearest
      multiple of 8, then figure out which nextf[] area to use.  Try to
      be smart about where to start searching -- if the number of bytes
@@ -1011,7 +1011,7 @@ internal_free (mem, file, line, flags)
 
   ap += p->mh_nbytes;
   z = mg.s;
-  *z++ = *ap++, *z++ = *ap++, *z++ = *ap++, *z++ = *ap++;  
+  *z++ = *ap++, *z++ = *ap++, *z++ = *ap++, *z++ = *ap++;
   if (mg.i != p->mh_nbytes)
     xbotch (mem, ERR_ASSERT_FAILED, _("free: start and end chunk sizes differ"), file, line);
 
@@ -1235,7 +1235,7 @@ internal_realloc (mem, n, file, line, flags)
 
       mg.i = n;
       z = mg.s;
-      *m++ = *z++, *m++ = *z++, *m++ = *z++, *m++ = *z++;      
+      *m++ = *z++, *m++ = *z++, *m++ = *z++, *m++ = *z++;
 
       return mem;
     }
@@ -1367,7 +1367,7 @@ malloc_usable_size (mem)
   /* return 0 if ISFREE */
   if (p->mh_alloc == ISFREE)
     return 0;
-  
+
   /* Since we use bounds checking, the usable size is the last requested size. */
   return (p->mh_nbytes);
 }
@@ -1399,7 +1399,7 @@ internal_calloc (n, s, file, line, flags)
   result = internal_malloc (total, file, line, flags|MALLOC_INTERNAL);
   if (result)
     memset (result, 0, total);
-  return result;  
+  return result;
 }
 
 static void

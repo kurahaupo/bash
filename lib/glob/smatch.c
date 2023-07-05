@@ -4,7 +4,7 @@
 /* Copyright (C) 1991-2021 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -22,7 +22,7 @@
 #include <config.h>
 
 #include <stdio.h>	/* for debugging */
-				
+
 #include "strmatch.h"
 #include <chartypes.h>
 
@@ -155,7 +155,7 @@ collequiv (c, equiv)
 #else
   return 0;
 #endif
-  
+
 }
 #else
 #  define collequiv(c, equiv)	((c) == (equiv))
@@ -245,7 +245,7 @@ cclass_test (c, char_class)
       case CC_ALPHA:
 	result = ISALPHA (c);
 	break;
-      case CC_BLANK:  
+      case CC_BLANK:
 	result = ISBLANK (c);
 	break;
       case CC_CNTRL:
@@ -260,7 +260,7 @@ cclass_test (c, char_class)
       case CC_LOWER:
 	result = ISLOWER (c);
 	break;
-      case CC_PRINT: 
+      case CC_PRINT:
 	result = ISPRINT (c);
 	break;
       case CC_PUNCT:
@@ -283,9 +283,9 @@ cclass_test (c, char_class)
 	break;
     }
 
-  return result;  
+  return result;
 }
-	
+
 static int
 is_cclass (c, name)
      int c;
@@ -557,9 +557,9 @@ posix_cclass_only (pattern)
 
       p = p1 + 2;		/* found posix char class name */
     }
-    
+
   return 1;			/* no char class names or only posix */
-}      
+}
 
 /* Now include `sm_loop.c' for multibyte characters. */
 #define FOLD(c) ((flags & FNM_CASEFOLD) && iswupper (c) ? towlower (c) : (c))

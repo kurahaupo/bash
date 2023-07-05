@@ -77,7 +77,7 @@ zgetline (fd, lineptr, n, delim, unbuffered_read)
 
   nr = 0;
   line = *lineptr;
-  
+
   while (1)
     {
       retval = unbuffered_read ? zread (fd, &c, 1) : zreadc(fd, &c);

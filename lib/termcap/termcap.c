@@ -140,7 +140,7 @@ xrealloc (ptr, size)
   return tem;
 }
 #endif /* not emacs */
-
+
 /* Looking up capabilities in the entry already found.  */
 
 /* The pointer to the data made by tgetent is left here
@@ -289,7 +289,7 @@ tgetst1 (ptr, area)
     *area = r + 1;
   return ret;
 }
-
+
 /* Outputting a string with padding.  */
 
 short ospeed;
@@ -378,7 +378,7 @@ tputs (str, nlines, outfun)
 
   return 0;
 }
-
+
 /* Finding the termcap entry in the termcap data base.  */
 
 struct buffer
@@ -761,7 +761,7 @@ gobble_line (fd, bufp, append_end)
     }
   return end + 1;
 }
-
+
 #ifdef TEST
 
 #ifdef NULL

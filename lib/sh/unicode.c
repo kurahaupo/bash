@@ -132,7 +132,7 @@ u32tochar (x, s)
       s[3] = x & 0xFF;
     }
   s[l] = '\0';
-  return l;  
+  return l;
 }
 
 int
@@ -291,7 +291,7 @@ u32cconv (c, s)
     }
 
   /* NL_LANGINFO and locale_charset used when setting locale_utf8locale */
-  
+
   /* If we have a UTF-8 locale, convert to UTF-8 and return converted value. */
   n = u32toutf8 (c, s);
   if (utf8locale)
@@ -302,7 +302,7 @@ u32cconv (c, s)
      u32tocesc(). */
   if (localconv == (iconv_t)-1)
     return n;
-    
+
   optr = obuf;
   obytesleft = sizeof (obuf);
   iptr = s;
@@ -312,7 +312,7 @@ u32cconv (c, s)
 
   if (iconv (localconv, (ICONV_CONST char **)&iptr, &sn, &optr, &obytesleft) == (size_t)-1)
     {
-      /* You get ISO C99 escape sequences if iconv fails */      
+      /* You get ISO C99 escape sequences if iconv fails */
       n = u32tocesc (c, s);
       return n;
     }

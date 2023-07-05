@@ -72,7 +72,7 @@ Copyright (C) 1999 Jeff Solomon
  * alternate interface. The first is the ability to interactively change the
  * prompt, which can't be done using the regular interface since rl_prompt is
  * read-only.
- * 
+ *
  * The second feature really highlights a subtle point when using the alternate
  * interface. That is, readline will not alter the terminal when inside your
  * callback handler. So let's so, your callback executes a user command that
@@ -101,7 +101,7 @@ tcflag_t old_lflag;
 cc_t     old_vtime;
 struct termios term;
 
-int 
+int
 main()
 {
     fd_set fds;
@@ -194,7 +194,7 @@ char *
 get_prompt(void)
 {
   /* The prompts can even be different lengths! */
-  sprintf(prompt_buf, "%s", 
+  sprintf(prompt_buf, "%s",
     prompt ? "Hit ctrl-t to toggle prompt> " : "Pretty cool huh?> ");
   return prompt_buf;
 }

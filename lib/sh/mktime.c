@@ -90,7 +90,7 @@
   ((t) (! TYPE_SIGNED (t) \
 	? (t) -1 \
 	: ((((t) 1 << (sizeof (t) * CHAR_BIT - 2)) - 1) * 2 + 1)))
-                  
+
 #ifndef TIME_T_MIN
 # define TIME_T_MIN TYPE_MINIMUM (time_t)
 #endif
@@ -317,7 +317,7 @@ __mktime_internal (tp, convert, offset)
 #ifdef weak_alias
 weak_alias (mktime, timelocal)
 #endif
-
+
 #if DEBUG_MKTIME
 
 static int
@@ -430,7 +430,7 @@ main (argc, argv)
 }
 
 #endif /* DEBUG_MKTIME */
-
+
 /*
 Local Variables:
 compile-command: "gcc -DDEBUG=1 -Wall -O -g mktime.c -o mktime"

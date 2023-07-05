@@ -265,7 +265,7 @@ typedef int sh_builtin_func_t PARAMS((WORD_LIST *)); /* sh_wlist_func_t */
 typedef int QSFUNC (const void *, const void *);
 #else
 typedef int QSFUNC ();
-#endif 
+#endif
 
 /* Some useful definitions for Unix pathnames.  Argument convention:
    x == string, c == character */

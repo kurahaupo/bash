@@ -105,7 +105,7 @@ arrayind_t	n;
 		array_resize (a, nsize);
 	}
 }
-	
+
 ARRAY *
 array_create()
 {
@@ -225,7 +225,7 @@ arrayind_t	s, e;
 	for (i = s; i < e; i++) {
 		p = array->elements[i];
 		n = p ? array_create_element (element_index(p), element_value(p)) : (ARRAY_ELEMENT *)NULL;
-		a->elements[i] = n;		
+		a->elements[i] = n;
 	}
 	a->num_elements = e - s;
 	a->max_index = e;
@@ -385,7 +385,7 @@ char	*s;
 		a->elements[ni] = (ARRAY_ELEMENT *)NULL;
 #endif
 	a->first_index += n;
-	
+
 	if (s) {
 		new = array_create_element(0, s);
 		a->elements[0] = new;
@@ -403,7 +403,7 @@ array_unshift_element(a)
 ARRAY	*a;
 {
 	ARRAY_ELEMENT **r, *ret;
-	
+
 	r = array_shift (a, 1, 0);
 	ret = r[0];
 	free (r);

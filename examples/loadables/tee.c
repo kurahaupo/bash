@@ -159,7 +159,7 @@ tee_builtin (list)
       free (fl);
     }
 
-  QUIT;  
+  QUIT;
   return (rval);
 }
 

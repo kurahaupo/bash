@@ -67,7 +67,7 @@ mbscasecmp (mbs1, mbs2)
 
       l1 = towlower (c1);
       l2 = towlower (c2);
- 
+
       mbs1 += len1;
       mbs2 += len2;
     }

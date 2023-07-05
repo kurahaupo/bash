@@ -153,7 +153,7 @@ file_error_and_exit:
       (*errfunc) (_("%s: file is too large"), filename);
       close (fd);
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_FAILURE : -1);
-    }      
+    }
 
   if (S_ISREG (finfo.st_mode) && file_size <= SSIZE_MAX)
     {
@@ -180,8 +180,8 @@ file_error_and_exit:
       free (string);
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_SUCCESS : 1);
     }
-      
-  if ((flags & FEVAL_CHECKBINARY) && 
+
+  if ((flags & FEVAL_CHECKBINARY) &&
       check_binary_file (string, (nr > 80) ? 80 : nr))
     {
       free (string);

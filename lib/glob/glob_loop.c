@@ -1,7 +1,7 @@
 /* Copyright (C) 1991-2020 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -55,7 +55,7 @@ INTERNAL_GLOB_PATTERN_P (pattern)
 
       case L('\\'):
 	/* Don't let the pattern end in a backslash (GMATCH returns no match
-	   if the pattern ends in a backslash anyway), but otherwise note that 
+	   if the pattern ends in a backslash anyway), but otherwise note that
 	   we have seen this, since the matching engine uses backslash as an
 	   escape character and it can be removed. We return 2 later if we
 	   have seen only backslash-escaped characters, so interested callers

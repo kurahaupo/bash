@@ -3,7 +3,7 @@
 /* Copyright (C) 1994-2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -504,7 +504,7 @@ rl_copy_backward_word (int count, int key)
 
   return (_rl_copy_word_as_kill (count, -1));
 }
-  
+
 /* Yank back the last killed text.  This ignores arguments. */
 int
 rl_yank (int count, int key)
@@ -691,7 +691,7 @@ rl_yank_last_arg (int count, int key)
       if (history_skip < 0)
 	history_skip = 0;
     }
- 
+
   if (explicit_arg_p)
     retval = rl_yank_nth_arg_internal (count_passed, key, history_skip);
   else

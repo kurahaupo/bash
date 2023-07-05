@@ -94,7 +94,7 @@ _path_checkino (dotp, name, thisino)
   return (st.st_ino == thisino);
 }
 #endif
-    
+
 /* Get the pathname of the current working directory,
    and put it in SIZE bytes of BUF.  Returns NULL if the
    directory couldn't be determined or SIZE was too small.

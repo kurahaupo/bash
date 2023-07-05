@@ -541,7 +541,7 @@ static int out_length = 0;
 /*
  * Add the links to the output. At the moment the following are
  * recognized:
- * 
+ *
 #if 0
  *	name(*)                 -> ../man?/name.*
 #endif
@@ -550,9 +550,9 @@ static int out_length = 0;
  *	ftp.host.name           -> ftp://ftp.host.name
  *	name@host               -> mailto:name@host
  *	<name.h>                -> file:/usr/include/name.h   (guess)
- * 
+ *
  * Other possible links to add in the future:
- * 
+ *
  * /dir/dir/file  -> file:/dir/dir/file
  */
 static void
@@ -2003,7 +2003,7 @@ unescape (char *c)
 	}
 	return c;
 }
-	
+
 static char *
 fill_words(char *c, char *words[], int *n)
 {
@@ -2918,7 +2918,7 @@ scan_request(char *c)
 					out_html("</TITLE>\n</HEAD>\n<BODY>");
 
 					outputPageHeader(th_page_and_sec, th_datestr, th_page_and_sec);
-					
+
 					out_html("<BR><A HREF=\"#index\">Index</A>\n");
 					*sl = '\n';
 					out_html("<HR>\n");

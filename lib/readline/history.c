@@ -172,7 +172,7 @@ _hs_at_end_of_history (void)
 {
   return (the_history == 0 || history_offset == history_length);
 }
- 
+
 /* Return the current history array.  The caller has to be careful, since this
    is the actual array of data, and could be bashed or made corrupt easily.
    The array is terminated with a NULL pointer. */
@@ -380,7 +380,7 @@ copy_history_entry (HIST_ENTRY *hist)
 
   return ret;
 }
-  
+
 /* Make the history entry at WHICH have LINE and DATA.  This returns
    the old entry so you can dispose of the data.  In the case of an
    invalid WHICH, a NULL pointer is returned. */
@@ -477,8 +477,8 @@ _hs_replace_history_data (int which, histdata_t *old, histdata_t *new)
       entry = the_history[last];
       entry->data = new;	/* XXX - we don't check entry->old */
     }
-}      
-  
+}
+
 /* Remove history element WHICH from the history.  The removed
    element is returned to you so you can free the line, data,
    and containing structure. */

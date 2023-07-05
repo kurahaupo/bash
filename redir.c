@@ -376,7 +376,7 @@ heredoc_expand (redirectee, ri, lenp)
         *lenp = STRLEN (redirectee->word);
       return (redirectee->word);
     }
-  
+
   expanding_redir = 1;
   /* Now that we've changed the variable search order to ignore the temp
      environment, see if we need to change the cached IFS values. */
@@ -402,7 +402,7 @@ heredoc_expand (redirectee, ri, lenp)
       document[dlen] = '\0';
     }
   if (lenp)
-    *lenp = dlen;    
+    *lenp = dlen;
 
   return document;
 }
@@ -660,7 +660,7 @@ redir_special_open (spec, filename, flags, mode, ri)
 
   return fd;
 }
-      
+
 /* Open FILENAME with FLAGS in noclobber mode, hopefully avoiding most
    race conditions and avoiding the problem where the file is replaced
    between the stat(2) and open(2). */
@@ -711,7 +711,7 @@ noclobber_open (filename, flags, mode, ri)
     return fd;
 
   /* The file has been replaced.  badness. */
-  close (fd);  
+  close (fd);
   errno = EEXIST;
   return (NOCLOBBER_REDIRECT);
 }
@@ -808,7 +808,7 @@ do_redirection_internal (redirect, flags, fnp)
   if (TRANSLATE_REDIRECT (ri))
     {
       /* We have [N]>&WORD[-] or [N]<&WORD[-] (or {V}>&WORD[-] or {V}<&WORD-).
-         and WORD, then translate the redirection into a new one and 
+         and WORD, then translate the redirection into a new one and
 	 continue. */
       redirectee_word = redirection_expand (redirectee);
 
@@ -955,9 +955,9 @@ do_redirection_internal (redirect, flags, fnp)
 	      /* Only setup to undo it if the thing to undo is active. We want
 		 to autoclose if we are doing a varassign redirection and the
 		 varredir_close shell option is set, and we can't test
-		 redirector in this case since we just assigned it above. */		 
+		 redirector in this case since we just assigned it above. */
 	      if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		r = add_undo_close_redirect (redirector);	      
+		r = add_undo_close_redirect (redirector);
 	      else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
 		r = add_undo_redirect (redirector, ri, -1);
 	      else
@@ -1078,7 +1078,7 @@ do_redirection_internal (redirect, flags, fnp)
 		     Close if the right option is set and we are doing a
 		     varassign redirection. */
 		  if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		    r = add_undo_close_redirect (redirector);	      
+		    r = add_undo_close_redirect (redirector);
 		  else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
 		    r = add_undo_redirect (redirector, ri, -1);
 		  else
@@ -1143,7 +1143,7 @@ do_redirection_internal (redirect, flags, fnp)
 		 Close if the right option is set and we are doing a
 		 varassign redirection. */
 	      if ((redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		r = add_undo_close_redirect (redirector);	      
+		r = add_undo_close_redirect (redirector);
 	      else if (fcntl (redirector, F_GETFD, 0) != -1)
 		r = add_undo_redirect (redirector, ri, redir_fd);
 	      else
@@ -1208,7 +1208,7 @@ do_redirection_internal (redirect, flags, fnp)
 	     when the fd is restored. */
 	  if ((redirect->flags & RX_INTERNAL) && (redirect->flags & RX_SAVCLEXEC) && redirector >= 3 && (redir_fd >= SHELL_FD_BASE || (redirect->flags & RX_SAVEFD)))
 	    SET_OPEN_ON_EXEC (redirector);
-	    
+
 	  /* dup-and-close redirection */
 	  if (ri == r_move_input || ri == r_move_output)
 	    {
@@ -1505,7 +1505,7 @@ redir_varvalue (redir)
 	}
 #endif
     }
-	
+
   if (v == 0 || invisible_p (v))
     return -1;
 

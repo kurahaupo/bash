@@ -55,7 +55,7 @@ _rl_callback_generic_arg *_rl_callback_data = 0;
    readline-6.2.  This should be used with care, because it can result in
    readline receiving signals and not handling them until it's called again
    via rl_callback_read_char, thereby stealing them from the application.
-   By default, signal handlers are only active while readline is active. */   
+   By default, signal handlers are only active while readline is active. */
 int rl_persistent_signal_handlers = 0;
 
 /* **************************************************************** */
@@ -68,7 +68,7 @@ int rl_persistent_signal_handlers = 0;
    things to handle at once, and dispatches them via select().  Call
    rl_callback_handler_install() with the prompt and a function to call
    whenever a complete line of input is ready.  The user must then
-   call rl_callback_read_char() every time some input is available, and 
+   call rl_callback_read_char() every time some input is available, and
    rl_callback_read_char() will call the user's function with the complete
    text read in at each end of line.  The terminal is kept prepped
    all the time, except during calls to the user's function.  Signal
@@ -209,7 +209,7 @@ rl_callback_read_char (void)
 	    {
 	      _rl_vi_domove_motion_cleanup (k, _rl_vimvcxt);
 	      _rl_internal_char_cleanup ();
-	      CALLBACK_READ_RETURN ();	      
+	      CALLBACK_READ_RETURN ();
 	    }
 
 	  _rl_internal_char_cleanup ();
@@ -260,7 +260,7 @@ rl_callback_read_char (void)
 	     cleaned up. */
 	  if (_rl_callback_func == 0)
 	    {
-	      if (_rl_callback_data) 	
+	      if (_rl_callback_data)
 		{
 		  _rl_callback_data_dispose (_rl_callback_data);
 		  _rl_callback_data = 0;

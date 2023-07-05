@@ -9,7 +9,7 @@
 /* Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -365,7 +365,7 @@ _rl_isearch_dispatch (_rl_search_cxt *cxt, int c)
       if (j == 1)
 	{
 	  cxt->lastc = -7;		/* bracketed paste, see below */
-	  goto opcode_dispatch;	
+	  goto opcode_dispatch;
         }
       else if (_rl_pushed_input_available ())	/* eat extra char we pushed back */
 	c = cxt->lastc = rl_read_key ();
@@ -482,8 +482,8 @@ add_character:
 #if defined (HANDLE_MULTIBYTE)
 	  /* Have to overwrite cxt->mb here because dispatch uses it below */
 	  if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
-	    {  
-	      if (cxt->pmb[1] == 0)	  
+	    {
+	      if (cxt->pmb[1] == 0)
 		{
 		  cxt->mb[0] = cxt->lastc;	/* == cxt->prevc */
 		  cxt->mb[1] = '\0';
@@ -492,7 +492,7 @@ add_character:
 		memcpy (cxt->mb, cxt->pmb, sizeof (cxt->mb));
 	    }
 #endif
-	  cxt->prevc = 0;	  
+	  cxt->prevc = 0;
 	}
       else if (cxt->lastc > 0 && cxt->prevc > 0 && f && f != rl_insert)
 	{
@@ -813,7 +813,7 @@ opcode_dispatch:
       cxt->prev_line_found = cxt->lines[cxt->history_pos];
       rl_replace_line (cxt->lines[cxt->history_pos], 0);
       if (_rl_enable_active_region)
-	rl_activate_mark ();	
+	rl_activate_mark ();
       rl_point = cxt->sline_index;
       if (rl_mark_active_p () && cxt->search_string_index > 0)
 	rl_mark = rl_point + cxt->search_string_index;

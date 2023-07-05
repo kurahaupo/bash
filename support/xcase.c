@@ -93,6 +93,6 @@ char	**av;
 		}
 		putchar(x);
 	}
-			
+
 	exit(0);
 }

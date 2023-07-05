@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -380,7 +380,7 @@ rl_forward_char (int count, int key)
   return (rl_forward_byte (count, key));
 }
 #endif /* !HANDLE_MULTIBYTE */
-  
+
 /* Backwards compatibility. */
 int
 rl_forward (int count, int key)
@@ -564,7 +564,7 @@ rl_backward_word (int count, int key)
       while (rl_point)
 	{
 	  p = MB_PREVCHAR (rl_line_buffer, rl_point, MB_FIND_NONZERO);
-	  c = _rl_char_value (rl_line_buffer, p);	  
+	  c = _rl_char_value (rl_line_buffer, p);
 	  if (_rl_walphabetic (c) == 0)
 	    break;
 	  else
@@ -794,7 +794,7 @@ _rl_insert_char (int count, int c)
 	}
     }
 #endif /* HANDLE_MULTIBYTE */
-	  
+
   /* If we can optimize, then do it.  But don't let people crash
      readline because of extra large arguments. */
   if (count > 1 && count <= TEXT_COUNT_MAX)
@@ -987,7 +987,7 @@ rl_insert (int count, int c)
     {
       /* setting rl_pending_input inhibits setting rl_last_func so we do it
 	 ourselves here */
-      rl_last_func = rl_insert; 
+      rl_last_func = rl_insert;
       _rl_reset_argument ();
       rl_executing_keyseq[rl_key_sequence_length = 0] = '\0';
       r = rl_execute_next (n);
@@ -1017,7 +1017,7 @@ _rl_insert_next (int count)
     _rl_restore_tty_signals ();
 #endif
 
-  return (_rl_insert_char (count, c));  
+  return (_rl_insert_char (count, c));
 }
 
 #if defined (READLINE_CALLBACKS)
@@ -1050,7 +1050,7 @@ _rl_insert_next_callback (_rl_callback_generic_arg *data)
   return _rl_insert_next (count);
 }
 #endif
-  
+
 int
 rl_quoted_insert (int count, int key)
 {
@@ -1182,7 +1182,7 @@ _rl_overwrite_rubout (int count, int key)
 
   return 0;
 }
-  
+
 /* Rubout the character behind point. */
 int
 rl_rubout (int count, int key)
@@ -1283,7 +1283,7 @@ rl_delete (int count, int key)
 /* Delete the character under the cursor, unless the insertion
    point is at the end of the line, in which case the character
    behind the cursor is deleted.  COUNT is obeyed and may be used
-   to delete forward or backward that many characters. */      
+   to delete forward or backward that many characters. */
 int
 rl_rubout_or_delete (int count, int key)
 {
@@ -1291,7 +1291,7 @@ rl_rubout_or_delete (int count, int key)
     return (_rl_rubout_char (count, key));
   else
     return (rl_delete (count, key));
-}  
+}
 
 /* Delete all spaces and tabs around point. */
 int
@@ -1787,7 +1787,7 @@ rl_char_search (int count, int key)
       return (0);
     }
 #endif
-  
+
   return (_rl_char_search (count, FFIND, BFIND));
 }
 

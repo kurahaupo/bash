@@ -321,7 +321,7 @@ filecomp (s, t, op)
       if (op == EF)
 	return (FALSE);
     }
-  
+
   switch (op)
     {
     case OT: return (r1 < r2 || (r2 == 0 && timespec_cmp (ts1, ts2) < 0));
@@ -405,7 +405,7 @@ binary_test (op, arg1, arg2, flags)
     }
   else if (op[0] == '!' && op[1] == '=' && op[2] == '\0')
     return (patmatch ? patcomp (arg1, arg2, NE) : (STREQ (arg1, arg2) == 0));
-    
+
 
   else if (op[2] == 't')
     {
@@ -522,7 +522,7 @@ unary_test (op, arg, flags)
   struct timespec mtime, atime;
   SHELL_VAR *v;
   int aflags;
-     
+
   switch (op[1])
     {
     case 'a':			/* file exists in the file system? */

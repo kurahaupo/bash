@@ -110,7 +110,7 @@ malloc_watch (addr)
     }
 #endif
 
-  return ret;  
+  return ret;
 }
 
 /* Remove a watchpoint set on ADDR.  If ADDR is NULL, remove all

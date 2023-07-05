@@ -1091,7 +1091,7 @@ arith_command:	ARITH_CMD
 
 cond_command:	COND_START COND_CMD COND_END
 			{ $$ = $2; }
-	; 
+	;
 
 elif_clause:	ELIF compound_list THEN compound_list
 			{ $$ = make_if_command ($2, $4, (COMMAND *)NULL); }
@@ -1127,7 +1127,7 @@ case_clause_sequence:  pattern_list SEMI_SEMI
 	|	pattern_list SEMI_SEMI_AND
 			{ $1->flags |= CASEPAT_TESTNEXT; $$ = $1; }
 	|	case_clause_sequence pattern_list SEMI_SEMI_AND
-			{ $2->flags |= CASEPAT_TESTNEXT; $2->next = $1; $$ = $2; }	
+			{ $2->flags |= CASEPAT_TESTNEXT; $2->next = $1; $$ = $2; }
 	;
 
 pattern:	WORD
@@ -1280,7 +1280,7 @@ simple_list1:	simple_list1 AND_AND newline_list simple_list1
 	;
 
 pipeline_command: pipeline
-			{ $$ = $1; }			
+			{ $$ = $1; }
 	|	BANG pipeline_command
 			{
 			  if ($2)
@@ -1610,7 +1610,7 @@ parser_will_prompt ()
 {
   return (current_readline_line == 0 || current_readline_line[current_readline_line_index] == 0);
 }
-  
+
 #else  /* !READLINE */
 
 void
@@ -2339,7 +2339,7 @@ shell_getc (remove_quoted_newline)
       sigwinch_received = 0;
       get_new_window_size (0, (int *)0, (int *)0);
     }
-      
+
   if (eol_ungetc_lookahead)
     {
       c = eol_ungetc_lookahead;
@@ -2694,7 +2694,7 @@ pop_alias:
 	    goto next_alias_char;	/* and get next character */
 	  }
 	else
-#endif 
+#endif
 	  goto restart_read;
     }
 
@@ -4263,7 +4263,7 @@ xparse_dolparen (base, string, indp, flags)
 
   if (*string == 0)
     {
-      if (flags & SX_NOALLOC) 
+      if (flags & SX_NOALLOC)
 	return (char *)NULL;
 
       ret = xmalloc (1);
@@ -4365,7 +4365,7 @@ xparse_dolparen (base, string, indp, flags)
       jump_to_top_level (DISCARD);
     }
 
-  if (flags & SX_NOALLOC) 
+  if (flags & SX_NOALLOC)
     return (char *)NULL;
 
   if (nc == 0)
@@ -4588,7 +4588,7 @@ cond_error ()
 static COND_COM *
 cond_expr ()
 {
-  return (cond_or ());  
+  return (cond_or ());
 }
 
 static COND_COM *
@@ -4799,7 +4799,7 @@ cond_term ()
       COND_RETURN_ERROR ();
     }
   return (term);
-}      
+}
 
 /* This is kind of bogus -- we slip a mini recursive-descent parser in
    here to handle the conditional statement syntax. */
@@ -4922,7 +4922,7 @@ read_token_word (character)
 	      quoted = 1;
 	      goto got_character;
 	    }
-	      
+
 	  peek_char = shell_getc (0);
 
 	  /* Backslash-newline is ignored in all cases except
@@ -5413,7 +5413,7 @@ reserved_word_acceptable (toksym)
       return 0;
     }
 }
-    
+
 /* Return the index of TOKEN in the alist of reserved words, or -1 if
    TOKEN is not a shell reserved word. */
 int
@@ -5630,7 +5630,7 @@ set_current_prompt_level (x)
   prompt_string_pointer = (x == 2) ? &ps2_prompt : &ps1_prompt;
   current_prompt_string = *prompt_string_pointer;
 }
-      
+
 static void
 print_prompt ()
 {
@@ -5708,7 +5708,7 @@ decode_prompt_string (string)
   size_t result_index;
   int c, n, i;
   char *temp, *t_host, octal_string[4];
-  struct tm *tm;  
+  struct tm *tm;
   time_t the_time;
   char timebuf[128];
   char *timefmt;
@@ -5846,7 +5846,7 @@ decode_prompt_string (string)
 	      else
 		temp = savestring (timebuf);
 	      goto add_string;
-	      
+
 	    case 'n':
 	      temp = (char *)xmalloc (3);
 	      temp[0] = no_line_editing ? '\n' : '\r';
@@ -6455,7 +6455,7 @@ parse_string_to_word_list (s, flags, whom)
 	}
       wl = make_word_list (yylval.word, wl);
     }
-  
+
   last_read_token = '\n';
   pop_stream ();
 
@@ -6608,7 +6608,7 @@ save_parser_state (ps)
 #if defined (ARRAY_VARS)
   ps->pipestatus = save_pipestatus_array ();
 #endif
-    
+
   ps->last_shell_builtin = last_shell_builtin;
   ps->this_shell_builtin = this_shell_builtin;
 

@@ -497,7 +497,7 @@ set_trap_state (sig)
   pending_traps[sig]++;
   trapped_signal_received = sig;
 }
-    
+
 sighandler
 trap_handler (sig)
      int sig;
@@ -569,7 +569,7 @@ trap_handler (sig)
 
       errno = oerrno;
     }
-  
+
   SIGRETURN (0);
 }
 
@@ -1223,7 +1223,7 @@ run_debug_trap ()
 
       notify_and_cleanup ();
 #endif
-      
+
 #if defined (DEBUGGER)
       /* If we're in the debugger and the DEBUG trap returns 2 while we're in
 	 a function or sourced script, we force a `return'. */

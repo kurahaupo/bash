@@ -19,7 +19,7 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined (CROSS_COMPILING) 
+#if !defined (CROSS_COMPILING)
 #  include <config.h>
 #else	/* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */
@@ -189,7 +189,7 @@ char *arrayvar_builtins[] =
   "typeset", "unset", "wait",		/*]*/
   (char *)NULL
 };
-	
+
 /* Forward declarations. */
 static int is_special_builtin ();
 static int is_assignment_builtin ();
@@ -224,7 +224,6 @@ void remove_trailing_whitespace ();
 
 #define document_name(b)	((b)->docname ? (b)->docname : (b)->name)
 
-
 /* For each file mentioned on the command line, process it and
    write the information to STRUCTFILE and EXTERNFILE, while
    creating the production file if necessary. */
@@ -420,7 +419,7 @@ copy_string_array (array)
   copy->width = array->width;
 
   copy->array = (char **)xmalloc ((1 + array->sindex) * sizeof (char *));
-  
+
   for (i = 0; i < array->sindex; i++)
     copy->array[i] = savestring (array->array[i]);
 
@@ -1509,7 +1508,7 @@ write_documentation (stream, documentation, indentation, flags)
 	{
 	  if (filename_p == 0)
 	    {
-	      if (line[0])	      
+	      if (line[0])
 		fprintf (stream, "  N_(\"");
 	      else
 		fprintf (stream, "  N_(\" ");		/* the empty string translates specially. */
@@ -1596,7 +1595,7 @@ write_helpfiles (builtins)
   char *helpfile, *bname;
   FILE *helpfp;
   int i, hdlen;
-  BUILTIN_DESC *builtin;	
+  BUILTIN_DESC *builtin;
 
   i = mkdir ("helpfiles", 0777);
   if (i < 0 && errno != EEXIST)
@@ -1629,8 +1628,8 @@ write_helpfiles (builtins)
       free (helpfile);
     }
   return 0;
-}      
-      	        
+}
+
 static int
 _find_in_table (name, name_table)
      char *name, *name_table[];

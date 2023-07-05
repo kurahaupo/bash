@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
 
   if (_rl_digit_p (c))
     {
-      r = _rl_digit_value (c);    	
+      r = _rl_digit_value (c);
       rl_numeric_arg = rl_explicit_arg ? (rl_numeric_arg * 10) +  r : r;
       rl_explicit_arg = 1;
       _rl_argcxt |= NUM_SAWDIGITS;
@@ -438,7 +438,7 @@ rl_replace_from_history (HIST_ENTRY *entry, int flags)
 }
 
 /* Process and free undo lists attached to each history entry prior to the
-   current entry, inclusive, reverting each line to its saved state.  This 
+   current entry, inclusive, reverting each line to its saved state.  This
    is destructive, and state about the current line is lost.  This is not
    intended to be called while actively editing, and the current line is
    not assumed to have been added to the history list. */
@@ -478,14 +478,14 @@ _rl_revert_previous_lines (void)
   /* Restore history state */
   rl_undo_list = saved_undo_list;	/* may have been set to null */
   history_set_pos (hpos);
-  
+
   /* reset the line buffer */
   rl_replace_line (lbuf, 0);
   _rl_set_the_line ();
 
   /* and clean up */
   xfree (lbuf);
-}  
+}
 
 /* Revert all lines in the history by making sure we are at the end of the
    history before calling _rl_revert_previous_lines() */

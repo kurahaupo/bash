@@ -81,7 +81,7 @@ cval (s, i, l)
 {
   size_t tmp;
   wchar_t wc;
-  mbstate_t mps;  
+  mbstate_t mps;
 
   if (MB_CUR_MAX == 1 || is_basic (s[i]))
     return ((wchar_t)s[i]);
@@ -91,7 +91,7 @@ cval (s, i, l)
   tmp = mbrtowc (&wc, s + i, l - i, &mps);
   if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))
     return ((wchar_t)s[i]);
-  return wc;  
+  return wc;
 }
 #endif
 

@@ -158,9 +158,9 @@ opt_end:
       if (nflag == 0)
 	fprintf (ofp, "\n");
       fflush (ofp);
-      return (0);	
+      return (0);
     }
-        
+
   r = printargs (list, ofp);
   if (r && nflag == 0)
     fprintf (ofp, "\n");

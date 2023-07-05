@@ -257,7 +257,7 @@ sh_un_double_quote (string)
    set with char needing to be backslash-quoted if table[char]==1.  FLAGS,
    if 1, causes tildes to be quoted as well.  If FLAGS&2, backslash-quote
    other shell blank characters. */
-   
+
 char *
 sh_backslash_quote (string, table, flags)
      char *string;
@@ -324,7 +324,7 @@ sh_backslash_quote_for_double_quotes (string, flags)
   size_t slen;
   int mb_cur_max;
   DECLARE_MBSTATE;
- 
+
   slen = strlen (string);
   send = string + slen;
   mb_cur_max = MB_CUR_MAX;

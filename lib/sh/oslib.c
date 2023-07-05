@@ -180,7 +180,7 @@ bcopy (s,d,n)
 #  endif
 void
 bzero (s, n)
-     void *s; 
+     void *s;
      size_t n;
 {
   register int i;
@@ -268,7 +268,7 @@ getmaxgroups ()
 #    else /* !NGROUPS */
   maxgroups = DEFAULT_MAXGROUPS;
 #    endif /* !NGROUPS */
-#  endif /* !NGROUPS_MAX */  
+#  endif /* !NGROUPS_MAX */
 #endif /* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
 
   if (maxgroups <= 0)

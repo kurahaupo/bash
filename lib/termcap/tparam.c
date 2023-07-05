@@ -22,7 +22,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 
-#ifdef HAVE_STDLIB_H 
+#ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
 #else
 extern char *getenv ();
@@ -59,7 +59,7 @@ char *realloc ();
 #ifndef NULL
 #define NULL (char *) 0
 #endif
-
+
 #ifndef emacs
 static void
 memory_out ()
@@ -91,7 +91,7 @@ xrealloc (ptr, size)
   return tem;
 }
 #endif /* not emacs */
-
+
 /* Assuming STRING is the value of a termcap string entry
    containing `%' constructs to expand parameters,
    merge in parameter values and store result in block OUTSTRING points to.
@@ -325,7 +325,7 @@ tparam1 (string, outstring, len, up, left, argp)
     strcat (op, left);
   return outstring;
 }
-
+
 #ifdef DEBUG
 
 main (argc, argv)

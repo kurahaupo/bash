@@ -3,7 +3,7 @@
 /* Copyright (C) 1992-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ noninc_dosearch (char *string, int dir, int flags)
   oldpos = where_history ();
   history_set_pos (noninc_history_pos);
   entry = current_history ();		/* will never be NULL after successful search */
-  
+
 #if defined (VI_MODE)
   if (rl_editing_mode != vi_mode)
 #endif
@@ -210,7 +210,7 @@ noninc_dosearch (char *string, int dir, int flags)
       rl_activate_mark ();
     }
   else
-    {  
+    {
       rl_point = 0;
       rl_mark = rl_end;
     }
@@ -291,7 +291,7 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
   int n;
 
   if (c < 0)
-    c = CTRL ('C');  
+    c = CTRL ('C');
 
   switch (c)
     {
@@ -428,7 +428,7 @@ noninc_search (int dir, int pchar)
 	  _rl_nsearch_abort (cxt);
 	  return 1;
 	}
-	  
+
       if (c == 0)
 	break;
 
@@ -436,7 +436,7 @@ noninc_search (int dir, int pchar)
       if (r < 0)
         return 1;
       else if (r == 0)
-	break;        
+	break;
     }
 
   r = _rl_nsearch_dosearch (cxt);
@@ -524,7 +524,7 @@ _rl_nsearch_callback (_rl_search_cxt *cxt)
   return ((r >= 0) ? _rl_nsearch_cleanup (cxt, r) : (r != 1));
 }
 #endif
-  
+
 static int
 rl_history_search_internal (int count, int dir)
 {

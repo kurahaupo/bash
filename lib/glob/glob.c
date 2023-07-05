@@ -3,7 +3,7 @@
    Copyright (C) 1985-2021 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne-Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -656,7 +656,7 @@ finddirs (pat, sdir, flags, ep, np)
 
   return ret;
 }
-     	
+
 /* Return a vector of names of files in directory DIR
    whose names match glob pattern PAT.
    The names are not in any particular order.

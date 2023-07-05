@@ -4,7 +4,7 @@
  build a test version with
    gcc -g -DDRIVER -I../.. -I../../include -o test-snprintf snprintf.c fmtu*long.o
 */
- 
+
 /*
    Unix snprintf implementation.
    derived from inetutils/libinetutils/snprintf.c Version 1.1
@@ -25,7 +25,7 @@
 
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
-   
+
    Original (pre-bash) Revision History:
 
    1.1:
@@ -187,7 +187,7 @@ static int decpoint;
 static int thoussep;
 static char *grouping;
 
-/* 
+/*
  * For the FLOATING POINT FORMAT :
  *  the challenge was finding a way to
  *  manipulate the Real numbers without having
@@ -203,20 +203,20 @@ static char *grouping;
       fraction = b(1)*10^-1 + b(2)*10^-2 + ...
 
       where:
-       0 <= a(i) => 9 
-       0 <= b(i) => 9 
- 
+       0 <= a(i) => 9
+       0 <= b(i) => 9
+
     from then it was simple math
  */
 
 /*
  * size of the buffer for the integral part
- * and the fraction part 
+ * and the fraction part
  */
 #define MAX_INT  99 + 1 /* 1 for the null */
 #define MAX_FRACT 307 + 1
 
-/* 
+/*
  * These functions use static buffers to store the results,
  * and so are not reentrant
  */
@@ -319,7 +319,7 @@ static char *groupnum PARAMS((char *));
        : sizeof (x) == sizeof (double) ? isnan_d (x) \
        : isnan_f (x))
 #endif
-  
+
 #ifndef isinf
   static inline int isinf_f  (float       x) { return !isnan (x) && isnan (x - x); }
   static inline int isinf_d  (double      x) { return !isnan (x) && isnan (x - x); }
@@ -398,7 +398,7 @@ static void xfree PARAMS((void *));
 	    if (((p)->flags & PF_SPACE) && (d) > zero) \
 	      PUT_CHAR(' ', p)
 
-/* pad right */ 
+/* pad right */
 #define PAD_RIGHT(p) \
 	    if ((p)->width > 0 && (p)->justify != LEFT) \
 	      for (; (p)->width > 0; (p)->width--) \
@@ -472,7 +472,7 @@ static void xfree PARAMS((void *));
 static double
 pow_10(n)
      int n;
-{ 
+{
   double P;
 
   /* handle common cases with fast switch statement. */
@@ -504,7 +504,7 @@ pow_10(n)
 }
 
 /*
- * Find the integral part of the log in base 10 
+ * Find the integral part of the log in base 10
  * Note: this not a real log10()
 	 I just need and approximation(integerpart) of x in:
 	  10^x ~= r
@@ -516,7 +516,7 @@ pow_10(n)
 static int
 log_10(r)
      double r;
-{ 
+{
   int i = 0;
   double result = 1.;
 
@@ -552,7 +552,7 @@ static double
 integral(real, ip)
      double real;
      double *ip;
-{ 
+{
   int j;
   double i, s, p;
   double real_integral = 0.;
@@ -591,11 +591,11 @@ integral(real, ip)
 }
 
 #define PRECISION 1.e-6
-/* 
+/*
  * return an ascii representation of the integral part of the number
  * and set fract to be an ascii representation of the fraction part
  * the container for the fraction and the integral part or statically
- * declare with fix size 
+ * declare with fix size
  */
 static char *
 numtoa(number, base, precision, fract)
@@ -613,7 +613,7 @@ numtoa(number, base, precision, fract)
 
   /* taking care of the obvious case: 0.0 */
   if (number == 0.)
-    { 
+    {
       integral_part[0] = '0';
       integral_part[1] = '\0';
       /* The fractional part has to take the precision into account */
@@ -659,7 +659,7 @@ numtoa(number, base, precision, fract)
 	  number = ip;
 	 }
     }
-     
+
   /* Oh No !! out of bound, ho well fill it up ! */
   if (number != 0.)
     for (i = 0; i < digits; ++i)
@@ -673,7 +673,7 @@ numtoa(number, base, precision, fract)
 
   /* reverse every thing */
   for ( i--, j = 0; j < i; j++, i--)
-    SWAP_INT(integral_part[i], integral_part[j]);  
+    SWAP_INT(integral_part[i], integral_part[j]);
 
   /* the fractional part */
   for (i=0, fp=fraction; precision > 0 && i < MAX_FRACT ; i++, precision--)
@@ -917,7 +917,7 @@ wstrings(p, tmp)
   if (len == (size_t)-1)
     {
       /* invalid multibyte sequence; bail now. */
-      FREE (os);      
+      FREE (os);
       return;
     }
 
@@ -1009,7 +1009,7 @@ floating(p, d)
     {
       /* smash the trailing zeros unless altform */
       for (i = strlen(tmp2) - 1; i >= 0 && tmp2[i] == '0'; i--)
-	tmp2[i] = '\0'; 
+	tmp2[i] = '\0';
       if (tmp2[0] == '\0')
 	p->precision = 0;
     }
@@ -1052,9 +1052,9 @@ floating(p, d)
 
   for (; *tmp2; tmp2++)
     PUT_CHAR(*tmp2, p); /* the fraction */
-  
+
   PAD_LEFT(p);
-} 
+}
 
 /* %e %E %g %G exponent representation */
 static void
@@ -1076,14 +1076,14 @@ exponent(p, d)
     {
       j = log_10(d);
       d = d / pow_10(j);  /* get the Mantissa */
-      d = ROUND(d, p);		  
+      d = ROUND(d, p);
     }
   tmp = dtoa(d, p->precision, &tmp2);
 
   /* 1 for unit, 1 for the '.', 1 for 'e|E',
    * 1 for '+|-', 2 for 'exp'  (but no `.' if precision == 0 */
   /* calculate how much padding need */
-  p->width = p->width - 
+  p->width = p->width -
   	    /* XXX - should this be d>0. && (p->flags & PF_PLUS) ? */
 #if 0
 	     ((d > 0. && p->justify == RIGHT) ? 1:0) -
@@ -1119,7 +1119,7 @@ exponent(p, d)
   if ((*p->pf == 'g' || *p->pf == 'G') && (p->flags & PF_ALTFORM) == 0)
     /* smash the trailing zeros unless altform */
     for (i = strlen(tmp2) - 1; i >= 0 && tmp2[i] == '0'; i--)
-      tmp2[i] = '\0'; 
+      tmp2[i] = '\0';
 
   for (; *tmp2; tmp2++)
     PUT_CHAR(*tmp2, p); /* the fraction */
@@ -1215,7 +1215,7 @@ groupnum (s)
 #else
     strcpy (ret, re);
 #endif
-   
+
   return ret;
 }
 
@@ -1426,7 +1426,7 @@ vsnprintf_internal(data, string, length, format, args)
 		data->flags |= PF_PTRDIFF_T;
 		SET_SIZE_FLAGS(data, ptrdiff_t);
 		continue;
-		
+
 	      /* Conversion specifiers */
 #ifdef FLOATING_POINT
 	      case 'f':  /* float, double */
@@ -1434,10 +1434,10 @@ vsnprintf_internal(data, string, length, format, args)
 		STAR_ARGS(data);
 		d = GETDOUBLE(data);
 		floating(data, d);
-conv_break:		
+conv_break:
 		state = 0;
 		break;
-	      case 'g': 
+	      case 'g':
 	      case 'G':
 		STAR_ARGS(data);
 		DEF_PREC(data);
@@ -1536,7 +1536,7 @@ conv_break:
 		  }
 		state = 0;
 		break;
-	      case 'x': 
+	      case 'x':
 	      case 'X':  /* hexadecimal */
 		STAR_ARGS(data);
 #ifdef HAVE_LONG_LONG_INT
@@ -1574,7 +1574,7 @@ conv_break:
 		  }
 		else
 #endif
-		  {		
+		  {
 		    ul = GETARG (int);
 		    PUT_CHAR(ul, data);
 		  }
@@ -1664,7 +1664,7 @@ ldfallback (data, fs, fe, ld)
     sprintf (obuf, fmtbuf, ld);
 
   for (x = obuf; *x; x++)
-    PUT_CHAR (*x, data);    
+    PUT_CHAR (*x, data);
   xfree (obuf);
 }
 #endif /* FLOATING_POINT && HAVE_LONG_DOUBLE */
@@ -1695,7 +1695,7 @@ dfallback (data, fs, fe, d)
     sprintf (obuf, fmtbuf, d);
 
   for (x = obuf; *x; x++)
-    PUT_CHAR (*x, data);    
+    PUT_CHAR (*x, data);
 }
 #endif /* FLOATING_POINT */
 
@@ -1858,7 +1858,7 @@ main()
   printf("snprintf returns %d with non-NULL first argument and size of 0\n", si);
   si = snprintf((char *)NULL, 16, "abcde\n");
   printf("snprintf returns %d with NULL first argument and non-zero size\n", si);
-  
+
 /*
   printf("Suite of test for snprintf:\n");
   printf("a_format\n");
@@ -2032,9 +2032,9 @@ main()
   printf("%s\n", h);
 
   printf("/%%.1G/, 3100000000.4\n");
-  snprintf(holder, sizeof holder, "/%.1G/\n", 3100000000.4);  
-  asprintf(&h, "/%.1G/\n", 3100000000.4);  
-  printf("/%.1G/\n", 3100000000.4); 
+  snprintf(holder, sizeof holder, "/%.1G/\n", 3100000000.4);
+  asprintf(&h, "/%.1G/\n", 3100000000.4);
+  printf("/%.1G/\n", 3100000000.4);
   printf("%s", holder);
   printf("%s\n", h);
 
@@ -2044,7 +2044,7 @@ main()
   printf("%s", holder); printf("%d\n\n", i);
   asprintf(&h, "abc%n", &i);
   printf("%s", h); printf("%d\n\n", i);
-  
+
   printf("%%*.*s --> 10.10\n");
   snprintf(holder, sizeof holder, "%*.*s\n", 10, 10, BLURB);
   asprintf(&h, "%*.*s\n", 10, 10, BLURB);
@@ -2061,7 +2061,7 @@ main()
 
 #define BIG "Hello this is a too big string for the buffer"
 /*  printf("A buffer to small of 10, trying to put this:\n");*/
-  printf("<%%>, %s\n", BIG); 
+  printf("<%%>, %s\n", BIG);
   i = snprintf(holder, 10, "%s\n", BIG);
   i = asprintf(&h, "%s", BIG);
   printf("<%s>\n", BIG);
@@ -2072,7 +2072,7 @@ main()
   i = snprintf(holder, 100, "%p", vsnprintf);
   i = asprintf(&h, "%p", vsnprintf);
   printf("<%p>\n", vsnprintf);
-  printf("<%s>\n", holder);  
+  printf("<%s>\n", holder);
   printf("<%s>\n\n", h);
 
   printf ("<%%lu> LONG_MAX+1\n");

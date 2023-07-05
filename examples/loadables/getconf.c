@@ -979,7 +979,7 @@ getconf_internal (const struct conf *c, int all)
 
   return (r);
 }
-    
+
 static int
 getconf_all (void)
 {
@@ -1029,7 +1029,7 @@ getconf_one (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-     
+
   return (getconf_print (c, vpath, 0));
 }
 
@@ -1099,7 +1099,7 @@ getconf_print (const struct conf *c, const char *vpath, int all)
     case UNDEFINED:
       builtin_error ("%s: undefined", c->name);
       return (EXECUTION_FAILURE);
-    }   
+    }
 
   /* NOTREACHED */
   return (EX_USAGE);

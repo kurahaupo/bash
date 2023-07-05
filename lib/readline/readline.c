@@ -4,7 +4,7 @@
 /* Copyright (C) 1987-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ int _rl_mark_modified_lines = 0;
 /* The style of `bell' notification preferred.  This can be set to NO_BELL,
    AUDIBLE_BELL, or VISIBLE_BELL. */
 int _rl_bell_preference = AUDIBLE_BELL;
-     
+
 /* String inserted into the line by rl_insert_comment (). */
 char *_rl_comment_begin;
 
@@ -281,7 +281,7 @@ int _rl_keyseq_timeout = 500;
 	} \
     } \
   while (0);
-        
+
 /* Forward declarations used by the display, termcap, and history code. */
 
 /* **************************************************************** */
@@ -347,7 +347,7 @@ rl_set_prompt (const char *prompt)
   rl_visible_prompt_length = rl_expand_prompt (rl_prompt);
   return 0;
 }
-  
+
 /* Read a line of input.  Prompt with PROMPT.  An empty PROMPT means
    none.  A return value of NULL means that EOF was encountered. */
 char *
@@ -849,7 +849,7 @@ _rl_dispatch_callback (_rl_keyseq_cxt *cxt)
   return r;
 }
 #endif /* READLINE_CALLBACKS */
-  
+
 /* Do the command associated with KEY in MAP.
    If the associated command is really a keymap, then read
    another key, and dispatch into that map. */
@@ -993,7 +993,7 @@ _rl_dispatch_subseq (register int key, Keymap map, int got_subseq)
 	      (RL_ISSTATE (RL_STATE_MACROINPUT) && _rl_peek_macro_key () == 0) &&
 	      _rl_pushed_input_available () == 0 &&
 	      _rl_input_queued ((_rl_keyseq_timeout > 0) ? _rl_keyseq_timeout*1000 : 0) == 0)
-	    return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));	      
+	    return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));
 #endif
 
 	  RESIZE_KEYSEQ_BUFFER ();
@@ -1290,7 +1290,7 @@ readline_initialize_everything (void)
 
   /* Decide whether we should automatically go into eight-bit mode. */
   _rl_init_eightbit ();
-      
+
   /* Read in the init file. */
   rl_read_init_file ((char *)NULL);
 
@@ -1448,7 +1448,7 @@ bind_bracketed_paste_prefix (void)
 
   _rl_keymap = xkeymap;
 }
-  
+
 /* **************************************************************** */
 /*								    */
 /*		Saving and Restoring Readline's state		    */

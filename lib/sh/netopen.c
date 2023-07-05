@@ -1,4 +1,4 @@
-/*   
+/*
  * netopen.c -- functions to make tcp/udp connections
  *
  * Chet Ramey
@@ -31,7 +31,7 @@
 #  include <unistd.h>
 #endif
 
-#include <stdio.h> 
+#include <stdio.h>
 #include <sys/types.h>
 
 #if defined (HAVE_SYS_SOCKET_H)
@@ -108,11 +108,11 @@ _getaddr (host, ap)
     }
 #endif
   return 0;
-  
+
 }
 
 /* Return 1 if SERV is a valid port number and stuff the converted value into
-   PP in network byte order. */   
+   PP in network byte order. */
 static int
 _getserv (serv, proto, pp)
      char *serv;
@@ -153,7 +153,7 @@ _getserv (serv, proto, pp)
  * Open a TCP or UDP connection to HOST on port SERV.  Uses the
  * traditional BSD mechanisms.  Returns the connected socket or -1 on error.
  */
-static int 
+static int
 _netopen4(host, serv, typ)
      char *host, *serv;
      int typ;
@@ -176,7 +176,7 @@ _netopen4(host, serv, typ)
       errno = EINVAL;
       return -1;
     }
-	
+
   memset ((char *)&sin, 0, sizeof(sin));
   sin.sin_family = AF_INET;
   sin.sin_port = p;
@@ -273,7 +273,7 @@ _netopen6 (host, serv, typ)
  * if available, falling back to the traditional BSD mechanisms otherwise.
  * Returns the connected socket or -1 on error.
  */
-static int 
+static int
 _netopen(host, serv, typ)
      char *host, *serv;
      int typ;

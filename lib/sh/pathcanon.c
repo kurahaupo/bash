@@ -56,7 +56,7 @@ _is_cygdrive (path)
   /* If the path is the first part of a network path, treat it as
      existing. */
   if (path[0] == '/' && path[1] == '/' && !strchr (path + 2, '/'))
-    return 1; 
+    return 1;
   /* Otherwise check for /cygdrive prefix. */
   if (first_time)
     {
@@ -68,7 +68,7 @@ _is_cygdrive (path)
     }
   return !strcasecmp (path, user) || !strcasecmp (path, system);
 }
-#endif /* __CYGWIN__ */	
+#endif /* __CYGWIN__ */
 
 /* Return 1 if PATH corresponds to a directory.  A function for debugging. */
 static int

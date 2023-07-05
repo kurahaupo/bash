@@ -1,7 +1,7 @@
 /* Copyright (C) 1991-2017 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +32,7 @@ EXTGLOB_PATTERN_P (pat)
     default:
       return 0;
     }
-    
+
   return 0;
 }
 #endif

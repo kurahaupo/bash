@@ -139,7 +139,7 @@ utf8_mblen (s, n)
 	{
 	  if (n == 1)
 	    return -2;
-	 
+
 	  /*
 	   *				c	c1	c2	c3
 	   *
@@ -147,7 +147,7 @@ utf8_mblen (s, n)
 	   *    U+40000..U+FFFFF     F1..F3   80..BF   80..BF   80..BF
 	   *    U+100000..U+10FFFF   F4       80..8F   80..BF   80..BF
 	   */
-	  if (((c1 ^ 0x80) < 0x40) 
+	  if (((c1 ^ 0x80) < 0x40)
 		&& (c >= 0xf1 || c1 >= 0x90)
 		&& (c < 0xf4 || (c == 0xf4 && c1 < 0x90)))
 	    {

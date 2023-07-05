@@ -31,7 +31,7 @@
 #if !defined (PARAMS)
 #  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus) || defined (PROTOTYPES)
 #    define PARAMS(protos) protos
-#  else 
+#  else
 #    define PARAMS(protos) ()
 #  endif
 #endif

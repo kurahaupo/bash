@@ -218,7 +218,7 @@ getrandom (buf, len, flags)
   return -1;
 }
 #endif
-      
+
 u_bits32_t
 get_urandom32 ()
 {

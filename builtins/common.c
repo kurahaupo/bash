@@ -65,7 +65,7 @@
 #endif
 
 #if !defined (errno)
-extern int errno;   
+extern int errno;
 #endif /* !errno */
 
 extern const char * const bash_getcwd_errstr;
@@ -1056,7 +1056,7 @@ builtin_find_indexed_array (array_name, flags)
 
   return entry;
 }
-#endif /* ARRAY_VARS */	
+#endif /* ARRAY_VARS */
 
 /* Like check_unbind_variable, but for use by builtins (only matters for
    error messages). */

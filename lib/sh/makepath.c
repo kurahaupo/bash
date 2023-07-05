@@ -118,7 +118,7 @@ sh_makepath (path, dir, flags)
   while (*s)
     *r++ = *s++;
   if (s > xpath && s[-1] != '/')
-    *r++ = '/';      
+    *r++ = '/';
   s = xdir;
   while (*r++ = *s++)
     ;

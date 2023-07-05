@@ -52,7 +52,7 @@ _remove_directory(const char *dirname)
   if ((dir = opendir(dirname)))
     {
       while ((dp = readdir(dir)))
-	{	
+	{
 #ifdef __GNUC__
 	  char fname[dirlen + 1 + strlen (dp->d_name) + 1];
 #else
@@ -60,7 +60,7 @@ _remove_directory(const char *dirname)
 	  int fnsize;
 #endif
 
-	  QUIT;	  
+	  QUIT;
           if (*dp->d_name == '.' && (dp->d_name[1] == 0 || (dp->d_name[1] == '.' && dp->d_name[2] == 0)))
             continue;
 
@@ -81,7 +81,7 @@ _remove_directory(const char *dirname)
         }
 
       closedir(dir);
-		
+
       if (err == 0 && rmdir (dirname) && force == 0)
         err = 1;
     }
@@ -153,7 +153,7 @@ rm_builtin (list)
           builtin_usage ();
           return (EXECUTION_FAILURE);
 	}
-      return (EXECUTION_SUCCESS);      
+      return (EXECUTION_SUCCESS);
     }
 
   for (l = list; l; l = l->next)

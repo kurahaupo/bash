@@ -74,7 +74,7 @@ curencoding ()
     *mod = '\0';
   return ++dot;
 #endif
-}  
+}
 
 static void
 init_tofs ()
@@ -103,7 +103,7 @@ fnx_tofs (string, len)
   ICONV_CONST char *inbuf;
   char *tempbuf;
   size_t templen;
-  
+
   if (conv_tofs == (iconv_t)-1)
     init_tofs ();
   if (conv_tofs == (iconv_t)-1)

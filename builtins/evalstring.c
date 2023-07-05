@@ -153,7 +153,7 @@ optimize_subshell_command (command)
 	   (command->value.Connection->connector == AND_AND || command->value.Connection->connector == OR_OR || command->value.Connection->connector == ';') &&
 	   command->value.Connection->second->type == cm_simple &&
 	   parser_expanding_alias () == 0)
-    {	   
+    {
       command->value.Connection->second->flags |= CMD_TRY_OPTIMIZING;
       command->value.Connection->second->value.Simple->flags |= CMD_TRY_OPTIMIZING;
     }
@@ -176,7 +176,7 @@ optimize_shell_function (command)
     {
       fc->value.Connection->second->flags |= CMD_NO_FORK;
       fc->value.Connection->second->value.Simple->flags |= CMD_NO_FORK;
-    }  
+    }
 }
 
 int
@@ -324,10 +324,10 @@ parse_and_execute (string, from_file, flags)
   if (parser_expanding_alias ())
     /* push current shell_input_line */
     parser_save_alias ();
-  
+
   if (lreset == 0)
     line_number--;
-    
+
   indirection_level++;
 
   code = should_jump_to_top_level = 0;
@@ -375,7 +375,7 @@ parse_and_execute (string, from_file, flags)
 	        }
 	      should_jump_to_top_level = 1;
 	      goto out;
-	    case FORCE_EOF:	      
+	    case FORCE_EOF:
 	    case EXITPROG:
 	      if (command)
 		run_unwind_frame ("pe_dispose");
@@ -674,7 +674,7 @@ parse_string (string, from_file, flags, cmdp, endp)
 	      break;
 	    }
 	}
-	  
+
       if (parse_command () == 0)
 	{
 	  if (cmdp)
@@ -838,6 +838,6 @@ evalstring (string, from_file, flags)
 	  sh_longjmp (return_catch, 1);
 	}
     }
-    
+
   return (r);
 }

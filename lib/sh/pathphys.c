@@ -158,7 +158,7 @@ sh_physpath (path, flags)
 #endif
 		  goto error;
 		}
-		
+
 	      *q++ = *p++;
 	    }
 
@@ -221,7 +221,7 @@ error:
 #endif
 	      double_slash_path = DOUBLE_SLASH (workpath);
 	      qbase += double_slash_path;
-    
+
 	      for (p = workpath; p < qbase; )
 		*q++ = *p++;
 	      qbase = q;

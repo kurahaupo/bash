@@ -439,7 +439,7 @@ throw_to_top_level ()
 
   /* This needs to stay because jobs.c:make_child() uses it without resetting
      the signal mask. */
-  restore_sigmask ();  
+  restore_sigmask ();
 
   reset_parser ();
 

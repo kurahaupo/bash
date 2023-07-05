@@ -179,7 +179,7 @@ id_pruser (uid)
     printf ("%s", pwd->pw_name);
   else
     printf ("%u", (unsigned) uid);
-      
+
   return r;
 }
 
@@ -238,7 +238,7 @@ id_prgroups (uname)
 	putchar (' ');
 	id_prgrp (glist[i]);
       }
-  
+
   return r;
 }
 
@@ -266,16 +266,16 @@ id_prall (uname)
     printf ("(%s)", grp->gr_name);
 
   if (euid != ruid)
-    { 
+    {
       printf (" euid=%u", (unsigned) euid);
       pwd = getpwuid (euid);
       if (pwd == NULL)
 	r = 1;
-      else 
+      else
 	printf ("(%s)", pwd->pw_name);
     }
 
-  if (egid != rgid) 
+  if (egid != rgid)
     {
       printf (" egid=%u", (unsigned) egid);
       grp = getgrgid (egid);

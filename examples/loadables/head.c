@@ -147,7 +147,7 @@ head_builtin (list)
       rval = file_head (fp, nline);
       fclose (fp);
     }
-   
+
   return (rval);
 }
 

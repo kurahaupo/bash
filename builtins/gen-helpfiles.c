@@ -22,7 +22,7 @@
    the long_doc members of each struct builtin element and writes those to
    the file named by the `handle' member of the struct builtin element. */
 
-#if !defined (CROSS_COMPILING) 
+#if !defined (CROSS_COMPILING)
 #  include <config.h>
 #else	/* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */

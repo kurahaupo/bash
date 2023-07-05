@@ -123,7 +123,7 @@ static int
 getallflags ()
 {
   int i, allflags;
-  
+
   for (i = allflags = 0; i < N_FLAGS; i++)
     allflags |= file_flags[i].value;
   return allflags;
@@ -141,7 +141,7 @@ getflags(int fd, int p)
 	builtin_error("can't get status for fd %d: %s", fd, strerror(errno));
       return -1;
     }
-    
+
   if ((f = fcntl(fd, F_GETFL)) == -1)
     {
       if (p)
@@ -209,7 +209,7 @@ parseflags(char *s, int *p, int *n)
 	  v = &f;
 	  break;
 	}
-			
+
       for (i = 0; i < N_FLAGS; i++)
 	if (strcmp(s, file_flags[i].name) == 0)
 	  {
@@ -303,7 +303,7 @@ fdflags_builtin (WORD_LIST *list)
 	  builtin_usage ();
 	  return (EX_USAGE);
 	}
-	
+
     }
   list = loptend;
 

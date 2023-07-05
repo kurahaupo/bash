@@ -45,7 +45,7 @@ rename (from, to)
   struct stat fb, tb;
 
   if (stat (from, &fb) < 0)
-    return -1;  
+    return -1;
 
   if (stat (to, &tb) < 0)
     {

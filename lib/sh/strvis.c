@@ -3,7 +3,7 @@
 /* Copyright (C) 2022 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -107,11 +107,11 @@ sh_charvis (s, sindp, slen, ret, rindp)
     }
   else
     ret[ri++] = s[si++];
-  
+
   *sindp = si;
   *rindp = ri;
 
-  return si;    
+  return si;
 }
 
 /* Return a new string with `unsafe' non-graphical characters in S rendered

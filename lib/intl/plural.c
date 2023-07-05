@@ -754,7 +754,6 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
 
 #if YYERROR_VERBOSE
 
@@ -809,7 +808,6 @@ yystpcpy (yydest, yysrc)
 
 #endif /* !YYERROR_VERBOSE */
 
-
 
 #if YYDEBUG
 /*--------------------------------.
@@ -878,7 +876,6 @@ yydestruct (yymsg, yytype, yyvaluep)
         break;
     }
 }
-
 
 /* Prevent warnings from -Wmissing-prototypes.  */
 
@@ -1268,7 +1265,6 @@ yyreduce:
 
 /* Line 1037 of yacc.c.  */
 #line 1270 "/usr/src/local/bash/bash-20080814/lib/intl/plural.c"
-
   yyvsp -= yylen;
   yyssp -= yylen;
 

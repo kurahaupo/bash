@@ -270,7 +270,7 @@ make_command_string_internal (command)
 		s[0] = ' ';
 		s[1] = c;
 		s[2] = '\0';
-		
+
 		print_deferred_heredocs (s);
 
 		if (c != '&' || command->value.Connection->second)
@@ -336,7 +336,7 @@ make_command_string_internal (command)
 
 	  make_command_string_internal (command->value.Connection->second);
 	  PRINT_DEFERRED_HEREDOCS ("");
-	  printing_connection--;	  	  
+	  printing_connection--;
 	  break;
 
 	case cm_function_def:
@@ -414,7 +414,7 @@ xtrace_set (fd, fp)
     }
   if (fd >= 0 && fileno (fp) != fd)
     internal_warning (_("xtrace fd (%d) != fileno xtrace fp (%d)"), fd, fileno (fp));
-  
+
   xtrace_fd = fd;
   xtrace_fp = fp;
 }
@@ -507,7 +507,7 @@ indirection_level_string ()
 	indirection_string[i] = ps4_firstc[0];
       else
 	memcpy (indirection_string+i, ps4_firstc, ps4_firstc_len);
-    }      
+    }
 
   for (j = ps4_firstc_len; *ps4 && ps4[j] && i < indirection_stringsiz - 1; i++, j++)
     indirection_string[i] = ps4[j];
@@ -965,7 +965,7 @@ xtrace_print_cond_term (type, invert, op, arg1, arg2)
   fprintf (xtrace_fp, " ]]\n");
 
   fflush (xtrace_fp);
-}	  
+}
 #endif /* COND_COMMAND */
 
 #if defined (DPAREN_ARITHMETIC) || defined (ARITH_FOR_COMMAND)
@@ -1008,7 +1008,7 @@ print_heredocs (heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf (" "); 
+  cprintf (" ");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_redirection (hdtail);
@@ -1023,7 +1023,7 @@ print_heredoc_bodies (heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf ("\n"); 
+  cprintf ("\n");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_heredoc_body (hdtail);
@@ -1045,7 +1045,7 @@ print_deferred_heredocs (cstring)
 {
   /* We now print the heredoc headers in print_redirection_list */
   if (cstring && cstring[0] && (cstring[0] != ';' || cstring[1]))
-    cprintf ("%s", cstring); 
+    cprintf ("%s", cstring);
   if (deferred_heredocs)
     {
       print_heredoc_bodies (deferred_heredocs);
@@ -1056,7 +1056,7 @@ print_deferred_heredocs (cstring)
     }
   deferred_heredocs = (REDIRECT *)NULL;
 }
-      
+
 static void
 print_redirection_list (redirects)
      REDIRECT *redirects;
@@ -1471,7 +1471,7 @@ named_function_string (name, command, flags)
 	  }
 #else
       if (result[2] == '\n')	/* XXX -- experimental */
-	memmove (result + 2, result + 3, strlen (result) - 2);	
+	memmove (result + 2, result + 3, strlen (result) - 2);
 #endif
     }
 

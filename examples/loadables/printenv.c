@@ -34,7 +34,7 @@
 extern char **export_env;
 
 int
-printenv_builtin (list) 
+printenv_builtin (list)
      WORD_LIST *list;
 {
   register char **envp;
