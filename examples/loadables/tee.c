@@ -158,7 +158,7 @@ tee_builtin (WORD_LIST *list)
       free (fl);
     }
 
-  QUIT;  
+  QUIT;
   return (rval);
 }
 

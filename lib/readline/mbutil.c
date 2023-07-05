@@ -3,7 +3,7 @@
 /* Copyright (C) 2001-2021,2023 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -168,14 +168,14 @@ _rl_find_next_mbchar_internal (const char *string, int seed, int count, int find
      treat as a byte. */
   if (point == seed - 1)	/* invalid */
     return seed + 1;
-    
+
   /* if this is true, means that seed was not pointing to a byte indicating
      the beginning of a multibyte character.  Correct the point and consume
      one char. */
   if (seed < point)
     count--;
 
-  while (count > 0)  
+  while (count > 0)
     {
       len = strlen (string + point);
       if (len == 0)
@@ -291,7 +291,7 @@ _rl_find_prev_utf8char (const char *string, int seed, int find_non_zero)
     }
 
   return ((prev < 0) ? 0 : prev);
-}  
+}
 
 /*static*/ int
 _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
@@ -306,7 +306,7 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
 
   memset(&ps, 0, sizeof(mbstate_t));
   length = strlen(string);
-  
+
   if (seed < 0)
     return 0;
   else if (length < seed)
@@ -347,7 +347,7 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
 		prev = point;
 	    }
 	  else
-	    prev = point;  
+	    prev = point;
 	}
 
       point += tmp;
@@ -357,9 +357,9 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
 }
 
 /* return the number of bytes parsed from the multibyte sequence starting
-   at src, if a non-L'\0' wide character was recognized. It returns 0, 
-   if a L'\0' wide character was recognized. It  returns (size_t)(-1), 
-   if an invalid multibyte sequence was encountered. It returns (size_t)(-2) 
+   at src, if a non-L'\0' wide character was recognized. It returns 0,
+   if a L'\0' wide character was recognized. It  returns (size_t)(-1),
+   if an invalid multibyte sequence was encountered. It returns (size_t)(-2)
    if it couldn't parse a complete  multibyte character.  */
 int
 _rl_get_char_len (const char *src, mbstate_t *ps)
@@ -404,7 +404,7 @@ _rl_compare_chars (const char *buf1, int pos1, mbstate_t *ps1, const char *buf2,
 {
   int i, w1, w2;
 
-  if ((w1 = _rl_get_char_len (&buf1[pos1], ps1)) <= 0 || 
+  if ((w1 = _rl_get_char_len (&buf1[pos1], ps1)) <= 0 ||
 	(w2 = _rl_get_char_len (&buf2[pos2], ps2)) <= 0 ||
 	(w1 != w2) ||
 	(buf1[pos1] != buf2[pos2]))
@@ -435,7 +435,7 @@ _rl_adjust_point (const char *string, int point, mbstate_t *ps)
     return -1;
   if (length < point)
     return -1;
-  
+
   while (pos < point)
     {
       if (_rl_utf8locale && UTF8_SINGLEBYTE(string[pos]))
@@ -495,7 +495,7 @@ _rl_char_value (const char *buf, int ind)
     l = strlen (buf+ind);
   memset (&ps, 0, sizeof (mbstate_t));
   tmp = MBRTOWC (&wc, buf + ind, l - ind, &ps);
-  if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))  
+  if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))
     return ((WCHAR_T) buf[ind]);
   return wc;
 }

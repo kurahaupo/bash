@@ -86,7 +86,7 @@ divtimeval (struct timeval *d, int m)
   d->tv_usec = (d->tv_usec + 1000000 * (t % m)) / m;
   return d;
 }
-  
+
 /* Do "cpu = ((user + sys) * 10000) / real;" with timevals.
    Barely-tested code from Deven T. Corzine <deven@ties.org>. */
 int
@@ -121,7 +121,7 @@ timeval_to_cpu (struct timeval *rt, struct timeval *ut, struct timeval *st)
     }
 
   return ((t2.tv_sec == 0) ? 0 : t1.tv_sec / t2.tv_sec);
-}  
+}
 
 /* Convert a pointer to a struct timeval to seconds and fractions of a
    second, returning the values in *SP and *SFP, respectively.  The precision
@@ -151,7 +151,7 @@ timeval_to_secs (struct timeval *tvp, time_t *sp, long *sfp, int maxval)
       *sfp -= maxval;
     }
 }
-  
+
 /* Print the contents of a struct timeval * in a standard way to stdio
    stream FP.  */
 void

@@ -179,7 +179,7 @@ bind_keyseq:
 	  keyseq[l++] = '\\';
 	  keyseq[l++] = '\\';
 	}
-      else if (key == '\0')	  
+      else if (key == '\0')
 	{
 	  keyseq[l++] = '\\';
 	  keyseq[l++] = '0';
@@ -377,7 +377,7 @@ rl_generic_bind (int type, const char *keyseq, char *data, Keymap map)
   int keys_len, prevkey, ic;
   register int i;
   KEYMAP_ENTRY k;
-  Keymap prevmap;  
+  Keymap prevmap;
 
   k.function = 0;
 
@@ -549,7 +549,7 @@ rl_translate_keyseq (const char *seq, char *array, int *len)
 	      i++;
 	      has_meta = 1;
 	      continue;
-	    }	      
+	    }
 
 	  /* Translate other backslash-escaped characters.  These are the
 	     same escape sequences that bash's `echo' and `printf' builtins
@@ -948,7 +948,7 @@ rl_trim_arg_from_keyseq	(const char *keyseq, size_t len, Keymap map)
      key sequence that consists solely of a numeric argument */
   return -1;
 }
-  
+
 /* The last key bindings file read. */
 static char *last_readline_init_file = (char *)NULL;
 
@@ -975,7 +975,7 @@ _rl_read_file (char *filename, size_t *sizep)
       RL_CHECK_SIGNALS ();
       file = open (filename, O_RDONLY, 0666);
     }
-  
+
   if ((file < 0) || (fstat (file, &finfo) < 0))
     {
       i = errno;
@@ -1081,7 +1081,7 @@ _rl_read_init_file (const char *filename, int include_level)
   RL_CHECK_SIGNALS ();
   if (buffer == 0)
     return (errno);
-  
+
   if (include_level == 0 && filename != last_readline_init_file)
     {
       FREE (last_readline_init_file);
@@ -1199,7 +1199,7 @@ parse_comparison_op (const char *s, int *indp)
     }
 
   *indp = i;
-  return op;        
+  return op;
 }
 
 /* **************************************************************** */
@@ -1507,7 +1507,7 @@ parser_include (char *args)
 
   return r;
 }
-  
+
 /* Associate textual names with actual functions. */
 static const struct {
   const char * const name;
@@ -1695,7 +1695,7 @@ rl_parse_and_bind (char *string)
 	      while (e >= value && whitespace (*e))
 		e--;
 	      e++;		/* skip back to whitespace or EOS */
-	  
+
 	      if (*e && e >= value)
 		*e = '\0';
 	    }
@@ -1928,7 +1928,7 @@ static const char *
 boolean_varname (int i)
 {
   return ((i >= 0) ? boolean_varlist[i].name : (char *)NULL);
-}  
+}
 
 /* Hooks for handling special boolean variables, where a
    function needs to be called or another variable needs
@@ -1998,13 +1998,13 @@ static const struct {
   { "completion-prefix-display-length", V_INT,	sv_dispprefix },
   { "completion-query-items", V_INT,	sv_compquery },
   { "editing-mode",	V_STRING,	sv_editmode },
-  { "emacs-mode-string", V_STRING,	sv_emacs_modestr },  
+  { "emacs-mode-string", V_STRING,	sv_emacs_modestr },
   { "history-size",	V_INT,		sv_histsize },
   { "isearch-terminators", V_STRING,	sv_isrchterm },
   { "keymap",		V_STRING,	sv_keymap },
   { "keyseq-timeout",	V_INT,		sv_seqtimeout },
-  { "vi-cmd-mode-string", V_STRING,	sv_vicmd_modestr }, 
-  { "vi-ins-mode-string", V_STRING,	sv_viins_modestr }, 
+  { "vi-cmd-mode-string", V_STRING,	sv_vicmd_modestr },
+  { "vi-ins-mode-string", V_STRING,	sv_viins_modestr },
   { (char *)NULL,	0, (_rl_sv_func_t *)0 }
 };
 
@@ -2023,7 +2023,7 @@ static const char *
 string_varname (int i)
 {
   return ((i >= 0) ? string_varlist[i].name : (char *)NULL);
-}  
+}
 
 /* A boolean value that can appear in a `set variable' command is true if
    the value is null or empty, `on' (case-insensitive), or "1".  All other

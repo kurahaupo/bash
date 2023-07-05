@@ -403,7 +403,7 @@ enable_hostname_completion (int on_or_off)
      allocate new memory for rl_completer_word_break_characters. */
 
   if (bash_readline_initialized == 0 &&
-      (rl_completer_word_break_characters == 0 || 
+      (rl_completer_word_break_characters == 0 ||
        rl_completer_word_break_characters == rl_basic_word_break_characters))
     {
       if (on_or_off)
@@ -979,7 +979,7 @@ edit_and_execute_command (int count, int c, int editing_mode, const char *edit_c
 
   metaval = rl_variable_value ("input-meta");
   metaflag = RL_BOOLEAN_VARIABLE_VALUE (metaval);
-  
+
   if (rl_deprep_term_function)
     (*rl_deprep_term_function) ();
   rl_clear_signals ();
@@ -1130,7 +1130,7 @@ bash_forward_shellword (int count, int key)
 	  rl_ding ();
 	  return 0;
         }
-	
+
       /* Now move forward until we hit a non-quoted metacharacter or EOL */
       while (p < rl_end && (c = rl_line_buffer[p]) && WORDDELIM (c) == 0)
 	{
@@ -1161,7 +1161,7 @@ bash_forward_shellword (int count, int key)
 	  return (0);
 	}
 
-      count--;      
+      count--;
     }
 
   rl_point = p;
@@ -1418,9 +1418,9 @@ bash_spell_correct_shellword (int count, int key)
 /* **************************************************************** */
 
 #define COMMAND_SEPARATORS ";|&{(`"
-/* )} */ 
+/* )} */
 #define COMMAND_SEPARATORS_PLUS_WS ";|&{(` \t"
-/* )} */ 
+/* )} */
 
 /* check for redirections and other character combinations that are not
    command separators */
@@ -1625,7 +1625,7 @@ attempt_shell_completion (const char *text, int start, int end)
 	ti--;
     }
 #endif
-      
+
   in_command_position = 0;
   if (ti < 0)
     {
@@ -1977,7 +1977,7 @@ executable_completion (const char *filename, int searching_path)
   c = 0;
   f = bash_quote_filename ((char *)filename, SINGLE_MATCH, &c);
   bash_directory_completion_hook (&f);
-  
+
   r = searching_path ? executable_file (f) : executable_or_directory (f);
   free (f);
   return r;
@@ -2236,7 +2236,7 @@ globword:
 	    }
 
 	  local_index = 0;
-		
+
 	  if (glob_matches[1] && rl_completion_type == TAB)	/* multiple matches are bad */
 	    {
 	      strvec_dispose (glob_matches);
@@ -2273,7 +2273,7 @@ globword:
       hint_is_dir = 0;	/* only return the hint text once */
       return (savestring (hint_text));
     }
-    
+
   /* Repeatedly call filename_completion_function while we have
      members of PATH left.  Question:  should we stat each file?
      Answer: we call executable_file () on each file. */
@@ -3492,7 +3492,7 @@ bash_expand_filename (char *filename)
       return newname;
     }
 }
-  
+
 /* Expand a filename before the readline completion code passes it to stat(2).
    The filename will already have had tilde expansion performed. */
 static int
@@ -3512,8 +3512,8 @@ bash_filename_stat_hook (char **dirname)
 
   if (should_expand_dirname && directory_exists (local_dirname, 0))
     should_expand_dirname = 0;
-  
-  if (should_expand_dirname)  
+
+  if (should_expand_dirname)
     {
       new_dirname = savestring (local_dirname);
       /* no error messages, and expand_prompt_string doesn't longjmp so we don't
@@ -3541,7 +3541,7 @@ bash_filename_stat_hook (char **dirname)
 	}
       else
 	free (new_dirname);
-    }	
+    }
 
   /* This is very similar to the code in bash_directory_completion_hook below,
      but without spelling correction and not worrying about whether or not
@@ -3589,7 +3589,7 @@ bash_directory_completion_hook (char **dirname)
   if (should_expand_dirname && directory_exists (local_dirname, 1))
     should_expand_dirname = 0;
 
-  if (should_expand_dirname)  
+  if (should_expand_dirname)
     {
       new_dirname = savestring (local_dirname);
       wl = expand_prompt_string (new_dirname, 0, W_NOCOMSUB|W_NOPROCSUB|W_COMPLETE);	/* does the right thing */
@@ -3615,7 +3615,7 @@ bash_directory_completion_hook (char **dirname)
 	  return 1;
 	}
     }
-  else 
+  else
     {
       /* Dequote the filename even if we don't expand it. */
       new_dirname = bash_dequote_filename (local_dirname, rl_completion_quote_character);
@@ -4057,7 +4057,7 @@ bash_glob_complete_word (int count, int key)
     rl_explicit_arg = 1;	/* force `*' append */
   orig_quoting_function = rl_filename_quoting_function;
   rl_filename_quoting_function = bash_glob_quote_filename;
-  
+
   r = bash_glob_completion_internal (rl_completion_mode (bash_glob_complete_word));
 
   rl_filename_quoting_function = orig_quoting_function;
@@ -4161,7 +4161,7 @@ bash_vi_complete (int count, int key)
       p = r;
 
       t = substring (rl_line_buffer, p, rl_point);
-    }      
+    }
 
   if (t && completion_glob_pattern (t) == 0)
     rl_explicit_arg = 1;	/* XXX - force glob_complete_word to append `*' */
@@ -4581,7 +4581,7 @@ uw_unbind_readline_variables (void *ignore)
 {
   unbind_readline_variables ();
 }
-   
+
 int
 bash_execute_unix_command (int count, int key)
 {
@@ -4735,7 +4735,7 @@ init_unix_command_map (void)
   emacs_std_cmd_xmap[ESC].type = ISKMAP;
   emacs_std_cmd_xmap[ESC].function = KEYMAP_TO_FUNCTION (rl_make_bare_keymap ());
 
-#if defined (VI_MODE)  
+#if defined (VI_MODE)
   vi_insert_cmd_xmap = rl_make_bare_keymap ();
   vi_movement_cmd_xmap = rl_make_bare_keymap ();
 #endif
@@ -4800,7 +4800,7 @@ isolate_sequence (char *string, int ind, int need_dquote, int *startp)
   /* We can have delimited strings even if NEED_DQUOTE == 0, like the command
      string to bind the key sequence to. */
   delim = (string[i] == '"' || string[i] == '\'') ? string[i] : 0;
-    
+
   if (startp)
     *startp = delim ? ++i : i;
 
@@ -4888,7 +4888,7 @@ bind_keyseq_to_unix_command (char *line)
      understands how to execute from CMD_XMAP */
   rl_bind_keyseq_in_map (kseq, bash_execute_unix_command, kmap);
 
-  free (kseq);  
+  free (kseq);
   return 0;
 }
 
@@ -4916,7 +4916,7 @@ bash_directory_completion_matches (const char *text)
   char *dfn;
   int qc;
 
-  qc = rl_dispatching ? rl_completion_quote_character : 0;  
+  qc = rl_dispatching ? rl_completion_quote_character : 0;
   /* If rl_completion_found_quote != 0, rl_completion_matches will call the
      filename dequoting function, causing the directory name to be dequoted
      twice. */

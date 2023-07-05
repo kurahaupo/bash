@@ -242,7 +242,7 @@ extern SHELL_VAR nameref_invalid_value;
 /* Assignment statements */
 #define ASSIGN_DISALLOWED(v, f) \
   ((readonly_p (v) && (f&ASS_FORCE) == 0) || noassign_p (v))
-	
+
 /* Stuff for hacking variables. */
 typedef int sh_var_map_func_t (SHELL_VAR *);
 
@@ -310,7 +310,7 @@ extern void bind_function_def (const char *, FUNCTION_DEF *, int);
 
 extern SHELL_VAR **map_over (sh_var_map_func_t *, VAR_CONTEXT *);
 SHELL_VAR **map_over_funcs (sh_var_map_func_t *);
-     
+
 extern SHELL_VAR **all_shell_variables (void);
 extern SHELL_VAR **all_shell_functions (void);
 extern SHELL_VAR **all_visible_variables (void);

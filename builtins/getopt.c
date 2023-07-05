@@ -274,7 +274,7 @@ sh_getopt_debug_restore_state (char **argv)
     }
 }
 #endif
- 
+
 #ifdef TEST
 
 /* Compile with -DTEST to make an executable for use in testing

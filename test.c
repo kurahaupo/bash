@@ -343,7 +343,7 @@ filecomp (const char *s, const char *t, int op)
       if (op == EF)
 	return (FALSE);
     }
-  
+
   switch (op)
     {
     case OT: return (r1 < r2 || (r2 == 0 && timespec_cmp (ts1, ts2) < 0));
@@ -424,7 +424,7 @@ binary_test (char *op, char *arg1, char *arg2, int flags)
     }
   else if (op[0] == '!' && op[1] == '=' && op[2] == '\0')
     return (patmatch ? patcomp (arg1, arg2, NE) : (STREQ (arg1, arg2) == 0));
-    
+
 
   else if (op[2] == 't')
     {
@@ -517,7 +517,7 @@ unary_operator (void)
 	      return (unary_test (op, argv[pos - 1], 0));
 	    }
 	  else if (argc >= 5 && ANDOR (argv[pos]))
-	    return (unary_test (op, "1", 0));	  
+	    return (unary_test (op, "1", 0));
 	  else
 	    integer_expected_error (argv[pos]);
 	}
@@ -542,7 +542,7 @@ unary_test (char *op, char *arg, int flags)
   struct timespec mtime, atime;
   SHELL_VAR *v;
   int aflags;
-     
+
   switch (op[1])
     {
     case 'a':			/* file exists in the file system? */

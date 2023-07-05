@@ -284,7 +284,7 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
 	  if (entry == 0)
 	    FAIL_SEARCH ();
 	  history_offset = history_length;
-	
+
 	  /* If this was a substring search, then remember the
 	     string that we matched for word substitution. */
 	  if (substring_okay)
@@ -562,7 +562,7 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
     }
   else
     event = get_history_event (string, &i, qc);
-	  
+
   if (event == 0)
     {
       *ret_string = hist_error (string, start, i, EVENT_NOT_FOUND);
@@ -933,7 +933,7 @@ history_expand (const char *hstring, char **output)
       *output = savestring (hstring);
       return (0);
     }
-    
+
   /* Prepare the buffer for printing error messages. */
   result = (char *)xmalloc (result_len = 256);
   result[0] = '\0';
@@ -1069,7 +1069,7 @@ history_expand (const char *hstring, char **output)
 	      if (cc == '\'' || cc == history_expansion_char)
 		i++;
 	    }
-	  
+
 	}
 
       if (string[i] != history_expansion_char)
@@ -1095,7 +1095,7 @@ history_expand (const char *hstring, char **output)
       hist_string_extract_single_quoted (string, &i, 0);
       squote = 0;
       for (c = 0; c < i; c++)
-	ADD_CHAR (string[c]);      
+	ADD_CHAR (string[c]);
       if (string[i])
 	{
 	  ADD_CHAR (string[i]);
@@ -1158,7 +1158,7 @@ history_expand (const char *hstring, char **output)
 	  dquote = 1 - dquote;
 	  ADD_CHAR (tchar);
 	  break;
-	  
+
 	case '\'':
 	  {
 	    /* If history_quotes_inhibit_expansion is set, single quotes
@@ -1589,7 +1589,7 @@ get_word:
 	    delimiter = 0;
 	  continue;
 	}
-      
+
       if (delimiter && string[i] == delimiter)
 	{
 	  delimiter = 0;
@@ -1607,7 +1607,7 @@ get_word:
 	  nestdelim = 1;
 	  continue;
 	}
-      
+
       if (delimiter == 0 && (member (string[i], history_word_delimiters)))
 	break;
 

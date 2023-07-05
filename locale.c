@@ -294,7 +294,7 @@ set_locale_var (const char *var, const char *value)
 #  endif /* LC_TIME */
     }
 #endif /* HAVE_SETLOCALE */
-  
+
   if (x == 0)
     {
       if (errno == 0)
@@ -407,7 +407,7 @@ reset_locale_vars (void)
   locale_mb_cur_max = MB_CUR_MAX;
   if (x)
     locale_utf8locale = locale_isutf8 (x);
-  locale_setblanks ();  
+  locale_setblanks ();
 #  if defined (HANDLE_MULTIBYTE)
   locale_shiftstates = mblen ((char *)NULL, 0);
 #  else
@@ -493,7 +493,7 @@ mk_msgstr (char *string, int *foundnlp)
       else if (*s == '\n')
 	len += 5;
     }
-  
+
   r = result = (char *)xmalloc (len + 3);
   *r++ = '"';
 

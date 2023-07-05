@@ -1066,7 +1066,7 @@ comsub:		DOLPAREN compound_list ')'
 			  $$ = (COMMAND *)NULL;
 			}
 	;
-	
+
 funsub:		DOLBRACE compound_list '}'
 			{
 			  $$ = $2;
@@ -1158,7 +1158,7 @@ arith_command:	ARITH_CMD
 
 cond_command:	COND_START COND_CMD COND_END
 			{ $$ = $2; }
-	; 
+	;
 
 elif_clause:	ELIF compound_list THEN compound_list
 			{ $$ = make_if_command ($2, $4, (COMMAND *)NULL); }
@@ -1194,7 +1194,7 @@ case_clause_sequence:  pattern_list SEMI_SEMI
 	|	pattern_list SEMI_SEMI_AND
 			{ $1->flags |= CASEPAT_TESTNEXT; $$ = $1; }
 	|	case_clause_sequence pattern_list SEMI_SEMI_AND
-			{ $2->flags |= CASEPAT_TESTNEXT; $2->next = $1; $$ = $2; }	
+			{ $2->flags |= CASEPAT_TESTNEXT; $2->next = $1; $$ = $2; }
 	;
 
 pattern:	WORD
@@ -1355,7 +1355,7 @@ simple_list1:	simple_list1 AND_AND newline_list simple_list1
 	;
 
 pipeline_command: pipeline
-			{ $$ = $1; }			
+			{ $$ = $1; }
 	|	BANG pipeline_command
 			{
 			  if ($2)
@@ -1694,7 +1694,7 @@ parser_will_prompt (void)
 {
   return (current_readline_line == 0 || current_readline_line[current_readline_line_index] == 0);
 }
-  
+
 #else  /* !READLINE */
 
 void
@@ -2419,7 +2419,7 @@ shell_getc (int remove_quoted_newline)
 
   last_was_backslash = 0;
   CHECK_WINCH;
-      
+
   if (eol_ungetc_lookahead)
     {
       c = eol_ungetc_lookahead;
@@ -2800,7 +2800,7 @@ pop_alias:
 	    goto next_alias_char;	/* and get next character */
 	  }
 	else
-#endif 
+#endif
 	  goto restart_read;
     }
 
@@ -4635,7 +4635,7 @@ xparse_dolparen (const char *base, char *string, size_t *indp, int flags)
 
   if (*string == 0)
     {
-      if (flags & SX_NOALLOC) 
+      if (flags & SX_NOALLOC)
 	return (char *)NULL;
 
       ret = xmalloc (1);
@@ -4746,7 +4746,7 @@ xparse_dolparen (const char *base, char *string, size_t *indp, int flags)
       jump_to_top_level (DISCARD);
     }
 
-  if (flags & SX_NOALLOC) 
+  if (flags & SX_NOALLOC)
     return (char *)NULL;
 
   if (nc == 0)
@@ -4965,7 +4965,7 @@ cond_error (void)
 static COND_COM *
 cond_expr (void)
 {
-  return (cond_or ());  
+  return (cond_or ());
 }
 
 static COND_COM *
@@ -5180,7 +5180,7 @@ cond_term (void)
       COND_RETURN_ERROR ();
     }
   return (term);
-}      
+}
 
 /* This is kind of bogus -- we slip a mini recursive-descent parser in
    here to handle the conditional statement syntax. */
@@ -5307,7 +5307,7 @@ read_token_word (int character)
 	      quoted = 1;
 	      goto got_character;
 	    }
-	      
+
 	  peek_char = shell_getc (0);
 
 	  /* Backslash-newline is ignored in all cases except
@@ -5869,7 +5869,7 @@ reserved_word_acceptable (int toksym)
       return 0;
     }
 }
-    
+
 /* Return the index of TOKEN in the alist of reserved words, or -1 if
    TOKEN is not a shell reserved word. */
 int
@@ -5951,7 +5951,7 @@ history_delimiting_chars (const char *line)
       size_t curlen;
 
       ch = current_delimiter(dstack);
-      if (shellquote(ch))      
+      if (shellquote(ch))
 	return ("\n");
       else if (ch == '(')	/* ) and maybe for other non-quote-char delimiters */
 	{
@@ -6102,7 +6102,7 @@ set_current_prompt_level (int x)
   prompt_string_pointer = (x == 2) ? &ps2_prompt : &ps1_prompt;
   current_prompt_string = *prompt_string_pointer;
 }
-      
+
 static void
 print_prompt (void)
 {
@@ -6181,7 +6181,7 @@ decode_prompt_string (char *string, int is_prompt)
   size_t result_index;
   int c, n, i;
   char *temp, *t_host, octal_string[4];
-  struct tm *tm;  
+  struct tm *tm;
   time_t the_time;
   char timebuf[128];
   char *timefmt;
@@ -6343,7 +6343,7 @@ decode_prompt_string (char *string, int is_prompt)
 	      else
 		temp = savestring (timebuf);
 	      goto add_string;
-	      
+
 	    case 'n':
 	      temp = (char *)xmalloc (3);
 	      temp[0] = no_line_editing ? '\n' : '\r';
@@ -6961,7 +6961,7 @@ parse_string_to_word_list (char *s, int flags, const char *whom)
 	}
       wl = make_word_list (yylval.word, wl);
     }
-  
+
   last_read_token = '\n';
   pop_stream ();
 
@@ -7026,7 +7026,7 @@ parse_compound_assignment (size_t *retlenp)
      popped out from underneath us. */
   ss = (ea = (expanding_alias () || parsing_dparen ())) ? pushed_string_list : (STRING_SAVER *)NULL;
   restore_pushed_strings = 0;
-    
+
   while ((tok = read_token (READ)) != ')')
     {
       if (tok == '\n')			/* Allow newlines in compound assignments */
@@ -7139,7 +7139,7 @@ save_parser_state (sh_parser_state_t *ps)
 #if defined (ARRAY_VARS)
   ps->pipestatus = save_pipestatus_array ();
 #endif
-    
+
   ps->last_shell_builtin = last_shell_builtin;
   ps->this_shell_builtin = this_shell_builtin;
 

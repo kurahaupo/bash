@@ -62,7 +62,7 @@ extern int bash_input_fd_changed;
 #undef beof
 #undef berror
 
-#define beof(bp)	(((bp)->b_flag & B_EOF) != 0)	
+#define beof(bp)	(((bp)->b_flag & B_EOF) != 0)
 #define berror(bp)	(((bp)->b_flag & B_ERROR) != 0)
 
 #undef bclearerror

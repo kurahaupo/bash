@@ -715,7 +715,7 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
 	  else
 	    temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
         }
-          
+
       break;
 
     default:

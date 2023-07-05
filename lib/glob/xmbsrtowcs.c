@@ -93,7 +93,7 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 	free (wsbuf);
       return wclength;
     }
-      
+
   for (wclength = 0; wclength < len; wclength++, dest++)
     {
       if (mbsinit(ps))

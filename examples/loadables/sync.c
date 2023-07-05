@@ -47,7 +47,7 @@ sync_builtin (WORD_LIST *list)
   list = loptend;
 
   if (list == 0)
-    {  
+    {
       sync();
       return (EXECUTION_SUCCESS);
     }

@@ -74,7 +74,7 @@ int main()
     perror("open /dev/tty");
     exit_handler(0);
   }
-  
+
   if ( (pgrp = tcgetpgrp(_global_fd)) < 0) {
     perror("Can't get pgrp\n");
     exit_handler(0);
@@ -104,7 +104,7 @@ int main()
 
   {
     struct sigaction siga;
-    
+
     sigemptyset(&siga.sa_mask);
     siga.sa_flags = 0;
 

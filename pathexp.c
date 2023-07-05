@@ -46,7 +46,7 @@ static int glob_name_is_acceptable (const char *);
 static void ignore_globbed_names (char **, sh_ignore_func_t *);
 static char *split_ignorespec (char *, int *);
 static void sh_sortglob (char **);
-	       
+
 #include <glob/glob.h>
 
 /* Control whether * matches .files in globbing. */
@@ -153,7 +153,7 @@ ere_char (int c)
     case '^':
     case '$':
       return 1;
-    default: 
+    default:
       return 0;
     }
   return (0);
@@ -606,11 +606,11 @@ split_ignorespec (char *s, int *ip)
   t = substring (s, i, n);
 
   if (s[n] == ':')
-    n++;  
-  *ip = n;  
+    n++;
+  *ip = n;
   return t;
 }
-  
+
 void
 setup_ignore_patterns (struct ignorevar *ivp)
 {
@@ -693,7 +693,7 @@ struct globstat {
   struct timespec ctime;
   int blocks;
 };
-  
+
 struct globsort_t {
   char *name;
   struct globstat st;
@@ -861,8 +861,8 @@ globsort_buildarray (char **array, size_t len)
     }
 
   return ret;
-}  
-          
+}
+
 static inline void
 globsort_sortbyname (char **results)
 {

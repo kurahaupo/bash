@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-                                 
+
 #if !defined (_SH_MBUTIL_H_)
 #define _SH_MBUTIL_H_
 
@@ -568,18 +568,18 @@ mbcharlen(char *s, size_t maxlen)
 {
   size_t l;
   DECLARE_MBSTATE;
-  
+
   if (maxlen == 1 || is_basic (*s))
     return 1;
   else if (locale_utf8locale && UTF8_SINGLEBYTE (*s))
     return (*s != 0);
-  else        
+  else
     l = mbrlen (s, maxlen, &state);
-  if (MB_INVALIDCH (l))  
+  if (MB_INVALIDCH (l))
     return (1);
   return l;
 }
-#else  
+#else
 #define mbcharlen(s, n)      (1)
 #endif /* HANDLE_MULTIBYTE */
 #endif /* _SH_MBUTIL_H_ */

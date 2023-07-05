@@ -252,7 +252,7 @@ getmaxgroups (void)
 #    else /* !NGROUPS */
   maxgroups = DEFAULT_MAXGROUPS;
 #    endif /* !NGROUPS */
-#  endif /* !NGROUPS_MAX */  
+#  endif /* !NGROUPS_MAX */
 #endif /* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
 
   if (maxgroups <= 0)

@@ -526,7 +526,7 @@ expand_seqterm (char *text, size_t tlen)
   /* OK, we have something.  It's either a sequence of integers, ascending
      or descending, or a sequence or letters, ditto.  Generate the sequence,
      put it into a string vector, and return it. */
-  
+
   if (lhs_t == ST_CHAR)
     {
       lhs_v = (unsigned char)lhs[0];
@@ -571,7 +571,7 @@ expand_seqterm (char *text, size_t tlen)
 /* If SATISFY is `}', we are looking for a brace expression, so we
    should enforce the rules that govern valid brace expansions:
 	1) to count as an arg separator, a comma or `..' has to be outside
-	   an inner set of braces.	 
+	   an inner set of braces.
 */
 static int
 brace_gobbler (char *text, size_t tlen, int *indx, int satisfy)
@@ -787,7 +787,7 @@ array_concat (char **arr1, char **arr2)
 	    }
 	  QUIT;
 #endif
-	
+
 	  result[len] = (char *)xmalloc (1 + strlen_1 + strlen (arr2[j]));
 	  strcpy (result[len], arr1[i]);
 	  strcpy (result[len] + strlen_1, arr2[j]);
@@ -822,7 +822,7 @@ internal_error (char *format, char *arg1, char *arg2)
   fprintf (stderr, format, arg1, arg2);
   fprintf (stderr, "\n");
 }
-      
+
 main (int c, char **v)
 {
   char example[256];

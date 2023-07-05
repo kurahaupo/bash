@@ -62,7 +62,7 @@ sigwinch (int s)
   rl_resize_terminal ();
 }
 
-static int 
+static int
 user_input(void)
 {
   int size;
@@ -80,7 +80,7 @@ user_input(void)
   return 0;
 }
 
-static int 
+static int
 readline_input(void)
 {
   const int MAX = 1024;
@@ -106,13 +106,13 @@ readline_input(void)
   return 0;
 }
 
-static void 
+static void
 rlctx_send_user_command(char *line)
 {
   /* This happens when rl_callback_read_char gets EOF */
   if ( line == NULL )
     return;
-    
+
   if (strcmp (line, "exit") == 0) {
   	tty_reset (STDIN_FILENO);
   	close (masterfd);
@@ -120,19 +120,19 @@ rlctx_send_user_command(char *line)
   	printf ("\n");
 	exit (0);
   }
-  
+
   /* Don't add the enter command */
   if ( line && *line != '\0' )
     add_history(line);
 }
 
-static void 
+static void
 custom_deprep_term_function (void)
 {
 }
 
-static int 
-init_readline (int inputfd, int outputfd) 
+static int
+init_readline (int inputfd, int outputfd)
 {
   FILE *inputFILE, *outputFILE;
 
@@ -161,17 +161,17 @@ init_readline (int inputfd, int outputfd)
   rl_deprep_term_function = custom_deprep_term_function;
 
   using_history();
-  read_history(".history"); 
+  read_history(".history");
 
   return 0;
 }
 
-static int 
+static int
 main_loop(void)
 {
   fd_set rset;
   int max;
-    
+
   max = (masterfd > STDIN_FILENO) ? masterfd : STDIN_FILENO;
   max = (max > slavefd) ? max : slavefd;
 
@@ -179,7 +179,7 @@ main_loop(void)
     {
       /* Reset the fd_set, and watch for input from GDB or stdin */
       FD_ZERO(&rset);
-        
+
       FD_SET(STDIN_FILENO, &rset);
       FD_SET(slavefd, &rset);
       FD_SET(masterfd, &rset);
@@ -193,14 +193,14 @@ main_loop(void)
             return -1;
         }
 
-      /* Input received through the pty:  Handle it 
-       * Wrote to masterfd, slave fd has that input, alert readline to read it. 
+      /* Input received through the pty:  Handle it
+       * Wrote to masterfd, slave fd has that input, alert readline to read it.
        */
       if (FD_ISSET(slavefd, &rset))
         rl_callback_read_char();
 
       /* Input received through the pty.
-       * Readline read from slavefd, and it wrote to the masterfd. 
+       * Readline read from slavefd, and it wrote to the masterfd.
        */
       if (FD_ISSET(masterfd, &rset))
         if ( readline_input() == -1 )
@@ -226,17 +226,17 @@ static enum { RESET, TCBREAK } ttystate = RESET;
  *    3. Read in one char at a time.
  *
  * fd    - The file descriptor of the terminal
- * 
+ *
  * Returns: 0 on success, -1 on error
  */
 int tty_cbreak(int fd)
 {
    struct termios buf;
    int ttysavefd = -1;
-   
+
    if(tcgetattr(fd, &save_termios) < 0)
       return -1;
-      
+
    buf = save_termios;
    buf.c_lflag &= ~(ECHO | ICANON);
    buf.c_iflag &= ~(ICRNL | INLCR);
@@ -276,13 +276,13 @@ int tty_cbreak(int fd)
       return -1;
 
 #ifdef DEBUG
-   err_msg("%d rows and %d cols\n", size.ws_row, size.ws_col);   
+   err_msg("%d rows and %d cols\n", size.ws_row, size.ws_col);
 #endif
-   
-   return (0);   
+
+   return (0);
 }
 
-int 
+int
 tty_off_xon_xoff (int fd)
 {
   struct termios buf;
@@ -290,20 +290,20 @@ tty_off_xon_xoff (int fd)
 
   if(tcgetattr(fd, &buf) < 0)
     return -1;
-     
+
   buf.c_iflag &= ~(IXON|IXOFF);
 
   if(tcsetattr(fd, TCSAFLUSH, &buf) < 0)
     return -1;
 
-  return 0;   
+  return 0;
 }
 
 /* tty_reset: Sets the terminal attributes back to their previous state.
  * PRE: tty_cbreak must have already been called.
- * 
+ *
  * fd    - The file descrioptor of the terminal to reset.
- * 
+ *
  * Returns: 0 on success, -1 on error
  */
 int
@@ -314,13 +314,13 @@ tty_reset(int fd)
 
    if(tcsetattr(fd, TCSAFLUSH, &save_termios) < 0)
       return (-1);
-      
+
    ttystate = RESET;
-   
-   return 0;   
+
+   return 0;
 }
 
-int 
+int
 main(int c, char **v)
 {
   int val;

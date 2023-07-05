@@ -61,7 +61,7 @@ char *logname_doc[] = {
 	"logname ignores any non-option arguments.",
 	(char *)NULL
 };
-	
+
 struct builtin logname_struct = {
 	"logname",
 	logname_builtin,
@@ -70,4 +70,4 @@ struct builtin logname_struct = {
 	"logname",
 	0
 };
-	
+

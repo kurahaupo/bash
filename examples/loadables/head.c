@@ -143,7 +143,7 @@ head_builtin (WORD_LIST *list)
       rval = file_head (fp, nline);
       fclose (fp);
     }
-   
+
   return (rval);
 }
 

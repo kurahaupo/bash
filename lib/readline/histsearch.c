@@ -295,7 +295,7 @@ _hs_history_patsearch (const char *string, int direction, int flags)
     xfree (pat);
   return ret;
 }
-	
+
 /* Do a non-anchored search for STRING through the history in DIRECTION. */
 int
 history_search (const char *string, int direction)

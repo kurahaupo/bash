@@ -146,7 +146,7 @@ _rl_print_prefix_color (void)
   else
     return 1;
 }
-  
+
 /* Returns whether any color sequence was printed. */
 bool
 _rl_print_color_indicator (const char *f)

@@ -258,7 +258,7 @@ dsv_builtin_unload (char *name)
 
 char *dsv_doc[] = {
 	"Read delimiter-separated fields from STRING.",
-	"",	
+	"",
 	"Parse STRING, a line of delimiter-separated values, into individual",
 	"fields, and store them into the indexed array ARRAYNAME starting at",
 	"index 0. The parsing understands and skips over double-quoted strings. ",

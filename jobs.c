@@ -600,7 +600,7 @@ stop_pipeline (int async, COMMAND *deferred)
 	    i = 0;
 	  if (jobs[i] == 0)
 	    break;
-	}	
+	}
       if (i == js.j_lastj)
         i = js.j_jobslots;
 #else
@@ -984,7 +984,7 @@ save_proc_status (pid_t pid, int status)
 
   BLOCK_CHILD (set, oset);
   bgp_add (pid, status);
-  UNBLOCK_CHILD (oset);  
+  UNBLOCK_CHILD (oset);
 }
 
 int
@@ -1027,7 +1027,7 @@ procsub_free (PROCESS *p)
   FREE (p->command);
   free (p);
 }
-    
+
 PROCESS *
 procsub_add (PROCESS *p)
 {
@@ -1099,7 +1099,7 @@ procsub_delete (pid_t pid)
   /* this can't be called anywhere in a signal handling path */
   bgp_add (p->pid, process_exit_status (p->status));
   UNBLOCK_CHILD (oset);
-  return (p);  
+  return (p);
 }
 
 int
@@ -1138,7 +1138,7 @@ procsub_clear (void)
   sigset_t set, oset;
 
   BLOCK_CHILD (set, oset);
-  
+
   for (ps = procsubs.head; ps; )
     {
       p = ps;
@@ -1146,7 +1146,7 @@ procsub_clear (void)
       procsub_free (p);
     }
   procsubs.head = procsubs.end = 0;
-  procsubs.nproc = 0;        
+  procsubs.nproc = 0;
   UNBLOCK_CHILD (oset);
 }
 
@@ -1225,7 +1225,7 @@ reset_job_indices (void)
 	js.j_firstj = js.j_lastj = js.j_njobs = 0;
     }
 }
-      
+
 /* Delete all DEAD jobs that the user had received notification about. */
 static void
 cleanup_dead_jobs (void)
@@ -2077,7 +2077,7 @@ should_notify (int job)
   if (DEADJOB (job) && IS_FOREGROUND (job) && job_killed_by_signal (job))
     return 1;
 
-  return 0;		/* catch-all */  
+  return 0;		/* catch-all */
 }
 
 /* Print information to STREAM about jobs[JOB_INDEX] according to FORMAT.
@@ -2276,7 +2276,7 @@ make_child (char *command, int flags)
 
       /* Restore top-level signal mask, including unblocking SIGTERM */
       restore_sigmask ();
-  
+
       if (job_control)
 	{
 	  /* All processes in this pipeline belong in the same
@@ -2623,7 +2623,7 @@ find_last_pid (int job, int block)
   p = find_last_proc (job, block);
   /* Possible race condition here. */
   return p->pid;
-}     
+}
 
 /* Wait for a particular child of the shell to finish executing.
    This low-level function prints an error message if PID is not
@@ -2769,7 +2769,7 @@ static SigHandler *old_sigint_handler = INVALID_SIGNAL_HANDLER;
 
 /* The current SIGINT handler as set by restore_sigint_handler. Only valid
    immediately after restore_sigint_handler, used for continuations. */
-static SigHandler *cur_sigint_handler = INVALID_SIGNAL_HANDLER;   
+static SigHandler *cur_sigint_handler = INVALID_SIGNAL_HANDLER;
 
 static int wait_sigint_received;
 static int child_caught_sigint;
@@ -2879,7 +2879,7 @@ job_signal_status (int job)
 
   return s;
 }
-  
+
 /* Return the exit status of the last process in the pipeline for job JOB.
    This is the exit status of the entire job. */
 static WAIT
@@ -3423,7 +3423,7 @@ return_job:
       r = wait_for (ANY_PID, 0);	/* special sentinel value for wait_for */
       if (r == -1 && errno == ECHILD)
 	mark_all_jobs_as_dead ();
-	
+
       /* Now we see if we have any dead jobs and return the first one */
       BLOCK_CHILD (set, oset);
       for (i = 0; i < js.j_jobslots; i++)
@@ -3681,7 +3681,7 @@ start_job (int job, int foreground)
       /* POSIX.2 says `bg' doesn't give any indication about current or
 	 previous job. */
       if (posixly_correct == 0)
-	s = (job == js.j_current) ? "+ ": ((job == js.j_previous) ? "- " : " ");       
+	s = (job == js.j_current) ? "+ ": ((job == js.j_previous) ? "- " : " ");
       else
 	s = " ";
       printf ("[%d]%s", job + 1, s);
@@ -4049,7 +4049,7 @@ itrace("waitchld: waitpid returns %d block = %d children_exited = %d", pid, bloc
       else if (sigchld)	/* called from signal handler */
 	queue_sigchld_trap (children_exited);
       else if (signal_in_progress (SIGCHLD))
-	queue_sigchld_trap (children_exited);     
+	queue_sigchld_trap (children_exited);
       else if (trap_list[SIGCHLD] == (char *)IMPOSSIBLE_TRAP_HANDLER)
 	queue_sigchld_trap (children_exited);
       else if (running_trap)
@@ -4830,7 +4830,7 @@ maybe_give_terminal_to (pid_t opgrp, pid_t npgrp, int flags)
       return -1;
     }
   else
-    return (give_terminal_to (npgrp, flags));     
+    return (give_terminal_to (npgrp, flags));
 }
 
 /* Clear out any jobs in the job array.  This is intended to be used by
@@ -5105,7 +5105,7 @@ set_job_control (int arg)
   /* If we're turning on job control we're going to want to know the shell's
      process group. */
   if (job_control != old && job_control)
-    shell_pgrp = getpgid (0);  
+    shell_pgrp = getpgid (0);
 
   running_in_background = (terminal_pgrp != shell_pgrp);
 
