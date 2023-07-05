@@ -343,7 +343,7 @@ static intmax_t parameter_brace_expand_length (char *);
 static char *skiparith (char *, int);
 static int verify_substring_values (SHELL_VAR *, char *, char *, int, intmax_t *, intmax_t *);
 static int get_var_and_type (char *, char *, array_eltstate_t *, int, int, SHELL_VAR **, char **);
-static char *mb_subfstring (const char *, int, int);
+static char *mb_substring (const char *, int, int);
 static char *parameter_brace_substring (char *, char *, array_eltstate_t *, char *, int, int, int);
 
 static int shouldexp_replacement (const char *);
