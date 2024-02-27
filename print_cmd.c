@@ -52,6 +52,8 @@ extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
 static int indentation;
 static int indentation_amount = 4;
 
+int balanced_case_parens = 0;
+
 typedef void PFUNC (const char *, ...);
 
 static void cprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
@@ -771,11 +773,11 @@ print_case_clauses (PATTERN_LIST *clauses)
       if (printing_comsub == 0 || first == 0)
 	newline ("");
       first = 0;
-      if (clauses->patterns &&
-          clauses->patterns->word &&
-          clauses->patterns->word->word && !strcmp(
-          clauses->patterns->word->word, "esac"))
+      if (balanced_case_parens)
+        cprintf("(");
+      else if (!strcmp(clauses->patterns->word->word, "esac"))
         cprintf("\\");
+
       command_print_word_list (clauses->patterns, " | ");
       cprintf (")\n");
       indentation += indentation_amount;
