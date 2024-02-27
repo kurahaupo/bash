@@ -786,7 +786,7 @@ print_case_clauses (PATTERN_LIST *clauses)
 	newline (";&");
       else if (clauses->flags & CASEPAT_TESTNEXT)
 	newline (";;&");
-      else
+      else if (clauses->next) /* be unambiguous: omit last ';;' */
 	newline (";;");
       clauses = clauses->next;
     }
