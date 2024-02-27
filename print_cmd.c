@@ -771,6 +771,11 @@ print_case_clauses (PATTERN_LIST *clauses)
       if (printing_comsub == 0 || first == 0)
 	newline ("");
       first = 0;
+      if (clauses->patterns &&
+          clauses->patterns->word &&
+          clauses->patterns->word->word && !strcmp(
+          clauses->patterns->word->word, "esac"))
+        cprintf("\\");
       command_print_word_list (clauses->patterns, " | ");
       cprintf (")\n");
       indentation += indentation_amount;
