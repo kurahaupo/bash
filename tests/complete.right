@@ -175,6 +175,7 @@ xtrace
 autocd
 array_expand_once
 assoc_expand_once
+balanced_case_parens
 cdable_vars
 cdspell
 checkhash

@@ -74,7 +74,17 @@ tf2()
 	( { time -p echo a | cat - > /dev/null ; } ) 2>&1
 }
 
+tf3()
+{
+	case $1 in
+	(esac)	echo esac ;;
+	\esac)	echo other-esac ;;
+	*)	echo other
+	esac
+}
+
 type tf
 type tf2
+type tf3
 
 tf

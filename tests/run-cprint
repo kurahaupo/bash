@@ -1,2 +1,4 @@
-${THIS_SH} ./cprint.tests > ${BASH_TSTOUT} 2>&1
+${THIS_SH} +O balanced_case_parens ./cprint.tests > ${BASH_TSTOUT} 2>&1
 diff ${BASH_TSTOUT} cprint.right && rm -f ${BASH_TSTOUT}
+${THIS_SH} -O balanced_case_parens ./cprint.tests > ${BASH_TSTOUT} 2>&1
+diff ${BASH_TSTOUT} cprint.right2 && rm -f ${BASH_TSTOUT}

@@ -33,10 +33,10 @@ tf ()
         fi;
     fi > /dev/null;
     case $PATH in 
-        *$PWD*)
+        (*$PWD*)
             echo \$PWD in \$PATH
         ;;
-        *)
+        (*)
             echo \$PWD not in \$PATH
     esac > /dev/null;
     while false; do
@@ -60,13 +60,13 @@ tf3 is a function
 tf3 () 
 { 
     case $1 in 
-        \esac)
+        (esac)
             echo esac
         ;;
-        \esac)
+        (\esac)
             echo other-esac
         ;;
-        *)
+        (*)
             echo other
     esac
 }
