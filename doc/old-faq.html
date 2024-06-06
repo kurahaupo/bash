@@ -21,7 +21,7 @@ Chet Ramey writes:
 > >   Is there a HTML version of the Bash FAQ? If not do you want one?  I
 > > have converted it to HTML and if there isn't already a HTML-ised FAQ,
 > > I wondered if you wanted one?
-> 
+>
 > Sure, send it along.  Thanks.
 
   Here it is.  It is (with the exception of the <CENTER></CENTER> tags
@@ -50,7 +50,7 @@ Cajun
 <TITLE>The Bash FAQ</TITLE>
 <LINK REV=MADE HREF="mailto:chet@po.cwru.edu">
 </HEAD>
-<BODY> 
+<BODY>
 <CENTER><H1>Bash FAQ</H1></CENTER>
 
 <P>
@@ -129,18 +129,18 @@ Bash is the GNU project's shell, and so is available from the master GNU archive
 <H3><A NAME="4">4)  What's the `Posix 1003.2 standard'?</A></H3>
 
 <P>
-POSIX is a name originally coined by Richard Stallman for a family of open system standards based on UNIX.  There are a number of aspects of UNIX under consideration for standardization, from the basic system services at the system call and C library level to applications and tools to system administration and management.  Each area of standardization is assigned to a working group in the 1003 series. 
+POSIX is a name originally coined by Richard Stallman for a family of open system standards based on UNIX.  There are a number of aspects of UNIX under consideration for standardization, from the basic system services at the system call and C library level to applications and tools to system administration and management.  Each area of standardization is assigned to a working group in the 1003 series.
 <P>
-The POSIX Shell and Utilities standard has been developed by IEEE Working Group 1003.2 (POSIX.2).  It concentrates on the command interpreter interface and utility programs commonly executed from the command line or by other programs.  An initial version of the standard has been approved and published by the IEEE, and work is currently underway to update it. 
+The POSIX Shell and Utilities standard has been developed by IEEE Working Group 1003.2 (POSIX.2).  It concentrates on the command interpreter interface and utility programs commonly executed from the command line or by other programs.  An initial version of the standard has been approved and published by the IEEE, and work is currently underway to update it.
 <P>
-Bash is concerned with the aspects of the shell's behavior defined by POSIX.2.  The shell command language has of course been standardized, including the basic flow control and program execution constructs, I/O redirection and pipelining, argument handling, variable expansion, and quoting. 
+Bash is concerned with the aspects of the shell's behavior defined by POSIX.2.  The shell command language has of course been standardized, including the basic flow control and program execution constructs, I/O redirection and pipelining, argument handling, variable expansion, and quoting.
 <P>
 The `special' builtins, which must be implemented as part of the shell to provide the desired functionality, are specified as being part of the shell; examples of these are `eval' and `export'.  Other utilities appear in the sections of POSIX.2 not devoted to the shell which are commonly (and in some cases must be) implemented as builtin commands, such as `read' and `test'.  POSIX.2 also specifies aspects of the shell's interactive behavior as part of the UPE, including job control and command line editing.  Only vi-style line editing commands have been standardized; emacs editing commands were left out due to objections.
 
 <H3><A NAME="5">5)  On what machines will bash run?</A></H3>
 
 <P>
-Bash has been ported to nearly every version of UNIX.  All you should have to do to build it on a machine for which a port exists is to type `make'.  The build process will attempt to discover the version of UNIX you have and tailor itself accordingly, using a combination of saved definitions in the file `machines.h' and a file `sysdefs.h' created by inspecting the environment for various things. 
+Bash has been ported to nearly every version of UNIX.  All you should have to do to build it on a machine for which a port exists is to type `make'.  The build process will attempt to discover the version of UNIX you have and tailor itself accordingly, using a combination of saved definitions in the file `machines.h' and a file `sysdefs.h' created by inspecting the environment for various things.
 <P>
 More information appears in the file `INSTALL' in the distribution.
 
@@ -203,7 +203,7 @@ from the SVR4 shell.  The bash manual page explains these completely.
 <LI>`read' builtin has -r
 <LI>kill -s is present
 </UL>
-  
+
 <H4>Implementation differences:</H4>
 
 <UL>
@@ -243,7 +243,7 @@ from the SVR4 shell.  The bash manual page explains these completely.
 <LI>((...)) equivalent to let "..."
 <LI>time keyword to let pipelines be timed
 <LI>tracked aliases
-<LI>$(&lt;file)	
+<LI>$(&lt;file)
 <LI>one-dimensional arrays and appropriate expansions
 <LI>variables: ERRNO, FPATH, COLUMNS, LINES, EDITOR, VISUAL
 <LI>extended pattern matching with egrep-style pattern lists
@@ -253,7 +253,7 @@ from the SVR4 shell.  The bash manual page explains these completely.
 <LI>text of command history kept in a file, not memory
 <LI>builtins: alias -x, cd old new, fc -e -, newgrp, print, read -p/-s/u/var?prompt, set -A/-o gmacs/-o keyword/-o bgnice/-o markdirs/-o nolog/-o trackall/-o viraw/-s, typeset -H/-L/-R/-A/-ft/-fu/-fx/-l/-u/-t, whence
 </UL>
-  
+
 <H4>Implementation differences:</H4>
 
 <UL>
@@ -264,7 +264,7 @@ from the SVR4 shell.  The bash manual page explains these completely.
 <LI>bash has exported functions
 <LI>bash command search finds functions before builtins
 </UL>
-  
+
 <H3><A NAME="8">8)  What is the bash `posix mode'?</A></H3>
 
 <P>
@@ -272,7 +272,7 @@ Although bash is an implementation of the Posix.2 shell specification, there are
 <P>
 Posix mode is entered by starting bash with the -posix option or executing `set -o posix' after bash is running.
 <P>
-The specific aspects of bash which change when posix mode is active are listed in the file CWRU/POSIX.NOTES in the bash distribution. 
+The specific aspects of bash which change when posix mode is active are listed in the file CWRU/POSIX.NOTES in the bash distribution.
 
 <H3><A NAME="9">9) How can I build bash with gcc?</A></H3>
 
@@ -286,13 +286,13 @@ Type
 <H3><A NAME="10">10) Why does bash run a different version of `command' than `which command' says it will?</A></H3>
 
 <P>
-`which' is actually a csh script that assumes you're running csh. It reads the csh startup files from your home directory and uses those to determine which `command' will be invoked.  Since bash doesn't use any of those startup files, there's a good chance that your bash environment differs from your csh environment. 
+`which' is actually a csh script that assumes you're running csh. It reads the csh startup files from your home directory and uses those to determine which `command' will be invoked.  Since bash doesn't use any of those startup files, there's a good chance that your bash environment differs from your csh environment.
 
 <H3><A NAME="11">11) How can I make my csh aliases work when I convert to bash?</A></H3>
 
 <P>
 Bash uses a different syntax to support aliases than csh does. The details can be found in the documentation.  We have provided a shell script which does most of the work of conversion for you; this script can be found in ./examples/alias-conv.sh.  Here is how you use it:
-<P>  
+<P>
 Start csh in the normal way for you.  (e.g., `csh')
 <P>
 Pipe the output of `alias' through `alias-conv.sh', saving the results into `bash_aliases':
@@ -310,8 +310,8 @@ Edit `bash_aliases', carefully reading through any created functions.  You will 
 is converted to the bash function:
 <BR>
 <PRE>
-	cd () 
-	{ 
+	cd ()
+	{
 		cd $*;
 		echo $cwd
 	}
@@ -387,7 +387,7 @@ If a sequence of commands appears in a pipeline, and one of the reading commands
       ps -aux | head
 </PRE>
 <P>
-`head' can finish before `ps' writes all of its output, and ps will try to write on a pipe without a reader.  In that case, bash will print `Broken pipe' to stderr when ps is killed by a SIGPIPE. 
+`head' can finish before `ps' writes all of its output, and ps will try to write on a pipe without a reader.  In that case, bash will print `Broken pipe' to stderr when ps is killed by a SIGPIPE.
 
 <H3><A NAME="15">15) How can I get bash to read and display eight-bit characters?</A></H3>
 
@@ -429,7 +429,7 @@ The `set' commands between the single quotes may also be placed in ~/.inputrc.
 <P>
 The problem is `cmdtool' and bash fighting over the input.  When scrolling is enabled in a cmdtool window, cmdtool puts the tty in `raw mode' to permit command-line editing using the mouse for applications that cannot do it themselves.  As a result, bash and cmdtool each try to read keyboard input immediately, with neither getting enough of it to be useful.
 <P>
-This mode also causes cmdtool to not implement many of the terminal functions and control sequences appearing in the `sun-cmd' termcap entry.  For a more complete explanation, see that file examples/suncmd.termcap in the bash distribution. 
+This mode also causes cmdtool to not implement many of the terminal functions and control sequences appearing in the `sun-cmd' termcap entry.  For a more complete explanation, see that file examples/suncmd.termcap in the bash distribution.
 <P>
 `xterm' is a better choice, and gets along with bash much more smoothly.
 <P>
@@ -444,7 +444,7 @@ Then export TERMCAP and start a new cmdtool window from that shell. The bash com
 <H3><A NAME="17">17) How do I write a function `x' to replace builtin command `x', but still invoke the command from within the function?</A></H3>
 
 <P>
-This is what the `command' and `builtin' builtins are for.  The `command' builtin executes the command supplied as its first argument, skipping over any function defined with that name.  The `builtin' builtin executes the builtin command given as its first argument directly. 
+This is what the `command' and `builtin' builtins are for.  The `command' builtin executes the command supplied as its first argument, skipping over any function defined with that name.  The `builtin' builtin executes the builtin command given as its first argument directly.
 <P>
 For example, to write a function to replace `cd' that writes the hostname and current directory to an xterm title bar, use something like the following:
 <BR>
@@ -455,21 +455,21 @@ For example, to write a function to replace `cd' that writes the hostname and cu
 	}
 </PRE>
 <P>
-This could also be written using `command' instead of `builtin'; the version above is marginally more efficient. 
+This could also be written using `command' instead of `builtin'; the version above is marginally more efficient.
 
 <H3><A NAME="18">18) When I have terminal escape sequences in my prompt, why does bash wrap lines at the wrong column?</A></H3>
 
 <P>
 Bash does not know that the terminal escape sequences do not take up space on the screen.  The redisplay code assumes, unless told otherwise, that each character in the prompt is a `printable' character that takes up one character position on the screen.
 <P>
-You can use the bash prompt expansion facility (see the PROMPTING section in the manual page) to tell readline that sequences of characters in the prompt strings take up no screen space. 
+You can use the bash prompt expansion facility (see the PROMPTING section in the manual page) to tell readline that sequences of characters in the prompt strings take up no screen space.
 <P>
-Use the \[ escape to begin a sequence of non-printing characters, and the \] escape to signal the end of such a sequence. 
+Use the \[ escape to begin a sequence of non-printing characters, and the \] escape to signal the end of such a sequence.
 
 <H3><A NAME="19">19) I built bash on Solaris 2.  Why do globbing expansions and filename completion chop off the first few characters of each filename?</A></H3>
 
 <P>
-This is the consequence of building bash on SunOS 5 and linking with the libraries in /usr/ucblib, but using the definitions and structures from files in /usr/include. 
+This is the consequence of building bash on SunOS 5 and linking with the libraries in /usr/ucblib, but using the definitions and structures from files in /usr/include.
 <P>
 The actual conflict is between the dirent structure in /usr/include/dirent.h and the struct returned by the version of `readdir' in libucb.a (a 4.3-BSD style `struct direct').
 <P>
@@ -480,20 +480,20 @@ If you have installed the Sun C compiler, you may also need to put /usr/ccs/bin 
 <H3><A NAME="20">20) Why doesn't bash treat brace expansions exactly like csh?</A></H3>
 
 <P>
-The only difference between bash and csh brace expansion is that bash requires a brace expression to contain at least one unquoted comma if it is to be expanded.  Any brace-surrounded word not containing an unquoted comma is left unchanged by the brace expansion code.  This affords the greatest degree of sh compatibility. 
+The only difference between bash and csh brace expansion is that bash requires a brace expression to contain at least one unquoted comma if it is to be expanded.  Any brace-surrounded word not containing an unquoted comma is left unchanged by the brace expansion code.  This affords the greatest degree of sh compatibility.
 <P>
-Bash, ksh, zsh, and pd-ksh all implement brace expansion this way. 
+Bash, ksh, zsh, and pd-ksh all implement brace expansion this way.
 
 <H3><A NAME="21">21) Why does bash dump core after I interrupt username completion or `~user' tilde expansion on a machine running NIS?</A></H3>
 
 <P>
 This is a famous and long-standing bug in the SunOS YP (sorry, NIS) client library, which is part of libc.
 <P>
-The YP library code keeps static state -- a pointer into the data returned from the server.  When YP initializes itself (setpwent), it looks at this pointer and calls free on it if it's non-null.  So far, so good. 
+The YP library code keeps static state -- a pointer into the data returned from the server.  When YP initializes itself (setpwent), it looks at this pointer and calls free on it if it's non-null.  So far, so good.
 <P>
-If one of the YP functions is interrupted during getpwent (the exact function is interpretwithsave()), and returns NULL, the pointer is freed without being reset to NULL, and the function returns.  The next time getpwent is called, it sees that this pointer is non-null, calls free, and the bash free() blows up because it's being asked to free freed memory. 
+If one of the YP functions is interrupted during getpwent (the exact function is interpretwithsave()), and returns NULL, the pointer is freed without being reset to NULL, and the function returns.  The next time getpwent is called, it sees that this pointer is non-null, calls free, and the bash free() blows up because it's being asked to free freed memory.
 <P>
-The traditional Unix mallocs allow memory to be freed multiple times; that's probably why this has never been fixed.  You can probably stop it by adding an #undef USE_GNU_MALLOC to the appropriate machine description in machines.h. 
+The traditional Unix mallocs allow memory to be freed multiple times; that's probably why this has never been fixed.  You can probably stop it by adding an #undef USE_GNU_MALLOC to the appropriate machine description in machines.h.
 
 <H3><A NAME="22">22) I'm running SVR4.2.  Why is the line erased every time I type `@'?</A></H3>
 
@@ -516,14 +516,14 @@ For example, this expression prints the value of the last positional parameter:
 	eval echo \"\$\{$#\}\"
 </PRE>
 <P>
-The expansion of the quoted portions of this expression will be deferred until `eval' runs, while the `$#' will be expanded before `eval' is executed. 
+The expansion of the quoted portions of this expression will be deferred until `eval' runs, while the `$#' will be expanded before `eval' is executed.
 
 <H3><A NAME="24">24) If I pipe the output of a command into `read variable', why doesn't the output show up in $variable when the read command finishes?</A></H3>
 
 <P>
-This has to do with the parent-child relationship between Unix processes. 
+This has to do with the parent-child relationship between Unix processes.
 <P>
-Each element of a pipeline runs in a separate process, a child of the shell running the pipeline.  A subprocess cannot affect its parent's environment.  When the `read' command sets the variable to the input, that variable is set only in the subshell, not the parent shell.  When the subshell exits, the value of the variable is lost. 
+Each element of a pipeline runs in a separate process, a child of the shell running the pipeline.  A subprocess cannot affect its parent's environment.  When the `read' command sets the variable to the input, that variable is set only in the subshell, not the parent shell.  When the subshell exits, the value of the variable is lost.
 <P>
 Many pipelines that end with `read variable' can be converted into command substitutions, which will capture the output of a specified command.  The output can then be assigned to a variable:
 <BR>
@@ -569,14 +569,14 @@ This is the general approach -- in most cases you will not need to set $IFS to a
 <H3><A NAME="25">25) I just changed my shell to bash, and now I can't FTP into my machine. Why not?</A></H3>
 
 <P>
-You must add the full pathname to bash to the file /etc/shells. Many versions of ftpd use this file to prohibit `special' users such as `uucp' and `news' from using FTP. 
+You must add the full pathname to bash to the file /etc/shells. Many versions of ftpd use this file to prohibit `special' users such as `uucp' and `news' from using FTP.
 
 <H3><A NAME="26">26) I have a bunch of shell scripts that use backslash-escaped characters in arguments to `echo'.  Bash doesn't interpret these characters.  Why not, and how can I make it understand them?</A></H3>
 
 <P>
 This is the behavior of echo on most Unix System V machines.
 <P>
-The bash builtin `echo' is modelled after the 9th Edition Research Unix version of `echo'.  It does not interpret backslash-escaped characters in its argument strings by default; it requires the use of the -e option to enable the interpretation.  The System V echo provides no way to disable the special characters; the bash echo has a -E option to disable them. 
+The bash builtin `echo' is modelled after the 9th Edition Research Unix version of `echo'.  It does not interpret backslash-escaped characters in its argument strings by default; it requires the use of the -e option to enable the interpretation.  The System V echo provides no way to disable the special characters; the bash echo has a -E option to disable them.
 <P>
 There is a compile-time option that will make bash behave like the System V echo and interpret things like \t by default.  Change config.h so that DEFAULT_ECHO_TO_USG is defined, remove builtins/libbuiltins.a and builtins/echo.o, and rebuild.
 
@@ -594,7 +594,7 @@ Posix has specified a more powerful, albeit somewhat more confusing, mechanism c
         --&gt;file.o
 </PRE>
 <BR>
-     
+
 <DT>${parameter%%word}
 <DD>Remove largest suffix pattern.  The WORD is expanded to produce a pattern.  It then expands to the value of PARAMETER, with the largest portion of the suffix matched by the pattern deleted.
 <PRE>
@@ -603,7 +603,7 @@ Posix has specified a more powerful, albeit somewhat more confusing, mechanism c
         --&gt;posix
 </PRE>
 <BR>
-     
+
 <DT>${parameter#word}
 <DD>Remove smallest prefix pattern.  The WORD is expanded to produce a pattern.  It then expands to the value of PARAMETER, with the smallest portion of the prefix matched by the pattern deleted.
 <PRE>
@@ -667,7 +667,7 @@ The key is to remember that piping is performed before redirection, so file desc
 <P>
 Use the `bashbug' script to report bugs.  It is built and installed at the same time as bash.  It provides a standard template for reporting a problem and automatically includes information about your configuration and build environment.
 <P>
-`bashbug' sends its reports to <A HREF="mailto:bug-bash@prep.ai.mit.edu">bug-bash@prep.ai.mit.edu</A>, which is a large mailing list gatewayed to the usenet newsgroup <A HREF="news:gnu.bash.bug">gnu.bash.bug</A>. 
+`bashbug' sends its reports to <A HREF="mailto:bug-bash@prep.ai.mit.edu">bug-bash@prep.ai.mit.edu</A>, which is a large mailing list gatewayed to the usenet newsgroup <A HREF="news:gnu.bash.bug">gnu.bash.bug</A>.
 <P>
 Bug fixes, answers to questions, and announcements of new releases are all posted to <A HREF="news:gnu.bash.bug">gnu.bash.bug</A>.  Discussions concerning bash features and problems also take place there.
 <P>
