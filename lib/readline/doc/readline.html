@@ -1,14 +1,14 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- Created on January, 2  2018 by texi2html 1.64 -->
-<!-- 
+<!--
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
             Olaf Bachmann <obachman@mathematik.uni-kl.de>
             and many others.
 Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
 Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
- 
+
 -->
 <HEAD>
 <TITLE>GNU Readline Library: </TITLE>
@@ -38,7 +38,7 @@ provide a command line interface.
 The Readline home page is <A HREF="http://www.gnu.org/software/readline/">http://www.gnu.org/software/readline/</A>.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC1">1. Command Line Editing</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">GNU Readline User's Manual.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC23">2. Programming with GNU Readline</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">GNU Readline Programmer's Manual.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC50">A. GNU Free Documentation License</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">License for copying this manual.</TD></TR>
@@ -70,7 +70,7 @@ This chapter describes the basic features of the GNU
 command line editing interface.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC2">1.1 Introduction to Line Editing</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Notation used in this text.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC3">1.2 Readline Interaction</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The minimum set of commands for editing a line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC9">1.3 Readline Init File</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Customizing Readline from a user's view.</TD></TR>
@@ -170,7 +170,7 @@ end of the line to press <KBD>RET</KBD>; the entire line is accepted
 regardless of the location of the cursor within the line.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC4">1.2.1 Readline Bare Essentials</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The least you need to know about Readline.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC5">1.2.2 Readline Movement Commands</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Moving about the input line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC6">1.2.3 Readline Killing Commands</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to delete text, and how to get it back!</TD></TR>
@@ -505,7 +505,7 @@ In addition, the <CODE>C-x C-r</CODE> command re-reads this init file, thus
 incorporating any changes that you might have made to it.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC10">1.3.1 Readline Init File Syntax</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Syntax for the commands in the inputrc file.</TD></TR>
 </TABLE>
 
@@ -782,7 +782,7 @@ this variable is set to <SAMP>`off'</SAMP>.
 If set to <SAMP>`on'</SAMP>, Readline will enable eight-bit input (it
 will not clear the eighth bit in the characters it reads),
 regardless of what the terminal claims it can support.  The
-default value is <SAMP>`off'</SAMP>, but Readline will set it to <SAMP>`on'</SAMP> if the 
+default value is <SAMP>`off'</SAMP>, but Readline will set it to <SAMP>`on'</SAMP> if the
 locale contains eight-bit characters.
 The name <CODE>meta-flag</CODE> is a synonym for this variable.
 <P>
@@ -901,7 +901,7 @@ calls to <CODE>readline</CODE>.  The default is <SAMP>`off'</SAMP>.
 <DT><CODE>show-all-if-ambiguous</CODE>
 <DD><A NAME="IDX38"></A>
 This alters the default behavior of the completion functions.  If
-set to <SAMP>`on'</SAMP>, 
+set to <SAMP>`on'</SAMP>,
 words which have more than one possible completion cause the
 matches to be listed immediately instead of ringing the bell.
 The default value is <SAMP>`off'</SAMP>.
@@ -911,7 +911,7 @@ The default value is <SAMP>`off'</SAMP>.
 <DD><A NAME="IDX39"></A>
 This alters the default behavior of the completion functions in
 a fashion similar to <VAR>show-all-if-ambiguous</VAR>.
-If set to <SAMP>`on'</SAMP>, 
+If set to <SAMP>`on'</SAMP>,
 words which have more than one possible completion without any
 possible partial completion (the possible completions don't share
 a common prefix) cause the matches to be listed immediately instead
@@ -1198,7 +1198,7 @@ $endif
 <DD>The <VAR>application</VAR> construct is used to include
 application-specific settings.  Each program using the Readline
 library sets the <VAR>application name</VAR>, and you can test for
-a particular value. 
+a particular value.
 This could be used to bind key sequences to functions useful for
 a specific program.  For instance, the following command adds a
 key sequence that quotes the current or previous word in Bash:
@@ -1279,7 +1279,7 @@ $include /etc/Inputrc
 #
 # Set various bindings for emacs mode.
 
-set editing-mode emacs 
+set editing-mode emacs
 
 $if mode=emacs
 
@@ -1384,7 +1384,7 @@ $endif
 <!--docid::SEC13::-->
 <P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC14">1.4.1 Commands For Moving</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Moving about the line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC15">1.4.2 Commands For Manipulating The History</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Getting at previous lines.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC16">1.4.3 Commands For Changing Text</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Commands for changing text.</TD></TR>
@@ -2352,7 +2352,7 @@ such as completion, line editing, and interactive history manipulation
 in your own programs, this section is for you.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC24">2.1 Basic Behavior</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Using the default behavior of Readline.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC25">2.2 Custom Functions</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Adding your own functions to Readline.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC28">2.3 Readline Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variables accessible to custom
@@ -2536,12 +2536,12 @@ be used to conditionally compile application code depending on
 the installed Readline version.  The value is a hexadecimal
 encoding of the major and minor version numbers of the library,
 of the form 0x<VAR>MMmm</VAR>.  <VAR>MM</VAR> is the two-digit major
-version number; <VAR>mm</VAR> is the two-digit minor version number. 
+version number; <VAR>mm</VAR> is the two-digit minor version number.
 For Readline 4.2, for example, the value of
-<CODE>RL_READLINE_VERSION</CODE> would be <CODE>0x0402</CODE>. 
+<CODE>RL_READLINE_VERSION</CODE> would be <CODE>0x0402</CODE>.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC26">2.2.1 Readline Typedefs</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">C declarations to make code readable.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC27">2.2.2 Writing a New Function</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variables and calling conventions.</TD></TR>
 </TABLE></BLOCKQUOTE>
@@ -3167,7 +3167,7 @@ means that vi mode is active.
 <!--docid::SEC29::-->
 <P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC30">2.4.1 Naming a Function</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to give a function you write a name.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC31">2.4.2 Selecting a Keymap</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Making keymaps.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC32">2.4.3 Binding Keys</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Changing Keymaps.</TD></TR>
@@ -3646,7 +3646,7 @@ This is done with <CODE>rl_begin_undo_group()</CODE> and
 The types of events that can be undone are:
 </P><P>
 
-<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>enum undo_code { UNDO_DELETE, UNDO_INSERT, UNDO_BEGIN, UNDO_END }; 
+<TABLE><tr><td>&nbsp;</td><td class=smallexample><FONT SIZE=-1><pre>enum undo_code { UNDO_DELETE, UNDO_INSERT, UNDO_BEGIN, UNDO_END };
 </FONT></pre></td></tr></table></P><P>
 
 Notice that <CODE>UNDO_DELETE</CODE> means to insert some text, and
@@ -4460,7 +4460,7 @@ invert_case_line (count, key)
     }
   else
     direction = 1;
-      
+
   /* Find the end of the range to modify. */
   end = start + (count * direction);
 
@@ -4606,7 +4606,7 @@ main (int c, char **v)
   while (running)
     {
       FD_ZERO (&#38;fds);
-      FD_SET (fileno (rl_instream), &#38;fds);    
+      FD_SET (fileno (rl_instream), &#38;fds);
 
       r = select (FD_SETSIZE, &#38;fds, NULL, NULL, NULL);
       if (r &#60; 0 &#38;&#38; errno != EINTR)
@@ -4621,7 +4621,7 @@ main (int c, char **v)
 	  sigwinch_received = 0;
 	}
       if (r &#60; 0)
-	continue;     
+	continue;
 
       if (FD_ISSET (fileno (rl_instream), &#38;fds))
         rl_callback_read_char ();
@@ -4658,12 +4658,12 @@ be sent to the process currently reading input from the keyboard.  Since
 Readline changes the terminal attributes when it is called, it needs to
 perform special processing when such a signal is received in order to
 restore the terminal to a sane state, or provide application writers with
-functions to do so manually. 
+functions to do so manually.
 </P><P>
 
 Readline contains an internal signal handler that is installed for a
 number of signals (<CODE>SIGINT</CODE>, <CODE>SIGQUIT</CODE>, <CODE>SIGTERM</CODE>,
-<CODE>SIGHUP</CODE>, 
+<CODE>SIGHUP</CODE>,
 <CODE>SIGALRM</CODE>, <CODE>SIGTSTP</CODE>, <CODE>SIGTTIN</CODE>, and <CODE>SIGTTOU</CODE>).
 When one of these signals is received, the signal handler
 will reset the terminal attributes to those that were in effect before
@@ -4681,7 +4681,7 @@ There is an additional Readline signal handler, for <CODE>SIGWINCH</CODE>, which
 the kernel sends to a process whenever the terminal's size changes (for
 example, if a user resizes an <CODE>xterm</CODE>).  The Readline <CODE>SIGWINCH</CODE>
 handler updates Readline's internal screen size information, and then calls
-any <CODE>SIGWINCH</CODE> signal handler the calling application has installed. 
+any <CODE>SIGWINCH</CODE> signal handler the calling application has installed.
 Readline calls the application's <CODE>SIGWINCH</CODE> signal handler without
 resetting the terminal to its original state.  If the application's signal
 handler does more than update its idea of the terminal size and return (for
@@ -4773,7 +4773,7 @@ The default value of <CODE>rl_change_environment</CODE> is 1.
 
 If an application does not wish to have Readline catch any signals, or
 to handle signals other than those Readline catches (<CODE>SIGHUP</CODE>,
-for example), 
+for example),
 Readline provides convenience functions to do the necessary terminal
 and internal state cleanup upon receipt of a signal.
 </P><P>
@@ -4932,7 +4932,7 @@ The following sections describe how your program and Readline
 cooperate to provide this service.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC46">2.6.1 How Completing Works</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The logic used to do completion.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC47">2.6.2 Completion Functions</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Functions provided by Readline.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="readline.html#SEC48">2.6.3 Completion Variables</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Variables which control completion.</TD></TR>
@@ -5220,7 +5220,7 @@ to reset this character.
 characters from a filename before completion is attempted, so those
 characters do not interfere with matching the text against names in
 the filesystem.  It is called with <VAR>text</VAR>, the text of the word
-to be dequoted, and <VAR>quote_char</VAR>, which is the quoting character 
+to be dequoted, and <VAR>quote_char</VAR>, which is the quoting character
 that delimits the filename (usually <SAMP>`''</SAMP> or <SAMP>`"'</SAMP>).  If
 <VAR>quote_char</VAR> is zero, the filename was not in an embedded string.
 </DL>
@@ -5419,7 +5419,7 @@ shell variables and hostnames.
 <DT><U>Variable:</U> int <B>rl_completion_query_items</B>
 <DD>Up to this many items will be displayed in response to a
 possible-completions call.  After that, readline asks the user if she is sure
-she wants to see them all.  The default value is 100.  A negative value 
+she wants to see them all.  The default value is 100.  A negative value
 indicates that Readline should never ask the user.
 </DL>
 </P><P>
@@ -5799,7 +5799,7 @@ stripwhite (string)
 
   for (s = string; whitespace (*s); s++)
     ;
-    
+
   if (*s == 0)
     return (s);
 
@@ -6678,23 +6678,23 @@ to permit their use in free software.
 <H1> Concept Index </H1>
 <!--docid::SEC52::-->
 <table><tr><th valign=top>Jump to: &nbsp; </th><td><A HREF="readline.html#cp_A" style="text-decoration:none"><b>A</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_C" style="text-decoration:none"><b>C</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_E" style="text-decoration:none"><b>E</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_I" style="text-decoration:none"><b>I</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_K" style="text-decoration:none"><b>K</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_N" style="text-decoration:none"><b>N</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_R" style="text-decoration:none"><b>R</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_V" style="text-decoration:none"><b>V</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_Y" style="text-decoration:none"><b>Y</b></A>
- &nbsp; 
+ &nbsp;
 </td></tr></table><br><P></P>
 <TABLE border=0>
 <TR><TD></TD><TH ALIGN=LEFT>Index Entry</TH><TH ALIGN=LEFT> Section</TH></TR>
@@ -6729,23 +6729,23 @@ to permit their use in free software.
 <TR><TD></TD><TD valign=top><A HREF="readline.html#IDX2">yanking text</A></TD><TD valign=top><A HREF="rlman.html#SEC6">1.2.3 Readline Killing Commands</A></TD></TR>
 <TR><TD COLSPAN=3> <HR></TD></TR>
 </TABLE><P></P><table><tr><th valign=top>Jump to: &nbsp; </th><td><A HREF="readline.html#cp_A" style="text-decoration:none"><b>A</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_C" style="text-decoration:none"><b>C</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_E" style="text-decoration:none"><b>E</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_I" style="text-decoration:none"><b>I</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_K" style="text-decoration:none"><b>K</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_N" style="text-decoration:none"><b>N</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_R" style="text-decoration:none"><b>R</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_V" style="text-decoration:none"><b>V</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#cp_Y" style="text-decoration:none"><b>Y</b></A>
- &nbsp; 
+ &nbsp;
 </td></tr></table><br><P>
 
 <A NAME="Function and Variable Index"></A>
@@ -6765,48 +6765,48 @@ to permit their use in free software.
 <H1> Function and Variable Index </H1>
 <!--docid::SEC53::-->
 <table><tr><th valign=top>Jump to: &nbsp; </th><td><A HREF="readline.html#fn__" style="text-decoration:none"><b>_</b></A>
- &nbsp; 
+ &nbsp;
 <BR>
 <A HREF="readline.html#fn_A" style="text-decoration:none"><b>A</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_B" style="text-decoration:none"><b>B</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_C" style="text-decoration:none"><b>C</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_D" style="text-decoration:none"><b>D</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_E" style="text-decoration:none"><b>E</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_F" style="text-decoration:none"><b>F</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_H" style="text-decoration:none"><b>H</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_I" style="text-decoration:none"><b>I</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_K" style="text-decoration:none"><b>K</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_M" style="text-decoration:none"><b>M</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_N" style="text-decoration:none"><b>N</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_O" style="text-decoration:none"><b>O</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_P" style="text-decoration:none"><b>P</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_Q" style="text-decoration:none"><b>Q</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_R" style="text-decoration:none"><b>R</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_S" style="text-decoration:none"><b>S</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_T" style="text-decoration:none"><b>T</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_U" style="text-decoration:none"><b>U</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_V" style="text-decoration:none"><b>V</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_Y" style="text-decoration:none"><b>Y</b></A>
- &nbsp; 
+ &nbsp;
 </td></tr></table><br><P></P>
 <TABLE border=0>
 <TR><TD></TD><TH ALIGN=LEFT>Index Entry</TH><TH ALIGN=LEFT> Section</TH></TR>
@@ -7261,48 +7261,48 @@ to permit their use in free software.
 <TR><TD></TD><TD valign=top><A HREF="readline.html#IDX152"><CODE>yank-pop (M-y)</CODE></A></TD><TD valign=top><A HREF="rlman.html#SEC17">1.4.4 Killing And Yanking</A></TD></TR>
 <TR><TD COLSPAN=3> <HR></TD></TR>
 </TABLE><P></P><table><tr><th valign=top>Jump to: &nbsp; </th><td><A HREF="readline.html#fn__" style="text-decoration:none"><b>_</b></A>
- &nbsp; 
+ &nbsp;
 <BR>
 <A HREF="readline.html#fn_A" style="text-decoration:none"><b>A</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_B" style="text-decoration:none"><b>B</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_C" style="text-decoration:none"><b>C</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_D" style="text-decoration:none"><b>D</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_E" style="text-decoration:none"><b>E</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_F" style="text-decoration:none"><b>F</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_H" style="text-decoration:none"><b>H</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_I" style="text-decoration:none"><b>I</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_K" style="text-decoration:none"><b>K</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_M" style="text-decoration:none"><b>M</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_N" style="text-decoration:none"><b>N</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_O" style="text-decoration:none"><b>O</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_P" style="text-decoration:none"><b>P</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_Q" style="text-decoration:none"><b>Q</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_R" style="text-decoration:none"><b>R</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_S" style="text-decoration:none"><b>S</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_T" style="text-decoration:none"><b>T</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_U" style="text-decoration:none"><b>U</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_V" style="text-decoration:none"><b>V</b></A>
- &nbsp; 
+ &nbsp;
 <A HREF="readline.html#fn_Y" style="text-decoration:none"><b>Y</b></A>
- &nbsp; 
+ &nbsp;
 </td></tr></table><br><P>
 
 <HR SIZE="6">
@@ -7470,7 +7470,7 @@ to permit their use in free software.
 This document was generated by <I>Chet Ramey</I> on <I>January, 2  2018</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
-<P></P>  
+<P></P>
 The buttons in the navigation panels have the following meaning:
 <P></P>
 <table border = "1">
@@ -7513,7 +7513,7 @@ next section in reading order
 FastBack
 </TD>
 <TD>
-previous or up-and-previous section 
+previous or up-and-previous section
 </TD>
 <TD>
 1.1
@@ -7555,7 +7555,7 @@ Top
 cover (top) of document
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -7568,7 +7568,7 @@ Contents
 table of contents
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -7581,7 +7581,7 @@ Index
 concept index
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -7594,13 +7594,13 @@ About
 this page
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 </TABLE>
 <P></P>
-where the <STRONG> Example </STRONG> assumes that the current position 
-is at <STRONG> Subsubsection One-Two-Three </STRONG> of a document of 
+where the <STRONG> Example </STRONG> assumes that the current position
+is at <STRONG> Subsubsection One-Two-Three </STRONG> of a document of
 the following structure:
 <UL>
 <LI> 1. Section One  </LI>
@@ -7626,7 +7626,7 @@ the following structure:
 </UL>
 
 <HR SIZE=1>
-<BR>  
+<BR>
 <FONT SIZE="-1">
 This document was generated
 by <I>Chet Ramey</I> on <I>January, 2  2018</I>
