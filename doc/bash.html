@@ -1149,7 +1149,7 @@ is the exit status of the last command executed in
 <I>list</I>,
 
 or zero if no commands were executed.
-<DT><B>case</B> <I>word</I> <B>in</B> [ [(] <I>pattern</I> [ <B>|</B> <I>pattern</I> ] 
+<DT><B>case</B> <I>word</I> <B>in</B> [ [(] <I>pattern</I> [ <B>|</B> <I>pattern</I> ]
 .. ) <I>list</I> ;; ] ... <B>esac</B><DD>
 A <B>case</B> command first expands <I>word</I>, and tries to match
 it against each <I>pattern</I> in turn, using the matching rules
@@ -9557,7 +9557,7 @@ _completion_loader()
 {
   . &quot;
 /etc/bash_completion.d/$1.sh&quot;
- 
+
 \
 <BR>
 
@@ -9565,7 +9565,7 @@ _completion_loader()
 &nbsp;&nbsp;&nbsp;&nbsp;
 &gt;/dev/null 2&gt;&amp;1 &amp;&amp; return 124
 }
-complete -D -F _completion_loader 
+complete -D -F _completion_loader
 \
 <BR>
 
