@@ -1,14 +1,14 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- Created on January, 2  2018 by texi2html 1.64 -->
-<!-- 
+<!--
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
             Olaf Bachmann <obachman@mathematik.uni-kl.de>
             and many others.
 Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
 Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
- 
+
 -->
 <HEAD>
 <TITLE>GNU Readline Library: </TITLE>
@@ -38,7 +38,7 @@ programs which provide a command line interface.
 The Readline home page is <A HREF="http://www.gnu.org/software/readline/">http://www.gnu.org/software/readline/</A>.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC1">1. Command Line Editing</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">GNU Readline User's Manual.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC23">A. GNU Free Documentation License</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">License for copying this manual.</TD></TR>
 </TABLE></BLOCKQUOTE>
@@ -66,7 +66,7 @@ This chapter describes the basic features of the GNU
 command line editing interface.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC2">1.1 Introduction to Line Editing</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Notation used in this text.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC3">1.2 Readline Interaction</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The minimum set of commands for editing a line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC9">1.3 Readline Init File</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Customizing Readline from a user's view.</TD></TR>
@@ -166,7 +166,7 @@ end of the line to press <KBD>RET</KBD>; the entire line is accepted
 regardless of the location of the cursor within the line.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC4">1.2.1 Readline Bare Essentials</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">The least you need to know about Readline.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC5">1.2.2 Readline Movement Commands</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Moving about the input line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC6">1.2.3 Readline Killing Commands</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">How to delete text, and how to get it back!</TD></TR>
@@ -501,7 +501,7 @@ In addition, the <CODE>C-x C-r</CODE> command re-reads this init file, thus
 incorporating any changes that you might have made to it.
 </P><P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC10">1.3.1 Readline Init File Syntax</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Syntax for the commands in the inputrc file.</TD></TR>
 </TABLE>
 
@@ -778,7 +778,7 @@ this variable is set to <SAMP>`off'</SAMP>.
 If set to <SAMP>`on'</SAMP>, Readline will enable eight-bit input (it
 will not clear the eighth bit in the characters it reads),
 regardless of what the terminal claims it can support.  The
-default value is <SAMP>`off'</SAMP>, but Readline will set it to <SAMP>`on'</SAMP> if the 
+default value is <SAMP>`off'</SAMP>, but Readline will set it to <SAMP>`on'</SAMP> if the
 locale contains eight-bit characters.
 The name <CODE>meta-flag</CODE> is a synonym for this variable.
 <P>
@@ -897,7 +897,7 @@ calls to <CODE>readline</CODE>.  The default is <SAMP>`off'</SAMP>.
 <DT><CODE>show-all-if-ambiguous</CODE>
 <DD><A NAME="IDX38"></A>
 This alters the default behavior of the completion functions.  If
-set to <SAMP>`on'</SAMP>, 
+set to <SAMP>`on'</SAMP>,
 words which have more than one possible completion cause the
 matches to be listed immediately instead of ringing the bell.
 The default value is <SAMP>`off'</SAMP>.
@@ -907,7 +907,7 @@ The default value is <SAMP>`off'</SAMP>.
 <DD><A NAME="IDX39"></A>
 This alters the default behavior of the completion functions in
 a fashion similar to <VAR>show-all-if-ambiguous</VAR>.
-If set to <SAMP>`on'</SAMP>, 
+If set to <SAMP>`on'</SAMP>,
 words which have more than one possible completion without any
 possible partial completion (the possible completions don't share
 a common prefix) cause the matches to be listed immediately instead
@@ -1194,7 +1194,7 @@ $endif
 <DD>The <VAR>application</VAR> construct is used to include
 application-specific settings.  Each program using the Readline
 library sets the <VAR>application name</VAR>, and you can test for
-a particular value. 
+a particular value.
 This could be used to bind key sequences to functions useful for
 a specific program.  For instance, the following command adds a
 key sequence that quotes the current or previous word in Bash:
@@ -1275,7 +1275,7 @@ $include /etc/Inputrc
 #
 # Set various bindings for emacs mode.
 
-set editing-mode emacs 
+set editing-mode emacs
 
 $if mode=emacs
 
@@ -1380,7 +1380,7 @@ $endif
 <!--docid::SEC13::-->
 <P>
 
-<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC14">1.4.1 Commands For Moving</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Moving about the line.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC15">1.4.2 Commands For Manipulating The History</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Getting at previous lines.</TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="rluserman.html#SEC16">1.4.3 Commands For Changing Text</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP">Commands for changing text.</TD></TR>
@@ -2982,7 +2982,7 @@ to permit their use in free software.
 This document was generated by <I>Chet Ramey</I> on <I>January, 2  2018</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
-<P></P>  
+<P></P>
 The buttons in the navigation panels have the following meaning:
 <P></P>
 <table border = "1">
@@ -3025,7 +3025,7 @@ next section in reading order
 FastBack
 </TD>
 <TD>
-previous or up-and-previous section 
+previous or up-and-previous section
 </TD>
 <TD>
 1.1
@@ -3067,7 +3067,7 @@ Top
 cover (top) of document
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -3080,7 +3080,7 @@ Contents
 table of contents
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -3093,7 +3093,7 @@ Index
 concept index
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 <TR>
@@ -3106,13 +3106,13 @@ About
 this page
 </TD>
 <TD>
- &nbsp; 
+ &nbsp;
 </TD>
 </TR>
 </TABLE>
 <P></P>
-where the <STRONG> Example </STRONG> assumes that the current position 
-is at <STRONG> Subsubsection One-Two-Three </STRONG> of a document of 
+where the <STRONG> Example </STRONG> assumes that the current position
+is at <STRONG> Subsubsection One-Two-Three </STRONG> of a document of
 the following structure:
 <UL>
 <LI> 1. Section One  </LI>
@@ -3138,7 +3138,7 @@ the following structure:
 </UL>
 
 <HR SIZE=1>
-<BR>  
+<BR>
 <FONT SIZE="-1">
 This document was generated
 by <I>Chet Ramey</I> on <I>January, 2  2018</I>
