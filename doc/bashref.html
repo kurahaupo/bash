@@ -329,7 +329,7 @@ Next: <a href="#What-is-a-shell_003f" accesskey="n" rel="next">What is a shell?<
 for the <small class="sc">GNU</small> operating system.
 The name is an acronym for the &lsquo;<samp class="samp">Bourne-Again SHell</samp>&rsquo;,
 a pun on Stephen Bourne, the author of the direct ancestor of
-the current Unix shell <code class="code">sh</code>, 
+the current Unix shell <code class="code">sh</code>,
 which appeared in the Seventh Edition Bell Labs Research version
 of Unix.
 </p>
@@ -401,10 +401,10 @@ subsequent sections.
 <p>While executing commands is essential, most of the power (and
 complexity) of shells is due to their embedded programming
 languages.  Like any high-level language, the shell provides
-variables, flow control constructs, quoting, and functions. 
+variables, flow control constructs, quoting, and functions.
 </p>
 <p>Shells offer features geared specifically for
-interactive use rather than to augment the programming language. 
+interactive use rather than to augment the programming language.
 These interactive features include job control, command line
 editing, command history and aliases.  Each of these features is
 described in this manual.
@@ -424,7 +424,7 @@ Next: <a href="#Basic-Shell-Features" accesskey="n" rel="next">Basic Shell Featu
 <dt><a id="index-POSIX"></a><span><code class="code">POSIX</code><a class="copiable-link" href="#index-POSIX"> &para;</a></span></dt>
 <dd><p>A family of open system standards based on Unix.  Bash
 is primarily concerned with the Shell and Utilities portion of the
-<small class="sc">POSIX</small> 1003.1 standard. 
+<small class="sc">POSIX</small> 1003.1 standard.
 </p>
 </dd>
 <dt><code class="code">blank</code></dt>
@@ -576,7 +576,7 @@ Next: <a href="#Shell-Commands" accesskey="n" rel="next">Shell Commands</a>, Up:
 sequence of operations.  If the input indicates the beginning of a
 comment, the shell ignores the comment symbol (&lsquo;<samp class="samp">#</samp>&rsquo;), and the rest
 of that line.
-</p>                                
+</p>
 <p>Otherwise, roughly speaking,  the shell reads its input and
 divides the input into words and operators, employing the quoting rules
 to select which meanings to assign various words and characters.
@@ -821,7 +821,7 @@ Previous: <a href="#ANSI_002dC-Quoting" accesskey="p" rel="prev">ANSI-C Quoting<
 <p>Prefixing a double-quoted string with a dollar sign (&lsquo;<samp class="samp">$</samp>&rsquo;), such
 as <code class="verb">$&quot;hello,&nbsp;world&quot;</code>,
 will cause the string to be translated according to the current locale.
-The <code class="code">gettext</code> infrastructure performs the lookup and 
+The <code class="code">gettext</code> infrastructure performs the lookup and
 translation, using the <code class="code">LC_MESSAGES</code>, <code class="code">TEXTDOMAINDIR</code>,
 and <code class="code">TEXTDOMAIN</code> shell variables, as explained below.
 See the gettext documentation for additional details not covered here.
@@ -901,7 +901,7 @@ For instance, if you had a file with Spanish translations, you could run
 </p>
 <p>Once you have the MO files, you decide where to install them and use the
 <code class="code">TEXTDOMAINDIR</code> shell variable to tell the gettext tools where they are.
-Make sure to use the same message domain to name the MO files 
+Make sure to use the same message domain to name the MO files
 as you did for the PO files when you install them.
 </p>
 <a class="index-entry-id" id="index-LANG"></a>
@@ -1012,7 +1012,7 @@ Next: <a href="#Simple-Commands" accesskey="n" rel="next">Simple Commands</a>, U
 <p>Reserved words are words that have special meaning to the shell.
 They are used to begin and end the shell&rsquo;s compound commands.
 </p>
-<p>The following words are recognized as reserved when unquoted and 
+<p>The following words are recognized as reserved when unquoted and
 the first word of a command (see below for exceptions):
 </p>
 <table class="multitable">
@@ -1291,9 +1291,9 @@ executed, and the return status is zero.
 <p>First, the arithmetic expression <var class="var">expr1</var> is evaluated according
 to the rules described below (see <a class="pxref" href="#Shell-Arithmetic">Shell Arithmetic</a>).
 The arithmetic expression <var class="var">expr2</var> is then evaluated repeatedly
-until it evaluates to zero.   
+until it evaluates to zero.
 Each time <var class="var">expr2</var> evaluates to a non-zero value, <var class="var">commands</var> are
-executed and the arithmetic expression <var class="var">expr3</var> is evaluated.       
+executed and the arithmetic expression <var class="var">expr3</var> is evaluated.
 If any expression is omitted, it behaves as if it evaluates to 1.
 The return value is the exit status of the last command in <var class="var">commands</var>
 that is executed, or false if any of the expressions is invalid.
@@ -1334,7 +1334,7 @@ fi
 the <var class="var">consequent-commands</var> list is executed.
 If <var class="var">test-commands</var> returns a non-zero status, each <code class="code">elif</code> list
 is executed in turn, and if its exit status is zero,
-the corresponding <var class="var">more-consequents</var> is executed and the   
+the corresponding <var class="var">more-consequents</var> is executed and the
 command completes.
 If &lsquo;<samp class="samp">else <var class="var">alternate-consequents</var></samp>&rsquo; is present, and
 the final command in the final <code class="code">if</code> or <code class="code">elif</code> clause
@@ -1464,7 +1464,7 @@ as if it were within double quotes,
 but double quote characters in <var class="var">expression</var> are not treated specially
 are removed.
 If the value of the expression is non-zero, the return status is 0;
-otherwise the return status is 1. 
+otherwise the return status is 1.
 </p>
 
 </dd>
@@ -1535,7 +1535,7 @@ operators.
 <p>For example, the following will match a line
 (stored in the shell variable <code class="code">line</code>)
 if there is a sequence of characters anywhere in the value consisting of
-any number, including zero, of 
+any number, including zero, of
 characters in the <code class="code">space</code> character class,
 immediately followed by zero or one instances of &lsquo;<samp class="samp">a</samp>&rsquo;,
 then a &lsquo;<samp class="samp">b</samp>&rsquo;:
@@ -1715,7 +1715,7 @@ commands in the list may be redirected to a single stream.
 a subshell (see <a class="pxref" href="#Command-Execution-Environment">Command Execution Environment</a>), and each
 of the commands in <var class="var">list</var> is executed in that subshell environment.
 Since the <var class="var">list</var> is executed in a subshell, variable assignments do not
-remain in effect after the subshell completes. 
+remain in effect after the subshell completes.
 </p>
 </dd>
 <dt><a class="index-entry-id" id="index-_007d"></a>
@@ -2020,16 +2020,16 @@ var=global
 func1
 </pre></div>
 
-<p>The <code class="code">unset</code> builtin also acts using the same dynamic scope: if a  
-variable is local to the current scope, <code class="code">unset</code> will unset it;         
-otherwise the unset will refer to the variable found in any calling scope 
+<p>The <code class="code">unset</code> builtin also acts using the same dynamic scope: if a
+variable is local to the current scope, <code class="code">unset</code> will unset it;
+otherwise the unset will refer to the variable found in any calling scope
 as described above.
 If a variable at the current local scope is unset, it will remain so
 (appearing as unset)
 until it is reset in that scope or until the function returns.
 Once the function returns, any instance of the variable at a previous
 scope will become visible.
-If the unset acts on a variable at a previous scope, any instance of a   
+If the unset acts on a variable at a previous scope, any instance of a
 variable with that name that had been shadowed will become visible
 (see below how <code class="code">localvar_unset</code>shell option changes this behavior).
 </p>
@@ -2086,21 +2086,21 @@ is not given, the variable is assigned the null string.  All
 command substitution, arithmetic expansion, and quote
 removal (see <a class="pxref" href="#Shell-Parameter-Expansion">Shell Parameter Expansion</a>).
 If the variable has its <code class="code">integer</code>
-attribute set, then <var class="var">value</var> 
+attribute set, then <var class="var">value</var>
 is evaluated as an arithmetic expression even if the <code class="code">$((&hellip;))</code>
 expansion is not used (see <a class="pxref" href="#Arithmetic-Expansion">Arithmetic Expansion</a>).
 Word splitting and filename expansion are not performed.
 Assignment statements may also appear as arguments to the
-<code class="code">alias</code>, 
+<code class="code">alias</code>,
 <code class="code">declare</code>, <code class="code">typeset</code>, <code class="code">export</code>, <code class="code">readonly</code>,
 and <code class="code">local</code> builtin commands (<em class="dfn">declaration</em> commands).
 When in <small class="sc">POSIX</small> mode (see <a class="pxref" href="#Bash-POSIX-Mode">Bash and POSIX</a>), these builtins may appear
 in a command after one or more instances of the <code class="code">command</code> builtin
 and retain these assignment statement properties.
 </p>
-<p>In the context where an assignment statement is assigning a value  
+<p>In the context where an assignment statement is assigning a value
 to a shell variable or array index (see <a class="pxref" href="#Arrays">Arrays</a>), the &lsquo;<samp class="samp">+=</samp>&rsquo;
-operator can be used to   
+operator can be used to
 append to or add to the variable&rsquo;s previous value.
 This includes arguments to builtin commands such as <code class="code">declare</code> that
 accept assignment statements (declaration commands).
@@ -2596,7 +2596,7 @@ unset-or-null
 <dd><p>If <var class="var">parameter</var>
 is unset or null, the expansion of <var class="var">word</var>
 is assigned to <var class="var">parameter</var>.
-The value of <var class="var">parameter</var> is then substituted. 
+The value of <var class="var">parameter</var> is then substituted.
 Positional parameters and special parameters may not be assigned to
 in this way.
 </p>
@@ -2801,7 +2801,7 @@ key expands to a separate word.
 substituted.
 If <var class="var">parameter</var> is &lsquo;<samp class="samp">*</samp>&rsquo; or &lsquo;<samp class="samp">@</samp>&rsquo;, the value substituted
 is the number of positional parameters.
-If <var class="var">parameter</var> is an array name subscripted by &lsquo;<samp class="samp">*</samp>&rsquo; or &lsquo;<samp class="samp">@</samp>&rsquo;, 
+If <var class="var">parameter</var> is an array name subscripted by &lsquo;<samp class="samp">*</samp>&rsquo; or &lsquo;<samp class="samp">@</samp>&rsquo;,
 the value substituted is the number of elements in the array.
 If <var class="var">parameter</var>
 is an indexed array name subscripted by a negative number, that number is
@@ -2938,9 +2938,9 @@ echo ${var/abc/$rep}
 <p>It should rarely be necessary to enclose only <var class="var">string</var> in double
 quotes.
 </p>
-<p>If the <code class="code">nocasematch</code> shell option   
+<p>If the <code class="code">nocasematch</code> shell option
 (see the description of <code class="code">shopt</code> in <a class="ref" href="#The-Shopt-Builtin">The Shopt Builtin</a>)
-is enabled, the match is performed without regard to the case   
+is enabled, the match is performed without regard to the case
 of alphabetic characters.
 If <var class="var">parameter</var> is &lsquo;<samp class="samp">@</samp>&rsquo; or &lsquo;<samp class="samp">*</samp>&rsquo;,
 the substitution operation is applied to each positional
@@ -3077,7 +3077,7 @@ replaced by the equivalent but faster <code class="code">$(&lt; <var class="var"
 </p>
 <p>With the old-style backquote form of substitution,
 backslash retains its literal meaning except when followed by
-&lsquo;<samp class="samp">$</samp>&rsquo;, &lsquo;<samp class="samp">`</samp>&rsquo;, or &lsquo;<samp class="samp">\</samp>&rsquo;. 
+&lsquo;<samp class="samp">$</samp>&rsquo;, &lsquo;<samp class="samp">`</samp>&rsquo;, or &lsquo;<samp class="samp">\</samp>&rsquo;.
 The first backquote not preceded by a backslash terminates the
 command substitution.
 When using the <code class="code">$(<var class="var">command</var>)</code> form, all characters between
@@ -3101,7 +3101,7 @@ the word without being followed by a shell metacharacter as a reserved
 word would usually require.
 </p>
 <p>Any side effects of <var class="var">command</var> take effect immediately
-in the current execution environment and persist in the current 
+in the current execution environment and persist in the current
 environment after the command completes (e.g., the <code class="code">exit</code> builtin
 will exit the shell).
 </p>
@@ -3174,7 +3174,7 @@ and are removed.
 All tokens in the expression undergo parameter and variable expansion,
 command substitution, and quote removal.
 The result is treated as the arithmetic expression to be evaluated.
-Arithmetic expansions may be nested. 
+Arithmetic expansions may be nested.
 </p>
 <p>The evaluation is performed according to the rules listed below
 (see <a class="pxref" href="#Shell-Arithmetic">Shell Arithmetic</a>).
@@ -3193,7 +3193,7 @@ Next: <a href="#Word-Splitting" accesskey="n" rel="next">Word Splitting</a>, Pre
 
 <p>Process substitution allows a process&rsquo;s input or output to be
 referred to using a filename.
-It takes the form of 
+It takes the form of
 </p><div class="example">
 <pre class="example-preformatted">&lt;(<var class="var">list</var>)
 </pre></div>
@@ -3201,7 +3201,7 @@ It takes the form of
 </p><div class="example">
 <pre class="example-preformatted">&gt;(<var class="var">list</var>)
 </pre></div>
-<p>The process <var class="var">list</var> is run asynchronously, and its input or output 
+<p>The process <var class="var">list</var> is run asynchronously, and its input or output
 appears as a filename.
 This filename is
 passed as an argument to the current command as the result of the
@@ -3478,7 +3478,7 @@ pattern or sub-pattern that begins with a dot;
 when it is disabled, the set does not
 include any filenames beginning with &ldquo;.&rdquo; unless the pattern
 or sub-pattern begins with a &lsquo;<samp class="samp">.</samp>&rsquo;.
-As above, &lsquo;<samp class="samp">.</samp>&rsquo; only has a special meaning when matching filenames. 
+As above, &lsquo;<samp class="samp">.</samp>&rsquo; only has a special meaning when matching filenames.
 </p>
 <p>Complicated extended pattern matching against long strings is slow,
 especially when the patterns contain alternations and the strings
@@ -3596,7 +3596,7 @@ the corresponding TCP socket.
 </dd>
 <dt><code class="code">/dev/udp/<var class="var">host</var>/<var class="var">port</var></code></dt>
 <dd><p>If <var class="var">host</var> is a valid hostname or Internet address, and <var class="var">port</var>
-is an integer port number or service name, Bash attempts to open 
+is an integer port number or service name, Bash attempts to open
 the corresponding UDP socket.
 </p></dd>
 </dl>
@@ -4107,7 +4107,7 @@ Next: <a href="#Signals" accesskey="n" rel="next">Signals</a>, Previous: <a href
 <a class="index-entry-id" id="index-exit-status-1"></a>
 
 <p>The exit status of an executed command is the value returned by the
-<code class="code">waitpid</code> system call or equivalent function.  Exit statuses    
+<code class="code">waitpid</code> system call or equivalent function.  Exit statuses
 fall between 0 and 255, though, as explained below, the shell may
 use values above 125 specially.  Exit statuses from shell builtins and
 compound commands are also limited to this range.  Under certain
@@ -4124,7 +4124,7 @@ When a command terminates on a fatal signal whose number is <var class="var">N</
 Bash uses the value 128+<var class="var">N</var> as the exit status.
 </p>
 <p>If a command is not found, the child process created to
-execute it returns a status of 127.  If a command is found  
+execute it returns a status of 127.  If a command is found
 but is not executable, the return status is 126.
 </p>
 <p>If a command fails because of an error during expansion or redirection,
@@ -4238,7 +4238,7 @@ Previous: <a href="#Executing-Commands" accesskey="p" rel="prev">Executing Comma
 <p>A shell script is a text file containing shell commands.  When such
 a file is used as the first non-option argument when invoking Bash,
 and neither the <samp class="option">-c</samp> nor <samp class="option">-s</samp> option is supplied
-(see <a class="pxref" href="#Invoking-Bash">Invoking Bash</a>), 
+(see <a class="pxref" href="#Invoking-Bash">Invoking Bash</a>),
 Bash reads and executes commands from the file, then exits.  This
 mode of operation creates a non-interactive shell.  The shell first
 searches for the file in the current directory, and looks in the
@@ -4448,7 +4448,7 @@ after a successful directory change, <code class="code">cd</code> will return an
 status.
 </p>
 <p>On systems that support it, the <samp class="option">-@</samp> option presents the extended
-attributes associated with a file as a directory.              
+attributes associated with a file as a directory.
 </p>
 <p>If <var class="var">directory</var> is &lsquo;<samp class="samp">-</samp>&rsquo;, it is converted to <code class="env">$OLDPWD</code>
 before the directory change is attempted.
@@ -4921,7 +4921,7 @@ If a <var class="var">sigspec</var> is <code class="code">RETURN</code>, <var cl
 each time a shell function or a script executed with the <code class="code">.</code> or
 <code class="code">source</code> builtins finishes executing.
 </p>
-<p>If a <var class="var">sigspec</var> is <code class="code">ERR</code>, <var class="var">action</var> 
+<p>If a <var class="var">sigspec</var> is <code class="code">ERR</code>, <var class="var">action</var>
 is executed whenever
 a pipeline (which may consist of a single simple
 command), a list, or a compound command returns a
@@ -5229,7 +5229,7 @@ zero if <var class="var">command</var> is found, and non-zero if not.
 </pre></div>
 
 <p>Declare variables and give them attributes.  If no <var class="var">name</var>s
-are given, then display the values of variables instead. 
+are given, then display the values of variables instead.
 </p>
 <p>The <samp class="option">-p</samp> option will display the attributes and values of each
 <var class="var">name</var>.
@@ -5332,7 +5332,7 @@ as with the <code class="code">local</code> command, unless the <samp class="opt
 If a variable name is followed by =<var class="var">value</var>, the value of the variable
 is set to <var class="var">value</var>.
 </p>
-<p>When using <samp class="option">-a</samp> or <samp class="option">-A</samp> and the compound assignment syntax to 
+<p>When using <samp class="option">-a</samp> or <samp class="option">-A</samp> and the compound assignment syntax to
 create array variables, additional attributes do not take effect until
 subsequent assignments.
 </p>
@@ -5436,7 +5436,7 @@ found via <code class="env">$PATH</code> instead of the shell builtin version, t
 a list of shell builtins is printed.  With no other arguments, the list
 consists of all enabled shell builtins.
 The <samp class="option">-a</samp> option means to list
-each builtin with an indication of whether or not it is enabled. 
+each builtin with an indication of whether or not it is enabled.
 </p>
 <p>The <samp class="option">-f</samp> option means to load the new builtin command <var class="var">name</var>
 from shared object <var class="var">filename</var>, on systems that support dynamic loading.
@@ -5646,7 +5646,7 @@ This is an exception to the usual <code class="code">printf</code> behavior.
 </dl>
 
 <p>The %b, %q, and %T format specifiers all use the field width and precision
-arguments from the format specification and write that many bytes from    
+arguments from the format specification and write that many bytes from
 (or use that wide a field for) the expanded argument, which usually
 contains more characters than the original.
 </p>
@@ -6037,7 +6037,7 @@ Aliases are described in <a class="ref" href="#Aliases">Aliases</a>.
 Next: <a href="#Special-Builtins" accesskey="n" rel="next">Special Builtins</a>, Previous: <a href="#Bash-Builtins" accesskey="p" rel="prev">Bash Builtin Commands</a>, Up: <a href="#Shell-Builtin-Commands" accesskey="u" rel="up">Shell Builtin Commands</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="#Indexes" title="Index" rel="index">Index</a>]</p>
 </div>
 <h3 class="section" id="Modifying-Shell-Behavior-1"><span>4.3 Modifying Shell Behavior<a class="copiable-link" href="#Modifying-Shell-Behavior-1"> &para;</a></span></h3>
- 
+
 
 <ul class="mini-toc">
 <li><a href="#The-Set-Builtin" accesskey="1">The Set Builtin</a></li>
@@ -6479,7 +6479,7 @@ and while executing builtins that perform array dereferencing.
 </p>
 </dd>
 <dt><code class="code">assoc_expand_once</code></dt>
-<dd><p>Deprecated; a synonym for <code class="code">array_expand_once</code>. 
+<dd><p>Deprecated; a synonym for <code class="code">array_expand_once</code>.
 </p>
 </dd>
 <dt><code class="code">autocd</code></dt>
@@ -6525,7 +6525,7 @@ The shell always postpones exiting if any jobs are stopped.
 </dd>
 <dt><code class="code">checkwinsize</code></dt>
 <dd><p>If set, Bash checks the window size after each external (non-builtin)
-command and, if necessary, updates the values of    
+command and, if necessary, updates the values of
 <code class="env">LINES</code> and <code class="env">COLUMNS</code>.
 This option is enabled by default.
 </p>
@@ -6578,7 +6578,7 @@ If not set, Bash attempts to preserve what the user typed.
 </dd>
 <dt><code class="code">dirspell</code></dt>
 <dd><p>If set, Bash
-attempts spelling correction on directory names during word completion 
+attempts spelling correction on directory names during word completion
 if the directory name initially supplied does not exist.
 </p>
 </dd>
@@ -6641,9 +6641,9 @@ subshells invoked with <code class="code">( <var class="var">command</var> )</co
 </p>
 </dd>
 <dt><code class="code">extquote</code></dt>
-<dd><p>If set, <code class="code">$'<var class="var">string</var>'</code> and <code class="code">$&quot;<var class="var">string</var>&quot;</code> quoting is  
-performed within <code class="code">${<var class="var">parameter</var>}</code> expansions                     
-enclosed in double quotes.  This option is enabled by default. 
+<dd><p>If set, <code class="code">$'<var class="var">string</var>'</code> and <code class="code">$&quot;<var class="var">string</var>&quot;</code> quoting is
+performed within <code class="code">${<var class="var">parameter</var>}</code> expansions
+enclosed in double quotes.  This option is enabled by default.
 </p>
 </dd>
 <dt><code class="code">failglob</code></dt>
@@ -6666,7 +6666,7 @@ behave as if in the traditional C locale when performing
 comparisons.  That is, the current locale&rsquo;s collating sequence
 is not taken into account, so
 &lsquo;<samp class="samp">b</samp>&rsquo; will not collate between &lsquo;<samp class="samp">A</samp>&rsquo; and &lsquo;<samp class="samp">B</samp>&rsquo;,
-and upper-case and lower-case ASCII characters will collate together.   
+and upper-case and lower-case ASCII characters will collate together.
 </p>
 </dd>
 <dt><code class="code">globskipdots</code></dt>
@@ -6896,7 +6896,7 @@ environment after the command completes.
 
 <p>When Bash is not executing in <small class="sc">POSIX</small> mode, these builtins behave no
 differently than the rest of the Bash builtin commands.
-The Bash <small class="sc">POSIX</small> mode is described in <a class="ref" href="#Bash-POSIX-Mode">Bash and POSIX</a>. 
+The Bash <small class="sc">POSIX</small> mode is described in <a class="ref" href="#Bash-POSIX-Mode">Bash and POSIX</a>.
 </p>
 <p>These are the <small class="sc">POSIX</small> special builtins:
 </p><div class="example">
@@ -7023,7 +7023,7 @@ At shell startup, set to the pathname used to invoke the
 shell or shell script being executed as passed in the environment
 or argument list.
 Subsequently, expands to the last argument to the previous simple
-command executed in the foreground, after expansion. 
+command executed in the foreground, after expansion.
 Also set to the full pathname used to invoke each command executed
 and placed in the environment exported to that command.
 When checking mail, this parameter holds the name of the mail file.
@@ -7166,7 +7166,7 @@ where each corresponding member of <code class="env">FUNCNAME</code> was invoked
 <code class="code">${BASH_LINENO[$i]}</code> is the line number in the source file
 (<code class="code">${BASH_SOURCE[$i+1]}</code>) where
 <code class="code">${FUNCNAME[$i]}</code> was called (or <code class="code">${BASH_LINENO[$i-1]}</code> if
-referenced within another shell function). 
+referenced within another shell function).
 Use <code class="code">LINENO</code> to obtain the current line number.
 Assignments to <code class="env">BASH_LINENO</code> have no effect, and it may not be unset.
 </p>
@@ -7425,7 +7425,7 @@ commands.
 Full pathnames in the command hash table are not subject to <code class="code">EXECIGNORE</code>.
 Use this variable to ignore shared library files that have the executable
 bit set, but are not executable files.
-The pattern matching honors the setting of the <code class="code">extglob</code> shell 
+The pattern matching honors the setting of the <code class="code">extglob</code> shell
 option.
 </p>
 </dd>
@@ -7437,7 +7437,7 @@ builtin command.
 <dt><a id="index-FIGNORE"></a><span><code class="code">FIGNORE</code><a class="copiable-link" href="#index-FIGNORE"> &para;</a></span></dt>
 <dd><p>A colon-separated list of suffixes to ignore when performing
 filename completion.
-A filename whose suffix matches one of the entries in 
+A filename whose suffix matches one of the entries in
 <code class="env">FIGNORE</code>
 is excluded from the list of matched filenames.  A sample
 value is &lsquo;<samp class="samp">.o:~</samp>&rsquo;
@@ -7526,7 +7526,7 @@ and a value of &lsquo;<samp class="samp">-</samp>&rsquo; sorts by name in descen
 </p>
 </dd>
 <dt><a id="index-GROUPS"></a><span><code class="code">GROUPS</code><a class="copiable-link" href="#index-GROUPS"> &para;</a></span></dt>
-<dd><p>An array variable containing the list of groups of which the current    
+<dd><p>An array variable containing the list of groups of which the current
 user is a member.
 Assignments to <code class="env">GROUPS</code> have no effect.
 If <code class="env">GROUPS</code>
@@ -7575,8 +7575,8 @@ A value of &lsquo;<samp class="samp">erasedups</samp>&rsquo; causes all previous
 current line to be removed from the history list before that line
 is saved.
 Any value not in the above list is ignored.
-If <code class="env">HISTCONTROL</code> is unset, or does not include a valid value, 
-all lines read by the shell parser are saved on the history list, 
+If <code class="env">HISTCONTROL</code> is unset, or does not include a valid value,
+all lines read by the shell parser are saved on the history list,
 subject to the value of <code class="env">HISTIGNORE</code>.
 The second and subsequent lines of a multi-line compound command are
 not tested, and are added to the history regardless of the value of
@@ -7616,7 +7616,7 @@ against the line after the checks specified by <code class="env">HISTCONTROL</co
 are applied.  In addition to the normal shell pattern matching
 characters, &lsquo;<samp class="samp">&amp;</samp>&rsquo; matches the previous history line.  &lsquo;<samp class="samp">&amp;</samp>&rsquo;
 may be escaped using a backslash; the backslash is removed
-before attempting a match. 
+before attempting a match.
 The second and subsequent lines of a multi-line compound command are
 not tested, and are added to the history regardless of the value of
 <code class="env">HISTIGNORE</code>.
@@ -7625,9 +7625,9 @@ option.
 </p>
 <p><code class="env">HISTIGNORE</code> subsumes the function of <code class="env">HISTCONTROL</code>.  A
 pattern of &lsquo;<samp class="samp">&amp;</samp>&rsquo; is identical to <code class="code">ignoredups</code>, and a
-pattern of &lsquo;<samp class="samp">[ ]*</samp>&rsquo; is identical to <code class="code">ignorespace</code>. 
+pattern of &lsquo;<samp class="samp">[ ]*</samp>&rsquo; is identical to <code class="code">ignorespace</code>.
 Combining these two patterns, separating them with a colon,
-provides the functionality of <code class="code">ignoreboth</code>. 
+provides the functionality of <code class="code">ignoreboth</code>.
 </p>
 </dd>
 <dt><a id="index-HISTSIZE"></a><span><code class="code">HISTSIZE</code><a class="copiable-link" href="#index-HISTSIZE"> &para;</a></span></dt>
@@ -7657,7 +7657,7 @@ the next time hostname completion is attempted after the
 value is changed, Bash adds the contents of the new file to the
 existing list.
 If <code class="env">HOSTFILE</code> is set, but has no value, or does not name a readable file,
-Bash attempts to read 
+Bash attempts to read
 <samp class="file">/etc/hosts</samp> to obtain the list of possible hostname completions.
 When <code class="env">HOSTFILE</code> is unset, the hostname list is cleared.
 </p>
@@ -7677,7 +7677,7 @@ of consecutive <code class="code">EOF</code> characters that can be read as the
 first character on an input line
 before the shell will exit.  If the variable exists but does not
 have a numeric value, or has no value, then the default is 10.
-If the variable does not exist, then <code class="code">EOF</code> signifies the end of 
+If the variable does not exist, then <code class="code">EOF</code> signifies the end of
 input to the shell.  This is only in effect for interactive shells.
 </p>
 </dd>
@@ -7882,7 +7882,7 @@ with &lsquo;<samp class="samp">bind -x</samp>&rsquo; (see <a class="pxref" href=
 </p>
 </dd>
 <dt><a id="index-SECONDS"></a><span><code class="code">SECONDS</code><a class="copiable-link" href="#index-SECONDS"> &para;</a></span></dt>
-<dd><p>This variable expands to the number of seconds since the shell was started. 
+<dd><p>This variable expands to the number of seconds since the shell was started.
 Assignment to this variable resets the count to the value assigned, and the
 expanded value becomes the value assigned plus the number of seconds
 since the assignment.
@@ -7935,7 +7935,7 @@ The &lsquo;<samp class="samp">%</samp>&rsquo; character introduces an
 escape sequence that is expanded to a time value or other
 information.
 The escape sequences and their meanings are as
-follows; the brackets denote optional portions. 
+follows; the brackets denote optional portions.
 </p>
 <dl class="table">
 <dt><code class="code">%%</code></dt>
@@ -7943,19 +7943,19 @@ follows; the brackets denote optional portions.
 </p>
 </dd>
 <dt><code class="code">%[<var class="var">p</var>][l]R</code></dt>
-<dd><p>The elapsed time in seconds. 
+<dd><p>The elapsed time in seconds.
 </p>
 </dd>
 <dt><code class="code">%[<var class="var">p</var>][l]U</code></dt>
-<dd><p>The number of CPU seconds spent in user mode. 
+<dd><p>The number of CPU seconds spent in user mode.
 </p>
 </dd>
 <dt><code class="code">%[<var class="var">p</var>][l]S</code></dt>
-<dd><p>The number of CPU seconds spent in system mode. 
+<dd><p>The number of CPU seconds spent in system mode.
 </p>
 </dd>
 <dt><code class="code">%P</code></dt>
-<dd><p>The CPU percentage, computed as (%U + %S) / %R. 
+<dd><p>The CPU percentage, computed as (%U + %S) / %R.
 </p></dd>
 </dl>
 
@@ -7964,11 +7964,11 @@ fractional digits after a decimal point.
 A value of 0 causes no decimal point or fraction to be output.
 At most six places after the decimal point may be specified;
 values of <var class="var">p</var> greater than 6 are changed to 6.
-If <var class="var">p</var> is not specified, the value 3 is used. 
+If <var class="var">p</var> is not specified, the value 3 is used.
 </p>
 <p>The optional <code class="code">l</code> specifies a longer format, including minutes, of
 the form <var class="var">MM</var>m<var class="var">SS</var>.<var class="var">FF</var>s.
-The value of <var class="var">p</var> determines whether or not the fraction is included. 
+The value of <var class="var">p</var> determines whether or not the fraction is included.
 </p>
 <p>If this variable is not set, Bash acts as if it had the value
 </p><div class="example">
@@ -8052,7 +8052,7 @@ bash [long-opt] -s [-abefhkmnptuvxdBCDHP] [-o <var class="var">option</var>]
 (see <a class="pxref" href="#The-Set-Builtin">The Set Builtin</a>) can be used as options when the shell is invoked.
 In addition, there are several multi-character
 options that you can use.  These options must appear on the command
-line before the single-character options to be recognized. 
+line before the single-character options to be recognized.
 </p>
 <dl class="table">
 <dt><code class="code">--debugger</code></dt>
@@ -8134,7 +8134,7 @@ invocation which are not available with the <code class="code">set</code> builti
 <dl class="table">
 <dt><code class="code">-c</code></dt>
 <dd><p>Read and execute commands from the first non-option argument
-<var class="var">command_string</var>, then exit. 
+<var class="var">command_string</var>, then exit.
 If there are arguments after the <var class="var">command_string</var>,
 the first argument is assigned to <code class="code">$0</code>
 and any remaining arguments are assigned to the positional parameters.
@@ -8184,7 +8184,7 @@ This implies the <samp class="option">-n</samp> option; no commands will be exec
 <dd><p><var class="var">shopt_option</var> is one of the shell options accepted by the
 <code class="code">shopt</code> builtin (see <a class="pxref" href="#The-Shopt-Builtin">The Shopt Builtin</a>).
 If <var class="var">shopt_option</var> is present, <samp class="option">-O</samp> sets the value of that option;
-<samp class="option">+O</samp> unsets it.  
+<samp class="option">+O</samp> unsets it.
 If <var class="var">shopt_option</var> is not supplied, the names and values of the shell
 options accepted by <code class="code">shopt</code> are printed on the standard output.
 If the invocation option is <samp class="option">+O</samp>, the output is displayed in a format
@@ -8224,7 +8224,7 @@ be the name of a file containing shell commands (see <a class="pxref" href="#She
 When Bash is invoked in this fashion, <code class="code">$0</code>
 is set to the name of the file, and the positional parameters
 are set to the remaining arguments.
-Bash reads and executes commands from this file, then exits.   
+Bash reads and executes commands from this file, then exits.
 Bash&rsquo;s exit status is the exit status of the last command executed
 in the script.  If no commands are executed, the exit status is 0.
 </p>
@@ -8291,7 +8291,7 @@ filename.
 </p>
 <p>As noted above, if a non-interactive shell is invoked with the
 <samp class="option">--login</samp> option, Bash attempts to read and execute commands from the
-login shell startup files. 
+login shell startup files.
 </p>
 <h4 class="subsubheading" id="Invoked-with-name-sh"><span>Invoked with name <code class="code">sh</code><a class="copiable-link" href="#Invoked-with-name-sh"> &para;</a></span></h4>
 
@@ -8714,7 +8714,7 @@ described above (see <a class="pxref" href="#Conditional-Constructs">Conditional
 </p>
 </dd>
 <dt><code class="code"><var class="var">arg1</var> OP <var class="var">arg2</var></code></dt>
-<dd><p><code class="code">OP</code> is one of 
+<dd><p><code class="code">OP</code> is one of
 &lsquo;<samp class="samp">-eq</samp>&rsquo;, &lsquo;<samp class="samp">-ne</samp>&rsquo;, &lsquo;<samp class="samp">-lt</samp>&rsquo;, &lsquo;<samp class="samp">-le</samp>&rsquo;, &lsquo;<samp class="samp">-gt</samp>&rsquo;, or &lsquo;<samp class="samp">-ge</samp>&rsquo;.
 These arithmetic binary operators return true if <var class="var">arg1</var>
 is equal to, not equal to, less than, less than or equal to,
@@ -8750,7 +8750,7 @@ The operators and their precedence, associativity, and values
 are the same as in the C language.
 The following list of operators is grouped into levels of
 equal-precedence operators.
-The levels are listed in order of decreasing precedence. 
+The levels are listed in order of decreasing precedence.
 </p>
 <dl class="table">
 <dd><a class="index-entry-id" id="index-arithmetic-operators"></a>
@@ -8761,7 +8761,7 @@ The levels are listed in order of decreasing precedence.
 
 </dd>
 <dt><code class="code"><var class="var">id</var>++ <var class="var">id</var>--</code></dt>
-<dd><p>variable post-increment and post-decrement 
+<dd><p>variable post-increment and post-decrement
 </p>
 </dd>
 <dt><code class="code">++<var class="var">id</var> --<var class="var">id</var></code></dt>
@@ -8834,13 +8834,13 @@ The levels are listed in order of decreasing precedence.
 </dl>
 
 <p>Shell variables are allowed as operands; parameter expansion is
-performed before the expression is evaluated. 
+performed before the expression is evaluated.
 Within an expression, shell variables may also be referenced by name
 without using the parameter expansion syntax.
 A shell variable that is null or unset evaluates to 0 when referenced
 by name without using the parameter expansion syntax.
 The value of a variable is evaluated as an arithmetic expression
-when it is referenced, or when a variable which has been given the  
+when it is referenced, or when a variable which has been given the
 <code class="code">integer</code> attribute using &lsquo;<samp class="samp">declare -i</samp>&rsquo; is assigned a value.
 A null value evaluates to 0.
 A shell variable need not have its <code class="code">integer</code> attribute turned on
@@ -8888,7 +8888,7 @@ the word to see if it matches an alias name. If it matches, the shell
 replaces the word with the alias value, and reads that value as if it
 had been read instead of the word.
 The shell doesn&rsquo;t look at any characters following the word before
-attempting alias substitution. 
+attempting alias substitution.
 </p>
 <p>The characters &lsquo;<samp class="samp">/</samp>&rsquo;, &lsquo;<samp class="samp">$</samp>&rsquo;, &lsquo;<samp class="samp">`</samp>&rsquo;, &lsquo;<samp class="samp">=</samp>&rsquo; and any of the
 shell metacharacters or quoting characters listed above may not appear
@@ -9053,11 +9053,11 @@ the first parameter is joined with the beginning part of the original
 word, and the expansion of the last parameter is joined with the last
 part of the original word.
 This is analogous to the
-expansion of the special parameters &lsquo;<samp class="samp">@</samp>&rsquo; and &lsquo;<samp class="samp">*</samp>&rsquo;. 
+expansion of the special parameters &lsquo;<samp class="samp">@</samp>&rsquo; and &lsquo;<samp class="samp">*</samp>&rsquo;.
 <code class="code">${#<var class="var">name</var>[<var class="var">subscript</var>]}</code> expands to the length of
 <code class="code">${<var class="var">name</var>[<var class="var">subscript</var>]}</code>.
 If <var class="var">subscript</var> is &lsquo;<samp class="samp">@</samp>&rsquo; or
-&lsquo;<samp class="samp">*</samp>&rsquo;, the expansion is the number of elements in the array. 
+&lsquo;<samp class="samp">*</samp>&rsquo;, the expansion is the number of elements in the array.
 If the <var class="var">subscript</var>
 used to reference an element of an indexed array
 evaluates to a number less than zero, it is
@@ -9352,7 +9352,7 @@ following the final slash).
 <dd><p>The username of the current user.
 </p></dd>
 <dt><code class="code">\v</code></dt>
-<dd><p>The version of Bash (e.g., 2.00)          
+<dd><p>The version of Bash (e.g., 2.00)
 </p></dd>
 <dt><code class="code">\V</code></dt>
 <dd><p>The release of Bash, version + patchlevel (e.g., 2.00.0)
@@ -9535,7 +9535,7 @@ objections.
 specification, there are areas where the Bash default behavior
 differs from the specification.
 The Bash <em class="dfn">posix mode</em> changes the Bash
-behavior in these areas so that it conforms to the standard more closely. 
+behavior in these areas so that it conforms to the standard more closely.
 </p>
 <p>Starting Bash with the <samp class="option">--posix</samp> command-line option or executing
 &lsquo;<samp class="samp">set -o posix</samp>&rsquo; while Bash is running will cause Bash to conform more
@@ -9763,7 +9763,7 @@ does not refer to an existing directory, <code class="code">cd</code> will fail 
 falling back to physical mode.
 
 </li><li> When the <code class="code">cd</code> builtin cannot change a directory because the
-length of the pathname 
+length of the pathname
 constructed from <code class="code">$PWD</code> and the directory name supplied as an argument
 exceeds <code class="code">PATH_MAX</code> when canonicalized, <code class="code">cd</code> will
 attempt to use the supplied directory name.
@@ -9885,7 +9885,7 @@ behavior. It&rsquo;s intended to be a temporary solution.
 <p>This section does not mention behavior that is standard for a particular
 version (e.g., setting <code class="code">compat32</code> means that quoting the rhs of the regexp
 matching operator quotes special regexp characters in the word, which is
-default behavior in bash-3.2 and subsequent versions). 
+default behavior in bash-3.2 and subsequent versions).
 </p>
 <p>If a user enables, say, <code class="code">compat32</code>, it may affect the behavior of other
 compatibility levels up to and including the current compatibility level.
@@ -10109,13 +10109,13 @@ like:
 of the last process in the pipeline associated with this job is
 25647.  All of the processes in a single pipeline are members of
 the same job.  Bash uses the <var class="var">job</var> abstraction as the
-basis for job control. 
+basis for job control.
 </p>
 <p>To facilitate the implementation of the user interface to job
 control, the operating system maintains the notion of a current terminal
 process group <small class="sc">ID</small>.  Members of this process group (processes whose
 process group <small class="sc">ID</small> is equal to the current terminal process group
-<small class="sc">ID</small>) receive keyboard-generated signals such as <code class="code">SIGINT</code>. 
+<small class="sc">ID</small>) receive keyboard-generated signals such as <code class="code">SIGINT</code>.
 These processes are said to be in the foreground.  Background
 processes are those whose process group <small class="sc">ID</small> differs from the
 terminal&rsquo;s; such processes are immune to keyboard-generated
@@ -10125,7 +10125,7 @@ Background processes which attempt to
 read from (write to when <code class="code">tostop</code> is in effect) the
 terminal are sent a <code class="code">SIGTTIN</code> (<code class="code">SIGTTOU</code>)
 signal by the kernel&rsquo;s terminal driver,
-which, unless caught, suspends the process. 
+which, unless caught, suspends the process.
 </p>
 <p>If the operating system on which Bash is running supports
 job control, Bash contains facilities to use it.  Typing the
@@ -10139,7 +10139,7 @@ this job, using the <code class="code">bg</code> command to continue it in the
 background, the <code class="code">fg</code> command to continue it in the
 foreground, or the <code class="code">kill</code> command to kill it.  A &lsquo;<samp class="samp">^Z</samp>&rsquo;
 takes effect immediately, and has the additional side effect of
-causing pending output and typeahead to be discarded. 
+causing pending output and typeahead to be discarded.
 </p>
 <p>There are a number of ways to refer to a job in the shell.  The
 character &lsquo;<samp class="samp">%</samp>&rsquo; introduces a job specification (<em class="dfn">jobspec</em>).
@@ -10155,7 +10155,7 @@ If there is only a single job, &lsquo;<samp class="samp">%+</samp>&rsquo; and &l
 to refer to that job.
 In output pertaining to jobs (e.g., the output of the <code class="code">jobs</code>
 command), the current job is always flagged with a &lsquo;<samp class="samp">+</samp>&rsquo;, and the
-previous job with a &lsquo;<samp class="samp">-</samp>&rsquo;. 
+previous job with a &lsquo;<samp class="samp">-</samp>&rsquo;.
 </p>
 <p>A job may also be referred to
 using a prefix of the name used to start it, or using a substring
@@ -10171,7 +10171,7 @@ Bash reports an error.
 background into the foreground.  Similarly, &lsquo;<samp class="samp">%1 &amp;</samp>&rsquo; resumes
 job 1 in the background, equivalent to &lsquo;<samp class="samp">bg %1</samp>&rsquo;
 </p>
-<p>The shell learns immediately whenever a job changes state. 
+<p>The shell learns immediately whenever a job changes state.
 Normally, Bash waits until it is about to print a prompt
 before reporting changes in a job&rsquo;s status so as to not interrupt
 any other output.
@@ -10263,14 +10263,14 @@ the user was last notified of their status.
 </dl>
 
 <p>If <var class="var">jobspec</var> is given,
-output is restricted to information about that job. 
+output is restricted to information about that job.
 If <var class="var">jobspec</var> is not supplied, the status of all jobs is
 listed.
 </p>
 <p>If the <samp class="option">-x</samp> option is supplied, <code class="code">jobs</code> replaces any
 <var class="var">jobspec</var> found in <var class="var">command</var> or <var class="var">arguments</var> with the
 corresponding process group <small class="sc">ID</small>, and executes <var class="var">command</var>,
-passing it <var class="var">argument</var>s, returning its exit status. 
+passing it <var class="var">argument</var>s, returning its exit status.
 </p>
 </dd>
 <dt><a id="index-kill"></a><span><code class="code">kill</code><a class="copiable-link" href="#index-kill"> &para;</a></span></dt>
@@ -10438,7 +10438,7 @@ By default, the line editing commands are similar to those of Emacs.
 A vi-style line editing interface is also available.
 Line editing can be enabled at any time using the <samp class="option">-o emacs</samp> or
 <samp class="option">-o vi</samp> options to the <code class="code">set</code> builtin command
-(see <a class="pxref" href="#The-Set-Builtin">The Set Builtin</a>), or disabled using the <samp class="option">+o emacs</samp> or 
+(see <a class="pxref" href="#The-Set-Builtin">The Set Builtin</a>), or disabled using the <samp class="option">+o emacs</samp> or
 <samp class="option">+o vi</samp> options to <code class="code">set</code>.
 </p>
 
@@ -11083,7 +11083,7 @@ By default, this variable is set to &lsquo;<samp class="samp">off</samp>&rsquo;.
 <dd><p>If set to &lsquo;<samp class="samp">on</samp>&rsquo;, Readline will enable eight-bit input (it
 will not clear the eighth bit in the characters it reads),
 regardless of what the terminal claims it can support.  The
-default value is &lsquo;<samp class="samp">off</samp>&rsquo;, but Readline will set it to &lsquo;<samp class="samp">on</samp>&rsquo; if the 
+default value is &lsquo;<samp class="samp">off</samp>&rsquo;, but Readline will set it to &lsquo;<samp class="samp">on</samp>&rsquo; if the
 locale contains eight-bit characters.
 The name <code class="code">meta-flag</code> is a synonym for this variable.
 This variable is dependent on the <code class="code">LC_CTYPE</code> locale category, and
@@ -11203,7 +11203,7 @@ The default value is &lsquo;<samp class="samp">off</samp>&rsquo;.
 </dd>
 <dt><a id="index-show_002dall_002dif_002dambiguous"></a><span><code class="code">show-all-if-ambiguous</code><a class="copiable-link" href="#index-show_002dall_002dif_002dambiguous"> &para;</a></span></dt>
 <dd><p>This alters the default behavior of the completion functions.  If
-set to &lsquo;<samp class="samp">on</samp>&rsquo;, 
+set to &lsquo;<samp class="samp">on</samp>&rsquo;,
 words which have more than one possible completion cause the
 matches to be listed immediately instead of ringing the bell.
 The default value is &lsquo;<samp class="samp">off</samp>&rsquo;.
@@ -11212,7 +11212,7 @@ The default value is &lsquo;<samp class="samp">off</samp>&rsquo;.
 <dt><a id="index-show_002dall_002dif_002dunmodified"></a><span><code class="code">show-all-if-unmodified</code><a class="copiable-link" href="#index-show_002dall_002dif_002dunmodified"> &para;</a></span></dt>
 <dd><p>This alters the default behavior of the completion functions in
 a fashion similar to <var class="var">show-all-if-ambiguous</var>.
-If set to &lsquo;<samp class="samp">on</samp>&rsquo;, 
+If set to &lsquo;<samp class="samp">on</samp>&rsquo;,
 words which have more than one possible completion without any
 possible partial completion (the possible completions don&rsquo;t share
 a common prefix) cause the matches to be listed immediately instead
@@ -11498,7 +11498,7 @@ $endif
 <dd><p>The <var class="var">application</var> construct is used to include
 application-specific settings.  Each program using the Readline
 library sets the <var class="var">application name</var>, and you can test for
-a particular value. 
+a particular value.
 This could be used to bind key sequences to functions useful for
 a specific program.  For instance, the following command adds a
 key sequence that quotes the current or previous word in Bash:
@@ -11577,7 +11577,7 @@ $include /etc/Inputrc
 #
 # Set various bindings for emacs mode.
 
-set editing-mode emacs 
+set editing-mode emacs
 
 $if mode=emacs
 
@@ -12176,7 +12176,7 @@ The actual completion performed is application-specific.
 Bash attempts completion treating the text as a variable (if the
 text begins with &lsquo;<samp class="samp">$</samp>&rsquo;), username (if the text begins with
 &lsquo;<samp class="samp">~</samp>&rsquo;), hostname (if the text begins with &lsquo;<samp class="samp">@</samp>&rsquo;), or
-command (including aliases and functions) in turn.  If none 
+command (including aliases and functions) in turn.  If none
 of these produces a match, filename completion is attempted.
 </p>
 </dd>
@@ -12466,12 +12466,12 @@ pathname expansion.
 </p>
 </dd>
 <dt><a id="index-shell_002dexpand_002dline-_0028M_002dC_002de_0029"></a><span><code class="code">shell-expand-line (M-C-e)</code><a class="copiable-link" href="#index-shell_002dexpand_002dline-_0028M_002dC_002de_0029"> &para;</a></span></dt>
-<dd><p>Expand the line by performing shell word expansions.  
+<dd><p>Expand the line by performing shell word expansions.
 This performs alias and history expansion,
 $&rsquo;<var class="var">string</var>&rsquo; and $&quot;<var class="var">string</var>&quot; quoting,
 tilde expansion, parameter and variable expansion, arithmetic expansion,
 command and proces substitution,
-word splitting, and quote removal.  
+word splitting, and quote removal.
 An explicit argument suppresses command and process substitution.
 </p>
 </dd>
@@ -12556,7 +12556,7 @@ Next: <a href="#Programmable-Completion-Builtins" accesskey="n" rel="next">Progr
 <p>When word completion is attempted for an argument to a command for
 which a completion specification (a <var class="var">compspec</var>) has been defined
 using the <code class="code">complete</code> builtin (see <a class="pxref" href="#Programmable-Completion-Builtins">Programmable Completion Builtins</a>),
-the programmable completion facilities are invoked. 
+the programmable completion facilities are invoked.
 </p>
 <p>First, the command name is identified.
 If a compspec has been defined for that command, the
@@ -12572,7 +12572,7 @@ If those searches do not result in a compspec, any compspec defined with
 the <samp class="option">-D</samp> option to <code class="code">complete</code> is used as the default.
 If there is no default compspec, Bash attempts alias expansion
 on the command word as a final resort, and attempts to find a compspec
-for the command word from any successful expansion 
+for the command word from any successful expansion
 </p>
 <p>Once a compspec has been found, it is used to generate the list of
 matching words.
@@ -12659,7 +12659,7 @@ completions.
 </p>
 <p>If the previously-applied actions do not generate any matches, and the
 <samp class="option">-o dirnames</samp> option was supplied to <code class="code">complete</code> when the
-compspec was defined, directory name completion is attempted. 
+compspec was defined, directory name completion is attempted.
 </p>
 <p>If the <samp class="option">-o plusdirs</samp> option was supplied to <code class="code">complete</code> when
 the compspec was defined, directory name completion is attempted and any
@@ -12777,7 +12777,7 @@ The <samp class="option">-D</samp> option indicates that other supplied options 
 apply to the &ldquo;default&rdquo; command completion; that is, completion attempted
 on a command for which no completion has previously been defined.
 The <samp class="option">-E</samp> option indicates that other supplied options and actions should
-apply to &ldquo;empty&rdquo; command completion; that is, completion attempted on a 
+apply to &ldquo;empty&rdquo; command completion; that is, completion attempted on a
 blank line.
 The <samp class="option">-I</samp> option indicates that other supplied options and actions should
 apply to completion on the initial non-assignment word on the line, or after a
@@ -12803,7 +12803,7 @@ should be quoted to protect them from expansion before the
 <dt><code class="code">-o <var class="var">comp-option</var></code></dt>
 <dd><p>The <var class="var">comp-option</var> controls several aspects of the compspec&rsquo;s behavior
 beyond the simple generation of completions.
-<var class="var">comp-option</var> may be one of: 
+<var class="var">comp-option</var> may be one of:
 </p>
 <dl class="table">
 <dt><code class="code">bashdefault</code></dt>
@@ -12848,7 +12848,7 @@ the end of the line.
 </p>
 </dd>
 <dt><code class="code">plusdirs</code></dt>
-<dd><p>After any matches defined by the compspec are generated, 
+<dd><p>After any matches defined by the compspec are generated,
 directory name completion is attempted and any
 matches are added to the results of the other actions.
 </p>
@@ -13041,7 +13041,7 @@ The <samp class="option">-D</samp> option indicates that other supplied options 
 apply to the &ldquo;default&rdquo; command completion; that is, completion attempted
 on a command for which no completion has previously been defined.
 The <samp class="option">-E</samp> option indicates that other supplied options should
-apply to &ldquo;empty&rdquo; command completion; that is, completion attempted on a 
+apply to &ldquo;empty&rdquo; command completion; that is, completion attempted on a
 blank line.
 The <samp class="option">-I</samp> option indicates that other supplied options should
 apply to completion on the initial non-assignment word on the line, or after a
@@ -13483,7 +13483,7 @@ double quotes.
 <p>When using the shell, only &lsquo;<samp class="samp">\</samp>&rsquo; and &lsquo;<samp class="samp">'</samp>&rsquo; may be used to escape the
 history expansion character, but the history expansion character is
 also treated as quoted if it immediately precedes the closing double quote
-in a double-quoted string. 
+in a double-quoted string.
 </p>
 <p>There is a special abbreviation for substitution, active when the
 <var class="var">quick substitution</var> character (default &lsquo;<samp class="samp">^</samp>&rsquo;)
@@ -13630,7 +13630,7 @@ the letters <code class="code">fi</code>.
 </dl>
 
 <p>Here are the word designators:
-</p> 
+</p>
 <dl class="table">
 <dt><code class="code">0 (zero)</code></dt>
 <dd><p>The <code class="code">0</code>th word.  For many applications, this is the command word.
@@ -13838,18 +13838,18 @@ compilation.  It uses those values to create a <samp class="file">Makefile</samp
 each directory of the package (the top directory, the
 <samp class="file">builtins</samp>, <samp class="file">doc</samp>, <samp class="file">po</samp>, and <samp class="file">support</samp> directories,
 each directory under <samp class="file">lib</samp>, and several others).  It also creates a
-<samp class="file">config.h</samp> file containing system-dependent definitions. 
+<samp class="file">config.h</samp> file containing system-dependent definitions.
 Finally, it creates a shell script named <code class="code">config.status</code> that you
 can run in the future to recreate the current configuration, a
 file <samp class="file">config.cache</samp> that saves the results of its tests to
 speed up reconfiguring, and a file <samp class="file">config.log</samp> containing
-compiler output (useful mainly for debugging <code class="code">configure</code>). 
+compiler output (useful mainly for debugging <code class="code">configure</code>).
 If at some point
 <samp class="file">config.cache</samp> contains results you don&rsquo;t want to keep, you
-may remove or edit it. 
+may remove or edit it.
 </p>
 <p>To find out more about the options and arguments that the
-<code class="code">configure</code> script understands, type 
+<code class="code">configure</code> script understands, type
 </p>
 <div class="example">
 <pre class="example-preformatted">bash-4.2$ ./configure --help
@@ -13982,7 +13982,7 @@ The <code class="env">prefix</code> variable provides a default for <code class=
 other variables used when installing Bash.
 </p>
 <p>You can specify separate installation prefixes for
-architecture-specific files and architecture-independent files. 
+architecture-specific files and architecture-independent files.
 If you give <code class="code">configure</code> the option
 <samp class="option">--exec-prefix=<var class="var">PATH</var></samp>, &lsquo;<samp class="samp">make install</samp>&rsquo; will use
 <var class="var">PATH</var> as the prefix for installing programs and libraries.
@@ -14033,7 +14033,7 @@ or a canonical name with three fields: &lsquo;<samp class="samp">CPU-COMPANY-SYS
 (e.g., &lsquo;<samp class="samp">i386-unknown-freebsd4.2</samp>&rsquo;).
 </p>
 <p>See the file <samp class="file">support/config.sub</samp> for the possible
-values of each field. 
+values of each field.
 </p>
 <hr>
 </div>
@@ -14071,7 +14071,7 @@ operates.
 <dd><p>Use and save the results of the tests in
 <var class="var">file</var> instead of <samp class="file">./config.cache</samp>.  Set <var class="var">file</var> to
 <samp class="file">/dev/null</samp> to disable caching, for debugging
-<code class="code">configure</code>. 
+<code class="code">configure</code>.
 </p>
 </dd>
 <dt><code class="code">--help</code></dt>
@@ -14116,7 +14116,7 @@ To turn off the default use of a package, use
 that is enabled by default, use <samp class="option">--disable-<var class="var">feature</var></samp>.
 </p>
 <p>Here is a complete list of the <samp class="option">--enable-</samp> and
-<samp class="option">--with-</samp> options that the Bash <code class="code">configure</code> recognizes. 
+<samp class="option">--with-</samp> options that the Bash <code class="code">configure</code> recognizes.
 </p>
 <dl class="table">
 <dt><code class="code">--with-afs</code></dt>
@@ -14207,7 +14207,7 @@ This could be used to build a version to use as root&rsquo;s shell.
 
 <p>The &lsquo;<samp class="samp">minimal-config</samp>&rsquo; option can be used to disable all of
 the following options, but it is processed first, so individual
-options may be enabled using &lsquo;<samp class="samp">enable-<var class="var">feature</var></samp>&rsquo;. 
+options may be enabled using &lsquo;<samp class="samp">enable-<var class="var">feature</var></samp>&rsquo;.
 </p>
 <p>All of the following options except for
 &lsquo;<samp class="samp">alt-array-implementation</samp>&rsquo;,
@@ -14495,7 +14495,7 @@ Next: <a href="#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Fre
 <h2 class="appendix" id="Major-Differences-From-The-Bourne-Shell-1"><span>Appendix B Major Differences From The Bourne Shell<a class="copiable-link" href="#Major-Differences-From-The-Bourne-Shell-1"> &para;</a></span></h2>
 
 <p>Bash implements essentially the same grammar, parameter and
-variable expansion, redirection, and quoting as the Bourne Shell. 
+variable expansion, redirection, and quoting as the Bourne Shell.
 Bash uses the <small class="sc">POSIX</small> standard as the specification of
 how these features are to be implemented.  There are some
 differences between the traditional Bourne shell and Bash; this
@@ -14664,7 +14664,7 @@ shell option is enabled (see <a class="pxref" href="#Pattern-Matching">Pattern M
 
 </li><li>Variable assignments preceding commands affect only that command, even
 builtins and functions (see <a class="pxref" href="#Environment">Environment</a>).
-In <code class="code">sh</code>, all variable assignments 
+In <code class="code">sh</code>, all variable assignments
 preceding commands are global unless the command is executed from the
 file system.
 
@@ -14725,7 +14725,7 @@ variables (<code class="code">PS0</code>, <code class="code">PS1</code>, <code c
 </li><li>Bash runs commands from the <code class="code">PROMPT_COMMAND</code> array variable before
 issuing each primary prompt.
 
-</li><li>Bash decodes a number of backslash-escaped characters 
+</li><li>Bash decodes a number of backslash-escaped characters
 </li><li>The Bash <code class="code">export</code>, <code class="code">readonly</code>, and <code class="code">declare</code> builtins can
 take a <samp class="option">-f</samp> option to act on shell functions, a <samp class="option">-p</samp> option to
 display variables with various attributes set in a format that can be
@@ -15424,48 +15424,48 @@ Next: <a href="#Reserved-Word-Index" accesskey="n" rel="next">Index of Shell Res
 <h3 class="appendixsec" id="Index-of-Shell-Builtin-Commands"><span>D.1 Index of Shell Builtin Commands<a class="copiable-link" href="#Index-of-Shell-Builtin-Commands"> &para;</a></span></h3>
 <div class="printindex bt-printindex">
 <table class="bt-letters-header-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-1"><b>:</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-2"><b>.</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-3"><b>[</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-J"><b>J</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 <table class="bt-entries-printindex" border="0">
 <tr><td></td><th class="entries-header-printindex">Index Entry</th><th class="sections-header-printindex">Section</th></tr>
@@ -15575,48 +15575,48 @@ Next: <a href="#Reserved-Word-Index" accesskey="n" rel="next">Index of Shell Res
 <tr><td colspan="3"><hr></td></tr>
 </table>
 <table class="bt-letters-footer-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-1"><b>:</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-2"><b>.</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_symbol-3"><b>[</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-J"><b>J</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Builtin-Index_bt_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 </div>
 
@@ -15630,34 +15630,34 @@ Next: <a href="#Variable-Index" accesskey="n" rel="next">Parameter and Variable 
 <h3 class="appendixsec" id="Index-of-Shell-Reserved-Words"><span>D.2 Index of Shell Reserved Words<a class="copiable-link" href="#Index-of-Shell-Reserved-Words"> &para;</a></span></h3>
 <div class="printindex rw-printindex">
 <table class="rw-letters-header-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-1"><b>!</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-2"><b>[</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-3"><b>]</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-4"><b>{</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-5"><b>}</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 <table class="rw-entries-printindex" border="0">
 <tr><td></td><th class="entries-header-printindex">Index Entry</th><th class="sections-header-printindex">Section</th></tr>
@@ -15713,34 +15713,34 @@ Next: <a href="#Variable-Index" accesskey="n" rel="next">Parameter and Variable 
 <tr><td colspan="3"><hr></td></tr>
 </table>
 <table class="rw-letters-footer-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-1"><b>!</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-2"><b>[</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-3"><b>]</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-4"><b>{</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_symbol-5"><b>}</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Reserved-Word-Index_rw_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 </div>
 
@@ -15754,62 +15754,62 @@ Next: <a href="#Function-Index" accesskey="n" rel="next">Function Index</a>, Pre
 <h3 class="appendixsec" id="Parameter-and-Variable-Index"><span>D.3 Parameter and Variable Index<a class="copiable-link" href="#Parameter-and-Variable-Index"> &para;</a></span></h3>
 <div class="printindex vr-printindex">
 <table class="vr-letters-header-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-1"><b>_</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-2"><b>-</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-3"><b>!</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-4"><b>?</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-5"><b>@</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-6"><b>*</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-7"><b>#</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-8"><b>$</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-9"><b>0</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-V"><b>V</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 <table class="vr-entries-printindex" border="0">
 <tr><td></td><th class="entries-header-printindex">Index Entry</th><th class="sections-header-printindex">Section</th></tr>
@@ -16049,62 +16049,62 @@ Next: <a href="#Function-Index" accesskey="n" rel="next">Function Index</a>, Pre
 <tr><td colspan="3"><hr></td></tr>
 </table>
 <table class="vr-letters-footer-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-1"><b>_</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-2"><b>-</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-3"><b>!</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-4"><b>?</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-5"><b>@</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-6"><b>*</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-7"><b>#</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-8"><b>$</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_symbol-9"><b>0</b></a>
- &nbsp; 
+ &nbsp;
 <br>
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Variable-Index_vr_letter-V"><b>V</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 </div>
 
@@ -16118,45 +16118,45 @@ Next: <a href="#Concept-Index" accesskey="n" rel="next">Concept Index</a>, Previ
 <h3 class="appendixsec" id="Function-Index-1"><span>D.4 Function Index<a class="copiable-link" href="#Function-Index-1"> &para;</a></span></h3>
 <div class="printindex fn-printindex">
 <table class="fn-letters-header-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Function-Index_fn_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-N"><b>N</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-Q"><b>Q</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-Y"><b>Y</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 <table class="fn-entries-printindex" border="0">
 <tr><td></td><th class="entries-header-printindex">Index Entry</th><th class="sections-header-printindex">Section</th></tr>
@@ -16318,45 +16318,45 @@ Next: <a href="#Concept-Index" accesskey="n" rel="next">Concept Index</a>, Previ
 <tr><td colspan="3"><hr></td></tr>
 </table>
 <table class="fn-letters-footer-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Function-Index_fn_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-G"><b>G</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-N"><b>N</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-Q"><b>Q</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Function-Index_fn_letter-Y"><b>Y</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 </div>
 
@@ -16370,51 +16370,51 @@ Previous: <a href="#Function-Index" accesskey="p" rel="prev">Function Index</a>,
 <h3 class="appendixsec" id="Concept-Index-1"><span>D.5 Concept Index<a class="copiable-link" href="#Concept-Index-1"> &para;</a></span></h3>
 <div class="printindex cp-printindex">
 <table class="cp-letters-header-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Concept-Index_cp_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-J"><b>J</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-N"><b>N</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-Q"><b>Q</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-V"><b>V</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-Y"><b>Y</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 <table class="cp-entries-printindex" border="0">
 <tr><td></td><th class="entries-header-printindex">Index Entry</th><th class="sections-header-printindex">Section</th></tr>
@@ -16596,51 +16596,51 @@ Previous: <a href="#Function-Index" accesskey="p" rel="prev">Function Index</a>,
 <tr><td colspan="3"><hr></td></tr>
 </table>
 <table class="cp-letters-footer-printindex"><tr><th>Jump to: &nbsp; </th><td><a class="summary-letter-printindex" href="#Concept-Index_cp_letter-A"><b>A</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-B"><b>B</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-C"><b>C</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-D"><b>D</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-E"><b>E</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-F"><b>F</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-H"><b>H</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-I"><b>I</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-J"><b>J</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-K"><b>K</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-L"><b>L</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-M"><b>M</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-N"><b>N</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-O"><b>O</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-P"><b>P</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-Q"><b>Q</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-R"><b>R</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-S"><b>S</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-T"><b>T</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-U"><b>U</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-V"><b>V</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-W"><b>W</b></a>
- &nbsp; 
+ &nbsp;
 <a class="summary-letter-printindex" href="#Concept-Index_cp_letter-Y"><b>Y</b></a>
- &nbsp; 
+ &nbsp;
 </td></tr></table>
 </div>
 
