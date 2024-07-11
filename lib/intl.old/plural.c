@@ -276,10 +276,8 @@ new_exp_3 (enum operator op, struct expression *bexp,
    /* Pacify GCC's `empty if-body' warning. */
 #  define YYSTACK_FREE(Ptr) do { /* empty */; } while (0)
 # else
-#  if defined (__STDC__) || defined (__cplusplus)
-#   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
-#   define YYSIZE_T size_t
-#  endif
+#  include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+#  define YYSIZE_T size_t
 #  define YYSTACK_ALLOC YYMALLOC
 #  define YYSTACK_FREE YYFREE
 # endif
@@ -342,11 +340,7 @@ union yyalloc
 
 #endif
 
-#if defined (__STDC__) || defined (__cplusplus)
-   typedef signed char yysigned_char;
-#else
-   typedef short int yysigned_char;
-#endif
+typedef signed char yysigned_char;
 
 /* YYFINAL -- State number of the termination state. */
 #define YYFINAL  9
@@ -536,10 +530,8 @@ static const unsigned char yystos[] =
 # define YYSIZE_T size_t
 #endif
 #if ! defined (YYSIZE_T)
-# if defined (__STDC__) || defined (__cplusplus)
-#  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
-#  define YYSIZE_T size_t
-# endif
+# include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+# define YYSIZE_T size_t
 #endif
 #if ! defined (YYSIZE_T)
 # define YYSIZE_T unsigned int

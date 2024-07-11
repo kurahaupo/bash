@@ -217,11 +217,7 @@ botch (const char *s)
 #endif /* !botch */
 
 #if !defined (__STRING)
-#  if defined (__STDC__)
-#    define __STRING(x) #x
-#  else
-#    define __STRING(x) "x"
-#  endif
+# define __STRING(x) #x
 #endif /* !__STRING */
 
 /* To implement range checking, we write magic values in at the beginning

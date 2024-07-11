@@ -73,13 +73,8 @@ extern int errno;
 #endif
 
 /* Need an autoconf test for this. */
-#if __STDC__
-#  undef  genptr_t
-#  define genptr_t	void *
-#else
-#  undef  genptr_t
-#  define genptr_t	char *
-#endif /* !__STDC__ */
+#undef  genptr_t
+#define genptr_t	void *
 
 #if !defined (HAVE_MEMSET)
 #  define	memset(s, zero, n)	bzero ((s), (n))
