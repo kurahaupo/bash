@@ -484,10 +484,7 @@ morecore_done:
 
 #if defined (MEMSCRAMBLE) || !defined (NO_CALLOC)
 static char *
-zmemset (s, c, n)
-     char *s;
-     int c;
-     register int n;
+zmemset (char *s, char c, int n)
 {
   register char *sp;
 
