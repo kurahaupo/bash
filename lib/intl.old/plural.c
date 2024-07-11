@@ -162,17 +162,17 @@ typedef union YYSTYPE {
 
 /* Prototypes for local functions.  */
 static struct expression *new_exp (int nargs, enum operator op,
-					   struct expression * const *args);
+                                   struct expression * const *args);
 static inline struct expression *new_exp_0 (enum operator op);
 static inline struct expression *new_exp_1 (enum operator op,
-						   struct expression *right);
+                                            struct expression *right);
 static struct expression *new_exp_2 (enum operator op,
-					     struct expression *left,
-					     struct expression *right);
+                                     struct expression *left,
+                                     struct expression *right);
 static inline struct expression *new_exp_3 (enum operator op,
-						   struct expression *bexp,
-						   struct expression *tbranch,
-						   struct expression *fbranch);
+                                            struct expression *bexp,
+                                            struct expression *tbranch,
+                                            struct expression *fbranch);
 static int yylex (YYSTYPE *lval, const char **pexp);
 static void yyerror (const char *str);
 
