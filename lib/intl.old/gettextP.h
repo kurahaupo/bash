@@ -168,9 +168,9 @@ const char *_nl_locale_name (int category, const char *categoryname);
 #endif
 
 struct loaded_l10nfile *_nl_find_domain (const char *__dirname,
-						 char *__locale,
-						 const char *__domainname,
-					      struct binding *__domainbinding);
+                                         char *__locale,
+                                         const char *__domainname,
+                                         struct binding *__domainbinding);
      internal_function;
 
 #ifdef __MVS__
@@ -178,55 +178,55 @@ struct loaded_l10nfile *_nl_find_domain (const char *__dirname,
 #endif
 
 void _nl_load_domain (struct loaded_l10nfile *__domain,
-			      struct binding *__domainbinding);
+                      struct binding *__domainbinding);
      internal_function;
 void _nl_unload_domain (struct loaded_domain *__domain);
      internal_function;
 const char *_nl_init_domain_conv (struct loaded_l10nfile *__domain_file,
-					  struct loaded_domain *__domain,
-					  struct binding *__domainbinding);
+                                  struct loaded_domain *__domain,
+                                  struct binding *__domainbinding);
      internal_function;
 void _nl_free_domain_conv (struct loaded_domain *__domain);
      internal_function;
 
 char *_nl_find_msg (struct loaded_l10nfile *domain_file,
-			    struct binding *domainbinding,
-			    const char *msgid, size_t *lengthp);
+                    struct binding *domainbinding,
+                    const char *msgid, size_t *lengthp);
      internal_function;
 
 #ifdef _LIBC
 extern char *__gettext (const char *__msgid);
 extern char *__dgettext (const char *__domainname,
-				 const char *__msgid);
+                         const char *__msgid);
 extern char *__dcgettext (const char *__domainname,
-				  const char *__msgid, int __category);
+                          const char *__msgid, int __category);
 extern char *__ngettext (const char *__msgid1, const char *__msgid2,
-				 unsigned long int __n);
+                         unsigned long int __n);
 extern char *__dngettext (const char *__domainname,
-				  const char *__msgid1, const char *__msgid2,
-				  unsigned long int n);
+                          const char *__msgid1, const char *__msgid2,
+                          unsigned long int n);
 extern char *__dcngettext (const char *__domainname,
-				   const char *__msgid1, const char *__msgid2,
-				   unsigned long int __n, int __category);
+                           const char *__msgid1, const char *__msgid2,
+                           unsigned long int __n, int __category);
 extern char *__dcigettext (const char *__domainname,
-				   const char *__msgid1, const char *__msgid2,
-				   int __plural, unsigned long int __n,
-				   int __category);
+                           const char *__msgid1, const char *__msgid2,
+                           int __plural, unsigned long int __n,
+                           int __category);
 extern char *__textdomain (const char *__domainname);
 extern char *__bindtextdomain (const char *__domainname,
-				       const char *__dirname);
+                               const char *__dirname);
 extern char *__bind_textdomain_codeset (const char *__domainname,
-						const char *__codeset);
+                                        const char *__codeset);
 #else
 /* Declare the exported libintl_* functions, in a way that allows us to
    call them under their real name.  */
 # define _INTL_REDIRECT_MACROS
 # include "libgnuintl.h"
 extern char *libintl_dcigettext (const char *__domainname,
-					 const char *__msgid1,
-					 const char *__msgid2,
-					 int __plural, unsigned long int __n,
-					 int __category);
+                                 const char *__msgid1,
+                                 const char *__msgid2,
+                                 int __plural, unsigned long int __n,
+                                 int __category);
 #endif
 
 /* @@ begin of epilog @@ */
