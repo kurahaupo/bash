@@ -28,16 +28,16 @@ extern char *strerror();
 extern int sys_nerr;
 
 int
-main(int c, char **v)
+main(int argc, char **argv)
 {
 	int	i, n;
 
-	if (c == 1) {
+	if (argc == 1) {
 		for (i = 1; i < sys_nerr; i++)
 			printf("%d --> %s\n", i, strerror(i));
 	} else {
-		for (i = 1; i < c; i++) {
-			n = atoi(v[i]);
+		for (i = 1; i < argc; i++) {
+			n = atoi(argv[i]);
 			printf("%d --> %s\n", n, strerror(n));
 		}
 	}
