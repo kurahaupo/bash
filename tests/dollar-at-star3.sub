@@ -54,4 +54,3 @@ set -- abc def ghi
 
 printf '<%s> ' "123 $@ 456"; echo
 printf '<%s> ' "123 $@\ 456"; echo
-

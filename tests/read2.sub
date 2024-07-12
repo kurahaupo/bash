@@ -74,4 +74,3 @@ rm -f $TMPDIR/a.pipe		# paranoia
 TMOUT=.001
 read a <<<abcde
 echo $a
-

@@ -35,4 +35,3 @@ command command -v type
 command -p command -v type
 command -p -- command -v type
 set +x
-

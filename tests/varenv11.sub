@@ -40,4 +40,3 @@ declare -p foo bar
 
 readonly a=7
 a=(1 2 3)
-

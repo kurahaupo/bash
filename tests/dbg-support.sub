@@ -36,4 +36,3 @@ sourced_fn
 #;;; mode:shell-script ***
 #;;; eval: (sh-set-shell "bash") ***
 #;;; End: ***
-

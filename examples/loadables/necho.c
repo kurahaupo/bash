@@ -51,4 +51,3 @@ struct builtin necho_struct = {
 	"echo [args]",
 	0
 };
-

@@ -91,5 +91,3 @@ echo global: $(declare -p b)
 unset -f f f1
 
 # can't use c from here on
-
-

@@ -66,4 +66,3 @@ f
 
 unset var
 unset -f f
-

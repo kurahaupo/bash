@@ -125,5 +125,3 @@ echo ${string//BC/x}
 echo ${string//[BC]/x}
 echo ${string//[bC]/x}
 echo ${string//?/z}
-
-
