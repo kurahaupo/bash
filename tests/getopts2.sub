@@ -16,17 +16,17 @@ bflag=
 
 while getopts ab:c:de name "$@"
 do
-	case $name in
-	a)	aflag=1 ;;
-	b)	bflag=1
-		bval=$OPTARG;;
-	c)	cflag=1
-		cval=$OPTARG ;;
-	d)	dflag=1 ;;
-	e)	eflag=1;;
-	?)	echo Usage: $0 [-a] [-b value] [-c value] -[de] args
-		exit 2;;
-	esac
+        case $name in
+        a)      aflag=1 ;;
+        b)      bflag=1
+                bval=$OPTARG;;
+        c)      cflag=1
+                cval=$OPTARG ;;
+        d)      dflag=1 ;;
+        e)      eflag=1;;
+        ?)      echo Usage: $0 [-a] [-b value] [-c value] -[de] args
+                exit 2;;
+        esac
 
 done
 

@@ -24,9 +24,9 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>		/* puts */
-#include <stdlib.h>		/* exit */
-#include <string.h>		/* strncmp */
+#include <stdio.h>              /* puts */
+#include <stdlib.h>             /* exit */
+#include <string.h>             /* strncmp */
 
 extern char **environ;
 
@@ -43,7 +43,7 @@ main (int argc, char **argv)
   if (argc == 0)
     {
       for (envp = environ; *envp; envp++)
-	puts (*envp);
+        puts (*envp);
       exit (0);
     }
 
@@ -52,16 +52,15 @@ main (int argc, char **argv)
   for (envp = environ; *envp; envp++)
     {
       if (**argv == **envp && strncmp (*envp, *argv, len) == 0)
-	{
-	  eval = *envp + len;
-	  /* If the environment variable doesn't have an `=', ignore it. */
-	  if (*eval == '=')
-	    {
-	      puts (eval + 1);
-	      exit (0);
-	    }
-	}
+        {
+          eval = *envp + len;
+          /* If the environment variable doesn't have an `=', ignore it. */
+          if (*eval == '=')
+            {
+              puts (eval + 1);
+              exit (0);
+            }
+        }
     }
   exit (1);
 }
-  

@@ -53,53 +53,53 @@ main (argc, argv)
     {
       if (strcmp (argv[arg_index], "-dist") == 0)
         {
-	  dist++;
-	  dist_inc++;
+          dist++;
+          dist_inc++;
         }
       else if (strcmp (argv[arg_index], "-build") == 0)
         {
-	  build++;
-	  build_inc++;
+          build++;
+          build_inc++;
         }
       else if (strcmp (argv[arg_index], "-patch") == 0)
         {
           patch++;
-	  patch_inc++;
+          patch_inc++;
         }
       else if (strcmp (argv[arg_index], "-dir") == 0)
-	{
-	  dir = argv[++arg_index];
-	  if (dir == 0)
-	    {
-	      fprintf (stderr, "%s: `-dir' requires an argument\n", progname);
-	      exit (1);
-	    }
-	  if (stat (dir, &sb) < 0)
-	    {
-	      fprintf (stderr, "%s: cannot stat %s\n", progname, dir);
-	      exit (1);
-	    }
-	  if ((sb.st_mode & S_IFMT) != S_IFDIR)
-	    {
-	      fprintf (stderr, "%s: not a directory\n", progname);
-	      exit (1);
-	    }
-	}
+        {
+          dir = argv[++arg_index];
+          if (dir == 0)
+            {
+              fprintf (stderr, "%s: `-dir' requires an argument\n", progname);
+              exit (1);
+            }
+          if (stat (dir, &sb) < 0)
+            {
+              fprintf (stderr, "%s: cannot stat %s\n", progname, dir);
+              exit (1);
+            }
+          if ((sb.st_mode & S_IFMT) != S_IFDIR)
+            {
+              fprintf (stderr, "%s: not a directory\n", progname);
+              exit (1);
+            }
+        }
       else if (strcmp (argv[arg_index], "-status") == 0)
         {
           status = argv[++arg_index];
-	  if (status == 0)
-	    {
-	      fprintf (stderr, "%s: `-status' requires an argument\n", progname);
-	      exit (1);
-	    }
+          if (status == 0)
+            {
+              fprintf (stderr, "%s: `-status' requires an argument\n", progname);
+              exit (1);
+            }
         }
       else
-	{
-	  fprintf (stderr, "%s: unknown option: %s\n", progname, argv[arg_index]);
-	  fprintf (stderr, "usage: %s [-dist|-patch|-build] [-dir directory]\n", progname);
-	  exit (1);
-	}
+        {
+          fprintf (stderr, "%s: unknown option: %s\n", progname, argv[arg_index]);
+          fprintf (stderr, "usage: %s [-dist|-patch|-build] [-dir directory]\n", progname);
+          exit (1);
+        }
       arg_index++;
     }
 
@@ -119,41 +119,41 @@ main (argc, argv)
   if (dist && arg_index < argc)
     if (sscanf (argv[arg_index], "%f", &distver) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected float value for -dist.\n",
-		 progname, argv[arg_index]);
-	exit (1);
+        fprintf (stderr, "%s: Bad input `%s'.  Expected float value for -dist.\n",
+                 progname, argv[arg_index]);
+        exit (1);
       }
     else
       {
-	arg_index++;
-	dist_inc = 0;
+        arg_index++;
+        dist_inc = 0;
       }
 
   /* Setting patchlevel via argument. */
   if (patch && arg_index < argc)
     if (sscanf (argv[arg_index], "%d", &patchlevel) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -patch.\n",
-		 progname, argv[arg_index]);
-	exit (1);
+        fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -patch.\n",
+                 progname, argv[arg_index]);
+        exit (1);
       }
     else
       {
-	arg_index++;
-	patch_inc = 0;
+        arg_index++;
+        patch_inc = 0;
       }
-    
+
   if (build && arg_index < argc)
     if (sscanf (argv[arg_index], "%d", &buildver) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -build.\n",
-		 progname, argv[arg_index]);
-	exit (1);
+        fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -build.\n",
+                 progname, argv[arg_index]);
+        exit (1);
       }
     else
       {
-	arg_index++;
-	build_inc = 0;
+        arg_index++;
+        build_inc = 0;
       }
 
   if (dot_dist_needs_making && !distver)
@@ -174,7 +174,7 @@ main (argc, argv)
   file = must_open ("newversion.h", "w");
 
   /* Output the leading comment. */
-  fprintf (file, 
+  fprintf (file,
 "/* Version control for the shell.  This file gets changed when you say\n\
    `make newversion' to the Makefile.  It is created by mkversion. */\n");
 
@@ -294,11 +294,11 @@ must_open (name, mode)
   if (!temp)
     {
       fprintf (stderr, "%s: Cannot open `%s' for mode `%s'.\n",
-	       progname, name, mode);
+               progname, name, mode);
       fprintf
-	(stderr,
-	 "Perhaps you don't have %s permission to the file or directory.\n",
-	 (strcmp (mode, "w") == 0) ? "write" : "read");
+        (stderr,
+         "Perhaps you don't have %s permission to the file or directory.\n",
+         (strcmp (mode, "w") == 0) ? "write" : "read");
       exit (3);
     }
   return (temp);

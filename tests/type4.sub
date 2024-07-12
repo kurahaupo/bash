@@ -13,13 +13,13 @@
 #
 bb()
 {
-	(
-	cat << EOF
+        (
+        cat << EOF
 foo
 bar
 EOF
-	)
-	echo after subshell
+        )
+        echo after subshell
 }
 
 type bb
@@ -27,7 +27,7 @@ type bb
 
 mkcoprocs()
 {
-	coproc a { cat <<EOF1
+        coproc a { cat <<EOF1
 producer 1
 EOF1
 }
@@ -45,11 +45,11 @@ unset -f mkcoprocs
 
 mkcoprocs()
 {
-	coproc ( b cat << EOF
+        coproc ( b cat << EOF
 heredoc
 body
 EOF
-	)
+        )
 echo "coprocs created"
 }
 
@@ -60,7 +60,7 @@ unset -f mkcoprocs
 # make sure that simple commands are printed without the coproc name
 mkcoprocs ()
 {
-	coproc cat -u - &
-	read -u ${COPROC[0]} msg
+        coproc cat -u - &
+        read -u ${COPROC[0]} msg
 }
 type mkcoprocs

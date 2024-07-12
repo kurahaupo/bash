@@ -37,7 +37,7 @@
 extern int errno;
 #endif
 
-#define KV_ARRAY_DEFAULT	"KV"
+#define KV_ARRAY_DEFAULT        "KV"
 
 /* Split LINE into a key and value, with the delimiter between the key and
    value being a member of DSTRING. A sequence of one or more delimiters
@@ -103,7 +103,7 @@ kvfile (SHELL_VAR *v, int fd, char *delims, char *rs)
     {
       QUIT;
       if (line[n] == *rs)
-	line[n] = '\0';		/* value doesn't include the record separator */
+        line[n] = '\0';         /* value doesn't include the record separator */
       nr += kvsplit (v, line, delims);
       free (line);
       line = 0;
@@ -111,7 +111,7 @@ kvfile (SHELL_VAR *v, int fd, char *delims, char *rs)
     }
 
   QUIT;
-  return nr;  
+  return nr;
 }
 
 int
@@ -129,21 +129,21 @@ kv_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "A:s:d:")) != -1)
     {
       switch (opt)
-	{
-	case 'A':
-	  array_name = list_optarg;
-	  break;
-	case 's':
-	  delims = list_optarg;
-	  break;
-	case 'd':
-	  rs = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'A':
+          array_name = list_optarg;
+          break;
+        case 's':
+          delims = list_optarg;
+          break;
+        case 'd':
+          rs = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -175,7 +175,7 @@ kv_builtin (WORD_LIST *list)
   if (v == 0 || readonly_p (v) || noassign_p (v))
     {
       if (v && readonly_p (v))
-	err_readonly (array_name);
+        err_readonly (array_name);
       return (EXECUTION_FAILURE);
     }
   else if (assoc_p (v) == 0)
@@ -190,7 +190,7 @@ kv_builtin (WORD_LIST *list)
   rval = kvfile (v, 0, delims, rs);
 
   if (free_delims)
-    free (delims);	/* getifs returns allocated memory */  
+    free (delims);      /* getifs returns allocated memory */
   return (rval > 0 ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
 }
 
@@ -209,28 +209,28 @@ kv_builtin_unload (char *name)
 }
 
 char *kv_doc[] = {
-	"Read key-value pairs into an associative array.",
-	"",
-	"Read delimiter-terminated records composed of a single key-value pair",
-	"from the standard input and add the key and corresponding value",
-	"to the associative array ARRAYNAME. The key and value are separated",
-	"by a sequence of one or more characters in SEPARATORS. Records are",
-	"terminated by the first character of RS, similar to the read and",
-	"mapfile builtins.",
-	"",
-	"If SEPARATORS is not supplied, $IFS is used to separate the keys",
-	"and values. If RS is not supplied, newlines terminate records.",
-	"If ARRAYNAME is not supplied, \"KV\" is the default array name.",
-	"",
-	"Returns success if at least one key-value pair is stored in ARRAYNAME.",
-	(char *)NULL
+        "Read key-value pairs into an associative array.",
+        "",
+        "Read delimiter-terminated records composed of a single key-value pair",
+        "from the standard input and add the key and corresponding value",
+        "to the associative array ARRAYNAME. The key and value are separated",
+        "by a sequence of one or more characters in SEPARATORS. Records are",
+        "terminated by the first character of RS, similar to the read and",
+        "mapfile builtins.",
+        "",
+        "If SEPARATORS is not supplied, $IFS is used to separate the keys",
+        "and values. If RS is not supplied, newlines terminate records.",
+        "If ARRAYNAME is not supplied, \"KV\" is the default array name.",
+        "",
+        "Returns success if at least one key-value pair is stored in ARRAYNAME.",
+        (char *)NULL
 };
 
 struct builtin kv_struct = {
-	"kv",			/* builtin name */
-	kv_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	kv_doc,		/* array of long documentation strings. */
-	"kv [-A ARRAYNAME] [-s SEPARATORS] [-d RS]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "kv",                   /* builtin name */
+        kv_builtin,             /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        kv_doc,         /* array of long documentation strings. */
+        "kv [-A ARRAYNAME] [-s SEPARATORS] [-d RS]",    /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

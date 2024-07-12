@@ -84,9 +84,9 @@ int com_quit (char *);
    can understand. */
 
 typedef struct {
-  char *name;			/* User printable name of the function. */
-  rl_icpfunc_t *func;		/* Function to call to do the job. */
-  char *doc;			/* Documentation for this function.  */
+  char *name;                   /* User printable name of the function. */
+  rl_icpfunc_t *func;           /* Function to call to do the job. */
+  char *doc;                    /* Documentation for this function.  */
 } COMMAND;
 
 COMMAND commands[] = {
@@ -188,7 +188,7 @@ stripwhite (char *string)
 
   for (s = string; whitespace (*s); s++)
     ;
-    
+
   if (*s == 0)
     return (s);
 
@@ -334,7 +334,7 @@ com_stat (char *arg)
   printf ("Statistics for `%s':\n", arg);
 
   printf ("%s has %d link%s, and is %lu byte%s in length.\n",
-	  arg,
+          arg,
           finfo.st_nlink,
           (finfo.st_nlink == 1) ? "" : "s",
           (unsigned long)finfo.st_size,
@@ -461,7 +461,7 @@ main (int argc, char **argv)
 
   progname = argv[0];
 
-  initialize_readline ();	/* Bind our completer. */
+  initialize_readline ();       /* Bind our completer. */
 
   /* Loop reading and executing lines until the user quits. */
   for ( ; done == 0; )

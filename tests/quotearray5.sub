@@ -24,8 +24,8 @@ key='$(echo foo)'
 # This solves the surprise expansion issues.
 
 a[$key]=1
-unset -v a[$key]		# this performs normal word splitting
-unset -v a["$key"]		# prevent word splitting
+unset -v a[$key]                # this performs normal word splitting
+unset -v a["$key"]              # prevent word splitting
 declare -p a # Displays no element
 
 a['$key']=2
@@ -116,7 +116,7 @@ unset a
 shopt -s assoc_expand_once
 
 declare -A a=(@ v0 . v1)
-unset "a[$key]"			# $key is expanded
+unset "a[$key]"                 # $key is expanded
 declare -p a # Displays 'declare -A a=([.]="v1" )'
 
 declare -A a=(@ v0 . v1)

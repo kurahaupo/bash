@@ -59,16 +59,16 @@ extern int errno;
 #endif
 
 /* Flags for _evalfile() */
-#define FEVAL_ENOENTOK		0x001
-#define FEVAL_BUILTIN		0x002
-#define FEVAL_UNWINDPROT	0x004
-#define FEVAL_NONINT		0x008
-#define FEVAL_LONGJMP		0x010
-#define FEVAL_HISTORY		0x020
-#define FEVAL_CHECKBINARY	0x040
-#define FEVAL_REGFILE		0x080
-#define FEVAL_NOPUSHARGS	0x100
-#define FEVAL_RETRY		0x200
+#define FEVAL_ENOENTOK          0x001
+#define FEVAL_BUILTIN           0x002
+#define FEVAL_UNWINDPROT        0x004
+#define FEVAL_NONINT            0x008
+#define FEVAL_LONGJMP           0x010
+#define FEVAL_HISTORY           0x020
+#define FEVAL_CHECKBINARY       0x040
+#define FEVAL_REGFILE           0x080
+#define FEVAL_NOPUSHARGS        0x100
+#define FEVAL_RETRY             0x200
 
 /* How many `levels' of sourced files we have. */
 int sourcelevel = 0;
@@ -80,7 +80,7 @@ _evalfile (const char *filename, int flags)
   procenv_t old_return_catch;
   int return_val, fd, result, pflags, nnull;
   size_t i;
-  ssize_t nr;			/* return value from read(2) */
+  ssize_t nr;                   /* return value from read(2) */
   char *string;
   struct stat finfo;
   size_t file_size;
@@ -113,21 +113,21 @@ _evalfile (const char *filename, int flags)
     {
       result = errno;
       if (fd >= 0)
-	close (fd);
+        close (fd);
       errno = result;
 
 file_error_and_exit:
       if (((flags & FEVAL_ENOENTOK) == 0) || errno != ENOENT)
-	file_error (filename);
+        file_error (filename);
 
       if (flags & FEVAL_LONGJMP)
-	{
-	  last_command_exit_value = EXECUTION_FAILURE;
-	  jump_to_top_level (EXITPROG);
-	}
+        {
+          last_command_exit_value = EXECUTION_FAILURE;
+          jump_to_top_level (EXITPROG);
+        }
 
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_FAILURE
-      				      : ((errno == ENOENT && (flags & FEVAL_ENOENTOK) != 0) ? 0 : -1));
+                                      : ((errno == ENOENT && (flags & FEVAL_ENOENTOK) != 0) ? 0 : -1));
     }
 
   errfunc = ((flags & FEVAL_BUILTIN) ? builtin_error : internal_error);
@@ -159,9 +159,9 @@ file_error_and_exit:
       string = (char *)xmalloc (1 + file_size);
       nr = read (fd, string, file_size);
       if (nr >= 0)
-	string[nr] = '\0';
+        string[nr] = '\0';
       if (nr != file_size)
-	nr = -1;		/* XXX - didn't get the whole file */
+        nr = -1;                /* XXX - didn't get the whole file */
     }
   else
     nr = zmapfd (fd, &string, 0);
@@ -170,7 +170,7 @@ file_error_and_exit:
   close (fd);
   errno = return_val;
 
-  if (nr < 0)		/* XXX was != file_size, not < 0 */
+  if (nr < 0)           /* XXX was != file_size, not < 0 */
     {
       free (string);
       goto file_error_and_exit;
@@ -181,8 +181,8 @@ file_error_and_exit:
       free (string);
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_SUCCESS : 1);
     }
-      
-  if ((flags & FEVAL_CHECKBINARY) && 
+
+  if ((flags & FEVAL_CHECKBINARY) &&
       check_binary_file (string, (nr > 80) ? 80 : nr))
     {
       free (string);
@@ -194,19 +194,19 @@ file_error_and_exit:
   if (i < nr)
     {
       for (nnull = i = 0; i < nr; i++)
-	if (string[i] == '\0')
+        if (string[i] == '\0')
           {
-	    memmove (string+i, string+i+1, nr - i);
-	    nr--;
-	    /* Even if the `check binary' flag is not set, we want to avoid
-	       sourcing files with more than 256 null characters -- that
-	       probably indicates a binary file. */
-	    if ((flags & FEVAL_BUILTIN) && ++nnull > 256)
-	      {
-		free (string);
-		(*errfunc) ("%s: %s", filename, _("cannot execute binary file"));
-		return ((flags & FEVAL_BUILTIN) ? EX_BINARY_FILE : -1);
-	      }
+            memmove (string+i, string+i+1, nr - i);
+            nr--;
+            /* Even if the `check binary' flag is not set, we want to avoid
+               sourcing files with more than 256 null characters -- that
+               probably indicates a binary file. */
+            if ((flags & FEVAL_BUILTIN) && ++nnull > 256)
+              {
+                free (string);
+                (*errfunc) ("%s: %s", filename, _("cannot execute binary file"));
+                return ((flags & FEVAL_BUILTIN) ? EX_BINARY_FILE : -1);
+              }
           }
     }
 
@@ -217,7 +217,7 @@ file_error_and_exit:
       unwind_protect_int (return_catch_flag);
       unwind_protect_jmp_buf (return_catch);
       if (flags & FEVAL_NONINT)
-	unwind_protect_int (interactive);
+        unwind_protect_int (interactive);
       unwind_protect_int (sourcelevel);
       unwind_protect_int (retain_fifos);
     }
@@ -225,7 +225,7 @@ file_error_and_exit:
     {
       COPY_PROCENV (return_catch, old_return_catch);
       if (flags & FEVAL_NONINT)
-	old_interactive = interactive;
+        old_interactive = interactive;
     }
 
   if (flags & FEVAL_NONINT)
@@ -234,7 +234,7 @@ file_error_and_exit:
   return_catch_flag++;
   sourcelevel++;
 
-  retain_fifos++;			/* XXX */
+  retain_fifos++;                       /* XXX */
 
 #if defined (ARRAY_VARS)
   GET_ARRAY_FROM_VAR ("FUNCNAME", funcname_v, funcname_a);
@@ -249,7 +249,7 @@ file_error_and_exit:
   t = itos (executing_line_number ());
   array_push (bash_lineno_a, t);
   free (t);
-  array_push (funcname_a, "source");	/* not exactly right */
+  array_push (funcname_a, "source");    /* not exactly right */
 
   fa = (struct func_array_state *)xmalloc (sizeof (struct func_array_state));
   fa->source_a = bash_source_a;
@@ -267,12 +267,12 @@ file_error_and_exit:
   if ((flags & FEVAL_NOPUSHARGS) == 0)
     {
       if (shell_compatibility_level <= 44)
-	init_bash_argv ();
-      array_push (bash_argv_a, (char *)filename);	/* XXX - unconditionally? */
+        init_bash_argv ();
+      array_push (bash_argv_a, (char *)filename);       /* XXX - unconditionally? */
       tt[0] = '1'; tt[1] = '\0';
       array_push (bash_argc_a, tt);
       if (flags & FEVAL_UNWINDPROT)
-	add_unwind_protect (uw_pop_args, 0);
+        add_unwind_protect (uw_pop_args, 0);
     }
 #  endif
 #endif
@@ -301,17 +301,17 @@ file_error_and_exit:
   else
     {
       if (flags & FEVAL_NONINT)
-	interactive = old_interactive;
+        interactive = old_interactive;
 #if defined (ARRAY_VARS)
       restore_funcarray_state (fa);
 #  if defined (DEBUGGER)
       if ((flags & FEVAL_NOPUSHARGS) == 0)
-	{
-	  /* Don't need to call pop_args here until we do something better
-	     when source is passed arguments (see above). */
-	  array_pop (bash_argc_a);
-	  array_pop (bash_argv_a);
-	}
+        {
+          /* Don't need to call pop_args here until we do something better
+             when source is passed arguments (see above). */
+          array_pop (bash_argc_a);
+          array_pop (bash_argv_a);
+        }
 #  endif
 #endif
       return_catch_flag--;
@@ -323,7 +323,7 @@ file_error_and_exit:
   /* If we end up with EOF after sourcing a file, which can happen when the file
      doesn't end with a newline, pretend that it did. */
   if (current_token == yacc_EOF)
-    push_token ('\n');		/* XXX */
+    push_token ('\n');          /* XXX */
 
   return ((flags & FEVAL_BUILTIN) ? result : 1);
 }

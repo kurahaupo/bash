@@ -58,7 +58,7 @@
 #endif
 
 #if !defined (isxdigit) && !defined (HAVE_ISXDIGIT)
-#  define isxdigit(c)	(((c) >= '0' && (c) <= '9') || ((c) >= 'a' && (c) <= 'f') || ((c) >= 'A' && (c) <= 'F'))
+#  define isxdigit(c)   (((c) >= '0' && (c) <= '9') || ((c) >= 'a' && (c) <= 'f') || ((c) >= 'A' && (c) <= 'F'))
 #endif
 
 #undef ISPRINT
@@ -74,36 +74,36 @@
 #define ISUPPER(c) (IN_CTYPE_DOMAIN (c) && isupper ((unsigned char)c))
 #define ISXDIGIT(c) (IN_CTYPE_DOMAIN (c) && isxdigit ((unsigned char)c))
 
-#define ISLETTER(c)	(ISALPHA(c))
+#define ISLETTER(c)     (ISALPHA(c))
 
-#define DIGIT(c)	((c) >= '0' && (c) <= '9')
+#define DIGIT(c)        ((c) >= '0' && (c) <= '9')
 
-#define ISWORD(c)	(ISLETTER(c) || DIGIT(c) || ((c) == '_'))
+#define ISWORD(c)       (ISLETTER(c) || DIGIT(c) || ((c) == '_'))
 
 #define HEXVALUE(c) \
   (((c) >= 'a' && (c) <= 'f') \
-	? (c)-'a'+10 \
-	: (c) >= 'A' && (c) <= 'F' ? (c)-'A'+10 : (c)-'0')
-                  
+        ? (c)-'a'+10 \
+        : (c) >= 'A' && (c) <= 'F' ? (c)-'A'+10 : (c)-'0')
+
 #ifndef ISOCTAL
-#  define ISOCTAL(c)	((c) >= '0' && (c) <= '7')
+#  define ISOCTAL(c)    ((c) >= '0' && (c) <= '7')
 #endif
-#define OCTVALUE(c)	((c) - '0')
+#define OCTVALUE(c)     ((c) - '0')
 
-#define TODIGIT(c)	((c) - '0')
-#define TOCHAR(c)	((c) + '0')
+#define TODIGIT(c)      ((c) - '0')
+#define TOCHAR(c)       ((c) + '0')
 
-#define TOLOWER(c)	(ISUPPER(c) ? tolower(c) : (c))
-#define TOUPPER(c)	(ISLOWER(c) ? toupper(c) : (c))
+#define TOLOWER(c)      (ISUPPER(c) ? tolower(c) : (c))
+#define TOUPPER(c)      (ISLOWER(c) ? toupper(c) : (c))
 
 #ifndef TOCTRL
    /* letter to control char -- ASCII.  The TOUPPER is in there so \ce and
       \cE will map to the same character in $'...' expansions. */
-#  define TOCTRL(x)	((x) == '?' ? 0x7f : (TOUPPER(x) & 0x1f))
+#  define TOCTRL(x)     ((x) == '?' ? 0x7f : (TOUPPER(x) & 0x1f))
 #endif
 #ifndef UNCTRL
    /* control char to letter -- ASCII */
-#  define UNCTRL(x)	(TOUPPER(x ^ 0x40))
+#  define UNCTRL(x)     (TOUPPER(x ^ 0x40))
 #endif
 
 #endif /* _SH_CHARTYPES_H */

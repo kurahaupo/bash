@@ -3,7 +3,7 @@
 /* Copyright (C) 1996-2023 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@
 
 #include "rltty.h"
 #if defined (HAVE_SYS_IOCTL_H)
-#  include <sys/ioctl.h>		/* include for declaration of ioctl */
+#  include <sys/ioctl.h>                /* include for declaration of ioctl */
 #endif
 #include "tcap.h"
 
@@ -90,9 +90,9 @@ int rl_prefer_env_winsize = 0;
 int rl_change_environment = 1;
 
 /* **************************************************************** */
-/*								    */
-/*			Terminal and Termcap			    */
-/*								    */
+/*                                                                  */
+/*                      Terminal and Termcap                        */
+/*                                                                  */
 /* **************************************************************** */
 
 #ifndef __MSDOS__
@@ -104,7 +104,7 @@ static int tcap_initialized;
 
 #if !defined (__linux__) && !defined (NCURSES_VERSION)
 #  if defined (__EMX__) || defined (NEED_EXTERN_PC)
-extern 
+extern
 #  endif /* __EMX__ || NEED_EXTERN_PC */
 char PC, *BC, *UP;
 #endif /* !__linux__ && !NCURSES_VERSION */
@@ -170,7 +170,7 @@ static char *_rl_term_ke;
 /* The key sequences sent by the Home and End keys, if any. */
 static char *_rl_term_kh;
 static char *_rl_term_kH;
-static char *_rl_term_at7;	/* @7 */
+static char *_rl_term_at7;      /* @7 */
 
 /* Delete key */
 static char *_rl_term_kD;
@@ -183,14 +183,14 @@ static char *_rl_term_kP;
 static char *_rl_term_kN;
 
 /* Cursor control */
-static char *_rl_term_vs;	/* very visible */
-static char *_rl_term_ve;	/* normal */
+static char *_rl_term_vs;       /* very visible */
+static char *_rl_term_ve;       /* normal */
 
 /* Bracketed paste */
-static char *_rl_term_BE;	/* enable */
-static char *_rl_term_BD;	/* disable */
-static char *_rl_term_PS;	/* paste start */
-static char *_rl_term_PE;	/* paste end */
+static char *_rl_term_BE;       /* enable */
+static char *_rl_term_BD;       /* disable */
+static char *_rl_term_PS;       /* paste start */
+static char *_rl_term_PE;       /* paste end */
 
 /* User-settable color sequences to begin and end the active region. Defaults
    are rl_term_so and rl_term_se on non-dumb terminals. */
@@ -208,7 +208,7 @@ char *_rl_active_region_end_color = NULL;
 #else
 #  define TGETFLAG_SUCCESS 1
 #endif
-#define TGETFLAG(cap)	(tgetflag (cap) == TGETFLAG_SUCCESS)
+#define TGETFLAG(cap)   (tgetflag (cap) == TGETFLAG_SUCCESS)
 
 static void bind_termcap_arrow_keys (Keymap);
 
@@ -250,10 +250,10 @@ _win_get_screensize (int *swp, int *shp)
   if (hConOut != INVALID_HANDLE_VALUE)
     {
       if (GetConsoleScreenBufferInfo (hConOut, &scr))
-	{
-	  *swp = scr.dwSize.X;
-	  *shp = scr.srWindow.Bottom - scr.srWindow.Top + 1;
-	}
+        {
+          *swp = scr.dwSize.X;
+          *shp = scr.srWindow.Bottom - scr.srWindow.Top + 1;
+        }
     }
 }
 #endif
@@ -300,17 +300,17 @@ _rl_get_screen_size (int tty, int ignore_env)
   if (_rl_screenwidth <= 0)
     {
       if (ignore_env == 0 && (ss = sh_get_env_value ("COLUMNS")))
-	_rl_screenwidth = atoi (ss);
+        _rl_screenwidth = atoi (ss);
 
       if (_rl_screenwidth <= 0)
         _rl_screenwidth = wc;
 
 #if defined (__DJGPP__)
       if (_rl_screenwidth <= 0)
-	_rl_screenwidth = ScreenCols ();
+        _rl_screenwidth = ScreenCols ();
 #else
       if (_rl_screenwidth <= 0 && term_string_buffer)
-	_rl_screenwidth = tgetnum ("co");
+        _rl_screenwidth = tgetnum ("co");
 #endif
     }
 
@@ -319,17 +319,17 @@ _rl_get_screen_size (int tty, int ignore_env)
   if (_rl_screenheight <= 0)
     {
       if (ignore_env == 0 && (ss = sh_get_env_value ("LINES")))
-	_rl_screenheight = atoi (ss);
+        _rl_screenheight = atoi (ss);
 
       if (_rl_screenheight <= 0)
         _rl_screenheight = wr;
 
 #if defined (__DJGPP__)
       if (_rl_screenheight <= 0)
-	_rl_screenheight = ScreenRows ();
+        _rl_screenheight = ScreenRows ();
 #else
       if (_rl_screenheight <= 0 && term_string_buffer)
-	_rl_screenheight = tgetnum ("li");
+        _rl_screenheight = tgetnum ("li");
 #endif
     }
 
@@ -364,7 +364,7 @@ _rl_set_screen_size (int rows, int cols)
     {
       _rl_screenwidth = cols;
       if (_rl_term_autowrap == 0)
-	_rl_screenwidth--;
+        _rl_screenwidth--;
     }
 
   if (rows > 0 || cols > 0)
@@ -397,7 +397,7 @@ _rl_sigwinch_resize_terminal (void)
 {
   _rl_get_screen_size (fileno (rl_instream), 1);
 }
-	
+
 void
 rl_resize_terminal (void)
 {
@@ -409,9 +409,9 @@ rl_resize_terminal (void)
   if (_rl_echoing_p && (width != _rl_screenwidth || height != _rl_screenheight))
     {
       if (CUSTOM_REDISPLAY_FUNC ())
-	rl_forced_update_display ();
+        rl_forced_update_display ();
       else if (RL_ISSTATE(RL_STATE_REDISPLAYING) == 0)
-	_rl_redisplay_after_sigwinch ();
+        _rl_redisplay_after_sigwinch ();
     }
 }
 
@@ -440,17 +440,17 @@ static const struct _tc_string tc_strings[] =
   { "ho", &_rl_term_ho },
   { "ic", &_rl_term_ic },
   { "im", &_rl_term_im },
-  { "kD", &_rl_term_kD },	/* delete */
-  { "kH", &_rl_term_kH },	/* home down ?? */
-  { "kI", &_rl_term_kI },	/* insert */
-  { "kN", &_rl_term_kN },	/* page down */
-  { "kP", &_rl_term_kP },	/* page up */
+  { "kD", &_rl_term_kD },       /* delete */
+  { "kH", &_rl_term_kH },       /* home down ?? */
+  { "kI", &_rl_term_kI },       /* insert */
+  { "kN", &_rl_term_kN },       /* page down */
+  { "kP", &_rl_term_kP },       /* page up */
   { "kd", &_rl_term_kd },
-  { "ke", &_rl_term_ke },	/* end keypad mode */
-  { "kh", &_rl_term_kh },	/* home */
+  { "ke", &_rl_term_ke },       /* end keypad mode */
+  { "kh", &_rl_term_kh },       /* home */
   { "kl", &_rl_term_kl },
   { "kr", &_rl_term_kr },
-  { "ks", &_rl_term_ks },	/* start keypad mode */
+  { "ks", &_rl_term_ks },       /* start keypad mode */
   { "ku", &_rl_term_ku },
   { "le", &_rl_term_backspace },
   { "mm", &_rl_term_mm },
@@ -472,7 +472,7 @@ static const struct _tc_string tc_strings[] =
 static void
 get_term_capabilities (char **bp)
 {
-#if !defined (__DJGPP__)	/* XXX - doesn't DJGPP have a termcap library? */
+#if !defined (__DJGPP__)        /* XXX - doesn't DJGPP have a termcap library? */
   register int i;
 
   for (i = 0; i < NUM_TC_STRINGS; i++)
@@ -489,21 +489,21 @@ struct _term_name {
 /* Non-exhaustive list of ANSI/ECMA terminals. */
 static const struct _term_name ansiterms[] =
 {
-  { "xterm",	5 },
-  { "rxvt",	4 },
-  { "eterm",	5 },
-  { "screen",	6 },
-  { "tmux",	4 },
-  { "vt100",	5 },
-  { "vt102",	5 },
-  { "vt220",	5 },
-  { "vt320",	5 },
-  { "ansi",	4 },
-  { "scoansi",	7 },
-  { "cygwin",	6 },
-  { "linux", 	5 },
-  { "konsole",	7 },
-  { "bvterm",	6 },
+  { "xterm",    5 },
+  { "rxvt",     4 },
+  { "eterm",    5 },
+  { "screen",   6 },
+  { "tmux",     4 },
+  { "vt100",    5 },
+  { "vt102",    5 },
+  { "vt220",    5 },
+  { "vt320",    5 },
+  { "ansi",     4 },
+  { "scoansi",  7 },
+  { "cygwin",   6 },
+  { "linux",    5 },
+  { "konsole",  7 },
+  { "bvterm",   6 },
   {  0, 0 }
 };
 
@@ -511,7 +511,7 @@ static inline int
 iscsi (const char *s)
 {
   return ((s[0] == ESC && s[1] == '[') ? 2
-				       : ((unsigned char)s[0] == 0x9b) ? 1 : 0);
+                                       : ((unsigned char)s[0] == 0x9b) ? 1 : 0);
 }
 
 static int
@@ -529,10 +529,10 @@ _rl_check_ansi_terminal (const char *terminal_name)
     return 0;
 
   /* check some common capabilities */
-  if (((len = iscsi (_rl_term_clreol)) && _rl_term_clreol[len] == 'K') &&	/* ce */
-      ((len = iscsi (_rl_term_forward_char)) && _rl_term_forward_char[len] == 'C') &&	/* nd */
-      ((len = iscsi (_rl_term_ho)) && _rl_term_ho[len] == 'H') &&	/* ho */
-      ((len = iscsi (_rl_term_up)) && _rl_term_up[len] == 'A'))		/* up */
+  if (((len = iscsi (_rl_term_clreol)) && _rl_term_clreol[len] == 'K') &&       /* ce */
+      ((len = iscsi (_rl_term_forward_char)) && _rl_term_forward_char[len] == 'C') &&   /* nd */
+      ((len = iscsi (_rl_term_ho)) && _rl_term_ho[len] == 'H') &&       /* ho */
+      ((len = iscsi (_rl_term_up)) && _rl_term_up[len] == 'A'))         /* up */
     return 1;
 
   return 0;
@@ -590,10 +590,10 @@ _rl_init_terminal_io (const char *terminal_name)
   else
     {
       if (term_string_buffer == 0)
-	term_string_buffer = (char *)xmalloc(2032);
+        term_string_buffer = (char *)xmalloc(2032);
 
       if (term_buffer == 0)
-	term_buffer = (char *)xmalloc(4080);
+        term_buffer = (char *)xmalloc(4080);
 
       buffer = term_string_buffer;
 
@@ -606,25 +606,25 @@ _rl_init_terminal_io (const char *terminal_name)
       FREE (term_buffer);
       buffer = term_buffer = term_string_buffer = (char *)NULL;
 
-      _rl_term_autowrap = 0;	/* used by _rl_get_screen_size */
+      _rl_term_autowrap = 0;    /* used by _rl_get_screen_size */
 
       /* Allow calling application to set default height and width, using
-	 rl_set_screen_size */
+         rl_set_screen_size */
       if (_rl_screenwidth <= 0 || _rl_screenheight <= 0)
-	{
+        {
 #if defined (__EMX__)
-	  _emx_get_screensize (&_rl_screenwidth, &_rl_screenheight);
-	  _rl_screenwidth--;
+          _emx_get_screensize (&_rl_screenwidth, &_rl_screenheight);
+          _rl_screenwidth--;
 #else /* !__EMX__ */
-	  _rl_get_screen_size (tty, 0);
+          _rl_get_screen_size (tty, 0);
 #endif /* !__EMX__ */
-	}
+        }
 
       /* Defaults. */
       if (_rl_screenwidth <= 0 || _rl_screenheight <= 0)
         {
-	  _rl_screenwidth = 79;
-	  _rl_screenheight = 24;
+          _rl_screenwidth = 79;
+          _rl_screenheight = 24;
         }
 
       /* Everything below here is used by the redisplay code (tputs). */
@@ -643,10 +643,10 @@ _rl_init_terminal_io (const char *terminal_name)
       _rl_term_so = _rl_term_se = (char *)NULL;
       _rl_terminal_can_insert = term_has_meta = 0;
 
-      _rl_term_isansi = 0;	/* not an ANSI terminal */
+      _rl_term_isansi = 0;      /* not an ANSI terminal */
 
       /* Assume generic unknown terminal can't handle the enable/disable
-	 escape sequences */
+         escape sequences */
       _rl_term_BD = _rl_term_BE = _rl_term_PE = _rl_term_PS = (char *)NULL;
       _rl_enable_bracketed_paste = 0;
 
@@ -654,7 +654,7 @@ _rl_init_terminal_io (const char *terminal_name)
       _rl_enable_active_region = 0;
       _rl_reset_region_color (0, NULL);
       _rl_reset_region_color (1, NULL);
-    
+
       /* Reasonable defaults for tgoto().  Readline currently only uses
          tgoto if _rl_term_IC or _rl_term_DC is defined, but just in case we
          change that later... */
@@ -738,14 +738,14 @@ bind_termcap_arrow_keys (Keymap map)
   rl_bind_keyseq_if_unbound (_rl_term_kr, rl_forward_char);
   rl_bind_keyseq_if_unbound (_rl_term_kl, rl_backward_char);
 
-  rl_bind_keyseq_if_unbound (_rl_term_kh, rl_beg_of_line);	/* Home */
-  rl_bind_keyseq_if_unbound (_rl_term_at7, rl_end_of_line);	/* End */
+  rl_bind_keyseq_if_unbound (_rl_term_kh, rl_beg_of_line);      /* Home */
+  rl_bind_keyseq_if_unbound (_rl_term_at7, rl_end_of_line);     /* End */
 
   rl_bind_keyseq_if_unbound (_rl_term_kD, rl_delete);
-  rl_bind_keyseq_if_unbound (_rl_term_kI, rl_overwrite_mode);	/* Insert */
+  rl_bind_keyseq_if_unbound (_rl_term_kI, rl_overwrite_mode);   /* Insert */
 
-  rl_bind_keyseq_if_unbound (_rl_term_kN, rl_history_search_forward);	/* Page Down */
-  rl_bind_keyseq_if_unbound (_rl_term_kP, rl_history_search_backward);	/* Page Up */
+  rl_bind_keyseq_if_unbound (_rl_term_kN, rl_history_search_forward);   /* Page Down */
+  rl_bind_keyseq_if_unbound (_rl_term_kP, rl_history_search_backward);  /* Page Up */
 
   _rl_keymap = xkeymap;
 }
@@ -844,24 +844,24 @@ rl_ding (void)
     {
       switch (_rl_bell_preference)
         {
-	case NO_BELL:
-	default:
-	  break;
-	case VISIBLE_BELL:
-	  if (_rl_visible_bell)
-	    {
+        case NO_BELL:
+        default:
+          break;
+        case VISIBLE_BELL:
+          if (_rl_visible_bell)
+            {
 #ifdef __DJGPP__
-	      ScreenVisualBell ();
+              ScreenVisualBell ();
 #else
-	      tputs (_rl_visible_bell, 1, _rl_output_character_function);
+              tputs (_rl_visible_bell, 1, _rl_output_character_function);
 #endif
-	      break;
-	    }
-	  /* FALLTHROUGH */
-	case AUDIBLE_BELL:
-	  fprintf (stderr, "\007");
-	  fflush (stderr);
-	  break;
+              break;
+            }
+          /* FALLTHROUGH */
+        case AUDIBLE_BELL:
+          fprintf (stderr, "\007");
+          fflush (stderr);
+          break;
         }
       return (0);
     }
@@ -869,9 +869,9 @@ rl_ding (void)
 }
 
 /* **************************************************************** */
-/*								    */
-/*		Entering and leaving terminal standout mode	    */
-/*								    */
+/*                                                                  */
+/*              Entering and leaving terminal standout mode         */
+/*                                                                  */
 /* **************************************************************** */
 
 void
@@ -893,9 +893,9 @@ _rl_standout_off (void)
 }
 
 /* **************************************************************** */
-/*								    */
-/*	     Controlling color for a portion of the line	    */
-/*								    */
+/*                                                                  */
+/*           Controlling color for a portion of the line            */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Reset the region color variables to VALUE depending on WHICH (0 == start,
@@ -911,25 +911,25 @@ _rl_reset_region_color (int which, const char *value)
     {
       xfree (_rl_active_region_start_color);
       if (value && *value)
-	{
-	  _rl_active_region_start_color = (char *)xmalloc (2 * strlen (value) + 1);
-	  rl_translate_keyseq (value, _rl_active_region_start_color, &len);
-	  _rl_active_region_start_color[len] = '\0';
-	}
+        {
+          _rl_active_region_start_color = (char *)xmalloc (2 * strlen (value) + 1);
+          rl_translate_keyseq (value, _rl_active_region_start_color, &len);
+          _rl_active_region_start_color[len] = '\0';
+        }
       else
-	_rl_active_region_start_color = NULL;
+        _rl_active_region_start_color = NULL;
     }
   else
     {
       xfree (_rl_active_region_end_color);
       if (value && *value)
-	{
-	  _rl_active_region_end_color = (char *)xmalloc (2 * strlen (value) + 1);
-	  rl_translate_keyseq (value, _rl_active_region_end_color, &len);
-	  _rl_active_region_end_color[len] = '\0';
-	}
+        {
+          _rl_active_region_end_color = (char *)xmalloc (2 * strlen (value) + 1);
+          rl_translate_keyseq (value, _rl_active_region_end_color, &len);
+          _rl_active_region_end_color[len] = '\0';
+        }
       else
-	_rl_active_region_end_color = NULL;
+        _rl_active_region_end_color = NULL;
     }
 
   return 0;
@@ -954,12 +954,12 @@ _rl_region_color_off (void)
 }
 
 /* **************************************************************** */
-/*								    */
-/*	 	Controlling the Meta Key and Keypad		    */
-/*								    */
+/*                                                                  */
+/*              Controlling the Meta Key and Keypad                 */
+/*                                                                  */
 /* **************************************************************** */
 
-static int enabled_meta = 0;	/* flag indicating we enabled meta mode */
+static int enabled_meta = 0;    /* flag indicating we enabled meta mode */
 
 void
 _rl_enable_meta_key (void)
@@ -997,9 +997,9 @@ _rl_control_keypad (int on)
 }
 
 /* **************************************************************** */
-/*								    */
-/*	 		Controlling the Cursor			    */
-/*								    */
+/*                                                                  */
+/*                      Controlling the Cursor                      */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Set the cursor appropriately depending on IM, which is one of the
@@ -1013,12 +1013,12 @@ _rl_set_cursor (int im, int force)
   if (_rl_term_ve && _rl_term_vs)
     {
       if (force || im != rl_insert_mode)
-	{
-	  if (im == RL_IM_OVERWRITE)
-	    tputs (_rl_term_vs, 1, _rl_output_character_function);
-	  else
-	    tputs (_rl_term_ve, 1, _rl_output_character_function);
-	}
+        {
+          if (im == RL_IM_OVERWRITE)
+            tputs (_rl_term_vs, 1, _rl_output_character_function);
+          else
+            tputs (_rl_term_ve, 1, _rl_output_character_function);
+        }
     }
 #endif
 }

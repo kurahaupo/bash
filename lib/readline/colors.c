@@ -45,7 +45,7 @@
 #include <fcntl.h> // S_ISUID
 
 #ifndef S_ISDIR
-#  define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+#  define       S_ISDIR(m)      (((m) & S_IFMT) == S_IFDIR)
 #endif
 
 // strlen()
@@ -73,7 +73,7 @@
 static bool is_colored (enum indicator_no type);
 static void restore_default_color (void);
 
-#define RL_COLOR_PREFIX_EXTENSION	".readline-colored-completion-prefix"
+#define RL_COLOR_PREFIX_EXTENSION       ".readline-colored-completion-prefix"
 
 COLOR_EXT_TYPE *_rl_color_ext_list = 0;
 
@@ -137,7 +137,7 @@ _rl_print_prefix_color (void)
   if (s->string != NULL)
     {
       if (is_colored (C_NORM))
-	restore_default_color ();
+        restore_default_color ();
       _rl_put_indicator (&_rl_color_indicator[C_LEFT]);
       _rl_put_indicator (s);
       _rl_put_indicator (&_rl_color_indicator[C_RIGHT]);
@@ -146,20 +146,20 @@ _rl_print_prefix_color (void)
   else
     return 1;
 }
-  
+
 /* Returns whether any color sequence was printed. */
 bool
 _rl_print_color_indicator (const char *f)
 {
   enum indicator_no colored_filetype;
-  COLOR_EXT_TYPE *ext;	/* Color extension */
-  size_t len;		/* Length of name */
+  COLOR_EXT_TYPE *ext;  /* Color extension */
+  size_t len;           /* Length of name */
 
   const char* name;
   char *filename;
   struct stat astat, linkstat;
   mode_t mode;
-  int linkok;	/* 1 == ok, 0 == dangling symlink, -1 == missing */
+  int linkok;   /* 1 == ok, 0 == dangling symlink, -1 == missing */
   int stat_ok;
 
   name = f;
@@ -183,14 +183,14 @@ _rl_print_color_indicator (const char *f)
       mode = astat.st_mode;
 #if defined (HAVE_LSTAT)
       if (S_ISLNK (mode))
-	{
-	  linkok = stat (name, &linkstat) == 0;
-	  if (linkok && strncmp (_rl_color_indicator[C_LINK].string, "target", 6) == 0)
-	    mode = linkstat.st_mode;
-	}
+        {
+          linkok = stat (name, &linkstat) == 0;
+          if (linkok && strncmp (_rl_color_indicator[C_LINK].string, "target", 6) == 0)
+            mode = linkstat.st_mode;
+        }
       else
 #endif
-	linkok = 1;
+        linkok = 1;
     }
   else
     linkok = -1;
@@ -200,7 +200,7 @@ _rl_print_color_indicator (const char *f)
   if (linkok == -1 && _rl_color_indicator[C_MISSING].string != NULL)
     colored_filetype = C_MISSING;
   else if (linkok == 0 && _rl_color_indicator[C_ORPHAN].string != NULL)
-    colored_filetype = C_ORPHAN;	/* dangling symlink */
+    colored_filetype = C_ORPHAN;        /* dangling symlink */
   else if(stat_ok != 0)
     {
       static enum indicator_no filetype_indicator[] = FILETYPE_INDICATORS;
@@ -275,7 +275,7 @@ _rl_print_color_indicator (const char *f)
     {
       /* Test if NAME has a recognized suffix.  */
       len = strlen (name);
-      name += len;		/* Pointer to final \0.  */
+      name += len;              /* Pointer to final \0.  */
       for (ext = _rl_color_ext_list; ext != NULL; ext = ext->next)
         {
           if (ext->ext.len <= len
@@ -285,7 +285,7 @@ _rl_print_color_indicator (const char *f)
         }
     }
 
-  free (filename);	/* NULL or savestring return value */
+  free (filename);      /* NULL or savestring return value */
 
   {
     const struct bin_str *const s
@@ -294,7 +294,7 @@ _rl_print_color_indicator (const char *f)
       {
         /* Need to reset so not dealing with attribute combinations */
         if (is_colored (C_NORM))
-	  restore_default_color ();
+          restore_default_color ();
         _rl_put_indicator (&_rl_color_indicator[C_LEFT]);
         _rl_put_indicator (s);
         _rl_put_indicator (&_rl_color_indicator[C_RIGHT]);

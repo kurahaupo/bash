@@ -26,8 +26,8 @@
 #ifdef MALLOC_REGISTER
 
 /* values for flags byte. */
-#define MT_ALLOC	0x01
-#define MT_FREE		0x02
+#define MT_ALLOC        0x01
+#define MT_FREE         0x02
 
 /*
  * Memory table entry.
@@ -46,28 +46,28 @@
  *
  */
 typedef struct mr_table {
-	PTR_T mem;
-	size_t size;
-	char flags;
-	const char *func;
-	const char *file;
-	int line;
-	int nalloc, nfree;
+        PTR_T mem;
+        size_t size;
+        char flags;
+        const char *func;
+        const char *file;
+        int line;
+        int nalloc, nfree;
 } mr_table_t;
 
-#define REG_TABLE_SIZE	8192
+#define REG_TABLE_SIZE  8192
 
 extern mr_table_t *mr_table_entry (PTR_T);
 extern void mregister_alloc (const char *, PTR_T, size_t, const char *, int);
 extern void mregister_free (PTR_T, int, const char *, int);
-extern void mregister_describe_mem (PTR_T, FILE *);	/* needs stdio.h */
+extern void mregister_describe_mem (PTR_T, FILE *);     /* needs stdio.h */
 extern void mregister_dump_table (void);
 extern void mregister_table_init (void);
 
 typedef struct ma_table {
-	const char *file;
-	int line;
-	int nalloc;
+        const char *file;
+        int line;
+        int nalloc;
 } ma_table_t;
 
 extern void mlocation_register_alloc (const char *, int);

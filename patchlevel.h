@@ -22,7 +22,7 @@
 #define _PATCHLEVEL_H_
 
 /* It's important that there be no other strings in this file that match the
-   regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
+   regexp `^#define[    ]*PATCHLEVEL', since that's what support/mkversion.sh
    looks for to find the patch level (for the sccs version string). */
 
 #define PATCHLEVEL 0

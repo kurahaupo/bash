@@ -2,6 +2,6 @@
 
 main()
 {
-	fprintf(stderr, "%d\n", getpid());
-	exit(0);
+        fprintf(stderr, "%d\n", getpid());
+        exit(0);
 }

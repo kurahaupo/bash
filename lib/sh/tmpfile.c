@@ -46,10 +46,10 @@ extern int errno;
 #  define USE_URANDOM32
 #endif
 
-#define BASEOPENFLAGS	(O_CREAT | O_TRUNC | O_EXCL | O_BINARY)
+#define BASEOPENFLAGS   (O_CREAT | O_TRUNC | O_EXCL | O_BINARY)
 
-#define DEFAULT_TMPDIR		"."	/* bogus default, should be changed */
-#define DEFAULT_NAMEROOT	"shtmp"
+#define DEFAULT_TMPDIR          "."     /* bogus default, should be changed */
+#define DEFAULT_NAMEROOT        "shtmp"
 
 /* Use ANSI-C rand() interface if random(3) is not available */
 #if !HAVE_RANDOM
@@ -128,7 +128,7 @@ sh_seedrand (void)
   if (seeded == 0)
     {
       struct timeval tv;
-  	      
+
       gettimeofday (&tv, NULL);
       srandom (tv.tv_sec ^ tv.tv_usec ^ (getpid () << 16) ^ (uintptr_t)&d);
       seeded = 1;
@@ -188,19 +188,19 @@ sh_mktmpname (const char *nameroot, int flags)
       x = (unsigned long) ((flags & MT_USERANDOM) ? random () : ntmpfiles++);
 #endif
       filenum = (filenum << 1) ^
-		(unsigned long) time ((time_t *)0) ^
-		(unsigned long) dollar_dollar_pid ^
-		x;
+                (unsigned long) time ((time_t *)0) ^
+                (unsigned long) dollar_dollar_pid ^
+                x;
       snprintf (filename, PATH_MAX, "%s/%s-%lu", tdir, lroot, filenum);
-      if (tmpnamelen > 0 && tmpnamelen < 32)		/* XXX */
-	filename[tdlen + 1 + tmpnamelen] = '\0';
+      if (tmpnamelen > 0 && tmpnamelen < 32)            /* XXX */
+        filename[tdlen + 1 + tmpnamelen] = '\0';
 #  ifdef HAVE_LSTAT
       r = lstat (filename, &sb);
 #  else
       r = stat (filename, &sb);
 #  endif
       if (r < 0 && errno == ENOENT)
-	break;
+        break;
     }
 #endif /* !USE_MKTEMP */
 
@@ -213,7 +213,7 @@ sh_mktmpfd (const char *nameroot, int flags, char **namep)
   char *filename, *tdir;
   const char *lroot;
   int fd, tdlen;
-  
+
   filename = (char *)xmalloc (PATH_MAX + 1);
   tdir = get_tmpdir (flags);
   tdlen = strlen (tdir);
@@ -260,12 +260,12 @@ sh_mktmpfd (const char *nameroot, int flags, char **namep)
       x = (unsigned long) ((flags & MT_USERANDOM) ? random () : ntmpfiles++);
 #endif
       filenum = (filenum << 1) ^
-		(unsigned long) time ((time_t *)0) ^
-		(unsigned long) dollar_dollar_pid ^
-		x;
+                (unsigned long) time ((time_t *)0) ^
+                (unsigned long) dollar_dollar_pid ^
+                x;
       snprintf (filename, PATH_MAX, "%s/%s-%lu", tdir, lroot, filenum);
-      if (tmpnamelen > 0 && tmpnamelen < 32)		/* XXX */
-	filename[tdlen + 1 + tmpnamelen] = '\0';
+      if (tmpnamelen > 0 && tmpnamelen < 32)            /* XXX */
+        filename[tdlen + 1 + tmpnamelen] = '\0';
       fd = open (filename, BASEOPENFLAGS | ((flags & MT_READWRITE) ? O_RDWR : O_WRONLY), 0600);
     }
   while (fd < 0 && errno == EEXIST);
@@ -314,7 +314,7 @@ sh_mktmpdir (const char *nameroot, int flags)
   char *tdir, *dirname;
   const char *lroot;
   int tdlen;
-  
+
   filename = (char *)xmalloc (PATH_MAX + 1);
   tdir = get_tmpdir (flags);
   tdlen = strlen (tdir);
@@ -344,7 +344,7 @@ sh_mktmpdir (const char *nameroot, int flags)
       filename = sh_mktmpname (nameroot, flags);
       fd = mkdir (filename, 0700);
       if (fd == 0)
-	break;
+        break;
       free (filename);
       filename = (char *)NULL;
     }

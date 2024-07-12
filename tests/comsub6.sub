@@ -25,7 +25,7 @@ echo post foo1
 
 alias comsub0='echo $(echo $DATE'
 comsub0)
-comsub0		) after
+comsub0         ) after
 
 alias math0='echo $(( 4+3 )'
 math0)

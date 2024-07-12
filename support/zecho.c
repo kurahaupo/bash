@@ -24,14 +24,14 @@
 int
 main(int argc, char **argv)
 {
-	argv++;
+        argv++;
 
-	while (*argv) {
-		(void)printf("%s", *argv);
-		if (*++argv)
-			putchar(' ');
-	}
+        while (*argv) {
+                (void)printf("%s", *argv);
+                if (*++argv)
+                        putchar(' ');
+        }
 
-	putchar('\n');
-	exit(0);
+        putchar('\n');
+        exit(0);
 }

@@ -18,9 +18,9 @@ shopt -o ignoreeof
 
 f()
 {
-	local -
-	set +o ignoreeof
-	shopt -o ignoreeof
+        local -
+        set +o ignoreeof
+        shopt -o ignoreeof
 }
 
 f
@@ -31,10 +31,10 @@ unset -f f
 
 f()
 {
-	local -
-	set -m -H +B
-	set -u
-	local -p	# make sure it prints `local -'
+        local -
+        set -m -H +B
+        set -u
+        local -p        # make sure it prints `local -'
 }
 
 before="$-|$SHELLOPTS"
@@ -42,8 +42,8 @@ f
 after="$-|$SHELLOPTS"
 
 case "$after" in
-$before)	echo match 1 ;;
-*)		echo bad 1 ;;
+$before)        echo match 1 ;;
+*)              echo bad 1 ;;
 esac
 
 unset -f f

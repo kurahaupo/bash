@@ -56,8 +56,8 @@ dirname_builtin (WORD_LIST *list)
     slen--;
 
   /* (2) If string consists entirely of slash characters, string shall be
-	 set to a single slash character.  In this case, skip steps (3)
-	 through (8). */
+         set to a single slash character.  In this case, skip steps (3)
+         through (8). */
   if (slen == 0)
     {
       fputs ("/\n", stdout);
@@ -65,15 +65,15 @@ dirname_builtin (WORD_LIST *list)
     }
 
   /* (3) If there are any trailing slash characters in string, they
-	 shall be removed. */
+         shall be removed. */
   string[slen] = '\0';
 
   /* (4) If there are no slash characters remaining in string, string
-	 shall be set to a single period character.  In this case, skip
-	 steps (5) through (8).
+         shall be set to a single period character.  In this case, skip
+         steps (5) through (8).
 
      (5) If there are any trailing nonslash characters in string,
-	 they shall be removed. */
+         they shall be removed. */
 
   while (--slen >= 0)
     if (string[slen] == '/')
@@ -86,33 +86,33 @@ dirname_builtin (WORD_LIST *list)
     }
 
   /* (7) If there are any trailing slash characters in string, they
-	 shall be removed. */
+         shall be removed. */
   while (--slen >= 0)
     if (string[slen] != '/')
       break;
   string[++slen] = '\0';
 
   /* (8) If the remaining string is empty, string shall be set to a single
-	 slash character. */
+         slash character. */
   printf ("%s\n", (slen == 0) ? "/" : string);
   return (EXECUTION_SUCCESS);
 }
 
 char *dirname_doc[] = {
-	"Display directory portion of pathname.",
-	"",
-	"The STRING is converted to the name of the directory containing",	
-	"the filename corresponding to the last pathname component in STRING.",
-	(char *)NULL
+        "Display directory portion of pathname.",
+        "",
+        "The STRING is converted to the name of the directory containing",
+        "the filename corresponding to the last pathname component in STRING.",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin dirname_struct = {
-	"dirname",		/* builtin name */
-	dirname_builtin,	/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	dirname_doc,		/* array of long documentation strings. */
-	"dirname string",	/* usage synopsis */
-	0			/* reserved for internal use */
+        "dirname",              /* builtin name */
+        dirname_builtin,        /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        dirname_doc,            /* array of long documentation strings. */
+        "dirname string",       /* usage synopsis */
+        0                       /* reserved for internal use */
 };

@@ -72,12 +72,12 @@ copy_word_list (WORD_LIST *list)
   for (new_list = tl = (WORD_LIST *)NULL; list; list = list->next)
     {
       if (new_list == 0)
-	new_list = tl = make_word_list (copy_word (list->word), new_list);
+        new_list = tl = make_word_list (copy_word (list->word), new_list);
       else
-	{
-	  tl->next = make_word_list (copy_word (list->word), (WORD_LIST *)NULL);
-	  tl = tl->next;
-	}
+        {
+          tl->next = make_word_list (copy_word (list->word), (WORD_LIST *)NULL);
+          tl = tl->next;
+        }
     }
 
   return (new_list);
@@ -116,7 +116,7 @@ copy_redirect (REDIRECT *redirect)
   REDIRECT *new_redirect;
 
   new_redirect = (REDIRECT *)xmalloc (sizeof (REDIRECT));
-  *new_redirect = *redirect;	/* let the compiler do the fast structure copy */
+  *new_redirect = *redirect;    /* let the compiler do the fast structure copy */
 
   if (redirect->rflags & REDIR_VARASSIGN)
     new_redirect->redirector.filename = copy_word (redirect->redirector.filename);
@@ -358,78 +358,78 @@ copy_command (COMMAND *command)
   switch (command->type)
     {
       case cm_for:
-	new_command->value.For = copy_for_command (command->value.For);
-	break;
+        new_command->value.For = copy_for_command (command->value.For);
+        break;
 
 #if defined (ARITH_FOR_COMMAND)
       case cm_arith_for:
-	new_command->value.ArithFor = copy_arith_for_command (command->value.ArithFor);
-	break;
+        new_command->value.ArithFor = copy_arith_for_command (command->value.ArithFor);
+        break;
 #endif
 
 #if defined (SELECT_COMMAND)
       case cm_select:
-	new_command->value.Select =
-	  (SELECT_COM *)copy_for_command ((FOR_COM *)command->value.Select);
-	break;
+        new_command->value.Select =
+          (SELECT_COM *)copy_for_command ((FOR_COM *)command->value.Select);
+        break;
 #endif
 
       case cm_group:
-	new_command->value.Group = copy_group_command (command->value.Group);
-	break;
+        new_command->value.Group = copy_group_command (command->value.Group);
+        break;
 
       case cm_subshell:
-	new_command->value.Subshell = copy_subshell_command (command->value.Subshell);
-	break;
+        new_command->value.Subshell = copy_subshell_command (command->value.Subshell);
+        break;
 
       case cm_coproc:
-	new_command->value.Coproc = copy_coproc_command (command->value.Coproc);
-	break;
+        new_command->value.Coproc = copy_coproc_command (command->value.Coproc);
+        break;
 
       case cm_case:
-	new_command->value.Case = copy_case_command (command->value.Case);
-	break;
+        new_command->value.Case = copy_case_command (command->value.Case);
+        break;
 
       case cm_until:
       case cm_while:
-	new_command->value.While = copy_while_command (command->value.While);
-	break;
+        new_command->value.While = copy_while_command (command->value.While);
+        break;
 
       case cm_if:
-	new_command->value.If = copy_if_command (command->value.If);
-	break;
+        new_command->value.If = copy_if_command (command->value.If);
+        break;
 
 #if defined (DPAREN_ARITHMETIC)
       case cm_arith:
-	new_command->value.Arith = copy_arith_command (command->value.Arith);
-	break;
+        new_command->value.Arith = copy_arith_command (command->value.Arith);
+        break;
 #endif
 
 #if defined (COND_COMMAND)
       case cm_cond:
-	new_command->value.Cond = copy_cond_command (command->value.Cond);
-	break;
+        new_command->value.Cond = copy_cond_command (command->value.Cond);
+        break;
 #endif
 
       case cm_simple:
-	new_command->value.Simple = copy_simple_command (command->value.Simple);
-	break;
+        new_command->value.Simple = copy_simple_command (command->value.Simple);
+        break;
 
       case cm_connection:
-	{
-	  CONNECTION *new_connection;
+        {
+          CONNECTION *new_connection;
 
-	  new_connection = (CONNECTION *)xmalloc (sizeof (CONNECTION));
-	  new_connection->connector = command->value.Connection->connector;
-	  new_connection->first = copy_command (command->value.Connection->first);
-	  new_connection->second = copy_command (command->value.Connection->second);
-	  new_command->value.Connection = new_connection;
-	  break;
-	}
+          new_connection = (CONNECTION *)xmalloc (sizeof (CONNECTION));
+          new_connection->connector = command->value.Connection->connector;
+          new_connection->first = copy_command (command->value.Connection->first);
+          new_connection->second = copy_command (command->value.Connection->second);
+          new_command->value.Connection = new_connection;
+          break;
+        }
 
       case cm_function_def:
-	new_command->value.Function_def = copy_function_def (command->value.Function_def);
-	break;
+        new_command->value.Function_def = copy_function_def (command->value.Function_def);
+        break;
     }
   return (new_command);
 }

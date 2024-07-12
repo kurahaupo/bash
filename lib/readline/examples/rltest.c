@@ -1,7 +1,7 @@
 /* **************************************************************** */
-/*								    */
-/*			Testing Readline			    */
-/*								    */
+/*                                                                  */
+/*                      Testing Readline                            */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Copyright (C) 1987-2009,2023 Free Software Foundation, Inc.
@@ -32,7 +32,7 @@
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-#else 
+#else
 extern void exit();
 #endif
 
@@ -68,31 +68,31 @@ main (int c, char **v)
 
       /* Test for EOF. */
       if (!temp)
-	exit (1);
+        exit (1);
 
       /* If there is anything on the line, print it and remember it. */
       if (*temp)
-	{
-	  fprintf (stderr, "%s\r\n", temp);
-	  add_history (temp);
-	}
+        {
+          fprintf (stderr, "%s\r\n", temp);
+          add_history (temp);
+        }
 
       /* Check for `command' that we handle. */
       if (strcmp (temp, "quit") == 0)
-	done = 1;
+        done = 1;
 
       if (strcmp (temp, "list") == 0)
-	{
-	  HIST_ENTRY **list;
-	  register int i;
+        {
+          HIST_ENTRY **list;
+          register int i;
 
-	  list = history_list ();
-	  if (list)
-	    {
-	      for (i = 0; list[i]; i++)
-		fprintf (stderr, "%d: %s\r\n", i, list[i]->line);
-	    }
-	}
+          list = history_list ();
+          if (list)
+            {
+              for (i = 0; list[i]; i++)
+                fprintf (stderr, "%d: %s\r\n", i, list[i]->line);
+            }
+        }
       free (temp);
     }
   exit (0);

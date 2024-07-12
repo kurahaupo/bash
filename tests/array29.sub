@@ -24,9 +24,9 @@ declare -p v2
 
 pv()
 {
-	local -a foo
-	foo=( "${var[@]}" )
-	declare -p foo
+        local -a foo
+        foo=( "${var[@]}" )
+        declare -p foo
 }
 pv
 
@@ -44,43 +44,43 @@ pv
 
 pv1()
 {
-	local -a foo=( "${var[@]}" )
-	declare -p foo
+        local -a foo=( "${var[@]}" )
+        declare -p foo
 }
 pv1
 
 pv2()
 {
-	local -a foo=( [0]="${var[@]}" )
-	declare -p foo
+        local -a foo=( [0]="${var[@]}" )
+        declare -p foo
 }
 pv2
 
 pv3()
 {
-	local -A foo=( v "${var[@]}" )
-	declare -p foo
+        local -A foo=( v "${var[@]}" )
+        declare -p foo
 }
 pv3
 
 pv4()
 {
-	local -A foo=( [v]="${var[@]}" )
-	declare -p foo
+        local -A foo=( [v]="${var[@]}" )
+        declare -p foo
 }
 pv4
 
 unset -f pv3 pv4
 pv3()
 {
-	local -A foo=( $'\x01' "${v2[@]}" )
-	declare -p foo
+        local -A foo=( $'\x01' "${v2[@]}" )
+        declare -p foo
 }
 pv3
 
 pv4()
 {
-	local -A foo=( [$'\x01']="${v2[@]}" )
-	declare -p foo
+        local -A foo=( [$'\x01']="${v2[@]}" )
+        declare -p foo
 }
 pv4

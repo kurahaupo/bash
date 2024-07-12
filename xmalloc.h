@@ -26,7 +26,7 @@
 
 /* Generic pointer type. */
 #ifndef PTR_T
-#  define PTR_T	void *
+#  define PTR_T void *
 #endif /* PTR_T */
 
 /* Allocation functions in xmalloc.c */
@@ -41,23 +41,23 @@ extern PTR_T sh_xrealloc (void *, size_t, const char *, int);
 extern PTR_T sh_xreallocarray (void *, size_t, size_t, const char *, int);
 extern void sh_xfree (void *, const char *, int);
 
-#define xmalloc(x)	sh_xmalloc((x), __FILE__, __LINE__)
-#define xrealloc(x, n)	sh_xrealloc((x), (n), __FILE__, __LINE__)
-#define xreallocarray(x, n, s)	sh_xreallocarray((x), (n), (s), __FILE__, __LINE__)
-#define xfree(x)	sh_xfree((x), __FILE__, __LINE__)
+#define xmalloc(x)      sh_xmalloc((x), __FILE__, __LINE__)
+#define xrealloc(x, n)  sh_xrealloc((x), (n), __FILE__, __LINE__)
+#define xreallocarray(x, n, s)  sh_xreallocarray((x), (n), (s), __FILE__, __LINE__)
+#define xfree(x)        sh_xfree((x), __FILE__, __LINE__)
 
 #ifdef free
 #undef free
 #endif
-#define free(x)		sh_xfree((x), __FILE__, __LINE__)
+#define free(x)         sh_xfree((x), __FILE__, __LINE__)
 
 extern PTR_T sh_malloc (size_t, const char *, int);
 
 #ifdef malloc
 #undef malloc
 #endif
-#define malloc(x)	sh_malloc((x), __FILE__, __LINE__)
+#define malloc(x)       sh_malloc((x), __FILE__, __LINE__)
 
-#endif	/* USING_BASH_MALLOC */
+#endif  /* USING_BASH_MALLOC */
 
-#endif	/* _XMALLOC_H_ */
+#endif  /* _XMALLOC_H_ */

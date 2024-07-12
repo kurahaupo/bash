@@ -57,7 +57,7 @@ typedef int WAIT;
 #  endif /* !WSTOPSIG */
 
 #  if !defined (WTERMSIG)
-#    define WTERMSIG(s)	      ((s) & 0177)
+#    define WTERMSIG(s)       ((s) & 0177)
 #  endif /* !WTERMSIG */
 
 #  if !defined (WEXITSTATUS)
@@ -78,7 +78,7 @@ typedef int WAIT;
 
 #  if !defined (WIFCORED)
 #    if defined (WCOREDUMP)
-#      define WIFCORED(s)	(WCOREDUMP(s))
+#      define WIFCORED(s)       (WCOREDUMP(s))
 #    else
 #      define WIFCORED(s)       ((s) & 0200)
 #    endif
@@ -87,11 +87,11 @@ typedef int WAIT;
 #else /* !_POSIX_VERSION */
 
 #  if !defined (WSTOPSIG)
-#    define WSTOPSIG(s)	      ((s).w_stopsig)
+#    define WSTOPSIG(s)       ((s).w_stopsig)
 #  endif /* !WSTOPSIG */
 
 #  if !defined (WTERMSIG)
-#    define WTERMSIG(s)	      ((s).w_termsig)
+#    define WTERMSIG(s)       ((s).w_termsig)
 #  endif /* !WTERMSIG */
 
 #  if !defined (WEXITSTATUS)

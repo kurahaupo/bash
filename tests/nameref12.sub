@@ -62,20 +62,20 @@ declare -n foo ; declare -i foo ; foo=7*6 ; declare -p foo
 # used to be buggy
 f()
 {
-	unset var
-	declare -n ref=var
-	declare -n ref
-	declare -p ref
+        unset var
+        declare -n ref=var
+        declare -n ref
+        declare -p ref
 }
 f
 
 unset -f f
 f()
 {
-	local var
-	declare -n ref=var
-	declare -n ref
-	declare -p ref
+        local var
+        declare -n ref=var
+        declare -n ref
+        declare -p ref
 }
 f
 

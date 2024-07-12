@@ -3,7 +3,7 @@
 /* Copyright (C) 2022 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -37,19 +37,19 @@
 #endif
 
 #ifndef CTRL_CHAR
-#define CTRL_CHAR(c)	((c) < 0x20)
+#define CTRL_CHAR(c)    ((c) < 0x20)
 #endif
 
 #ifndef META_CHAR
-#define META_CHAR(c)	((c) > 0x7f && (c) <= UCHAR_MAX)
+#define META_CHAR(c)    ((c) > 0x7f && (c) <= UCHAR_MAX)
 #endif
 
 #ifndef UNCTRL
-#define UNCTRL(c)	(TOUPPER ((c) | 0x40))
+#define UNCTRL(c)       (TOUPPER ((c) | 0x40))
 #endif
 
 #ifndef UNMETA
-#define UNMETA(c)	((c) & 0x7f)
+#define UNMETA(c)       ((c) & 0x7f)
 #endif
 
 int
@@ -102,11 +102,11 @@ sh_charvis (const char *s, size_t *sindp, size_t slen, char *ret, size_t *rindp)
     }
   else
     ret[ri++] = s[si++];
-  
+
   *sindp = si;
   *rindp = ri;
 
-  return si;    
+  return si;
 }
 
 /* Return a new string with `unsafe' non-graphical characters in S rendered
@@ -125,7 +125,7 @@ sh_strvis (const char *string)
   if (*string == '\0')
     {
       if ((ret = (char *)malloc (1)) == 0)
-	return 0;
+        return 0;
       ret[0] = '\0';
       return ret;
     }

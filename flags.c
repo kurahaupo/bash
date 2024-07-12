@@ -37,9 +37,9 @@ extern int set_job_control (int);
 #endif
 
 /* **************************************************************** */
-/*								    */
-/*			The Standard sh Flags.			    */
-/*								    */
+/*                                                                  */
+/*                      The Standard sh Flags.                      */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Non-zero means automatically mark variables which are modified or created
@@ -102,9 +102,9 @@ int forced_interactive = 0;
 int no_symbolic_links = 0;
 
 /* **************************************************************** */
-/*								    */
-/*		     Non-Standard Flags Follow Here.		    */
-/*								    */
+/*                                                                  */
+/*                   Non-Standard Flags Follow Here.                */
+/*                                                                  */
 /* **************************************************************** */
 
 #if 0
@@ -130,8 +130,8 @@ int interactive_comments = 1;
    disallows: changing directories, command or path names containing `/',
    unsetting or resetting the values of $PATH and $SHELL, and any type of
    output redirection. */
-int restricted = 0;		/* currently restricted */
-int restricted_shell = 0;	/* shell was started in restricted mode. */
+int restricted = 0;             /* currently restricted */
+int restricted_shell = 0;       /* shell was started in restricted mode. */
 #endif /* RESTRICTED_SHELL */
 
 /* Non-zero means that this shell is running in `privileged' mode.  This
@@ -157,9 +157,9 @@ int error_trace_mode = 0;
 int pipefail_opt = 0;
 
 /* **************************************************************** */
-/*								    */
-/*			The Flags ALIST.			    */
-/*								    */
+/*                                                                  */
+/*                      The Flags ALIST.                            */
+/*                                                                  */
 /* **************************************************************** */
 
 const struct flags_alist shell_flags[] = {
@@ -214,7 +214,7 @@ find_flag (int name)
   for (i = 0; shell_flags[i].name; i++)
     {
       if (shell_flags[i].name == name)
-	return (shell_flags[i].value);
+        return (shell_flags[i].value);
     }
   return (FLAG_UNKNOWN);
 }
@@ -248,7 +248,7 @@ change_flag (int flag, int on_or_off)
     case 'H':
       history_expansion = histexp_flag;
       if (on_or_off == FLAG_ON)
-	bash_initialize_history ();
+        bash_initialize_history ();
       break;
 #endif
 
@@ -260,23 +260,23 @@ change_flag (int flag, int on_or_off)
 
     case 'e':
       if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
+        exit_immediately_on_error = errexit_flag;
       break;
 
     case 'n':
       if (interactive_shell)
-	read_but_dont_execute = 0;
+        read_but_dont_execute = 0;
       break;
 
     case 'p':
       if (on_or_off == FLAG_OFF)
-	disable_priv_mode ();
+        disable_priv_mode ();
       break;
 
 #if defined (RESTRICTED_SHELL)
     case 'r':
       if (on_or_off == FLAG_ON && shell_initialized)
-	maybe_make_restricted (shell_name);
+        maybe_make_restricted (shell_name);
       break;
 #endif
 

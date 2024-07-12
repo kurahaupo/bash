@@ -21,8 +21,8 @@ if cat << HERE
 contents
 HERE
 then
-	echo 1 2
-	echo 3 4
+        echo 1 2
+        echo 3 4
 fi
 }
 
@@ -35,8 +35,8 @@ while read var << HERE
 contents
 HERE
 do
-	echo 1 2
-	echo 3 4
+        echo 1 2
+        echo 3 4
 done
 }
 

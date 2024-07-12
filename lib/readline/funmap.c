@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ static const FUNMAP default_funmap[] = {
   { "vi-backward-bigword", rl_vi_bWord },
   { "vi-backward-word", rl_vi_bword },
   { "vi-bWord", rl_vi_bWord },
-  { "vi-bword", rl_vi_bword },	/* BEWARE: name matching is case insensitive */
+  { "vi-bword", rl_vi_bword },  /* BEWARE: name matching is case insensitive */
   { "vi-change-case", rl_vi_change_case },
   { "vi-change-char", rl_vi_change_char },
   { "vi-change-to", rl_vi_change_to },
@@ -171,13 +171,13 @@ static const FUNMAP default_funmap[] = {
   { "vi-end-bigword", rl_vi_eWord },
   { "vi-end-word", rl_vi_end_word },
   { "vi-eof-maybe", rl_vi_eof_maybe },
-  { "vi-eword", rl_vi_eword },	/* BEWARE: name matching is case insensitive */
+  { "vi-eword", rl_vi_eword },  /* BEWARE: name matching is case insensitive */
   { "vi-fWord", rl_vi_fWord },
   { "vi-fetch-history", rl_vi_fetch_history },
   { "vi-first-print", rl_vi_first_print },
   { "vi-forward-bigword", rl_vi_fWord },
   { "vi-forward-word", rl_vi_fword },
-  { "vi-fword", rl_vi_fword },	/* BEWARE: name matching is case insensitive */
+  { "vi-fword", rl_vi_fword },  /* BEWARE: name matching is case insensitive */
   { "vi-goto-mark", rl_vi_goto_mark },
   { "vi-insert-beg", rl_vi_insert_beg },
   { "vi-insertion-mode", rl_vi_insert_mode },
@@ -214,7 +214,7 @@ rl_add_funmap_entry (const char *name, rl_command_func_t *function)
       funmap_size += 64;
       funmap = (FUNMAP **)xrealloc (funmap, funmap_size * sizeof (FUNMAP *));
     }
-  
+
   funmap[funmap_entry] = (FUNMAP *)xmalloc (sizeof (FUNMAP));
   funmap[funmap_entry]->name = name;
   funmap[funmap_entry]->function = function;
@@ -256,10 +256,10 @@ rl_funmap_names (void)
   for (result_index = result_size = 0, result = (const char **)NULL; funmap[result_index]; result_index++)
     {
       if (result_index + 2 > result_size)
-	{
-	  result_size += 20;
-	  result = (const char **)xrealloc (result, result_size * sizeof (char *));
-	}
+        {
+          result_size += 20;
+          result = (const char **)xrealloc (result, result_size * sizeof (char *));
+        }
 
       result[result_index] = funmap[result_index]->name;
       result[result_index + 1] = (char *)NULL;

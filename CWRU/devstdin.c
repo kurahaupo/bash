@@ -12,27 +12,25 @@
 #endif
 
 main(c, v)
-int	c;
-char	**v;
+int     c;
+char    **v;
 {
-	struct stat 	sb;
-	int	r, fd;
-	char	fbuf[32];
+        struct stat     sb;
+        int     r, fd;
+        char    fbuf[32];
 
-	r = stat("/dev/fd", &sb);
-	/* test -d /dev/fd */
-	if (r == -1 || S_ISDIR (sb.st_mode) == 0)
-		exit (1);
-	/* test -r /dev/stdin < /dev/null */
-	fd = open("/dev/null", O_RDONLY, 0666);
-	if (fd == -1)
-		exit (2);
-	if (dup2(fd, 0) == -1)
-		exit (1);
-	r = access("/dev/stdin", R_OK);
-	if (r == -1)
-		exit (1);
-	exit (0);
+        r = stat("/dev/fd", &sb);
+        /* test -d /dev/fd */
+        if (r == -1 || S_ISDIR (sb.st_mode) == 0)
+                exit (1);
+        /* test -r /dev/stdin < /dev/null */
+        fd = open("/dev/null", O_RDONLY, 0666);
+        if (fd == -1)
+                exit (2);
+        if (dup2(fd, 0) == -1)
+                exit (1);
+        r = access("/dev/stdin", R_OK);
+        if (r == -1)
+                exit (1);
+        exit (0);
 }
-
-	

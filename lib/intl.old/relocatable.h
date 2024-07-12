@@ -41,7 +41,7 @@
    instead of "/").  */
 extern RELOCATABLE_DLL_EXPORTED void
        set_relocation_prefix (const char *orig_prefix,
-			      const char *curr_prefix);
+                              const char *curr_prefix);
 
 /* Returns the pathname, relocated according to the current installation
    directory.  */
@@ -56,8 +56,8 @@ extern const char * relocate (const char *pathname);
    installation prefix, the original installation directory of a particular
    file, and the current pathname of this file.  Returns NULL upon failure.  */
 extern const char * compute_curr_prefix (const char *orig_installprefix,
-					 const char *orig_installdir,
-					 const char *curr_pathname);
+                                         const char *orig_installdir,
+                                         const char *curr_pathname);
 
 #else
 

@@ -20,7 +20,7 @@ set -o histexpand
 echo one
 
 for f in a b c; do
-	echo !!
+        echo !!
 done
 
 history
@@ -28,7 +28,7 @@ history -c
 
 echo two
 for f in a b c; do
-	echo !-1
+        echo !-1
 done
 
 history

@@ -47,7 +47,7 @@ sync_builtin (WORD_LIST *list)
   list = loptend;
 
   if (list == 0)
-    {  
+    {
       sync();
       return (EXECUTION_SUCCESS);
     }
@@ -58,20 +58,20 @@ sync_builtin (WORD_LIST *list)
       fn = l->word->word;
       fd = open (fn, O_WRONLY);
       if (fd < 0)
-	fd = open (fn, O_RDONLY);
+        fd = open (fn, O_RDONLY);
 
       if (fd < 0)
-	{
-	  file_error (fn);
-	  status = EXECUTION_FAILURE;
-	  continue;
-	}
+        {
+          file_error (fn);
+          status = EXECUTION_FAILURE;
+          continue;
+        }
 
       if (fsync (fd) < 0)
-	{
-	  builtin_error ("%s: cannot sync: %s", fn, strerror (errno));
-	  status = EXECUTION_FAILURE;
-	}
+        {
+          builtin_error ("%s: cannot sync: %s", fn, strerror (errno));
+          status = EXECUTION_FAILURE;
+        }
       close (fd);
     }
 
@@ -79,21 +79,21 @@ sync_builtin (WORD_LIST *list)
 }
 
 char *sync_doc[] = {
-	"Sync disks or specified files.",
-	"",
-	"If one or more FILEs is supplied, force completion of pending writes",
-	"to those files. Otherwise, force completion of any pending disk",
-	"writes.",
-	"",
-	"Exit Status: zero unless any FILE could not be synced.",
-	(char *)NULL
+        "Sync disks or specified files.",
+        "",
+        "If one or more FILEs is supplied, force completion of pending writes",
+        "to those files. Otherwise, force completion of any pending disk",
+        "writes.",
+        "",
+        "Exit Status: zero unless any FILE could not be synced.",
+        (char *)NULL
 };
 
 struct builtin sync_struct = {
-	"sync",			/* builtin name */
-	sync_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	sync_doc,		/* array of long documentation strings. */
-	"sync [file ...]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "sync",                 /* builtin name */
+        sync_builtin,           /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        sync_doc,               /* array of long documentation strings. */
+        "sync [file ...]",      /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

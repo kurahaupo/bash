@@ -3,7 +3,7 @@
 /* Copyright (C) 1991, 1992, 2022-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -61,8 +61,8 @@ strtod (const char *nptr, char **endptr)
   double num;
 
   int radixchar;
-  int got_dot;			/* Found a decimal point.  */
-  int got_digit;		/* Seen any digits.  */
+  int got_dot;                  /* Found a decimal point.  */
+  int got_digit;                /* Seen any digits.  */
 
   /* The exponent of the number.  */
   long int exponent;
@@ -92,33 +92,33 @@ strtod (const char *nptr, char **endptr)
   for (;; ++s)
     {
       if (DIGIT (*s))
-	{
-	  got_digit = 1;
+        {
+          got_digit = 1;
 
-	  /* Make sure that multiplication by 10 will not overflow.  */
-	  if (num > DBL_MAX * 0.1)
-	    /* The value of the digit doesn't matter, since we have already
-	       gotten as many digits as can be represented in a `double'.
-	       This doesn't necessarily mean the result will overflow.
-	       The exponent may reduce it to within range.
+          /* Make sure that multiplication by 10 will not overflow.  */
+          if (num > DBL_MAX * 0.1)
+            /* The value of the digit doesn't matter, since we have already
+               gotten as many digits as can be represented in a `double'.
+               This doesn't necessarily mean the result will overflow.
+               The exponent may reduce it to within range.
 
-	       We just need to record that there was another
-	       digit so that we can multiply by 10 later.  */
-	    ++exponent;
-	  else
-	    num = (num * 10.0) + (*s - '0');
+               We just need to record that there was another
+               digit so that we can multiply by 10 later.  */
+            ++exponent;
+          else
+            num = (num * 10.0) + (*s - '0');
 
-	  /* Keep track of the number of digits after the decimal point.
-	     If we just divided by 10 here, we would lose precision.  */
-	  if (got_dot)
-	    --exponent;
-	}
+          /* Keep track of the number of digits after the decimal point.
+             If we just divided by 10 here, we would lose precision.  */
+          if (got_dot)
+            --exponent;
+        }
       else if (!got_dot && *s == radixchar)
-	/* Record that we have found the decimal point.  */
-	got_dot = 1;
+        /* Record that we have found the decimal point.  */
+        got_dot = 1;
       else
-	/* Any other character terminates the number.  */
-	break;
+        /* Any other character terminates the number.  */
+        break;
     }
 
   if (!got_digit)
@@ -135,21 +135,21 @@ strtod (const char *nptr, char **endptr)
       ++s;
       exp = strtol (s, &end, 10);
       if (errno == ERANGE)
-	{
-	  /* The exponent overflowed a `long int'.  It is probably a safe
-	     assumption that an exponent that cannot be represented by
-	     a `long int' exceeds the limits of a `double'.  */
-	  if (endptr != NULL)
-	    *endptr = end;
-	  if (exp < 0)
-	    goto underflow;
-	  else
-	    goto overflow;
-	}
+        {
+          /* The exponent overflowed a `long int'.  It is probably a safe
+             assumption that an exponent that cannot be represented by
+             a `long int' exceeds the limits of a `double'.  */
+          if (endptr != NULL)
+            *endptr = end;
+          if (exp < 0)
+            goto underflow;
+          else
+            goto overflow;
+        }
       else if (end == s)
-	/* There was no exponent.  Reset END to point to
-	   the 'e' or 'E', so *ENDPTR will be set there.  */
-	end = (char *) s - 1;
+        /* There was no exponent.  Reset END to point to
+           the 'e' or 'E', so *ENDPTR will be set there.  */
+        end = (char *) s - 1;
       errno = save;
       s = end;
       exponent += exp;
@@ -167,12 +167,12 @@ strtod (const char *nptr, char **endptr)
   if (exponent < 0)
     {
       if (num < DBL_MIN * pow (10.0, (double) -exponent))
-	goto underflow;
+        goto underflow;
     }
   else if (exponent > 0)
     {
       if (num > DBL_MAX * pow (10.0, (double) -exponent))
-	goto overflow;
+        goto overflow;
     }
 
   num *= pow (10.0, (double) exponent);

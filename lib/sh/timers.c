@@ -106,7 +106,7 @@ shtimer_set (sh_timer *t, time_t sec, long usec)
 
   if (t->flags & SHTIMER_ALARM)
     {
-      t->alrmflag = 0;		/* just paranoia */
+      t->alrmflag = 0;          /* just paranoia */
       t->old_handler = set_signal_handler (SIGALRM, t->alrm_handler);
       t->flags |= SHTIMER_SIGSET;
       falarm (t->tmout.tv_sec = sec, t->tmout.tv_usec = usec);
@@ -136,13 +136,13 @@ shtimer_unset (sh_timer *t)
     {
       t->alrmflag = 0;
       if (t->flags & SHTIMER_ALRMSET)
-	falarm (0, 0);
+        falarm (0, 0);
       if (t->old_handler && (t->flags & SHTIMER_SIGSET))
-	{
-	  set_signal_handler (SIGALRM, t->old_handler);
-	  t->flags &= ~SHTIMER_SIGSET;
-	  t->old_handler = 0;
-	}
+        {
+          set_signal_handler (SIGALRM, t->old_handler);
+          t->flags &= ~SHTIMER_SIGSET;
+          t->old_handler = 0;
+        }
     }
 }
 
@@ -176,7 +176,7 @@ shtimer_chktimeout (sh_timer *t)
   if (gettimeofday (&now, 0) < 0)
     return 0;
   r = ((now.tv_sec > t->tmout.tv_sec) ||
-	(now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec));
+        (now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec));
 
   return r;
 }
@@ -202,21 +202,21 @@ shtimer_select (sh_timer *t)
   if (gettimeofday (&now, 0) < 0)
     {
       if (t->flags & SHTIMER_LONGJMP)
-	sh_longjmp (t->jmpenv, 1);
+        sh_longjmp (t->jmpenv, 1);
       else
-	return -1;
+        return -1;
     }
 
-  /* If the timer has already expired, return immediately */    
+  /* If the timer has already expired, return immediately */
   if ((now.tv_sec > t->tmout.tv_sec) ||
-	(now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec))
+        (now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec))
     {
       if (t->flags & SHTIMER_LONGJMP)
-	sh_longjmp (t->jmpenv, 1);
+        sh_longjmp (t->jmpenv, 1);
       else if (t->tm_handler)
-	return ((*t->tm_handler) (t));
+        return ((*t->tm_handler) (t));
       else
-	return 0;
+        return 0;
     }
 
   /* compute timeout */
@@ -249,7 +249,7 @@ shtimer_select (sh_timer *t)
 #endif
 
   if (r < 0)
-    return r;		/* caller will handle */
+    return r;           /* caller will handle */
   else if (r == 0 && (t->flags & SHTIMER_LONGJMP))
     sh_longjmp (t->jmpenv, 1);
   else if (r == 0 && t->tm_handler)

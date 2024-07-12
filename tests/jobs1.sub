@@ -23,7 +23,7 @@ pid2=$(< $FN)
 rm $FN
 
 if [ $pid1 -ne $pid2 ]; then
-	echo 'oops - $! and jobs -p %+ disagree!'
+        echo 'oops - $! and jobs -p %+ disagree!'
 fi
 
 exec 2>/dev/null

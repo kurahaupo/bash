@@ -23,7 +23,7 @@ export PATH
 command -p sh -c 'echo $PATH'
 
 PATH=${TMPDIR}
-command -pv cat	>/dev/null || echo "cannot find cat using standard path"
+command -pv cat >/dev/null || echo "cannot find cat using standard path"
 command -p cat < /dev/null
 #hash
 

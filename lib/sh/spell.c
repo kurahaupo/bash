@@ -50,13 +50,13 @@ static int spdist (char *, char *);
  */
 
 /*
- *	`spname' -- return a correctly spelled filename
+ *      `spname' -- return a correctly spelled filename
  *
- *	int spname(char * oldname, char * newname)
- *	Returns:  -1 if no reasonable match found
- *		   0 if exact match found
- *		   1 if corrected
- *	Stores corrected name in `newname'.
+ *      int spname(char * oldname, char * newname)
+ *      Returns:  -1 if no reasonable match found
+ *                 0 if exact match found
+ *                 1 if corrected
+ *      Stores corrected name in `newname'.
  */
 int
 spname(char *oldname, char *newname)
@@ -69,32 +69,32 @@ spname(char *oldname, char *newname)
   for (;;)
     {
       while (*op == '/')    /* Skip slashes */
-	*np++ = *op++;
+        *np++ = *op++;
       *np = '\0';
 
       if (*op == '\0')    /* Exact or corrected */
-	{
-	  /* `.' is rarely the right thing. */
-	  if (oldname[1] == '\0' && newname[1] == '\0' &&
-		oldname[0] != '.' && newname[0] == '.')
-	    return -1;
-	  return strcmp(oldname, newname) != 0;
-	}
+        {
+          /* `.' is rarely the right thing. */
+          if (oldname[1] == '\0' && newname[1] == '\0' &&
+                oldname[0] != '.' && newname[0] == '.')
+            return -1;
+          return strcmp(oldname, newname) != 0;
+        }
 
       /* Copy next component into guess */
       for (p = guess; *op != '/' && *op != '\0'; op++)
-	if (p < guess + PATH_MAX)
-	  *p++ = *op;
+        if (p < guess + PATH_MAX)
+          *p++ = *op;
       *p = '\0';
 
       if (mindist(newname, guess, best) >= 3)
-	return -1;  /* Hopeless */
+        return -1;  /* Hopeless */
 
       /*
        *  Add to end of newname
        */
       for (p = best; *np = *p++; np++)
-	;
+        ;
     }
 }
 
@@ -125,12 +125,12 @@ mindist(const char *dir, char *guess, char *best)
        */
       x = spdist(dp->d_name, guess);
       if (x <= dist && x != 3)
-	{
-	  strcpy(best, dp->d_name);
-	  dist = x;
-	  if (dist == 0)    /* Exact match */
-	    break;
-	}
+        {
+          strcpy(best, dp->d_name);
+          dist = x;
+          if (dist == 0)    /* Exact match */
+            break;
+        }
     }
   (void)closedir(fd);
 
@@ -155,7 +155,7 @@ spdist(char *cur, char *new)
   while (*cur == *new)
     {
       if (*cur == '\0')
-	return 0;    /* Exact match */
+        return 0;    /* Exact match */
       cur++;
       new++;
     }
@@ -163,16 +163,16 @@ spdist(char *cur, char *new)
   if (*cur)
     {
       if (*new)
-	{
-	  if (cur[1] && new[1] && cur[0] == new[1] && cur[1] == new[0] && strcmp (cur + 2, new + 2) == 0)
-	    return 1;  /* Transposition */
+        {
+          if (cur[1] && new[1] && cur[0] == new[1] && cur[1] == new[0] && strcmp (cur + 2, new + 2) == 0)
+            return 1;  /* Transposition */
 
-	  if (strcmp (cur + 1, new + 1) == 0)
-	    return 2;  /* One character mismatch */
-	}
+          if (strcmp (cur + 1, new + 1) == 0)
+            return 2;  /* One character mismatch */
+        }
 
       if (strcmp(&cur[1], &new[0]) == 0)
-	return 2;    /* Extra character */
+        return 2;    /* Extra character */
     }
 
   if (*new && strcmp(cur, new + 1) == 0)

@@ -29,12 +29,12 @@ f 'x[$(echo 0)]'
 unset -f f
 f()
 {
-	typeset -n foo="$1";
+        typeset -n foo="$1";
 
-	echo "x[i=0$(echo comsub >&2)]"
-	echo "${x[i=0$(echo comsub >&2)]}"
-	echo "${!1}"
-	echo "$foo"
+        echo "x[i=0$(echo comsub >&2)]"
+        echo "${x[i=0$(echo comsub >&2)]}"
+        echo "${!1}"
+        echo "$foo"
 }
 
 f 'x[i=0$(echo comsub >&2)]'
@@ -47,11 +47,11 @@ unset x
 
 typeset -n foo=somevariable
 foo=bar
-unset foo		# unsets somevariable
+unset foo               # unsets somevariable
 typeset -p foo somevariable
 echo foo = $foo
 
-typeset -A foo		# should create array variable named somevariable
+typeset -A foo          # should create array variable named somevariable
 foo["jug"]="brown"
 
 typeset -p foo somevariable

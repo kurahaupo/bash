@@ -33,7 +33,7 @@ A trailing space in VALUE causes the next word to be checked for
 alias substitution when the alias is expanded.
 
 Options:
-  -p	print all defined aliases in a reusable format
+  -p    print all defined aliases in a reusable format
 
 Exit Status:
 alias returns true unless a NAME is supplied for which no alias has been
@@ -61,7 +61,7 @@ $END
 #  include "bashgetopt.h"
 
 /* Flags for print_alias */
-#define AL_REUSABLE	0x01
+#define AL_REUSABLE     0x01
 
 static int print_alias (alias_t *, int);
 
@@ -79,16 +79,16 @@ alias_builtin (WORD_LIST *list)
   while ((offset = internal_getopt (list, "p")) != -1)
     {
       switch (offset)
-	{
-	case 'p':
-	  pflag = 1;
-	  dflags |= AL_REUSABLE;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'p':
+          pflag = 1;
+          dflags |= AL_REUSABLE;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   list = loptend;
@@ -96,19 +96,19 @@ alias_builtin (WORD_LIST *list)
   if (list == 0 || pflag)
     {
       if (aliases == 0)
-	return (EXECUTION_SUCCESS);
+        return (EXECUTION_SUCCESS);
 
       alias_list = all_aliases ();
 
       if (alias_list == 0)
-	return (EXECUTION_SUCCESS);
+        return (EXECUTION_SUCCESS);
 
       any_failed = EXECUTION_SUCCESS;
       for (offset = 0; alias_list[offset]; offset++)
-	if (any_failed = print_alias (alias_list[offset], dflags) != EXECUTION_SUCCESS)
-	  break;
+        if (any_failed = print_alias (alias_list[offset], dflags) != EXECUTION_SUCCESS)
+          break;
 
-      free (alias_list);	/* XXX - Do not free the strings. */
+      free (alias_list);        /* XXX - Do not free the strings. */
 
       return (any_failed != EXECUTION_SUCCESS ? EXECUTION_FAILURE : sh_chkwrite (EXECUTION_SUCCESS));
     }
@@ -119,35 +119,35 @@ alias_builtin (WORD_LIST *list)
       name = list->word->word;
 
       for (offset = 0; name[offset] && name[offset] != '='; offset++)
-	;
+        ;
 
       if (offset && name[offset] == '=')
-	{
-	  name[offset] = '\0';
-	  value = name + offset + 1;
+        {
+          name[offset] = '\0';
+          value = name + offset + 1;
 
-	  if (valid_alias_name (name, 0) == 0)
-	    {
-	      builtin_error (_("`%s': invalid alias name"), name);
-	      any_failed++;
-	    }
-	  else
-	    add_alias (name, value);
-	}
+          if (valid_alias_name (name, 0) == 0)
+            {
+              builtin_error (_("`%s': invalid alias name"), name);
+              any_failed++;
+            }
+          else
+            add_alias (name, value);
+        }
       else
-	{
-	  t = find_alias (name);
-	  if (t)
-	    {
-	      if (print_alias (t, dflags) != EXECUTION_SUCCESS)
-		return (EXECUTION_FAILURE);
-	    }
-	  else
-	    {
-	      sh_notfound (name);
-	      any_failed++;
-	    }
-	}
+        {
+          t = find_alias (name);
+          if (t)
+            {
+              if (print_alias (t, dflags) != EXECUTION_SUCCESS)
+                return (EXECUTION_FAILURE);
+            }
+          else
+            {
+              sh_notfound (name);
+              any_failed++;
+            }
+        }
       list = list->next;
     }
 
@@ -162,7 +162,7 @@ $SHORT_DOC unalias [-a] name [name ...]
 Remove each NAME from the list of defined aliases.
 
 Options:
-  -a	remove all alias definitions
+  -a    remove all alias definitions
 
 Return success unless a NAME is not an existing alias.
 $END
@@ -180,15 +180,15 @@ unalias_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "a")) != -1)
     {
       switch (opt)
-	{
-	case 'a':
-	  aflag = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'a':
+          aflag = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   list = loptend;
@@ -209,10 +209,10 @@ unalias_builtin (WORD_LIST *list)
   while (list)
     {
       if (remove_alias (list->word->word) < 0)
-	{
-	  sh_notfound (list->word->word);
-	  aflag++;
-	}
+        {
+          sh_notfound (list->word->word);
+          aflag++;
+        }
 
       list = list->next;
     }

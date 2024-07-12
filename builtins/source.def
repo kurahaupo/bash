@@ -106,9 +106,9 @@ uw_maybe_pop_dollar_vars (void *ignore)
   else
     pop_dollar_vars ();
   if (debugging_mode)
-    pop_args ();	/* restore BASH_ARGC and BASH_ARGV */
+    pop_args ();        /* restore BASH_ARGC and BASH_ARGV */
   set_dollar_vars_unchanged ();
-  invalidate_cached_quoted_dollar_at ();	/* just invalidate to be safe */
+  invalidate_cached_quoted_dollar_at ();        /* just invalidate to be safe */
 }
 
 /* Read and execute commands from the file passed as argument.  Guess what.
@@ -128,12 +128,12 @@ source_builtin (WORD_LIST *list)
     switch (opt)
       {
       case 'p':
-	pathstring = list_optarg;
-	break;
+        pathstring = list_optarg;
+        break;
       CASE_HELPOPT;
       default:
-	builtin_usage ();
-	return (EX_USAGE);
+        builtin_usage ();
+        return (EX_USAGE);
       }
     }
   list = loptend;
@@ -174,20 +174,20 @@ source_builtin (WORD_LIST *list)
   if (filename == 0)
     {
       if (search_cwd == 0)
-	{
-	  x = printable_filename (list->word->word, 0);
-	  builtin_error (_("%s: file not found"), x);
-	  if (x != list->word->word)
-	    free (x);
-	  if (posixly_correct && interactive_shell == 0 && executing_command_builtin == 0)
-	    {
-	      last_command_exit_value = EXECUTION_FAILURE;
-	      jump_to_top_level (EXITPROG);
-	    }
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          x = printable_filename (list->word->word, 0);
+          builtin_error (_("%s: file not found"), x);
+          if (x != list->word->word)
+            free (x);
+          if (posixly_correct && interactive_shell == 0 && executing_command_builtin == 0)
+            {
+              last_command_exit_value = EXECUTION_FAILURE;
+              jump_to_top_level (EXITPROG);
+            }
+          return (EXECUTION_FAILURE);
+        }
       else
-	filename = savestring (list->word->word);
+        filename = savestring (list->word->word);
     }
 
   begin_unwind_frame ("source");
@@ -198,10 +198,10 @@ source_builtin (WORD_LIST *list)
       push_dollar_vars ();
       add_unwind_protect (uw_maybe_pop_dollar_vars, NULL);
       if (debugging_mode || shell_compatibility_level <= 44)
-	init_bash_argv ();	/* Initialize BASH_ARGV and BASH_ARGC */
+        init_bash_argv ();      /* Initialize BASH_ARGV and BASH_ARGC */
       remember_args (list->next, 1);
       if (debugging_mode)
-	push_args (list->next);	/* Update BASH_ARGV and BASH_ARGC */
+        push_args (list->next); /* Update BASH_ARGV and BASH_ARGC */
     }
   set_dollar_vars_unchanged ();
 

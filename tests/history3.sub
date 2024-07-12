@@ -24,7 +24,7 @@ echo c
 echo d
 echo e
 
-history ; echo 
+history ; echo
 
 history -d 2-4
 

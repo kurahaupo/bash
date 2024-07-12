@@ -77,31 +77,31 @@
    systems claiming Posix compatibility define some but not all). */
 
 #if defined (S_IFBLK) && !defined (S_ISBLK)
-#define	S_ISBLK(m)	(((m)&S_IFMT) == S_IFBLK)	/* block device */
+#define S_ISBLK(m)      (((m)&S_IFMT) == S_IFBLK)       /* block device */
 #endif
 
 #if defined (S_IFCHR) && !defined (S_ISCHR)
-#define	S_ISCHR(m)	(((m)&S_IFMT) == S_IFCHR)	/* character device */
+#define S_ISCHR(m)      (((m)&S_IFMT) == S_IFCHR)       /* character device */
 #endif
 
 #if defined (S_IFDIR) && !defined (S_ISDIR)
-#define	S_ISDIR(m)	(((m)&S_IFMT) == S_IFDIR)	/* directory */
+#define S_ISDIR(m)      (((m)&S_IFMT) == S_IFDIR)       /* directory */
 #endif
 
 #if defined (S_IFREG) && !defined (S_ISREG)
-#define	S_ISREG(m)	(((m)&S_IFMT) == S_IFREG)	/* file */
+#define S_ISREG(m)      (((m)&S_IFMT) == S_IFREG)       /* file */
 #endif
 
 #if defined (S_IFIFO) && !defined (S_ISFIFO)
-#define	S_ISFIFO(m)	(((m)&S_IFMT) == S_IFIFO)	/* fifo - named pipe */
+#define S_ISFIFO(m)     (((m)&S_IFMT) == S_IFIFO)       /* fifo - named pipe */
 #endif
 
 #if defined (S_IFLNK) && !defined (S_ISLNK)
-#define	S_ISLNK(m)	(((m)&S_IFMT) == S_IFLNK)	/* symbolic link */
+#define S_ISLNK(m)      (((m)&S_IFMT) == S_IFLNK)       /* symbolic link */
 #endif
 
 #if defined (S_IFSOCK) && !defined (S_ISSOCK)
-#define	S_ISSOCK(m)	(((m)&S_IFMT) == S_IFSOCK)	/* socket */
+#define S_ISSOCK(m)     (((m)&S_IFMT) == S_IFSOCK)      /* socket */
 #endif
 
 /*
@@ -110,53 +110,53 @@
 
 #if !defined (S_IRWXU)
 #  if !defined (S_IREAD)
-#    define S_IREAD	00400
-#    define S_IWRITE	00200
-#    define S_IEXEC	00100
+#    define S_IREAD     00400
+#    define S_IWRITE    00200
+#    define S_IEXEC     00100
 #  endif /* S_IREAD */
 
 #  if !defined (S_IRUSR)
-#    define S_IRUSR	S_IREAD			/* read, owner */
-#    define S_IWUSR	S_IWRITE		/* write, owner */
-#    define S_IXUSR	S_IEXEC			/* execute, owner */
+#    define S_IRUSR     S_IREAD                 /* read, owner */
+#    define S_IWUSR     S_IWRITE                /* write, owner */
+#    define S_IXUSR     S_IEXEC                 /* execute, owner */
 
-#    define S_IRGRP	(S_IREAD  >> 3)		/* read, group */
-#    define S_IWGRP	(S_IWRITE >> 3)		/* write, group */
-#    define S_IXGRP	(S_IEXEC  >> 3)		/* execute, group */
+#    define S_IRGRP     (S_IREAD  >> 3)         /* read, group */
+#    define S_IWGRP     (S_IWRITE >> 3)         /* write, group */
+#    define S_IXGRP     (S_IEXEC  >> 3)         /* execute, group */
 
-#    define S_IROTH	(S_IREAD  >> 6)		/* read, other */
-#    define S_IWOTH	(S_IWRITE >> 6)		/* write, other */
-#    define S_IXOTH	(S_IEXEC  >> 6)		/* execute, other */
+#    define S_IROTH     (S_IREAD  >> 6)         /* read, other */
+#    define S_IWOTH     (S_IWRITE >> 6)         /* write, other */
+#    define S_IXOTH     (S_IEXEC  >> 6)         /* execute, other */
 #  endif /* !S_IRUSR */
 
-#  define S_IRWXU	(S_IRUSR | S_IWUSR | S_IXUSR)
-#  define S_IRWXG	(S_IRGRP | S_IWGRP | S_IXGRP)
-#  define S_IRWXO	(S_IROTH | S_IWOTH | S_IXOTH)
+#  define S_IRWXU       (S_IRUSR | S_IWUSR | S_IXUSR)
+#  define S_IRWXG       (S_IRGRP | S_IWGRP | S_IXGRP)
+#  define S_IRWXO       (S_IROTH | S_IWOTH | S_IXOTH)
 #else /* !S_IRWXU */
   /* S_IRWXU is defined, but "group" and "other" bits might not be
      (happens in certain versions of MinGW).  */
 #  if !defined (S_IRGRP)
-#    define S_IRGRP	(S_IREAD  >> 3)		/* read, group */
-#    define S_IWGRP	(S_IWRITE >> 3)		/* write, group */
-#    define S_IXGRP	(S_IEXEC  >> 3)		/* execute, group */
+#    define S_IRGRP     (S_IREAD  >> 3)         /* read, group */
+#    define S_IWGRP     (S_IWRITE >> 3)         /* write, group */
+#    define S_IXGRP     (S_IEXEC  >> 3)         /* execute, group */
 #  endif /* !S_IRGRP */
 
 #  if !defined (S_IROTH)
-#    define S_IROTH	(S_IREAD  >> 6)		/* read, other */
-#    define S_IWOTH	(S_IWRITE >> 6)		/* write, other */
-#    define S_IXOTH	(S_IEXEC  >> 6)		/* execute, other */
+#    define S_IROTH     (S_IREAD  >> 6)         /* read, other */
+#    define S_IWOTH     (S_IWRITE >> 6)         /* write, other */
+#    define S_IXOTH     (S_IEXEC  >> 6)         /* execute, other */
 #  endif /* !S_IROTH */
 #  if !defined (S_IRWXG)
-#    define S_IRWXG	(S_IRGRP | S_IWGRP | S_IXGRP)
+#    define S_IRWXG     (S_IRGRP | S_IWGRP | S_IXGRP)
 #  endif
 #  if !defined (S_IRWXO)
-#    define S_IRWXO	(S_IROTH | S_IWOTH | S_IXOTH)
+#    define S_IRWXO     (S_IROTH | S_IWOTH | S_IXOTH)
 #  endif
 #endif /* !S_IRWXU */
 
 /* These are non-standard, but are used in builtins.c$symbolic_umask() */
-#define S_IRUGO		(S_IRUSR | S_IRGRP | S_IROTH)
-#define S_IWUGO		(S_IWUSR | S_IWGRP | S_IWOTH)
-#define S_IXUGO		(S_IXUSR | S_IXGRP | S_IXOTH)
+#define S_IRUGO         (S_IRUSR | S_IRGRP | S_IROTH)
+#define S_IWUGO         (S_IWUSR | S_IWGRP | S_IWOTH)
+#define S_IXUGO         (S_IXUSR | S_IXGRP | S_IXOTH)
 
 #endif /* _POSIXSTAT_H_ */

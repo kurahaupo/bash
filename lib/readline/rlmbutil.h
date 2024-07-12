@@ -3,7 +3,7 @@
 /* Copyright (C) 2001-2024 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@
 #  define WCHAR_T char32_t
 #  define MBRTOWC mbrtoc32
 #  define WCRTOMB c32rtomb
-#else	/* normal systems */
+#else   /* normal systems */
 #  define WCHAR_T wchar_t
 #  define MBRTOWC mbrtowc
 #  define WCRTOMB wcrtomb
@@ -97,12 +97,12 @@
 /*
  * Flags for _rl_find_prev_mbchar and _rl_find_next_mbchar:
  *
- * MB_FIND_ANY		find any multibyte character
- * MB_FIND_NONZERO	find a non-zero-width multibyte character
+ * MB_FIND_ANY          find any multibyte character
+ * MB_FIND_NONZERO      find a non-zero-width multibyte character
  */
 
-#define MB_FIND_ANY	0x00
-#define MB_FIND_NONZERO	0x01
+#define MB_FIND_ANY     0x00
+#define MB_FIND_NONZERO 0x01
 
 extern int _rl_find_prev_mbchar (const char *, int, int);
 extern int _rl_find_next_mbchar (const char *, int, int, int);
@@ -124,20 +124,20 @@ extern int _rl_walphabetic (WCHAR_T);
 extern int _rl_mb_strcaseeqn (const char *, size_t, const char *, size_t, size_t, int);
 extern int _rl_mb_charcasecmp (const char *, mbstate_t *, const char *, mbstate_t *, int);
 
-#define _rl_to_wupper(wc)	(iswlower (wc) ? towupper (wc) : (wc))
-#define _rl_to_wlower(wc)	(iswupper (wc) ? towlower (wc) : (wc))
+#define _rl_to_wupper(wc)       (iswlower (wc) ? towupper (wc) : (wc))
+#define _rl_to_wlower(wc)       (iswupper (wc) ? towlower (wc) : (wc))
 
 #define MB_NEXTCHAR(b,s,c,f) \
-	((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
-		? _rl_find_next_mbchar ((b), (s), (c), (f)) \
-		: ((s) + (c)))
+        ((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
+                ? _rl_find_next_mbchar ((b), (s), (c), (f)) \
+                : ((s) + (c)))
 #define MB_PREVCHAR(b,s,f) \
-	((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
-		? _rl_find_prev_mbchar ((b), (s), (f)) \
-		: ((s) - 1))
+        ((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
+                ? _rl_find_prev_mbchar ((b), (s), (f)) \
+                : ((s) - 1))
 
-#define MB_INVALIDCH(x)		((x) == (size_t)-1 || (x) == (size_t)-2)
-#define MB_NULLWCH(x)		((x) == 0)
+#define MB_INVALIDCH(x)         ((x) == (size_t)-1 || (x) == (size_t)-2)
+#define MB_NULLWCH(x)           ((x) == 0)
 
 /* Try and shortcut the printable ascii characters to cut down the number of
    calls to a libc wcwidth() */
@@ -174,55 +174,55 @@ _rl_wcwidth (WCHAR_T wc)
 
 /* Unicode combining characters as of version 15.1 */
 #define UNICODE_COMBINING_CHAR(x) \
-	(((x) >= 0x0300 && (x) <= 0x036F) || \
-	 ((x) >= 0x1AB0 && (x) <= 0x1AFF) || \
-	 ((x) >= 0x1DC0 && (x) <= 0x1DFF) || \
-	 ((x) >= 0x20D0 && (x) <= 0x20FF) || \
-	 ((x) >= 0xFE20 && (x) <= 0xFE2F))
+        (((x) >= 0x0300 && (x) <= 0x036F) || \
+         ((x) >= 0x1AB0 && (x) <= 0x1AFF) || \
+         ((x) >= 0x1DC0 && (x) <= 0x1DFF) || \
+         ((x) >= 0x20D0 && (x) <= 0x20FF) || \
+         ((x) >= 0xFE20 && (x) <= 0xFE2F))
 
 #if defined (WCWIDTH_BROKEN)
-#  define WCWIDTH(wc)	((_rl_utf8locale && UNICODE_COMBINING_CHAR((int)wc)) ? 0 : _rl_wcwidth(wc))
+#  define WCWIDTH(wc)   ((_rl_utf8locale && UNICODE_COMBINING_CHAR((int)wc)) ? 0 : _rl_wcwidth(wc))
 #else
-#  define WCWIDTH(wc)	_rl_wcwidth(wc)
+#  define WCWIDTH(wc)   _rl_wcwidth(wc)
 #endif
 
 #if defined (WCWIDTH_BROKEN)
-#  define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0 && iswcntrl(x) == 0)
+#  define IS_COMBINING_CHAR(x)  (WCWIDTH(x) == 0 && iswcntrl(x) == 0)
 #else
-#  define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0)
+#  define IS_COMBINING_CHAR(x)  (WCWIDTH(x) == 0)
 #endif
 
-#define IS_BASE_CHAR(x)		(iswgraph(x) && WCWIDTH(x) > 0)
+#define IS_BASE_CHAR(x)         (iswgraph(x) && WCWIDTH(x) > 0)
 
-#define UTF8_SINGLEBYTE(c)	(((c) & 0x80) == 0)
-#define UTF8_MBFIRSTCHAR(c)	(((c) & 0xc0) == 0xc0)
-#define UTF8_MBCHAR(c)		(((c) & 0xc0) == 0x80)
+#define UTF8_SINGLEBYTE(c)      (((c) & 0x80) == 0)
+#define UTF8_MBFIRSTCHAR(c)     (((c) & 0xc0) == 0xc0)
+#define UTF8_MBCHAR(c)          (((c) & 0xc0) == 0x80)
 
 #else /* !HANDLE_MULTIBYTE */
 
 #undef MB_LEN_MAX
 #undef MB_CUR_MAX
 
-#define MB_LEN_MAX	1
-#define MB_CUR_MAX	1
+#define MB_LEN_MAX      1
+#define MB_CUR_MAX      1
 
-#define _rl_find_prev_mbchar(b, i, f)		(((i) == 0) ? (i) : ((i) - 1))
-#define _rl_find_next_mbchar(b, i1, i2, f)	((i1) + (i2))
+#define _rl_find_prev_mbchar(b, i, f)           (((i) == 0) ? (i) : ((i) - 1))
+#define _rl_find_next_mbchar(b, i1, i2, f)      ((i1) + (i2))
 
-#define _rl_char_value(buf,ind)	((buf)[(ind)])
+#define _rl_char_value(buf,ind) ((buf)[(ind)])
 
-#define _rl_walphabetic(c)	(rl_alphabetic (c))
+#define _rl_walphabetic(c)      (rl_alphabetic (c))
 
-#define _rl_to_wupper(c)	(_rl_to_upper (c))
-#define _rl_to_wlower(c)	(_rl_to_lower (c))
+#define _rl_to_wupper(c)        (_rl_to_upper (c))
+#define _rl_to_wlower(c)        (_rl_to_lower (c))
 
-#define MB_NEXTCHAR(b,s,c,f)	((s) + (c))
-#define MB_PREVCHAR(b,s,f)	((s) - 1)
+#define MB_NEXTCHAR(b,s,c,f)    ((s) + (c))
+#define MB_PREVCHAR(b,s,f)      ((s) - 1)
 
-#define MB_INVALIDCH(x)		(0)
-#define MB_NULLWCH(x)		(0)
+#define MB_INVALIDCH(x)         (0)
+#define MB_NULLWCH(x)           (0)
 
-#define UTF8_SINGLEBYTE(c)	(1)
+#define UTF8_SINGLEBYTE(c)      (1)
 
 #if !defined (HAVE_WCHAR_T) && !defined (wchar_t)
 #  define wchar_t int

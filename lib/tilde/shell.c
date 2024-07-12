@@ -1,5 +1,5 @@
 /* shell.c -- tilde utility functions that are normally provided by
-	      bash when readline is linked as part of the shell. */
+              bash when readline is linked as part of the shell. */
 
 /* Copyright (C) 1998-2017 Free Software Foundation, Inc.
 
@@ -72,7 +72,7 @@ get_home_dir (void)
 #endif
 
 #if defined (HAVE_GETPWENT)
-  endpwent ();		/* some systems need this */
+  endpwent ();          /* some systems need this */
 #endif
 
   return (home_dir);

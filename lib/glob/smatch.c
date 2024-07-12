@@ -1,10 +1,10 @@
 /* strmatch.c -- ksh-like extended pattern matching for the shell and filename
-		globbing. */
+                globbing. */
 
 /* Copyright (C) 1991-2023 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -21,8 +21,8 @@
 
 #include <config.h>
 
-#include <stdio.h>	/* for debugging */
-				
+#include <stdio.h>      /* for debugging */
+
 #include "strmatch.h"
 #include <chartypes.h>
 
@@ -43,12 +43,12 @@ extern int fnmatch (const char *, const char *, int);
 #endif
 
 /* First, compile `sm_loop.c' for single-byte characters. */
-#define CHAR	unsigned char
-#define U_CHAR	unsigned char
-#define XCHAR	char
-#define INT	int
-#define L(CS)	CS
-#define INVALID	-1
+#define CHAR    unsigned char
+#define U_CHAR  unsigned char
+#define XCHAR   char
+#define INT     int
+#define L(CS)   CS
+#define INVALID -1
 
 #undef STREQ
 #undef STREQN
@@ -69,8 +69,8 @@ int glob_recursion_depth;
 static int
 _fnmatch_fallback (int s, int p)
 {
-  char s1[2];			/* string */
-  char s2[8];			/* constructed pattern */
+  char s1[2];                   /* string */
+  char s2[8];                   /* constructed pattern */
 
   s1[0] = (unsigned char)s;
   s1[1] = '\0';
@@ -130,10 +130,10 @@ rangecmp (int c1, int c2, int forcecoll)
   /* We impose a total ordering here by returning c1-c2 if charcmp returns 0 */
   if (r != 0)
     return r;
-  return (c1 - c2);		/* impose total ordering */
+  return (c1 - c2);             /* impose total ordering */
 }
 #else /* !HAVE_STRCOLL */
-#  define rangecmp(c1, c2, f)	((int)(c1) - (int)(c2))
+#  define rangecmp(c1, c2, f)   ((int)(c1) - (int)(c2))
 #endif /* !HAVE_STRCOLL */
 
 #if defined (HAVE_STRCOLL)
@@ -153,15 +153,15 @@ collseqcmp (int c, int equiv)
 #else
   return 0;
 #endif
-  
+
 }
 #else
-#  define collseqcmp(c, equiv)	((c) == (equiv))
+#  define collseqcmp(c, equiv)  ((c) == (equiv))
 #endif
 
-#define _COLLSYM	_collsym
-#define __COLLSYM	__collsym
-#define POSIXCOLL	posix_collsyms
+#define _COLLSYM        _collsym
+#define __COLLSYM       __collsym
+#define POSIXCOLL       posix_collsyms
 #include "collsyms.h"
 
 static int
@@ -174,7 +174,7 @@ collsym (CHAR *s, int len)
   for (csp = posix_collsyms; csp->name; csp++)
     {
       if (STREQN(csp->name, x, len) && csp->name[len] == '\0')
-	return (csp->code);
+        return (csp->code);
     }
   if (len == 1)
     return s[0];
@@ -183,7 +183,7 @@ collsym (CHAR *s, int len)
 
 /* unibyte character classification */
 #if !defined (isascii) && !defined (HAVE_ISASCII)
-#  define isascii(c)	((unsigned int)(c) <= 0177)
+#  define isascii(c)    ((unsigned int)(c) <= 0177)
 #endif
 
 enum char_class
@@ -213,10 +213,10 @@ is_valid_cclass (const char *name)
   for (i = 1; i < N_CHAR_CLASS; i++)
     {
       if (STREQ (name, cclass_name[i]))
-	{
-	  ret = (enum char_class)i;
-	  break;
-	}
+        {
+          ret = (enum char_class)i;
+          break;
+        }
     }
 
   return ret;
@@ -230,55 +230,55 @@ cclass_test (int c, enum char_class char_class)
   switch (char_class)
     {
       case CC_ASCII:
-	result = isascii (c);
-	break;
+        result = isascii (c);
+        break;
       case CC_ALNUM:
-	result = ISALNUM (c);
-	break;
+        result = ISALNUM (c);
+        break;
       case CC_ALPHA:
-	result = ISALPHA (c);
-	break;
-      case CC_BLANK:  
-	result = ISBLANK (c);
-	break;
+        result = ISALPHA (c);
+        break;
+      case CC_BLANK:
+        result = ISBLANK (c);
+        break;
       case CC_CNTRL:
-	result = ISCNTRL (c);
-	break;
+        result = ISCNTRL (c);
+        break;
       case CC_DIGIT:
-	result = ISDIGIT (c);
-	break;
+        result = ISDIGIT (c);
+        break;
       case CC_GRAPH:
-	result = ISGRAPH (c);
-	break;
+        result = ISGRAPH (c);
+        break;
       case CC_LOWER:
-	result = ISLOWER (c);
-	break;
-      case CC_PRINT: 
-	result = ISPRINT (c);
-	break;
+        result = ISLOWER (c);
+        break;
+      case CC_PRINT:
+        result = ISPRINT (c);
+        break;
       case CC_PUNCT:
-	result = ISPUNCT (c);
-	break;
+        result = ISPUNCT (c);
+        break;
       case CC_SPACE:
-	result = ISSPACE (c);
-	break;
+        result = ISSPACE (c);
+        break;
       case CC_UPPER:
-	result = ISUPPER (c);
-	break;
+        result = ISUPPER (c);
+        break;
       case CC_WORD:
         result = (ISALNUM (c) || c == '_');
-	break;
+        break;
       case CC_XDIGIT:
-	result = ISXDIGIT (c);
-	break;
+        result = ISXDIGIT (c);
+        break;
       default:
-	result = -1;
-	break;
+        result = -1;
+        break;
     }
 
-  return result;  
+  return result;
 }
-	
+
 static int
 is_cclass (int c, const char *name)
 {
@@ -304,44 +304,44 @@ is_cclass (int c, const char *name)
     : ((unsigned char)c))
 
 #if !defined (__CYGWIN__)
-#  define ISDIRSEP(c)	((c) == '/')
+#  define ISDIRSEP(c)   ((c) == '/')
 #else
-#  define ISDIRSEP(c)	((c) == '/' || (c) == '\\')
+#  define ISDIRSEP(c)   ((c) == '/' || (c) == '\\')
 #endif /* __CYGWIN__ */
-#define PATHSEP(c)	(ISDIRSEP(c) || (c) == 0)
+#define PATHSEP(c)      (ISDIRSEP(c) || (c) == 0)
 
-#  define PDOT_OR_DOTDOT(s)	(s[0] == '.' && (PATHSEP (s[1]) || (s[1] == '.' && PATHSEP (s[2]))))
-#  define SDOT_OR_DOTDOT(s)	(s[0] == '.' && (s[1] == 0 || (s[1] == '.' && s[2] == 0)))
+#  define PDOT_OR_DOTDOT(s)     (s[0] == '.' && (PATHSEP (s[1]) || (s[1] == '.' && PATHSEP (s[2]))))
+#  define SDOT_OR_DOTDOT(s)     (s[0] == '.' && (s[1] == 0 || (s[1] == '.' && s[2] == 0)))
 
-#define FCT			internal_strmatch
-#define GMATCH			gmatch
-#define COLLSYM			collsym
-#define PARSE_SUBBRACKET	parse_subbracket
-#define BRACKMATCH		brackmatch
-#define PATSCAN			glob_patscan
-#define STRCOMPARE		strcompare
-#define EXTMATCH		extmatch
-#define DEQUOTE_PATHNAME	udequote_pathname
-#define STRUCT			smat_struct
-#define STRCHR(S, C)		strchr((S), (C))
-#define MEMCHR(S, C, N)		memchr((S), (C), (N))
-#define STRCOLL(S1, S2)		strcoll((S1), (S2))
-#define STRLEN(S)		strlen(S)
-#define STRCMP(S1, S2)		strcmp((S1), (S2))
-#define RANGECMP(C1, C2, F)	rangecmp((C1), (C2), (F))
-#define COLLEQUIV(C1, C2)	collseqcmp((C1), (C2))
-#define CTYPE_T			enum char_class
-#define IS_CCLASS(C, S)		is_cclass((C), (S))
+#define FCT                     internal_strmatch
+#define GMATCH                  gmatch
+#define COLLSYM                 collsym
+#define PARSE_SUBBRACKET        parse_subbracket
+#define BRACKMATCH              brackmatch
+#define PATSCAN                 glob_patscan
+#define STRCOMPARE              strcompare
+#define EXTMATCH                extmatch
+#define DEQUOTE_PATHNAME        udequote_pathname
+#define STRUCT                  smat_struct
+#define STRCHR(S, C)            strchr((S), (C))
+#define MEMCHR(S, C, N)         memchr((S), (C), (N))
+#define STRCOLL(S1, S2)         strcoll((S1), (S2))
+#define STRLEN(S)               strlen(S)
+#define STRCMP(S1, S2)          strcmp((S1), (S2))
+#define RANGECMP(C1, C2, F)     rangecmp((C1), (C2), (F))
+#define COLLEQUIV(C1, C2)       collseqcmp((C1), (C2))
+#define CTYPE_T                 enum char_class
+#define IS_CCLASS(C, S)         is_cclass((C), (S))
 #include "sm_loop.c"
 
 #if HANDLE_MULTIBYTE
 
-#  define CHAR		wchar_t
-#  define U_CHAR	wint_t
-#  define XCHAR		wchar_t
-#  define INT		wint_t
-#  define L(CS)		L##CS
-#  define INVALID	WEOF
+#  define CHAR          wchar_t
+#  define U_CHAR        wint_t
+#  define XCHAR         wchar_t
+#  define INT           wint_t
+#  define L(CS)         L##CS
+#  define INVALID       WEOF
 
 #  undef STREQ
 #  undef STREQN
@@ -354,12 +354,12 @@ extern char *mbsmbchar (const char *);
 /* Construct a string w1 = "c1" and a pattern w2 = "[[=c2=]]" and pass them
    to fnmatch to see if wide characters c1 and c2 collate as members of the
    same equivalence class. We can't really do this portably any other way
-   c1 == string char, c2 == patchar */   
+   c1 == string char, c2 == patchar */
 static int
 _fnmatch_fallback_wc (wchar_t c1, wchar_t c2)
 {
-  char w1[MB_LEN_MAX+1];		/* string */
-  char w2[MB_LEN_MAX+8];		/* constructed pattern */
+  char w1[MB_LEN_MAX+1];                /* string */
+  char w2[MB_LEN_MAX+8];                /* constructed pattern */
   int l1, l2;
 
   l1 = wctomb (w1, c1);
@@ -410,7 +410,7 @@ rangecmp_wc (wint_t c1, wint_t c2, int forcecoll)
      as we do above in the single-byte case. */
   if (r != 0 || forcecoll)
     return r;
-  return ((int)(c1 - c2));		/* impose total ordering */
+  return ((int)(c1 - c2));              /* impose total ordering */
 }
 
 /* Returns 1 if wide chars C and EQUIV collate equally in the current locale. */
@@ -436,9 +436,9 @@ collseqcmp_wc (wint_t c, wint_t equiv)
 }
 
 /* Helper function for collating symbol. */
-#  define _COLLSYM	_collwcsym
-#  define __COLLSYM	__collwcsym
-#  define POSIXCOLL	posix_collwcsyms
+#  define _COLLSYM      _collwcsym
+#  define __COLLSYM     __collwcsym
+#  define POSIXCOLL     posix_collwcsyms
 #  include "collsyms.h"
 
 static wint_t
@@ -449,7 +449,7 @@ collwcsym (wchar_t *s, int len)
   for (csp = posix_collwcsyms; csp->name; csp++)
     {
       if (STREQN(csp->name, s, len) && csp->name[len] == L'\0')
-	return (csp->code);
+        return (csp->code);
     }
   if (len == 1)
     return s[0];
@@ -470,7 +470,7 @@ is_wcclass (wint_t wc, wchar_t *name)
       int c;
 
       if ((c = wctob (wc)) == EOF)
-	return 0;
+        return 0;
       else
         return (c <= 0x7F);
     }
@@ -512,71 +512,71 @@ static int
 posix_cclass_only (char *pattern)
 {
   char *p, *p1;
-  char cc[16];		/* sufficient for all valid posix char class names */
+  char cc[16];          /* sufficient for all valid posix char class names */
   enum char_class valid;
 
   p = pattern;
   while (p = strchr (p, '['))
     {
       if (p[1] != ':')
-	{
-	  p++;
-	  continue;
+        {
+          p++;
+          continue;
         }
-      p += 2;		/* skip past "[:" */
+      p += 2;           /* skip past "[:" */
       /* Find end of char class expression */
       for (p1 = p; *p1;  p1++)
-	if (*p1 == ':' && p1[1] == ']')
-	  break;
-      if (*p1 == 0)	/* no char class expression found */
-	break;
+        if (*p1 == ':' && p1[1] == ']')
+          break;
+      if (*p1 == 0)     /* no char class expression found */
+        break;
       /* Find char class name and validate it against posix char classes */
       if ((p1 - p) >= sizeof (cc))
-	return 0;
+        return 0;
       bcopy (p, cc, p1 - p);
       cc[p1 - p] = '\0';
       valid = is_valid_cclass (cc);
       if (valid == CC_NO_CLASS)
-	return 0;		/* found unrecognized char class name */
+        return 0;               /* found unrecognized char class name */
 
-      p = p1 + 2;		/* found posix char class name */
+      p = p1 + 2;               /* found posix char class name */
     }
-    
-  return 1;			/* no char class names or only posix */
-}      
+
+  return 1;                     /* no char class names or only posix */
+}
 
 /* Now include `sm_loop.c' for multibyte characters. */
 #define FOLD(c) ((flags & FNM_CASEFOLD) && iswupper (c) ? towlower (c) : (c))
 
 #  if !defined (__CYGWIN__)
-#    define ISDIRSEP(c)	((c) == L'/')
+#    define ISDIRSEP(c) ((c) == L'/')
 #  else
-#    define ISDIRSEP(c)	((c) == L'/' || (c) == L'\\')
+#    define ISDIRSEP(c) ((c) == L'/' || (c) == L'\\')
 #  endif /* __CYGWIN__ */
-#  define PATHSEP(c)	(ISDIRSEP(c) || (c) == L'\0')
+#  define PATHSEP(c)    (ISDIRSEP(c) || (c) == L'\0')
 
-#  define PDOT_OR_DOTDOT(w)	(w[0] == L'.' && (PATHSEP(w[1]) || (w[1] == L'.' && PATHSEP(w[2]))))
-#  define SDOT_OR_DOTDOT(w)	(w[0] == L'.' && (w[1] == L'\0' || (w[1] == L'.' && w[2] == L'\0')))
+#  define PDOT_OR_DOTDOT(w)     (w[0] == L'.' && (PATHSEP(w[1]) || (w[1] == L'.' && PATHSEP(w[2]))))
+#  define SDOT_OR_DOTDOT(w)     (w[0] == L'.' && (w[1] == L'\0' || (w[1] == L'.' && w[2] == L'\0')))
 
-#define FCT			internal_wstrmatch
-#define GMATCH			gmatch_wc
-#define COLLSYM			collwcsym
-#define PARSE_SUBBRACKET	parse_subbracket_wc
-#define BRACKMATCH		brackmatch_wc
-#define PATSCAN			glob_patscan_wc
-#define STRCOMPARE		wscompare
-#define EXTMATCH		extmatch_wc
-#define DEQUOTE_PATHNAME	wcdequote_pathname
-#define STRUCT			wcsmat_struct
-#define STRCHR(S, C)		wcschr((S), (C))
-#define MEMCHR(S, C, N)		wmemchr((S), (C), (N))
-#define STRCOLL(S1, S2)		wcscoll((S1), (S2))
-#define STRLEN(S)		wcslen(S)
-#define STRCMP(S1, S2)		wcscmp((S1), (S2))
-#define RANGECMP(C1, C2, F)	rangecmp_wc((C1), (C2), (F))
-#define COLLEQUIV(C1, C2)	collseqcmp_wc((C1), (C2))
-#define CTYPE_T			enum char_class
-#define IS_CCLASS(C, S)		is_wcclass((C), (S))
+#define FCT                     internal_wstrmatch
+#define GMATCH                  gmatch_wc
+#define COLLSYM                 collwcsym
+#define PARSE_SUBBRACKET        parse_subbracket_wc
+#define BRACKMATCH              brackmatch_wc
+#define PATSCAN                 glob_patscan_wc
+#define STRCOMPARE              wscompare
+#define EXTMATCH                extmatch_wc
+#define DEQUOTE_PATHNAME        wcdequote_pathname
+#define STRUCT                  wcsmat_struct
+#define STRCHR(S, C)            wcschr((S), (C))
+#define MEMCHR(S, C, N)         wmemchr((S), (C), (N))
+#define STRCOLL(S1, S2)         wcscoll((S1), (S2))
+#define STRLEN(S)               wcslen(S)
+#define STRCMP(S1, S2)          wcscmp((S1), (S2))
+#define RANGECMP(C1, C2, F)     rangecmp_wc((C1), (C2), (F))
+#define COLLEQUIV(C1, C2)       collseqcmp_wc((C1), (C2))
+#define CTYPE_T                 enum char_class
+#define IS_CCLASS(C, S)         is_wcclass((C), (S))
 #include "sm_loop.c"
 
 #endif /* HAVE_MULTIBYTE */

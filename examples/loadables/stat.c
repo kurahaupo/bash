@@ -43,27 +43,27 @@
 #include "bashgetopt.h"
 
 #ifndef errno
-extern int	errno;
+extern int      errno;
 #endif
 
-#define ST_NAME		0
-#define ST_DEV		1
-#define ST_INO		2
-#define ST_MODE		3
-#define ST_NLINK	4
-#define ST_UID		5
-#define ST_GID		6
-#define ST_RDEV		7
-#define ST_SIZE		8
-#define ST_ATIME	9
-#define ST_MTIME	10
-#define ST_CTIME	11
-#define ST_BLKSIZE	12
-#define ST_BLOCKS	13
-#define ST_CHASELINK	14
-#define ST_PERMS	15
+#define ST_NAME         0
+#define ST_DEV          1
+#define ST_INO          2
+#define ST_MODE         3
+#define ST_NLINK        4
+#define ST_UID          5
+#define ST_GID          6
+#define ST_RDEV         7
+#define ST_SIZE         8
+#define ST_ATIME        9
+#define ST_MTIME        10
+#define ST_CTIME        11
+#define ST_BLKSIZE      12
+#define ST_BLOCKS       13
+#define ST_CHASELINK    14
+#define ST_PERMS        15
 
-#define ST_END		16
+#define ST_END          16
 
 static char *arraysubs[] =
   {
@@ -72,7 +72,7 @@ static char *arraysubs[] =
     0
   };
 
-#define DEFTIMEFMT	"%a %b %e %k:%M:%S %Z %Y"
+#define DEFTIMEFMT      "%a %b %e %k:%M:%S %Z %Y"
 #ifndef TIMELEN_MAX
 #  define TIMELEN_MAX 128
 #endif
@@ -88,10 +88,10 @@ getstat (const char *fname, int flags, struct stat *sp)
   if (strncmp (fname, "/dev/fd/", 8) == 0)
     {
       if ((valid_number(fname + 8, &lfd) == 0) || (int)lfd != lfd)
-	{
-	  errno = EINVAL;
-	  return -1;
-	}
+        {
+          errno = EINVAL;
+          return -1;
+        }
       fd = lfd;
       r = fstat(fd, sp);
     }
@@ -166,7 +166,7 @@ octalperms (int m)
 static char *
 statperms (int m)
 {
-  char ubits[4], gbits[4], obits[4];	/* u=rwx,g=rwx,o=rwx */
+  char ubits[4], gbits[4], obits[4];    /* u=rwx,g=rwx,o=rwx */
   int i;
   char *ret;
 
@@ -351,24 +351,24 @@ stat_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "A:F:Ll")) != -1)
     {
       switch (opt)
-	{
-	case 'A':
-	  aname = list_optarg;
-	  break;
-	case 'L':
-	  flags |= 1;		/* operate on links rather than resolving them */
-	  break;
-	case 'l':
-	  flags |= 2;
-	  break;
-	case 'F':
-	  timefmt = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'A':
+          aname = list_optarg;
+          break;
+        case 'L':
+          flags |= 1;           /* operate on links rather than resolving them */
+          break;
+        case 'l':
+          flags |= 2;
+          break;
+        case 'F':
+          timefmt = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   if (valid_identifier (aname) == 0)
@@ -416,30 +416,30 @@ stat_builtin (WORD_LIST *list)
    which is printed by `help xxx'.  It must end with a NULL.  By convention,
    the first line is a short description. */
 char *stat_doc[] = {
-	"Load an associative array with file status information.",
-	"",
-	"Take a filename and load the status information returned by a",
-	"stat(2) call on that file into the associative array specified",
-	"by the -A option.  The default array name is STAT.",
-	"",
-	"If the -L option is supplied, stat does not resolve symbolic links",
-	"and reports information about the link itself.  The -l option results",
-	"in longer-form listings for some of the fields. When -l is used,",
-	"the -F option supplies a format string passed to strftime(3) to",
-	"display the file time information.",
-	"The exit status is 0 unless the stat fails or assigning the array",
-	"is unsuccessful.",
-	(char *)NULL
+        "Load an associative array with file status information.",
+        "",
+        "Take a filename and load the status information returned by a",
+        "stat(2) call on that file into the associative array specified",
+        "by the -A option.  The default array name is STAT.",
+        "",
+        "If the -L option is supplied, stat does not resolve symbolic links",
+        "and reports information about the link itself.  The -l option results",
+        "in longer-form listings for some of the fields. When -l is used,",
+        "the -F option supplies a format string passed to strftime(3) to",
+        "display the file time information.",
+        "The exit status is 0 unless the stat fails or assigning the array",
+        "is unsuccessful.",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures.  The flags must include BUILTIN_ENABLED so the
    builtin can be used. */
 struct builtin stat_struct = {
-	"stat",			/* builtin name */
-	stat_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	stat_doc,		/* array of long documentation strings. */
-	"stat [-lL] [-A aname] file",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "stat",                 /* builtin name */
+        stat_builtin,           /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        stat_doc,               /* array of long documentation strings. */
+        "stat [-lL] [-A aname] file",   /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

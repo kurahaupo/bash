@@ -3,7 +3,7 @@
    Copyright (C) 1985-2023 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne-Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -61,13 +61,13 @@
 #endif /* !HAVE_BCOPY && !bcopy */
 
 #if !defined (FREE)
-#  define FREE(x)	if (x) free (x)
+#  define FREE(x)       if (x) free (x)
 #endif
 
 /* Don't try to alloca() more than this much memory for `struct globval'
    in glob_vector() */
 #ifndef ALLOCA_MAX
-#  define ALLOCA_MAX	100000
+#  define ALLOCA_MAX    100000
 #endif
 
 struct globval
@@ -128,20 +128,20 @@ extern int wextglob_pattern_p (wchar_t *);
 extern char *glob_dirscan (char *, int);
 
 /* Compile `glob_loop.c' for single-byte characters. */
-#define GCHAR	unsigned char
-#define CHAR	char
-#define INT	int
-#define L(CS)	CS
+#define GCHAR   unsigned char
+#define CHAR    char
+#define INT     int
+#define L(CS)   CS
 #define INTERNAL_GLOB_PATTERN_P internal_glob_pattern_p
 #include "glob_loop.c"
 
 /* Compile `glob_loop.c' again for multibyte characters. */
 #if HANDLE_MULTIBYTE
 
-#define GCHAR	wchar_t
-#define CHAR	wchar_t
-#define INT	wint_t
-#define L(CS)	L##CS
+#define GCHAR   wchar_t
+#define CHAR    wchar_t
+#define INT     wint_t
+#define L(CS)   L##CS
 #define INTERNAL_GLOB_PATTERN_P internal_glob_wpattern_p
 #include "glob_loop.c"
 
@@ -178,9 +178,9 @@ glob_pattern_p (const char *pattern)
 #if EXTENDED_GLOB
 
 #if defined (HANDLE_MULTIBYTE)
-#  define XSKIPNAME(p, d, f)	mbskipname(p, d, f)
+#  define XSKIPNAME(p, d, f)    mbskipname(p, d, f)
 #else
-#  define XSKIPNAME(p, d, f)	skipname(p, d, f)
+#  define XSKIPNAME(p, d, f)    skipname(p, d, f)
 #endif
 
 /* Return 1 if all subpatterns in the extended globbing pattern PAT indicate
@@ -195,8 +195,8 @@ extglob_skipname (char *pat, char *dname, int flags)
   negate = *pat == '!';
   wild = *pat == '*' || *pat == '?';
   pp = pat + 2;
-  se = pp + strlen (pp);		/* end of pattern string */
-  pe = glob_patscan (pp, se, 0, 0);	/* end of extglob pattern */
+  se = pp + strlen (pp);                /* end of pattern string */
+  pe = glob_patscan (pp, se, 0, 0);     /* end of extglob pattern */
 
   /* if pe == 0, this is an invalid extglob pattern */
   if (pe == 0)
@@ -210,8 +210,8 @@ extglob_skipname (char *pat, char *dname, int flags)
     {
       pe[-1] = '\0';
       /* This is where we check whether the pattern is being negated and
-	 match all files beginning with `.' if the pattern begins with a
-	 literal `.'. */
+         match all files beginning with `.' if the pattern begins with a
+         literal `.'. */
       r = XSKIPNAME (pp, dname, xflags); /*(*/
       pe[-1] = ')';
       return r;
@@ -226,19 +226,19 @@ extglob_skipname (char *pat, char *dname, int flags)
   while (t = glob_patscan (pp, pe, '|', 0))
     {
       /* If T == PE and *T == 0 (&& PE[-1] == RPAREN), we have hit the end
-	 of a pattern with no trailing characters. */
-      n = t[-1];	/* ( */
-      if (extglob_pattern_p (pp) && n == ')')		/* nested extglob? */
-	t[-1] = n;	/* no-op for now */
+         of a pattern with no trailing characters. */
+      n = t[-1];        /* ( */
+      if (extglob_pattern_p (pp) && n == ')')           /* nested extglob? */
+        t[-1] = n;      /* no-op for now */
       else
-	t[-1] = '\0';
+        t[-1] = '\0';
       r = XSKIPNAME (pp, dname, xflags);
       t[-1] = n;
-      if (r == 0)	/* if any pattern says not skip, we don't skip */
+      if (r == 0)       /* if any pattern says not skip, we don't skip */
         return r;
       pp = t;
       if (pp == pe)
-	break;
+        break;
     }
 
   /* glob_patscan might find end of string */
@@ -246,7 +246,7 @@ extglob_skipname (char *pat, char *dname, int flags)
     return r;
 
   /* but if it doesn't then we didn't match a leading dot */
-  if (wild && *pe)	/* if we can match zero instances, check further */
+  if (wild && *pe)      /* if we can match zero instances, check further */
     return (XSKIPNAME (pe, dname, flags));
 
   return 1;
@@ -259,7 +259,7 @@ static int
 skipname (char *pat, char *dname, int flags)
 {
 #if EXTENDED_GLOB
-  if (extglob_pattern_p (pat))		/* XXX */
+  if (extglob_pattern_p (pat))          /* XXX */
     return (extglob_skipname (pat, dname, flags));
 #endif
 
@@ -269,8 +269,8 @@ skipname (char *pat, char *dname, int flags)
   /* If a leading dot need not be explicitly matched, and the pattern
      doesn't start with a `.', don't match `.' or `..' */
   if (noglob_dot_filenames == 0 && pat[0] != '.' &&
-	(pat[0] != '\\' || pat[1] != '.') &&
-	DOT_OR_DOTDOT (dname))
+        (pat[0] != '\\' || pat[1] != '.') &&
+        DOT_OR_DOTDOT (dname))
     return 1;
 
 #if 0
@@ -278,14 +278,14 @@ skipname (char *pat, char *dname, int flags)
      match all files beginning with `.' if the pattern begins with a
      literal `.'. This is the negation of the next clause. */
   else if ((flags & GX_NEGATE) && noglob_dot_filenames == 0 &&
-	dname[0] == '.' &&
-	(pat[0] == '.' || (pat[0] == '\\' && pat[1] == '.')))
+        dname[0] == '.' &&
+        (pat[0] == '.' || (pat[0] == '\\' && pat[1] == '.')))
     return 0;
 #endif
 
   /* If a dot must be explicitly matched, check to see if they do. */
   else if (noglob_dot_filenames && dname[0] == '.' &&
- 	   pat[0] != '.' && (pat[0] != '\\' || pat[1] != '.'))
+           pat[0] != '.' && (pat[0] != '\\' || pat[1] != '.'))
     return 1;
 
   return 0;
@@ -302,8 +302,8 @@ wskipname (wchar_t *pat, wchar_t *dname, int flags)
   /* If a leading dot need not be explicitly matched, and the
      pattern doesn't start with a `.', don't match `.' or `..' */
   if (noglob_dot_filenames == 0 && pat[0] != L'.' &&
-	(pat[0] != L'\\' || pat[1] != L'.') &&
-	WDOT_OR_DOTDOT (dname))
+        (pat[0] != L'\\' || pat[1] != L'.') &&
+        WDOT_OR_DOTDOT (dname))
     return 1;
 
 #if 0
@@ -311,15 +311,15 @@ wskipname (wchar_t *pat, wchar_t *dname, int flags)
      match all files beginning with `.' if the pattern begins with a
      literal `.'. This is the negation of the next clause. */
   else if ((flags & GX_NEGATE) && noglob_dot_filenames == 0 &&
-	dname[0] == L'.' &&
-	(pat[0] == L'.' || (pat[0] == L'\\' && pat[1] == L'.')))
+        dname[0] == L'.' &&
+        (pat[0] == L'.' || (pat[0] == L'\\' && pat[1] == L'.')))
     return 0;
 #endif
 
   /* If a leading dot must be explicitly matched, check to see if the
      pattern and dirname both have one. */
   else if (noglob_dot_filenames && dname[0] == L'.' &&
-	pat[0] != L'.' && (pat[0] != L'\\' || pat[1] != L'.'))
+        pat[0] != L'.' && (pat[0] != L'\\' || pat[1] != L'.'))
     return 1;
 
   return 0;
@@ -362,18 +362,18 @@ wextglob_skipname (wchar_t *pat, wchar_t *dname, int flags)
   /* check every subpattern */
   while (t = glob_patscan_wc (pp, pe, '|', 0))
     {
-      n = t[-1];	/* ( */
-      if (wextglob_pattern_p (pp) && n == L')')		/* nested extglob? */
-	t[-1] = n;	/* no-op for now */
+      n = t[-1];        /* ( */
+      if (wextglob_pattern_p (pp) && n == L')')         /* nested extglob? */
+        t[-1] = n;      /* no-op for now */
       else
-	t[-1] = L'\0';
+        t[-1] = L'\0';
       r = wskipname (pp, dname, xflags);
       t[-1] = n;
       if (r == 0)
-	return 0;
+        return 0;
       pp = t;
       if (pp == pe)
-	break;
+        break;
     }
 
   /* glob_patscan_wc might find end of string */
@@ -435,12 +435,12 @@ udequote_pathname (char *pathname)
   for (i = j = 0; pathname && pathname[i]; )
     {
       if (pathname[i] == '\\')
-	i++;
+        i++;
 
       pathname[j++] = pathname[i++];
 
       if (pathname[i - 1] == 0)
-	break;
+        break;
     }
   if (pathname)
     pathname[j] = '\0';
@@ -456,12 +456,12 @@ wcdequote_pathname (wchar_t *wpathname)
   for (i = j = 0; wpathname && wpathname[i]; )
     {
       if (wpathname[i] == L'\\')
-	i++;
+        i++;
 
       wpathname[j++] = wpathname[i++];
 
       if (wpathname[i - 1] == L'\0')
-	break;
+        break;
     }
   if (wpathname)
     wpathname[j] = L'\0';
@@ -497,7 +497,7 @@ wdequote_pathname (char *pathname)
   /* Convert the wide character string into unibyte character set. */
   memset (&ps, '\0', sizeof(mbstate_t));
   n = wcsrtombs(pathname, (const wchar_t **)&wpathname, len, &ps);
-  if (n == (size_t)-1 || (wpathname && *wpathname != 0))	/* what? now you tell me? */
+  if (n == (size_t)-1 || (wpathname && *wpathname != 0))        /* what? now you tell me? */
     {
       wpathname = orig_wpathname;
       memset (&ps, '\0', sizeof(mbstate_t));
@@ -577,34 +577,34 @@ finddirs (char *pat, char *sdir, int flags, struct globval **ep, int *np)
   if (r == 0 || r[0] == 0)
     {
       if (np)
-	*np = 0;
+        *np = 0;
       if (ep)
         *ep = 0;
       if (r && r != &glob_error_return)
-	free (r);
+        free (r);
       return (struct globval *)0;
     }
   for (ndirs = 0; r[ndirs] != 0; ndirs++)
     {
       g = (struct globval *) malloc (sizeof (struct globval));
       if (g == 0)
-	{
-	  while (ret)		/* free list built so far */
-	    {
-	      g = ret->next;
-	      free (ret);
-	      ret = g;
-	    }
+        {
+          while (ret)           /* free list built so far */
+            {
+              g = ret->next;
+              free (ret);
+              ret = g;
+            }
 
-	  free (r);
-	  if (np)
-	    *np = 0;
-	  if (ep)
-	    *ep = 0;
-	  return (&finddirs_error_return);
-	}
+          free (r);
+          if (np)
+            *np = 0;
+          if (ep)
+            *ep = 0;
+          return (&finddirs_error_return);
+        }
       if (e == 0)
-	e = g;
+        e = g;
 
       g->next = ret;
       ret = g;
@@ -620,7 +620,7 @@ finddirs (char *pat, char *sdir, int flags, struct globval **ep, int *np)
 
   return ret;
 }
-     	
+
 /* Return a vector of names of files in directory DIR
    whose names match glob pattern PAT.
    The names are not in any particular order.
@@ -648,9 +648,9 @@ glob_vector (char *pat, char *dir, int flags)
   int lose, skip, ndirs, isdir, add_current;
   size_t patlen, sdlen;
   char **name_vector;
-  int mflags;		/* Flags passed to strmatch (). */
-  int pflags;		/* flags passed to sh_makepath () */
-  int hasglob;		/* return value from glob_pattern_p */
+  int mflags;           /* Flags passed to strmatch (). */
+  int pflags;           /* flags passed to sh_makepath () */
+  int hasglob;          /* return value from glob_pattern_p */
   int nalloca;
   struct globval *firstmalloc, *tmplink;
   char *convfn, *convpat;
@@ -669,23 +669,23 @@ glob_vector (char *pat, char *dir, int flags)
   if (pat == 0 || *pat == '\0')
     {
       if (glob_testdir (dir, 0) < 0)
-	return ((char **) &glob_error_return);
+        return ((char **) &glob_error_return);
 
       nextlink = (struct globval *)alloca (sizeof (struct globval));
       if (nextlink == NULL)
-	return ((char **) NULL);
+        return ((char **) NULL);
 
       nextlink->next = (struct globval *)0;
       nextname = (char *) malloc (1);
       if (nextname == 0)
-	lose = 1;
+        lose = 1;
       else
-	{
-	  lastlink = nextlink;
-	  nextlink->name = nextname;
-	  nextname[0] = '\0';
-	  count = 1;
-	}
+        {
+          lastlink = nextlink;
+          nextlink->name = nextname;
+          nextname[0] = '\0';
+          count = 1;
+        }
 
       skip = 1;
     }
@@ -704,49 +704,49 @@ glob_vector (char *pat, char *dir, int flags)
       struct stat finfo;
 
       if (glob_testdir (dir, 0) < 0)
-	return ((char **) &glob_error_return);
+        return ((char **) &glob_error_return);
 
       dirlen = strlen (dir);
       nextname = (char *)malloc (dirlen + patlen + 2);
       npat = (char *)malloc (patlen + 1);
       if (nextname == 0 || npat == 0)
-	{
-	  FREE (nextname);
-	  FREE (npat);
-	  lose = 1;
-	}
+        {
+          FREE (nextname);
+          FREE (npat);
+          lose = 1;
+        }
       else
-	{
-	  strcpy (npat, pat);
-	  dequote_pathname (npat);
+        {
+          strcpy (npat, pat);
+          dequote_pathname (npat);
 
-	  strcpy (nextname, dir);
-	  nextname[dirlen++] = '/';
-	  strcpy (nextname + dirlen, npat);
+          strcpy (nextname, dir);
+          nextname[dirlen++] = '/';
+          strcpy (nextname + dirlen, npat);
 
-	  if (GLOB_TESTNAME (nextname) >= 0)
-	    {
-	      free (nextname);
-	      nextlink = (struct globval *)alloca (sizeof (struct globval));
-	      if (nextlink)
-		{
-		  nextlink->next = (struct globval *)0;
-		  lastlink = nextlink;
-		  nextlink->name = npat;
-		  count = 1;
-		}
-	      else
-		{
-		  free (npat);
-		  lose = 1;
-		}
-	    }
-	  else
-	    {
-	      free (nextname);
-	      free (npat);
-	    }
-	}
+          if (GLOB_TESTNAME (nextname) >= 0)
+            {
+              free (nextname);
+              nextlink = (struct globval *)alloca (sizeof (struct globval));
+              if (nextlink)
+                {
+                  nextlink->next = (struct globval *)0;
+                  lastlink = nextlink;
+                  nextlink->name = npat;
+                  count = 1;
+                }
+              else
+                {
+                  free (npat);
+                  lose = 1;
+                }
+            }
+          else
+            {
+              free (nextname);
+              free (npat);
+            }
+        }
 
       skip = 1;
     }
@@ -754,183 +754,183 @@ glob_vector (char *pat, char *dir, int flags)
   if (skip == 0)
     {
       /* Open the directory, punting immediately if we cannot.  If opendir
-	 is not robust (i.e., it opens non-directories successfully), test
-	 that DIR is a directory and punt if it's not. */
+         is not robust (i.e., it opens non-directories successfully), test
+         that DIR is a directory and punt if it's not. */
 #if defined (OPENDIR_NOT_ROBUST)
       if (glob_testdir (dir, 0) < 0)
-	return ((char **) &glob_error_return);
+        return ((char **) &glob_error_return);
 #endif
 
       d = opendir (dir);
       if (d == NULL)
-	return ((char **) &glob_error_return);
+        return ((char **) &glob_error_return);
 
       convpat = fnx_fromfs (pat, patlen);
       if (convpat != pat)
-	convpat = savestring (convpat);
+        convpat = savestring (convpat);
 
       /* Compute the flags that will be passed to strmatch().  We don't
-	 need to do this every time through the loop. */
+         need to do this every time through the loop. */
       mflags = (noglob_dot_filenames ? FNM_PERIOD : FNM_DOTDOT) | FNM_PATHNAME;
 
 #ifdef FNM_CASEFOLD
       if (glob_ignore_case)
-	mflags |= FNM_CASEFOLD;
+        mflags |= FNM_CASEFOLD;
 #endif
 
       if (extended_glob)
-	mflags |= FNM_EXTMATCH;
+        mflags |= FNM_EXTMATCH;
 
       add_current = ((flags & (GX_ALLDIRS|GX_ADDCURDIR)) == (GX_ALLDIRS|GX_ADDCURDIR));
 
-      /* Scan the directory, finding all names that match	 For each name that matches, allocate a struct globval
-	 on the stack and store the name in it.
-	 Chain those structs together; lastlink is the front of the chain.  */
+      /* Scan the directory, finding all names that match        For each name that matches, allocate a struct globval
+         on the stack and store the name in it.
+         Chain those structs together; lastlink is the front of the chain.  */
       while (1)
-	{
-	  /* Make globbing interruptible in the shell. */
-	  if (interrupt_state || terminating_signal)
-	    {
-	      lose = 1;
-	      break;
-	    }
-	  else if (signal_is_pending (SIGINT))	/* XXX - make SIGINT traps responsive */
-	    {
-	      lose = 1;
-	      break;
-	    }
+        {
+          /* Make globbing interruptible in the shell. */
+          if (interrupt_state || terminating_signal)
+            {
+              lose = 1;
+              break;
+            }
+          else if (signal_is_pending (SIGINT))  /* XXX - make SIGINT traps responsive */
+            {
+              lose = 1;
+              break;
+            }
 
-	  dp = readdir (d);
-	  if (dp == NULL)
-	    break;
+          dp = readdir (d);
+          if (dp == NULL)
+            break;
 
-	  /* If this directory entry is not to be used, try again. */
-	  if (REAL_DIR_ENTRY (dp) == 0)
-	    continue;
+          /* If this directory entry is not to be used, try again. */
+          if (REAL_DIR_ENTRY (dp) == 0)
+            continue;
 
 #if 0
-	  if (dp->d_name == 0 || *dp->d_name == 0)
-	    continue;
+          if (dp->d_name == 0 || *dp->d_name == 0)
+            continue;
 #endif
 
 #if HANDLE_MULTIBYTE
-	  if (MB_CUR_MAX > 1 && mbskipname (pat, dp->d_name, flags))
-	    continue;
-	  else
+          if (MB_CUR_MAX > 1 && mbskipname (pat, dp->d_name, flags))
+            continue;
+          else
 #endif
-	  if (skipname (pat, dp->d_name, flags))
-	    continue;
+          if (skipname (pat, dp->d_name, flags))
+            continue;
 
-	  /* If we're only interested in directories, don't bother with files */
-	  if (flags & (GX_MATCHDIRS|GX_ALLDIRS))
-	    {
-	      pflags = (flags & GX_ALLDIRS) ? MP_RMDOT : 0;
-	      if (flags & GX_NULLDIR)
-		pflags |= MP_IGNDOT;
-	      subdir = sh_makepath (dir, dp->d_name, pflags);
-	      isdir = glob_testdir (subdir, flags);
-	      if (isdir < 0 && (flags & GX_MATCHDIRS))
-		{
-		  free (subdir);
-		  continue;
-		}
-	    }
+          /* If we're only interested in directories, don't bother with files */
+          if (flags & (GX_MATCHDIRS|GX_ALLDIRS))
+            {
+              pflags = (flags & GX_ALLDIRS) ? MP_RMDOT : 0;
+              if (flags & GX_NULLDIR)
+                pflags |= MP_IGNDOT;
+              subdir = sh_makepath (dir, dp->d_name, pflags);
+              isdir = glob_testdir (subdir, flags);
+              if (isdir < 0 && (flags & GX_MATCHDIRS))
+                {
+                  free (subdir);
+                  continue;
+                }
+            }
 
-	  if (flags & GX_ALLDIRS)
-	    {
-	      if (isdir == 0)
-		{
-		  dirlist = finddirs (pat, subdir, (flags & ~GX_ADDCURDIR), &e, &ndirs);
-		  if (dirlist == &finddirs_error_return)
-		    {
-		      free (subdir);
-		      lose = 1;
-		      break;
-		    }
-		  if (ndirs)		/* add recursive directories to list */
-		    {
-		      if (firstmalloc == 0)
-		        firstmalloc = e;
-		      e->next = lastlink;
-		      lastlink = dirlist;
-		      count += ndirs;
-		    }
-		}
+          if (flags & GX_ALLDIRS)
+            {
+              if (isdir == 0)
+                {
+                  dirlist = finddirs (pat, subdir, (flags & ~GX_ADDCURDIR), &e, &ndirs);
+                  if (dirlist == &finddirs_error_return)
+                    {
+                      free (subdir);
+                      lose = 1;
+                      break;
+                    }
+                  if (ndirs)            /* add recursive directories to list */
+                    {
+                      if (firstmalloc == 0)
+                        firstmalloc = e;
+                      e->next = lastlink;
+                      lastlink = dirlist;
+                      count += ndirs;
+                    }
+                }
 
-	      /* XXX - should we even add this if it's not a directory? */
-	      nextlink = (struct globval *) malloc (sizeof (struct globval));
-	      if (firstmalloc == 0)
-		firstmalloc = nextlink;
-	      sdlen = strlen (subdir);
-	      nextname = (char *) malloc (sdlen + 1);
-	      if (nextlink == 0 || nextname == 0)
-		{
-		  if (firstmalloc && firstmalloc == nextlink)
-		    firstmalloc = 0;
-		  /* If we reset FIRSTMALLOC we can free this here. */
-		  FREE (nextlink);
-		  FREE (nextname);
-		  free (subdir);
-		  lose = 1;
-		  break;
-		}
-	      nextlink->next = lastlink;
-	      lastlink = nextlink;
-	      nextlink->name = nextname;
-	      bcopy (subdir, nextname, sdlen + 1);
-	      free (subdir);
-	      ++count;
-	      continue;
-	    }
-	  else if (flags & GX_MATCHDIRS)
-	    free (subdir);
+              /* XXX - should we even add this if it's not a directory? */
+              nextlink = (struct globval *) malloc (sizeof (struct globval));
+              if (firstmalloc == 0)
+                firstmalloc = nextlink;
+              sdlen = strlen (subdir);
+              nextname = (char *) malloc (sdlen + 1);
+              if (nextlink == 0 || nextname == 0)
+                {
+                  if (firstmalloc && firstmalloc == nextlink)
+                    firstmalloc = 0;
+                  /* If we reset FIRSTMALLOC we can free this here. */
+                  FREE (nextlink);
+                  FREE (nextname);
+                  free (subdir);
+                  lose = 1;
+                  break;
+                }
+              nextlink->next = lastlink;
+              lastlink = nextlink;
+              nextlink->name = nextname;
+              bcopy (subdir, nextname, sdlen + 1);
+              free (subdir);
+              ++count;
+              continue;
+            }
+          else if (flags & GX_MATCHDIRS)
+            free (subdir);
 
-	  convfn = fnx_fromfs (dp->d_name, D_NAMLEN (dp));
-	  if (strmatch (convpat, convfn, mflags) != FNM_NOMATCH)
-	    {
-	      if (nalloca < ALLOCA_MAX)
-		{
-		  nextlink = (struct globval *) alloca (sizeof (struct globval));
-		  nalloca += sizeof (struct globval);
-		}
-	      else
-		{
-		  nextlink = (struct globval *) malloc (sizeof (struct globval));
-		  if (firstmalloc == 0)
-		    firstmalloc = nextlink;
-		}
+          convfn = fnx_fromfs (dp->d_name, D_NAMLEN (dp));
+          if (strmatch (convpat, convfn, mflags) != FNM_NOMATCH)
+            {
+              if (nalloca < ALLOCA_MAX)
+                {
+                  nextlink = (struct globval *) alloca (sizeof (struct globval));
+                  nalloca += sizeof (struct globval);
+                }
+              else
+                {
+                  nextlink = (struct globval *) malloc (sizeof (struct globval));
+                  if (firstmalloc == 0)
+                    firstmalloc = nextlink;
+                }
 
-	      nextname = (char *) malloc (D_NAMLEN (dp) + 1);
-	      if (nextlink == 0 || nextname == 0)
-		{
-		  /* We free NEXTLINK here, since it won't be added to the
-		     LASTLINK chain. If we used malloc, and it returned non-
-		     NULL, firstmalloc will be set to something valid. If it's
-		     NEXTLINK, reset it before we free NEXTLINK to avoid
-		     duplicate frees. If not, it will be taken care of by the
-		     loop below with TMPLINK. */
-		  if (firstmalloc)
-		    {
-		      if (firstmalloc == nextlink)
-			firstmalloc = 0;
-		      FREE (nextlink);
-		    }
-		  FREE (nextname);
-		  lose = 1;
-		  break;
-		}
-	      nextlink->next = lastlink;
-	      lastlink = nextlink;
-	      nextlink->name = nextname;
-	      bcopy (dp->d_name, nextname, D_NAMLEN (dp) + 1);
-	      ++count;
-	    }
-	}
+              nextname = (char *) malloc (D_NAMLEN (dp) + 1);
+              if (nextlink == 0 || nextname == 0)
+                {
+                  /* We free NEXTLINK here, since it won't be added to the
+                     LASTLINK chain. If we used malloc, and it returned non-
+                     NULL, firstmalloc will be set to something valid. If it's
+                     NEXTLINK, reset it before we free NEXTLINK to avoid
+                     duplicate frees. If not, it will be taken care of by the
+                     loop below with TMPLINK. */
+                  if (firstmalloc)
+                    {
+                      if (firstmalloc == nextlink)
+                        firstmalloc = 0;
+                      FREE (nextlink);
+                    }
+                  FREE (nextname);
+                  lose = 1;
+                  break;
+                }
+              nextlink->next = lastlink;
+              lastlink = nextlink;
+              nextlink->name = nextname;
+              bcopy (dp->d_name, nextname, D_NAMLEN (dp) + 1);
+              ++count;
+            }
+        }
 
       (void) closedir (d);
 
       if (convpat != pat)
-	free (convpat);
+        free (convpat);
     }
 
   /* compat: if GX_ADDCURDIR, add the passed directory also.  Add an empty
@@ -942,22 +942,22 @@ glob_vector (char *pat, char *dir, int flags)
       nextname = (char *)malloc (sdlen + 1);
       nextlink = (struct globval *) malloc (sizeof (struct globval));
       if (nextlink == 0 || nextname == 0)
-	{
-	  FREE (nextlink);
-	  FREE (nextname);
-	  lose = 1;
-	}
+        {
+          FREE (nextlink);
+          FREE (nextname);
+          lose = 1;
+        }
       else
-	{
-	  nextlink->name = nextname;
-	  nextlink->next = lastlink;
-	  lastlink = nextlink;
-	  if (flags & GX_NULLDIR)
-	    nextname[0] = '\0';
-	  else
-	    bcopy (dir, nextname, sdlen + 1);
-	  ++count;
-	}
+        {
+          nextlink->name = nextname;
+          nextlink->next = lastlink;
+          lastlink = nextlink;
+          if (flags & GX_NULLDIR)
+            nextname[0] = '\0';
+          else
+            bcopy (dir, nextname, sdlen + 1);
+          ++count;
+        }
     }
 
   if (lose == 0)
@@ -973,22 +973,22 @@ glob_vector (char *pat, char *dir, int flags)
 
       /* Here free the strings we have got.  */
       while (lastlink)
-	{
-	  /* Since we build the list in reverse order, the first N entries
-	     will be allocated with malloc, if firstmalloc is set, from
-	     lastlink to firstmalloc. */
-	  if (firstmalloc)
-	    {
-	      if (lastlink == firstmalloc)
-		firstmalloc = 0;
-	      tmplink = lastlink;
-	    }
-	  else
-	    tmplink = 0;
-	  free (lastlink->name);
-	  lastlink = lastlink->next;
-	  FREE (tmplink);
-	}
+        {
+          /* Since we build the list in reverse order, the first N entries
+             will be allocated with malloc, if firstmalloc is set, from
+             lastlink to firstmalloc. */
+          if (firstmalloc)
+            {
+              if (lastlink == firstmalloc)
+                firstmalloc = 0;
+              tmplink = lastlink;
+            }
+          else
+            tmplink = 0;
+          free (lastlink->name);
+          lastlink = lastlink->next;
+          FREE (tmplink);
+        }
 
       /* Don't call QUIT; here; let higher layers deal with it. */
 
@@ -1009,14 +1009,14 @@ glob_vector (char *pat, char *dir, int flags)
     {
       tmplink = 0;
       while (lastlink)
-	{
-	  tmplink = lastlink;
-	  if (lastlink == firstmalloc)
-	    lastlink = firstmalloc = 0;
-	  else
-	    lastlink = lastlink->next;
-	  free (tmplink);
-	}
+        {
+          tmplink = lastlink;
+          if (lastlink == firstmalloc)
+            lastlink = firstmalloc = 0;
+          else
+            lastlink = lastlink->next;
+          free (tmplink);
+        }
     }
 
   return (name_vector);
@@ -1039,19 +1039,19 @@ glob_dir_to_array (char *dir, char **array, int flags)
   if (l == 0)
     {
       if (flags & GX_MARKDIRS)
-	for (i = 0; array[i]; i++)
-	  {
-	    if ((stat (array[i], &sb) == 0) && S_ISDIR (sb.st_mode))
-	      {
-		l = strlen (array[i]);
-		new = (char *)realloc (array[i], l + 2);
-		if (new == 0)
-		  return NULL;
-		new[l] = '/';
-		new[l+1] = '\0';
-		array[i] = new;
-	      }
-	  }
+        for (i = 0; array[i]; i++)
+          {
+            if ((stat (array[i], &sb) == 0) && S_ISDIR (sb.st_mode))
+              {
+                l = strlen (array[i]);
+                new = (char *)realloc (array[i], l + 2);
+                if (new == 0)
+                  return NULL;
+                new[l] = '/';
+                new[l+1] = '\0';
+                array[i] = new;
+              }
+          }
       return (array);
     }
 
@@ -1071,31 +1071,31 @@ glob_dir_to_array (char *dir, char **array, int flags)
       result[i] = (char *) malloc (l + strlen (array[i]) + 3);
 
       if (result[i] == NULL)
-	{
-	  int ind;
-	  for (ind = 0; ind < i; ind++)
-	    free (result[ind]);
-	  free (result);
-	  return (NULL);
-	}
+        {
+          int ind;
+          for (ind = 0; ind < i; ind++)
+            free (result[ind]);
+          free (result);
+          return (NULL);
+        }
 
       strcpy (result[i], dir);
       if (add_slash)
-	result[i][l] = '/';
+        result[i][l] = '/';
       if (array[i][0])
-	{
-	  strcpy (result[i] + l + add_slash, array[i]);
-	  if (flags & GX_MARKDIRS)
-	    {
-	      if ((stat (result[i], &sb) == 0) && S_ISDIR (sb.st_mode))
-		{
-		  size_t rlen;
-		  rlen = strlen (result[i]);
-		  result[i][rlen] = '/';
-		  result[i][rlen+1] = '\0';
-		}
-	    }
-	}
+        {
+          strcpy (result[i] + l + add_slash, array[i]);
+          if (flags & GX_MARKDIRS)
+            {
+              if ((stat (result[i], &sb) == 0) && S_ISDIR (sb.st_mode))
+                {
+                  size_t rlen;
+                  rlen = strlen (result[i]);
+                  result[i][rlen] = '/';
+                  result[i][rlen+1] = '\0';
+                }
+            }
+        }
       else
         result[i][l+add_slash] = '\0';
     }
@@ -1121,7 +1121,7 @@ glob_filename (char *pathname, int flags)
   unsigned int result_size;
   char *directory_name, *filename, *dname, *fn;
   size_t directory_len;
-  int free_dirname;			/* flag */
+  int free_dirname;                     /* flag */
   int dflags, hasglob;
 
   result = (char **) malloc (sizeof (char *));
@@ -1141,7 +1141,7 @@ glob_filename (char *pathname, int flags)
       fn = glob_dirscan (pathname, '/');
 #if DEBUG_MATCHING
       if (fn != filename)
-	fprintf (stderr, "glob_filename: glob_dirscan: fn (%s) != filename (%s)\n", fn ? fn : "(null)", filename);
+        fprintf (stderr, "glob_filename: glob_dirscan: fn (%s) != filename (%s)\n", fn ? fn : "(null)", filename);
 #endif
       filename = fn;
     }
@@ -1159,11 +1159,11 @@ glob_filename (char *pathname, int flags)
       directory_len = (filename - pathname) + 1;
       directory_name = (char *) malloc (directory_len + 1);
 
-      if (directory_name == 0)		/* allocation failed? */
-	{
-	  free (result);
-	  return (NULL);
-	}
+      if (directory_name == 0)          /* allocation failed? */
+        {
+          free (result);
+          return (NULL);
+        }
 
       bcopy (pathname, directory_name, directory_len);
       directory_name[directory_len] = '\0';
@@ -1186,243 +1186,243 @@ glob_filename (char *pathname, int flags)
       d = directory_name;
       dflags = flags & ~GX_MARKDIRS;
       /* Collapse a sequence of ** patterns separated by one or more slashes
-	 to a single ** terminated by a slash or NUL */
+         to a single ** terminated by a slash or NUL */
       if ((flags & GX_GLOBSTAR) && d[0] == '*' && d[1] == '*' && (d[2] == '/' || d[2] == '\0'))
-	{
-	  p = d;
-	  while (d[0] == '*' && d[1] == '*' && (d[2] == '/' || d[2] == '\0'))
-	    {
-	      p = d;
-	      if (d[2])
-		{
-		  d += 3;
-		  while (*d == '/')
-		    d++;
-		  if (*d == 0)
-		    break;
-		}
-	    }
-	  if (*d == 0)
-	    all_starstar = 1;
-	  d = p;
-	  dflags |= GX_ALLDIRS|GX_ADDCURDIR;
-	  directory_len = strlen (d);
-	}
+        {
+          p = d;
+          while (d[0] == '*' && d[1] == '*' && (d[2] == '/' || d[2] == '\0'))
+            {
+              p = d;
+              if (d[2])
+                {
+                  d += 3;
+                  while (*d == '/')
+                    d++;
+                  if (*d == 0)
+                    break;
+                }
+            }
+          if (*d == 0)
+            all_starstar = 1;
+          d = p;
+          dflags |= GX_ALLDIRS|GX_ADDCURDIR;
+          directory_len = strlen (d);
+        }
 
       /* If there is a non [star][star]/ component in directory_name, we
-	 still need to collapse trailing sequences of [star][star]/ into
-	 a single one and note that the directory name ends with [star][star],
-	 so we can compensate if filename is [star][star] */
+         still need to collapse trailing sequences of [star][star]/ into
+         a single one and note that the directory name ends with [star][star],
+         so we can compensate if filename is [star][star] */
       if ((flags & GX_GLOBSTAR) && all_starstar == 0)
-	{
-	  size_t dl, prev;
-	  prev = dl = directory_len;
-	  while (dl >= 4 && d[dl - 1] == '/' &&
-			   d[dl - 2] == '*' &&
-			   d[dl - 3] == '*' &&
-			   d[dl - 4] == '/')
-	    prev = dl, dl -= 3;
-	  if (dl != directory_len)
-	    last_starstar = 1;
-	  directory_len = prev;
-	}
+        {
+          size_t dl, prev;
+          prev = dl = directory_len;
+          while (dl >= 4 && d[dl - 1] == '/' &&
+                           d[dl - 2] == '*' &&
+                           d[dl - 3] == '*' &&
+                           d[dl - 4] == '/')
+            prev = dl, dl -= 3;
+          if (dl != directory_len)
+            last_starstar = 1;
+          directory_len = prev;
+        }
 
       /* If the directory name ends in [star][star]/ but the filename is
-	 [star][star], just remove the final [star][star] from the directory
-	 so we don't have to scan everything twice. */
+         [star][star], just remove the final [star][star] from the directory
+         so we don't have to scan everything twice. */
       if (last_starstar && directory_len > 4 &&
-	    filename[0] == '*' && filename[1] == '*' && filename[2] == 0)
-	{
-	  directory_len -= 3;
-	}
+            filename[0] == '*' && filename[1] == '*' && filename[2] == 0)
+        {
+          directory_len -= 3;
+        }
 
       if (d[directory_len - 1] == '/')
-	d[directory_len - 1] = '\0';
+        d[directory_len - 1] = '\0';
 
       directories = glob_filename (d, dflags|GX_RECURSE);
 
       if (free_dirname)
-	{
-	  free (directory_name);
-	  directory_name = NULL;
-	}
+        {
+          free (directory_name);
+          directory_name = NULL;
+        }
 
       if (directories == NULL)
-	goto memory_error;
+        goto memory_error;
       else if (directories == (char **)&glob_error_return)
-	{
-	  free ((char *) result);
-	  return ((char **) &glob_error_return);
-	}
+        {
+          free ((char *) result);
+          return ((char **) &glob_error_return);
+        }
       else if (*directories == NULL)
-	{
-	  free ((char *) directories);
-	  free ((char *) result);
-	  return ((char **) &glob_error_return);
-	}
+        {
+          free ((char *) directories);
+          free ((char *) result);
+          return ((char **) &glob_error_return);
+        }
 
       /* If we have something like [star][star]/[star][star], it's no use to
          glob **, then do it again, and throw half the results away.  */
       if (all_starstar && filename[0] == '*' && filename[1] == '*' && filename[2] == 0)
-	{
-	  free ((char *) directories);
-	  free (directory_name);
-	  directory_name = NULL;
-	  directory_len = 0;
-	  goto only_filename;
-	}
+        {
+          free ((char *) directories);
+          free (directory_name);
+          directory_name = NULL;
+          directory_len = 0;
+          goto only_filename;
+        }
 
       /* We have successfully globbed the preceding directory name.
-	 For each name in DIRECTORIES, call glob_vector on it and
-	 FILENAME.  Concatenate the results together.  */
+         For each name in DIRECTORIES, call glob_vector on it and
+         FILENAME.  Concatenate the results together.  */
       for (i = 0; directories[i] != NULL; ++i)
-	{
-	  char **temp_results;
-	  int shouldbreak;
+        {
+          char **temp_results;
+          int shouldbreak;
 
-	  shouldbreak = 0;
-	  /* XXX -- we've recursively scanned any directories resulting from
-	     a `**', so turn off the flag.  We turn it on again below if
-	     filename is `**' */
-	  /* Scan directory even on a NULL filename.  That way, `*h/'
-	     returns only directories ending in `h', instead of all
-	     files ending in `h' with a `/' appended. */
-	  dname = directories[i];
-	  dflags = flags & ~(GX_MARKDIRS|GX_ALLDIRS|GX_ADDCURDIR);
-	  /* last_starstar? */
-	  if ((flags & GX_GLOBSTAR) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
-	    dflags |= GX_ALLDIRS|GX_ADDCURDIR;
-	  if (dname[0] == '\0' && filename[0])
-	    {
-	      dflags |= GX_NULLDIR;
-	      dname = ".";	/* treat null directory name and non-null filename as current directory */
-	    }
+          shouldbreak = 0;
+          /* XXX -- we've recursively scanned any directories resulting from
+             a `**', so turn off the flag.  We turn it on again below if
+             filename is `**' */
+          /* Scan directory even on a NULL filename.  That way, `*h/'
+             returns only directories ending in `h', instead of all
+             files ending in `h' with a `/' appended. */
+          dname = directories[i];
+          dflags = flags & ~(GX_MARKDIRS|GX_ALLDIRS|GX_ADDCURDIR);
+          /* last_starstar? */
+          if ((flags & GX_GLOBSTAR) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
+            dflags |= GX_ALLDIRS|GX_ADDCURDIR;
+          if (dname[0] == '\0' && filename[0])
+            {
+              dflags |= GX_NULLDIR;
+              dname = ".";      /* treat null directory name and non-null filename as current directory */
+            }
 
-	  /* Special handling for symlinks to directories with globstar on */
-	  if (all_starstar && (dflags & GX_NULLDIR) == 0)
-	    {
-	      /* If we have a directory name that is not null (GX_NULLDIR above)
-		 and is a symlink to a directory, we return the symlink if
-		 we're not `descending' into it (filename[0] == 0) and return
-		 glob_error_return (which causes the code below to skip the
-		 name) otherwise. I should fold this into a test that does both
-		 checks instead of calling stat twice. */
-	      if (glob_testdir (dname, flags|GX_ALLDIRS) == -2 && glob_testdir (dname, 0) == 0)
-		{
-		  if (filename[0] != 0)
-		    temp_results = (char **)&glob_error_return;		/* skip */
-		  else
-		    {
-		      /* Construct array to pass to glob_dir_to_array */
-		      temp_results = (char **)malloc (2 * sizeof (char *));
-		      if (temp_results == NULL)
-			goto memory_error;
-		      temp_results[0] = (char *)malloc (1);
-		      if (temp_results[0] == 0)
-			{
-			  free (temp_results);
-			  goto memory_error;
-			}
-		      **temp_results = '\0';
-		      temp_results[1] = NULL;
-		      dflags |= GX_SYMLINK;	/* mostly for debugging */
-		    }
-		}
-	      else
-		temp_results = glob_vector (filename, dname, dflags);
-	    }
-	  else
-	    temp_results = glob_vector (filename, dname, dflags);
+          /* Special handling for symlinks to directories with globstar on */
+          if (all_starstar && (dflags & GX_NULLDIR) == 0)
+            {
+              /* If we have a directory name that is not null (GX_NULLDIR above)
+                 and is a symlink to a directory, we return the symlink if
+                 we're not `descending' into it (filename[0] == 0) and return
+                 glob_error_return (which causes the code below to skip the
+                 name) otherwise. I should fold this into a test that does both
+                 checks instead of calling stat twice. */
+              if (glob_testdir (dname, flags|GX_ALLDIRS) == -2 && glob_testdir (dname, 0) == 0)
+                {
+                  if (filename[0] != 0)
+                    temp_results = (char **)&glob_error_return;         /* skip */
+                  else
+                    {
+                      /* Construct array to pass to glob_dir_to_array */
+                      temp_results = (char **)malloc (2 * sizeof (char *));
+                      if (temp_results == NULL)
+                        goto memory_error;
+                      temp_results[0] = (char *)malloc (1);
+                      if (temp_results[0] == 0)
+                        {
+                          free (temp_results);
+                          goto memory_error;
+                        }
+                      **temp_results = '\0';
+                      temp_results[1] = NULL;
+                      dflags |= GX_SYMLINK;     /* mostly for debugging */
+                    }
+                }
+              else
+                temp_results = glob_vector (filename, dname, dflags);
+            }
+          else
+            temp_results = glob_vector (filename, dname, dflags);
 
-	  /* Handle error cases. */
-	  if (temp_results == NULL)
-	    goto memory_error;
-	  else if (temp_results == (char **)&glob_error_return)
-	    /* This filename is probably not a directory.  Ignore it.  */
-	    ;
-	  else
-	    {
-	      char **array;
-	      unsigned int l;
+          /* Handle error cases. */
+          if (temp_results == NULL)
+            goto memory_error;
+          else if (temp_results == (char **)&glob_error_return)
+            /* This filename is probably not a directory.  Ignore it.  */
+            ;
+          else
+            {
+              char **array;
+              unsigned int l;
 
-	      /* If we're expanding **, we don't need to glue the directory
-		 name to the results; we've already done it in glob_vector */
-	      if ((dflags & GX_ALLDIRS) && filename[0] == '*' && filename[1] == '*' && (filename[2] == '\0' || filename[2] == '/'))
-		{
-		  /* When do we remove null elements from temp_results?  And
-		     how to avoid duplicate elements in the final result? */
-		  /* If (dflags & GX_NULLDIR) glob_filename potentially left a
-		     NULL placeholder in the temp results just in case
-		     glob_vector/glob_dir_to_array did something with it, but
-		     if it didn't, and we're not supposed to be passing them
-		     through for some reason ((flags & GX_NULLDIR) == 0) we
-		     need to remove all the NULL elements from the beginning
-		     of TEMP_RESULTS. */
-		  /* If we have a null directory name and ** as the filename,
-		     we have just searched for everything from the current
-		     directory on down. Break now (shouldbreak = 1) to avoid
-		     duplicate entries in the final result. */
-#define NULL_PLACEHOLDER(x)	((x) && *(x) && **(x) == 0)
-		  if ((dflags & GX_NULLDIR) && (flags & GX_NULLDIR) == 0 &&
-			NULL_PLACEHOLDER (temp_results))
+              /* If we're expanding **, we don't need to glue the directory
+                 name to the results; we've already done it in glob_vector */
+              if ((dflags & GX_ALLDIRS) && filename[0] == '*' && filename[1] == '*' && (filename[2] == '\0' || filename[2] == '/'))
+                {
+                  /* When do we remove null elements from temp_results?  And
+                     how to avoid duplicate elements in the final result? */
+                  /* If (dflags & GX_NULLDIR) glob_filename potentially left a
+                     NULL placeholder in the temp results just in case
+                     glob_vector/glob_dir_to_array did something with it, but
+                     if it didn't, and we're not supposed to be passing them
+                     through for some reason ((flags & GX_NULLDIR) == 0) we
+                     need to remove all the NULL elements from the beginning
+                     of TEMP_RESULTS. */
+                  /* If we have a null directory name and ** as the filename,
+                     we have just searched for everything from the current
+                     directory on down. Break now (shouldbreak = 1) to avoid
+                     duplicate entries in the final result. */
+#define NULL_PLACEHOLDER(x)     ((x) && *(x) && **(x) == 0)
+                  if ((dflags & GX_NULLDIR) && (flags & GX_NULLDIR) == 0 &&
+                        NULL_PLACEHOLDER (temp_results))
 #undef NULL_PLACEHOLDER
-		    {
-		      int i, n;
-		      for (n = 0; temp_results[n] && *temp_results[n] == 0; n++)
-			;
-		      i = n;
-		      do
-			temp_results[i - n] = temp_results[i];
-		      while (temp_results[i++] != 0);
-		      array = temp_results;
-		      shouldbreak = 1;
-		    }
-	          else
-		    array = temp_results;
-		}
-	      else if (dflags & GX_SYMLINK)
-		array = glob_dir_to_array (directories[i], temp_results, flags);
-	      else
-		array = glob_dir_to_array (directories[i], temp_results, flags);
-	      l = 0;
-	      while (array[l] != NULL)
-		++l;
+                    {
+                      int i, n;
+                      for (n = 0; temp_results[n] && *temp_results[n] == 0; n++)
+                        ;
+                      i = n;
+                      do
+                        temp_results[i - n] = temp_results[i];
+                      while (temp_results[i++] != 0);
+                      array = temp_results;
+                      shouldbreak = 1;
+                    }
+                  else
+                    array = temp_results;
+                }
+              else if (dflags & GX_SYMLINK)
+                array = glob_dir_to_array (directories[i], temp_results, flags);
+              else
+                array = glob_dir_to_array (directories[i], temp_results, flags);
+              l = 0;
+              while (array[l] != NULL)
+                ++l;
 
-	      new_result = (char **)realloc (result, (result_size + l) * sizeof (char *));
+              new_result = (char **)realloc (result, (result_size + l) * sizeof (char *));
 
-	      if (new_result == NULL)
-		{
-		  for (l = 0; array[l]; ++l)
-		    free (array[l]);
-		  free ((char *)array);
-		  goto memory_error;
-		}
-	      result = new_result;
+              if (new_result == NULL)
+                {
+                  for (l = 0; array[l]; ++l)
+                    free (array[l]);
+                  free ((char *)array);
+                  goto memory_error;
+                }
+              result = new_result;
 
-	      for (l = 0; array[l] != NULL; ++l)
-		result[result_size++ - 1] = array[l];
+              for (l = 0; array[l] != NULL; ++l)
+                result[result_size++ - 1] = array[l];
 
-	      result[result_size - 1] = NULL;
+              result[result_size - 1] = NULL;
 
-	      /* Note that the elements of ARRAY are not freed.  */
-	      if (array != temp_results)
-		free ((char *) array);
-	      else if ((dflags & GX_ALLDIRS) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
-		free (temp_results);	/* expanding ** case above */
-	      else if (array == temp_results)
-		/* If array == temp_results, either we assigned it above or
-		   glob_dir_to_array returned temp_results because the dirname
-		   was the empty string. In any case, we assume temp_results
-		   has not been freed, and free it here. */
-		free (temp_results);
+              /* Note that the elements of ARRAY are not freed.  */
+              if (array != temp_results)
+                free ((char *) array);
+              else if ((dflags & GX_ALLDIRS) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
+                free (temp_results);    /* expanding ** case above */
+              else if (array == temp_results)
+                /* If array == temp_results, either we assigned it above or
+                   glob_dir_to_array returned temp_results because the dirname
+                   was the empty string. In any case, we assume temp_results
+                   has not been freed, and free it here. */
+                free (temp_results);
 
-	      if (shouldbreak)
-		break;
-	    }
-	}
+              if (shouldbreak)
+                break;
+            }
+        }
       /* Free the directories.  */
       for (i = 0; directories[i]; i++)
-	free (directories[i]);
+        free (directories[i]);
 
       free ((char *) directories);
 
@@ -1435,47 +1435,47 @@ only_filename:
     {
       result = (char **) realloc ((char *) result, 2 * sizeof (char *));
       if (result == NULL)
-	{
-	  if (free_dirname)
-	    free (directory_name);
-	  return (NULL);
-	}
+        {
+          if (free_dirname)
+            free (directory_name);
+          return (NULL);
+        }
       /* If we have a directory name with quoted characters, and we are
-	 being called recursively to glob the directory portion of a pathname,
-	 we need to dequote the directory name before returning it so the
-	 caller can read the directory */
+         being called recursively to glob the directory portion of a pathname,
+         we need to dequote the directory name before returning it so the
+         caller can read the directory */
       if (directory_len > 0 && hasglob == 2 && (flags & GX_RECURSE) != 0)
-	{
-	  dequote_pathname (directory_name);
-	  directory_len = strlen (directory_name);
-	}
+        {
+          dequote_pathname (directory_name);
+          directory_len = strlen (directory_name);
+        }
 
       /* We could check whether or not the dequoted directory_name is a
-	 directory and return it here, returning the original directory_name
-	 if not, but we don't do that. We do return the dequoted directory
-	 name if we're not being called recursively and the dequoted name
-	 corresponds to an actual directory. For better backwards compatibility,
-	 we can return &glob_error_return unconditionally in this case. */
+         directory and return it here, returning the original directory_name
+         if not, but we don't do that. We do return the dequoted directory
+         name if we're not being called recursively and the dequoted name
+         corresponds to an actual directory. For better backwards compatibility,
+         we can return &glob_error_return unconditionally in this case. */
 
       if (directory_len > 0 && hasglob == 2 && (flags & GX_RECURSE) == 0)
-	{
-	  dequote_pathname (directory_name);
-	  if (glob_testdir (directory_name, 0) < 0)
-	    {
-	      if (free_dirname)
-		free (directory_name);
-	      free ((char *) result);
-	      return ((char **)&glob_error_return);
-	    }
-	}
+        {
+          dequote_pathname (directory_name);
+          if (glob_testdir (directory_name, 0) < 0)
+            {
+              if (free_dirname)
+                free (directory_name);
+              free ((char *) result);
+              return ((char **)&glob_error_return);
+            }
+        }
 
       /* Handle GX_MARKDIRS here. */
       result[0] = (char *) malloc (directory_len + 1);
       if (result[0] == NULL)
-	goto memory_error;
+        goto memory_error;
       bcopy (directory_name, result[0], directory_len + 1);
       if (free_dirname)
-	free (directory_name);
+        free (directory_name);
       result[1] = NULL;
       return (result);
     }
@@ -1484,52 +1484,52 @@ only_filename:
       char **temp_results;
 
       /* There are no unquoted globbing characters in DIRECTORY_NAME.
-	 Dequote it before we try to open the directory since there may
-	 be quoted globbing characters which should be treated verbatim. */
+         Dequote it before we try to open the directory since there may
+         be quoted globbing characters which should be treated verbatim. */
       if (directory_len > 0)
-	dequote_pathname (directory_name);
+        dequote_pathname (directory_name);
 
       /* We allocated a small array called RESULT, which we won't be using.
-	 Free that memory now. */
+         Free that memory now. */
       free (result);
 
       /* Just return what glob_vector () returns appended to the
-	 directory name. */
+         directory name. */
       /* If flags & GX_ALLDIRS, we're called recursively */
       dflags = flags & ~GX_MARKDIRS;
       if (directory_len == 0)
-	dflags |= GX_NULLDIR;
+        dflags |= GX_NULLDIR;
       if ((flags & GX_GLOBSTAR) && filename[0] == '*' && filename[1] == '*' && filename[2] == '\0')
-	{
-	  dflags |= GX_ALLDIRS|GX_ADDCURDIR;
+        {
+          dflags |= GX_ALLDIRS|GX_ADDCURDIR;
 #if 0
-	  /* If we want all directories (dflags & GX_ALLDIRS) and we're not
-	     being called recursively as something like `echo [star][star]/[star].o'
-	     ((flags & GX_ALLDIRS) == 0), we want to prevent glob_vector from
-	     adding a null directory name to the front of the temp_results
-	     array.  We turn off ADDCURDIR if not called recursively and
-	     dlen == 0 */
+          /* If we want all directories (dflags & GX_ALLDIRS) and we're not
+             being called recursively as something like `echo [star][star]/[star].o'
+             ((flags & GX_ALLDIRS) == 0), we want to prevent glob_vector from
+             adding a null directory name to the front of the temp_results
+             array.  We turn off ADDCURDIR if not called recursively and
+             dlen == 0 */
 #endif
-	  if (directory_len == 0 && (flags & GX_ALLDIRS) == 0)
-	    dflags &= ~GX_ADDCURDIR;
-	}
+          if (directory_len == 0 && (flags & GX_ALLDIRS) == 0)
+            dflags &= ~GX_ADDCURDIR;
+        }
       temp_results = glob_vector (filename,
-				  (directory_len == 0 ? "." : directory_name),
-				  dflags);
+                                  (directory_len == 0 ? "." : directory_name),
+                                  dflags);
 
       if (temp_results == NULL || temp_results == (char **)&glob_error_return)
-	{
-	  if (free_dirname)
-	    free (directory_name);
-	  QUIT;			/* XXX - shell */
-	  run_pending_traps ();
-	  return (temp_results);
-	}
+        {
+          if (free_dirname)
+            free (directory_name);
+          QUIT;                 /* XXX - shell */
+          run_pending_traps ();
+          return (temp_results);
+        }
 
       result = glob_dir_to_array ((dflags & GX_ALLDIRS) ? "" : directory_name, temp_results, flags);
 
       if (free_dirname)
-	free (directory_name);
+        free (directory_name);
 
       return (result);
     }
@@ -1541,7 +1541,7 @@ only_filename:
     {
       register unsigned int i;
       for (i = 0; result[i] != NULL; ++i)
-	free (result[i]);
+        free (result[i]);
       free ((char *) result);
     }
 
@@ -1566,14 +1566,14 @@ main (argc, argv)
     {
       char **value = glob_filename (argv[i], 0);
       if (value == NULL)
-	puts ("Out of memory.");
+        puts ("Out of memory.");
       else if (value == &glob_error_return)
-	perror (argv[i]);
+        perror (argv[i]);
       else
-	for (i = 0; value[i] != NULL; i++)
-	  puts (value[i]);
+        for (i = 0; value[i] != NULL; i++)
+          puts (value[i]);
     }
 
   exit (0);
 }
-#endif	/* TEST.  */
+#endif  /* TEST.  */

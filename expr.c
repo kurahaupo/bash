@@ -25,24 +25,24 @@
  The following operators are handled, grouped into a set of levels in
  order of decreasing precedence.
 
-	"id++", "id--"		[post-increment and post-decrement]
-	"-", "+"		[(unary operators)]
-	"++id", "--id"		[pre-increment and pre-decrement]
-	"!", "~"
-	"**"			[(exponentiation)]
-	"*", "/", "%"
-	"+", "-"
-	"<<", ">>"
-	"<=", ">=", "<", ">"
-	"==", "!="
-	"&"
-	"^"
-	"|"
-	"&&"
-	"||"
-	"expr ? expr : expr"
-	"=", "*=", "/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|="
-	,			[comma]
+        "id++", "id--"          [post-increment and post-decrement]
+        "-", "+"                [(unary operators)]
+        "++id", "--id"          [pre-increment and pre-decrement]
+        "!", "~"
+        "**"                    [(exponentiation)]
+        "*", "/", "%"
+        "+", "-"
+        "<<", ">>"
+        "<=", ">=", "<", ">"
+        "==", "!="
+        "&"
+        "^"
+        "|"
+        "&&"
+        "||"
+        "expr ? expr : expr"
+        "=", "*=", "/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|="
+        ,                       [comma]
 
  (Note that most of these operators have special meaning to bash, and an
  entire expression should be quoted, e.g. "a=$a+1" or "a=a+1" to ensure
@@ -86,7 +86,7 @@
 #include "execute_cmd.h"
 #include "flags.h"
 #include "subst.h"
-#include "typemax.h"		/* INTMAX_MAX, INTMAX_MIN */
+#include "typemax.h"            /* INTMAX_MAX, INTMAX_MIN */
 
 /* Because of the $((...)) construct, expressions may include newlines.
    Here is a macro which accepts newlines, tabs and spaces as whitespace. */
@@ -102,45 +102,45 @@
 
 /* The Tokens.  Singing "The Lion Sleeps Tonight". */
 
-#define EQEQ	1	/* "==" */
-#define NEQ	2	/* "!=" */
-#define LEQ	3	/* "<=" */
-#define GEQ	4	/* ">=" */
-#define STR	5	/* string */
-#define NUM	6	/* number */
-#define LAND	7	/* "&&" Logical AND */
-#define LOR	8	/* "||" Logical OR */
-#define LSH	9	/* "<<" Left SHift */
-#define RSH    10	/* ">>" Right SHift */
-#define OP_ASSIGN 11	/* op= expassign as in Posix.2 */
-#define COND	12	/* exp1 ? exp2 : exp3 */
-#define POWER	13	/* exp1**exp2 */
-#define PREINC	14	/* ++var */
-#define PREDEC	15	/* --var */
-#define POSTINC	16	/* var++ */
-#define POSTDEC	17	/* var-- */
-#define EQ	'='
-#define GT	'>'
-#define LT	'<'
-#define PLUS	'+'
-#define MINUS	'-'
-#define MUL	'*'
-#define DIV	'/'
-#define MOD	'%'
-#define NOT	'!'
-#define LPAR	'('
-#define RPAR	')'
-#define BAND	'&'	/* Bitwise AND */
-#define BOR	'|'	/* Bitwise OR. */
-#define BXOR	'^'	/* Bitwise eXclusive OR. */
-#define BNOT	'~'	/* Bitwise NOT; Two's complement. */
-#define QUES	'?'
-#define COL	':'
-#define COMMA	','
+#define EQEQ    1       /* "==" */
+#define NEQ     2       /* "!=" */
+#define LEQ     3       /* "<=" */
+#define GEQ     4       /* ">=" */
+#define STR     5       /* string */
+#define NUM     6       /* number */
+#define LAND    7       /* "&&" Logical AND */
+#define LOR     8       /* "||" Logical OR */
+#define LSH     9       /* "<<" Left SHift */
+#define RSH    10       /* ">>" Right SHift */
+#define OP_ASSIGN 11    /* op= expassign as in Posix.2 */
+#define COND    12      /* exp1 ? exp2 : exp3 */
+#define POWER   13      /* exp1**exp2 */
+#define PREINC  14      /* ++var */
+#define PREDEC  15      /* --var */
+#define POSTINC 16      /* var++ */
+#define POSTDEC 17      /* var-- */
+#define EQ      '='
+#define GT      '>'
+#define LT      '<'
+#define PLUS    '+'
+#define MINUS   '-'
+#define MUL     '*'
+#define DIV     '/'
+#define MOD     '%'
+#define NOT     '!'
+#define LPAR    '('
+#define RPAR    ')'
+#define BAND    '&'     /* Bitwise AND */
+#define BOR     '|'     /* Bitwise OR. */
+#define BXOR    '^'     /* Bitwise eXclusive OR. */
+#define BNOT    '~'     /* Bitwise NOT; Two's complement. */
+#define QUES    '?'
+#define COL     ':'
+#define COMMA   ','
 
 /* This should be the function corresponding to the operator with the
    lowest precedence. */
-#define EXP_LOWEST	expcomma
+#define EXP_LOWEST      expcomma
 
 #ifndef MAX_INT_LEN
 #  define MAX_INT_LEN 32
@@ -148,10 +148,10 @@
 
 struct lvalue
 {
-  char *tokstr;		/* possibly-rewritten lvalue if not NULL */
-  intmax_t tokval;	/* expression evaluated value */
-  SHELL_VAR *tokvar;	/* variable described by array or var reference */
-  intmax_t ind;		/* array index if not -1 */
+  char *tokstr;         /* possibly-rewritten lvalue if not NULL */
+  intmax_t tokval;      /* expression evaluated value */
+  SHELL_VAR *tokvar;    /* variable described by array or var reference */
+  intmax_t ind;         /* array index if not -1 */
 };
 
 /* A structure defining a single expression context. */
@@ -165,66 +165,66 @@ typedef struct
   struct lvalue lval;
 } EXPR_CONTEXT;
 
-static char	*expression;	/* The current expression */
-static char	*tp;		/* token lexical position */
-static char	*lasttp;	/* pointer to last token position */
-static int	curtok;		/* the current token */
-static int	lasttok;	/* the previous token */
-static int	assigntok;	/* the OP in OP= */
-static char	*tokstr;	/* current token string */
-static intmax_t	tokval;		/* current token value */
-static int	noeval;		/* set to 1 if no assignment to be done */
+static char     *expression;    /* The current expression */
+static char     *tp;            /* token lexical position */
+static char     *lasttp;        /* pointer to last token position */
+static int      curtok;         /* the current token */
+static int      lasttok;        /* the previous token */
+static int      assigntok;      /* the OP in OP= */
+static char     *tokstr;        /* current token string */
+static intmax_t tokval;         /* current token value */
+static int      noeval;         /* set to 1 if no assignment to be done */
 static procenv_t evalbuf;
 
 /* set to 1 if the expression has already been run through word expansion */
-static int	already_expanded;
+static int      already_expanded;
 
 static struct lvalue curlval = {0, 0, 0, -1};
 static struct lvalue lastlval = {0, 0, 0, -1};
 
-static int	is_arithop (int);
-static int	is_multiop (int);
-static void	readtok (void);	/* lexical analyzer */
+static int      is_arithop (int);
+static int      is_multiop (int);
+static void     readtok (void); /* lexical analyzer */
 
-static void	init_lvalue (struct lvalue *);
+static void     init_lvalue (struct lvalue *);
 static struct lvalue *alloc_lvalue (void);
-static void	free_lvalue (struct lvalue *);
+static void     free_lvalue (struct lvalue *);
 
-static intmax_t	expr_streval (char *, int, struct lvalue *);
-static intmax_t	strlong (char *);
-static void	evalerror (const char *);
+static intmax_t expr_streval (char *, int, struct lvalue *);
+static intmax_t strlong (char *);
+static void     evalerror (const char *);
 
-static void	pushexp (void);
-static void	popexp (void);
-static void	expr_unwind (void);
-static void	expr_bind_variable (const char *, const char *);
+static void     pushexp (void);
+static void     popexp (void);
+static void     expr_unwind (void);
+static void     expr_bind_variable (const char *, const char *);
 #if defined (ARRAY_VARS)
-static void	expr_bind_array_element (const char *, arrayind_t, const char *);
+static void     expr_bind_array_element (const char *, arrayind_t, const char *);
 #endif
 
 static intmax_t subexpr (const char *);
 
-static intmax_t	expcomma (void);
+static intmax_t expcomma (void);
 static intmax_t expassign (void);
-static intmax_t	expcond (void);
+static intmax_t expcond (void);
 static intmax_t explor (void);
 static intmax_t expland (void);
-static intmax_t	expbor (void);
-static intmax_t	expbxor (void);
-static intmax_t	expband (void);
+static intmax_t expbor (void);
+static intmax_t expbxor (void);
+static intmax_t expband (void);
 static intmax_t expeq (void);
 static intmax_t expcompare (void);
 static intmax_t expshift (void);
 static intmax_t expaddsub (void);
 static intmax_t expmuldiv (void);
-static intmax_t	exppower (void);
+static intmax_t exppower (void);
 static intmax_t expunary (void);
 static intmax_t exp0 (void);
 
 /* Global var which contains the stack of expression contexts. */
 static EXPR_CONTEXT **expr_stack;
-static int expr_depth;		   /* Location in the stack. */
-static size_t expr_stack_size;	   /* Number of slots already allocated. */
+static int expr_depth;             /* Location in the stack. */
+static size_t expr_stack_size;     /* Number of slots already allocated. */
 
 #if defined (ARRAY_VARS)
 extern const char * const bash_badsub_errmsg;
@@ -288,7 +288,7 @@ popexp (void)
   if (expr_depth <= 0)
     {
       /* See the comment at the top of evalexp() for an explanation of why
-	 this is done. */
+         this is done. */
       expression = lasttp = 0;
       evalerror (_("recursion stack underflow"));
     }
@@ -307,17 +307,17 @@ expr_unwind (void)
   while (--expr_depth > 0)
     {
       if (expr_stack[expr_depth]->tokstr)
-	free (expr_stack[expr_depth]->tokstr);
+        free (expr_stack[expr_depth]->tokstr);
 
       if (expr_stack[expr_depth]->expression)
-	free (expr_stack[expr_depth]->expression);
+        free (expr_stack[expr_depth]->expression);
 
       free (expr_stack[expr_depth]);
     }
   if (expr_depth == 0)
-    free (expr_stack[expr_depth]);	/* free the allocated EXPR_CONTEXT */
+    free (expr_stack[expr_depth]);      /* free the allocated EXPR_CONTEXT */
 
-  noeval = 0;	/* XXX */
+  noeval = 0;   /* XXX */
 }
 
 static void
@@ -327,17 +327,17 @@ expr_bind_variable (const char *lhs, const char *rhs)
   int aflags;
 
   if (lhs == 0 || *lhs == 0)
-    return;		/* XXX */
+    return;             /* XXX */
 
 #if defined (ARRAY_VARS)
   aflags = (array_expand_once && already_expanded) ? ASS_NOEXPAND : 0;
-  aflags |= ASS_ALLOWALLSUB;		/* allow assoc[@]=value */
+  aflags |= ASS_ALLOWALLSUB;            /* allow assoc[@]=value */
 #else
   aflags = 0;
 #endif
   v = bind_int_variable (lhs, rhs, aflags);
   if (v && ASSIGN_DISALLOWED (v, 0))
-    sh_longjmp (evalbuf, 1);	/* variable assignment error */
+    sh_longjmp (evalbuf, 1);    /* variable assignment error */
   stupidly_hack_special_variables (lhs);
 }
 
@@ -356,7 +356,7 @@ expr_skipsubscript (char *vp, char *cp)
     {
       *cp = '\0';
       isassoc = valid_identifier (vp) && (entry = find_variable (vp)) && assoc_p (entry);
-      *cp = '[';	/* ] */
+      *cp = '[';        /* ] */
     }
   flags = (isassoc && array_expand_once && already_expanded) ? VA_NOEXPAND : 0;
   return (skipsubscript (cp, 0, flags));
@@ -377,8 +377,8 @@ expr_bind_array_element (const char *tok, arrayind_t ind, const char *rhs)
   llen = strlen (vname) + sizeof (ibuf) + 3;
   lhs = xmalloc (llen);
 
-  sprintf (lhs, "%s[%s]", vname, istr);		/* XXX */
-  
+  sprintf (lhs, "%s[%s]", vname, istr);         /* XXX */
+
 /*itrace("expr_bind_array_element: %s=%s", lhs, rhs);*/
   expr_bind_variable (lhs, rhs);
   free (vname);
@@ -421,13 +421,13 @@ evalexp (const char *expr, int flags, int *validp)
       tokstr = expression = (char *)NULL;
 
       expr_unwind ();
-      expr_depth = 0;	/* XXX - make sure */
+      expr_depth = 0;   /* XXX - make sure */
 
       /* We copy in case we've called evalexp recursively */
       FASTCOPY (oevalbuf, evalbuf, sizeof (evalbuf));
 
       if (validp)
-	*validp = 0;
+        *validp = 0;
       return (0);
     }
 
@@ -492,7 +492,7 @@ expcomma (void)
 
   return value;
 }
-  
+
 static intmax_t
 expassign (void)
 {
@@ -512,16 +512,16 @@ expassign (void)
       special = curtok == OP_ASSIGN;
 
       if (lasttok != STR)
-	evalerror (_("attempted assignment to non-variable"));
+        evalerror (_("attempted assignment to non-variable"));
 
       if (special)
-	{
-	  op = assigntok;		/* a OP= b */
-	  lvalue = value;
-	}
+        {
+          op = assigntok;               /* a OP= b */
+          lvalue = value;
+        }
 
       if (tokstr == 0)
-	evalerror (_("arithmetic syntax error in variable assignment"));
+        evalerror (_("arithmetic syntax error in variable assignment"));
 
       /* XXX - watch out for pointer aliasing issues here */
       lhs = savestring (tokstr);
@@ -531,81 +531,81 @@ expassign (void)
       value = expassign ();
 
       if (special)
-	{
-	  if ((op == DIV || op == MOD) && value == 0)
-	    {
-	      if (noeval == 0)
-		evalerror (_("division by 0"));
-	      else
-	        value = 1;
-	    }
+        {
+          if ((op == DIV || op == MOD) && value == 0)
+            {
+              if (noeval == 0)
+                evalerror (_("division by 0"));
+              else
+                value = 1;
+            }
 
-	  switch (op)
-	    {
-	    case MUL:
-	      /* Handle INTMAX_MIN and INTMAX_MAX * -1 specially here? */
-	      lvalue *= value;
-	      break;
-	    case DIV:
-	    case MOD:
-	      if (lvalue == INTMAX_MIN && value == -1)
-		lvalue = (op == DIV) ? INTMAX_MIN : 0;
-	      else
+          switch (op)
+            {
+            case MUL:
+              /* Handle INTMAX_MIN and INTMAX_MAX * -1 specially here? */
+              lvalue *= value;
+              break;
+            case DIV:
+            case MOD:
+              if (lvalue == INTMAX_MIN && value == -1)
+                lvalue = (op == DIV) ? INTMAX_MIN : 0;
+              else
 #if HAVE_IMAXDIV
-		{
-		  idiv = imaxdiv (lvalue, value);
-		  lvalue = (op == DIV) ? idiv.quot : idiv.rem;
-		}
+                {
+                  idiv = imaxdiv (lvalue, value);
+                  lvalue = (op == DIV) ? idiv.quot : idiv.rem;
+                }
 #else
-	        lvalue = (op == DIV) ? lvalue / value : lvalue % value;
+                lvalue = (op == DIV) ? lvalue / value : lvalue % value;
 #endif
-	      break;
-	    case PLUS:
-	      lvalue += value;
-	      break;
-	    case MINUS:
-	      lvalue -= value;
-	      break;
-	    case LSH:
-	      lvalue <<= value;
-	      break;
-	    case RSH:
-	      lvalue >>= value;
-	      break;
-	    case BAND:
-	      lvalue &= value;
-	      break;
-	    case BOR:
-	      lvalue |= value;
-	      break;
-	    case BXOR:
-	      lvalue ^= value;
-	      break;
-	    default:
-	      free (lhs);
-	      evalerror (_("bug: bad expassign token"));
-	      break;
-	    }
-	  value = lvalue;
-	}
+              break;
+            case PLUS:
+              lvalue += value;
+              break;
+            case MINUS:
+              lvalue -= value;
+              break;
+            case LSH:
+              lvalue <<= value;
+              break;
+            case RSH:
+              lvalue >>= value;
+              break;
+            case BAND:
+              lvalue &= value;
+              break;
+            case BOR:
+              lvalue |= value;
+              break;
+            case BXOR:
+              lvalue ^= value;
+              break;
+            default:
+              free (lhs);
+              evalerror (_("bug: bad expassign token"));
+              break;
+            }
+          value = lvalue;
+        }
 
       rhs = itos (value);
       if (noeval == 0)
-	{
+        {
 #if defined (ARRAY_VARS)
-	  if (lind != -1)
-	    expr_bind_array_element (lhs, lind, rhs);
-	  else
+          if (lind != -1)
+            expr_bind_array_element (lhs, lind, rhs);
+          else
 #endif
-	    expr_bind_variable (lhs, rhs);
-	}
+            expr_bind_variable (lhs, rhs);
+        }
       if (curlval.tokstr && curlval.tokstr == tokstr)
-	init_lvalue (&curlval);
+        init_lvalue (&curlval);
 
       free (rhs);
       free (lhs);
       FREE (tokstr);
-      tokstr = (char *)NULL;		/* For freeing on errors. */
+      tokstr = (char *)NULL;            /* For freeing on errors. */
     }
 
   return (value);
@@ -620,39 +620,39 @@ expcond (void)
 
   set_noeval = 0;
   rval = cval = explor ();
-  if (curtok == QUES)		/* found conditional expr */
+  if (curtok == QUES)           /* found conditional expr */
     {
       if (cval == 0)
-	{
-	  set_noeval = 1;
-	  noeval++;
-	}
+        {
+          set_noeval = 1;
+          noeval++;
+        }
 
       readtok ();
       if (curtok == 0 || curtok == COL)
-	evalerror (_("expression expected"));
+        evalerror (_("expression expected"));
 
       val1 = EXP_LOWEST ();
 
       if (set_noeval)
-	noeval--;
+        noeval--;
       if (curtok != COL)
-	evalerror (_("`:' expected for conditional expression"));
+        evalerror (_("`:' expected for conditional expression"));
 
       set_noeval = 0;
       if (cval)
- 	{
- 	  set_noeval = 1;
-	  noeval++;
- 	}
+        {
+          set_noeval = 1;
+          noeval++;
+        }
 
       readtok ();
       if (curtok == 0)
-	evalerror (_("expression expected"));
+        evalerror (_("expression expected"));
       val2 = expcond ();
 
       if (set_noeval)
-	noeval--;
+        noeval--;
       rval = cval ? val1 : val2;
       lasttok = COND;
     }
@@ -672,14 +672,14 @@ explor (void)
     {
       set_noeval = 0;
       if (val1 != 0)
-	{
-	  noeval++;
-	  set_noeval = 1;
-	}
+        {
+          noeval++;
+          set_noeval = 1;
+        }
       readtok ();
       val2 = expland ();
       if (set_noeval)
-	noeval--;
+        noeval--;
       val1 = val1 || val2;
       lasttok = LOR;
     }
@@ -700,14 +700,14 @@ expland (void)
     {
       set_noeval = 0;
       if (val1 == 0)
-	{
-	  set_noeval = 1;
-	  noeval++;
-	}
+        {
+          set_noeval = 1;
+          noeval++;
+        }
       readtok ();
       val2 = expbor ();
       if (set_noeval)
-	noeval--;
+        noeval--;
       val1 = val1 && val2;
       lasttok = LAND;
     }
@@ -786,9 +786,9 @@ expeq (void)
       readtok ();
       val2 = expcompare ();
       if (op == EQEQ)
-	val1 = (val1 == val2);
+        val1 = (val1 == val2);
       else if (op == NEQ)
-	val1 = (val1 != val2);
+        val1 = (val1 != val2);
       lasttok = NUM;
     }
   return (val1);
@@ -801,9 +801,9 @@ expcompare (void)
 
   val1 = expshift ();
   while ((curtok == LEQ) ||
-	 (curtok == GEQ) ||
-	 (curtok == LT) ||
-	 (curtok == GT))
+         (curtok == GEQ) ||
+         (curtok == LT) ||
+         (curtok == GT))
     {
       int op = curtok;
 
@@ -811,13 +811,13 @@ expcompare (void)
       val2 = expshift ();
 
       if (op == LEQ)
-	val1 = val1 <= val2;
+        val1 = val1 <= val2;
       else if (op == GEQ)
-	val1 = val1 >= val2;
+        val1 = val1 >= val2;
       else if (op == LT)
-	val1 = val1 < val2;
-      else			/* (op == GT) */
-	val1 = val1 > val2;
+        val1 = val1 < val2;
+      else                      /* (op == GT) */
+        val1 = val1 > val2;
       lasttok = NUM;
     }
   return (val1);
@@ -839,9 +839,9 @@ expshift (void)
       val2 = expaddsub ();
 
       if (op == LSH)
-	val1 = val1 << val2;
+        val1 = val1 << val2;
       else
-	val1 = val1 >> val2;
+        val1 = val1 >> val2;
       lasttok = NUM;
     }
 
@@ -863,9 +863,9 @@ expaddsub (void)
       val2 = expmuldiv ();
 
       if (op == PLUS)
-	val1 += val2;
+        val1 += val2;
       else if (op == MINUS)
-	val1 -= val2;
+        val1 -= val2;
       lasttok = NUM;
     }
   return (val1);
@@ -882,8 +882,8 @@ expmuldiv (void)
   val1 = exppower ();
 
   while ((curtok == MUL) ||
-	 (curtok == DIV) ||
-	 (curtok == MOD))
+         (curtok == DIV) ||
+         (curtok == MOD))
     {
       int op = curtok;
       char *stp, *sltp;
@@ -895,37 +895,37 @@ expmuldiv (void)
 
       /* Handle division by 0 and twos-complement arithmetic overflow */
       if (((op == DIV) || (op == MOD)) && (val2 == 0))
-	{
-	  if (noeval == 0)
-	    {
-	      sltp = lasttp;
-	      lasttp = stp;
-	      while (lasttp && *lasttp && whitespace (*lasttp))
-		lasttp++;
-	      evalerror (_("division by 0"));
-	      lasttp = sltp;
-	    }
-	  else
-	    val2 = 1;
-	}
+        {
+          if (noeval == 0)
+            {
+              sltp = lasttp;
+              lasttp = stp;
+              while (lasttp && *lasttp && whitespace (*lasttp))
+                lasttp++;
+              evalerror (_("division by 0"));
+              lasttp = sltp;
+            }
+          else
+            val2 = 1;
+        }
       else if (op == MOD && val1 == INTMAX_MIN && val2 == -1)
-	{
-	  val1 = 0;
-	  continue;
-	}
+        {
+          val1 = 0;
+          continue;
+        }
       else if (op == DIV && val1 == INTMAX_MIN && val2 == -1)
-	val2 = 1;
+        val2 = 1;
 
       if (op == MUL)
-	val1 *= val2;
+        val1 *= val2;
       else if (op == DIV || op == MOD)
 #if defined (HAVE_IMAXDIV)
-	{
-	  idiv = imaxdiv (val1, val2);
-	  val1 = (op == DIV) ? idiv.quot : idiv.rem;
-	}
+        {
+          idiv = imaxdiv (val1, val2);
+          val1 = (op == DIV) ? idiv.quot : idiv.rem;
+        }
 #else
-	val1 = (op == DIV) ? val1 / val2 : val1 % val2;
+        val1 = (op == DIV) ? val1 / val2 : val1 % val2;
 #endif
       lasttok = NUM;
     }
@@ -941,7 +941,7 @@ ipow (intmax_t base, intmax_t exp)
   while (exp)
     {
       if (exp & 1)
-	result *= base;
+        result *= base;
       exp >>= 1;
       base *= base;
     }
@@ -957,18 +957,18 @@ exppower (void)
   while (curtok == POWER)
     {
       readtok ();
-      val2 = exppower ();	/* exponentiation is right-associative */
+      val2 = exppower ();       /* exponentiation is right-associative */
       lasttok = NUM;
       if (noeval == 0)
-	{
-	  if (val2 == 0)
-	    return (1);
-	  if (val2 < 0)
-	    evalerror (_("exponent less than 0"));
-	  val1 = ipow (val1, val2);
-	}
+        {
+          if (val2 == 0)
+            return (1);
+          if (val2 < 0)
+            evalerror (_("exponent less than 0"));
+          val1 = ipow (val1, val2);
+        }
       else
-	val1 = 1;
+        val1 = 1;
     }
   return (val1);
 }
@@ -1018,31 +1018,31 @@ exp0 (void)
 
   val = 0;
   /* XXX - might need additional logic here to decide whether or not
-	   pre-increment or pre-decrement is legal at this point. */
+           pre-increment or pre-decrement is legal at this point. */
   if (curtok == PREINC || curtok == PREDEC)
     {
       stok = lasttok = curtok;
       readtok ();
       if (curtok != STR)
-	/* readtok() catches this */
-	evalerror (_("identifier expected after pre-increment or pre-decrement"));
+        /* readtok() catches this */
+        evalerror (_("identifier expected after pre-increment or pre-decrement"));
 
       v2 = tokval + ((stok == PREINC) ? 1 : -1);
       vincdec = itos (v2);
       if (noeval == 0)
-	{
+        {
 #if defined (ARRAY_VARS)
-	  if (curlval.ind != -1)
-	    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
-	  else
+          if (curlval.ind != -1)
+            expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
+          else
 #endif
-	    if (tokstr)
-	      expr_bind_variable (tokstr, vincdec);
-	}
+            if (tokstr)
+              expr_bind_variable (tokstr, vincdec);
+        }
       free (vincdec);
       val = v2;
 
-      curtok = NUM;	/* make sure --x=7 is flagged as an error */
+      curtok = NUM;     /* make sure --x=7 is flagged as an error */
       readtok ();
     }
   else if (curtok == LPAR)
@@ -1052,7 +1052,7 @@ exp0 (void)
       val = EXP_LOWEST ();
 
       if (curtok != RPAR) /* ( */
-	evalerror (_("missing `)'"));
+        evalerror (_("missing `)'"));
 
       /* Skip over closing paren. */
       readtok ();
@@ -1061,45 +1061,45 @@ exp0 (void)
     {
       val = tokval;
       if (curtok == STR)
-	{
-	  SAVETOK (&ec);
-	  tokstr = (char *)NULL;	/* keep it from being freed */
+        {
+          SAVETOK (&ec);
+          tokstr = (char *)NULL;        /* keep it from being freed */
           noeval = 1;
           readtok ();
           stok = curtok;
 
-	  /* post-increment or post-decrement */
- 	  if (stok == POSTINC || stok == POSTDEC)
- 	    {
- 	      /* restore certain portions of EC */
- 	      tokstr = ec.tokstr;
- 	      noeval = ec.noeval;
- 	      curlval = ec.lval;
- 	      lasttok = STR;	/* ec.curtok */
+          /* post-increment or post-decrement */
+          if (stok == POSTINC || stok == POSTDEC)
+            {
+              /* restore certain portions of EC */
+              tokstr = ec.tokstr;
+              noeval = ec.noeval;
+              curlval = ec.lval;
+              lasttok = STR;    /* ec.curtok */
 
-	      v2 = val + ((stok == POSTINC) ? 1 : -1);
-	      vincdec = itos (v2);
-	      if (noeval == 0)
-		{
+              v2 = val + ((stok == POSTINC) ? 1 : -1);
+              vincdec = itos (v2);
+              if (noeval == 0)
+                {
 #if defined (ARRAY_VARS)
-		  if (curlval.ind != -1)
-		    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
-		  else
+                  if (curlval.ind != -1)
+                    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
+                  else
 #endif
-		    expr_bind_variable (tokstr, vincdec);
-		}
-	      free (vincdec);
-	      curtok = NUM;	/* make sure x++=7 is flagged as an error */
- 	    }
- 	  else
- 	    {
-	      /* XXX - watch out for pointer aliasing issues here */
-	      if (stok == STR)	/* free new tokstr before old one is restored */
-		FREE (tokstr);
-	      RESTORETOK (&ec);
- 	    }
-	}
-	  
+                    expr_bind_variable (tokstr, vincdec);
+                }
+              free (vincdec);
+              curtok = NUM;     /* make sure x++=7 is flagged as an error */
+            }
+          else
+            {
+              /* XXX - watch out for pointer aliasing issues here */
+              if (stok == STR)  /* free new tokstr before old one is restored */
+                FREE (tokstr);
+              RESTORETOK (&ec);
+            }
+        }
+
       readtok ();
     }
   else
@@ -1129,7 +1129,7 @@ alloc_lvalue (void)
 static void
 free_lvalue (struct lvalue *lv)
 {
-  free (lv);		/* should be inlined */
+  free (lv);            /* should be inlined */
 }
 
 static intmax_t
@@ -1154,12 +1154,12 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
   initial_depth = expr_depth;
 
 #if defined (ARRAY_VARS)
-  tflag = (array_expand_once && already_expanded) ? AV_NOEXPAND : 0;	/* for a start */
+  tflag = (array_expand_once && already_expanded) ? AV_NOEXPAND : 0;    /* for a start */
 #endif
 
   /* [[[[[ */
 #if defined (ARRAY_VARS)
-  aflag = tflag;	/* use a different variable for now */
+  aflag = tflag;        /* use a different variable for now */
   if (shell_compatibility_level > 51)
     aflag |= AV_ATSTARKEYS;
   v = (e == ']') ? array_variable_part (tok, tflag, (char **)0, (int *)0) : find_variable (tok);
@@ -1167,7 +1167,7 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
   v = find_variable (tok);
 #endif
   if (v == 0 && e != ']')
-    v = find_variable_last_nameref (tok, 0);  
+    v = find_variable_last_nameref (tok, 0);
 
   if ((v == 0 || invisible_p (v)) && unbound_vars_is_error)
     {
@@ -1182,20 +1182,20 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
 
 #if defined (ARRAY_VARS)
       if (e == ']')
-	FREE (value);	/* array_variable_name returns new memory */
+        FREE (value);   /* array_variable_name returns new memory */
 #endif
 
       if (no_longjmp_on_fatal_error && interactive_shell)
-	sh_longjmp (evalbuf, 1);
+        sh_longjmp (evalbuf, 1);
 
       if (interactive_shell)
-	{
-	  expr_unwind ();
-	  top_level_cleanup ();
-	  jump_to_top_level (DISCARD);
-	}
+        {
+          expr_unwind ();
+          top_level_cleanup ();
+          jump_to_top_level (DISCARD);
+        }
       else
-	jump_to_top_level (FORCE_EOF);
+        jump_to_top_level (FORCE_EOF);
     }
 
 #if defined (ARRAY_VARS)
@@ -1216,7 +1216,7 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
   if (expr_depth < initial_depth)
     {
       if (no_longjmp_on_fatal_error && interactive_shell)
-	sh_longjmp (evalbuf, 1);
+        sh_longjmp (evalbuf, 1);
       return (0);
     }
 
@@ -1224,16 +1224,16 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
 
   if (lvalue)
     {
-      lvalue->tokstr = tok;	/* XXX */
+      lvalue->tokstr = tok;     /* XXX */
       lvalue->tokval = tval;
-      lvalue->tokvar = v;	/* XXX */
+      lvalue->tokvar = v;       /* XXX */
 #if defined (ARRAY_VARS)
       lvalue->ind = ind;
 #else
       lvalue->ind = -1;
 #endif
     }
-	  
+
   return (tval);
 }
 
@@ -1283,13 +1283,13 @@ is_arithop (int c)
     case BOR:
     case BXOR:
     case BNOT:
-      return 1;		/* operator tokens */
+      return 1;         /* operator tokens */
     case QUES:
     case COL:
     case COMMA:
-      return 1;		/* questionable */
+      return 1;         /* questionable */
     default:
-      return 0;		/* anything else is invalid */
+      return 0;         /* anything else is invalid */
     }
 }
 
@@ -1331,29 +1331,29 @@ readtok (void)
       int peektok;
 
       while (legal_variable_char (c))
-	c = *cp++;
+        c = *cp++;
 
       c = *--cp;
 
 #if defined (ARRAY_VARS)
       if (c == '[')
-	{
-	  e = expr_skipsubscript (tp, cp);		/* XXX - was skipsubscript */
-	  if (cp[e] == ']')
-	    {
-	      cp += e + 1;
-	      c = *cp;
-	      e = ']';
-	    }
-	  else
-	    evalerror (_(bash_badsub_errmsg));
-	}
+        {
+          e = expr_skipsubscript (tp, cp);              /* XXX - was skipsubscript */
+          if (cp[e] == ']')
+            {
+              cp += e + 1;
+              c = *cp;
+              e = ']';
+            }
+          else
+            evalerror (_(bash_badsub_errmsg));
+        }
 #endif /* ARRAY_VARS */
 
       *cp = '\0';
       /* XXX - watch out for pointer aliasing issues here */
       if (curlval.tokstr && curlval.tokstr == tokstr)
-	init_lvalue (&curlval);
+        init_lvalue (&curlval);
 
       FREE (tokstr);
       tokstr = savestring (tp);
@@ -1361,26 +1361,26 @@ readtok (void)
 
       /* XXX - make peektok part of saved token state? */
       SAVETOK (&ec);
-      tokstr = (char *)NULL;	/* keep it from being freed */
+      tokstr = (char *)NULL;    /* keep it from being freed */
       tp = savecp = cp;
       noeval = 1;
       curtok = STR;
       readtok ();
       peektok = curtok;
-      if (peektok == STR)	/* free new tokstr before old one is restored */
-	FREE (tokstr);
+      if (peektok == STR)       /* free new tokstr before old one is restored */
+        FREE (tokstr);
       RESTORETOK (&ec);
       cp = savecp;
 
       /* The tests for PREINC and PREDEC aren't strictly correct, but they
-	 preserve old behavior if a construct like --x=9 is given. */
+         preserve old behavior if a construct like --x=9 is given. */
       if (lasttok == PREINC || lasttok == PREDEC || peektok != EQ)
         {
           lastlval = curlval;
-	  tokval = expr_streval (tokstr, e, &curlval);
+          tokval = expr_streval (tokstr, e, &curlval);
         }
       else
-	tokval = 0;
+        tokval = 0;
 
       lasttok = curtok;
       curtok = STR;
@@ -1388,7 +1388,7 @@ readtok (void)
   else if (DIGIT(c))
     {
       while (ISALNUM (c) || c == '#' || c == '@' || c == '_')
-	c = *cp++;
+        c = *cp++;
 
       c = *--cp;
       *cp = '\0';
@@ -1402,101 +1402,101 @@ readtok (void)
     {
       c1 = *cp++;
       if ((c == EQ) && (c1 == EQ))
-	c = EQEQ;
+        c = EQEQ;
       else if ((c == NOT) && (c1 == EQ))
-	c = NEQ;
+        c = NEQ;
       else if ((c == GT) && (c1 == EQ))
-	c = GEQ;
+        c = GEQ;
       else if ((c == LT) && (c1 == EQ))
-	c = LEQ;
+        c = LEQ;
       else if ((c == LT) && (c1 == LT))
-	{
-	  if (*cp == '=')	/* a <<= b */
-	    {
-	      assigntok = LSH;
-	      c = OP_ASSIGN;
-	      cp++;
-	    }
-	  else
-	    c = LSH;
-	}
+        {
+          if (*cp == '=')       /* a <<= b */
+            {
+              assigntok = LSH;
+              c = OP_ASSIGN;
+              cp++;
+            }
+          else
+            c = LSH;
+        }
       else if ((c == GT) && (c1 == GT))
-	{
-	  if (*cp == '=')
-	    {
-	      assigntok = RSH;	/* a >>= b */
-	      c = OP_ASSIGN;
-	      cp++;
-	    }
-	  else
-	    c = RSH;
-	}
+        {
+          if (*cp == '=')
+            {
+              assigntok = RSH;  /* a >>= b */
+              c = OP_ASSIGN;
+              cp++;
+            }
+          else
+            c = RSH;
+        }
       else if ((c == BAND) && (c1 == BAND))
-	c = LAND;
+        c = LAND;
       else if ((c == BOR) && (c1 == BOR))
-	c = LOR;
+        c = LOR;
       else if ((c == '*') && (c1 == '*'))
-	c = POWER;
+        c = POWER;
       else if ((c == '-' || c == '+') && c1 == c && curtok == STR)
-	c = (c == '-') ? POSTDEC : POSTINC;
+        c = (c == '-') ? POSTDEC : POSTINC;
 #if STRICT_ARITH_PARSING
       else if ((c == '-' || c == '+') && c1 == c && curtok == NUM)
 #else
       else if ((c == '-' || c == '+') && c1 == c && curtok == NUM && (lasttok == PREINC || lasttok == PREDEC))
 #endif
-	{
-	  /* This catches something like --FOO++ */
-	  if (c == '-')
-	    evalerror (_("--: assignment requires lvalue"));
-	  else
-	    evalerror (_("++: assignment requires lvalue"));
-	}
+        {
+          /* This catches something like --FOO++ */
+          if (c == '-')
+            evalerror (_("--: assignment requires lvalue"));
+          else
+            evalerror (_("++: assignment requires lvalue"));
+        }
       else if ((c == '-' || c == '+') && c1 == c)
-	{
-	  /* Quickly scan forward to see if this is followed by optional
-	     whitespace and an identifier. */
-	  xp = cp;
-	  while (xp && *xp && cr_whitespace (*xp))
-	    xp++;
-	  if (legal_variable_starter ((unsigned char)*xp))
-	    c = (c == '-') ? PREDEC : PREINC;
-	  else
-	    /* Could force parsing as preinc or predec and throw an error */
+        {
+          /* Quickly scan forward to see if this is followed by optional
+             whitespace and an identifier. */
+          xp = cp;
+          while (xp && *xp && cr_whitespace (*xp))
+            xp++;
+          if (legal_variable_starter ((unsigned char)*xp))
+            c = (c == '-') ? PREDEC : PREINC;
+          else
+            /* Could force parsing as preinc or predec and throw an error */
 #if STRICT_ARITH_PARSING
-	    {
-	      /* Posix says unary plus and minus have higher priority than
-		 preinc and predec. */
-	      /* This catches something like --4++ */
-	      if (c == '-')
-		evalerror (_("--: assignment requires lvalue"));
-	      else
-		evalerror (_("++: assignment requires lvalue"));
-	    }
+            {
+              /* Posix says unary plus and minus have higher priority than
+                 preinc and predec. */
+              /* This catches something like --4++ */
+              if (c == '-')
+                evalerror (_("--: assignment requires lvalue"));
+              else
+                evalerror (_("++: assignment requires lvalue"));
+            }
 #else
-	    cp--;	/* not preinc or predec, so unget the character */
+            cp--;       /* not preinc or predec, so unget the character */
 #endif
-	}
+        }
       else if (c1 == EQ && member (c, "*/%+-&^|"))
-	{
-	  assigntok = c;	/* a OP= b */
-	  c = OP_ASSIGN;
-	}
+        {
+          assigntok = c;        /* a OP= b */
+          c = OP_ASSIGN;
+        }
       else if (is_arithop (c) == 0)
-	{
-	  cp--;
-	  /* use curtok, since it hasn't been copied to lasttok yet */
-	  if (curtok == 0 || is_arithop (curtok) || is_multiop (curtok))
-	    evalerror (_("arithmetic syntax error: operand expected"));
-	  else
-	    evalerror (_("arithmetic syntax error: invalid arithmetic operator"));
-	}
+        {
+          cp--;
+          /* use curtok, since it hasn't been copied to lasttok yet */
+          if (curtok == 0 || is_arithop (curtok) || is_multiop (curtok))
+            evalerror (_("arithmetic syntax error: operand expected"));
+          else
+            evalerror (_("arithmetic syntax error: invalid arithmetic operator"));
+        }
       else
-	cp--;			/* `unget' the character */
+        cp--;                   /* `unget' the character */
 
       /* Should check here to make sure that the current character is one
-	 of the recognized operators and flag an error if not.  Could create
-	 a character map the first time through and check it on subsequent
-	 calls. */
+         of the recognized operators and flag an error if not.  Could create
+         a character map the first time through and check it on subsequent
+         calls. */
       lasttok = curtok;
       curtok = c;
     }
@@ -1512,8 +1512,8 @@ evalerror (const char *msg)
   for (t = expression; t && whitespace (*t); t++)
     ;
   internal_error (_("%s%s%s: %s (error token is \"%s\")"),
-		   name ? name : "", name ? ": " : "",
-		   t ? t : "", msg, (lasttp && *lasttp) ? lasttp : "");
+                   name ? name : "", name ? ": " : "",
+                   t ? t : "", msg, (lasttp && *lasttp) ? lasttp : "");
   sh_longjmp (evalbuf, 1);
 }
 
@@ -1528,7 +1528,7 @@ evalerror (const char *msg)
    from [0-9][a-z][A-Z]_@ (a = 10, z = 35, A = 36, Z = 61, @ = 62, _ = 63 --
    you get the picture). */
 
-#define VALID_NUMCHAR(c)	(ISALNUM(c) || ((c) == '_') || ((c) == '@'))
+#define VALID_NUMCHAR(c)        (ISALNUM(c) || ((c) == '_') || ((c) == '@'))
 
 static intmax_t
 strlong (char *num)
@@ -1547,20 +1547,20 @@ strlong (char *num)
       s++;
 
       if (*s == '\0')
-	return 0;
+        return 0;
 
        /* Base 16? */
       if (*s == 'x' || *s == 'X')
-	{
-	  base = 16;
-	  s++;
+        {
+          base = 16;
+          s++;
 #if STRICT_ARITH_PARSING
-	  if (*s == 0)
-	    evalerror (_("invalid number"));
-#endif	    
-	}
+          if (*s == 0)
+            evalerror (_("invalid number"));
+#endif
+        }
       else
-	base = 8;
+        base = 8;
       foundbase++;
     }
 
@@ -1568,50 +1568,50 @@ strlong (char *num)
   for (c = *s++; c; c = *s++)
     {
       if (c == '#')
-	{
-	  if (foundbase)
-	    evalerror (_("invalid number"));
+        {
+          if (foundbase)
+            evalerror (_("invalid number"));
 
-	  /* Illegal base specifications raise an evaluation error. */
-	  if (val < 2 || val > 64)
-	    evalerror (_("invalid arithmetic base"));
+          /* Illegal base specifications raise an evaluation error. */
+          if (val < 2 || val > 64)
+            evalerror (_("invalid arithmetic base"));
 
-	  base = val;
-	  val = 0;
-	  foundbase++;
+          base = val;
+          val = 0;
+          foundbase++;
 
-	  /* Make sure a base# is followed by a character that can compose a
-	     valid integer constant. Jeremy Townshend <jeremy.townshend@gmail.com> */
-	  if (VALID_NUMCHAR (*s) == 0)
-	    evalerror (_("invalid integer constant"));
-	}
+          /* Make sure a base# is followed by a character that can compose a
+             valid integer constant. Jeremy Townshend <jeremy.townshend@gmail.com> */
+          if (VALID_NUMCHAR (*s) == 0)
+            evalerror (_("invalid integer constant"));
+        }
       else if (VALID_NUMCHAR (c))
-	{
-	  if (DIGIT(c))
-	    c = TODIGIT(c);
-	  else if (c >= 'a' && c <= 'z')
-	    c -= 'a' - 10;
-	  else if (c >= 'A' && c <= 'Z')
-	    c -= 'A' - ((base <= 36) ? 10 : 36);
-	  else if (c == '@')
-	    c = 62;
-	  else if (c == '_')
-	    c = 63;
+        {
+          if (DIGIT(c))
+            c = TODIGIT(c);
+          else if (c >= 'a' && c <= 'z')
+            c -= 'a' - 10;
+          else if (c >= 'A' && c <= 'Z')
+            c -= 'A' - ((base <= 36) ? 10 : 36);
+          else if (c == '@')
+            c = 62;
+          else if (c == '_')
+            c = 63;
 
-	  if (c >= base)
-	    evalerror (_("value too great for base"));
+          if (c >= base)
+            evalerror (_("value too great for base"));
 
 #ifdef CHECK_OVERFLOW
-	  pval = val;
-	  val = (val * base) + c;
-	  if (val < 0 || val < pval)	/* overflow */
-	    return INTMAX_MAX;
+          pval = val;
+          val = (val * base) + c;
+          if (val < 0 || val < pval)    /* overflow */
+            return INTMAX_MAX;
 #else
-	  val = (val * base) + c;
+          val = (val * base) + c;
 #endif
-	}
+        }
       else
-	break;
+        break;
     }
 
   return (val);
@@ -1650,9 +1650,9 @@ main (int argc, char **argv)
     {
       v = evalexp (argv[i], 0, &expok);
       if (expok == 0)
-	fprintf (stderr, _("%s: expression error\n"), argv[i]);
+        fprintf (stderr, _("%s: expression error\n"), argv[i]);
       else
-	printf ("'%s' -> %ld\n", argv[i], v);
+        printf ("'%s' -> %ld\n", argv[i], v);
     }
   exit (0);
 }

@@ -23,8 +23,8 @@
 
 #include "stdc.h"
 
-#define ISOPTION(s, c)	(s[0] == '-' && s[1] == c && !s[2])
-#define ISHELP(s)	(STREQ ((s), "--help"))
+#define ISOPTION(s, c)  (s[0] == '-' && s[1] == c && !s[2])
+#define ISHELP(s)       (STREQ ((s), "--help"))
 
 #define CHECK_HELPOPT(l) \
 do { \
@@ -41,45 +41,45 @@ do { \
     return (EX_USAGE)
 
 /* Flag values for parse_and_execute () and parse_string () */
-#define SEVAL_NONINT	0x001
-#define SEVAL_INTERACT	0x002
-#define SEVAL_NOHIST	0x004
-#define SEVAL_NOFREE	0x008
-#define SEVAL_RESETLINE	0x010
-#define SEVAL_PARSEONLY	0x020
+#define SEVAL_NONINT    0x001
+#define SEVAL_INTERACT  0x002
+#define SEVAL_NOHIST    0x004
+#define SEVAL_NOFREE    0x008
+#define SEVAL_RESETLINE 0x010
+#define SEVAL_PARSEONLY 0x020
 #define SEVAL_NOLONGJMP 0x040
-#define SEVAL_FUNCDEF	0x080		/* only allow function definitions */
-#define SEVAL_ONECMD	0x100		/* only allow a single command */
-#define SEVAL_NOHISTEXP	0x200		/* inhibit history expansion */
-#define SEVAL_NOOPTIMIZE 0x400		/* don't try to set optimization flags */
-#define SEVAL_NOTIFY	0x800		/* want job notifications */
+#define SEVAL_FUNCDEF   0x080           /* only allow function definitions */
+#define SEVAL_ONECMD    0x100           /* only allow a single command */
+#define SEVAL_NOHISTEXP 0x200           /* inhibit history expansion */
+#define SEVAL_NOOPTIMIZE 0x400          /* don't try to set optimization flags */
+#define SEVAL_NOTIFY    0x800           /* want job notifications */
 
 /* Flags for describe_command, shared between type.def and command.def */
-#define CDESC_ALL		0x001	/* type -a */
-#define CDESC_SHORTDESC		0x002	/* command -V */
-#define CDESC_REUSABLE		0x004	/* command -v */
-#define CDESC_TYPE		0x008	/* type -t */
-#define CDESC_PATH_ONLY		0x010	/* type -p */
-#define CDESC_FORCE_PATH	0x020	/* type -ap or type -P */
-#define CDESC_NOFUNCS		0x040	/* type -f */
-#define CDESC_ABSPATH		0x080	/* convert to absolute path, no ./ */
-#define CDESC_STDPATH		0x100	/* command -p */
+#define CDESC_ALL               0x001   /* type -a */
+#define CDESC_SHORTDESC         0x002   /* command -V */
+#define CDESC_REUSABLE          0x004   /* command -v */
+#define CDESC_TYPE              0x008   /* type -t */
+#define CDESC_PATH_ONLY         0x010   /* type -p */
+#define CDESC_FORCE_PATH        0x020   /* type -ap or type -P */
+#define CDESC_NOFUNCS           0x040   /* type -f */
+#define CDESC_ABSPATH           0x080   /* convert to absolute path, no ./ */
+#define CDESC_STDPATH           0x100   /* command -p */
 
 /* Flags for get_job_by_name */
-#define JM_PREFIX		0x01	/* prefix of job name */
-#define JM_SUBSTRING		0x02	/* substring of job name */
-#define JM_EXACT		0x04	/* match job name exactly */
-#define JM_STOPPED		0x08	/* match stopped jobs only */
-#define JM_FIRSTMATCH		0x10	/* return first matching job */
+#define JM_PREFIX               0x01    /* prefix of job name */
+#define JM_SUBSTRING            0x02    /* substring of job name */
+#define JM_EXACT                0x04    /* match job name exactly */
+#define JM_STOPPED              0x08    /* match stopped jobs only */
+#define JM_FIRSTMATCH           0x10    /* return first matching job */
 
 /* Flags for remember_args and value of changed_dollar_vars */
-#define ARGS_NONE		0x0
-#define ARGS_INVOC		0x01
-#define ARGS_FUNC		0x02
-#define ARGS_SETBLTIN		0x04
+#define ARGS_NONE               0x0
+#define ARGS_INVOC              0x01
+#define ARGS_FUNC               0x02
+#define ARGS_SETBLTIN           0x04
 
 /* Maximum number of attribute letters */
-#define MAX_ATTRIBUTES		16
+#define MAX_ATTRIBUTES          16
 
 /* Functions from common.c */
 extern void builtin_error (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));

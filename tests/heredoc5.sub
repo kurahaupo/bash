@@ -24,18 +24,18 @@ FILENAME=${TMPDIR}/catfile-$$
 
 catfile()
 {
-	cat <<- EOF > $FILENAME
+        cat <<- EOF > $FILENAME
 		$(cat $1)
 EOF
-	cmp $FILENAME $1
-	rm -f $FILENAME
+        cmp $FILENAME $1
+        rm -f $FILENAME
 }
 
 
 if [ -f $BUILD_DIR/y.tab.c ]; then
-	catfile $BUILD_DIR/y.tab.c
+        catfile $BUILD_DIR/y.tab.c
 else
-	catfile ../y.tab.c
+        catfile ../y.tab.c
 fi
 catfile ${BUILD_DIR}/config.h
 catfile ${BUILD_DIR}/version.h

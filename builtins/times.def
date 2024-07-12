@@ -73,7 +73,7 @@ times_builtin (WORD_LIST *list)
     return (EX_USAGE);
 
   getrusage (RUSAGE_SELF, &self);
-  getrusage (RUSAGE_CHILDREN, &kids);	/* terminated child processes */
+  getrusage (RUSAGE_CHILDREN, &kids);   /* terminated child processes */
 
   print_timeval (stdout, &self.ru_utime);
   putchar (' ');
@@ -86,7 +86,7 @@ times_builtin (WORD_LIST *list)
 
 #else
 #  if defined (HAVE_TIMES)
-  /* This uses the POSIX.1/XPG5 times(2) interface, which fills in a 
+  /* This uses the POSIX.1/XPG5 times(2) interface, which fills in a
      `struct tms' with values of type clock_t. */
   struct tms t;
 

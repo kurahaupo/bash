@@ -213,7 +213,7 @@ template <int w>
 # define _GL_VERIFY(R, DIAGNOSTIC, ...) _Static_assert (R, DIAGNOSTIC)
 #else
 # define _GL_VERIFY(R, DIAGNOSTIC, ...)                                \
-    extern int (*_GL_GENSYM (_gl_verify_function) (void))	       \
+    extern int (*_GL_GENSYM (_gl_verify_function) (void))              \
       [_GL_VERIFY_TRUE (R, DIAGNOSTIC)]
 #endif
 

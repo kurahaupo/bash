@@ -13,16 +13,16 @@
 #
 f()
 {
-	OPTIND=4
+        OPTIND=4
 
-	echo \$1 = $1
+        echo \$1 = $1
 }
 
 main()
 {
 while getopts abcdefg opt
 do
-	f $opt
+        f $opt
 done
 }
 

@@ -52,8 +52,8 @@ int here_doc_first_line = 0;
 sh_obj_cache_t wdcache = {0, 0, 0};
 sh_obj_cache_t wlcache = {0, 0, 0};
 
-#define WDCACHESIZE	128
-#define WLCACHESIZE	128
+#define WDCACHESIZE     128
+#define WLCACHESIZE     128
 
 static COMMAND *make_for_or_select (enum command_type, WORD_DESC *, WORD_LIST *, COMMAND *, int);
 #if defined (ARITH_FOR_COMMAND)
@@ -109,18 +109,18 @@ make_word_flags (WORD_DESC *w, const char *string)
   while (i < slen)
     {
       switch (string[i])
-	{
-	case '$':
-	  w->flags |= W_HASDOLLAR;
-	  break;
-	case '\\':
-	  break;	/* continue the loop */
-	case '\'':
-	case '`':
-	case '"':
-	  w->flags |= W_QUOTED;
-	  break;
-	}
+        {
+        case '$':
+          w->flags |= W_HASDOLLAR;
+          break;
+        case '\\':
+          break;        /* continue the loop */
+        case '\'':
+        case '`':
+        case '"':
+          w->flags |= W_QUOTED;
+          break;
+        }
 
       ADVANCE_CHAR (string, slen, i);
     }
@@ -226,7 +226,7 @@ make_arith_for_expr (char *s)
   if (s == 0 || *s == '\0')
     return ((WORD_LIST *)NULL);
   wd = make_word (s);
-  wd->flags |= W_NOGLOB|W_NOSPLIT|W_QUOTED|W_NOTILDE|W_NOPROCSUB;	/* no word splitting or globbing */
+  wd->flags |= W_NOGLOB|W_NOSPLIT|W_QUOTED|W_NOTILDE|W_NOPROCSUB;       /* no word splitting or globbing */
   result = make_word_list (wd, (WORD_LIST *)NULL);
   return result;
 }
@@ -252,7 +252,7 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
     {
       /* skip whitespace at the start of each sub-expression. */
       while (whitespace (*s))
-	s++;
+        s++;
       start = s;
       /* skip to the semicolon or EOS */
       i = skip_to_delim (start, 0, ";", SD_NOJMP|SD_NOPROCSUB);
@@ -262,30 +262,30 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
 
       nsemi++;
       switch (nsemi)
-	{
-	case 1:
-	  init = make_arith_for_expr (t);
-	  break;
-	case 2:
-	  test = make_arith_for_expr (t);
-	  break;
-	case 3:
-	  step = make_arith_for_expr (t);
-	  break;
-	}
+        {
+        case 1:
+          init = make_arith_for_expr (t);
+          break;
+        case 2:
+          test = make_arith_for_expr (t);
+          break;
+        case 3:
+          step = make_arith_for_expr (t);
+          break;
+        }
 
       FREE (t);
       if (*s == '\0')
-	break;
-      s++;	/* skip over semicolon */
+        break;
+      s++;      /* skip over semicolon */
     }
 
   if (nsemi != 3)
     {
       if (nsemi < 3)
-	parser_error (lineno, _("syntax error: arithmetic expression required"));
+        parser_error (lineno, _("syntax error: arithmetic expression required"));
       else
-	parser_error (lineno, _("syntax error: `;' unexpected"));
+        parser_error (lineno, _("syntax error: `;' unexpected"));
       parser_error (lineno, _("syntax error: `((%s))'"), exprs->word->word);
       free (init);
       free (test);
@@ -492,10 +492,10 @@ make_simple_command (ELEMENT element, COMMAND *command, int line)
     {
       REDIRECT *r = element.redirect;
       /* Due to the way <> is implemented, there may be more than a single
-	 redirection in element.redirect.  We just follow the chain as far
-	 as it goes, and hook onto the end. */
+         redirection in element.redirect.  We just follow the chain as far
+         as it goes, and hook onto the end. */
       while (r->next)
-	r = r->next;
+        r = r->next;
       r->next = command->value.Simple->redirects;
       command->value.Simple->redirects = element.redirect;
     }
@@ -575,50 +575,50 @@ make_here_document (REDIRECT *temp, int lineno)
       line = full_line;
 
       /* if read_secondary_line uses shell_getc, that handles incrementing
-	 line_number where necessary. */
+         line_number where necessary. */
       if (heredoc_string == 0)
-	line_number++;
+        line_number++;
 
       /* If set -v is in effect, echo the line read.  read_secondary_line/
-	 read_a_line leaves the newline at the end, so don't print another. */
+         read_a_line leaves the newline at the end, so don't print another. */
       if (echo_input_at_read)
-	fprintf (stderr, "%s", line);
+        fprintf (stderr, "%s", line);
 
       if (kill_leading && *line)
-	{
-	  /* Hack:  To be compatible with some Bourne shells, we
-	     check the word before stripping the whitespace.  This
-	     is a hack, though. */
-	  if (STREQN (line, redir_word, redir_len) && line[redir_len] == '\n')
-	    break;
+        {
+          /* Hack:  To be compatible with some Bourne shells, we
+             check the word before stripping the whitespace.  This
+             is a hack, though. */
+          if (STREQN (line, redir_word, redir_len) && line[redir_len] == '\n')
+            break;
 
-	  while (*line == '\t')
-	    line++;
-	}
+          while (*line == '\t')
+            line++;
+        }
 
       if (*line == 0)
-	continue;
+        continue;
 
       if (STREQN (line, redir_word, redir_len) && line[redir_len] == '\n')
-	break;
+        break;
 
       /* Backwards compatibility here */
       if (STREQN (line, redir_word, redir_len) && (parser_state & PST_EOFTOKEN) && shell_eof_token && strchr (line+redir_len, shell_eof_token))
-	{
-	  shell_ungets (line + redir_len);
-	  full_line = 0;
-	  break;
-	}
+        {
+          shell_ungets (line + redir_len);
+          full_line = 0;
+          break;
+        }
 
       len = strlen (line);
       if (len + document_index >= document_size)
-	{
-	  document_size = document_size ? 2 * (document_size + len) : len + 2;
-	  document = (char *)xrealloc (document, document_size);
-	}
+        {
+          document_size = document_size ? 2 * (document_size + len) : len + 2;
+          document = (char *)xrealloc (document, document_size);
+        }
 
       /* len is guaranteed to be > 0 because of the check for line
-	 being an empty string before the call to strlen. */
+         being an empty string before the call to strlen. */
       FASTCOPY (line, document + document_index, len);
       document_index += len;
     }
@@ -663,59 +663,59 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
   switch (instruction)
     {
 
-    case r_output_direction:		/* >foo */
-    case r_output_force:		/* >| foo */
-    case r_err_and_out:			/* &>filename */
+    case r_output_direction:            /* >foo */
+    case r_output_force:                /* >| foo */
+    case r_err_and_out:                 /* &>filename */
       temp->flags = O_TRUNC | O_WRONLY | O_CREAT;
       break;
 
-    case r_appending_to:		/* >>foo */
-    case r_append_err_and_out:		/* &>> filename */
+    case r_appending_to:                /* >>foo */
+    case r_append_err_and_out:          /* &>> filename */
       temp->flags = O_APPEND | O_WRONLY | O_CREAT;
       break;
 
-    case r_input_direction:		/* <foo */
-    case r_inputa_direction:		/* foo & makes this. */
+    case r_input_direction:             /* <foo */
+    case r_inputa_direction:            /* foo & makes this. */
       temp->flags = O_RDONLY;
       break;
 
-    case r_input_output:		/* <>foo */
+    case r_input_output:                /* <>foo */
       temp->flags = O_RDWR | O_CREAT;
       break;
 
-    case r_deblank_reading_until: 	/* <<-foo */
-    case r_reading_until:		/* << foo */
-    case r_reading_string:		/* <<< foo */
-    case r_close_this:			/* <&- */
-    case r_duplicating_input:		/* 1<&2 */
-    case r_duplicating_output:		/* 1>&2 */
+    case r_deblank_reading_until:       /* <<-foo */
+    case r_reading_until:               /* << foo */
+    case r_reading_string:              /* <<< foo */
+    case r_close_this:                  /* <&- */
+    case r_duplicating_input:           /* 1<&2 */
+    case r_duplicating_output:          /* 1>&2 */
       break;
 
     /* the parser doesn't pass these. */
-    case r_move_input:			/* 1<&2- */
-    case r_move_output:			/* 1>&2- */
-    case r_move_input_word:		/* 1<&$foo- */
-    case r_move_output_word:		/* 1>&$foo- */
+    case r_move_input:                  /* 1<&2- */
+    case r_move_output:                 /* 1>&2- */
+    case r_move_input_word:             /* 1<&$foo- */
+    case r_move_output_word:            /* 1>&$foo- */
       break;
 
     /* The way the lexer works we have to do this here. */
-    case r_duplicating_input_word:	/* 1<&$foo */
-    case r_duplicating_output_word:	/* 1>&$foo */
+    case r_duplicating_input_word:      /* 1<&$foo */
+    case r_duplicating_output_word:     /* 1>&$foo */
       w = dest_and_filename.filename;
       wlen = strlen (w->word) - 1;
-      if (w->word[wlen] == '-')		/* Yuck */
+      if (w->word[wlen] == '-')         /* Yuck */
         {
           w->word[wlen] = '\0';
-	  if (all_digits (w->word) && valid_number (w->word, &lfd) && lfd == (int)lfd)
-	    {
-	      dispose_word (w);
-	      temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input : r_move_output;
-	      temp->redirectee.dest = lfd;
-	    }
-	  else
-	    temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
+          if (all_digits (w->word) && valid_number (w->word, &lfd) && lfd == (int)lfd)
+            {
+              dispose_word (w);
+              temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input : r_move_output;
+              temp->redirectee.dest = lfd;
+            }
+          else
+            temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
         }
-          
+
       break;
 
     default:
@@ -755,13 +755,13 @@ make_function_def (WORD_DESC *name, COMMAND *command, int lineno, int lstart)
   if (temp->source_file == 0)
     {
       if (shell_initialized == 0)
-	temp->source_file = "environment";
+        temp->source_file = "environment";
       else if (interactive_shell)
-	temp->source_file = "main";
-      else if (interactive == 0)	/* assume -c command */
-	temp->source_file = dollar_vars[0];
+        temp->source_file = "main";
+      else if (interactive == 0)        /* assume -c command */
+        temp->source_file = dollar_vars[0];
       else
-	temp->source_file = shell_name;	/* this clause is never hit */
+        temp->source_file = shell_name; /* this clause is never hit */
     }
 
 #if defined (DEBUGGER)
@@ -808,9 +808,9 @@ clean_simple_command (COMMAND *command)
   else
     {
       command->value.Simple->words =
-	REVERSE_LIST (command->value.Simple->words, WORD_LIST *);
+        REVERSE_LIST (command->value.Simple->words, WORD_LIST *);
       command->value.Simple->redirects =
-	REVERSE_LIST (command->value.Simple->redirects, REDIRECT *);
+        REVERSE_LIST (command->value.Simple->redirects, REDIRECT *);
     }
 
   parser_state &= ~PST_REDIRLIST;
@@ -849,7 +849,7 @@ connect_async_list (COMMAND *command, COMMAND *command2, int connector)
      with `( ... )', so we have to check for CMD_WANT_SUBSHELL.  That's
      the only way to tell. */
   while (((t->flags & CMD_WANT_SUBSHELL) == 0) && t->type == cm_connection &&
-	 t->value.Connection->connector == ';')
+         t->value.Connection->connector == ';')
     {
       t1 = t;
       t = t->value.Connection->second;

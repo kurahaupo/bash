@@ -43,10 +43,10 @@ hash_string (str_param)
       hval += (unsigned long int) *str++;
       g = hval & ((unsigned long int) 0xf << (HASHWORDBITS - 4));
       if (g != 0)
-	{
-	  hval ^= g >> (HASHWORDBITS - 8);
-	  hval ^= g;
-	}
+        {
+          hval ^= g >> (HASHWORDBITS - 8);
+          hval ^= g;
+        }
     }
   return hval;
 }

@@ -38,33 +38,33 @@ false_builtin (WORD_LIST *list)
 }
 
 static char *true_doc[] = {
-	"Exit successfully.",
-	"",
-	"Return a successful result.",
-	(char *)NULL
+        "Exit successfully.",
+        "",
+        "Return a successful result.",
+        (char *)NULL
 };
 
 static char *false_doc[] = {
-	"Exit unsuccessfully.",
-	"",
-	"Return an unsuccessful result.",
-	(char *)NULL
+        "Exit unsuccessfully.",
+        "",
+        "Return an unsuccessful result.",
+        (char *)NULL
 };
 
 struct builtin true_struct = {
-	"true",
-	true_builtin,
-	BUILTIN_ENABLED,
-	true_doc,
-	"true",
-	0
+        "true",
+        true_builtin,
+        BUILTIN_ENABLED,
+        true_doc,
+        "true",
+        0
 };
 
 struct builtin false_struct = {
-	"false",
-	false_builtin,
-	BUILTIN_ENABLED,
-	false_doc,
-	"false",
-	0
+        "false",
+        false_builtin,
+        BUILTIN_ENABLED,
+        false_doc,
+        "false",
+        0
 };

@@ -57,17 +57,17 @@ unlink_builtin (WORD_LIST *list)
 }
 
 char *unlink_doc[] = {
-	"Remove a directory entry.",
-	"",
-	"Forcibly remove a directory entry, even if it's a directory.",
-	(char *)NULL
+        "Remove a directory entry.",
+        "",
+        "Forcibly remove a directory entry, even if it's a directory.",
+        (char *)NULL
 };
 
 struct builtin unlink_struct = {
-	"unlink",		/* builtin name */
-	unlink_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	unlink_doc,		/* array of long documentation strings. */
-	"unlink name",		/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "unlink",               /* builtin name */
+        unlink_builtin,         /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        unlink_doc,             /* array of long documentation strings. */
+        "unlink name",          /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

@@ -51,10 +51,10 @@ extern int unwind_protect_tag_on_stack (const char *);
 extern void unwind_protect_mem (char *, int);
 
 /* Backwards compatibility */
-#define unwind_protect_int	unwind_protect_var
-#define unwind_protect_short	unwind_protect_var
-#define unwind_protect_string	unwind_protect_var
-#define unwind_protect_pointer	unwind_protect_var
-#define unwind_protect_jmp_buf	unwind_protect_var
+#define unwind_protect_int      unwind_protect_var
+#define unwind_protect_short    unwind_protect_var
+#define unwind_protect_string   unwind_protect_var
+#define unwind_protect_pointer  unwind_protect_var
+#define unwind_protect_jmp_buf  unwind_protect_var
 
 #endif /* _UNWIND_PROT_H */

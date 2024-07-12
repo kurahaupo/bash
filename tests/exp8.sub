@@ -27,7 +27,7 @@ recho ${var@P}
 echo -E ${var@A}
 
 unset array
-array=( [$'x\001y\177z']=foo )	# should be error
+array=( [$'x\001y\177z']=foo )  # should be error
 echo -E ${array[@]@A}
 
 unset array

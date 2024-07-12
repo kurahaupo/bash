@@ -30,5 +30,5 @@ exec 6>${TMPDIR}/pipe
 echo "t -p /dev/fd/6"
 test -p /dev/fd/6
 echo $?
-exec 2>/dev/null	# disable process termination message
-kill $! 2>/dev/null 
+exec 2>/dev/null        # disable process termination message
+kill $! 2>/dev/null

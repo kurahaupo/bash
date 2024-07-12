@@ -44,17 +44,17 @@ rename (const char *from, const char *to)
   struct stat fb, tb;
 
   if (stat (from, &fb) < 0)
-    return -1;  
+    return -1;
 
   if (stat (to, &tb) < 0)
     {
       if (errno != ENOENT)
-	return -1;
+        return -1;
     }
   else
     {
       if (fb.st_dev == tb.st_dev && fb.st_ino == tb.st_ino)
-        return 0;		/* same file */
+        return 0;               /* same file */
       if (unlink (to) < 0 && errno != ENOENT)
         return -1;
     }

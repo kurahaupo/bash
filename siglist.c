@@ -218,12 +218,12 @@ initialize_siglist (void)
   for (i = 0; i < NSIG; i++)
     {
       if (!sys_siglist[i])
-	{
-	  sys_siglist[i] =
-	    (char *)xmalloc (INT_STRLEN_BOUND (int) + 1 + strlen (_("Unknown Signal #%d")));
+        {
+          sys_siglist[i] =
+            (char *)xmalloc (INT_STRLEN_BOUND (int) + 1 + strlen (_("Unknown Signal #%d")));
 
-	  sprintf (sys_siglist[i], _("Unknown Signal #%d"), i);
-	}
+          sprintf (sys_siglist[i], _("Unknown Signal #%d"), i);
+        }
     }
 }
 #endif /* !HAVE_SYS_SIGLIST && !HAVE_UNDER_SYS_SIGLIST && !HAVE_STRSIGNAL */

@@ -31,13 +31,13 @@ specified, gives detailed help on all commands matching PATTERN,
 otherwise the list of help topics is printed.
 
 Options:
-  -d	output short description for each topic
-  -m	display usage in pseudo-manpage format
-  -s	output only a short usage synopsis for each topic matching
-		PATTERN
+  -d    output short description for each topic
+  -m    display usage in pseudo-manpage format
+  -s    output only a short usage synopsis for each topic matching
+                PATTERN
 
 Arguments:
-  PATTERN	Pattern specifying a help topic
+  PATTERN       Pattern specifying a help topic
 
 Exit Status:
 Returns success unless PATTERN is not found or an invalid option is given.
@@ -101,21 +101,21 @@ help_builtin (WORD_LIST *list)
   while ((i = internal_getopt (list, "dms")) != -1)
     {
       switch (i)
-	{
-	case 'd':
-	  dflag = 1;
-	  break;
-	case 'm':
-	  mflag = 1;
-	  break;
-	case 's':
-	  sflag = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'd':
+          dflag = 1;
+          break;
+        case 'm':
+          mflag = 1;
+          break;
+        case 's':
+          sflag = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -141,43 +141,43 @@ help_builtin (WORD_LIST *list)
       plen = strlen (pattern);
 
       for (pass = 1, this_found = 0; pass < 3; pass++)
-	{
-	  for (i = 0; name = shell_builtins[i].name; i++)
-	    {
-	      QUIT;
+        {
+          for (i = 0; name = shell_builtins[i].name; i++)
+            {
+              QUIT;
 
-	      /* First pass: look for exact string or pattern matches.
-		 Second pass: look for prefix matches like bash-4.2 */
-	      if (pass == 1)
-	        m = (strcmp (pattern, name) == 0) ||
-		    (strmatch (pattern, name, FNMATCH_EXTFLAG) != FNM_NOMATCH);
-	      else
-		m = strncmp (pattern, name, plen) == 0;
+              /* First pass: look for exact string or pattern matches.
+                 Second pass: look for prefix matches like bash-4.2 */
+              if (pass == 1)
+                m = (strcmp (pattern, name) == 0) ||
+                    (strmatch (pattern, name, FNMATCH_EXTFLAG) != FNM_NOMATCH);
+              else
+                m = strncmp (pattern, name, plen) == 0;
 
-	      if (m)
-	        {
-	          this_found = 1;
-	          match_found++;
-	          if (dflag)
-		    {
-		      show_desc (name, i);
-		      continue;
-		    }
-	          else if (mflag)
-		    {
-		      show_manpage (name, i);
-		      continue;
-		    }
+              if (m)
+                {
+                  this_found = 1;
+                  match_found++;
+                  if (dflag)
+                    {
+                      show_desc (name, i);
+                      continue;
+                    }
+                  else if (mflag)
+                    {
+                      show_manpage (name, i);
+                      continue;
+                    }
 
-	          printf ("%s: %s\n", name, _(shell_builtins[i].short_doc));
+                  printf ("%s: %s\n", name, _(shell_builtins[i].short_doc));
 
-	          if (sflag == 0)
-		    show_longdoc (i);
-	        }
-	    }
-	  if (pass == 1 && this_found == 1)
-	    break;
-	}
+                  if (sflag == 0)
+                    show_longdoc (i);
+                }
+            }
+          if (pass == 1 && this_found == 1)
+            break;
+        }
     }
 
   if (match_found == 0)
@@ -200,7 +200,7 @@ builtin_help (void)
 
   ind = current_builtin - shell_builtins;
   printf ("%s: %s\n", this_command_name, _(shell_builtins[ind].short_doc));
-  show_longdoc (ind);  
+  show_longdoc (ind);
 }
 
 static int
@@ -233,7 +233,7 @@ show_longdoc (int i)
     {
       fd = open_helpfile (doc[0]);
       if (fd < 0)
-	return;
+        return;
       zcatfd (fd, 1, doc[0]);
       close (fd);
     }
@@ -256,7 +256,7 @@ show_desc (char *name, int i)
     {
       fd = open_helpfile (doc[0]);
       if (fd < 0)
-	return;
+        return;
       r = zmapfd (fd, &line, doc[0]);
       close (fd);
       /* XXX - handle errors if zmapfd returns < 0 */
@@ -269,9 +269,9 @@ show_desc (char *name, int i)
     {
       putchar (line[j]);
       if (line[j] == '\n')
-	break;
+        break;
     }
-  
+
   fflush (stdout);
 
   if (usefile)
@@ -294,7 +294,7 @@ show_manpage (char *name, int i)
     {
       fd = open_helpfile (doc[0]);
       if (fd < 0)
-	return;
+        return;
       zmapfd (fd, &line, doc[0]);
       close (fd);
     }
@@ -308,7 +308,7 @@ show_manpage (char *name, int i)
     {
       putchar (line[j]);
       if (line[j] == '\n')
-	break;
+        break;
     }
   printf ("\n");
 
@@ -326,11 +326,11 @@ show_manpage (char *name, int i)
   else
     {
       for (j = 0; line && line[j]; j++)
-	{
-	  putchar (line[j]);
-	  if (line[j] == '\n')
-	    printf ("%*s", BASE_INDENT, " ");
-	}
+        {
+          putchar (line[j]);
+          if (line[j] == '\n')
+            printf ("%*s", BASE_INDENT, " ");
+        }
     }
   putchar ('\n');
 
@@ -364,7 +364,7 @@ dispcolumn (int i, char *buf, size_t bufsize, int width, int height)
 
   buf[0] = (shell_builtins[i].flags & BUILTIN_ENABLED) ? ' ' : '*';
   strncpy (buf + 1, helpdoc, width - 2);
-  buf[width - 2] = '>';		/* indicate truncation */
+  buf[width - 2] = '>';         /* indicate truncation */
   buf[width - 1] = '\0';
   printf ("%s", buf);
   if (((i << 1) >= num_shell_builtins) || (i+height >= num_shell_builtins))
@@ -383,7 +383,7 @@ dispcolumn (int i, char *buf, size_t bufsize, int width, int height)
 
   buf[0] = (shell_builtins[i+height].flags & BUILTIN_ENABLED) ? ' ' : '*';
   strncpy (buf + 1, helpdoc, width - 3);
-  buf[width - 3] = '>';		/* indicate truncation */
+  buf[width - 3] = '>';         /* indicate truncation */
   buf[width - 2] = '\0';
 
   printf ("%s\n", buf);
@@ -426,13 +426,13 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
   /* dispchars == number of characters that will be displayed */
   dispchars = wcsnwidth (wcstr+1, slen, width - 2);
   /* dispcols == number of columns required to display DISPCHARS */
-  dispcols = wcswidth (wcstr+1, dispchars) + 1;	/* +1 for ' ' or '*' */
+  dispcols = wcswidth (wcstr+1, dispchars) + 1; /* +1 for ' ' or '*' */
 
   wcstr[0] = (shell_builtins[i].flags & BUILTIN_ENABLED) ? L' ' : L'*';
 
   if (dispcols >= width-2)
     {
-      wcstr[dispchars] = L'>';		/* indicate truncation */
+      wcstr[dispchars] = L'>';          /* indicate truncation */
       wcstr[dispchars+1] = L'\0';
     }
 
@@ -463,7 +463,7 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
   if (slen >= width)
     slen = width - 2;
   n = mbstowcs (wcstr+1, helpdoc, slen + 1);
-  wcstr[n+1] = L'\0';		/* make sure null-terminated */
+  wcstr[n+1] = L'\0';           /* make sure null-terminated */
 
   /* Turn tabs and newlines into spaces for column display */
   for (j = 1; j < n; j++)
@@ -472,8 +472,8 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
 
   /* dispchars == number of characters that will be displayed */
   dispchars = wcsnwidth (wcstr+1, slen, width - 2);
-  dispcols = wcswidth (wcstr+1, dispchars) + 1;	/* +1 for ' ' or '*' */
-  
+  dispcols = wcswidth (wcstr+1, dispchars) + 1; /* +1 for ' ' or '*' */
+
   wcstr[0] = (shell_builtins[i+height].flags & BUILTIN_ENABLED) ? L' ' : L'*';
 
   /* The dispchars-1 is there for terminals that behave strangely when you
@@ -481,7 +481,7 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
      did. */
   if (dispcols >= width - 2)
     {
-      wcstr[dispchars-1] = L'>';		/* indicate truncation */
+      wcstr[dispchars-1] = L'>';                /* indicate truncation */
       wcstr[dispchars] = L'\0';
     }
 
@@ -514,7 +514,7 @@ A star (*) next to a name means that the command is disabled.\n\
     width = sizeof (blurb);
   if (width <= 3)
     width = 40;
-  height = (num_shell_builtins + 1) / 2;	/* number of rows */
+  height = (num_shell_builtins + 1) / 2;        /* number of rows */
 
   for (i = 0; i < height; i++)
     {
@@ -522,10 +522,10 @@ A star (*) next to a name means that the command is disabled.\n\
 
 #if defined (HANDLE_MULTIBYTE)
       if (MB_CUR_MAX > 1)
-	wdispcolumn (i, blurb, sizeof (blurb), width, height);
+        wdispcolumn (i, blurb, sizeof (blurb), width, height);
       else
 #endif
-	dispcolumn (i, blurb, sizeof (blurb), width, height);
+        dispcolumn (i, blurb, sizeof (blurb), width, height);
     }
 }
 #endif /* HELP_BUILTIN */

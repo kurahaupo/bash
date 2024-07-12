@@ -22,7 +22,7 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE	1
+# define _GNU_SOURCE    1
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -272,10 +272,10 @@ transcmp (p1, p2)
     {
       result = strcmp (s1->domainname, s2->domainname);
       if (result == 0)
-	/* We compare the category last (though this is the cheapest
-	   operation) since it is hopefully always the same (namely
-	   LC_MESSAGES).  */
-	result = s1->category - s2->category;
+        /* We compare the category last (though this is the cheapest
+           operation) since it is hopefully always the same (namely
+           LC_MESSAGES).  */
+        result = s1->category - s2->category;
     }
 
   return result;
@@ -311,15 +311,15 @@ struct binding *_nl_domain_bindings;
 
 /* Prototypes for local functions.  */
 static inline char *plural_lookup (struct loaded_l10nfile *domain,
-				    unsigned long int n,
-				    const char *translation,
-				    size_t translation_len);
+                                    unsigned long int n,
+                                    const char *translation,
+                                    size_t translation_len);
 static inline const char *guess_category_value (int category,
-					 const char *categoryname);
+                                         const char *categoryname);
 
 #ifdef _LIBC
 # include "../locale/localeinfo.h"
-# define category_to_name(category)	_nl_category_names[category]
+# define category_to_name(category)     _nl_category_names[category]
 #else
 static inline const char *category_to_name (int category);
 #endif
@@ -337,30 +337,30 @@ struct block_list
   void *address;
   struct block_list *next;
 };
-# define ADD_BLOCK(list, addr)						      \
-  do {									      \
+# define ADD_BLOCK(list, addr)                                                \
+  do {                                                                        \
     struct block_list *newp = (struct block_list *) malloc (sizeof (*newp));  \
-    /* If we cannot get a free block we cannot add the new element to	      \
-       the list.  */							      \
-    if (newp != NULL) {							      \
-      newp->address = (addr);						      \
-      newp->next = (list);						      \
-      (list) = newp;							      \
-    }									      \
+    /* If we cannot get a free block we cannot add the new element to         \
+       the list.  */                                                          \
+    if (newp != NULL) {                                                       \
+      newp->address = (addr);                                                 \
+      newp->next = (list);                                                    \
+      (list) = newp;                                                          \
+    }                                                                         \
   } while (0)
-# define FREE_BLOCKS(list)						      \
-  do {									      \
-    while (list != NULL) {						      \
-      struct block_list *old = list;					      \
-      list = list->next;						      \
-      free (old->address);						      \
-      free (old);							      \
-    }									      \
+# define FREE_BLOCKS(list)                                                    \
+  do {                                                                        \
+    while (list != NULL) {                                                    \
+      struct block_list *old = list;                                          \
+      list = list->next;                                                      \
+      free (old->address);                                                    \
+      free (old);                                                             \
+    }                                                                         \
   } while (0)
 # undef alloca
 # define alloca(size) (malloc (size))
 # define freea(p) free (p)
-#endif	/* have alloca */
+#endif  /* have alloca */
 
 
 #ifdef _LIBC
@@ -412,17 +412,17 @@ __libc_rwlock_define_initialized (, _nl_state_lock attribute_hidden)
 static int enable_secure;
 # define ENABLE_SECURE (enable_secure == 1)
 # define DETERMINE_SECURE \
-  if (enable_secure == 0)						      \
-    {									      \
-      if (getuid () != geteuid () || getgid () != getegid ())		      \
-	enable_secure = 1;						      \
-      else								      \
-	enable_secure = -1;						      \
+  if (enable_secure == 0)                                                     \
+    {                                                                         \
+      if (getuid () != geteuid () || getgid () != getegid ())                 \
+        enable_secure = 1;                                                    \
+      else                                                                    \
+        enable_secure = -1;                                                   \
     }
 #endif
 
 #ifndef HAVE_RAISE
-#  define raise(x)	kill (getpid (), (x))
+#  define raise(x)      kill (getpid (), (x))
 #endif
 
 /* Get the function to evaluate the plural expression.  */
@@ -467,9 +467,9 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
   if (category < 0 || category >= __LC_LAST || category == LC_ALL)
     /* Bogus.  */
     return (plural == 0
-	    ? (char *) msgid1
-	    /* Use the Germanic plural rule.  */
-	    : n == 1 ? (char *) msgid1 : (char *) msgid2);
+            ? (char *) msgid1
+            /* Use the Germanic plural rule.  */
+            : n == 1 ? (char *) msgid1 : (char *) msgid2);
 #endif
 
   __libc_rwlock_rdlock (_nl_state_lock);
@@ -492,7 +492,7 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
   /* Try to find the translation among those which we found at
      some time.  */
   search = (struct known_translation_t *)
-	   alloca (offsetof (struct known_translation_t, msgid) + msgid_len);
+           alloca (offsetof (struct known_translation_t, msgid) + msgid_len);
   memcpy (search->msgid, msgid1, msgid_len);
   search->domainname = (char *) domainname;
   search->category = category;
@@ -503,10 +503,10 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
     {
       /* Now deal with plural.  */
       if (plural)
-	retval = plural_lookup ((*foundp)->domain, n, (*foundp)->translation,
-				(*foundp)->translation_length);
+        retval = plural_lookup ((*foundp)->domain, n, (*foundp)->translation,
+                                (*foundp)->translation_length);
       else
-	retval = (char *) (*foundp)->translation;
+        retval = (char *) (*foundp)->translation;
 
       __libc_rwlock_unlock (_nl_state_lock);
       return retval;
@@ -524,14 +524,14 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
     {
       int compare = strcmp (domainname, binding->domainname);
       if (compare == 0)
-	/* We found it!  */
-	break;
+        /* We found it!  */
+        break;
       if (compare < 0)
-	{
-	  /* It is not in the list.  */
-	  binding = NULL;
-	  break;
-	}
+        {
+          /* It is not in the list.  */
+          binding = NULL;
+          break;
+        }
     }
 
   if (binding == NULL)
@@ -546,26 +546,26 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
       char *ret;
 
       path_max = (unsigned int) PATH_MAX;
-      path_max += 2;		/* The getcwd docs say to do this.  */
+      path_max += 2;            /* The getcwd docs say to do this.  */
 
       for (;;)
-	{
-	  dirname = (char *) alloca (path_max + dirname_len);
-	  ADD_BLOCK (block_list, dirname);
+        {
+          dirname = (char *) alloca (path_max + dirname_len);
+          ADD_BLOCK (block_list, dirname);
 
-	  __set_errno (0);
-	  ret = getcwd (dirname, path_max);
-	  if (ret != NULL || errno != ERANGE)
-	    break;
+          __set_errno (0);
+          ret = getcwd (dirname, path_max);
+          if (ret != NULL || errno != ERANGE)
+            break;
 
-	  path_max += path_max / 2;
-	  path_max += PATH_INCR;
-	}
+          path_max += path_max / 2;
+          path_max += PATH_INCR;
+        }
 
       if (ret == NULL)
-	/* We cannot get the current working directory.  Don't signal an
-	   error but simply return the default string.  */
-	goto return_untranslated;
+        /* We cannot get the current working directory.  Don't signal an
+           error but simply return the default string.  */
+        goto return_untranslated;
 
       stpcpy (stpcpy (strchr (dirname, '\0'), "/"), binding->dirname);
     }
@@ -576,12 +576,12 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 
   domainname_len = strlen (domainname);
   xdomainname = (char *) alloca (strlen (categoryname)
-				 + domainname_len + 5);
+                                 + domainname_len + 5);
   ADD_BLOCK (block_list, xdomainname);
 
   stpcpy (mempcpy (stpcpy (stpcpy (xdomainname, categoryname), "/"),
-		  domainname, domainname_len),
-	  ".mo");
+                  domainname, domainname_len),
+          ".mo");
 
   /* Creating working area.  */
   single_locale = (char *) alloca (strlen (categoryvalue) + 1);
@@ -594,114 +594,114 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
     {
       /* Make CATEGORYVALUE point to the next element of the list.  */
       while (categoryvalue[0] != '\0' && categoryvalue[0] == ':')
-	++categoryvalue;
+        ++categoryvalue;
       if (categoryvalue[0] == '\0')
-	{
-	  /* The whole contents of CATEGORYVALUE has been searched but
-	     no valid entry has been found.  We solve this situation
-	     by implicitly appending a "C" entry, i.e. no translation
-	     will take place.  */
-	  single_locale[0] = 'C';
-	  single_locale[1] = '\0';
-	}
+        {
+          /* The whole contents of CATEGORYVALUE has been searched but
+             no valid entry has been found.  We solve this situation
+             by implicitly appending a "C" entry, i.e. no translation
+             will take place.  */
+          single_locale[0] = 'C';
+          single_locale[1] = '\0';
+        }
       else
-	{
-	  char *cp = single_locale;
-	  while (categoryvalue[0] != '\0' && categoryvalue[0] != ':')
-	    *cp++ = *categoryvalue++;
-	  *cp = '\0';
+        {
+          char *cp = single_locale;
+          while (categoryvalue[0] != '\0' && categoryvalue[0] != ':')
+            *cp++ = *categoryvalue++;
+          *cp = '\0';
 
-	  /* When this is a SUID binary we must not allow accessing files
-	     outside the dedicated directories.  */
-	  if (ENABLE_SECURE && IS_PATH_WITH_DIR (single_locale))
-	    /* Ingore this entry.  */
-	    continue;
-	}
+          /* When this is a SUID binary we must not allow accessing files
+             outside the dedicated directories.  */
+          if (ENABLE_SECURE && IS_PATH_WITH_DIR (single_locale))
+            /* Ingore this entry.  */
+            continue;
+        }
 
       /* If the current locale value is C (or POSIX) we don't load a
-	 domain.  Return the MSGID.  */
+         domain.  Return the MSGID.  */
       if (strcmp (single_locale, "C") == 0
-	  || strcmp (single_locale, "POSIX") == 0)
-	break;
+          || strcmp (single_locale, "POSIX") == 0)
+        break;
 
       /* Find structure describing the message catalog matching the
-	 DOMAINNAME and CATEGORY.  */
+         DOMAINNAME and CATEGORY.  */
       domain = _nl_find_domain (dirname, single_locale, xdomainname, binding);
 
       if (domain != NULL)
-	{
-	  retval = _nl_find_msg (domain, binding, msgid1, &retlen);
+        {
+          retval = _nl_find_msg (domain, binding, msgid1, &retlen);
 
-	  if (retval == NULL)
-	    {
-	      int cnt;
+          if (retval == NULL)
+            {
+              int cnt;
 
-	      for (cnt = 0; domain->successor[cnt] != NULL; ++cnt)
-		{
-		  retval = _nl_find_msg (domain->successor[cnt], binding,
-					 msgid1, &retlen);
+              for (cnt = 0; domain->successor[cnt] != NULL; ++cnt)
+                {
+                  retval = _nl_find_msg (domain->successor[cnt], binding,
+                                         msgid1, &retlen);
 
-		  if (retval != NULL)
-		    {
-		      domain = domain->successor[cnt];
-		      break;
-		    }
-		}
-	    }
+                  if (retval != NULL)
+                    {
+                      domain = domain->successor[cnt];
+                      break;
+                    }
+                }
+            }
 
-	  if (retval != NULL)
-	    {
-	      /* Found the translation of MSGID1 in domain DOMAIN:
-		 starting at RETVAL, RETLEN bytes.  */
-	      FREE_BLOCKS (block_list);
+          if (retval != NULL)
+            {
+              /* Found the translation of MSGID1 in domain DOMAIN:
+                 starting at RETVAL, RETLEN bytes.  */
+              FREE_BLOCKS (block_list);
 #if defined HAVE_TSEARCH || defined _LIBC
-	      if (foundp == NULL)
-		{
-		  /* Create a new entry and add it to the search tree.  */
-		  struct known_translation_t *newp;
+              if (foundp == NULL)
+                {
+                  /* Create a new entry and add it to the search tree.  */
+                  struct known_translation_t *newp;
 
-		  newp = (struct known_translation_t *)
-		    malloc (offsetof (struct known_translation_t, msgid)
-			    + msgid_len + domainname_len + 1);
-		  if (newp != NULL)
-		    {
-		      newp->domainname =
-			mempcpy (newp->msgid, msgid1, msgid_len);
-		      memcpy (newp->domainname, domainname, domainname_len + 1);
-		      newp->category = category;
-		      newp->counter = _nl_msg_cat_cntr;
-		      newp->domain = domain;
-		      newp->translation = retval;
-		      newp->translation_length = retlen;
+                  newp = (struct known_translation_t *)
+                    malloc (offsetof (struct known_translation_t, msgid)
+                            + msgid_len + domainname_len + 1);
+                  if (newp != NULL)
+                    {
+                      newp->domainname =
+                        mempcpy (newp->msgid, msgid1, msgid_len);
+                      memcpy (newp->domainname, domainname, domainname_len + 1);
+                      newp->category = category;
+                      newp->counter = _nl_msg_cat_cntr;
+                      newp->domain = domain;
+                      newp->translation = retval;
+                      newp->translation_length = retlen;
 
-		      /* Insert the entry in the search tree.  */
-		      foundp = (struct known_translation_t **)
-			tsearch (newp, &root, transcmp);
-		      if (foundp == NULL
-			  || __builtin_expect (*foundp != newp, 0))
-			/* The insert failed.  */
-			free (newp);
-		    }
-		}
-	      else
-		{
-		  /* We can update the existing entry.  */
-		  (*foundp)->counter = _nl_msg_cat_cntr;
-		  (*foundp)->domain = domain;
-		  (*foundp)->translation = retval;
-		  (*foundp)->translation_length = retlen;
-		}
+                      /* Insert the entry in the search tree.  */
+                      foundp = (struct known_translation_t **)
+                        tsearch (newp, &root, transcmp);
+                      if (foundp == NULL
+                          || __builtin_expect (*foundp != newp, 0))
+                        /* The insert failed.  */
+                        free (newp);
+                    }
+                }
+              else
+                {
+                  /* We can update the existing entry.  */
+                  (*foundp)->counter = _nl_msg_cat_cntr;
+                  (*foundp)->domain = domain;
+                  (*foundp)->translation = retval;
+                  (*foundp)->translation_length = retlen;
+                }
 #endif
-	      __set_errno (saved_errno);
+              __set_errno (saved_errno);
 
-	      /* Now deal with plural.  */
-	      if (plural)
-		retval = plural_lookup (domain, n, retval, retlen);
+              /* Now deal with plural.  */
+              if (plural)
+                retval = plural_lookup (domain, n, retval, retlen);
 
-	      __libc_rwlock_unlock (_nl_state_lock);
-	      return retval;
-	    }
-	}
+              __libc_rwlock_unlock (_nl_state_lock);
+              return retval;
+            }
+        }
     }
 
  return_untranslated:
@@ -712,21 +712,21 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
   if (!ENABLE_SECURE)
     {
       extern void _nl_log_untranslated (const char *logfilename,
-						const char *domainname,
-						const char *msgid1,
-						const char *msgid2,
-						int plural);
+                                                const char *domainname,
+                                                const char *msgid1,
+                                                const char *msgid2,
+                                                int plural);
       const char *logfilename = getenv ("GETTEXT_LOG_UNTRANSLATED");
 
       if (logfilename != NULL && logfilename[0] != '\0')
-	_nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural);
+        _nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural);
     }
 #endif
   __set_errno (saved_errno);
   return (plural == 0
-	  ? (char *) msgid1
-	  /* Use the Germanic plural rule.  */
-	  : n == 1 ? (char *) msgid1 : (char *) msgid2);
+          ? (char *) msgid1
+          /* Use the Germanic plural rule.  */
+          : n == 1 ? (char *) msgid1 : (char *) msgid2);
 }
 
 
@@ -763,64 +763,64 @@ _nl_find_msg (domain_file, domainbinding, msgid, lengthp)
       nls_uint32 incr = 1 + (hash_val % (domain->hash_size - 2));
 
       while (1)
-	{
-	  nls_uint32 nstr =
-	    W (domain->must_swap_hash_tab, domain->hash_tab[idx]);
+        {
+          nls_uint32 nstr =
+            W (domain->must_swap_hash_tab, domain->hash_tab[idx]);
 
-	  if (nstr == 0)
-	    /* Hash table entry is empty.  */
-	    return NULL;
+          if (nstr == 0)
+            /* Hash table entry is empty.  */
+            return NULL;
 
-	  nstr--;
+          nstr--;
 
-	  /* Compare msgid with the original string at index nstr.
-	     We compare the lengths with >=, not ==, because plural entries
-	     are represented by strings with an embedded NUL.  */
-	  if (nstr < nstrings
-	      ? W (domain->must_swap, domain->orig_tab[nstr].length) >= len
-		&& (strcmp (msgid,
-			    domain->data + W (domain->must_swap,
-					      domain->orig_tab[nstr].offset))
-		    == 0)
-	      : domain->orig_sysdep_tab[nstr - nstrings].length > len
-		&& (strcmp (msgid,
-			    domain->orig_sysdep_tab[nstr - nstrings].pointer)
-		    == 0))
-	    {
-	      act = nstr;
-	      goto found;
-	    }
+          /* Compare msgid with the original string at index nstr.
+             We compare the lengths with >=, not ==, because plural entries
+             are represented by strings with an embedded NUL.  */
+          if (nstr < nstrings
+              ? W (domain->must_swap, domain->orig_tab[nstr].length) >= len
+                && (strcmp (msgid,
+                            domain->data + W (domain->must_swap,
+                                              domain->orig_tab[nstr].offset))
+                    == 0)
+              : domain->orig_sysdep_tab[nstr - nstrings].length > len
+                && (strcmp (msgid,
+                            domain->orig_sysdep_tab[nstr - nstrings].pointer)
+                    == 0))
+            {
+              act = nstr;
+              goto found;
+            }
 
-	  if (idx >= domain->hash_size - incr)
-	    idx -= domain->hash_size - incr;
-	  else
-	    idx += incr;
-	}
+          if (idx >= domain->hash_size - incr)
+            idx -= domain->hash_size - incr;
+          else
+            idx += incr;
+        }
       /* NOTREACHED */
     }
   else
     {
       /* Try the default method:  binary search in the sorted array of
-	 messages.  */
+         messages.  */
       size_t top, bottom;
 
       bottom = 0;
       top = nstrings;
       while (bottom < top)
-	{
-	  int cmp_val;
+        {
+          int cmp_val;
 
-	  act = (bottom + top) / 2;
-	  cmp_val = strcmp (msgid, (domain->data
-				    + W (domain->must_swap,
-					 domain->orig_tab[act].offset)));
-	  if (cmp_val < 0)
-	    top = act;
-	  else if (cmp_val > 0)
-	    bottom = act + 1;
-	  else
-	    goto found;
-	}
+          act = (bottom + top) / 2;
+          cmp_val = strcmp (msgid, (domain->data
+                                    + W (domain->must_swap,
+                                         domain->orig_tab[act].offset)));
+          if (cmp_val < 0)
+            top = act;
+          else if (cmp_val > 0)
+            bottom = act + 1;
+          else
+            goto found;
+        }
       /* No translation was found.  */
       return NULL;
     }
@@ -831,7 +831,7 @@ _nl_find_msg (domain_file, domainbinding, msgid, lengthp)
   if (act < nstrings)
     {
       result = (char *)
-	(domain->data + W (domain->must_swap, domain->trans_tab[act].offset));
+        (domain->data + W (domain->must_swap, domain->trans_tab[act].offset));
       resultlen = W (domain->must_swap, domain->trans_tab[act].length) + 1;
     }
   else
@@ -845,8 +845,8 @@ _nl_find_msg (domain_file, domainbinding, msgid, lengthp)
       != (domainbinding != NULL ? domainbinding->codeset_cntr : 0))
     {
       /* The domain's codeset has changed through bind_textdomain_codeset()
-	 since the message catalog was initialized or last accessed.  We
-	 have to reinitialize the converter.  */
+         since the message catalog was initialized or last accessed.  We
+         have to reinitialize the converter.  */
       _nl_free_domain_conv (domain);
       _nl_init_domain_conv (domain_file, domain, domainbinding);
     }
@@ -862,169 +862,169 @@ _nl_find_msg (domain_file, domainbinding, msgid, lengthp)
       )
     {
       /* We are supposed to do a conversion.  First allocate an
-	 appropriate table with the same structure as the table
-	 of translations in the file, where we can put the pointers
-	 to the converted strings in.
-	 There is a slight complication with plural entries.  They
-	 are represented by consecutive NUL terminated strings.  We
-	 handle this case by converting RESULTLEN bytes, including
-	 NULs.  */
+         appropriate table with the same structure as the table
+         of translations in the file, where we can put the pointers
+         to the converted strings in.
+         There is a slight complication with plural entries.  They
+         are represented by consecutive NUL terminated strings.  We
+         handle this case by converting RESULTLEN bytes, including
+         NULs.  */
 
       if (domain->conv_tab == NULL
-	  && ((domain->conv_tab =
-		 (char **) calloc (nstrings + domain->n_sysdep_strings,
-				   sizeof (char *)))
-	      == NULL))
-	/* Mark that we didn't succeed allocating a table.  */
-	domain->conv_tab = (char **) -1;
+          && ((domain->conv_tab =
+                 (char **) calloc (nstrings + domain->n_sysdep_strings,
+                                   sizeof (char *)))
+              == NULL))
+        /* Mark that we didn't succeed allocating a table.  */
+        domain->conv_tab = (char **) -1;
 
       if (__builtin_expect (domain->conv_tab == (char **) -1, 0))
-	/* Nothing we can do, no more memory.  */
-	goto converted;
+        /* Nothing we can do, no more memory.  */
+        goto converted;
 
       if (domain->conv_tab[act] == NULL)
-	{
-	  /* We haven't used this string so far, so it is not
-	     translated yet.  Do this now.  */
-	  /* We use a bit more efficient memory handling.
-	     We allocate always larger blocks which get used over
-	     time.  This is faster than many small allocations.   */
-	  __libc_lock_define_initialized (static, lock)
-# define INITIAL_BLOCK_SIZE	4080
-	  static unsigned char *freemem;
-	  static size_t freemem_size;
+        {
+          /* We haven't used this string so far, so it is not
+             translated yet.  Do this now.  */
+          /* We use a bit more efficient memory handling.
+             We allocate always larger blocks which get used over
+             time.  This is faster than many small allocations.   */
+          __libc_lock_define_initialized (static, lock)
+# define INITIAL_BLOCK_SIZE     4080
+          static unsigned char *freemem;
+          static size_t freemem_size;
 
-	  const unsigned char *inbuf;
-	  unsigned char *outbuf;
-	  int malloc_count;
+          const unsigned char *inbuf;
+          unsigned char *outbuf;
+          int malloc_count;
 # ifndef _LIBC
-	  transmem_block_t *transmem_list = NULL;
+          transmem_block_t *transmem_list = NULL;
 # endif
 
-	  __libc_lock_lock (lock);
+          __libc_lock_lock (lock);
 
-	  inbuf = (const unsigned char *) result;
-	  outbuf = freemem + sizeof (size_t);
+          inbuf = (const unsigned char *) result;
+          outbuf = freemem + sizeof (size_t);
 
-	  malloc_count = 0;
-	  while (1)
-	    {
-	      transmem_block_t *newmem;
+          malloc_count = 0;
+          while (1)
+            {
+              transmem_block_t *newmem;
 # ifdef _LIBC
-	      size_t non_reversible;
-	      int res;
+              size_t non_reversible;
+              int res;
 
-	      if (freemem_size < sizeof (size_t))
-		goto resize_freemem;
+              if (freemem_size < sizeof (size_t))
+                goto resize_freemem;
 
-	      res = __gconv (domain->conv,
-			     &inbuf, inbuf + resultlen,
-			     &outbuf,
-			     outbuf + freemem_size - sizeof (size_t),
-			     &non_reversible);
+              res = __gconv (domain->conv,
+                             &inbuf, inbuf + resultlen,
+                             &outbuf,
+                             outbuf + freemem_size - sizeof (size_t),
+                             &non_reversible);
 
-	      if (res == __GCONV_OK || res == __GCONV_EMPTY_INPUT)
-		break;
+              if (res == __GCONV_OK || res == __GCONV_EMPTY_INPUT)
+                break;
 
-	      if (res != __GCONV_FULL_OUTPUT)
-		{
-		  __libc_lock_unlock (lock);
-		  goto converted;
-		}
+              if (res != __GCONV_FULL_OUTPUT)
+                {
+                  __libc_lock_unlock (lock);
+                  goto converted;
+                }
 
-	      inbuf = result;
+              inbuf = result;
 # else
 #  if HAVE_ICONV
-	      const char *inptr = (const char *) inbuf;
-	      size_t inleft = resultlen;
-	      char *outptr = (char *) outbuf;
-	      size_t outleft;
+              const char *inptr = (const char *) inbuf;
+              size_t inleft = resultlen;
+              char *outptr = (char *) outbuf;
+              size_t outleft;
 
-	      if (freemem_size < sizeof (size_t))
-		goto resize_freemem;
+              if (freemem_size < sizeof (size_t))
+                goto resize_freemem;
 
-	      outleft = freemem_size - sizeof (size_t);
-	      if (iconv (domain->conv,
-			 (ICONV_CONST char **) &inptr, &inleft,
-			 &outptr, &outleft)
-		  != (size_t) (-1))
-		{
-		  outbuf = (unsigned char *) outptr;
-		  break;
-		}
-	      if (errno != E2BIG)
-		{
-		  __libc_lock_unlock (lock);
-		  goto converted;
-		}
+              outleft = freemem_size - sizeof (size_t);
+              if (iconv (domain->conv,
+                         (ICONV_CONST char **) &inptr, &inleft,
+                         &outptr, &outleft)
+                  != (size_t) (-1))
+                {
+                  outbuf = (unsigned char *) outptr;
+                  break;
+                }
+              if (errno != E2BIG)
+                {
+                  __libc_lock_unlock (lock);
+                  goto converted;
+                }
 #  endif
 # endif
 
-	    resize_freemem:
-	      /* We must allocate a new buffer or resize the old one.  */
-	      if (malloc_count > 0)
-		{
-		  ++malloc_count;
-		  freemem_size = malloc_count * INITIAL_BLOCK_SIZE;
-		  newmem = (transmem_block_t *) realloc (transmem_list,
-							 freemem_size);
+            resize_freemem:
+              /* We must allocate a new buffer or resize the old one.  */
+              if (malloc_count > 0)
+                {
+                  ++malloc_count;
+                  freemem_size = malloc_count * INITIAL_BLOCK_SIZE;
+                  newmem = (transmem_block_t *) realloc (transmem_list,
+                                                         freemem_size);
 # ifdef _LIBC
-		  if (newmem != NULL)
-		    transmem_list = transmem_list->next;
-		  else
-		    {
-		      struct transmem_list *old = transmem_list;
+                  if (newmem != NULL)
+                    transmem_list = transmem_list->next;
+                  else
+                    {
+                      struct transmem_list *old = transmem_list;
 
-		      transmem_list = transmem_list->next;
-		      free (old);
-		    }
+                      transmem_list = transmem_list->next;
+                      free (old);
+                    }
 # endif
-		}
-	      else
-		{
-		  malloc_count = 1;
-		  freemem_size = INITIAL_BLOCK_SIZE;
-		  newmem = (transmem_block_t *) malloc (freemem_size);
-		}
-	      if (__builtin_expect (newmem == NULL, 0))
-		{
-		  freemem = NULL;
-		  freemem_size = 0;
-		  __libc_lock_unlock (lock);
-		  goto converted;
-		}
+                }
+              else
+                {
+                  malloc_count = 1;
+                  freemem_size = INITIAL_BLOCK_SIZE;
+                  newmem = (transmem_block_t *) malloc (freemem_size);
+                }
+              if (__builtin_expect (newmem == NULL, 0))
+                {
+                  freemem = NULL;
+                  freemem_size = 0;
+                  __libc_lock_unlock (lock);
+                  goto converted;
+                }
 
 # ifdef _LIBC
-	      /* Add the block to the list of blocks we have to free
+              /* Add the block to the list of blocks we have to free
                  at some point.  */
-	      newmem->next = transmem_list;
-	      transmem_list = newmem;
+              newmem->next = transmem_list;
+              transmem_list = newmem;
 
-	      freemem = newmem->data;
-	      freemem_size -= offsetof (struct transmem_list, data);
+              freemem = newmem->data;
+              freemem_size -= offsetof (struct transmem_list, data);
 # else
-	      transmem_list = newmem;
-	      freemem = newmem;
+              transmem_list = newmem;
+              freemem = newmem;
 # endif
 
-	      outbuf = freemem + sizeof (size_t);
-	    }
+              outbuf = freemem + sizeof (size_t);
+            }
 
-	  /* We have now in our buffer a converted string.  Put this
-	     into the table of conversions.  */
-	  *(size_t *) freemem = outbuf - freemem - sizeof (size_t);
-	  domain->conv_tab[act] = (char *) freemem;
-	  /* Shrink freemem, but keep it aligned.  */
-	  freemem_size -= outbuf - freemem;
-	  freemem = outbuf;
-	  freemem += freemem_size & (alignof (size_t) - 1);
-	  freemem_size = freemem_size & ~ (alignof (size_t) - 1);
+          /* We have now in our buffer a converted string.  Put this
+             into the table of conversions.  */
+          *(size_t *) freemem = outbuf - freemem - sizeof (size_t);
+          domain->conv_tab[act] = (char *) freemem;
+          /* Shrink freemem, but keep it aligned.  */
+          freemem_size -= outbuf - freemem;
+          freemem = outbuf;
+          freemem += freemem_size & (alignof (size_t) - 1);
+          freemem_size = freemem_size & ~ (alignof (size_t) - 1);
 
-	  __libc_lock_unlock (lock);
-	}
+          __libc_lock_unlock (lock);
+        }
 
       /* Now domain->conv_tab[act] contains the translation of all
-	 the plural variants.  */
+         the plural variants.  */
       result = domain->conv_tab[act] + sizeof (size_t);
       resultlen = *(size_t *) domain->conv_tab[act];
     }
@@ -1070,10 +1070,10 @@ plural_lookup (domain, n, translation, translation_len)
       p++;
 
       if (p >= translation + translation_len)
-	/* This should never happen.  It means the plural expression
-	   evaluated to a value larger than the number of variants
-	   available for MSGID1.  */
-	return (char *) translation;
+        /* This should never happen.  It means the plural expression
+           evaluated to a value larger than the number of variants
+           available for MSGID1.  */
+        return (char *) translation;
     }
   return (char *) p;
 }
@@ -1166,13 +1166,13 @@ guess_category_value (category, categoryname)
 
   /* Ignore LANGUAGE if the locale is set to "C" because
      1. "C" locale usually uses the ASCII encoding, and most international
-	messages use non-ASCII characters. These characters get displayed
-	as question marks (if using glibc's iconv()) or as invalid 8-bit
-	characters (because other iconv()s refuse to convert most non-ASCII
-	characters to ASCII). In any case, the output is ugly.
+        messages use non-ASCII characters. These characters get displayed
+        as question marks (if using glibc's iconv()) or as invalid 8-bit
+        characters (because other iconv()s refuse to convert most non-ASCII
+        characters to ASCII). In any case, the output is ugly.
      2. The precise output of some programs in the "C" locale is specified
-	by POSIX and should not depend on environment variables like
-	"LANGUAGE".  We allow such programs to use gettext().  */
+        by POSIX and should not depend on environment variables like
+        "LANGUAGE".  We allow such programs to use gettext().  */
   return language != NULL && strcmp (retval, "C") != 0 ? language : retval;
 }
 
@@ -1218,8 +1218,8 @@ libc_freeres_fn (free_mem)
       struct binding *oldp = _nl_domain_bindings;
       _nl_domain_bindings = _nl_domain_bindings->next;
       if (oldp->dirname != INTUSE(_nl_default_dirname))
-	/* Yes, this is a pointer comparison.  */
-	free (oldp->dirname);
+        /* Yes, this is a pointer comparison.  */
+        free (oldp->dirname);
       free (oldp->codeset);
       free (oldp);
     }

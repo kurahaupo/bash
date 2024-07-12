@@ -3,7 +3,7 @@
 /* Copyright (C) 1992-2015 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -68,17 +68,17 @@
 
 /* Defaults for the various editing mode indicators, inserted at the beginning
    of the last (maybe only) line of the prompt if show-mode-in-prompt is on */
-#define RL_EMACS_MODESTR_DEFAULT	"@"
-#define RL_EMACS_MODESTR_DEFLEN		1
+#define RL_EMACS_MODESTR_DEFAULT        "@"
+#define RL_EMACS_MODESTR_DEFLEN         1
 
-#define RL_VI_INS_MODESTR_DEFAULT	"(ins)"
-#define RL_VI_INS_MODESTR_DEFLEN	5
-#define RL_VI_CMD_MODESTR_DEFAULT	"(cmd)"
-#define RL_VI_CMD_MODESTR_DEFLEN	5
+#define RL_VI_INS_MODESTR_DEFAULT       "(ins)"
+#define RL_VI_INS_MODESTR_DEFLEN        5
+#define RL_VI_CMD_MODESTR_DEFAULT       "(cmd)"
+#define RL_VI_CMD_MODESTR_DEFLEN        5
 
 /* Do you want readline to assume it's running in an ANSI-compatible terminal
    by default? If set to 0, readline tries to check and verify whether or not
    it is. */
-#define RL_ANSI_TERM_DEFAULT	1	/* for now */
+#define RL_ANSI_TERM_DEFAULT    1       /* for now */
 
 #endif /* _RLCONF_H_ */

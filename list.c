@@ -113,13 +113,13 @@ list_remove (GENERIC_LIST **list, sh_gcp_func_t *comparer, char *arg)
   for (prev = (GENERIC_LIST *)NULL, temp = *list; temp; prev = temp, temp = temp->next)
     {
       if ((*comparer) (temp, arg))
-	{
-	  if (prev)
-	    prev->next = temp->next;
-	  else
-	    *list = temp->next;
-	  return (temp);
-	}
+        {
+          if (prev)
+            prev->next = temp->next;
+          else
+            *list = temp->next;
+          return (temp);
+        }
     }
   return ((GENERIC_LIST *)&global_error_list);
 }

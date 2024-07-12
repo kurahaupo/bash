@@ -39,7 +39,7 @@
 
 #include "rltty.h"
 #if defined (HAVE_SYS_IOCTL_H)
-#  include <sys/ioctl.h>		/* include for declaration of ioctl */
+#  include <sys/ioctl.h>                /* include for declaration of ioctl */
 #endif
 
 #include "readline.h"
@@ -57,17 +57,17 @@ rl_voidfunc_t *rl_deprep_term_function = rl_deprep_terminal;
 static void set_winsize (int);
 
 /* **************************************************************** */
-/*								    */
-/*		      Saving and Restoring the TTY	    	    */
-/*								    */
+/*                                                                  */
+/*                    Saving and Restoring the TTY                  */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Non-zero means that the terminal is in a prepped state.  There are several
    flags that are OR'd in to denote whether or not we have sent various
    init strings to the terminal. */
-#define TPX_PREPPED	0x01
-#define TPX_BRACKPASTE	0x02
-#define TPX_METAKEY	0x04
+#define TPX_PREPPED     0x01
+#define TPX_BRACKPASTE  0x02
+#define TPX_METAKEY     0x04
 
 static int terminal_prepped;
 
@@ -99,21 +99,21 @@ set_winsize (int tty)
 /* Values for the `flags' field of a struct bsdtty.  This tells which
    elements of the struct bsdtty have been fetched from the system and
    are valid. */
-#define SGTTY_SET	0x01
-#define LFLAG_SET	0x02
-#define TCHARS_SET	0x04
-#define LTCHARS_SET	0x08
+#define SGTTY_SET       0x01
+#define LFLAG_SET       0x02
+#define TCHARS_SET      0x04
+#define LTCHARS_SET     0x08
 
 struct bsdtty {
-  struct sgttyb sgttyb;	/* Basic BSD tty driver information. */
-  int lflag;		/* Local mode flags, like LPASS8. */
+  struct sgttyb sgttyb; /* Basic BSD tty driver information. */
+  int lflag;            /* Local mode flags, like LPASS8. */
 #if defined (TIOCGETC)
-  struct tchars tchars;	/* Terminal special characters, including ^S and ^Q. */
+  struct tchars tchars; /* Terminal special characters, including ^S and ^Q. */
 #endif
 #if defined (TIOCGLTC)
   struct ltchars ltchars; /* 4.2 BSD editing characters */
 #endif
-  int flags;		/* Bitmap saying which parts of the struct are valid. */
+  int flags;            /* Bitmap saying which parts of the struct are valid. */
 };
 
 #define TIOTYPE struct bsdtty
@@ -285,7 +285,7 @@ prepare_terminal_settings (int meta_flag, TIOTYPE oldtio, TIOTYPE *tiop)
 
       /* If there is an XON character, bind it to restart the output. */
       if (oldtio.tchars.t_startc != -1)
-	rl_bind_key (oldtio.tchars.t_startc, rl_restart_output);
+        rl_bind_key (oldtio.tchars.t_startc, rl_restart_output);
     }
 
   /* If there is an EOF char, bind _rl_eof_char to it. */
@@ -301,8 +301,8 @@ prepare_terminal_settings (int meta_flag, TIOTYPE oldtio, TIOTYPE *tiop)
 
 #if defined (TIOCGLTC)
   /* Make the interrupt keys go away.  Just enough to make people happy. */
-  tiop->ltchars.t_dsuspc = -1;	/* C-y */
-  tiop->ltchars.t_lnextc = -1;	/* C-v */
+  tiop->ltchars.t_dsuspc = -1;  /* C-y */
+  tiop->ltchars.t_lnextc = -1;  /* C-v */
 #endif /* TIOCGLTC */
 }
 
@@ -318,18 +318,18 @@ prepare_terminal_settings (int meta_flag, TIOTYPE oldtio, TIOTYPE *tiop)
 
 #if defined (TERMIOS_TTY_DRIVER)
 #  define TIOTYPE struct termios
-#  define DRAIN_OUTPUT(fd)	tcdrain (fd)
-#  define GETATTR(tty, tiop)	(tcgetattr (tty, tiop))
+#  define DRAIN_OUTPUT(fd)      tcdrain (fd)
+#  define GETATTR(tty, tiop)    (tcgetattr (tty, tiop))
 #  ifdef M_UNIX
-#    define SETATTR(tty, tiop)	(tcsetattr (tty, TCSANOW, tiop))
+#    define SETATTR(tty, tiop)  (tcsetattr (tty, TCSANOW, tiop))
 #  else
-#    define SETATTR(tty, tiop)	(tcsetattr (tty, TCSADRAIN, tiop))
+#    define SETATTR(tty, tiop)  (tcsetattr (tty, TCSADRAIN, tiop))
 #  endif /* !M_UNIX */
 #else
 #  define TIOTYPE struct termio
 #  define DRAIN_OUTPUT(fd)
-#  define GETATTR(tty, tiop)	(ioctl (tty, TCGETA, tiop))
-#  define SETATTR(tty, tiop)	(ioctl (tty, TCSETAW, tiop))
+#  define GETATTR(tty, tiop)    (ioctl (tty, TCGETA, tiop))
+#  define SETATTR(tty, tiop)    (ioctl (tty, TCSETAW, tiop))
 #endif /* !TERMIOS_TTY_DRIVER */
 
 static TIOTYPE otio;
@@ -424,22 +424,22 @@ _get_tty_settings (int tty, TIOTYPE *tiop)
     {
       ioctl_ret = GETATTR (tty, tiop);
       if (ioctl_ret < 0)
-	{
-	  if (errno != EINTR)
-	    return -1;
-	  else
-	    continue;
-	}
+        {
+          if (errno != EINTR)
+            return -1;
+          else
+            continue;
+        }
       if (OUTPUT_BEING_FLUSHED (tiop))
-	{
+        {
 #if defined (FLUSHO)
-	  _rl_errmsg ("warning: turning off output flushing");
-	  tiop->c_lflag &= ~FLUSHO;
-	  break;
+          _rl_errmsg ("warning: turning off output flushing");
+          tiop->c_lflag &= ~FLUSHO;
+          break;
 #else
-	  continue;
+          continue;
 #endif
-	}
+        }
       break;
     }
 
@@ -468,7 +468,7 @@ _set_tty_settings (int tty, TIOTYPE *tiop)
   while (SETATTR (tty, tiop) < 0)
     {
       if (errno != EINTR)
-	return -1;
+        return -1;
       errno = 0;
     }
   return 0;
@@ -479,7 +479,7 @@ set_tty_settings (int tty, TIOTYPE *tiop)
 {
   if (_set_tty_settings (tty, tiop) < 0)
     return -1;
-    
+
 #if 0
 
 #if defined (TERMIOS_TTY_DRIVER)
@@ -490,10 +490,10 @@ set_tty_settings (int tty, TIOTYPE *tiop)
       tcflow (tty, TCOON);
     }
 #  else /* !ksr1 */
-  tcflow (tty, TCOON);		/* Simulate a ^Q. */
+  tcflow (tty, TCOON);          /* Simulate a ^Q. */
 #  endif /* !ksr1 */
 #else
-  ioctl (tty, TCXONC, 1);	/* Simulate a ^Q. */
+  ioctl (tty, TCXONC, 1);       /* Simulate a ^Q. */
 #endif /* !TERMIOS_TTY_DRIVER */
 
 #endif /* 0 */
@@ -612,12 +612,12 @@ rl_prep_terminal (int meta_flag)
     {
 #if defined (ENOTSUP)
       /* MacOS X and Linux, at least, lie about the value of errno if
-	 tcgetattr fails. */
+         tcgetattr fails. */
       if (errno == ENOTTY || errno == EINVAL || errno == ENOTSUP)
 #else
       if (errno == ENOTTY || errno == EINVAL)
 #endif
-	_rl_echoing_p = 1;		/* XXX */
+        _rl_echoing_p = 1;              /* XXX */
 
       _rl_release_sigint ();
       return;
@@ -629,12 +629,12 @@ rl_prep_terminal (int meta_flag)
     {
 #if defined (VI_MODE)
       /* If editing in vi mode, make sure we restore the bindings in the
-	 insertion keymap no matter what keymap we ended up in. */
+         insertion keymap no matter what keymap we ended up in. */
       if (rl_editing_mode == vi_mode)
-	rl_tty_unset_default_bindings (vi_insertion_keymap);
+        rl_tty_unset_default_bindings (vi_insertion_keymap);
       else
 #endif
-	rl_tty_unset_default_bindings (_rl_keymap);
+        rl_tty_unset_default_bindings (_rl_keymap);
     }
   save_tty_chars (&otio);
   RL_SETSTATE(RL_STATE_TTYCSAVED);
@@ -642,12 +642,12 @@ rl_prep_terminal (int meta_flag)
     {
 #if defined (VI_MODE)
       /* If editing in vi mode, make sure we set the bindings in the
-	 insertion keymap no matter what keymap we ended up in. */
+         insertion keymap no matter what keymap we ended up in. */
       if (rl_editing_mode == vi_mode)
-	_rl_bind_tty_special_chars (vi_insertion_keymap, tio);
+        _rl_bind_tty_special_chars (vi_insertion_keymap, tio);
       else
 #endif
-	_rl_bind_tty_special_chars (_rl_keymap, tio);
+        _rl_bind_tty_special_chars (_rl_keymap, tio);
     }
 
   prepare_terminal_settings (meta_flag, otio, &tio);
@@ -696,9 +696,9 @@ rl_deprep_terminal (void)
       /* Since the last character in BRACK_PASTE_FINI is \r */
       _rl_last_c_pos = 0;
       if (rl_eof_found && (RL_ISSTATE (RL_STATE_TIMEOUT) == 0))
- 	fprintf (rl_outstream, "\n");
+        fprintf (rl_outstream, "\n");
       else if (_rl_echoing_p == 0)
- 	fprintf (rl_outstream, "\n");
+        fprintf (rl_outstream, "\n");
     }
 
   if (_rl_enable_keypad)
@@ -732,9 +732,9 @@ rl_tty_set_echoing (int u)
 }
 
 /* **************************************************************** */
-/*								    */
-/*			Bogus Flow Control      		    */
-/*								    */
+/*                                                                  */
+/*                      Bogus Flow Control                          */
+/*                                                                  */
 /* **************************************************************** */
 
 int
@@ -761,7 +761,7 @@ rl_restart_output (int count, int key)
       tcflow (fildes, TCOON);
     }
 #    else /* !ksr1 */
-  tcflow (fildes, TCOON);		/* Simulate a ^Q. */
+  tcflow (fildes, TCOON);               /* Simulate a ^Q. */
 #    endif /* !ksr1 */
 #  else /* !TERMIOS_TTY_DRIVER */
 #    if defined (TCXONC)
@@ -807,13 +807,13 @@ rl_stop_output (int count, int key)
 }
 
 /* **************************************************************** */
-/*								    */
-/*			Default Key Bindings			    */
-/*								    */
+/*                                                                  */
+/*                      Default Key Bindings                        */
+/*                                                                  */
 /* **************************************************************** */
 
 #if !defined (NO_TTY_DRIVER)
-#define SET_SPECIAL(sc, func)	set_special_char(kmap, &ttybuff, sc, func)
+#define SET_SPECIAL(sc, func)   set_special_char(kmap, &ttybuff, sc, func)
 #endif
 
 #if defined (NO_TTY_DRIVER)

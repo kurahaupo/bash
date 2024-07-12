@@ -104,7 +104,7 @@ caller_builtin (WORD_LIST *list)
       printf("%s %s\n", lineno_s ? lineno_s : "NULL", source_s ? source_s : "NULL");
       return (EXECUTION_SUCCESS);
     }
-  
+
   if (funcname_a == 0 || array_empty (funcname_a))
     return (EXECUTION_FAILURE);
 
@@ -115,7 +115,7 @@ caller_builtin (WORD_LIST *list)
       funcname_s = array_reference (funcname_a, num+1);
 
       if (lineno_s == NULL|| source_s == NULL || funcname_s == NULL)
-	return (EXECUTION_FAILURE);
+        return (EXECUTION_FAILURE);
 
       printf("%s %s %s\n", lineno_s, funcname_s, source_s);
     }
@@ -149,12 +149,12 @@ N_("Returns the context of the current subroutine call.\n\
 };
 
 struct builtin caller_struct = {
-	"caller",
-	caller_builtin,
-	BUILTIN_ENABLED,
-	caller_doc,
-	"caller [EXPR]",
-	0
+        "caller",
+        caller_builtin,
+        BUILTIN_ENABLED,
+        caller_doc,
+        "caller [EXPR]",
+        0
 };
 
 #endif /* LOADABLE_BUILTIN */

@@ -32,7 +32,7 @@ echo 123456789012345678 > mksyntax.dSYM ; sleep 0.1
 
 echo m*
 GLOBSORT=nosort
-#echo m*			# might have to take this one out
+#echo m*                        # might have to take this one out
 unset GLOBSORT
 echo
 

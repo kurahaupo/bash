@@ -18,7 +18,7 @@ declare -A assoc
 
 var=x123
 assoc['$var']=value
-declare -p assoc 
+declare -p assoc
 
 shopt -u assoc_expand_once
 unset "assoc[$var]"
@@ -112,6 +112,3 @@ for i in "${!blah[@]}"; do echo "$i"; done
 for i in "${!blah[@]}"; do unset blah["$i"]; done
 declare -p blah
 unset blah
-
-
-

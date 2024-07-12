@@ -33,9 +33,9 @@
 #if !defined (HAVE_SYSCONF) || !defined (_SC_CLK_TCK)
 #  if !defined (CLK_TCK)
 #    if defined (HZ)
-#      define CLK_TCK	HZ
+#      define CLK_TCK   HZ
 #    else
-#      define CLK_TCK	60			/* 60HZ */
+#      define CLK_TCK   60                      /* 60HZ */
 #    endif
 #  endif /* !CLK_TCK */
 #endif /* !HAVE_SYSCONF && !_SC_CLK_TCK */
@@ -63,23 +63,23 @@ getnow(void)
 
 /* These exist on BSD systems, at least. */
 #if !defined (timerclear)
-#  define timerclear(tvp)	do { (tvp)->tv_sec = 0; (tvp)->tv_usec = 0; } while (0)
+#  define timerclear(tvp)       do { (tvp)->tv_sec = 0; (tvp)->tv_usec = 0; } while (0)
 #endif
 #if !defined (timerisset)
-#  define timerisset(tvp)	((tvp)->tv_sec || (tvp)->tv_usec)
+#  define timerisset(tvp)       ((tvp)->tv_sec || (tvp)->tv_usec)
 #endif
 #if !defined (timercmp)
 #  define timercmp(a, b, CMP) \
-	(((a)->tv_sec == (b)->tv_sec) ? ((a)->tv_usec CMP (b)->tv_usec) \
-				      : ((a)->tv_sec CMP (b)->tv_sec))
+        (((a)->tv_sec == (b)->tv_sec) ? ((a)->tv_usec CMP (b)->tv_usec) \
+                                      : ((a)->tv_sec CMP (b)->tv_sec))
 #endif
 
 /* These are non-standard. */
 #if !defined (timerisunset)
-#  define timerisunset(tvp)	((tvp)->tv_sec == 0 && (tvp)->tv_usec == 0)
+#  define timerisunset(tvp)     ((tvp)->tv_sec == 0 && (tvp)->tv_usec == 0)
 #endif
 #if !defined (timerset)
-#  define timerset(tvp, s, u)	do { tvp->tv_sec = s; tvp->tv_usec = u; } while (0)
+#  define timerset(tvp, s, u)   do { tvp->tv_sec = s; tvp->tv_usec = u; } while (0)
 #endif
 
 #ifndef TIMEVAL_TO_TIMESPEC

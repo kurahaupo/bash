@@ -33,21 +33,21 @@
 #endif /* !NSIG */
 
 #define NO_SIG -1
-#define DEFAULT_SIG	SIG_DFL
-#define IGNORE_SIG	SIG_IGN
+#define DEFAULT_SIG     SIG_DFL
+#define IGNORE_SIG      SIG_IGN
 
 /* Special shell trap names. */
-#define DEBUG_TRAP	NSIG
-#define ERROR_TRAP	NSIG+1
-#define RETURN_TRAP	NSIG+2
-#define EXIT_TRAP 	0
+#define DEBUG_TRAP      NSIG
+#define ERROR_TRAP      NSIG+1
+#define RETURN_TRAP     NSIG+2
+#define EXIT_TRAP       0
 
 /* system signals plus special bash traps */
-#define BASH_NSIG	NSIG+3
+#define BASH_NSIG       NSIG+3
 
 /* Flags values for decode_signal() */
-#define DSIG_SIGPREFIX	0x01		/* don't allow `SIG' PREFIX */
-#define DSIG_NOCASE	0x02		/* case-insensitive comparison */
+#define DSIG_SIGPREFIX  0x01            /* don't allow `SIG' PREFIX */
+#define DSIG_NOCASE     0x02            /* case-insensitive comparison */
 
 /* A value which can never be the target of a trap handler. */
 #define IMPOSSIBLE_TRAP_HANDLER (SigHandler *)initialize_traps
@@ -56,7 +56,7 @@
 
 #define TRAP_STRING(s) \
   (signal_is_trapped (s) && signal_is_ignored (s) == 0) ? trap_list[s] \
-							: (char *)NULL
+                                                        : (char *)NULL
 
 extern char *trap_list[];
 

@@ -2,7 +2,7 @@
 # commands to complete, the reception of a signal for which a trap has been
 # set shall cause the wait utility to return immediately with an exit status
 # >128, immediately after which the trap associated with that signal shall be
-# taken. 
+# taken.
 
 trap 'echo got $(kill -l $BASH_TRAPSIG)' USR1
 

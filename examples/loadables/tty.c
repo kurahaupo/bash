@@ -41,15 +41,15 @@ tty_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "s")) != -1)
     {
       switch (opt)
-	{
-	case 's':
-	  sflag = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 's':
+          sflag = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -61,22 +61,22 @@ tty_builtin (WORD_LIST *list)
 }
 
 char *tty_doc[] = {
-	"Display terminal name.",
-	"",
-	"tty writes the name of the terminal that is opened for standard",
-	"input to standard output.  If the `-s' option is supplied, nothing",
-	"is written; the exit status determines whether or not the standard",
-	"input is connected to a tty.",
-	(char *)NULL
+        "Display terminal name.",
+        "",
+        "tty writes the name of the terminal that is opened for standard",
+        "input to standard output.  If the `-s' option is supplied, nothing",
+        "is written; the exit status determines whether or not the standard",
+        "input is connected to a tty.",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin tty_struct = {
-	"tty",			/* builtin name */
-	tty_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	tty_doc,		/* array of long documentation strings. */
-	"tty [-s]",		/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "tty",                  /* builtin name */
+        tty_builtin,            /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        tty_doc,                /* array of long documentation strings. */
+        "tty [-s]",             /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

@@ -47,7 +47,7 @@ rm -f $TMPFILE
 ((echo abc; echo def;); echo ghi)
 
 if (((4+4) + (4 + 7))); then
-	echo ok
+        echo ok
 fi
 
-(())	# make sure the null expression works OK
+(())    # make sure the null expression works OK

@@ -31,8 +31,8 @@ Unless forced, login shells and shells without job control cannot be
 suspended.
 
 Options:
-  -f	force the suspend, even if the shell is a login shell or job
-		control is not enabled.
+  -f    force the suspend, even if the shell is a login shell or job
+                control is not enabled.
 
 Exit Status:
 Returns success unless job control is not enabled or an error occurs.
@@ -87,30 +87,30 @@ suspend_builtin (WORD_LIST *list)
     switch (opt)
       {
       case 'f':
-	force++;
-	break;
+        force++;
+        break;
       CASE_HELPOPT;
       default:
-	builtin_usage ();
-	return (EX_USAGE);
+        builtin_usage ();
+        return (EX_USAGE);
       }
-      
+
   list = loptend;
   no_args (list, 0);
 
-  if (force == 0)  
+  if (force == 0)
     {
       if (job_control == 0)
-	{
-	  sh_nojobs (_("cannot suspend"));
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          sh_nojobs (_("cannot suspend"));
+          return (EXECUTION_FAILURE);
+        }
 
       if (login_shell)
-	{
-	  builtin_error (_("cannot suspend a login shell"));
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error (_("cannot suspend a login shell"));
+          return (EXECUTION_FAILURE);
+        }
     }
 
   /* XXX - should we put ourselves back into the original pgrp now?  If so,

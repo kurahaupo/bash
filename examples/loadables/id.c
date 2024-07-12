@@ -6,7 +6,7 @@
  * usage: id [-Ggu] [-nr] [user]
  *
  * The default output format looks something like:
- *	uid=xxx(chet) gid=xx groups=aa(aname), bb(bname), cc(cname)
+ *      uid=xxx(chet) gid=xx groups=aa(aname), bb(bname), cc(cname)
  */
 
 /*
@@ -51,13 +51,13 @@ extern struct group *getgrgid (gid_t);
 #include "common.h"
 #include "bashgetopt.h"
 
-#define ID_ALLGROUPS	0x001		/* -G */
-#define ID_GIDONLY	0x002		/* -g */
-#define ID_USENAME	0x004		/* -n */
-#define ID_USEREAL	0x008		/* -r */
-#define ID_USERONLY	0x010		/* -u */
+#define ID_ALLGROUPS    0x001           /* -G */
+#define ID_GIDONLY      0x002           /* -g */
+#define ID_USENAME      0x004           /* -n */
+#define ID_USEREAL      0x008           /* -r */
+#define ID_USERONLY     0x010           /* -u */
 
-#define ID_FLAGSET(s)	((id_flags & (s)) != 0)
+#define ID_FLAGSET(s)   ((id_flags & (s)) != 0)
 
 static int id_flags;
 
@@ -84,17 +84,17 @@ id_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "Ggnru")) != -1)
     {
       switch (opt)
-	{
-	case 'G': id_flags |= ID_ALLGROUPS; break;
-	case 'g': id_flags |= ID_GIDONLY; break;
-	case 'n': id_flags |= ID_USENAME; break;
-	case 'r': id_flags |= ID_USEREAL; break;
-	case 'u': id_flags |= ID_USERONLY; break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'G': id_flags |= ID_ALLGROUPS; break;
+        case 'g': id_flags |= ID_GIDONLY; break;
+        case 'n': id_flags |= ID_USENAME; break;
+        case 'r': id_flags |= ID_USEREAL; break;
+        case 'u': id_flags |= ID_USERONLY; break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -141,10 +141,10 @@ inituser (char *uname)
     {
       pwd = getpwnam (uname);
       if (pwd == 0)
-	{
-	  builtin_error ("%s: no such user", uname);
-	  return -1;
-	}
+        {
+          builtin_error ("%s: no such user", uname);
+          return -1;
+        }
       ruid = euid = pwd->pw_uid;
       rgid = egid = pwd->pw_gid;
     }
@@ -176,7 +176,7 @@ id_pruser (int uid)
     printf ("%s", pwd->pw_name);
   else
     printf ("%u", (unsigned) uid);
-      
+
   return r;
 }
 
@@ -193,7 +193,7 @@ id_prgrp (int gid)
     {
       grp = getgrgid (gid);
       if (grp == NULL)
-	r = 1;
+        r = 1;
     }
 
   if (grp)
@@ -230,10 +230,10 @@ id_prgroups (char *uname)
   for (i = 0; i < ng; i++)
     if (glist[i] != rgid && glist[i] != egid)
       {
-	putchar (' ');
-	id_prgrp (glist[i]);
+        putchar (' ');
+        id_prgrp (glist[i]);
       }
-  
+
   return r;
 }
 
@@ -260,23 +260,23 @@ id_prall (char *uname)
     printf ("(%s)", grp->gr_name);
 
   if (euid != ruid)
-    { 
+    {
       printf (" euid=%u", (unsigned) euid);
       pwd = getpwuid (euid);
       if (pwd == NULL)
-	r = 1;
-      else 
-	printf ("(%s)", pwd->pw_name);
+        r = 1;
+      else
+        printf ("(%s)", pwd->pw_name);
     }
 
-  if (egid != rgid) 
+  if (egid != rgid)
     {
       printf (" egid=%u", (unsigned) egid);
       grp = getgrgid (egid);
       if (grp == NULL)
-	r = 1;
+        r = 1;
       else
-	printf ("(%s)", grp->gr_name);
+        printf ("(%s)", grp->gr_name);
     }
 
   if (uname)
@@ -294,30 +294,30 @@ id_prall (char *uname)
   for (i = 0; i < ng; i++)
     {
       if (i > 0)
-	printf (", ");
+        printf (", ");
       printf ("%u", (unsigned) glist[i]);
       grp = getgrgid (glist[i]);
       if (grp == NULL)
-	r = 1;
+        r = 1;
       else
-	printf ("(%s)", grp->gr_name);
+        printf ("(%s)", grp->gr_name);
     }
 
   return r;
 }
 
 char *id_doc[] = {
-	"Display information about user."
-	"",
-	"Return information about user identity",
-	(char *)NULL
+        "Display information about user."
+        "",
+        "Return information about user identity",
+        (char *)NULL
 };
 
 struct builtin id_struct = {
-	"id",
-	id_builtin,
-	BUILTIN_ENABLED,
-	id_doc,
-	"id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
-	0
+        "id",
+        id_builtin,
+        BUILTIN_ENABLED,
+        id_doc,
+        "id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
+        0
 };

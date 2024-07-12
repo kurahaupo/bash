@@ -32,5 +32,3 @@ typeset -p RO
 readonly V
 getopts x V
 echo $?
-
-

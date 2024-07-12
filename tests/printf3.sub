@@ -16,11 +16,11 @@ LANG=C
 
 SHELLSTART=$(date +%s)
 SECS=1275250155
-export TZ=EST5EDT,M3.2.0/2,M11.1.0/2		# ugh
+export TZ=EST5EDT,M3.2.0/2,M11.1.0/2            # ugh
 
 case $SHELLSTART in
-*s*)	SHELLSTART=$EPOCHSECONDS ; DATESECS=false ;;	# take a shot
-*)	DATESECS=true ;;
+*s*)    SHELLSTART=$EPOCHSECONDS ; DATESECS=false ;;    # take a shot
+*)      DATESECS=true ;;
 esac
 
 printf "%()T\n" $SECS
@@ -32,8 +32,8 @@ printf -v v1 "%(%e-%b-%Y %T)T\n" $( $DATESECS && date +%s || echo $EPOCHSECONDS 
 printf -v v2 "%(%e-%b-%Y %T)T\n" -1
 
 case $v1 in
-$v2)	;;
-*)	echo "current time and -1 possible mismatch|$v1|$v2|" >&2 ;;
+$v2)    ;;
+*)      echo "current time and -1 possible mismatch|$v1|$v2|" >&2 ;;
 esac
 unset v1 v2
 
@@ -41,8 +41,8 @@ v1=$(date +%s)
 printf -v v2 "%(%s)T" -1
 
 case $v1 in
-$v2)	;;
-*)	echo "current time mismatch:$v1|$v2|" >&2 ;;
+$v2)    ;;
+*)      echo "current time mismatch:$v1|$v2|" >&2 ;;
 esac
 unset v1 v2
 
@@ -52,8 +52,8 @@ printf -v v1 "%(%F %r)T\n" $SHELLSTART
 printf -v v2 "%(%F %r)T\n" -2
 
 case $v1 in
-$v2)	;;
-*)	echo "shell start time and -2 possible mismatch|$v1|$v2|" >&2 ;;
+$v2)    ;;
+*)      echo "shell start time and -2 possible mismatch|$v1|$v2|" >&2 ;;
 esac
 unset v1 v2
 

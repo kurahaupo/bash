@@ -15,7 +15,7 @@
 # set of tests for posix interp 1009, unset variable in tempenv
 
 # posix doesn't have local variables, but other shells echo
-# 
+#
 # local local global global
 #
 # ash-based shells unset local x in f1 after call to f2; we can do this
@@ -23,16 +23,16 @@
 
 f1()
 {
-	local x=local
-	echo $FUNCNAME: x = $x
-	f2
-	echo after f2: x = ${x-unset}
+        local x=local
+        echo $FUNCNAME: x = $x
+        f2
+        echo after f2: x = ${x-unset}
 }
 
 f2()
 {
-	echo $FUNCNAME: x = $x
-	unset x	
+        echo $FUNCNAME: x = $x
+        unset x
 }
 
 x=global
@@ -52,8 +52,8 @@ unset -v x
 
 f1()
 {
-	echo $FUNCNAME: x = $x
-	unset x	
+        echo $FUNCNAME: x = $x
+        unset x
 }
 
 x=global
@@ -82,10 +82,10 @@ unset -v x
 
 f1()
 {
-	local x=local
-	echo $FUNCNAME: x = $x
-	x=temp unset x	
-	echo after unset $FUNCNAME: x = ${x-unset}
+        local x=local
+        echo $FUNCNAME: x = $x
+        x=temp unset x
+        echo after unset $FUNCNAME: x = ${x-unset}
 }
 
 x=global

@@ -68,15 +68,15 @@
 #  include <sys/mman.h>
 
 #  ifdef MAP_FILE
-#    define MAP_RFLAGS	(MAP_FILE|MAP_PRIVATE)
-#    define MAP_WFLAGS	(MAP_FILE|MAP_SHARED)
+#    define MAP_RFLAGS  (MAP_FILE|MAP_PRIVATE)
+#    define MAP_WFLAGS  (MAP_FILE|MAP_SHARED)
 #  else
-#    define MAP_RFLAGS	MAP_PRIVATE
-#    define MAP_WFLAGS	MAP_SHARED
+#    define MAP_RFLAGS  MAP_PRIVATE
+#    define MAP_WFLAGS  MAP_SHARED
 #  endif
 
 #  ifndef MAP_FAILED
-#    define MAP_FAILED	((void *)-1)
+#    define MAP_FAILED  ((void *)-1)
 #  endif
 
 #endif /* HISTORY_USE_MMAP */
@@ -111,7 +111,7 @@ extern int errno;
 #include "xmalloc.h"
 
 #if !defined (PATH_MAX)
-#  define PATH_MAX	1024	/* default */
+#  define PATH_MAX      1024    /* default */
 #endif
 
 /* history file version; currently unused */
@@ -137,7 +137,7 @@ int history_lines_written_to_file = 0;
 
 /* Does S look like the beginning of a history timestamp entry?  Placeholder
    for more extensive tests. */
-#define HIST_TIMESTAMP_START(s)		(*(s) == history_comment_char && isdigit ((unsigned char)(s)[1]) )
+#define HIST_TIMESTAMP_START(s)         (*(s) == history_comment_char && isdigit ((unsigned char)(s)[1]) )
 
 static char *history_backupfile (const char *);
 static char *history_tempfile (const char *);
@@ -159,7 +159,7 @@ history_filename (const char *filename)
 
   if (return_val)
     return (return_val);
-  
+
   home = sh_get_env_value ("HOME");
 #if defined (_WIN32)
   if (home == 0)
@@ -190,7 +190,7 @@ history_backupfile (const char *filename)
   size_t len;
   ssize_t n;
 
-  fn = filename;  
+  fn = filename;
 #if defined (HAVE_READLINK)
   /* Follow symlink to avoid backing up symlink itself; call will fail if
      not a symlink */
@@ -200,7 +200,7 @@ history_backupfile (const char *filename)
       fn = linkbuf;
     }
 #endif
-      
+
   len = strlen (fn);
   ret = xmalloc (len + 2);
   strcpy (ret, fn);
@@ -208,7 +208,7 @@ history_backupfile (const char *filename)
   ret[len+1] = '\0';
   return ret;
 }
-  
+
 static char *
 history_tempfile (const char *filename)
 {
@@ -218,7 +218,7 @@ history_tempfile (const char *filename)
   ssize_t n;
   int pid;
 
-  fn = filename;  
+  fn = filename;
 #if defined (HAVE_READLINK)
   /* Follow symlink so tempfile created in the same directory as any symlinked
      history file; call will fail if not a symlink */
@@ -228,7 +228,7 @@ history_tempfile (const char *filename)
       fn = linkbuf;
     }
 #endif
-      
+
   len = strlen (fn);
   ret = xmalloc (len + 11);
   strcpy (ret, fn);
@@ -246,7 +246,7 @@ history_tempfile (const char *filename)
 
   return ret;
 }
-  
+
 /* Add the contents of FILENAME to the history list, a line at a time.
    If FILENAME is NULL, then read from ~/.history.  Returns 0 if
    successful, or errno if not. */
@@ -312,7 +312,7 @@ read_history_range (const char *filename, int from, int to)
     {
       xfree (input);
       close (file);
-      return 0;	/* don't waste time if we don't have to */
+      return 0; /* don't waste time if we don't have to */
     }
 
 #ifdef HISTORY_USE_MMAP
@@ -339,11 +339,11 @@ read_history_range (const char *filename, int from, int to)
     {
   error_and_exit:
       if (errno != 0)
-	chars_read = errno;
+        chars_read = errno;
       else
-	chars_read = EIO;
+        chars_read = EIO;
       if (file >= 0)
-	close (file);
+        close (file);
 
       FREE (input);
 #ifndef HISTORY_USE_MMAP
@@ -361,7 +361,7 @@ read_history_range (const char *filename, int from, int to)
 
   /* Start at beginning of file, work to end. */
   bufend = buffer + chars_read;
-  *bufend = '\0';		/* null-terminate buffer for timestamp checks */
+  *bufend = '\0';               /* null-terminate buffer for timestamp checks */
   current_line = 0;
 
   /* Heuristic: the history comment character rarely changes, so assume we
@@ -383,62 +383,62 @@ read_history_range (const char *filename, int from, int to)
   for (line_start = line_end = buffer; line_end < bufend && current_line < from; line_end++)
     if (*line_end == '\n')
       {
-      	p = line_end + 1;
-      	/* If we see something we think is a timestamp, continue with this
-	   line.  We should check more extensively here... */
-	if (HIST_TIMESTAMP_START(p) == 0)
-	  current_line++;
-	else
-	  last_ts = p;
-	line_start = p;
-	/* If we are at the last line (current_line == from) but we have
-	   timestamps (has_timestamps), then line_start points to the
-	   text of the last command, and we need to skip to its end. */
-	if (current_line >= from && has_timestamps)
-	  {
-	    for (line_end = p; line_end < bufend && *line_end != '\n'; line_end++)
-	      ;
-	    line_start = (*line_end == '\n') ? line_end + 1 : line_end;
-	  }
+        p = line_end + 1;
+        /* If we see something we think is a timestamp, continue with this
+           line.  We should check more extensively here... */
+        if (HIST_TIMESTAMP_START(p) == 0)
+          current_line++;
+        else
+          last_ts = p;
+        line_start = p;
+        /* If we are at the last line (current_line == from) but we have
+           timestamps (has_timestamps), then line_start points to the
+           text of the last command, and we need to skip to its end. */
+        if (current_line >= from && has_timestamps)
+          {
+            for (line_end = p; line_end < bufend && *line_end != '\n'; line_end++)
+              ;
+            line_start = (*line_end == '\n') ? line_end + 1 : line_end;
+          }
       }
 
   /* If there are lines left to gobble, then gobble them now. */
   for (line_end = line_start; line_end < bufend; line_end++)
     if (*line_end == '\n')
       {
-	/* Change to allow Windows-like \r\n end of line delimiter. */
-	if (line_end > line_start && line_end[-1] == '\r')
-	  line_end[-1] = '\0';
-	else
-	  *line_end = '\0';
+        /* Change to allow Windows-like \r\n end of line delimiter. */
+        if (line_end > line_start && line_end[-1] == '\r')
+          line_end[-1] = '\0';
+        else
+          *line_end = '\0';
 
-	if (*line_start)
-	  {
-	    if (HIST_TIMESTAMP_START(line_start) == 0)
-	      {
-	      	if (last_ts == NULL && history_length > 0 && history_multiline_entries)
-		  _hs_append_history_line (history_length - 1, line_start);
-		else
-		  add_history (line_start);
-		if (last_ts)
-		  {
-		    add_history_time (last_ts);
-		    last_ts = NULL;
-		  }
-	      }
-	    else
-	      {
-		last_ts = line_start;
-		current_line--;
-	      }
-	  }
+        if (*line_start)
+          {
+            if (HIST_TIMESTAMP_START(line_start) == 0)
+              {
+                if (last_ts == NULL && history_length > 0 && history_multiline_entries)
+                  _hs_append_history_line (history_length - 1, line_start);
+                else
+                  add_history (line_start);
+                if (last_ts)
+                  {
+                    add_history_time (last_ts);
+                    last_ts = NULL;
+                  }
+              }
+            else
+              {
+                last_ts = line_start;
+                current_line--;
+              }
+          }
 
-	current_line++;
+        current_line++;
 
-	if (current_line >= to)
-	  break;
+        if (current_line >= to)
+          break;
 
-	line_start = line_end + 1;
+        line_start = line_end + 1;
       }
 
   history_lines_read_from_file = current_line;
@@ -510,14 +510,14 @@ histfile_restore (const char *backup, const char *orig)
 
 #define SHOULD_CHOWN(finfo, nfinfo) \
   (finfo.st_uid != nfinfo.st_uid || finfo.st_gid != nfinfo.st_gid)
-  
+
 /* Truncate the history file FNAME, leaving only LINES trailing lines.
    If FNAME is NULL, then use ~/.history.  Writes a new file and renames
    it to the original name.  Returns 0 on success, errno on failure. */
 int
 history_truncate_file (const char *fname, int lines)
 {
-  char *buffer, *filename, *tempname, *bp, *bp1;		/* bp1 == bp+1 */
+  char *buffer, *filename, *tempname, *bp, *bp1;                /* bp1 == bp+1 */
   int file, chars_read, rv, orig_lines, exists, r;
   struct stat finfo, nfinfo;
   size_t file_size;
@@ -539,7 +539,7 @@ history_truncate_file (const char *fname, int lines)
     {
       rv = errno;
       if (file != -1)
-	close (file);
+        close (file);
       goto truncate_exit;
     }
   exists = 1;
@@ -599,7 +599,7 @@ history_truncate_file (const char *fname, int lines)
       rv = (chars_read < 0) ? errno : 0;
       goto truncate_exit;
     }
-  buffer[chars_read] = '\0';	/* for the initial check of bp1[1] */
+  buffer[chars_read] = '\0';    /* for the initial check of bp1[1] */
 
   /* Count backwards from the end of buffer until we have passed
      LINES lines.  bp1 is set funny initially.  But since bp[1] can't
@@ -612,7 +612,7 @@ history_truncate_file (const char *fname, int lines)
   for (bp1 = bp = buffer + chars_read - 1; lines > 0 && bp > buffer; bp--)
     {
       if (*bp == '\n' && HIST_TIMESTAMP_START(bp1) == 0)
-	lines--;
+        lines--;
       bp1 = bp;
     }
 
@@ -627,10 +627,10 @@ history_truncate_file (const char *fname, int lines)
   for ( ; bp > buffer; bp--)
     {
       if (*bp == '\n' && (history_write_timestamps == 0 || HIST_TIMESTAMP_START(bp1)))
-	{
-	  bp++;
-	  break;
-	}
+        {
+          bp++;
+          break;
+        }
       bp1 = bp;
     }
 
@@ -650,19 +650,19 @@ truncate_write:
   if ((file = open (tempname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600)) != -1)
     {
       if (write (file, bp, chars_read - (bp - buffer)) < 0)
-	{
-	  rv = errno;
-	  close (file);
-	}
+        {
+          rv = errno;
+          close (file);
+        }
 
       if (rv == 0 && fstat (file, &nfinfo) < 0)
-	{
-	  rv = errno;
-	  close (file);
-	}
+        {
+          rv = errno;
+          close (file);
+        }
 
       if (rv == 0 && close (file) < 0)
-	rv = errno;
+        rv = errno;
     }
   else
     rv = errno;
@@ -679,7 +679,7 @@ truncate_write:
     {
       rv = errno;
       if (tempname)
-	unlink (tempname);
+        unlink (tempname);
       history_lines_written_to_file = 0;
     }
 
@@ -713,9 +713,9 @@ history_write_slow (int fd, HIST_ENTRY **the_history, int nelements, int overwri
   for (j = 0, i = history_length - nelements; i < history_length; i++)
     {
       if (history_write_timestamps && the_history[i]->timestamp && the_history[i]->timestamp[0])
-	fprintf (fp, "%s\n", the_history[i]->timestamp);
+        fprintf (fp, "%s\n", the_history[i]->timestamp);
       if (fprintf (fp, "%s\n", the_history[i]->line) < 0)
-	goto slow_write_error;
+        goto slow_write_error;
     }
   if (fflush (fp) < 0)
     {
@@ -779,7 +779,7 @@ history_do_write (const char *filename, int nelements, int overwrite)
   /* Build a buffer of all the lines to write, and write them in one syscall.
      Suggested by Peter Ho (peter@robosts.oxford.ac.uk). */
   {
-    HIST_ENTRY **the_history;	/* local */
+    HIST_ENTRY **the_history;   /* local */
     size_t j;
     size_t buffer_size;
     char *buffer;
@@ -788,9 +788,9 @@ history_do_write (const char *filename, int nelements, int overwrite)
     /* Calculate the total number of bytes to write. */
     for (buffer_size = 0, i = history_length - nelements; i < history_length; i++)
       {
-	if (history_write_timestamps && the_history[i]->timestamp && the_history[i]->timestamp[0])
-	  buffer_size += strlen (the_history[i]->timestamp) + 1;
-	buffer_size += strlen (the_history[i]->line) + 1;
+        if (history_write_timestamps && the_history[i]->timestamp && the_history[i]->timestamp[0])
+          buffer_size += strlen (the_history[i]->timestamp) + 1;
+        buffer_size += strlen (the_history[i]->line) + 1;
       }
 
     /* Allocate the buffer, and fill it. */
@@ -801,43 +801,43 @@ history_do_write (const char *filename, int nelements, int overwrite)
     if ((void *)buffer == MAP_FAILED)
       {
 mmap_error:
-	if ((rv = history_write_slow (file, the_history, nelements, overwrite)) == 0)
-	  goto write_success;
-	rv = errno;
-	close (file);
-	if (tempname)
-	  unlink (tempname);
-	FREE (histname);
-	FREE (tempname);
-	return rv;
+        if ((rv = history_write_slow (file, the_history, nelements, overwrite)) == 0)
+          goto write_success;
+        rv = errno;
+        close (file);
+        if (tempname)
+          unlink (tempname);
+        FREE (histname);
+        FREE (tempname);
+        return rv;
       }
-#else    
+#else
     buffer = (char *)malloc (buffer_size);
     if (buffer == 0)
       {
-	if ((rv = history_write_slow (file, the_history, nelements, overwrite)) == 0)
-	  goto write_success;
-      	rv = errno;
-	close (file);
-	if (tempname)
-	  unlink (tempname);
-	FREE (histname);
-	FREE (tempname);
-	return rv;
+        if ((rv = history_write_slow (file, the_history, nelements, overwrite)) == 0)
+          goto write_success;
+        rv = errno;
+        close (file);
+        if (tempname)
+          unlink (tempname);
+        FREE (histname);
+        FREE (tempname);
+        return rv;
       }
 #endif
 
     for (j = 0, i = history_length - nelements; i < history_length; i++)
       {
-	if (history_write_timestamps && the_history[i]->timestamp && the_history[i]->timestamp[0])
-	  {
-	    strcpy (buffer + j, the_history[i]->timestamp);
-	    j += strlen (the_history[i]->timestamp);
-	    buffer[j++] = '\n';
-	  }
-	strcpy (buffer + j, the_history[i]->line);
-	j += strlen (the_history[i]->line);
-	buffer[j++] = '\n';
+        if (history_write_timestamps && the_history[i]->timestamp && the_history[i]->timestamp[0])
+          {
+            strcpy (buffer + j, the_history[i]->timestamp);
+            j += strlen (the_history[i]->timestamp);
+            buffer[j++] = '\n';
+          }
+        strcpy (buffer + j, the_history[i]->line);
+        j += strlen (the_history[i]->line);
+        buffer[j++] = '\n';
       }
 
 #ifdef HISTORY_USE_MMAP
@@ -863,7 +863,7 @@ write_success:
     {
       rv = errno;
       if (tempname)
-	unlink (tempname);
+        unlink (tempname);
       history_lines_written_to_file = 0;
     }
 

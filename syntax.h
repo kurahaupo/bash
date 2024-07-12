@@ -29,78 +29,78 @@
 #define shell_meta_chars   "()<>;&|"
 #define shell_break_chars  "()<>;&| \t\n"
 
-#define shell_quote_chars	"\"`'"
+#define shell_quote_chars       "\"`'"
 
 #if defined (PROCESS_SUBSTITUTION)
-#  define shell_exp_chars		"$<>"
+#  define shell_exp_chars               "$<>"
 #else
-#  define shell_exp_chars		"$"
+#  define shell_exp_chars               "$"
 #endif
 
 #if defined (EXTENDED_GLOB)
-#  define ext_glob_chars	"@*+?!"
+#  define ext_glob_chars        "@*+?!"
 #else
-#  define ext_glob_chars	""
+#  define ext_glob_chars        ""
 #endif
-#define shell_glob_chars	"*?[]^"
+#define shell_glob_chars        "*?[]^"
 
 /* Defines shared by mksyntax.c and the rest of the shell code. */
 
 /* Values for character flags in syntax tables */
 
-#define CWORD		0x0000	/* nothing special; an ordinary character */
-#define CSHMETA		0x0001	/* shell meta character */
-#define CSHBRK		0x0002	/* shell break character */
-#define CBACKQ		0x0004	/* back quote */
-#define CQUOTE		0x0008	/* shell quote character */
-#define CSPECL		0x0010	/* special character that needs quoting */
-#define CEXP		0x0020	/* shell expansion character */
-#define CBSDQUOTE	0x0040	/* characters escaped by backslash in double quotes */
-#define CBSHDOC		0x0080	/* characters escaped by backslash in here doc */
-#define CGLOB		0x0100	/* globbing characters */
-#define CXGLOB		0x0200	/* extended globbing characters */
-#define CXQUOTE		0x0400	/* cquote + backslash */
-#define CSPECVAR	0x0800	/* single-character shell variable name */
-#define CSUBSTOP	0x1000	/* values of OP for ${word[:]OPstuff} */
-#define CBLANK		0x2000	/* whitespace (blank) character */
+#define CWORD           0x0000  /* nothing special; an ordinary character */
+#define CSHMETA         0x0001  /* shell meta character */
+#define CSHBRK          0x0002  /* shell break character */
+#define CBACKQ          0x0004  /* back quote */
+#define CQUOTE          0x0008  /* shell quote character */
+#define CSPECL          0x0010  /* special character that needs quoting */
+#define CEXP            0x0020  /* shell expansion character */
+#define CBSDQUOTE       0x0040  /* characters escaped by backslash in double quotes */
+#define CBSHDOC         0x0080  /* characters escaped by backslash in here doc */
+#define CGLOB           0x0100  /* globbing characters */
+#define CXGLOB          0x0200  /* extended globbing characters */
+#define CXQUOTE         0x0400  /* cquote + backslash */
+#define CSPECVAR        0x0800  /* single-character shell variable name */
+#define CSUBSTOP        0x1000  /* values of OP for ${word[:]OPstuff} */
+#define CBLANK          0x2000  /* whitespace (blank) character */
 
 /* Defines for use by the rest of the shell. */
 extern int sh_syntaxtab[];
 extern int sh_syntabsiz;
 
-#define shellmeta(c)	(sh_syntaxtab[(unsigned char)(c)] & CSHMETA)
-#define shellbreak(c)	(sh_syntaxtab[(unsigned char)(c)] & CSHBRK)
-#define shellquote(c)	(sh_syntaxtab[(unsigned char)(c)] & CQUOTE)
-#define shellxquote(c)	(sh_syntaxtab[(unsigned char)(c)] & CXQUOTE)
+#define shellmeta(c)    (sh_syntaxtab[(unsigned char)(c)] & CSHMETA)
+#define shellbreak(c)   (sh_syntaxtab[(unsigned char)(c)] & CSHBRK)
+#define shellquote(c)   (sh_syntaxtab[(unsigned char)(c)] & CQUOTE)
+#define shellxquote(c)  (sh_syntaxtab[(unsigned char)(c)] & CXQUOTE)
 
-#define shellblank(c)	(sh_syntaxtab[(unsigned char)(c)] & CBLANK)
+#define shellblank(c)   (sh_syntaxtab[(unsigned char)(c)] & CBLANK)
 
-#define parserblank(c)	((c) == ' ' || (c) == '\t')
+#define parserblank(c)  ((c) == ' ' || (c) == '\t')
 
-#define issyntype(c, t)	((sh_syntaxtab[(unsigned char)(c)] & (t)) != 0)
+#define issyntype(c, t) ((sh_syntaxtab[(unsigned char)(c)] & (t)) != 0)
 #define notsyntype(c,t) ((sh_syntaxtab[(unsigned char)(c)] & (t)) == 0)
 
 #if defined (PROCESS_SUBSTITUTION)
-#  define shellexp(c)	((c) == '$' || (c) == '<' || (c) == '>')
+#  define shellexp(c)   ((c) == '$' || (c) == '<' || (c) == '>')
 #else
-#  define shellexp(c)	((c) == '$')
+#  define shellexp(c)   ((c) == '$')
 #endif
 
 #if defined (EXTENDED_GLOB)
 #  define PATTERN_CHAR(c) \
-	((c) == '@' || (c) == '*' || (c) == '+' || (c) == '?' || (c) == '!')
+        ((c) == '@' || (c) == '*' || (c) == '+' || (c) == '?' || (c) == '!')
 #else
 #  define PATTERN_CHAR(c) 0
 #endif
 
 #define GLOB_CHAR(c) \
-	((c) == '*' || (c) == '?' || (c) == '[' || (c) == ']' || (c) == '^')
+        ((c) == '*' || (c) == '?' || (c) == '[' || (c) == ']' || (c) == '^')
 
 #define CTLESC '\001'
 #define CTLNUL '\177'
 
 #if !defined (HAVE_ISBLANK) && !defined (isblank)
-#  define isblank(x)	((x) == ' ' || (x) == '\t')
+#  define isblank(x)    ((x) == ' ' || (x) == '\t')
 #endif
 
 #endif /* _SYNTAX_H_ */

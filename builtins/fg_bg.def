@@ -122,9 +122,9 @@ bg_builtin (WORD_LIST *list)
   do
     {
       if (fg_bg (list, 0) == EXECUTION_FAILURE)
-	r = EXECUTION_FAILURE;
+        r = EXECUTION_FAILURE;
       if (list)
-	list = list->next;
+        list = list->next;
     }
   while (list);
 
@@ -145,7 +145,7 @@ fg_bg (WORD_LIST *list, int foreground)
   if (INVALID_JOB (job))
     {
       if (job != DUP_JOB)
-	sh_badjob (list ? list->word->word : _("current"));
+        sh_badjob (list ? list->word->word : _("current"));
 
       goto failure;
     }
@@ -161,7 +161,7 @@ fg_bg (WORD_LIST *list, int foreground)
   if (foreground == 0)
     {
       old_async_pid = last_asynchronous_pid;
-      last_asynchronous_pid = j->pgrp;	/* As per Posix.2 5.4.2 */
+      last_asynchronous_pid = j->pgrp;  /* As per Posix.2 5.4.2 */
     }
 
   status = start_job (job, foreground);
@@ -175,7 +175,7 @@ fg_bg (WORD_LIST *list, int foreground)
   else
     {
       if (foreground == 0)
-	last_asynchronous_pid = old_async_pid;
+        last_asynchronous_pid = old_async_pid;
 
     failure:
       UNBLOCK_CHILD (oset);

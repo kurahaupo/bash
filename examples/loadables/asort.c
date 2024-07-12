@@ -116,7 +116,7 @@ sort_index(SHELL_VAR *dest, SHELL_VAR *source)
     }
 
     if (n)
-	qsort(sa, n, sizeof(sort_element), compare);
+        qsort(sa, n, sizeof(sort_element), compare);
 
     for ( i = 0; i < n; ++i ) {
         if ( assoc_p(source) )

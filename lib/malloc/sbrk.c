@@ -33,7 +33,7 @@ initbrk (void)
 
       b = brk (NULL);
       if (b == (void *)-1)
-	return -1;
+        return -1;
       initialbrk = curbrk = b;
     }
   return (0);
@@ -62,7 +62,7 @@ sbrk (intptr_t incr)
       return (void *)-1;
     }
 
-  newbrk = curbrk + incr;  
+  newbrk = curbrk + incr;
   if (newbrk < initialbrk)
     {
       errno = EINVAL;
@@ -70,7 +70,7 @@ sbrk (intptr_t incr)
     }
 
   if (brk (newbrk) == (void *)-1)
-    return (void *)-1;		/* preserve errno */
+    return (void *)-1;          /* preserve errno */
 
   oldbrk = curbrk;
   curbrk = newbrk;

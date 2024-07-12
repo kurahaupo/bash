@@ -52,8 +52,8 @@ Options:
   -u  function-name  Unbind all keys which are bound to the named function.
   -r  keyseq         Remove the binding for KEYSEQ.
   -f  filename       Read key bindings from FILENAME.
-  -x  keyseq:shell-command	Cause SHELL-COMMAND to be executed when
-				KEYSEQ is entered.
+  -x  keyseq:shell-command      Cause SHELL-COMMAND to be executed when
+                                KEYSEQ is entered.
   -X                 List key sequences bound with -x and associated commands
                      in a form that can be reused as input.
 
@@ -95,20 +95,20 @@ static int unbind_keyseq (char *);
 
 #define BIND_RETURN(x)  do { return_code = x; goto bind_exit; } while (0)
 
-#define LFLAG	0x0001
-#define PFLAG	0x0002
-#define FFLAG	0x0004
-#define VFLAG	0x0008
-#define QFLAG	0x0010
-#define MFLAG	0x0020
-#define RFLAG	0x0040
-#define PPFLAG	0x0080
-#define VVFLAG	0x0100
+#define LFLAG   0x0001
+#define PFLAG   0x0002
+#define FFLAG   0x0004
+#define VFLAG   0x0008
+#define QFLAG   0x0010
+#define MFLAG   0x0020
+#define RFLAG   0x0040
+#define PPFLAG  0x0080
+#define VVFLAG  0x0100
 #define SFLAG   0x0200
 #define SSFLAG  0x0400
-#define UFLAG	0x0800
-#define XFLAG	0x1000
-#define XXFLAG	0x2000
+#define UFLAG   0x0800
+#define XFLAG   0x1000
+#define XXFLAG  0x2000
 
 int
 bind_builtin (WORD_LIST *list)
@@ -135,64 +135,64 @@ bind_builtin (WORD_LIST *list)
 
   rl_outstream = stdout;
 
-  reset_internal_getopt ();  
+  reset_internal_getopt ();
   while ((opt = internal_getopt (list, "lvpVPsSXf:q:u:m:r:x:")) != -1)
     {
       switch (opt)
-	{
-	case 'l':
-	  flags |= LFLAG;
-	  break;
-	case 'v':
-	  flags |= VFLAG;
-	  break;
-	case 'p':
-	  flags |= PFLAG;
-	  break;
-	case 'f':
-	  flags |= FFLAG;
-	  initfile = list_optarg;
-	  break;
-	case 'm':
-	  flags |= MFLAG;
-	  map_name = list_optarg;
-	  break;
-	case 'q':
-	  flags |= QFLAG;
-	  fun_name = list_optarg;
-	  break;
-	case 'u':
-	  flags |= UFLAG;
-	  unbind_name = list_optarg;
-	  break;
-	case 'r':
-	  flags |= RFLAG;
-	  remove_seq = list_optarg;
-	  break;
-	case 'V':
-	  flags |= VVFLAG;
-	  break;
-	case 'P':
-	  flags |= PPFLAG;
-	  break;
-	case 's':
-	  flags |= SFLAG;
-	  break;
-	case 'S':
-	  flags |= SSFLAG;
-	  break;
-	case 'x':
-	  flags |= XFLAG;
-	  cmd_seq = list_optarg;
-	  break;
-	case 'X':
-	  flags |= XXFLAG;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  BIND_RETURN (EX_USAGE);
-	}
+        {
+        case 'l':
+          flags |= LFLAG;
+          break;
+        case 'v':
+          flags |= VFLAG;
+          break;
+        case 'p':
+          flags |= PFLAG;
+          break;
+        case 'f':
+          flags |= FFLAG;
+          initfile = list_optarg;
+          break;
+        case 'm':
+          flags |= MFLAG;
+          map_name = list_optarg;
+          break;
+        case 'q':
+          flags |= QFLAG;
+          fun_name = list_optarg;
+          break;
+        case 'u':
+          flags |= UFLAG;
+          unbind_name = list_optarg;
+          break;
+        case 'r':
+          flags |= RFLAG;
+          remove_seq = list_optarg;
+          break;
+        case 'V':
+          flags |= VVFLAG;
+          break;
+        case 'P':
+          flags |= PPFLAG;
+          break;
+        case 's':
+          flags |= SFLAG;
+          break;
+        case 'S':
+          flags |= SSFLAG;
+          break;
+        case 'x':
+          flags |= XFLAG;
+          cmd_seq = list_optarg;
+          break;
+        case 'X':
+          flags |= XXFLAG;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          BIND_RETURN (EX_USAGE);
+        }
     }
 
   list = loptend;
@@ -204,10 +204,10 @@ bind_builtin (WORD_LIST *list)
     {
       kmap = rl_get_keymap_by_name (map_name);
       if (kmap == 0)
-	{
-	  builtin_error (_("`%s': invalid keymap name"), map_name);
-	  BIND_RETURN (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error (_("`%s': invalid keymap name"), map_name);
+          BIND_RETURN (EXECUTION_FAILURE);
+        }
     }
 
   if (kmap)
@@ -225,35 +225,35 @@ bind_builtin (WORD_LIST *list)
   if (flags & PFLAG)
     {
       if (shell_compatibility_level <= 52 || list == 0)
-	rl_function_dumper (1);
+        rl_function_dumper (1);
       else
-	{
-	  /* Allow both -p and -P to have a crack at the additional
-	     arguments, just like supplying both -p and -P without
-	     arguments displays the full set of bindings twice in
-	     two separate formats. Otherwise, -p takes all the
-	     arguments and -P prints all the bindings. */
-	  savelist = (flags & PPFLAG) ? list : (WORD_LIST *)NULL;
-	  while (list)
-	    {
-	      rl_print_keybinding (list->word->word, kmap, 1);
-	      list = list->next;
-	    }
-	  list = savelist;
-	}
+        {
+          /* Allow both -p and -P to have a crack at the additional
+             arguments, just like supplying both -p and -P without
+             arguments displays the full set of bindings twice in
+             two separate formats. Otherwise, -p takes all the
+             arguments and -P prints all the bindings. */
+          savelist = (flags & PPFLAG) ? list : (WORD_LIST *)NULL;
+          while (list)
+            {
+              rl_print_keybinding (list->word->word, kmap, 1);
+              list = list->next;
+            }
+          list = savelist;
+        }
     }
 
   /* should combine this with the above clause */
   if (flags & PPFLAG)
     {
       if (shell_compatibility_level <= 52 || list == 0)
-	rl_function_dumper (0);
+        rl_function_dumper (0);
       else
-	while (list)
-	  {
-	    rl_print_keybinding (list->word->word, kmap, 0);
-	    list = list->next;
-	  }
+        while (list)
+          {
+            rl_print_keybinding (list->word->word, kmap, 0);
+            list = list->next;
+          }
     }
 
 
@@ -272,13 +272,13 @@ bind_builtin (WORD_LIST *list)
   if ((flags & FFLAG) && initfile)
     {
       if (rl_read_init_file (initfile) != 0)
-	{
-	  t = printable_filename (initfile, 0);
-	  builtin_error ("%s: %s: %s", t, _("cannot read"), strerror (errno));
-	  if (t != initfile)
-	    free (t);
-	  BIND_RETURN (EXECUTION_FAILURE);
-	}
+        {
+          t = printable_filename (initfile, 0);
+          builtin_error ("%s: %s: %s", t, _("cannot read"), strerror (errno));
+          if (t != initfile)
+            free (t);
+          BIND_RETURN (EXECUTION_FAILURE);
+        }
     }
 
   if ((flags & QFLAG) && fun_name)
@@ -314,13 +314,13 @@ bind_builtin (WORD_LIST *list)
       nbindings = rl_invoking_keyseqs (bash_execute_unix_command);
       nlen = nbindings ? strvec_len (nbindings) : 0;
 
-      if (nlen < olen)	/* fewer bind -x bindings */
-	for (d = olen - nlen, i = 0; i < olen && d > 0; i++)
-	  if (nlen == 0 || strvec_search (nbindings, obindings[i]) < 0)
-	    {
-	      unbind_unix_command (obindings[i]);
-	      d--;
-	    }
+      if (nlen < olen)  /* fewer bind -x bindings */
+        for (d = olen - nlen, i = 0; i < olen && d > 0; i++)
+          if (nlen == 0 || strvec_search (nbindings, obindings[i]) < 0)
+            {
+              unbind_unix_command (obindings[i]);
+              d--;
+            }
 
       strvec_dispose (obindings);
       strvec_dispose (nbindings);

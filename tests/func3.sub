@@ -17,7 +17,7 @@
 set -o posix
 func()
 {
-	return 5
+        return 5
 }
 
 myfunction () {
@@ -59,7 +59,7 @@ rm -f $TMPFILE
 var=0
 func()
 {
-	var=20 return 5
+        var=20 return 5
 }
 
 echo expect 5 20

@@ -76,10 +76,10 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
   int i, reverse;
   char *line;
   size_t string_len, line_len;
-  int line_index;		/* can't be unsigned */
+  int line_index;               /* can't be unsigned */
   int anchored, patsearch, igncase;
   int found, mb_cur_max;
-  HIST_ENTRY **the_history; 	/* local */
+  HIST_ENTRY **the_history;     /* local */
 
   i = history_offset;
   reverse = (listdir < 0);
@@ -113,130 +113,130 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
 
       /* At limit for direction? */
       if ((reverse && i < 0) || (!reverse && i == history_length))
-	return (-1);
+        return (-1);
 
       line = the_history[i]->line;
       line_len = line_index = strlen (line);
 
       /* If STRING is longer than line, no match. */
       if (patsearch == 0 && (string_len > line_index))
-	{
-	  NEXT_LINE ();
-	  continue;
-	}
+        {
+          NEXT_LINE ();
+          continue;
+        }
 
       /* Handle anchored searches first. */
       if (anchored == ANCHORED_SEARCH)
-	{
-	  found = 0;
+        {
+          found = 0;
 #if defined (HAVE_FNMATCH)
-	  if (patsearch)
-	    found = fnmatch (string, line, 0) == 0;
-	  else
+          if (patsearch)
+            found = fnmatch (string, line, 0) == 0;
+          else
 #endif
-	  if (igncase)
-	    {
+          if (igncase)
+            {
 #if defined (HANDLE_MULTIBYTE)
-	      if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		found = _rl_mb_strcaseeqn (string, string_len,
-					   line, line_len,
-					   string_len, 0);
-	      else
+              if (mb_cur_max > 1)       /* no rl_byte_oriented equivalent */
+                found = _rl_mb_strcaseeqn (string, string_len,
+                                           line, line_len,
+                                           string_len, 0);
+              else
 #endif
-		found = strncasecmp (string, line, string_len) == 0;
-	    }
-	  else
-	    found = STREQN (string, line, string_len);
+                found = strncasecmp (string, line, string_len) == 0;
+            }
+          else
+            found = STREQN (string, line, string_len);
 
-	  if (found)
-	    {
-	      history_offset = i;
-	      return (0);
-	    }
+          if (found)
+            {
+              history_offset = i;
+              return (0);
+            }
 
-	  NEXT_LINE ();
-	  continue;
-	}
+          NEXT_LINE ();
+          continue;
+        }
 
       /* Do substring search. */
-      if (linedir < 0)		/* search backwards from end */
-	{
-	  size_t ll;
+      if (linedir < 0)          /* search backwards from end */
+        {
+          size_t ll;
 
-	  ll = (patsearch == 0) ? string_len : 1;
-	  line_index -= ll;
-	  found = 0;
+          ll = (patsearch == 0) ? string_len : 1;
+          line_index -= ll;
+          found = 0;
 
-	  while (line_index >= 0)
-	    {
+          while (line_index >= 0)
+            {
 #if defined (HAVE_FNMATCH)
-	      if (patsearch)
-		found = fnmatch (string, line + line_index, 0) == 0;
-	      else
+              if (patsearch)
+                found = fnmatch (string, line + line_index, 0) == 0;
+              else
 #endif
-	      if (igncase)
-		{
+              if (igncase)
+                {
 #if defined (HANDLE_MULTIBYTE)
-		  if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		    found = _rl_mb_strcaseeqn (string, string_len,
-					       line + line_index, ll,
-					       string_len, 0);
-		  else
+                  if (mb_cur_max > 1)   /* no rl_byte_oriented equivalent */
+                    found = _rl_mb_strcaseeqn (string, string_len,
+                                               line + line_index, ll,
+                                               string_len, 0);
+                  else
 #endif
-		  found = strncasecmp (string, line + line_index, string_len) == 0;
-		}
-	      else
-	        found = STREQN (string, line + line_index, string_len);
+                  found = strncasecmp (string, line + line_index, string_len) == 0;
+                }
+              else
+                found = STREQN (string, line + line_index, string_len);
 
-	      if (found)
-		{
-		  history_offset = i;
-		  return (line_index);
-		}
-	      line_index--;
-	      ll++;
-	    }
-	}
+              if (found)
+                {
+                  history_offset = i;
+                  return (line_index);
+                }
+              line_index--;
+              ll++;
+            }
+        }
       else
-	{
-	  register int limit;
-	  size_t ll;
+        {
+          register int limit;
+          size_t ll;
 
-	  ll = line_len;
-	  limit = line_index - string_len + 1;
-	  line_index = 0;
-	  found = 0;
+          ll = line_len;
+          limit = line_index - string_len + 1;
+          line_index = 0;
+          found = 0;
 
-	  while (line_index < limit)
-	    {
+          while (line_index < limit)
+            {
 #if defined (HAVE_FNMATCH)
-	      if (patsearch)
-		found = fnmatch (string, line + line_index, 0) == 0;
-	      else
+              if (patsearch)
+                found = fnmatch (string, line + line_index, 0) == 0;
+              else
 #endif
-	      if (igncase)
-		{
+              if (igncase)
+                {
 #if defined (HANDLE_MULTIBYTE)
-		  if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		    found = _rl_mb_strcaseeqn (string, string_len,
-					       line + line_index, ll,
-					       string_len, 0);
-		  else
+                  if (mb_cur_max > 1)   /* no rl_byte_oriented equivalent */
+                    found = _rl_mb_strcaseeqn (string, string_len,
+                                               line + line_index, ll,
+                                               string_len, 0);
+                  else
 #endif
-		  found = strncasecmp (string, line + line_index, string_len) == 0;
-		}
-	      else
-		found = STREQN (string, line + line_index, string_len);
+                  found = strncasecmp (string, line + line_index, string_len) == 0;
+                }
+              else
+                found = STREQN (string, line + line_index, string_len);
 
-	      if (found)
-		{
-		  history_offset = i;
-		  return (line_index);
-		}
-	      line_index++;
-	      ll--;
-	    }
-	}
+              if (found)
+                {
+                  history_offset = i;
+                  return (line_index);
+                }
+              line_index++;
+              ll--;
+            }
+        }
       NEXT_LINE ();
     }
 }
@@ -258,7 +258,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
   if (unescaped_backslash = (string[ret] == '\\'))
     {
       while (ret > 0 && string[--ret] == '\\')
-	unescaped_backslash = 1 - unescaped_backslash;
+        unescaped_backslash = 1 - unescaped_backslash;
     }
   if (unescaped_backslash)
     return -1;
@@ -284,7 +284,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
   strcpy (pat + start, string);
   if (pat[len - 1] != '*')
     {
-      pat[len] = '*';		/* XXX */
+      pat[len] = '*';           /* XXX */
       pat[len+1] = '\0';
     }
 #else
@@ -297,7 +297,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
     xfree (pat);
   return ret;
 }
-	
+
 /* Do a non-anchored search for STRING through the history list in direction
    LISTDIR. */
 int

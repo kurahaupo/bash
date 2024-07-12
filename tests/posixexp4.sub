@@ -34,7 +34,7 @@ recho $@
 : ${var=$@}
 recho $var
 unset -v var
-recho ${var-$@}	# this is inconsistent
+recho ${var-$@} # this is inconsistent
 
 echo unset IFS
 recho $@

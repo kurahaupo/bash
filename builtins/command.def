@@ -74,21 +74,21 @@ command_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "pvV")) != -1)
     {
       switch (opt)
-	{
-	case 'p':
-	  use_standard_path = CDESC_STDPATH;
-	  break;
-	case 'V':
-	  verbose = CDESC_SHORTDESC|CDESC_ABSPATH;	/* look in common.h for constants */
-	  break;
-	case 'v':
-	  verbose = CDESC_REUSABLE;	/* ditto */
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'p':
+          use_standard_path = CDESC_STDPATH;
+          break;
+        case 'V':
+          verbose = CDESC_SHORTDESC|CDESC_ABSPATH;      /* look in common.h for constants */
+          break;
+        case 'v':
+          verbose = CDESC_REUSABLE;     /* ditto */
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -108,14 +108,14 @@ command_builtin (WORD_LIST *list)
       int found, any_found;
 
       for (any_found = 0; list; list = list->next)
-	{
-	  found = describe_command (list->word->word, verbose|use_standard_path);
+        {
+          found = describe_command (list->word->word, verbose|use_standard_path);
 
-	  if (found == 0 && verbose != CDESC_REUSABLE)
-	    sh_notfound (list->word->word);
+          if (found == 0 && verbose != CDESC_REUSABLE)
+            sh_notfound (list->word->word);
 
-	  any_found += found;
-	}
+          any_found += found;
+        }
 
       return (any_found ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
     }

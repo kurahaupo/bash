@@ -20,8 +20,8 @@ GTDIR=$TMPDIR/extglob4-$$
 shopt -s extglob
 [ -d "${GTDIR}" ] || mkdir "${GTDIR}"
 cd "${GTDIR}" || {
-	echo "extglob4: cannot cd to ${GTDIR}"
-	exit 2
+        echo "extglob4: cannot cd to ${GTDIR}"
+        exit 2
 }
 
 touch a b c .x .y .z

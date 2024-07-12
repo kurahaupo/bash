@@ -87,7 +87,7 @@ _path_checkino (const char *dotp, const char *name, ino_t thisino)
   return (st.st_ino == thisino);
 }
 #endif
-    
+
 /* Get the pathname of the current working directory,
    and put it in SIZE bytes of BUF.  Returns NULL if the
    directory couldn't be determined or SIZE was too small.
@@ -150,34 +150,34 @@ getcwd (char *buf, size_t size)
 
       /* Look at the parent directory.  */
       if (dotp == dotlist)
-	{
-	  /* My, what a deep directory tree you have, Grandma.  */
-	  char *new;
-	  if (dotlist == dots)
-	    {
-	      new = (char *)malloc (dotsize * 2 + 1);
-	      if (new == NULL)
-		goto lose;
-	      memcpy (new, dots, dotsize);
-	    }
-	  else
-	    {
-	      new = (char *)realloc ((PTR_T) dotlist, dotsize * 2 + 1);
-	      if (new == NULL)
-		goto lose;
-	    }
-	  memcpy (&new[dotsize], new, dotsize);
-	  dotp = &new[dotsize];
-	  dotsize *= 2;
-	  new[dotsize] = '\0';
-	  dotlist = new;
-	}
+        {
+          /* My, what a deep directory tree you have, Grandma.  */
+          char *new;
+          if (dotlist == dots)
+            {
+              new = (char *)malloc (dotsize * 2 + 1);
+              if (new == NULL)
+                goto lose;
+              memcpy (new, dots, dotsize);
+            }
+          else
+            {
+              new = (char *)realloc ((PTR_T) dotlist, dotsize * 2 + 1);
+              if (new == NULL)
+                goto lose;
+            }
+          memcpy (&new[dotsize], new, dotsize);
+          dotp = &new[dotsize];
+          dotsize *= 2;
+          new[dotsize] = '\0';
+          dotlist = new;
+        }
 
       dotp -= 3;
 
       /* Figure out if this directory is a mount point.  */
       if (stat (dotp, &st) < 0)
-	goto lose;
+        goto lose;
       dotdev = st.st_dev;
       dotino = st.st_ino;
       mount_point = dotdev != thisdev;
@@ -185,86 +185,86 @@ getcwd (char *buf, size_t size)
       /* Search for the last directory.  */
       dirstream = opendir (dotp);
       if (dirstream == NULL)
-	goto lose;
+        goto lose;
       while ((d = readdir (dirstream)) != NULL)
-	{
-	  if (d->d_name[0] == '.' &&
-	      (d->d_name[1] == '\0' ||
-		(d->d_name[1] == '.' && d->d_name[2] == '\0')))
-	    continue;
+        {
+          if (d->d_name[0] == '.' &&
+              (d->d_name[1] == '\0' ||
+                (d->d_name[1] == '.' && d->d_name[2] == '\0')))
+            continue;
 #if defined (D_FILENO_AVAILABLE)
-	  if (mount_point || d->d_fileno == thisino)
+          if (mount_point || d->d_fileno == thisino)
 #else
-	  if (mount_point || _path_checkino (dotp, d->d_name, thisino))
+          if (mount_point || _path_checkino (dotp, d->d_name, thisino))
 #endif
-	    {
-	      char *name;
+            {
+              char *name;
 
-	      namlen = D_NAMLEN(d);
-	      name = (char *)
-		alloca (dotlist + dotsize - dotp + 1 + namlen + 1);
-	      memcpy (name, dotp, dotlist + dotsize - dotp);
-	      name[dotlist + dotsize - dotp] = '/';
-	      memcpy (&name[dotlist + dotsize - dotp + 1],
-		      d->d_name, namlen + 1);
-	      if (lstat (name, &st) < 0)
-		{
+              namlen = D_NAMLEN(d);
+              name = (char *)
+                alloca (dotlist + dotsize - dotp + 1 + namlen + 1);
+              memcpy (name, dotp, dotlist + dotsize - dotp);
+              name[dotlist + dotsize - dotp] = '/';
+              memcpy (&name[dotlist + dotsize - dotp + 1],
+                      d->d_name, namlen + 1);
+              if (lstat (name, &st) < 0)
+                {
 #if 0
-		  int save = errno;
-		  (void) closedir (dirstream);
-		  errno = save;
-		  goto lose;
+                  int save = errno;
+                  (void) closedir (dirstream);
+                  errno = save;
+                  goto lose;
 #else
-		  saved_errno = errno;
+                  saved_errno = errno;
 #endif
-		}
-	      if (st.st_dev == thisdev && st.st_ino == thisino)
-		break;
-	    }
-	}
+                }
+              if (st.st_dev == thisdev && st.st_ino == thisino)
+                break;
+            }
+        }
       if (d == NULL)
-	{
+        {
 #if 0
-	  int save = errno;
+          int save = errno;
 #else
-	  int save = errno ? errno : saved_errno;
+          int save = errno ? errno : saved_errno;
 #endif
-	  (void) closedir (dirstream);
-	  errno = save;
-	  goto lose;
-	}
+          (void) closedir (dirstream);
+          errno = save;
+          goto lose;
+        }
       else
-	{
-	  size_t space;
+        {
+          size_t space;
 
-	  while ((space = pathp - pathbuf) <= namlen)
-	    {
-	      char *new;
+          while ((space = pathp - pathbuf) <= namlen)
+            {
+              char *new;
 
-	      if (pathbuf == path)
-		{
-		  new = (char *)malloc (pathsize * 2);
-		  if (!new)
-		    goto lose;
-		}
-	      else
-		{
-		  new = (char *)realloc ((PTR_T) pathbuf, (pathsize * 2));
-		  if (!new)
-		    goto lose;
-		  pathp = new + space;
-		}
-	      (void) memcpy (new + pathsize + space, pathp, pathsize - space);
-	      pathp = new + pathsize + space;
-	      pathbuf = new;
-	      pathsize *= 2;
-	    }
+              if (pathbuf == path)
+                {
+                  new = (char *)malloc (pathsize * 2);
+                  if (!new)
+                    goto lose;
+                }
+              else
+                {
+                  new = (char *)realloc ((PTR_T) pathbuf, (pathsize * 2));
+                  if (!new)
+                    goto lose;
+                  pathp = new + space;
+                }
+              (void) memcpy (new + pathsize + space, pathp, pathsize - space);
+              pathp = new + pathsize + space;
+              pathbuf = new;
+              pathsize *= 2;
+            }
 
-	  pathp -= namlen;
-	  (void) memcpy (pathp, d->d_name, namlen);
-	  *--pathp = '/';
-	  (void) closedir (dirstream);
-	}
+          pathp -= namlen;
+          (void) memcpy (pathp, d->d_name, namlen);
+          *--pathp = '/';
+          (void) closedir (dirstream);
+        }
 
       thisdev = dotdev;
       thisino = dotino;
@@ -283,14 +283,14 @@ getcwd (char *buf, size_t size)
 
     if ((size_t) size < len)
       {
-	errno = ERANGE;
-	goto lose2;
+        errno = ERANGE;
+        goto lose2;
       }
     if (buf == NULL)
       {
-	buf = (char *) malloc (size);
-	if (buf == NULL)
-	  goto lose2;
+        buf = (char *) malloc (size);
+        if (buf == NULL)
+          goto lose2;
       }
 
     (void) memcpy((PTR_T) buf, (PTR_T) pathp, len);

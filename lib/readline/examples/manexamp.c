@@ -33,7 +33,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-   
+
 #include <locale.h>
 
 #ifndef errno
@@ -50,7 +50,7 @@ extern int errno;
 
 /* **************************************************************** */
 /*                                                                  */
-/*   			How to Emulate gets ()			    */
+/*                      How to Emulate gets ()                      */
 /*                                                                  */
 /* **************************************************************** */
 
@@ -125,9 +125,9 @@ invert_case_line (int count, int key)
   for (; start != end; start++)
     {
       if (_rl_uppercase_p (rl_line_buffer[start]))
-	rl_line_buffer[start] = _rl_to_lower (rl_line_buffer[start]);
+        rl_line_buffer[start] = _rl_to_lower (rl_line_buffer[start]);
       else if (_rl_lowercase_p (rl_line_buffer[start]))
-	rl_line_buffer[start] = _rl_to_upper (rl_line_buffer[start]);
+        rl_line_buffer[start] = _rl_to_upper (rl_line_buffer[start]);
     }
 
   return 0;

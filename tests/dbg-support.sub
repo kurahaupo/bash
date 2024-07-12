@@ -20,11 +20,11 @@ sourced_fn() {
     # Print a stack trace
     declare -i n
     n=${#FUNCNAME[@]}
-    for (( i=0 ; (( i < $n )) ; i++ )) ; do 
+    for (( i=0 ; (( i < $n )) ; i++ )) ; do
         local -i j=i+1
-	[ $j -eq $n ] && j=i  # main()'s file is the same as the first caller
-	echo "FUNCNAME[$i]: ${FUNCNAME[$i]} called from ${BASH_SOURCE[$j]}" \
-	     "at line ${BASH_LINENO[$i]}"
+        [ $j -eq $n ] && j=i  # main()'s file is the same as the first caller
+        echo "FUNCNAME[$i]: ${FUNCNAME[$i]} called from ${BASH_SOURCE[$j]}" \
+             "at line ${BASH_LINENO[$i]}"
     done
 }
 
@@ -36,4 +36,3 @@ sourced_fn
 #;;; mode:shell-script ***
 #;;; eval: (sh-set-shell "bash") ***
 #;;; End: ***
-

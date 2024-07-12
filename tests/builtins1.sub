@@ -15,4 +15,4 @@ rmdir $FULLDIR
 
 cd /
 cd /tmp
-cd -		# should print /
+cd -            # should print /

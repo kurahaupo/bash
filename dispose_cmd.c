@@ -48,153 +48,153 @@ dispose_command (COMMAND *command)
     case cm_select:
 #endif
       {
-	register FOR_COM *c;
+        register FOR_COM *c;
 #if defined (SELECT_COMMAND)
-	if (command->type == cm_select)
-	  c = (FOR_COM *)command->value.Select;
-	else
+        if (command->type == cm_select)
+          c = (FOR_COM *)command->value.Select;
+        else
 #endif
-	c = command->value.For;
-	dispose_word (c->name);
-	dispose_words (c->map_list);
-	dispose_command (c->action);
-	free (c);
-	break;
+        c = command->value.For;
+        dispose_word (c->name);
+        dispose_words (c->map_list);
+        dispose_command (c->action);
+        free (c);
+        break;
       }
 
 #if defined (ARITH_FOR_COMMAND)
     case cm_arith_for:
       {
-	register ARITH_FOR_COM *c;
+        register ARITH_FOR_COM *c;
 
-	c = command->value.ArithFor;
-	dispose_words (c->init);
-	dispose_words (c->test);
-	dispose_words (c->step);
-	dispose_command (c->action);
-	free (c);
-	break;
+        c = command->value.ArithFor;
+        dispose_words (c->init);
+        dispose_words (c->test);
+        dispose_words (c->step);
+        dispose_command (c->action);
+        free (c);
+        break;
       }
 #endif /* ARITH_FOR_COMMAND */
 
     case cm_group:
       {
-	dispose_command (command->value.Group->command);
-	free (command->value.Group);
-	break;
+        dispose_command (command->value.Group->command);
+        free (command->value.Group);
+        break;
       }
 
     case cm_subshell:
       {
-	dispose_command (command->value.Subshell->command);
-	free (command->value.Subshell);
-	break;
+        dispose_command (command->value.Subshell->command);
+        free (command->value.Subshell);
+        break;
       }
 
     case cm_coproc:
       {
-	free (command->value.Coproc->name);
-	dispose_command (command->value.Coproc->command);
-	free (command->value.Coproc);
-	break;
+        free (command->value.Coproc->name);
+        dispose_command (command->value.Coproc->command);
+        free (command->value.Coproc);
+        break;
       }
 
     case cm_case:
       {
-	register CASE_COM *c;
-	PATTERN_LIST *t, *p;
+        register CASE_COM *c;
+        PATTERN_LIST *t, *p;
 
-	c = command->value.Case;
-	dispose_word (c->word);
+        c = command->value.Case;
+        dispose_word (c->word);
 
-	for (p = c->clauses; p; )
-	  {
-	    dispose_words (p->patterns);
-	    dispose_command (p->action);
-	    t = p;
-	    p = p->next;
-	    free (t);
-	  }
-	free (c);
-	break;
+        for (p = c->clauses; p; )
+          {
+            dispose_words (p->patterns);
+            dispose_command (p->action);
+            t = p;
+            p = p->next;
+            free (t);
+          }
+        free (c);
+        break;
       }
 
     case cm_until:
     case cm_while:
       {
-	register WHILE_COM *c;
+        register WHILE_COM *c;
 
-	c = command->value.While;
-	dispose_command (c->test);
-	dispose_command (c->action);
-	free (c);
-	break;
+        c = command->value.While;
+        dispose_command (c->test);
+        dispose_command (c->action);
+        free (c);
+        break;
       }
 
     case cm_if:
       {
-	register IF_COM *c;
+        register IF_COM *c;
 
-	c = command->value.If;
-	dispose_command (c->test);
-	dispose_command (c->true_case);
-	dispose_command (c->false_case);
-	free (c);
-	break;
+        c = command->value.If;
+        dispose_command (c->test);
+        dispose_command (c->true_case);
+        dispose_command (c->false_case);
+        free (c);
+        break;
       }
 
     case cm_simple:
       {
-	register SIMPLE_COM *c;
+        register SIMPLE_COM *c;
 
-	c = command->value.Simple;
-	dispose_words (c->words);
-	dispose_redirects (c->redirects);
-	free (c);
-	break;
+        c = command->value.Simple;
+        dispose_words (c->words);
+        dispose_redirects (c->redirects);
+        free (c);
+        break;
       }
 
     case cm_connection:
       {
-	register CONNECTION *c;
+        register CONNECTION *c;
 
-	c = command->value.Connection;
-	dispose_command (c->first);
-	dispose_command (c->second);
-	free (c);
-	break;
+        c = command->value.Connection;
+        dispose_command (c->first);
+        dispose_command (c->second);
+        free (c);
+        break;
       }
 
 #if defined (DPAREN_ARITHMETIC)
     case cm_arith:
       {
-	register ARITH_COM *c;
+        register ARITH_COM *c;
 
-	c = command->value.Arith;
-	dispose_words (c->exp);
-	free (c);
-	break;
+        c = command->value.Arith;
+        dispose_words (c->exp);
+        free (c);
+        break;
       }
 #endif /* DPAREN_ARITHMETIC */
 
 #if defined (COND_COMMAND)
     case cm_cond:
       {
-	register COND_COM *c;
+        register COND_COM *c;
 
-	c = command->value.Cond;
-	dispose_cond_node (c);
-	break;
+        c = command->value.Cond;
+        dispose_cond_node (c);
+        break;
       }
 #endif /* COND_COMMAND */
 
     case cm_function_def:
       {
-	register FUNCTION_DEF *c;
+        register FUNCTION_DEF *c;
 
-	c = command->value.Function_def;
-	dispose_function_def (c);
-	break;
+        c = command->value.Function_def;
+        dispose_function_def (c);
+        break;
       }
 
     default:
@@ -218,11 +218,11 @@ dispose_cond_node (COND_COM *cond)
   if (cond)
     {
       if (cond->left)
-	dispose_cond_node (cond->left);
+        dispose_cond_node (cond->left);
       if (cond->right)
-	dispose_cond_node (cond->right);
+        dispose_cond_node (cond->right);
       if (cond->op)
-	dispose_word (cond->op);
+        dispose_word (cond->op);
       free (cond);
     }
 }
@@ -314,32 +314,32 @@ dispose_redirects (REDIRECT *list)
       list = list->next;
 
       if (t->rflags & REDIR_VARASSIGN)
-	dispose_word (t->redirector.filename);
+        dispose_word (t->redirector.filename);
 
       switch (t->instruction)
-	{
-	case r_reading_until:
-	case r_deblank_reading_until:
-	  free (t->here_doc_eof);
-	/*FALLTHROUGH*/
-	case r_reading_string:
-	case r_output_direction:
-	case r_input_direction:
-	case r_inputa_direction:
-	case r_appending_to:
-	case r_err_and_out:
-	case r_append_err_and_out:
-	case r_input_output:
-	case r_output_force:
-	case r_duplicating_input_word:
-	case r_duplicating_output_word:
-	case r_move_input_word:
-	case r_move_output_word:
-	  dispose_word (t->redirectee.filename);
-	  /* FALLTHROUGH */
-	default:
-	  break;
-	}
+        {
+        case r_reading_until:
+        case r_deblank_reading_until:
+          free (t->here_doc_eof);
+        /*FALLTHROUGH*/
+        case r_reading_string:
+        case r_output_direction:
+        case r_input_direction:
+        case r_inputa_direction:
+        case r_appending_to:
+        case r_err_and_out:
+        case r_append_err_and_out:
+        case r_input_output:
+        case r_output_force:
+        case r_duplicating_input_word:
+        case r_duplicating_output_word:
+        case r_move_input_word:
+        case r_move_output_word:
+          dispose_word (t->redirectee.filename);
+          /* FALLTHROUGH */
+        default:
+          break;
+        }
       free (t);
     }
 }

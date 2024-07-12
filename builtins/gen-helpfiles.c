@@ -22,9 +22,9 @@
    the long_doc members of each struct builtin element and writes those to
    the file named by the `handle' member of the struct builtin element. */
 
-#if !defined (CROSS_COMPILING) 
+#if !defined (CROSS_COMPILING)
 #  include <config.h>
-#else	/* CROSS_COMPILING */
+#else   /* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */
 #  define HAVE_UNISTD_H
 #  define HAVE_STRING_H
@@ -65,7 +65,7 @@
 #undef xfree
 
 #undef malloc
-#undef free		/* defined in xmalloc.h */
+#undef free             /* defined in xmalloc.h */
 #endif
 
 #ifndef errno
@@ -75,11 +75,11 @@ extern int errno;
 #define whitespace(c) (((c) == ' ') || ((c) == '\t'))
 
 /* Flag values that builtins can have. */
-#define BUILTIN_FLAG_SPECIAL	0x01
+#define BUILTIN_FLAG_SPECIAL    0x01
 #define BUILTIN_FLAG_ASSIGNMENT 0x02
 #define BUILTIN_FLAG_POSIX_BUILTIN 0x04
 
-#define BASE_INDENT	4
+#define BASE_INDENT     4
 
 /* Non-zero means to produce separate help files for each builtin, named by
    the builtin name, in `./helpfiles'. */
@@ -110,16 +110,16 @@ main (int argc, char **argv)
       char *arg = argv[arg_index++];
 
       if (strcmp (arg, "-noproduction") == 0)
-	;
+        ;
       else if (strcmp (arg, "-H") == 0)
-	helpfile_directory = argv[arg_index++];
+        helpfile_directory = argv[arg_index++];
       else if (strcmp (arg, "-S") == 0)
-	single_longdoc_strings = 0;
+        single_longdoc_strings = 0;
       else
-	{
-	  fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
-	  exit (2);
-	}
+        {
+          fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
+          exit (2);
+        }
     }
 
   write_helpfiles(shell_builtins);
@@ -164,19 +164,19 @@ write_helpfiles (struct builtin *builtins)
       fname = (char *)b.handle;
       helpfile = (char *)malloc (hdlen + strlen (fname) + 1);
       if (helpfile == 0)
-	{
-	  fprintf (stderr, "gen-helpfiles: cannot allocate memory\n");
-	  exit (1);
-	}
+        {
+          fprintf (stderr, "gen-helpfiles: cannot allocate memory\n");
+          exit (1);
+        }
       sprintf (helpfile, "helpfiles/%s", fname);
 
       helpfp = fopen (helpfile, "w");
       if (helpfp == 0)
-	{
-	  fprintf (stderr, "write_helpfiles: cannot open %s\n", helpfile);
-	  free (helpfile);
-	  continue;
-	}
+        {
+          fprintf (stderr, "write_helpfiles: cannot open %s\n", helpfile);
+          free (helpfile);
+          continue;
+        }
 
       write_documentation (helpfp, b.long_doc[0], 4);
 

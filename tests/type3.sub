@@ -14,13 +14,13 @@
 cd ${TMPDIR:-/tmp}
 
 foo() {
-	rm -f a b c
-	for f in a b c; do
-		cat <<-EOF >> ${f}
+        rm -f a b c
+        for f in a b c; do
+                cat <<-EOF >> ${f}
 		file
 		EOF
-	done
-	grep . a b c
+        done
+        grep . a b c
 }
 
 type foo

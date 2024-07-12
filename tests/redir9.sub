@@ -15,8 +15,8 @@
 
 func()
 {
-	echo "to stdout"
-	echo "to stderr" >&2
+        echo "to stdout"
+        echo "to stderr" >&2
 }
 
 TMPFN=$TMPDIR/foo-$$
@@ -46,7 +46,7 @@ rm -f $TMPFN
 
 logfunc()
 {
-	echo "$@" &>> $TMPDIR/log
+        echo "$@" &>> $TMPDIR/log
 }
 
 type logfunc

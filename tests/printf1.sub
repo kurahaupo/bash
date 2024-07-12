@@ -115,7 +115,7 @@ Z1=$(printf -- "%b\n" '\a\b\e\f\r\v')
 Z2=$'\a\b\e\f\r\v'
 
 if [ "$Z1" != "$Z2" ]; then
-	printf "%s"  "whoops: printf -v vv %b and $'' differ" >&2
+        printf "%s"  "whoops: printf -v vv %b and $'' differ" >&2
 fi
 unset Z1 Z2
 
@@ -317,7 +317,7 @@ printf "%s"  "$vv"
 printf -v vv '(%*b)(%*s)\n' -4 foo -4 bar
 printf "%s"  "$vv"
 
-format='%'`printf '%0100384d' 0`'d\n' 
+format='%'`printf '%0100384d' 0`'d\n'
 printf -v vv $format 0
 printf "%s"  "$vv"
 

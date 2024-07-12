@@ -160,7 +160,7 @@ recho ${y=${!A[*]}}
 unset x y
 
 recho ${x-$*}
-recho ${y-${!A[*]}}	# this isn't right yet
+recho ${y-${!A[*]}}     # this isn't right yet
 
 IFS=:
 set -- a b
@@ -177,7 +177,7 @@ recho "$y"
 unset x y
 
 recho ${x-$*}
-recho ${y-${!ind}}	# this isn't right yet
+recho ${y-${!ind}}      # this isn't right yet
 
 unset x y
 
@@ -207,7 +207,7 @@ ind=*
 unset x y
 
 recho ${x-$*}
-recho ${y-${!ind}}	# this isn't right yet
+recho ${y-${!ind}}      # this isn't right yet
 
 unset x y
 

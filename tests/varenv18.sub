@@ -17,17 +17,17 @@ four=four
 
 f()
 {
-	local -a arr=( "${arr[@]}" )
-	arr+=(three four five)
-	declare -p arr
+        local -a arr=( "${arr[@]}" )
+        arr+=(three four five)
+        declare -p arr
 }
 f
 declare -p arr
 
 f1()
 {
-	local -a arr=(three $four five)
-	declare -p arr
+        local -a arr=(three $four five)
+        declare -p arr
 }
 f1
 
@@ -35,7 +35,7 @@ set -u
 name='arr[@]'
 f2()
 {
-	local -a arr=("${!name}")
-	declare -p arr
+        local -a arr=("${!name}")
+        declare -p arr
 }
 f2

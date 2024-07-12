@@ -34,7 +34,7 @@
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-#else 
+#else
 extern void exit();
 #endif
 
@@ -74,7 +74,7 @@ static void
 usage(void)
 {
   fprintf (stderr, "%s: usage: %s [-p prompt] [-u unit] [-d default] [-n nchars]\n",
-		progname, progname);
+                progname, progname);
 }
 
 int
@@ -103,42 +103,42 @@ main (int argc, char **argv)
   while ((opt = getopt(argc, argv, "p:u:d:n:")) != EOF)
     {
       switch (opt)
-	{
-	case 'p':
-	  prompt = optarg;
-	  break;
-	case 'u':
-	  fd = atoi(optarg);
-	  if (fd < 0)
-	    {
-	      fprintf (stderr, "%s: bad file descriptor `%s'\n", progname, optarg);
-	      exit (2);
-	    }
-	  break;
-	case 'd':
-	  deftext = optarg;
-	  break;
-	case 'n':
-	  nch = atoi(optarg);
-	  if (nch < 0)
-	    {
-	      fprintf (stderr, "%s: bad value for -n: `%s'\n", progname, optarg);
-	      exit (2);
-	    }
-	  break;
-	default:
-	  usage ();
-	  exit (2);
-	}
+        {
+        case 'p':
+          prompt = optarg;
+          break;
+        case 'u':
+          fd = atoi(optarg);
+          if (fd < 0)
+            {
+              fprintf (stderr, "%s: bad file descriptor `%s'\n", progname, optarg);
+              exit (2);
+            }
+          break;
+        case 'd':
+          deftext = optarg;
+          break;
+        case 'n':
+          nch = atoi(optarg);
+          if (nch < 0)
+            {
+              fprintf (stderr, "%s: bad value for -n: `%s'\n", progname, optarg);
+              exit (2);
+            }
+          break;
+        default:
+          usage ();
+          exit (2);
+        }
     }
 
   if (fd != 0)
     {
       if (fstat (fd, &sb) < 0)
-	{
-	  fprintf (stderr, "%s: %d: bad file descriptor\n", progname, fd);
-	  exit (1);
-	}
+        {
+          fprintf (stderr, "%s: %d: bad file descriptor\n", progname, fd);
+          exit (1);
+        }
       ifp = fdopen (fd, "r");
       rl_instream = ifp;
     }

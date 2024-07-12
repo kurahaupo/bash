@@ -27,11 +27,11 @@ typeset -p r1 r2 x y
 # same behavior when in a shell function
 foo()
 {
-	typeset -n r1=r2
-	typeset -n r2=x
-	typeset -n r1=y
+        typeset -n r1=r2
+        typeset -n r2=x
+        typeset -n r1=y
 
-	typeset -p r1 r2 x y
+        typeset -p r1 r2 x y
 }
 unset -n r1 r2
 foo

@@ -44,11 +44,11 @@ cat <<EOF
 8: ${x#$'a\t\'\tb'}
 EOF
 
-x=OK'a	"	b'
+x=OK'a  "       b'
 
 cat <<EOF
-9: ${x#'a	"	b'}
-10: ${x#$'a	"	b'}
+9: ${x#'a       "       b'}
+10: ${x#$'a     "       b'}
 EOF
 
 x=notOK

@@ -147,4 +147,4 @@ struct sysdep_string
 
 /* @@ begin of epilog @@ */
 
-#endif	/* gettext.h  */
+#endif  /* gettext.h  */

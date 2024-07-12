@@ -75,8 +75,8 @@ gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
    and vice versa.  */
 static void
 set_binding_values (const char *domainname,
-		    const char **dirnamep, const wchar_t **wdirnamep,
-		    const char **codesetp)
+                    const char **dirnamep, const wchar_t **wdirnamep,
+                    const char **codesetp)
 {
   struct binding *binding;
   int modified;
@@ -85,13 +85,13 @@ set_binding_values (const char *domainname,
   if (domainname == NULL || domainname[0] == '\0')
     {
       if (dirnamep)
-	*dirnamep = NULL;
+        *dirnamep = NULL;
 #if defined _WIN32 && !defined __CYGWIN__
       if (wdirnamep)
-	*wdirnamep = NULL;
+        *wdirnamep = NULL;
 #endif
       if (codesetp)
-	*codesetp = NULL;
+        *codesetp = NULL;
       return;
     }
 
@@ -103,265 +103,265 @@ set_binding_values (const char *domainname,
     {
       int compare = strcmp (domainname, binding->domainname);
       if (compare == 0)
-	/* We found it!  */
-	break;
+        /* We found it!  */
+        break;
       if (compare < 0)
-	{
-	  /* It is not in the list.  */
-	  binding = NULL;
-	  break;
-	}
+        {
+          /* It is not in the list.  */
+          binding = NULL;
+          break;
+        }
     }
 
   if (binding != NULL)
     {
       if (dirnamep)
-	{
-	  const char *dirname = *dirnamep;
+        {
+          const char *dirname = *dirnamep;
 
-	  if (dirname == NULL)
-	    /* The current binding has be to returned.  */
-	    *dirnamep = binding->dirname;
-	  else
-	    {
-	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
-	      char *result = binding->dirname;
-	      if (result == NULL || strcmp (dirname, result) != 0)
-		{
-		  if (strcmp (dirname, _nl_default_dirname) == 0)
-		    result = (char *) _nl_default_dirname;
-		  else
-		    result = strdup (dirname);
+          if (dirname == NULL)
+            /* The current binding has be to returned.  */
+            *dirnamep = binding->dirname;
+          else
+            {
+              /* The domain is already bound.  If the new value and the old
+                 one are equal we simply do nothing.  Otherwise replace the
+                 old binding.  */
+              char *result = binding->dirname;
+              if (result == NULL || strcmp (dirname, result) != 0)
+                {
+                  if (strcmp (dirname, _nl_default_dirname) == 0)
+                    result = (char *) _nl_default_dirname;
+                  else
+                    result = strdup (dirname);
 
-		  if (__builtin_expect (result != NULL, 1))
-		    {
-		      if (binding->dirname != _nl_default_dirname)
-			free (binding->dirname);
-		      binding->dirname = result;
+                  if (__builtin_expect (result != NULL, 1))
+                    {
+                      if (binding->dirname != _nl_default_dirname)
+                        free (binding->dirname);
+                      binding->dirname = result;
 
 #if defined _WIN32 && !defined __CYGWIN__
-		      free (binding->wdirname);
-		      binding->wdirname = NULL;
+                      free (binding->wdirname);
+                      binding->wdirname = NULL;
 #endif
 
-		      modified = 1;
-		    }
-		}
-	      *dirnamep = result;
-	    }
-	}
+                      modified = 1;
+                    }
+                }
+              *dirnamep = result;
+            }
+        }
 
 #if defined _WIN32 && !defined __CYGWIN__
       if (wdirnamep)
-	{
-	  const wchar_t *wdirname = *wdirnamep;
+        {
+          const wchar_t *wdirname = *wdirnamep;
 
-	  if (wdirname == NULL)
-	    /* The current binding has be to returned.  */
-	    *wdirnamep = binding->wdirname;
-	  else
-	    {
-	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
-	      wchar_t *result = binding->wdirname;
-	      if (result == NULL || wcscmp (wdirname, result) != 0)
-		{
-		  result = _wcsdup (wdirname);
+          if (wdirname == NULL)
+            /* The current binding has be to returned.  */
+            *wdirnamep = binding->wdirname;
+          else
+            {
+              /* The domain is already bound.  If the new value and the old
+                 one are equal we simply do nothing.  Otherwise replace the
+                 old binding.  */
+              wchar_t *result = binding->wdirname;
+              if (result == NULL || wcscmp (wdirname, result) != 0)
+                {
+                  result = _wcsdup (wdirname);
 
-		  if (__builtin_expect (result != NULL, 1))
-		    {
-		      if (binding->dirname != _nl_default_dirname)
-			free (binding->dirname);
-		      binding->dirname = NULL;
+                  if (__builtin_expect (result != NULL, 1))
+                    {
+                      if (binding->dirname != _nl_default_dirname)
+                        free (binding->dirname);
+                      binding->dirname = NULL;
 
-		      free (binding->wdirname);
-		      binding->wdirname = result;
+                      free (binding->wdirname);
+                      binding->wdirname = result;
 
-		      modified = 1;
-		    }
-		}
-	      *wdirnamep = result;
-	    }
-	}
+                      modified = 1;
+                    }
+                }
+              *wdirnamep = result;
+            }
+        }
 #endif
 
       if (codesetp)
-	{
-	  const char *codeset = *codesetp;
+        {
+          const char *codeset = *codesetp;
 
-	  if (codeset == NULL)
-	    /* The current binding has be to returned.  */
-	    *codesetp = binding->codeset;
-	  else
-	    {
-	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
-	      char *result = binding->codeset;
-	      if (result == NULL || strcmp (codeset, result) != 0)
-		{
-		  result = strdup (codeset);
-		  if (__builtin_expect (result != NULL, 1))
-		    {
-		      free (binding->codeset);
+          if (codeset == NULL)
+            /* The current binding has be to returned.  */
+            *codesetp = binding->codeset;
+          else
+            {
+              /* The domain is already bound.  If the new value and the old
+                 one are equal we simply do nothing.  Otherwise replace the
+                 old binding.  */
+              char *result = binding->codeset;
+              if (result == NULL || strcmp (codeset, result) != 0)
+                {
+                  result = strdup (codeset);
+                  if (__builtin_expect (result != NULL, 1))
+                    {
+                      free (binding->codeset);
 
-		      binding->codeset = result;
-		      modified = 1;
-		    }
-		}
-	      *codesetp = result;
-	    }
-	}
+                      binding->codeset = result;
+                      modified = 1;
+                    }
+                }
+              *codesetp = result;
+            }
+        }
     }
   else if ((dirnamep == NULL || *dirnamep == NULL)
 #if defined _WIN32 && !defined __CYGWIN__
-	   && (wdirnamep == NULL || *wdirnamep == NULL)
+           && (wdirnamep == NULL || *wdirnamep == NULL)
 #endif
-	   && (codesetp == NULL || *codesetp == NULL))
+           && (codesetp == NULL || *codesetp == NULL))
     {
       /* Simply return the default values.  */
       if (dirnamep)
-	*dirnamep = _nl_default_dirname;
+        *dirnamep = _nl_default_dirname;
 #if defined _WIN32 && !defined __CYGWIN__
       if (wdirnamep)
-	*wdirnamep = NULL;
+        *wdirnamep = NULL;
 #endif
       if (codesetp)
-	*codesetp = NULL;
+        *codesetp = NULL;
     }
   else
     {
       /* We have to create a new binding.  */
       size_t len = strlen (domainname) + 1;
       struct binding *new_binding =
-	(struct binding *) malloc (offsetof (struct binding, domainname) + len);
+        (struct binding *) malloc (offsetof (struct binding, domainname) + len);
 
       if (__builtin_expect (new_binding == NULL, 0))
-	goto failed;
+        goto failed;
 
       memcpy (new_binding->domainname, domainname, len);
 
       if (dirnamep)
-	{
-	  const char *dirname = *dirnamep;
+        {
+          const char *dirname = *dirnamep;
 
-	  if (dirname == NULL)
-	    {
+          if (dirname == NULL)
+            {
 #if defined _WIN32 && !defined __CYGWIN__
-	      if (wdirnamep && *wdirnamep != NULL)
-		dirname = NULL;
-	      else
+              if (wdirnamep && *wdirnamep != NULL)
+                dirname = NULL;
+              else
 #endif
-		/* The default value.  */
-		dirname = _nl_default_dirname;
-	    }
-	  else
-	    {
-	      if (strcmp (dirname, _nl_default_dirname) == 0)
-		dirname = _nl_default_dirname;
-	      else
-		{
-		  char *result = strdup (dirname);
-		  if (__builtin_expect (result == NULL, 0))
-		    goto failed_dirname;
-		  dirname = result;
-		}
-	    }
-	  *dirnamep = dirname;
-	  new_binding->dirname = (char *) dirname;
-	}
+                /* The default value.  */
+                dirname = _nl_default_dirname;
+            }
+          else
+            {
+              if (strcmp (dirname, _nl_default_dirname) == 0)
+                dirname = _nl_default_dirname;
+              else
+                {
+                  char *result = strdup (dirname);
+                  if (__builtin_expect (result == NULL, 0))
+                    goto failed_dirname;
+                  dirname = result;
+                }
+            }
+          *dirnamep = dirname;
+          new_binding->dirname = (char *) dirname;
+        }
       else
-	{
+        {
 #if defined _WIN32 && !defined __CYGWIN__
-	  if (wdirnamep && *wdirnamep != NULL)
-	    new_binding->dirname = NULL;
-	  else
+          if (wdirnamep && *wdirnamep != NULL)
+            new_binding->dirname = NULL;
+          else
 #endif
-	    /* The default value.  */
-	    new_binding->dirname = (char *) _nl_default_dirname;
-	}
+            /* The default value.  */
+            new_binding->dirname = (char *) _nl_default_dirname;
+        }
 
 #if defined _WIN32 && !defined __CYGWIN__
       if (wdirnamep)
-	{
-	  const wchar_t *wdirname = *wdirnamep;
+        {
+          const wchar_t *wdirname = *wdirnamep;
 
-	  if (wdirname != NULL)
-	    {
-	      wchar_t *result = _wcsdup (wdirname);
-	      if (__builtin_expect (result == NULL, 0))
-		goto failed_wdirname;
-	      wdirname = result;
-	    }
-	  *wdirnamep = wdirname;
-	  new_binding->wdirname = (wchar_t *) wdirname;
-	}
+          if (wdirname != NULL)
+            {
+              wchar_t *result = _wcsdup (wdirname);
+              if (__builtin_expect (result == NULL, 0))
+                goto failed_wdirname;
+              wdirname = result;
+            }
+          *wdirnamep = wdirname;
+          new_binding->wdirname = (wchar_t *) wdirname;
+        }
       else
-	new_binding->wdirname = NULL;
+        new_binding->wdirname = NULL;
 #endif
 
       if (codesetp)
-	{
-	  const char *codeset = *codesetp;
+        {
+          const char *codeset = *codesetp;
 
-	  if (codeset != NULL)
-	    {
-	      char *result = strdup (codeset);
-	      if (__builtin_expect (result == NULL, 0))
-		goto failed_codeset;
-	      codeset = result;
-	    }
-	  *codesetp = codeset;
-	  new_binding->codeset = (char *) codeset;
-	}
+          if (codeset != NULL)
+            {
+              char *result = strdup (codeset);
+              if (__builtin_expect (result == NULL, 0))
+                goto failed_codeset;
+              codeset = result;
+            }
+          *codesetp = codeset;
+          new_binding->codeset = (char *) codeset;
+        }
       else
-	new_binding->codeset = NULL;
+        new_binding->codeset = NULL;
 
       /* Now enqueue it.  */
       if (_nl_domain_bindings == NULL
-	  || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
-	{
-	  new_binding->next = _nl_domain_bindings;
-	  _nl_domain_bindings = new_binding;
-	}
+          || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
+        {
+          new_binding->next = _nl_domain_bindings;
+          _nl_domain_bindings = new_binding;
+        }
       else
-	{
-	  binding = _nl_domain_bindings;
-	  while (binding->next != NULL
-		 && strcmp (domainname, binding->next->domainname) > 0)
-	    binding = binding->next;
+        {
+          binding = _nl_domain_bindings;
+          while (binding->next != NULL
+                 && strcmp (domainname, binding->next->domainname) > 0)
+            binding = binding->next;
 
-	  new_binding->next = binding->next;
-	  binding->next = new_binding;
-	}
+          new_binding->next = binding->next;
+          binding->next = new_binding;
+        }
 
       modified = 1;
 
       /* Here we deal with memory allocation failures.  */
       if (0)
-	{
-	failed_codeset:
+        {
+        failed_codeset:
 #if defined _WIN32 && !defined __CYGWIN__
-	  free (new_binding->wdirname);
-	failed_wdirname:
+          free (new_binding->wdirname);
+        failed_wdirname:
 #endif
-	  if (new_binding->dirname != _nl_default_dirname)
-	    free (new_binding->dirname);
-	failed_dirname:
-	  free (new_binding);
-	failed:
-	  if (dirnamep)
-	    *dirnamep = NULL;
+          if (new_binding->dirname != _nl_default_dirname)
+            free (new_binding->dirname);
+        failed_dirname:
+          free (new_binding);
+        failed:
+          if (dirnamep)
+            *dirnamep = NULL;
 #if defined _WIN32 && !defined __CYGWIN__
-	  if (wdirnamep)
-	    *wdirnamep = NULL;
+          if (wdirnamep)
+            *wdirnamep = NULL;
 #endif
-	  if (codesetp)
-	    *codesetp = NULL;
-	}
+          if (codesetp)
+            *codesetp = NULL;
+        }
     }
 
   /* If we modified any binding, we flush the caches.  */

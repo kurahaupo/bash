@@ -24,10 +24,10 @@ a=2 echo foo 2>&1 >&$(echo $a) | { grep -q 'Bad file' || echo 'redir11 bad 2'; }
 
 foo()
 {
-	local -i a
-	local v=0 x=1
-	a+=3
-	echo $a
+        local -i a
+        local v=0 x=1
+        a+=3
+        echo $a
 }
 
 a=4 b=7 ss=4 declare -i ss
@@ -49,10 +49,10 @@ a=2 echo foo 2>&1 >&$(echo $a) | { grep -q 'Bad file' || echo 'redir11 bad 8'; }
 unset -f foo
 foo()
 {
-	local -i a
-	local v=0 x=1
-	a+=3
-	echo $a >&$(ss= declare -i ss)
+        local -i a
+        local v=0 x=1
+        a+=3
+        echo $a >&$(ss= declare -i ss)
 }
 
 a=4 b=7 foo

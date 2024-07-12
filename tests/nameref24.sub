@@ -24,11 +24,11 @@ declare -n name2=unset
 declare -n name3=
 declare -n name4='a&b'
 
-echo ${#name}	# length of nameref resolving to set variable
-echo ${#name1}	# length of nameref resolving to valid non-identifier
-echo ${#name2}	# length of nameref resolving to unset variable
-echo ${#name3}	# length of nameref resolving to empty string
-echo ${#name4}	# length of nameref resolving to invalid non-identifier
+echo ${#name}   # length of nameref resolving to set variable
+echo ${#name1}  # length of nameref resolving to valid non-identifier
+echo ${#name2}  # length of nameref resolving to unset variable
+echo ${#name3}  # length of nameref resolving to empty string
+echo ${#name4}  # length of nameref resolving to invalid non-identifier
 
 unset -n name name1
 
@@ -37,6 +37,6 @@ declare -n name1=scalar[0]
 name4='aa&bb'
 declare -n name4
 
-echo ${#name}	# length of nameref resolving to set variable
-echo ${#name1}	# length of nameref resolving to valid non-identifier
-echo ${#name4}	# length of nameref resolving to invalid non-identifier
+echo ${#name}   # length of nameref resolving to set variable
+echo ${#name1}  # length of nameref resolving to valid non-identifier
+echo ${#name4}  # length of nameref resolving to invalid non-identifier

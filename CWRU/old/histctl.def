@@ -41,10 +41,10 @@ $END
 #include "bashgetopt.h"
 #include "../bashhist.h"
 
-#define HIGNORE_NONE	0x0
-#define HIGNORE_SPACE	0x01
-#define HIGNORE_DUPS	0x02
-#define HIGNORE_BOTH	(HIGNORE_SPACE | HIGNORE_DUPS)
+#define HIGNORE_NONE    0x0
+#define HIGNORE_SPACE   0x01
+#define HIGNORE_DUPS    0x02
+#define HIGNORE_BOTH    (HIGNORE_SPACE | HIGNORE_DUPS)
 
 int
 histctl_builtin (list)
@@ -57,52 +57,52 @@ histctl_builtin (list)
   while ((opt = internal_getopt (list, "CcI:i:")) != -1)
     {
       switch (opt)
-	{
-	case 'c':
-	  command_oriented_history++;
-	  break;
-	case 'C':
-	  command_oriented_history = 0;
-	  break;
-	case 'i':
-	  spec = list_optarg;
-	  if (strcmp (spec, "none") == 0)
-	    history_control = HIGNORE_NONE;
-	  else if (strcmp (spec, "space") == 0)
-	    history_control |= HIGNORE_SPACE;
-	  else if (strcmp (spec, "dups") == 0)
-	    history_control |= HIGNORE_DUPS;
-	  else if (strcmp (spec, "both") == 0)
-	    history_control |= HIGNORE_BOTH;
-	  else
-	    {
-	      builtin_error ("invalid argument to -i: %s", spec);
-	      builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
-	      return (EX_USAGE);
-	    }
-	  break;
-	case 'I':
-	  spec = list_optarg;
-	  if (strcmp (spec, "none") == 0)
-	    history_control = HIGNORE_NONE;
-	  else if (strcmp (spec, "space") == 0)
-	    history_control &= ~HIGNORE_SPACE;
-	  else if (strcmp (spec, "dups") == 0)
-	    history_control &= ~HIGNORE_DUPS;
-	  else if (strcmp (spec, "both") == 0)
-	    history_control &= ~HIGNORE_BOTH;
-	  else
-	    {
-	      builtin_error ("invalid argument to -I: %s", spec);
-	      builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
-	      return (EX_USAGE);
-	    }
-	  break;
-	default:
-	  report_bad_option ();
-	  builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
-	  return (EX_USAGE);
-	}
+        {
+        case 'c':
+          command_oriented_history++;
+          break;
+        case 'C':
+          command_oriented_history = 0;
+          break;
+        case 'i':
+          spec = list_optarg;
+          if (strcmp (spec, "none") == 0)
+            history_control = HIGNORE_NONE;
+          else if (strcmp (spec, "space") == 0)
+            history_control |= HIGNORE_SPACE;
+          else if (strcmp (spec, "dups") == 0)
+            history_control |= HIGNORE_DUPS;
+          else if (strcmp (spec, "both") == 0)
+            history_control |= HIGNORE_BOTH;
+          else
+            {
+              builtin_error ("invalid argument to -i: %s", spec);
+              builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
+              return (EX_USAGE);
+            }
+          break;
+        case 'I':
+          spec = list_optarg;
+          if (strcmp (spec, "none") == 0)
+            history_control = HIGNORE_NONE;
+          else if (strcmp (spec, "space") == 0)
+            history_control &= ~HIGNORE_SPACE;
+          else if (strcmp (spec, "dups") == 0)
+            history_control &= ~HIGNORE_DUPS;
+          else if (strcmp (spec, "both") == 0)
+            history_control &= ~HIGNORE_BOTH;
+          else
+            {
+              builtin_error ("invalid argument to -I: %s", spec);
+              builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
+              return (EX_USAGE);
+            }
+          break;
+        default:
+          report_bad_option ();
+          builtin_error ("usage: histctl [-cC] [-iI space|dups|both|none]");
+          return (EX_USAGE);
+        }
     }
 
   return (EXECUTION_SUCCESS);

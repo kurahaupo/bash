@@ -13,8 +13,8 @@
 #
 
 # hash printing, deleting tests
-hash -r	# start with empty hash table
-hash	# should be error/warning
+hash -r # start with empty hash table
+hash    # should be error/warning
 
 hash -d notthere
 echo $?

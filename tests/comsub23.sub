@@ -31,8 +31,8 @@ unset a
 int=0
 incr()
 {
-	echo incr: $int
-	(( int++ ))
+        echo incr: $int
+        (( int++ ))
 }
 : ${ incr; }
 : ${ incr; }

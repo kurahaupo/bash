@@ -169,10 +169,10 @@
 #define SPROMPT "> "
 
 /* Define SELECT_COMMAND if you want the Korn-shell style `select' command:
-	select word in word_list; do command_list; done */
+        select word in word_list; do command_list; done */
 #define SELECT_COMMAND
 
 /* Define ARRAY_VARS if you want ksh-style one-dimensional array variables. */
 #define ARRAY_VARS
 
-#endif	/* !_CONFIG_H_ */
+#endif  /* !_CONFIG_H_ */

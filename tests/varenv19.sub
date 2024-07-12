@@ -44,8 +44,8 @@ ddd
 
 f()
 {
-	local x=(one two three)
-	declare -p x
+        local x=(one two three)
+        declare -p x
 }
 f
 declare -p x

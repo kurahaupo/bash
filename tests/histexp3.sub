@@ -54,4 +54,4 @@ echo j
 echo `echo j` !!
 
 set +o history
-rm -f $HISTFILE		# just in case
+rm -f $HISTFILE         # just in case

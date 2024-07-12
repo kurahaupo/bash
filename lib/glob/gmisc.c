@@ -3,7 +3,7 @@
    Copyright (C) 2010-2022 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne-Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -41,15 +41,15 @@
 extern char *glob_patscan (char *, char *, int, int);
 
 /* Compile `gm_loop.c' for single-byte characters. */
-#define CHAR	char
-#define INT	int
-#define L(CS)	CS
+#define CHAR    char
+#define INT     int
+#define L(CS)   CS
 #define EXTGLOB_PATTERN_P extglob_pattern_p
 #define MATCH_PATTERN_CHAR match_pattern_char
 #define MATCHLEN umatchlen
 #define FOLD(c) ((flags & FNM_CASEFOLD) \
-	? TOLOWER ((unsigned char)c) \
-	: ((unsigned char)c))
+        ? TOLOWER ((unsigned char)c) \
+        : ((unsigned char)c))
 #ifndef LPAREN
 #define LPAREN '('
 #define RPAREN ')'
@@ -59,9 +59,9 @@ extern char *glob_patscan (char *, char *, int, int);
 /* Compile `gm_loop.c' again for multibyte characters. */
 #if HANDLE_MULTIBYTE
 
-#define CHAR	wchar_t
-#define INT	wint_t
-#define L(CS)	L##CS
+#define CHAR    wchar_t
+#define INT     wint_t
+#define L(CS)   L##CS
 #define EXTGLOB_PATTERN_P wextglob_pattern_p
 #define MATCH_PATTERN_CHAR match_pattern_wchar
 #define MATCHLEN wmatchlen
@@ -87,19 +87,19 @@ glob_dirscan (char *pat, int dirsep)
   for (p = pat; p && *p; p++)
     {
       if (extglob_pattern_p (p))
-	{
-	  if (se == 0)
-	    se = p + strlen (p) - 1;
-	  pe = glob_patscan (p + 2, se, 0, 0);
-	  if (pe == 0)
-	    continue;
-	  else if (*pe == 0)
-	    break;
-	  p = pe - 1;	/* will do increment above */
-	  continue;
-	}
+        {
+          if (se == 0)
+            se = p + strlen (p) - 1;
+          pe = glob_patscan (p + 2, se, 0, 0);
+          if (pe == 0)
+            continue;
+          else if (*pe == 0)
+            break;
+          p = pe - 1;   /* will do increment above */
+          continue;
+        }
       if (*p ==  dirsep)
-	d = p;
+        d = p;
     }
   return d;
 }

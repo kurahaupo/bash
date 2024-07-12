@@ -8,17 +8,17 @@
    * strlen (each_directory_in_PATH) <= NAME_MAX
 
    Exit status:
-   0			All PATH names passed all of the tests.
-   1			An error occurred.
+   0                    All PATH names passed all of the tests.
+   1                    An error occurred.
 
    Options:
-   -p			Instead of performing length checks on the
-			underlying filesystem, test the length of the
-			pathname and its components against the POSIX.1
-			minimum limits for portability, _POSIX_NAME_MAX
-			and _POSIX_PATH_MAX in 2.9.2.  Also check that
-			the pathname contains no character not in the
-			portable filename character set. */
+   -p                   Instead of performing length checks on the
+                        underlying filesystem, test the length of the
+                        pathname and its components against the POSIX.1
+                        minimum limits for portability, _POSIX_NAME_MAX
+                        and _POSIX_PATH_MAX in 2.9.2.  Also check that
+                        the pathname contains no character not in the
+                        portable filename character set. */
 
 /* See Makefile for compilation details. */
 
@@ -87,11 +87,11 @@ extern int errno;
 #endif
 
 #if !defined (PATH_MAX_FOR)
-#  define PATH_MAX_FOR(p)	PATH_MAX
+#  define PATH_MAX_FOR(p)       PATH_MAX
 #endif
 
 #if !defined (NAME_MAX_FOR)
-#  define NAME_MAX_FOR(p)	NAME_MAX
+#  define NAME_MAX_FOR(p)       NAME_MAX
 #endif
 
 extern char *strerror (int);
@@ -107,15 +107,15 @@ pathchk_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "p")) != -1)
     {
       switch (opt)
-	{
-	case 'p':
-	  pflag = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'p':
+          pflag = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -132,28 +132,28 @@ pathchk_builtin (WORD_LIST *list)
 }
 
 char *pathchk_doc[] = {
-	"Check pathnames for validity.",
-	"",
-	"Check each pathname argument for validity (i.e., it may be used to",
-	"create or access a file without causing syntax errors) and portability",
-	"(i.e., no filename truncation will result).  If the `-p' option is",
-	"supplied, more extensive portability checks are performed.",
-	(char *)NULL
+        "Check pathnames for validity.",
+        "",
+        "Check each pathname argument for validity (i.e., it may be used to",
+        "create or access a file without causing syntax errors) and portability",
+        "(i.e., no filename truncation will result).  If the `-p' option is",
+        "supplied, more extensive portability checks are performed.",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin pathchk_struct = {
-	"pathchk",		/* builtin name */
-	pathchk_builtin,	/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	pathchk_doc,		/* array of long documentation strings. */
-	"pathchk [-p] pathname ...",	/* usage synopsis */
-	0			/* reserved for internal use */
+        "pathchk",              /* builtin name */
+        pathchk_builtin,        /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        pathchk_doc,            /* array of long documentation strings. */
+        "pathchk [-p] pathname ...",    /* usage synopsis */
+        0                       /* reserved for internal use */
 };
 
 /* The remainder of this file is stolen shamelessly from `pathchk.c' in
-   the sh-utils-1.12 distribution, by 
+   the sh-utils-1.12 distribution, by
 
    David MacKenzie <djm@gnu.ai.mit.edu>
    and Jim Meyering <meyering@cs.utexas.edu> */
@@ -171,13 +171,13 @@ static char const portable_chars[256] =
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, /* 80-95 */
   0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 96-111 */
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, /* 112-127 */
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
@@ -191,8 +191,8 @@ portable_chars_only (const char *path)
   for (p = path; *p; ++p)
     if (portable_chars[(const unsigned char) *p] == 0)
       {
-	builtin_error ("path `%s' contains nonportable character `%c'", path, *p);
-	return 0;
+        builtin_error ("path `%s' contains nonportable character `%c'", path, *p);
+        return 0;
       }
   return 1;
 }
@@ -240,9 +240,9 @@ dir_ok (const char *path)
   if (access (path, X_OK) != 0)
     {
       if (errno == EACCES)
-	builtin_error ("directory `%s' is not searchable", path);
+        builtin_error ("directory `%s' is not searchable", path);
       else
-	builtin_error ("%s: %s", path, strerror (errno));
+        builtin_error ("%s: %s", path, strerror (errno));
       return 0;
     }
 
@@ -273,10 +273,10 @@ static int
 validate_path (char *path, int portability)
 {
   int path_max;
-  int last_elem;		/* Nonzero if checking last element of path. */
-  int exists;			/* 2 if the path element exists.  */
+  int last_elem;                /* Nonzero if checking last element of path. */
+  int exists;                   /* 2 if the path element exists.  */
   char *slash;
-  char *parent;			/* Last existing leading directory so far.  */
+  char *parent;                 /* Last existing leading directory so far.  */
 
   if (portability && !portable_chars_only (path))
     return 1;
@@ -297,61 +297,61 @@ validate_path (char *path, int portability)
   while (1)
     {
       int name_max;
-      int length;		/* Length of partial path being checked. */
-      char *start;		/* Start of path element being checked. */
+      int length;               /* Length of partial path being checked. */
+      char *start;              /* Start of path element being checked. */
 
       /* Find the end of this element of the path.
-	 Then chop off the rest of the path after this element. */
+         Then chop off the rest of the path after this element. */
       while (*slash == '/')
-	slash++;
+        slash++;
       start = slash;
       slash = strchr (slash, '/');
       if (slash != NULL)
-	*slash = '\0';
+        *slash = '\0';
       else
-	{
-	  last_elem = 1;
-	  slash = strchr (start, '\0');
-	}
+        {
+          last_elem = 1;
+          slash = strchr (start, '\0');
+        }
 
       if (!last_elem)
-	{
-	  exists = dir_ok (path);
-	  if (exists == 0)
-	    {
-	      free (parent);
-	      return 1;
-	    }
-	}
+        {
+          exists = dir_ok (path);
+          if (exists == 0)
+            {
+              free (parent);
+              return 1;
+            }
+        }
 
       length = slash - start;
       /* Since we know that `parent' is a directory, it's ok to call
-	 pathconf with it as the argument.  (If `parent' isn't a directory
-	 or doesn't exist, the behavior of pathconf is undefined.)
-	 But if `parent' is a directory and is on a remote file system,
-	 it's likely that pathconf can't give us a reasonable value
-	 and will return -1.  (NFS and tempfs are not POSIX . . .)
-	 In that case, we have no choice but to assume the pessimal
-	 POSIX minimums.  */
+         pathconf with it as the argument.  (If `parent' isn't a directory
+         or doesn't exist, the behavior of pathconf is undefined.)
+         But if `parent' is a directory and is on a remote file system,
+         it's likely that pathconf can't give us a reasonable value
+         and will return -1.  (NFS and tempfs are not POSIX . . .)
+         In that case, we have no choice but to assume the pessimal
+         POSIX minimums.  */
       name_max = portability ? _POSIX_NAME_MAX : NAME_MAX_FOR (parent);
       if (name_max < 0)
-	name_max = _POSIX_NAME_MAX;
+        name_max = _POSIX_NAME_MAX;
       if (length > name_max)
-	{
-	  builtin_error ("name `%s' has length %d; exceeds limit of %d",
-		 start, length, name_max);
-	  free (parent);
-	  return 1;
-	}
+        {
+          builtin_error ("name `%s' has length %d; exceeds limit of %d",
+                 start, length, name_max);
+          free (parent);
+          return 1;
+        }
 
       if (last_elem)
-	break;
+        break;
 
       if (exists == 1)
-	{
-	  free (parent);
-	  parent = xstrdup (path);
-	}
+        {
+          free (parent);
+          parent = xstrdup (path);
+        }
 
       *slash++ = '/';
     }
@@ -365,7 +365,7 @@ validate_path (char *path, int portability)
   if (strlen (path) > path_max)
     {
       builtin_error ("path `%s' has length %lu; exceeds limit of %d",
-	     path, (unsigned long)strlen (path), path_max);
+             path, (unsigned long)strlen (path), path_max);
       return 1;
     }
 

@@ -86,8 +86,8 @@ sh_regmatch (const char *string, const char *pattern, int flags, char **errbuf)
   if (reg_err = regcomp (&regex, pattern, rflags))
     {
       if (errbuf)
-	*errbuf = strregerror (reg_err, &regex);
-      return 2;		/* flag for printing a warning here. */
+        *errbuf = strregerror (reg_err, &regex);
+      return 2;         /* flag for printing a warning here. */
     }
 
 #if defined (ARRAY_VARS)
@@ -101,7 +101,7 @@ sh_regmatch (const char *string, const char *pattern, int flags, char **errbuf)
     /* XXX - catch errors and fill in *errbuf here? */
     result = EXECUTION_FAILURE;
   else
-    result = EXECUTION_SUCCESS;		/* match */
+    result = EXECUTION_SUCCESS;         /* match */
 
 #if defined (ARRAY_VARS)
   subexp_len = strlen (string) + 10;
@@ -122,12 +122,12 @@ sh_regmatch (const char *string, const char *pattern, int flags, char **errbuf)
   if (matches && amatch && (flags & SHMAT_SUBEXP) && result == EXECUTION_SUCCESS && subexp_str)
     {
       for (subexp_ind = 0; subexp_ind <= regex.re_nsub; subexp_ind++)
-	{
-	  memset (subexp_str, 0, subexp_len);
-	  strncpy (subexp_str, string + matches[subexp_ind].rm_so,
-		     matches[subexp_ind].rm_eo - matches[subexp_ind].rm_so);
-	  array_insert (amatch, subexp_ind, subexp_str);
-	}
+        {
+          memset (subexp_str, 0, subexp_len);
+          strncpy (subexp_str, string + matches[subexp_ind].rm_so,
+                     matches[subexp_ind].rm_eo - matches[subexp_ind].rm_so);
+          array_insert (amatch, subexp_ind, subexp_str);
+        }
     }
 
 #if 0

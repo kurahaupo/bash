@@ -3,8 +3,8 @@ foo 1
 foo 2
 foo 3
 bar is a function
-bar () 
-{ 
+bar ()
+{
     exec {v}>> $TMPFILE;
     echo $v
 }
@@ -14,8 +14,8 @@ bar ()
 ./vredir.tests: line 38: v: readonly variable
 ./vredir.tests: line 38: v: cannot assign fd to variable
 bar is a function
-bar () 
-{ 
+bar ()
+{
     exec {v}>> $TMPFILE;
     echo $v
 }
@@ -24,8 +24,8 @@ line 1
 line 2
 line 3
 bar is a function
-bar () 
-{ 
+bar ()
+{
     exec {v}<<EOF
 line 1
 line 2
@@ -39,8 +39,8 @@ line 1
 line 2
 line 3
 bar is a function
-bar () 
-{ 
+bar ()
+{
     exec {v}<<-EOF
 line 1
 line 2
@@ -61,13 +61,13 @@ foo 3
 /bin/tcsh
 /bin/zsh
 oclosev is a function
-oclosev () 
-{ 
+oclosev ()
+{
     exec {v}>&-
 }
 iclosev is a function
-iclosev () 
-{ 
+iclosev ()
+{
     exec {v}>&-
 }
 /bin/bash
@@ -82,8 +82,8 @@ after
 a
 a
 swizzle is a function
-swizzle () 
-{ 
+swizzle ()
+{
     fd0=0;
     fd1=1;
     exec {stdin}<&$fd0;
@@ -96,8 +96,8 @@ swizzle ()
 a
 a
 swizzle is a function
-swizzle () 
-{ 
+swizzle ()
+{
     exec {fd0}<&0;
     exec {fd1}>&1;
     exec {stdin}<&$fd0-;
@@ -111,8 +111,8 @@ unset
 a
 a
 swizzle is a function
-swizzle () 
-{ 
+swizzle ()
+{
     exec {fd[0]}<&0;
     exec {fd[1]}>&1;
     exec {stdin}<&${fd[0]}-;

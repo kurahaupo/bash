@@ -49,8 +49,8 @@ unset -f fn
 
 func()
 {
-	var=value declare -x var
-	echo -n 'inside: ' ; declare -p var
+        var=value declare -x var
+        echo -n 'inside: ' ; declare -p var
 }
 
 var=one
@@ -71,9 +71,9 @@ unset -f func
 
 func()
 {
-	local var=inside
-	var=value export var
-	echo -n 'inside: ' ; declare -p var
+        local var=inside
+        var=value export var
+        echo -n 'inside: ' ; declare -p var
 }
 
 var=outside
@@ -85,9 +85,9 @@ unset -f func
 
 func()
 {
-	local var=local
-	var=inside :
-	echo -n 'inside: ' ; declare -p var
+        local var=local
+        var=inside :
+        echo -n 'inside: ' ; declare -p var
 }
 
 var=outside
@@ -99,7 +99,7 @@ unset -f func
 
 func()
 {
-	echo -n 'inside func: ' ; echo "var=${var-<unset>}"
+        echo -n 'inside func: ' ; echo "var=${var-<unset>}"
 }
 
 unset -v var
@@ -123,8 +123,8 @@ unset -f func
 
 func1()
 {
-	var=value export var
-	echo -n 'inside func1: ' ; echo "var=${var-<unset>}"
+        var=value export var
+        echo -n 'inside func1: ' ; echo "var=${var-<unset>}"
 }
 
 var=outside
@@ -137,8 +137,8 @@ unset -f func1
 # operations inside a function on temporary variables do not propagate
 func1()
 {
-	export var
-	echo -n 'inside func1: ' ; echo "var=${var-<unset>}"
+        export var
+        echo -n 'inside func1: ' ; echo "var=${var-<unset>}"
 }
 var=outside
 var=func func1
@@ -149,9 +149,9 @@ unset -f func1
 
 func2()
 {
-	local var=local
-	var=global :
-	echo -n 'inside func2: ' ; echo "var=${var-<unset>}"
+        local var=local
+        var=global :
+        echo -n 'inside func2: ' ; echo "var=${var-<unset>}"
 }
 
 var=outside

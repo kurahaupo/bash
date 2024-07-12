@@ -16,11 +16,11 @@ FUNCNEST=100
 
 foo()
 {
-	(( f++ ))
-	if (( f > 200 )); then
-		return 7
-	fi
-	foo
+        (( f++ ))
+        if (( f > 200 )); then
+                return 7
+        fi
+        foo
 }
 
 f=0

@@ -52,7 +52,7 @@ alias foo='two words'
 foo_word='foo'
 case "$foo_word"
 in
-	foo) echo "bad 1";;
+        foo) echo "bad 1";;
 esac' $bashname
 
 ${THIS_SH} -o posix -c '
@@ -60,7 +60,7 @@ alias foo='oneword'
 foo_word='foo'
 case "$foo_word"
 in
-	foo) echo "ok 1";;
+        foo) echo "ok 1";;
 esac' $bashname
 
 # POSIX grammar rule 6 with <linebreak> consisting of multiple newlines and
@@ -98,4 +98,3 @@ do
 echo $x
 done
 esac
-

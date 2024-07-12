@@ -48,8 +48,8 @@ unset PATH
 z=$(type -p e)
 
 case $z in
-*/e)	;;
-*)	echo 'type: unset PATH does not prefix with physical path to $PWD' ;;
+*/e)    ;;
+*)      echo 'type: unset PATH does not prefix with physical path to $PWD' ;;
 esac
 PATH=$OPATH
 

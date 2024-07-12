@@ -1,4 +1,4 @@
-LANG=en_US.UTF-8	# safest
+LANG=en_US.UTF-8        # safest
 : ${TMPDIR:=/var/tmp}
 HOME=${TMPDIR}
 

@@ -70,7 +70,7 @@ shift_builtin (WORD_LIST *list)
     {
       /* skip over `--' option to get the right error message */
       if (list && list->word && ISOPTION (list->word->word, '-'))
-	list = list->next;
+        list = list->next;
       sh_erange (list ? list->word->word : NULL, _("shift count"));
       return (EXECUTION_FAILURE);
     }
@@ -78,13 +78,13 @@ shift_builtin (WORD_LIST *list)
   if (times > nargs)
     {
       if (print_shift_error)
-	{
-	  /* skip over `--' option to get the right error message */
-	  if (list && list->word && ISOPTION (list->word->word, '-'))
-	    list = list->next;
+        {
+          /* skip over `--' option to get the right error message */
+          if (list && list->word && ISOPTION (list->word->word, '-'))
+            list = list->next;
 
-	  sh_erange (list ? list->word->word : NULL, _("shift count"));
-	}
+          sh_erange (list ? list->word->word : NULL, _("shift count"));
+        }
       return (EXECUTION_FAILURE);
     }
   else if (times == nargs)

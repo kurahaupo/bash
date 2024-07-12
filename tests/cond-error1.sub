@@ -23,6 +23,6 @@ trap 'echo ERR: $LINENO: -$BASH_COMMAND- failed' ERR
 
 func()
 {
-	[[ -z nonempty ]]
+        [[ -z nonempty ]]
 }
 func

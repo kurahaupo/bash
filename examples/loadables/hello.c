@@ -74,20 +74,20 @@ hello_builtin_unload (char *s)
    which is printed by `help xxx'.  It must end with a NULL.  By convention,
    the first line is a short description. */
 char *hello_doc[] = {
-	"Sample builtin.",
-	"",
-	"this is the long doc for the sample hello builtin",
-	(char *)NULL
+        "Sample builtin.",
+        "",
+        "this is the long doc for the sample hello builtin",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures.  The flags must include BUILTIN_ENABLED so the
    builtin can be used. */
 struct builtin hello_struct = {
-	"hello",		/* builtin name */
-	hello_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	hello_doc,		/* array of long documentation strings. */
-	"hello",		/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "hello",                /* builtin name */
+        hello_builtin,          /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        hello_doc,              /* array of long documentation strings. */
+        "hello",                /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

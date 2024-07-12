@@ -40,7 +40,7 @@
 #endif
 
 #ifndef VMS
-#include <sys/types.h>		/* Some systems define `time_t' here.  */
+#include <sys/types.h>          /* Some systems define `time_t' here.  */
 #endif
 #include <time.h>
 
@@ -76,13 +76,13 @@
    your host.  */
 #define TYPE_MINIMUM(t) \
   ((t) (! TYPE_SIGNED (t) \
-	? (t) 0 \
-	: ~ TYPE_MAXIMUM (t)))
+        ? (t) 0 \
+        : ~ TYPE_MAXIMUM (t)))
 #define TYPE_MAXIMUM(t) \
   ((t) (! TYPE_SIGNED (t) \
-	? (t) -1 \
-	: ((((t) 1 << (sizeof (t) * CHAR_BIT - 2)) - 1) * 2 + 1)))
-                  
+        ? (t) -1 \
+        : ((((t) 1 << (sizeof (t) * CHAR_BIT - 2)) - 1) * 2 + 1)))
+
 #ifndef TIME_T_MIN
 # define TIME_T_MIN TYPE_MINIMUM (time_t)
 #endif
@@ -96,7 +96,7 @@
 #ifndef __isleap
 /* Nonzero if YEAR is a leap year (every 4 years,
    except every 100th isn't, and every 400th is).  */
-#define	__isleap(year)	\
+#define __isleap(year)  \
   ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 #endif
 
@@ -111,8 +111,8 @@ const unsigned short int __mon_yday[2][13] =
 
 static time_t ydhms_tm_diff (int, int, int, int, int, const struct tm *);
 time_t __mktime_internal (struct tm *,
-			       struct tm *(*) (const time_t *, struct tm *),
-			       time_t *);
+                               struct tm *(*) (const time_t *, struct tm *),
+                               time_t *);
 
 
 static struct tm *my_localtime_r (const time_t *, struct tm *);
@@ -148,10 +148,10 @@ ydhms_tm_diff (int year, int yday, int hour, int min, int sec, const struct tm *
   int intervening_leap_days = (a4 - b4) - (a100 - b100) + (a400 - b400);
   time_t years = year - (time_t) tp->tm_year;
   time_t days = (365 * years + intervening_leap_days
-		 + (yday - tp->tm_yday));
+                 + (yday - tp->tm_yday));
   return (60 * (60 * (24 * days + (hour - tp->tm_hour))
-		+ (min - tp->tm_min))
-	  + (sec - tp->tm_sec));
+                + (min - tp->tm_min))
+          + (sec - tp->tm_sec));
 }
 
 static time_t localtime_offset;
@@ -176,9 +176,9 @@ mktime (struct tm *tp)
    compared to what the result would be for UTC without leap seconds.
    If *OFFSET's guess is correct, only one CONVERT call is needed.  */
 time_t
-__mktime_internal (struct tm *tp, 
-		   struct tm *(*convert) (const time_t *, struct tm *),
-		   time_t *offset)
+__mktime_internal (struct tm *tp,
+                   struct tm *(*convert) (const time_t *, struct tm *),
+                   time_t *offset)
 {
   time_t t, dt, t0;
   struct tm tm;
@@ -213,8 +213,8 @@ __mktime_internal (struct tm *tp,
   /* Calculate day of year from year, month, and day of month.
      The result need not be in range.  */
   int yday = ((__mon_yday[__isleap (year + TM_YEAR_BASE)]
-	       [mon_remainder + 12 * negative_mon_remainder])
-	      + mday - 1);
+               [mon_remainder + 12 * negative_mon_remainder])
+              + mday - 1);
 
 #if LEAP_SECONDS_POSSIBLE
   /* Handle out-of-range seconds specially,
@@ -244,26 +244,26 @@ __mktime_internal (struct tm *tp,
     {
       int dst_diff = (isdst != 0) - (tm.tm_isdst != 0);
       if (dst_diff)
-	{
-	  /* Move two hours in the direction indicated by the disagreement,
-	     probe some more, and switch to a new time if found.
-	     The largest known fallback due to daylight savings is two hours:
-	     once, in Newfoundland, 1988-10-30 02:00 -> 00:00.  */
-	  time_t ot = t - 2 * 60 * 60 * dst_diff;
-	  while (--remaining_probes != 0)
-	    {
-	      struct tm otm;
-	      if (! (dt = ydhms_tm_diff (year, yday, hour, min, sec,
-					 (*convert) (&ot, &otm))))
-		{
-		  t = ot;
-		  tm = otm;
-		  break;
-		}
-	      if ((ot += dt) == t)
-		break;  /* Avoid a redundant probe.  */
-	    }
-	}
+        {
+          /* Move two hours in the direction indicated by the disagreement,
+             probe some more, and switch to a new time if found.
+             The largest known fallback due to daylight savings is two hours:
+             once, in Newfoundland, 1988-10-30 02:00 -> 00:00.  */
+          time_t ot = t - 2 * 60 * 60 * dst_diff;
+          while (--remaining_probes != 0)
+            {
+              struct tm otm;
+              if (! (dt = ydhms_tm_diff (year, yday, hour, min, sec,
+                                         (*convert) (&ot, &otm))))
+                {
+                  t = ot;
+                  tm = otm;
+                  break;
+                }
+              if ((ot += dt) == t)
+                break;  /* Avoid a redundant probe.  */
+            }
+        }
     }
 
   *offset = t - t0;
@@ -272,7 +272,7 @@ __mktime_internal (struct tm *tp,
   if (sec_requested != tm.tm_sec)
     {
       /* Adjust time to reflect the tm_sec requested, not the normalized value.
-	 Also, repair any damage from a false match due to a leap second.  */
+         Also, repair any damage from a false match due to a leap second.  */
       t += sec_requested - sec + (sec == 0 && tm.tm_sec == 60);
       (*convert) (&t, &tm);
     }
@@ -281,17 +281,17 @@ __mktime_internal (struct tm *tp,
   if (TIME_T_MAX / INT_MAX / 366 / 24 / 60 / 60 < 3)
     {
       /* time_t isn't large enough to rule out overflows in ydhms_tm_diff,
-	 so check for major overflows.  A gross check suffices,
-	 since if t has overflowed, it is off by a multiple of
-	 TIME_T_MAX - TIME_T_MIN + 1.  So ignore any component of
-	 the difference that is bounded by a small value.  */
+         so check for major overflows.  A gross check suffices,
+         since if t has overflowed, it is off by a multiple of
+         TIME_T_MAX - TIME_T_MIN + 1.  So ignore any component of
+         the difference that is bounded by a small value.  */
 
       double dyear = (double) year_requested + mon_years - tm.tm_year;
       double dday = 366 * dyear + mday;
       double dsec = 60 * (60 * (24 * dday + hour) + min) + sec_requested;
 
       if (TIME_T_MAX / 3 - TIME_T_MIN / 3 < (dsec < 0 ? - dsec : dsec))
-	return -1;
+        return -1;
     }
 
   *tp = tm;

@@ -22,17 +22,17 @@ cat <<EOF
 1: ${x#$'no\t'}
 2: O${x#$'no\t'O}
 3: ${x#n$'o\t'}
-4: ${x#'no	'}
+4: ${x#'no      '}
 5: ${x#$pat}
 6: ${y#$'not'}
 7: ${y#'not'}
 EOF
 
 cat <<EOF
-1: ${x#$"no	"}
-2: ${x#n$"o	"}
-3: O${x#n$"o	"O}
-4: ${x#"no	"}
+1: ${x#$"no     "}
+2: ${x#n$"o     "}
+3: O${x#n$"o    "O}
+4: ${x#"no      "}
 5: ${y#$"not"}
 5: ${y#"not"}
 EOF
@@ -43,7 +43,7 @@ cat <<\EOF
 1: ${x#$'no\t'}
 2: O${x#$'no\t'O}
 3: ${x#n$'o\t'}
-4: ${x#'no	'}
+4: ${x#'no      '}
 5: ${x#$pat}
 6: ${y#$'not'}
 7: ${y#'not'}

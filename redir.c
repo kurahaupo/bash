@@ -83,7 +83,7 @@ extern int errno;
 #  endif
 #endif
 
-#define SHELL_FD_BASE	10
+#define SHELL_FD_BASE   10
 
 int expanding_redir;
 int varassign_redir_autoclose = 0;
@@ -124,7 +124,7 @@ do { \
   if ((r) < 0) \
     { \
       if (fd >= 0) \
-	close (fd); \
+        close (fd); \
       set_exit_status (EXECUTION_FAILURE);\
       return ((e) == 0 ? EINVAL : (e));\
     } \
@@ -156,23 +156,23 @@ redirection_error (REDIRECT *temp, int error, char *fn)
         case r_duplicating_output:
         case r_move_input:
         case r_move_output:
-	  filename = allocname = itos (temp->redirectee.dest);
-	  break;
-	case r_duplicating_input_word:
-	  if (temp->redirector.dest == 0)	/* Guess */
-	    filename = temp->redirectee.filename->word;	/* XXX */
-	  else
-	    filename = allocname = itos (temp->redirector.dest);
-	  break;
-	case r_duplicating_output_word:
-	  if (temp->redirector.dest == 1)	/* Guess */
-	    filename = temp->redirectee.filename->word;	/* XXX */
-	  else
-	    filename = allocname = itos (temp->redirector.dest);
-	  break;
-	default:
-	  filename = allocname = itos (temp->redirector.dest);
-	  break;
+          filename = allocname = itos (temp->redirectee.dest);
+          break;
+        case r_duplicating_input_word:
+          if (temp->redirector.dest == 0)       /* Guess */
+            filename = temp->redirectee.filename->word; /* XXX */
+          else
+            filename = allocname = itos (temp->redirector.dest);
+          break;
+        case r_duplicating_output_word:
+          if (temp->redirector.dest == 1)       /* Guess */
+            filename = temp->redirectee.filename->word; /* XXX */
+          else
+            filename = allocname = itos (temp->redirector.dest);
+          break;
+        default:
+          filename = allocname = itos (temp->redirector.dest);
+          break;
         }
     }
 #endif
@@ -182,12 +182,12 @@ redirection_error (REDIRECT *temp, int error, char *fn)
     {
       oflags = temp->redirectee.filename->flags;
       if (posixly_correct && interactive_shell == 0)
-	temp->redirectee.filename->flags |= W_NOGLOB;
+        temp->redirectee.filename->flags |= W_NOGLOB;
       temp->redirectee.filename->flags |= W_NOCOMSUB|W_NOPROCSUB;
       filename = allocname = redirection_expand (temp->redirectee.filename);
       temp->redirectee.filename->flags = oflags;
       if (filename == 0)
-	filename = temp->redirectee.filename->word;
+        filename = temp->redirectee.filename->word;
     }
   else if (temp->redirectee.dest < 0)
     filename = _("file descriptor out of range");
@@ -242,12 +242,12 @@ do_redirections (REDIRECT *list, int flags)
   if (flags & RX_UNDOABLE)
     {
       if (redirection_undo_list)
-	{
-	  dispose_redirects (redirection_undo_list);
-	  redirection_undo_list = (REDIRECT *)NULL;
-	}
+        {
+          dispose_redirects (redirection_undo_list);
+          redirection_undo_list = (REDIRECT *)NULL;
+        }
       if (exec_redirection_undo_list)
-	dispose_exec_redirects ();
+        dispose_exec_redirects ();
     }
 
   for (temp = list; temp; temp = temp->next)
@@ -255,11 +255,11 @@ do_redirections (REDIRECT *list, int flags)
       fn = 0;
       error = do_redirection_internal (temp, flags, &fn);
       if (error)
-	{
-	  redirection_error (temp, error, fn);
-	  FREE (fn);
-	  return (error);
-	}
+        {
+          redirection_error (temp, error, fn);
+          FREE (fn);
+          return (error);
+        }
       FREE (fn);
     }
   return (0);
@@ -325,9 +325,9 @@ redirection_expand (WORD_DESC *word)
   if (tlist2 == 0 || tlist2->next)
     {
       /* We expanded to no words, or to more than a single word.
-	 Dispose of the word list and return NULL. */
+         Dispose of the word list and return NULL. */
       if (tlist2)
-	dispose_words (tlist2);
+        dispose_words (tlist2);
       return ((char *)NULL);
     }
   result = string_list (tlist2);  /* XXX savestring (tlist2->word->word)? */
@@ -364,13 +364,13 @@ heredoc_expand (WORD_DESC *redirectee, enum r_instruction ri, size_t *lenp)
         *lenp = STRLEN (redirectee->word);
       return (redirectee->word);
     }
-  
+
   expanding_redir = 1;
   /* Now that we've changed the variable search order to ignore the temp
      environment, see if we need to change the cached IFS values. */
   sv_ifs ("IFS");
   document = (ri == r_reading_string) ? expand_assignment_string_to_string (redirectee->word, 0)
-  				      : expand_string_to_string (redirectee->word, Q_HERE_DOCUMENT);
+                                      : expand_string_to_string (redirectee->word, Q_HERE_DOCUMENT);
   expanding_redir = 0;
   /* Now we need to change the variable search order back to include the temp
      environment.  We force the temp environment search by forcing
@@ -390,7 +390,7 @@ heredoc_expand (WORD_DESC *redirectee, enum r_instruction ri, size_t *lenp)
       document[dlen] = '\0';
     }
   if (lenp)
-    *lenp = dlen;    
+    *lenp = dlen;
 
   return document;
 }
@@ -409,7 +409,7 @@ heredoc_write (int fd, const char *heredoc, size_t herelen)
   if (nw != herelen)
     {
       if (e == 0)
-	e = ENOSPC;
+        e = ENOSPC;
       return e;
     }
   return 0;
@@ -438,7 +438,7 @@ here_document_to_fd (WORD_DESC *redirectee, enum r_instruction ri)
       fd = open ("/dev/null", O_RDONLY);
       r = errno;
       if (document != redirectee->word)
-	FREE (document);
+        FREE (document);
       errno = r;
       return fd;
     }
@@ -453,30 +453,30 @@ here_document_to_fd (WORD_DESC *redirectee, enum r_instruction ri)
   if (document_len <= HEREDOC_PIPESIZE)
     {
       if (pipe (herepipe) < 0)
-	{
-	  /* XXX - goto use_tempfile; ? */
-	  r = errno;
-	  if (document != redirectee->word)
-	    free (document);
-	  errno = r;
-	  return (-1);
-	}
+        {
+          /* XXX - goto use_tempfile; ? */
+          r = errno;
+          if (document != redirectee->word)
+            free (document);
+          errno = r;
+          return (-1);
+        }
 
 #if defined (F_GETPIPE_SZ)
       if (fcntl (herepipe[1], F_GETPIPE_SZ, 0) < document_len)
-	goto use_tempfile;
+        goto use_tempfile;
 #endif
 
       r = heredoc_write (herepipe[1], document, document_len);
       if (document != redirectee->word)
-	free (document);
+        free (document);
       close (herepipe[1]);
-      if (r)			/* write error */
-	{
-	  close (herepipe[0]);
-	  errno = r;
-	  return (-1);
-	}
+      if (r)                    /* write error */
+        {
+          close (herepipe[0]);
+          errno = r;
+          return (-1);
+        }
       return (herepipe[0]);
     }
 #endif
@@ -491,7 +491,7 @@ use_tempfile:
       r = errno;
       FREE (filename);
       if (document != redirectee->word)
-	FREE (document);
+        FREE (document);
       errno = r;
       return (fd);
     }
@@ -499,7 +499,7 @@ use_tempfile:
   fchmod (fd, S_IRUSR | S_IWUSR);
   SET_CLOSE_ON_EXEC (fd);
 
-  errno = r = 0;		/* XXX */
+  errno = r = 0;                /* XXX */
   r = heredoc_write (fd, document, document_len);
   if (document != redirectee->word)
     FREE (document);
@@ -560,12 +560,12 @@ use_tempfile:
   return (fd2);
 }
 
-#define RF_DEVFD	1
-#define RF_DEVSTDERR	2
-#define RF_DEVSTDIN	3
-#define RF_DEVSTDOUT	4
-#define RF_DEVTCP	5
-#define RF_DEVUDP	6
+#define RF_DEVFD        1
+#define RF_DEVSTDERR    2
+#define RF_DEVSTDIN     3
+#define RF_DEVSTDOUT    4
+#define RF_DEVTCP       5
+#define RF_DEVUDP       6
 
 /* A list of pattern/value pairs for filenames that the redirection
    code handles specially. */
@@ -599,12 +599,12 @@ redir_special_open (int spec, char *filename, int flags, int mode, enum r_instru
 #if !defined (HAVE_DEV_FD)
     case RF_DEVFD:
       if (all_digits (filename+8) && valid_number (filename+8, &lfd) && lfd == (int)lfd)
-	{
-	  fd = lfd;
-	  fd = fcntl (fd, F_DUPFD, SHELL_FD_BASE);
-	}
+        {
+          fd = lfd;
+          fd = fcntl (fd, F_DUPFD, SHELL_FD_BASE);
+        }
       else
-	fd = AMBIGUOUS_REDIRECT;
+        fd = AMBIGUOUS_REDIRECT;
       break;
 #endif
 
@@ -625,7 +625,7 @@ redir_special_open (int spec, char *filename, int flags, int mode, enum r_instru
     case RF_DEVUDP:
 #if defined (RESTRICTED_SHELL)
       if (restricted)
-	return (RESTRICTED_REDIRECT);
+        return (RESTRICTED_REDIRECT);
 #endif
 #if defined (HAVE_NETWORK)
       fd = netopen (filename);
@@ -639,7 +639,7 @@ redir_special_open (int spec, char *filename, int flags, int mode, enum r_instru
 
   return fd;
 }
-      
+
 /* Open FILENAME with FLAGS in noclobber mode, hopefully avoiding most
    race conditions and avoiding the problem where the file is replaced
    between the stat(2) and open(2). */
@@ -687,7 +687,7 @@ noclobber_open (const char *filename, int flags, int mode, enum r_instruction ri
     return fd;
 
   /* The file has been replaced.  badness. */
-  close (fd);  
+  close (fd);
   errno = EEXIST;
   return (NOCLOBBER_REDIRECT);
 }
@@ -707,30 +707,30 @@ redir_open (char *filename, int flags, int mode, enum r_instruction ri)
     {
       fd = noclobber_open (filename, flags, mode, ri);
       if (fd == NOCLOBBER_REDIRECT)
-	return (NOCLOBBER_REDIRECT);
+        return (NOCLOBBER_REDIRECT);
     }
   else
     {
       do
-	{
-	  fd = open (filename, flags, mode);
-	  e = errno;
-	  if (fd < 0 && e == EINTR)
-	    {
-	      QUIT;
-	      run_pending_traps ();
-	    }
-	  errno = e;
-	}
+        {
+          fd = open (filename, flags, mode);
+          e = errno;
+          if (fd < 0 && e == EINTR)
+            {
+              QUIT;
+              run_pending_traps ();
+            }
+          errno = e;
+        }
       while (fd < 0 && errno == EINTR);
 
-#if 0	/* reportedly no longer needed */
+#if 0   /* reportedly no longer needed */
 #if defined (AFS)
       if ((fd < 0) && (errno == EACCES))
-	{
-	  fd = open (filename, flags & ~O_CREAT, mode);
-	  errno = EACCES;	/* restore errno */
-	}
+        {
+          fd = open (filename, flags & ~O_CREAT, mode);
+          errno = EACCES;       /* restore errno */
+        }
 #endif /* AFS */
 #endif
     }
@@ -773,91 +773,91 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
   redirector = redirect->redirector.dest;
   ri = redirect->instruction;
 
-  rflags = redirect->rflags;		/* for new redirection */
+  rflags = redirect->rflags;            /* for new redirection */
 
   if (TRANSLATE_REDIRECT (ri))
     {
       /* We have [N]>&WORD[-] or [N]<&WORD[-] (or {V}>&WORD[-] or {V}<&WORD-).
-         and WORD, then translate the redirection into a new one and 
-	 continue. */
+         and WORD, then translate the redirection into a new one and
+         continue. */
       redirectee_word = redirection_expand (redirectee);
 
       /* XXX - what to do with [N]<&$w- where w is unset or null?  ksh93
-	       turns it into [N]<&- or [N]>&- and closes N. */
+               turns it into [N]<&- or [N]>&- and closes N. */
       if ((ri == r_move_input_word || ri == r_move_output_word) && redirectee_word == 0)
-	{
-	  sd = redirect->redirector;
-	  rd.dest = 0;
-	  new_redirect = make_redirection (sd, r_close_this, rd, rflags);
-	}
+        {
+          sd = redirect->redirector;
+          rd.dest = 0;
+          new_redirect = make_redirection (sd, r_close_this, rd, rflags);
+        }
       else if (redirectee_word == 0)
-	return (AMBIGUOUS_REDIRECT);
+        return (AMBIGUOUS_REDIRECT);
       else if (redirectee_word[0] == '-' && redirectee_word[1] == '\0')
-	{
-	  sd = redirect->redirector;
-	  rd.dest = 0;
-	  new_redirect = make_redirection (sd, r_close_this, rd, rflags);
-	}
+        {
+          sd = redirect->redirector;
+          rd.dest = 0;
+          new_redirect = make_redirection (sd, r_close_this, rd, rflags);
+        }
       else if (all_digits (redirectee_word))
-	{
-	  sd = redirect->redirector;
-	  if (valid_number (redirectee_word, &lfd) && (int)lfd == lfd)
-	    rd.dest = lfd;
-	  else
-	    rd.dest = -1;	/* XXX */
-	  switch (ri)
-	    {
-	    case r_duplicating_input_word:
-	      new_redirect = make_redirection (sd, r_duplicating_input, rd, rflags);
-	      break;
-	    case r_duplicating_output_word:
-	      new_redirect = make_redirection (sd, r_duplicating_output, rd, rflags);
-	      break;
-	    case r_move_input_word:
-	      new_redirect = make_redirection (sd, r_move_input, rd, rflags);
-	      break;
-	    case r_move_output_word:
-	      new_redirect = make_redirection (sd, r_move_output, rd, rflags);
-	      break;
-	    default:
-	      break;	/* shut up gcc */
-	    }
-	}
+        {
+          sd = redirect->redirector;
+          if (valid_number (redirectee_word, &lfd) && (int)lfd == lfd)
+            rd.dest = lfd;
+          else
+            rd.dest = -1;       /* XXX */
+          switch (ri)
+            {
+            case r_duplicating_input_word:
+              new_redirect = make_redirection (sd, r_duplicating_input, rd, rflags);
+              break;
+            case r_duplicating_output_word:
+              new_redirect = make_redirection (sd, r_duplicating_output, rd, rflags);
+              break;
+            case r_move_input_word:
+              new_redirect = make_redirection (sd, r_move_input, rd, rflags);
+              break;
+            case r_move_output_word:
+              new_redirect = make_redirection (sd, r_move_output, rd, rflags);
+              break;
+            default:
+              break;    /* shut up gcc */
+            }
+        }
       else if (ri == r_duplicating_output_word && (redirect->rflags & REDIR_VARASSIGN) == 0 && redirector == 1)
-	{
-	  sd = redirect->redirector;
-	  rd.filename = make_bare_word (redirectee_word);
-	  new_redirect = make_redirection (sd, r_err_and_out, rd, rflags);
-	  new_redirect->rflags |= RX_EXPANDED;	/* we already expanded this */
-	}
+        {
+          sd = redirect->redirector;
+          rd.filename = make_bare_word (redirectee_word);
+          new_redirect = make_redirection (sd, r_err_and_out, rd, rflags);
+          new_redirect->rflags |= RX_EXPANDED;  /* we already expanded this */
+        }
       else
-	{
-	  free (redirectee_word);
-	  return (AMBIGUOUS_REDIRECT);
-	}
+        {
+          free (redirectee_word);
+          return (AMBIGUOUS_REDIRECT);
+        }
 
       free (redirectee_word);
 
       /* Set up the variables needed by the rest of the function from the
-	 new redirection. */
+         new redirection. */
       if (new_redirect->instruction == r_err_and_out)
-	{
-	  char *alloca_hack;
+        {
+          char *alloca_hack;
 
-	  /* Copy the word without allocating any memory that must be
-	     explicitly freed. */
-	  redirectee = (WORD_DESC *)alloca (sizeof (WORD_DESC));
-	  xbcopy ((char *)new_redirect->redirectee.filename,
-		 (char *)redirectee, sizeof (WORD_DESC));
+          /* Copy the word without allocating any memory that must be
+             explicitly freed. */
+          redirectee = (WORD_DESC *)alloca (sizeof (WORD_DESC));
+          xbcopy ((char *)new_redirect->redirectee.filename,
+                 (char *)redirectee, sizeof (WORD_DESC));
 
-	  alloca_hack = (char *)
-	    alloca (1 + strlen (new_redirect->redirectee.filename->word));
-	  redirectee->word = alloca_hack;
-	  strcpy (redirectee->word, new_redirect->redirectee.filename->word);
-	}
+          alloca_hack = (char *)
+            alloca (1 + strlen (new_redirect->redirectee.filename->word));
+          redirectee->word = alloca_hack;
+          strcpy (redirectee->word, new_redirect->redirectee.filename->word);
+        }
       else
-	/* It's guaranteed to be an integer, and shouldn't be freed. */
-	redirectee = new_redirect->redirectee.filename;
+        /* It's guaranteed to be an integer, and shouldn't be freed. */
+        redirectee = new_redirect->redirectee.filename;
 
       redir_fd = new_redirect->redirectee.dest;
       redirector = new_redirect->redirector.dest;
@@ -868,16 +868,16 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
       redirect->rflags = new_redirect->rflags;
 
       /* In all these cases, we don't duplicate redirect->redirector into
-	 new_redirect; we just assign sd (see make_cmd.c:make_redirection()).
-	 We don't want to dispose the word here, since that will invalidate
-	 redirect->redirector (see dispose_cmd.c:dispose_redirect()). So we
-	 set it to NULL and turn off REDIR_VARASSIGN so dispose_redirect()
-	 won't try to free it. */
+         new_redirect; we just assign sd (see make_cmd.c:make_redirection()).
+         We don't want to dispose the word here, since that will invalidate
+         redirect->redirector (see dispose_cmd.c:dispose_redirect()). So we
+         set it to NULL and turn off REDIR_VARASSIGN so dispose_redirect()
+         won't try to free it. */
       if (rflags & REDIR_VARASSIGN)
-	{
-	  new_redirect->redirector.filename = 0;
-	  new_redirect->rflags &= ~REDIR_VARASSIGN;
-	}
+        {
+          new_redirect->redirector.filename = 0;
+          new_redirect->rflags &= ~REDIR_VARASSIGN;
+        }
 
       dispose_redirects (new_redirect);
     }
@@ -888,213 +888,213 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
     case r_appending_to:
     case r_input_direction:
     case r_inputa_direction:
-    case r_err_and_out:		/* command &>filename */
-    case r_append_err_and_out:	/* command &>> filename */
+    case r_err_and_out:         /* command &>filename */
+    case r_append_err_and_out:  /* command &>> filename */
     case r_input_output:
     case r_output_force:
       if (posixly_correct && interactive_shell == 0)
-	{
-	  oflags = redirectee->flags;
-	  redirectee->flags |= W_NOGLOB;
-	}
+        {
+          oflags = redirectee->flags;
+          redirectee->flags |= W_NOGLOB;
+        }
       if ((redirect->rflags & RX_EXPANDED) == 0)
-	redirectee_word = redirection_expand (redirectee);
+        redirectee_word = redirection_expand (redirectee);
       else
-	redirectee_word = savestring (redirectee->word);
+        redirectee_word = savestring (redirectee->word);
       if (posixly_correct && interactive_shell == 0)
-	redirectee->flags = oflags;
+        redirectee->flags = oflags;
 
       if (redirectee_word == 0)
-	return (AMBIGUOUS_REDIRECT);
+        return (AMBIGUOUS_REDIRECT);
 
 #if defined (RESTRICTED_SHELL)
       if (restricted && (WRITE_REDIRECT (ri)))
-	{
-	  free (redirectee_word);
-	  return (RESTRICTED_REDIRECT);
-	}
+        {
+          free (redirectee_word);
+          return (RESTRICTED_REDIRECT);
+        }
 #endif /* RESTRICTED_SHELL */
 
       fd = redir_open (redirectee_word, redirect->flags, 0666, ri);
       if (fnp)
-	*fnp = redirectee_word;
+        *fnp = redirectee_word;
       else
-	free (redirectee_word);
+        free (redirectee_word);
 
       if (fd == NOCLOBBER_REDIRECT || fd == RESTRICTED_REDIRECT)
-	return (fd);
+        return (fd);
 
       if (fd < 0)
-	return (errno);
+        return (errno);
 
       if (flags & RX_ACTIVE)
-	{
-	  if (redirect->rflags & REDIR_VARASSIGN)
-	    {
-	      redirector = fcntl (fd, F_DUPFD, SHELL_FD_BASE);		/* XXX try this for now */
-	      r = errno;
-	      if (redirector < 0)
-		sys_error (_("redirection error: cannot duplicate fd"));
-	      REDIRECTION_ERROR (redirector, r, fd);
-	    }
+        {
+          if (redirect->rflags & REDIR_VARASSIGN)
+            {
+              redirector = fcntl (fd, F_DUPFD, SHELL_FD_BASE);          /* XXX try this for now */
+              r = errno;
+              if (redirector < 0)
+                sys_error (_("redirection error: cannot duplicate fd"));
+              REDIRECTION_ERROR (redirector, r, fd);
+            }
 
-	  if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
-	    {
-	      /* Only setup to undo it if the thing to undo is active. We want
-		 to autoclose if we are doing a varassign redirection and the
-		 varredir_close shell option is set, and we can't test
-		 redirector in this case since we just assigned it above. */		 
-	      if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		r = add_undo_close_redirect (redirector);	      
-	      else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
-		r = add_undo_redirect (redirector, ri, -1);
-	      else
-		r = add_undo_close_redirect (redirector);
-	      REDIRECTION_ERROR (r, errno, fd);
-	    }
+          if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
+            {
+              /* Only setup to undo it if the thing to undo is active. We want
+                 to autoclose if we are doing a varassign redirection and the
+                 varredir_close shell option is set, and we can't test
+                 redirector in this case since we just assigned it above. */
+              if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
+                r = add_undo_close_redirect (redirector);
+              else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
+                r = add_undo_redirect (redirector, ri, -1);
+              else
+                r = add_undo_close_redirect (redirector);
+              REDIRECTION_ERROR (r, errno, fd);
+            }
 
-	  /* inhibit call to sync_buffered_stream() for async processes */
-	  if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
-	    check_bash_input (redirector);
+          /* inhibit call to sync_buffered_stream() for async processes */
+          if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
+            check_bash_input (redirector);
 
-	  /* Make sure there is no pending output before we change the state
-	     of the underlying file descriptor, since the builtins use stdio
-	     for output. */
-	  if (redirector == 1 && fileno (stdout) == redirector)
-	    {
-	      fflush (stdout);
-	      fpurge (stdout);
-	    }
-	  else if (redirector == 2 && fileno (stderr) == redirector)
-	    {
-	      fflush (stderr);
-	      fpurge (stderr);
-	    }
+          /* Make sure there is no pending output before we change the state
+             of the underlying file descriptor, since the builtins use stdio
+             for output. */
+          if (redirector == 1 && fileno (stdout) == redirector)
+            {
+              fflush (stdout);
+              fpurge (stdout);
+            }
+          else if (redirector == 2 && fileno (stderr) == redirector)
+            {
+              fflush (stderr);
+              fpurge (stderr);
+            }
 
-	  if (redirect->rflags & REDIR_VARASSIGN)
-	    {
-	      if ((r = redir_varassign (redirect, redirector)) < 0)
-		{
-		  close (redirector);
-		  close (fd);
-		  return (r);	/* XXX */
-		}
-	    }
-	  else if ((fd != redirector) && (dup2 (fd, redirector) < 0))
-	    {
-	      close (fd);	/* dup2 failed? must be fd limit issue */
-	      return (errno);
-	    }
+          if (redirect->rflags & REDIR_VARASSIGN)
+            {
+              if ((r = redir_varassign (redirect, redirector)) < 0)
+                {
+                  close (redirector);
+                  close (fd);
+                  return (r);   /* XXX */
+                }
+            }
+          else if ((fd != redirector) && (dup2 (fd, redirector) < 0))
+            {
+              close (fd);       /* dup2 failed? must be fd limit issue */
+              return (errno);
+            }
 
-	  /* Do not change the buffered stream for an implicit redirection
-	     of /dev/null to fd 0 for asynchronous commands without job
-	     control (r_inputa_direction). */
-	  if (ri == r_input_direction || ri == r_input_output)
-	    duplicate_buffered_stream (fd, redirector);
+          /* Do not change the buffered stream for an implicit redirection
+             of /dev/null to fd 0 for asynchronous commands without job
+             control (r_inputa_direction). */
+          if (ri == r_input_direction || ri == r_input_output)
+            duplicate_buffered_stream (fd, redirector);
 
-	  /*
-	   * If we're remembering, then this is the result of a while, for
-	   * or until loop with a loop redirection, or a function/builtin
-	   * executing in the parent shell with a redirection.  In the
-	   * function/builtin case, we want to set all file descriptors > 2
-	   * to be close-on-exec to duplicate the effect of the old
-	   * for i = 3 to NOFILE close(i) loop.  In the case of the loops,
-	   * both sh and ksh leave the file descriptors open across execs.
-	   * The Posix standard mentions only the exec builtin.
-	   */
-	  if ((flags & RX_CLEXEC) && (redirector > 2))
-	    SET_CLOSE_ON_EXEC (redirector);
-	}
+          /*
+           * If we're remembering, then this is the result of a while, for
+           * or until loop with a loop redirection, or a function/builtin
+           * executing in the parent shell with a redirection.  In the
+           * function/builtin case, we want to set all file descriptors > 2
+           * to be close-on-exec to duplicate the effect of the old
+           * for i = 3 to NOFILE close(i) loop.  In the case of the loops,
+           * both sh and ksh leave the file descriptors open across execs.
+           * The Posix standard mentions only the exec builtin.
+           */
+          if ((flags & RX_CLEXEC) && (redirector > 2))
+            SET_CLOSE_ON_EXEC (redirector);
+        }
 
       if (fd != redirector)
-	{
-	  if (INPUT_REDIRECT (ri))
-	    close_buffered_fd (fd);
-	  else
-	    close (fd);		/* Don't close what we just opened! */
-	}
+        {
+          if (INPUT_REDIRECT (ri))
+            close_buffered_fd (fd);
+          else
+            close (fd);         /* Don't close what we just opened! */
+        }
 
       /* If we are hacking both stdout and stderr, do the stderr
-	 redirection here.  XXX - handle {var} here? */
+         redirection here.  XXX - handle {var} here? */
       if (ri == r_err_and_out || ri == r_append_err_and_out)
-	{
-	  if (flags & RX_ACTIVE)
-	    {
-	      if (flags & RX_UNDOABLE)
-		add_undo_redirect (2, ri, -1);
-	      if (dup2 (1, 2) < 0)
-		return (errno);
-	    }
-	}
+        {
+          if (flags & RX_ACTIVE)
+            {
+              if (flags & RX_UNDOABLE)
+                add_undo_redirect (2, ri, -1);
+              if (dup2 (1, 2) < 0)
+                return (errno);
+            }
+        }
       break;
 
     case r_reading_until:
     case r_deblank_reading_until:
     case r_reading_string:
       /* REDIRECTEE is a pointer to a WORD_DESC containing the text of
-	 the new input.  Place it in a temporary file. */
+         the new input.  Place it in a temporary file. */
       if (redirectee)
-	{
-	  fd = here_document_to_fd (redirectee, ri);
+        {
+          fd = here_document_to_fd (redirectee, ri);
 
-	  if (fd < 0)
-	    {
-	      heredoc_errno = errno;
-	      return (HEREDOC_REDIRECT);
-	    }
+          if (fd < 0)
+            {
+              heredoc_errno = errno;
+              return (HEREDOC_REDIRECT);
+            }
 
-	  if (redirect->rflags & REDIR_VARASSIGN)
-	    {
-	      redirector = fcntl (fd, F_DUPFD, SHELL_FD_BASE);		/* XXX try this for now */
-	      r = errno;
-	      if (redirector < 0)
-		sys_error (_("redirection error: cannot duplicate fd"));
-	      REDIRECTION_ERROR (redirector, r, fd);
-	    }
+          if (redirect->rflags & REDIR_VARASSIGN)
+            {
+              redirector = fcntl (fd, F_DUPFD, SHELL_FD_BASE);          /* XXX try this for now */
+              r = errno;
+              if (redirector < 0)
+                sys_error (_("redirection error: cannot duplicate fd"));
+              REDIRECTION_ERROR (redirector, r, fd);
+            }
 
-	  if (flags & RX_ACTIVE)
-	    {
-	      if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
-	        {
-		  /* Only setup to undo it if the thing to undo is active.
-		     Close if the right option is set and we are doing a
-		     varassign redirection. */
-		  if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		    r = add_undo_close_redirect (redirector);	      
-		  else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
-		    r = add_undo_redirect (redirector, ri, -1);
-		  else
-		    r = add_undo_close_redirect (redirector);
-		  REDIRECTION_ERROR (r, errno, fd);
-	        }
+          if (flags & RX_ACTIVE)
+            {
+              if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
+                {
+                  /* Only setup to undo it if the thing to undo is active.
+                     Close if the right option is set and we are doing a
+                     varassign redirection. */
+                  if (fd != redirector && (redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
+                    r = add_undo_close_redirect (redirector);
+                  else if ((fd != redirector) && (fcntl (redirector, F_GETFD, 0) != -1))
+                    r = add_undo_redirect (redirector, ri, -1);
+                  else
+                    r = add_undo_close_redirect (redirector);
+                  REDIRECTION_ERROR (r, errno, fd);
+                }
 
-	      check_bash_input (redirector);
+              check_bash_input (redirector);
 
-	      if (redirect->rflags & REDIR_VARASSIGN)
-		{
-		  if ((r = redir_varassign (redirect, redirector)) < 0)
-		    {
-		      close (redirector);
-		      close (fd);
-		      return (r);	/* XXX */
-		    }
-		}
-	      else if (fd != redirector && dup2 (fd, redirector) < 0)
-		{
-		  r = errno;
-		  close (fd);
-		  return (r);
-		}
+              if (redirect->rflags & REDIR_VARASSIGN)
+                {
+                  if ((r = redir_varassign (redirect, redirector)) < 0)
+                    {
+                      close (redirector);
+                      close (fd);
+                      return (r);       /* XXX */
+                    }
+                }
+              else if (fd != redirector && dup2 (fd, redirector) < 0)
+                {
+                  r = errno;
+                  close (fd);
+                  return (r);
+                }
 
-	      duplicate_buffered_stream (fd, redirector);
+              duplicate_buffered_stream (fd, redirector);
 
-	      if ((flags & RX_CLEXEC) && (redirector > 2))
-		SET_CLOSE_ON_EXEC (redirector);
-	    }
+              if ((flags & RX_CLEXEC) && (redirector > 2))
+                SET_CLOSE_ON_EXEC (redirector);
+            }
 
-	  if (fd != redirector)
-	    close_buffered_fd (fd);
-	}
+          if (fd != redirector)
+            close_buffered_fd (fd);
+        }
       break;
 
     case r_duplicating_input:
@@ -1103,131 +1103,131 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
     case r_move_output:
       if ((flags & RX_ACTIVE) && (redirect->rflags & REDIR_VARASSIGN))
         {
-	  redirector = fcntl (redir_fd, F_DUPFD, SHELL_FD_BASE);		/* XXX try this for now */
-	  r = errno;
-	  if (redirector < 0)
-	    sys_error (_("redirection error: cannot duplicate fd"));
-	  REDIRECTION_ERROR (redirector, r, -1);
+          redirector = fcntl (redir_fd, F_DUPFD, SHELL_FD_BASE);                /* XXX try this for now */
+          r = errno;
+          if (redirector < 0)
+            sys_error (_("redirection error: cannot duplicate fd"));
+          REDIRECTION_ERROR (redirector, r, -1);
         }
 
       if ((flags & RX_ACTIVE) && (redir_fd != redirector))
-	{
-	  if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
-	    {
-	      /* Only setup to undo it if the thing to undo is active.
-		 Close if the right option is set and we are doing a
-		 varassign redirection. */
-	      if ((redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
-		r = add_undo_close_redirect (redirector);	      
-	      else if (fcntl (redirector, F_GETFD, 0) != -1)
-		r = add_undo_redirect (redirector, ri, redir_fd);
-	      else
-		r = add_undo_close_redirect (redirector);
-	      REDIRECTION_ERROR (r, errno, -1);
-	    }
-	  if ((flags & RX_UNDOABLE) && (ri == r_move_input || ri == r_move_output))
-	    {
-	      /* r_move_input and r_move_output add an additional close()
-		 that needs to be undone */
-	      if (fcntl (redirector, F_GETFD, 0) != -1)
-		{
-		  r = add_undo_redirect (redir_fd, r_close_this, -1);
-		  REDIRECTION_ERROR (r, errno, -1);
-		}
-	    }
+        {
+          if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
+            {
+              /* Only setup to undo it if the thing to undo is active.
+                 Close if the right option is set and we are doing a
+                 varassign redirection. */
+              if ((redirect->rflags & REDIR_VARASSIGN) && varassign_redir_autoclose)
+                r = add_undo_close_redirect (redirector);
+              else if (fcntl (redirector, F_GETFD, 0) != -1)
+                r = add_undo_redirect (redirector, ri, redir_fd);
+              else
+                r = add_undo_close_redirect (redirector);
+              REDIRECTION_ERROR (r, errno, -1);
+            }
+          if ((flags & RX_UNDOABLE) && (ri == r_move_input || ri == r_move_output))
+            {
+              /* r_move_input and r_move_output add an additional close()
+                 that needs to be undone */
+              if (fcntl (redirector, F_GETFD, 0) != -1)
+                {
+                  r = add_undo_redirect (redir_fd, r_close_this, -1);
+                  REDIRECTION_ERROR (r, errno, -1);
+                }
+            }
 
-	  /* inhibit call to sync_buffered_stream() for async processes */
-	  if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
-	    check_bash_input (redirector);
+          /* inhibit call to sync_buffered_stream() for async processes */
+          if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
+            check_bash_input (redirector);
 
-	  if (redirect->rflags & REDIR_VARASSIGN)
-	    {
-	      if ((r = redir_varassign (redirect, redirector)) < 0)
-		{
-		  close (redirector);
-		  return (r);	/* XXX */
-		}
-	    }
-	  /* This is correct.  2>&1 means dup2 (1, 2); */
-	  else if (dup2 (redir_fd, redirector) < 0)
-	    return (errno);
+          if (redirect->rflags & REDIR_VARASSIGN)
+            {
+              if ((r = redir_varassign (redirect, redirector)) < 0)
+                {
+                  close (redirector);
+                  return (r);   /* XXX */
+                }
+            }
+          /* This is correct.  2>&1 means dup2 (1, 2); */
+          else if (dup2 (redir_fd, redirector) < 0)
+            return (errno);
 
-	  if (ri == r_duplicating_input || ri == r_move_input)
-	    duplicate_buffered_stream (redir_fd, redirector);
+          if (ri == r_duplicating_input || ri == r_move_input)
+            duplicate_buffered_stream (redir_fd, redirector);
 
-	  /* First duplicate the close-on-exec state of redirectee.  dup2
-	     leaves the flag unset on the new descriptor, which means it
-	     stays open.  Only set the close-on-exec bit for file descriptors
-	     greater than 2 in any case, since 0-2 should always be open
-	     unless closed by something like `exec 2<&-'.  It should always
-	     be safe to set fds > 2 to close-on-exec if they're being used to
-	     save file descriptors < 2, since we don't need to preserve the
-	     state of the close-on-exec flag for those fds -- they should
-	     always be open. */
-	  /* if ((already_set || set_unconditionally) && (ok_to_set))
-		set_it () */
+          /* First duplicate the close-on-exec state of redirectee.  dup2
+             leaves the flag unset on the new descriptor, which means it
+             stays open.  Only set the close-on-exec bit for file descriptors
+             greater than 2 in any case, since 0-2 should always be open
+             unless closed by something like `exec 2<&-'.  It should always
+             be safe to set fds > 2 to close-on-exec if they're being used to
+             save file descriptors < 2, since we don't need to preserve the
+             state of the close-on-exec flag for those fds -- they should
+             always be open. */
+          /* if ((already_set || set_unconditionally) && (ok_to_set))
+                set_it () */
 #if 0
-	  if (((fcntl (redir_fd, F_GETFD, 0) == 1) || redir_fd < 2 || (flags & RX_CLEXEC)) &&
-	       (redirector > 2))
+          if (((fcntl (redir_fd, F_GETFD, 0) == 1) || redir_fd < 2 || (flags & RX_CLEXEC)) &&
+               (redirector > 2))
 #else
-	  if (((fcntl (redir_fd, F_GETFD, 0) == 1) || (redir_fd < 2 && (rflags & RX_INTERNAL)) || (flags & RX_CLEXEC)) &&
-	       (redirector > 2))
+          if (((fcntl (redir_fd, F_GETFD, 0) == 1) || (redir_fd < 2 && (rflags & RX_INTERNAL)) || (flags & RX_CLEXEC)) &&
+               (redirector > 2))
 #endif
-	    SET_CLOSE_ON_EXEC (redirector);
+            SET_CLOSE_ON_EXEC (redirector);
 
-	  /* When undoing saving of non-standard file descriptors (>=3) using
-	     file descriptors >= SHELL_FD_BASE, we set the saving fd to be
-	     close-on-exec and use a flag to decide how to set close-on-exec
-	     when the fd is restored. */
-	  if ((rflags & RX_INTERNAL) && (rflags & RX_SAVCLEXEC) && redirector >= 3 && (redir_fd >= SHELL_FD_BASE || (rflags & RX_SAVEFD)))
-	    SET_OPEN_ON_EXEC (redirector);
-	    
-	  /* dup-and-close redirection */
-	  if (ri == r_move_input || ri == r_move_output)
-	    {
-	      xtrace_fdchk (redir_fd);
+          /* When undoing saving of non-standard file descriptors (>=3) using
+             file descriptors >= SHELL_FD_BASE, we set the saving fd to be
+             close-on-exec and use a flag to decide how to set close-on-exec
+             when the fd is restored. */
+          if ((rflags & RX_INTERNAL) && (rflags & RX_SAVCLEXEC) && redirector >= 3 && (redir_fd >= SHELL_FD_BASE || (rflags & RX_SAVEFD)))
+            SET_OPEN_ON_EXEC (redirector);
 
-	      close (redir_fd);
+          /* dup-and-close redirection */
+          if (ri == r_move_input || ri == r_move_output)
+            {
+              xtrace_fdchk (redir_fd);
+
+              close (redir_fd);
 #if defined (COPROCESS_SUPPORT)
-	      coproc_fdchk (redir_fd);	/* XXX - loses coproc fds */
+              coproc_fdchk (redir_fd);  /* XXX - loses coproc fds */
 #endif
-	    }
-	}
+            }
+        }
       break;
 
     case r_close_this:
       if (flags & RX_ACTIVE)
-	{
-	  if (redirect->rflags & REDIR_VARASSIGN)
-	    {
-	      redirector = redir_varvalue (redirect);
-	      if (redirector < 0)
-		return AMBIGUOUS_REDIRECT;
-	    }
+        {
+          if (redirect->rflags & REDIR_VARASSIGN)
+            {
+              redirector = redir_varvalue (redirect);
+              if (redirector < 0)
+                return AMBIGUOUS_REDIRECT;
+            }
 
-	  r = 0;
-	  if (flags & RX_UNDOABLE)
-	    {
-	      if (fcntl (redirector, F_GETFD, 0) != -1)
-		r = add_undo_redirect (redirector, ri, -1);
-	      else
-		r = add_undo_close_redirect (redirector);
-	      REDIRECTION_ERROR (r, errno, redirector);
-	    }
+          r = 0;
+          if (flags & RX_UNDOABLE)
+            {
+              if (fcntl (redirector, F_GETFD, 0) != -1)
+                r = add_undo_redirect (redirector, ri, -1);
+              else
+                r = add_undo_close_redirect (redirector);
+              REDIRECTION_ERROR (r, errno, redirector);
+            }
 
 #if defined (COPROCESS_SUPPORT)
-	  coproc_fdchk (redirector);
+          coproc_fdchk (redirector);
 #endif
-	  xtrace_fdchk (redirector);
+          xtrace_fdchk (redirector);
 
-	  /* inhibit call to sync_buffered_stream() for async processes */
-	  if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
-	    check_bash_input (redirector);
-	  r = close_buffered_fd (redirector);
+          /* inhibit call to sync_buffered_stream() for async processes */
+          if (redirector != 0 || (subshell_environment & SUBSHELL_ASYNC) == 0)
+            check_bash_input (redirector);
+          r = close_buffered_fd (redirector);
 
-	  if (r < 0 && (rflags & RX_INTERNAL) && (errno == EIO || errno == ENOSPC))
-	    REDIRECTION_ERROR (r, errno, -1);
-	}
+          if (r < 0 && (rflags & RX_INTERNAL) && (errno == EIO || errno == ENOSPC))
+            REDIRECTION_ERROR (r, errno, -1);
+        }
       break;
 
     case r_duplicating_input_word:
@@ -1437,7 +1437,7 @@ redir_varvalue (REDIRECT *redir)
   int len, vr;
 #endif
 
-  w = redir->redirector.filename->word;		/* shorthand */
+  w = redir->redirector.filename->word;         /* shorthand */
   /* XXX - handle set -u here? */
 #if defined (ARRAY_VARS)
   if (vr = valid_array_reference (w, 0))
@@ -1450,20 +1450,20 @@ redir_varvalue (REDIRECT *redir)
       v = find_variable (w);
 #if defined (ARRAY_VARS)
       if (v == 0)
-	{
-	  v = find_variable_last_nameref (w, 0);
-	  if (v && nameref_p (v))
-	    {
-	      w = nameref_cell (v);
-	      if (vr = valid_array_reference (w, 0))
-		v = array_variable_part (w, 0, &sub, &len);
-	      else
-	        v = find_variable (w);
-	    }
-	}
+        {
+          v = find_variable_last_nameref (w, 0);
+          if (v && nameref_p (v))
+            {
+              w = nameref_cell (v);
+              if (vr = valid_array_reference (w, 0))
+                v = array_variable_part (w, 0, &sub, &len);
+              else
+                v = find_variable (w);
+            }
+        }
 #endif
     }
-	
+
   if (v == 0 || invisible_p (v))
     return -1;
 
@@ -1481,6 +1481,6 @@ redir_varvalue (REDIRECT *redir)
   if (valid_number (val, &vmax) == 0)
     return -1;
 
-  i = vmax;	/* integer truncation */
+  i = vmax;     /* integer truncation */
   return i;
 }

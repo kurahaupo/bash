@@ -25,9 +25,9 @@
 #include <xmalloc.h>
 
 #if defined (USING_BASH_MALLOC)
-#  define LBUF_BUFSIZE	2016
+#  define LBUF_BUFSIZE  2016
 #else
-#  define LBUF_BUFSIZE	BUFSIZ
+#  define LBUF_BUFSIZE  BUFSIZ
 #endif
 
 static char *stdoutbuf = 0;
@@ -50,7 +50,7 @@ sh_setlinebuf (FILE *stream)
   else if (stream == stderr && stderrbuf == 0)
     local_linebuf = stderrbuf = (char *)xmalloc (LBUF_BUFSIZE);
   else
-    local_linebuf = (char *)NULL;	/* let stdio handle it */
+    local_linebuf = (char *)NULL;       /* let stdio handle it */
 #else
   local_linebuf = (char *)NULL;
 #endif

@@ -33,14 +33,14 @@ main (argc, argv)
     {
       printf ("%2d) %s\n", i, sys_siglist[i]);
       if (strlen (sys_siglist[i]) > length)
-	{
-	  longest = i;
-	  length = strlen (sys_siglist[i]);
-	}
+        {
+          longest = i;
+          length = strlen (sys_siglist[i]);
+        }
     }
 
   printf ("The longest name is %d:\"%s\", which is %d chars in length.\n",
-	  longest, sys_siglist[longest], length);
+          longest, sys_siglist[longest], length);
 }
 
 /*

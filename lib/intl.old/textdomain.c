@@ -107,19 +107,19 @@ TEXTDOMAIN (domainname)
   else
     {
       /* If the following malloc fails `_nl_current_default_domain'
-	 will be NULL.  This value will be returned and so signals we
-	 are out of core.  */
+         will be NULL.  This value will be returned and so signals we
+         are out of core.  */
 #if defined _LIBC || defined HAVE_STRDUP
       new_domain = strdup (domainname);
 #else
       size_t len = strlen (domainname) + 1;
       new_domain = (char *) malloc (len);
       if (new_domain != NULL)
-	memcpy (new_domain, domainname, len);
+        memcpy (new_domain, domainname, len);
 #endif
 
       if (new_domain != NULL)
-	_nl_current_default_domain = new_domain;
+        _nl_current_default_domain = new_domain;
     }
 
   /* We use this possibility to signal a change of the loaded catalogs
@@ -130,7 +130,7 @@ TEXTDOMAIN (domainname)
       ++_nl_msg_cat_cntr;
 
       if (old_domain != new_domain && old_domain != _nl_default_default_domain)
-	free (old_domain);
+        free (old_domain);
     }
 
   __libc_rwlock_unlock (_nl_state_lock);

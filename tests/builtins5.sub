@@ -79,5 +79,3 @@ echo scalar: ${#scalar2[@]}
 
 echo scalar: ${#scalar3}
 echo scalar: ${#scalar3[@]}
-
-

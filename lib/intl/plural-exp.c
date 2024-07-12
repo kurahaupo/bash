@@ -94,8 +94,8 @@ init_germanic_plural (void)
 void
 internal_function
 EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
-			   const struct expression **pluralp,
-			   unsigned long int *npluralsp)
+                           const struct expression **pluralp,
+                           unsigned long int *npluralsp)
 {
   if (nullentry != NULL)
     {
@@ -105,34 +105,34 @@ EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
       plural = strstr (nullentry, "plural=");
       nplurals = strstr (nullentry, "nplurals=");
       if (plural == NULL || nplurals == NULL)
-	goto no_plural;
+        goto no_plural;
       else
-	{
-	  char *endp;
-	  unsigned long int n;
-	  struct parse_args args;
+        {
+          char *endp;
+          unsigned long int n;
+          struct parse_args args;
 
-	  /* First get the number.  */
-	  nplurals += 9;
-	  while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
-	    ++nplurals;
-	  if (!(*nplurals >= '0' && *nplurals <= '9'))
-	    goto no_plural;
-	  n = strtoul (nplurals, &endp, 10);
-	  if (nplurals == endp)
-	    goto no_plural;
-	  *npluralsp = n;
+          /* First get the number.  */
+          nplurals += 9;
+          while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
+            ++nplurals;
+          if (!(*nplurals >= '0' && *nplurals <= '9'))
+            goto no_plural;
+          n = strtoul (nplurals, &endp, 10);
+          if (nplurals == endp)
+            goto no_plural;
+          *npluralsp = n;
 
-	  /* Due to the restrictions bison imposes onto the interface of the
-	     scanner function we have to put the input string and the result
-	     passed up from the parser into the same structure which address
-	     is passed down to the parser.  */
-	  plural += 7;
-	  args.cp = plural;
-	  if (PLURAL_PARSE (&args) != 0)
-	    goto no_plural;
-	  *pluralp = args.res;
-	}
+          /* Due to the restrictions bison imposes onto the interface of the
+             scanner function we have to put the input string and the result
+             passed up from the parser into the same structure which address
+             is passed down to the parser.  */
+          plural += 7;
+          args.cp = plural;
+          if (PLURAL_PARSE (&args) != 0)
+            goto no_plural;
+          *pluralp = args.res;
+        }
     }
   else
     {

@@ -38,9 +38,9 @@
 
 int
 _nl_explode_name (char *name,
-		  const char **language, const char **modifier,
-		  const char **territory, const char **codeset,
-		  const char **normalized_codeset)
+                  const char **language, const char **modifier,
+                  const char **territory, const char **codeset,
+                  const char **normalized_codeset)
 {
   char *cp;
   int mask;
@@ -79,95 +79,95 @@ _nl_explode_name (char *name,
   else
     {
       if (cp[0] == '_')
-	{
-	  *cp++ = '\0';
+        {
+          *cp++ = '\0';
 #if defined _AIX
-	  /* Lowercase the language.  */
-	  {
-	    char *lcp;
+          /* Lowercase the language.  */
+          {
+            char *lcp;
 
-	    for (lcp = name; lcp < cp; lcp++)
-	      if (*lcp >= 'A' && *lcp <= 'Z')
-		*lcp += 'a' - 'A';
-	  }
+            for (lcp = name; lcp < cp; lcp++)
+              if (*lcp >= 'A' && *lcp <= 'Z')
+                *lcp += 'a' - 'A';
+          }
 
-	  /* Next is the script or the territory.  It depends on whether
-	     there is another '_'.  */
-	  char *next = cp;
+          /* Next is the script or the territory.  It depends on whether
+             there is another '_'.  */
+          char *next = cp;
 
-	  while (cp[0] != '\0' && cp[0] != '_' && cp[0] != '@' && cp[0] != '.')
-	    ++cp;
+          while (cp[0] != '\0' && cp[0] != '_' && cp[0] != '@' && cp[0] != '.')
+            ++cp;
 
-	  if (cp[0] == '_')
-	    {
-	      *cp++ = '\0';
+          if (cp[0] == '_')
+            {
+              *cp++ = '\0';
 
-	      /* Next is the script.  Translate the script to a modifier.
-		 We don't need to support all of ISO 15924 here, only those
-		 scripts that actually occur:
-		   Latn -> latin
-		   Cyrl -> cyrillic
-		   Guru -> gurmukhi
-		   Hans -> (omitted, redundant with the territory CN or SG)
-		   Hant -> (omitted, redundant with the territory TW or HK)  */
-	      if (strcmp (next, "Latn") == 0)
-		*modifier = "latin";
-	      else if (strcmp (next, "Cyrl") == 0)
-		*modifier = "cyrillic";
-	      else if (strcmp (next, "Guru") == 0)
-		*modifier = "gurmukhi";
-	      else if (!(strcmp (next, "Hans") == 0
-			 || strcmp (next, "Hant") == 0))
-		*modifier = next;
-	      if (*modifier != NULL && (*modifier)[0] != '\0')
-		mask |= XPG_MODIFIER;
-	    }
-	  else
-	    cp = next;
+              /* Next is the script.  Translate the script to a modifier.
+                 We don't need to support all of ISO 15924 here, only those
+                 scripts that actually occur:
+                   Latn -> latin
+                   Cyrl -> cyrillic
+                   Guru -> gurmukhi
+                   Hans -> (omitted, redundant with the territory CN or SG)
+                   Hant -> (omitted, redundant with the territory TW or HK)  */
+              if (strcmp (next, "Latn") == 0)
+                *modifier = "latin";
+              else if (strcmp (next, "Cyrl") == 0)
+                *modifier = "cyrillic";
+              else if (strcmp (next, "Guru") == 0)
+                *modifier = "gurmukhi";
+              else if (!(strcmp (next, "Hans") == 0
+                         || strcmp (next, "Hant") == 0))
+                *modifier = next;
+              if (*modifier != NULL && (*modifier)[0] != '\0')
+                mask |= XPG_MODIFIER;
+            }
+          else
+            cp = next;
 #endif
 
-	  /* Next is the territory.  */
-	  *territory = cp;
+          /* Next is the territory.  */
+          *territory = cp;
 
-	  while (cp[0] != '\0' && cp[0] != '.' && cp[0] != '@')
-	    ++cp;
+          while (cp[0] != '\0' && cp[0] != '.' && cp[0] != '@')
+            ++cp;
 
-	  mask |= XPG_TERRITORY;
-	}
+          mask |= XPG_TERRITORY;
+        }
 
       if (cp[0] == '.')
-	{
-	  /* Next is the codeset.  */
-	  *cp++ = '\0';
-	  *codeset = cp;
+        {
+          /* Next is the codeset.  */
+          *cp++ = '\0';
+          *codeset = cp;
 
-	  while (cp[0] != '\0' && cp[0] != '@')
-	    ++cp;
+          while (cp[0] != '\0' && cp[0] != '@')
+            ++cp;
 
-	  mask |= XPG_CODESET;
+          mask |= XPG_CODESET;
 
-	  if (*codeset != cp && (*codeset)[0] != '\0')
-	    {
-	      *normalized_codeset = _nl_normalize_codeset (*codeset,
-							   cp - *codeset);
-	      if (*normalized_codeset == NULL)
-		return -1;
-	      else if (strcmp (*codeset, *normalized_codeset) == 0)
-		free ((char *) *normalized_codeset);
-	      else
-		mask |= XPG_NORM_CODESET;
-	    }
-	}
+          if (*codeset != cp && (*codeset)[0] != '\0')
+            {
+              *normalized_codeset = _nl_normalize_codeset (*codeset,
+                                                           cp - *codeset);
+              if (*normalized_codeset == NULL)
+                return -1;
+              else if (strcmp (*codeset, *normalized_codeset) == 0)
+                free ((char *) *normalized_codeset);
+              else
+                mask |= XPG_NORM_CODESET;
+            }
+        }
 
       if (cp[0] == '@')
-	{
-	  /* Next is the modifier.  */
-	  *cp++ = '\0';
-	  *modifier = cp;
+        {
+          /* Next is the modifier.  */
+          *cp++ = '\0';
+          *modifier = cp;
 
-	  if (cp[0] != '\0')
-	    mask |= XPG_MODIFIER;
-	}
+          if (cp[0] != '\0')
+            mask |= XPG_MODIFIER;
+        }
     }
 
   if (*territory != NULL && (*territory)[0] == '\0')

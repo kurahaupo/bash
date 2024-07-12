@@ -101,11 +101,11 @@ get_name_for_error (void)
 #if defined (ARRAY_VARS)
       bash_source_v = find_variable ("BASH_SOURCE");
       if (bash_source_v && array_p (bash_source_v) &&
-	  (bash_source_a = array_cell (bash_source_v)))
-	name = array_reference (bash_source_a, 0);
-      if (name == 0 || *name == '\0')	/* XXX - was just name == 0 */
+          (bash_source_a = array_cell (bash_source_v)))
+        name = array_reference (bash_source_a, 0);
+      if (name == 0 || *name == '\0')   /* XXX - was just name == 0 */
 #endif
-	name = dollar_vars[0];
+        name = dollar_vars[0];
     }
   if (name == 0 && shell_name && *shell_name)
     name = base_pathname (shell_name);
@@ -182,7 +182,7 @@ report_error (const char *format, ...)
   if (exit_immediately_on_error)
     {
       if (last_command_exit_value == 0)
-	last_command_exit_value = EXECUTION_FAILURE;
+        last_command_exit_value = EXECUTION_FAILURE;
       exit_shell (last_command_exit_value);
     }
 }
@@ -290,7 +290,7 @@ sys_error (const char *format, ...)
 
 /* An error from the parser takes the general form
 
-	shell_name: input file name: line number: message
+        shell_name: input file name: line number: message
 
    The input file name and line number are omitted if the shell is
    currently interactive.  If the shell is not currently interactive,
@@ -338,17 +338,17 @@ strescape (const char *str)
   for (s = (unsigned char *)str; s && *s; s++)
     {
       if (*s < ' ')
-	{
-	  *r++ = '^';
-	  *r++ = *s+64;
-	}
+        {
+          *r++ = '^';
+          *r++ = *s+64;
+        }
       else if (*s == 127)
-	{
-	  *r++ = '^';
-	  *r++ = '?';
-	}
+        {
+          *r++ = '^';
+          *r++ = '?';
+        }
      else
-	*r++ = *s;
+        *r++ = *s;
     }
 
   *r = '\0';
@@ -403,18 +403,18 @@ trace (const char *format, ...)
 #endif /* DEBUG */
 
 /* **************************************************************** */
-/*								    */
-/*  		    Common error reporting			    */
-/*								    */
+/*                                                                  */
+/*                  Common error reporting                          */
+/*                                                                  */
 /* **************************************************************** */
 
 
 static const char * const cmd_error_table[] = {
-	N_("unknown command error"),	/* CMDERR_DEFAULT */
-	N_("bad command type"),		/* CMDERR_BADTYPE */
-	N_("bad connector"),		/* CMDERR_BADCONN */
-	N_("bad jump"),			/* CMDERR_BADJUMP */
-	0
+        N_("unknown command error"),    /* CMDERR_DEFAULT */
+        N_("bad command type"),         /* CMDERR_BADTYPE */
+        N_("bad connector"),            /* CMDERR_BADCONN */
+        N_("bad jump"),                 /* CMDERR_BADJUMP */
+        0
 };
 
 void

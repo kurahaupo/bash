@@ -22,7 +22,7 @@
 # define __need_NULL
 # include <stddef.h>
 #else
-# include <stdlib.h>		/* Just for NULL.  */
+# include <stdlib.h>            /* Just for NULL.  */
 #endif
 
 #include "gettextP.h"

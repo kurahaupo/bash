@@ -1,5 +1,5 @@
 /* getenv.c - get environment variable value from the shell's variable
-	      list. */
+              list. */
 
 /* Copyright (C) 1997-2002,2023-2024 Free Software Foundation, Inc.
 
@@ -66,7 +66,7 @@ getenv (const char *name)
     {
       var = find_variable ((char *)name);
       if (var && exported_p (var))
-	return (value_cell (var));
+        return (value_cell (var));
     }
   else if (environ)
     {
@@ -74,15 +74,15 @@ getenv (const char *name)
       size_t len;
 
       /* In some cases, s5r3 invokes getenv() before main(); BSD systems
-	 using gprof also exhibit this behavior.  This means that
-	 shell_variables will be 0 when this is invoked.  We look up the
-	 variable in the real environment in that case. */
+         using gprof also exhibit this behavior.  This means that
+         shell_variables will be 0 when this is invoked.  We look up the
+         variable in the real environment in that case. */
 
       for (i = 0, len = strlen (name); environ[i]; i++)
-	{
-	  if ((STREQN (environ[i], name, len)) && (environ[i][len] == '='))
-	    return (environ[i] + len + 1);
-	}
+        {
+          if ((STREQN (environ[i], name, len)) && (environ[i][len] == '='))
+            return (environ[i] + len + 1);
+        }
     }
 
   return ((char *)NULL);
@@ -155,7 +155,7 @@ setenv (const char *name, const char *value, int rewrite)
     }
 
   var = 0;
-  v = (char *)value;	/* some compilers need explicit cast */
+  v = (char *)value;    /* some compilers need explicit cast */
   /* XXX - should we worry about readonly here? */
   if (rewrite == 0)
     var = find_variable (name);

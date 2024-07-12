@@ -78,21 +78,21 @@ unset -v A
 
 set -- aa bb cc -- dd
 case $* in
-"$*")	echo ok 35;;
-*)	echo bad 35;;
+"$*")   echo ok 35;;
+*)      echo bad 35;;
 esac
 
 case $f in
-$f)	echo ok 36;;
-*)	echo bad 36;;
+$f)     echo ok 36;;
+*)      echo bad 36;;
 esac
 
 case $f$*$f in
-$f"$*"$f)	echo ok 37;;
-*)	echo bad 37;;
+$f"$*"$f)       echo ok 37;;
+*)      echo bad 37;;
 esac
 
 case $f$*$f in
-*$f--$f*)	echo ok 38;;
-*)	echo bad 38;;
+*$f--$f*)       echo ok 38;;
+*)      echo bad 38;;
 esac

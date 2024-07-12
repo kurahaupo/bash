@@ -18,7 +18,7 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE	1
+# define _GNU_SOURCE    1
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -88,14 +88,14 @@ pop (int x)
 
 struct loaded_l10nfile *
 _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
-		    const char *dirlist, size_t dirlist_len,
+                    const char *dirlist, size_t dirlist_len,
 #if defined _WIN32 && !defined __CYGWIN__
-		    const wchar_t *wdirlist, size_t wdirlist_len,
+                    const wchar_t *wdirlist, size_t wdirlist_len,
 #endif
-		    int mask, const char *language, const char *territory,
-		    const char *codeset, const char *normalized_codeset,
-		    const char *modifier,
-		    const char *filename, int do_allocate)
+                    int mask, const char *language, const char *territory,
+                    const char *codeset, const char *normalized_codeset,
+                    const char *modifier,
+                    const char *filename, int do_allocate)
 {
   char *abs_filename;
 #if defined _WIN32 && !defined __CYGWIN__
@@ -119,16 +119,16 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 
   /* Allocate room for the full file name.  */
   abs_filename = (char *) malloc (dirlist_len
-				  + strlen (language)
-				  + ((mask & XPG_TERRITORY) != 0
-				     ? strlen (territory) + 1 : 0)
-				  + ((mask & XPG_CODESET) != 0
-				     ? strlen (codeset) + 1 : 0)
-				  + ((mask & XPG_NORM_CODESET) != 0
-				     ? strlen (normalized_codeset) + 1 : 0)
-				  + ((mask & XPG_MODIFIER) != 0
-				     ? strlen (modifier) + 1 : 0)
-				  + 1 + strlen (filename) + 1);
+                                  + strlen (language)
+                                  + ((mask & XPG_TERRITORY) != 0
+                                     ? strlen (territory) + 1 : 0)
+                                  + ((mask & XPG_CODESET) != 0
+                                     ? strlen (codeset) + 1 : 0)
+                                  + ((mask & XPG_NORM_CODESET) != 0
+                                     ? strlen (normalized_codeset) + 1 : 0)
+                                  + ((mask & XPG_MODIFIER) != 0
+                                     ? strlen (modifier) + 1 : 0)
+                                  + 1 + strlen (filename) + 1);
 
   if (abs_filename == NULL)
     return NULL;
@@ -140,35 +140,35 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
     cp = abs_filename;
     if (dirlist_len > 0)
       {
-	memcpy (cp, dirlist, dirlist_len);
+        memcpy (cp, dirlist, dirlist_len);
 #ifdef _LIBC
-	__argz_stringify (cp, dirlist_len, PATH_SEPARATOR);
+        __argz_stringify (cp, dirlist_len, PATH_SEPARATOR);
 #endif
-	cp += dirlist_len;
-	cp[-1] = '/';
+        cp += dirlist_len;
+        cp[-1] = '/';
       }
 
     cp = stpcpy (cp, language);
 
     if ((mask & XPG_TERRITORY) != 0)
       {
-	*cp++ = '_';
-	cp = stpcpy (cp, territory);
+        *cp++ = '_';
+        cp = stpcpy (cp, territory);
       }
     if ((mask & XPG_CODESET) != 0)
       {
-	*cp++ = '.';
-	cp = stpcpy (cp, codeset);
+        *cp++ = '.';
+        cp = stpcpy (cp, codeset);
       }
     if ((mask & XPG_NORM_CODESET) != 0)
       {
-	*cp++ = '.';
-	cp = stpcpy (cp, normalized_codeset);
+        *cp++ = '.';
+        cp = stpcpy (cp, normalized_codeset);
       }
     if ((mask & XPG_MODIFIER) != 0)
       {
-	*cp++ = '@';
-	cp = stpcpy (cp, modifier);
+        *cp++ = '@';
+        cp = stpcpy (cp, modifier);
       }
 
     *cp++ = '/';
@@ -183,30 +183,30 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
       /* An upper bound for wcslen (mbstowcs (abs_filename)).  */
       size_t abs_filename_bound = mbstowcs (NULL, abs_filename, 0);
       if (abs_filename_bound == (size_t)-1)
-	{
-	  free (abs_filename);
-	  return NULL;
-	}
+        {
+          free (abs_filename);
+          return NULL;
+        }
 
       /* Allocate and fill abs_wfilename.  */
       abs_wfilename =
-	(wchar_t *)
-	malloc ((wdirlist_len + abs_filename_bound + 1) * sizeof (wchar_t));
+        (wchar_t *)
+        malloc ((wdirlist_len + abs_filename_bound + 1) * sizeof (wchar_t));
       if (abs_wfilename == NULL)
-	{
-	  free (abs_filename);
-	  return NULL;
-	}
+        {
+          free (abs_filename);
+          return NULL;
+        }
       wmemcpy (abs_wfilename, wdirlist, wdirlist_len - 1);
       abs_wfilename[wdirlist_len - 1] = L'/';
       if (mbstowcs (abs_wfilename + wdirlist_len, abs_filename,
-		    abs_filename_bound + 1)
-	  > abs_filename_bound)
-	{
-	  free (abs_filename);
-	  free (abs_wfilename);
-	  return NULL;
-	}
+                    abs_filename_bound + 1)
+          > abs_filename_bound)
+        {
+          free (abs_filename);
+          free (abs_wfilename);
+          return NULL;
+        }
 
       free (abs_filename);
       abs_filename = NULL;
@@ -225,25 +225,25 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 #endif
        )
       {
-	int compare =
+        int compare =
 #if defined _WIN32 && !defined __CYGWIN__
-	  abs_wfilename != NULL
-	  ? retval->wfilename != NULL && wcscmp (retval->wfilename, abs_wfilename)
-	  : retval->filename != NULL && strcmp (retval->filename, abs_filename);
+          abs_wfilename != NULL
+          ? retval->wfilename != NULL && wcscmp (retval->wfilename, abs_wfilename)
+          : retval->filename != NULL && strcmp (retval->filename, abs_filename);
 #else
-	  strcmp (retval->filename, abs_filename);
+          strcmp (retval->filename, abs_filename);
 #endif
-	if (compare == 0)
-	  /* We found it!  */
-	  break;
-	if (compare < 0)
-	  {
-	    /* It's not in the list.  */
-	    retval = NULL;
-	    break;
-	  }
+        if (compare == 0)
+          /* We found it!  */
+          break;
+        if (compare < 0)
+          {
+            /* It's not in the list.  */
+            retval = NULL;
+            break;
+          }
 
-	lastp = &retval->next;
+        lastp = &retval->next;
       }
 
   if (retval != NULL || do_allocate == 0)
@@ -265,8 +265,8 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   retval =
     (struct loaded_l10nfile *)
     malloc (sizeof (*retval)
-	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
-	       * sizeof (struct loaded_l10nfile *)));
+            + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
+               * sizeof (struct loaded_l10nfile *)));
   if (retval == NULL)
     {
       free (abs_filename);
@@ -286,8 +286,8 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      correspond to a real file (dirlist_count > 1) or is not worth
      looking up (if an unnormalized codeset was specified).  */
   retval->decided = (dirlist_count > 1
-		     || ((mask & XPG_CODESET) != 0
-			 && (mask & XPG_NORM_CODESET) != 0));
+                     || ((mask & XPG_CODESET) != 0
+                         && (mask & XPG_NORM_CODESET) != 0));
   retval->data = NULL;
 
   retval->next = *lastp;
@@ -308,32 +308,32 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      normalized_codeset.  */
   for (cnt = dirlist_count > 1 ? mask : mask - 1; cnt >= 0; --cnt)
     if ((cnt & ~mask) == 0
-	&& !((cnt & XPG_CODESET) != 0 && (cnt & XPG_NORM_CODESET) != 0))
+        && !((cnt & XPG_CODESET) != 0 && (cnt & XPG_NORM_CODESET) != 0))
       {
 #ifdef _LIBC
-	if (dirlist_count > 1)
-	  {
-	    /* Iterate over all elements of the DIRLIST.  */
-	    char *dir = NULL;
+        if (dirlist_count > 1)
+          {
+            /* Iterate over all elements of the DIRLIST.  */
+            char *dir = NULL;
 
-	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
-		   != NULL)
-	      retval->successor[entries++]
-		= _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
-				      cnt, language, territory, codeset,
-				      normalized_codeset, modifier, filename,
-				      1);
-	  }
-	else
+            while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
+                   != NULL)
+              retval->successor[entries++]
+                = _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
+                                      cnt, language, territory, codeset,
+                                      normalized_codeset, modifier, filename,
+                                      1);
+          }
+        else
 #endif
-	  retval->successor[entries++]
-	    = _nl_make_l10nflist (l10nfile_list,
-				  dirlist, dirlist_len,
+          retval->successor[entries++]
+            = _nl_make_l10nflist (l10nfile_list,
+                                  dirlist, dirlist_len,
 #if defined _WIN32 && !defined __CYGWIN__
-				  wdirlist, wdirlist_len,
+                                  wdirlist, wdirlist_len,
 #endif
-				  cnt, language, territory, codeset,
-				  normalized_codeset, modifier, filename, 1);
+                                  cnt, language, territory, codeset,
+                                  normalized_codeset, modifier, filename, 1);
       }
   retval->successor[entries] = NULL;
 
@@ -356,10 +356,10 @@ _nl_normalize_codeset (const char *codeset, size_t name_len)
   for (cnt = 0; cnt < name_len; ++cnt)
     if (isalnum ((unsigned char) codeset[cnt]))
       {
-	++len;
+        ++len;
 
-	if (isalpha ((unsigned char) codeset[cnt]))
-	  only_digit = 0;
+        if (isalpha ((unsigned char) codeset[cnt]))
+          only_digit = 0;
       }
 
   retval = (char *) malloc ((only_digit ? 3 : 0) + len + 1);
@@ -367,15 +367,15 @@ _nl_normalize_codeset (const char *codeset, size_t name_len)
   if (retval != NULL)
     {
       if (only_digit)
-	wp = stpcpy (retval, "iso");
+        wp = stpcpy (retval, "iso");
       else
-	wp = retval;
+        wp = retval;
 
       for (cnt = 0; cnt < name_len; ++cnt)
-	if (isalpha ((unsigned char) codeset[cnt]))
-	  *wp++ = tolower ((unsigned char) codeset[cnt]);
-	else if (isdigit ((unsigned char) codeset[cnt]))
-	  *wp++ = codeset[cnt];
+        if (isalpha ((unsigned char) codeset[cnt]))
+          *wp++ = tolower ((unsigned char) codeset[cnt]);
+        else if (isdigit ((unsigned char) codeset[cnt]))
+          *wp++ = codeset[cnt];
 
       *wp = '\0';
     }

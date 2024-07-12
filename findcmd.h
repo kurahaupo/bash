@@ -24,9 +24,9 @@
 #include "stdc.h"
 
 /* Flags for search_for_command */
-#define CMDSRCH_HASH		0x01
-#define CMDSRCH_STDPATH		0x02
-#define CMDSRCH_TEMPENV		0x04
+#define CMDSRCH_HASH            0x01
+#define CMDSRCH_STDPATH         0x02
+#define CMDSRCH_TEMPENV         0x04
 
 extern int file_status (const char *);
 extern int executable_file (const char *);

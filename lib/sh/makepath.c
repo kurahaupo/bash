@@ -35,10 +35,10 @@
 /* MAKE SURE THESE AGREE WITH ../../externs.h. */
 
 #ifndef MP_DOTILDE
-#  define MP_DOTILDE	0x01
-#  define MP_DOCWD	0x02
-#  define MP_RMDOT	0x04
-#  define MP_IGNDOT	0x08
+#  define MP_DOTILDE    0x01
+#  define MP_DOCWD      0x02
+#  define MP_RMDOT      0x04
+#  define MP_IGNDOT     0x08
 #endif
 
 extern char *get_working_directory (char *);
@@ -71,24 +71,24 @@ sh_makepath (const char *path, const char *dir, int flags)
   if (path == 0 || *path == '\0')
     {
       if (flags & MP_DOCWD)
-	{
-	  xpath = get_working_directory ("sh_makepath");
-	  if (xpath == 0)
-	    {
-	      ret = get_string_value ("PWD");
-	      if (ret)
-		xpath = savestring (ret);
-	    }
-	  if (xpath == 0)
-	    MAKEDOT();
-	  else
-	    pathlen = strlen (xpath);
-	}
+        {
+          xpath = get_working_directory ("sh_makepath");
+          if (xpath == 0)
+            {
+              ret = get_string_value ("PWD");
+              if (ret)
+                xpath = savestring (ret);
+            }
+          if (xpath == 0)
+            MAKEDOT();
+          else
+            pathlen = strlen (xpath);
+        }
       else
-	MAKEDOT();
+        MAKEDOT();
     }
   else if ((flags & MP_IGNDOT) && path[0] == '.' && (path[1] == '\0' ||
-						     (path[1] == '/' && path[2] == '\0')))
+                                                     (path[1] == '/' && path[2] == '\0')))
     {
       xpath = nullpath;
       pathlen = 0;
@@ -112,7 +112,7 @@ sh_makepath (const char *path, const char *dir, int flags)
   while (*s)
     *r++ = *s++;
   if (s > xpath && s[-1] != '/')
-    *r++ = '/';      
+    *r++ = '/';
   s = xdir;
   while (*r++ = *s++)
     ;

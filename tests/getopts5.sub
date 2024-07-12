@@ -18,19 +18,19 @@ getop () {
     local OPTIND=1
     local OPTERR=1
 
-    echo getop: OPTERR=$OPTERR    
+    echo getop: OPTERR=$OPTERR
     while getopts ab arg "$@"; do
-	case $arg in
-	    a)
-		echo a here
-		;;
-	    b)
-		echo b here
-		;;
-	    :|?|*)
-		echo something else here
-		;;
-	esac
+        case $arg in
+            a)
+                echo a here
+                ;;
+            b)
+                echo b here
+                ;;
+            :|?|*)
+                echo something else here
+                ;;
+        esac
     done
     echo getop: OPTIND=$OPTIND
 }
@@ -41,16 +41,16 @@ OPTERR=0
 echo OPTERR=$OPTERR
 while getopts ab arg; do
     case $arg in
-	a)
-	    echo a here
-	    ;;
-	b)
-	    echo b here
-	    ;;
-	:|?|*)
-	    
-	    echo something else here
-	    ;;
+        a)
+            echo a here
+            ;;
+        b)
+            echo b here
+            ;;
+        :|?|*)
+
+            echo something else here
+            ;;
     esac
 done
 

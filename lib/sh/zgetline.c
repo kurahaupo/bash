@@ -1,5 +1,5 @@
 /* zgetline - read a line of input from a specified file descriptor and return
-	      a pointer to a newly-allocated buffer containing the data. */
+              a pointer to a newly-allocated buffer containing the data. */
 
 /* Copyright (C) 2008-2020,2022-2023 Free Software Foundation, Inc.
 
@@ -48,15 +48,15 @@ typedef ssize_t creadfunc_t (int, char *);
 /* Derived from GNU libc's getline.
    The behavior is almost the same as getline. See man getline.
    The differences are
-   	(1) using file descriptor instead of FILE *;
-	(2) the order of arguments: the file descriptor comes first;
-	(3) the addition of a fourth argument, DELIM; sets the delimiter to
-	    be something other than newline if desired.  If setting DELIM,
-	    the next argument should be 1; and
-	(4) the addition of a fifth argument, UNBUFFERED_READ; this argument
-	    controls whether get_line uses buffering or not to get a byte data
-	    from FD. get_line uses zreadc if UNBUFFERED_READ is zero; and
-	    uses zread if UNBUFFERED_READ is non-zero.
+        (1) using file descriptor instead of FILE *;
+        (2) the order of arguments: the file descriptor comes first;
+        (3) the addition of a fourth argument, DELIM; sets the delimiter to
+            be something other than newline if desired.  If setting DELIM,
+            the next argument should be 1; and
+        (4) the addition of a fifth argument, UNBUFFERED_READ; this argument
+            controls whether get_line uses buffering or not to get a byte data
+            from FD. get_line uses zreadc if UNBUFFERED_READ is zero; and
+            uses zread if UNBUFFERED_READ is non-zero.
 
    Returns number of bytes read or -1 on error. */
 
@@ -72,49 +72,49 @@ zgetline (int fd, char **lineptr, size_t *n, int delim, int unbuffered_read)
 
   nr = 0;
   line = *lineptr;
-  
+
   while (1)
     {
       retval = unbuffered_read ? zread (fd, &c, 1) : zreadc(fd, &c);
 
       if (retval <= 0)
-	{
-	  if (line && nr > 0)
-	    line[nr] = '\0';
-	  break;
-	}
+        {
+          if (line && nr > 0)
+            line[nr] = '\0';
+          break;
+        }
 
       if (nr + 2 >= *n)
-	{
-	  size_t new_size;
+        {
+          size_t new_size;
 
-	  new_size = (*n == 0) ? GET_LINE_INITIAL_ALLOCATION : *n * 2;
-	  line = (*n >= new_size) ? NULL : xrealloc (*lineptr, new_size);
+          new_size = (*n == 0) ? GET_LINE_INITIAL_ALLOCATION : *n * 2;
+          line = (*n >= new_size) ? NULL : xrealloc (*lineptr, new_size);
 
-	  if (line)
-	    {
-	      *lineptr = line;
-	      *n = new_size;
-	    }
-	  else
-	    {
-	      if (*n > 0)
-		{
-		  (*lineptr)[*n - 1] = '\0';
-		  nr = *n - 2;
-		}
-	      break;
-	    }
-	}
+          if (line)
+            {
+              *lineptr = line;
+              *n = new_size;
+            }
+          else
+            {
+              if (*n > 0)
+                {
+                  (*lineptr)[*n - 1] = '\0';
+                  nr = *n - 2;
+                }
+              break;
+            }
+        }
 
       line[nr] = c;
       nr++;
 
       if (c == delim)
-	{
-	  line[nr] = '\0';
-	  break;
-	}
+        {
+          line[nr] = '\0';
+          break;
+        }
     }
 
   return nr - 1;

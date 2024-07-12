@@ -15,22 +15,22 @@
 typeset -i errors=0
 ckval()
 {
-	typeset -n one=$1
+        typeset -n one=$1
 
-	if [[ $one != $2 ]]; then
-		echo "one=$one != 2=$2"
-		(( errors++ ))
-	fi
+        if [[ $one != $2 ]]; then
+                echo "one=$one != 2=$2"
+                (( errors++ ))
+        fi
 }
-		
+
 ckref()
 {
-	typeset -n one=$1 two=$2
+        typeset -n one=$1 two=$2
 
-	if [[ $one != $two ]]; then
-		echo "one=$one != two=$two"
-		(( errors++ ))
-	fi
+        if [[ $one != $two ]]; then
+                echo "one=$one != two=$two"
+                (( errors++ ))
+        fi
 }
 
 name=first
@@ -48,7 +48,7 @@ func2()
         typeset color=$1
         set -- ${color[@]}
         printf "<%s>" "$@"
-	echo
+        echo
 }
 
 typeset -A color
@@ -85,10 +85,10 @@ unset -n bar
 bar=123
 foobar()
 {
-	typeset -n foo=bar
-	typeset -n foo=bar
+        typeset -n foo=bar
+        typeset -n foo=bar
 
-	ckval foo 123
+        ckval foo 123
 }
 
 typeset -n short=long
@@ -118,11 +118,11 @@ echo ${bar[@]}
 
 barfunc()
 {
-	typeset -n v=$1
-	echo ${v[@]}
-	echo ${v[4]}
-	v[2]=44
-	echo ${bar[@]}
+        typeset -n v=$1
+        echo ${v[@]}
+        echo ${v[4]}
+        v[2]=44
+        echo ${bar[@]}
 }
 barfunc bar
 
@@ -136,9 +136,9 @@ typeset -n ref
 x=42
 foobar()
 {
-	local xxx=3
-	ref=xxx
-	return 0
+        local xxx=3
+        ref=xxx
+        return 0
 }
 echo ${ref-unset}
 ref=x
@@ -149,9 +149,9 @@ ckval x xxx
 # assignment in a function to something possibly out of scope
 assignvar()
 {
-	typeset -n v=$1
-	shift
-	v="$@"
+        typeset -n v=$1
+        shift
+        v="$@"
 }
 
 assignvar lex a b c d e

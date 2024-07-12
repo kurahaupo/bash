@@ -34,38 +34,38 @@ extern "C" {
 enum expression_operator
 {
   /* Without arguments:  */
-  var,				/* The variable "n".  */
-  num,				/* Decimal number.  */
+  var,                          /* The variable "n".  */
+  num,                          /* Decimal number.  */
   /* Unary operators:  */
-  lnot,				/* Logical NOT.  */
+  lnot,                         /* Logical NOT.  */
   /* Binary operators:  */
-  mult,				/* Multiplication.  */
-  divide,			/* Division.  */
-  module,			/* Modulo operation.  */
-  plus,				/* Addition.  */
-  minus,			/* Subtraction.  */
-  less_than,			/* Comparison.  */
-  greater_than,			/* Comparison.  */
-  less_or_equal,		/* Comparison.  */
-  greater_or_equal,		/* Comparison.  */
-  equal,			/* Comparison for equality.  */
-  not_equal,			/* Comparison for inequality.  */
-  land,				/* Logical AND.  */
-  lor,				/* Logical OR.  */
+  mult,                         /* Multiplication.  */
+  divide,                       /* Division.  */
+  module,                       /* Modulo operation.  */
+  plus,                         /* Addition.  */
+  minus,                        /* Subtraction.  */
+  less_than,                    /* Comparison.  */
+  greater_than,                 /* Comparison.  */
+  less_or_equal,                /* Comparison.  */
+  greater_or_equal,             /* Comparison.  */
+  equal,                        /* Comparison for equality.  */
+  not_equal,                    /* Comparison for inequality.  */
+  land,                         /* Logical AND.  */
+  lor,                          /* Logical OR.  */
   /* Ternary operators:  */
-  qmop				/* Question mark operator.  */
+  qmop                          /* Question mark operator.  */
 };
 
 /* This is the representation of the expressions to determine the
    plural form.  */
 struct expression
 {
-  int nargs;			/* Number of arguments.  */
+  int nargs;                    /* Number of arguments.  */
   enum expression_operator operation;
   union
   {
-    unsigned long int num;	/* Number value for `num'.  */
-    struct expression *args[3];	/* Up to three arguments.  */
+    unsigned long int num;      /* Number value for `num'.  */
+    struct expression *args[3]; /* Up to three arguments.  */
   } val;
 };
 
@@ -125,13 +125,13 @@ extern const struct expression GERMANIC_PLURAL attribute_hidden;
 extern struct expression GERMANIC_PLURAL attribute_hidden;
 #endif
 extern void EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
-				       const struct expression **pluralp,
-				       unsigned long int *npluralsp)
+                                       const struct expression **pluralp,
+                                       unsigned long int *npluralsp)
      internal_function;
 
 #if !defined (_LIBC) && !defined (IN_LIBINTL) && !defined (IN_LIBGLOCALE)
 extern unsigned long int plural_eval (const struct expression *pexp,
-				      unsigned long int n);
+                                      unsigned long int n);
 #endif
 
 

@@ -36,7 +36,7 @@ outer()
 echo main: ${res-unset}
 outer set
 echo main: after first call: ${res-unset}
-outer dontset 
+outer dontset
 echo main: after second call: ${res-unset}
 
 unset -f outer inner
@@ -45,10 +45,10 @@ unset res
 # local scope, unset variable at the same scope as local declaration
 func()
 {
-	typeset x=4
+        typeset x=4
 
-	unset x
-	echo ${FUNCNAME}: ${x:-null or unset}
+        unset x
+        echo ${FUNCNAME}: ${x:-null or unset}
 }
 
 x=outside

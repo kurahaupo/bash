@@ -13,12 +13,12 @@
 #
 f1()
 {
-	echo f1
+        echo f1
 }
 
 f2()
 {
-	echo f2
+        echo f2
 }
 
 v1=one
@@ -42,12 +42,12 @@ declare -f -p f1 f2
 
 f1()
 {
-	echo f1
+        echo f1
 }
 
 f2()
 {
-	echo f2
+        echo f2
 }
 
 v1=one-one

@@ -32,11 +32,11 @@
 #  include <sys/utsname.h>
 #else
 struct utsname {
-	char	sysname[32];
-	char	nodename[32];
-	char	release[32];
-	char	version[32];
-	char	machine[32];
+        char    sysname[32];
+        char    nodename[32];
+        char    release[32];
+        char    version[32];
+        char    machine[32];
 };
 #endif
 
@@ -47,13 +47,13 @@ struct utsname {
 #include "bashgetopt.h"
 #include "common.h"
 
-#define FLAG_SYSNAME	0x01	/* -s */
-#define FLAG_NODENAME	0x02	/* -n */
-#define FLAG_RELEASE	0x04	/* -r */
-#define FLAG_VERSION	0x08	/* -v */
-#define FLAG_MACHINE	0x10	/* -m, -p */
+#define FLAG_SYSNAME    0x01    /* -s */
+#define FLAG_NODENAME   0x02    /* -n */
+#define FLAG_RELEASE    0x04    /* -r */
+#define FLAG_VERSION    0x08    /* -v */
+#define FLAG_MACHINE    0x10    /* -m, -p */
 
-#define FLAG_ALL	0x1f
+#define FLAG_ALL        0x1f
 
 #ifndef errno
 extern int errno;
@@ -74,31 +74,31 @@ uname_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "amnprsv")) != -1)
     {
       switch (opt)
-	{
-	case 'a':
-	  uname_flags |= FLAG_ALL;
-	  break;
-	case 'm':
-	case 'p':
-	  uname_flags |= FLAG_MACHINE;
-	  break;
-	case 'n':
-	  uname_flags |= FLAG_NODENAME;
-	  break;
-	case 'r':
-	  uname_flags |= FLAG_RELEASE;
-	  break;
-	case 's':
-	  uname_flags |= FLAG_SYSNAME;
-	  break;
-	case 'v':
-	  uname_flags |= FLAG_VERSION;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'a':
+          uname_flags |= FLAG_ALL;
+          break;
+        case 'm':
+        case 'p':
+          uname_flags |= FLAG_MACHINE;
+          break;
+        case 'n':
+          uname_flags |= FLAG_NODENAME;
+          break;
+        case 'r':
+          uname_flags |= FLAG_RELEASE;
+          break;
+        case 's':
+          uname_flags |= FLAG_SYSNAME;
+          break;
+        case 'v':
+          uname_flags |= FLAG_VERSION;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -143,17 +143,17 @@ uprint (int flag, char *info)
 }
 
 char *uname_doc[] = {
-	"Display system information.",
-	"",
-	"Display information about the system hardware and OS.",
-	(char *)NULL
+        "Display system information.",
+        "",
+        "Display information about the system hardware and OS.",
+        (char *)NULL
 };
 
 struct builtin uname_struct = {
-	"uname",
-	uname_builtin,
-	BUILTIN_ENABLED,
-	uname_doc,
-	"uname [-amnrsv]",
-	0
+        "uname",
+        uname_builtin,
+        BUILTIN_ENABLED,
+        uname_doc,
+        "uname [-amnrsv]",
+        0
 };

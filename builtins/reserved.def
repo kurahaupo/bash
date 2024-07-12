@@ -48,11 +48,11 @@ $SHORT_DOC for (( exp1; exp2; exp3 )); do COMMANDS; done
 Arithmetic for loop.
 
 Equivalent to
-	(( EXP1 ))
-	while (( EXP2 )); do
-		COMMANDS
-		(( EXP3 ))
-	done
+        (( EXP1 ))
+        while (( EXP2 )); do
+                COMMANDS
+                (( EXP3 ))
+        done
 EXP1, EXP2, and EXP3 are arithmetic expressions.  If any expression is
 omitted, it behaves as if it evaluates to 1.
 
@@ -88,7 +88,7 @@ Execute PIPELINE and print a summary of the real time, user CPU time,
 and system CPU time spent executing PIPELINE when it terminates.
 
 Options:
-  -p	print the timing summary in the portable Posix format
+  -p    print the timing summary in the portable Posix format
 
 The value of the TIMEFORMAT variable is used as the output format.
 
@@ -219,10 +219,10 @@ Returns a status of 0 or 1 depending on the evaluation of the conditional
 expression EXPRESSION.  Expressions are composed of the same primaries used
 by the `test' builtin, and may be combined using the following operators:
 
-  ( EXPRESSION )	Returns the value of EXPRESSION
-  ! EXPRESSION		True if EXPRESSION is false; else false
-  EXPR1 && EXPR2	True if both EXPR1 and EXPR2 are true; else false
-  EXPR1 || EXPR2	True if either EXPR1 or EXPR2 is true; else false
+  ( EXPRESSION )        Returns the value of EXPRESSION
+  ! EXPRESSION          True if EXPRESSION is false; else false
+  EXPR1 && EXPR2        True if both EXPR1 and EXPR2 are true; else false
+  EXPR1 || EXPR2        True if either EXPR1 or EXPR2 is true; else false
 
 When the `==' and `!=' operators are used, the string to the right of
 the operator is used as a pattern and pattern matching is performed.
@@ -241,58 +241,58 @@ $DOCNAME variable_help
 $SHORT_DOC variables - Names and meanings of some shell variables
 Common shell variable names and usage.
 
-BASH_VERSION	Version information for this Bash.
-CDPATH	A colon-separated list of directories to search
-		for directories given as arguments to `cd'.
-GLOBIGNORE	A colon-separated list of patterns describing filenames to
-		be ignored by pathname expansion.
+BASH_VERSION    Version information for this Bash.
+CDPATH  A colon-separated list of directories to search
+                for directories given as arguments to `cd'.
+GLOBIGNORE      A colon-separated list of patterns describing filenames to
+                be ignored by pathname expansion.
 #if defined (HISTORY)
-HISTFILE	The name of the file where your command history is stored.
-HISTFILESIZE	The maximum number of lines this file can contain.
-HISTSIZE	The maximum number of history lines that a running
-		shell can access.
+HISTFILE        The name of the file where your command history is stored.
+HISTFILESIZE    The maximum number of lines this file can contain.
+HISTSIZE        The maximum number of history lines that a running
+                shell can access.
 #endif /* HISTORY */
-HOME	The complete pathname to your login directory.
-HOSTNAME	The name of the current host.
-HOSTTYPE	The type of CPU this version of Bash is running under.
-IGNOREEOF	Controls the action of the shell on receipt of an EOF
-		character as the sole input.  If set, then the value
-		of it is the number of EOF characters that can be seen
-		in a row on an empty line before the shell will exit
-		(default 10).  When unset, EOF signifies the end of input.
-MACHTYPE	A string describing the current system Bash is running on.
-MAILCHECK	How often, in seconds, Bash checks for new mail.
-MAILPATH	A colon-separated list of filenames which Bash checks
-		for new mail.
-OSTYPE	The version of Unix this version of Bash is running on.
-PATH	A colon-separated list of directories to search when
-		looking for commands.
-PROMPT_COMMAND	A command to be executed before the printing of each
-		primary prompt.
-PS1		The primary prompt string.
-PS2		The secondary prompt string.
-PWD		The full pathname of the current directory.
-SHELLOPTS	A colon-separated list of enabled shell options.
-TERM	The name of the current terminal type.
-TIMEFORMAT	The output format for timing statistics displayed by the
-		`time' reserved word.
-auto_resume	Non-null means a command word appearing on a line by
-		itself is first looked for in the list of currently
-		stopped jobs.  If found there, that job is foregrounded.
-		A value of `exact' means that the command word must
-		exactly match a command in the list of stopped jobs.  A
-		value of `substring' means that the command word must
-		match a substring of the job.  Any other value means that
-		the command must be a prefix of a stopped job.
+HOME    The complete pathname to your login directory.
+HOSTNAME        The name of the current host.
+HOSTTYPE        The type of CPU this version of Bash is running under.
+IGNOREEOF       Controls the action of the shell on receipt of an EOF
+                character as the sole input.  If set, then the value
+                of it is the number of EOF characters that can be seen
+                in a row on an empty line before the shell will exit
+                (default 10).  When unset, EOF signifies the end of input.
+MACHTYPE        A string describing the current system Bash is running on.
+MAILCHECK       How often, in seconds, Bash checks for new mail.
+MAILPATH        A colon-separated list of filenames which Bash checks
+                for new mail.
+OSTYPE  The version of Unix this version of Bash is running on.
+PATH    A colon-separated list of directories to search when
+                looking for commands.
+PROMPT_COMMAND  A command to be executed before the printing of each
+                primary prompt.
+PS1             The primary prompt string.
+PS2             The secondary prompt string.
+PWD             The full pathname of the current directory.
+SHELLOPTS       A colon-separated list of enabled shell options.
+TERM    The name of the current terminal type.
+TIMEFORMAT      The output format for timing statistics displayed by the
+                `time' reserved word.
+auto_resume     Non-null means a command word appearing on a line by
+                itself is first looked for in the list of currently
+                stopped jobs.  If found there, that job is foregrounded.
+                A value of `exact' means that the command word must
+                exactly match a command in the list of stopped jobs.  A
+                value of `substring' means that the command word must
+                match a substring of the job.  Any other value means that
+                the command must be a prefix of a stopped job.
 #if defined (HISTORY)
 #  if defined (BANG_HISTORY)
-histchars	Characters controlling history expansion and quick
-		substitution.  The first character is the history
-		substitution character, usually `!'.  The second is
-		the `quick substitution' character, usually `^'.  The
-		third is the `history comment' character, usually `#'.
+histchars       Characters controlling history expansion and quick
+                substitution.  The first character is the history
+                substitution character, usually `!'.  The second is
+                the `quick substitution' character, usually `^'.  The
+                third is the `history comment' character, usually `#'.
 #  endif /* BANG_HISTORY */
-HISTIGNORE	A colon-separated list of patterns used to decide which
-		commands should be saved on the history list.
+HISTIGNORE      A colon-separated list of patterns used to decide which
+                commands should be saved on the history list.
 #endif /* HISTORY */
 $END

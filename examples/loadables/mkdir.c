@@ -40,7 +40,7 @@
 extern int errno;
 #endif
 
-#define ISOCTAL(c)	((c) >= '0' && (c) <= '7')
+#define ISOCTAL(c)      ((c) >= '0' && (c) <= '7')
 
 extern int parse_symbolic_mode (char *, mode_t);
 
@@ -61,17 +61,17 @@ mkdir_builtin (WORD_LIST *list)
   while ((opt = internal_getopt(list, "m:p")) != -1)
     switch (opt)
       {
-	case 'p':
-	  pflag = 1;
-	  break;
-	case 'm':
-	  mflag = 1;
-	  mode = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage();
-	  return (EX_USAGE);
+        case 'p':
+          pflag = 1;
+          break;
+        case 'm':
+          mflag = 1;
+          mode = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage();
+          return (EX_USAGE);
       }
   list = loptend;
 
@@ -82,25 +82,25 @@ mkdir_builtin (WORD_LIST *list)
     }
 
   if (mode == NULL)
-    omode = S_IRWXU | S_IRWXG | S_IRWXO;	/* a=rwx */
-  else if (ISOCTAL (*mode))	/* octal number */
+    omode = S_IRWXU | S_IRWXG | S_IRWXO;        /* a=rwx */
+  else if (ISOCTAL (*mode))     /* octal number */
     {
       omode = read_octal (mode);
       if (omode < 0)
-	{
-	  builtin_error ("invalid file mode: %s", mode);
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("invalid file mode: %s", mode);
+          return (EXECUTION_FAILURE);
+        }
     }
-  else 				/* symbolic mode */
+  else                          /* symbolic mode */
     {
       /* initial bits are a=rwx; the mode argument modifies them */
       omode = parse_symbolic_mode (mode, S_IRWXU | S_IRWXG | S_IRWXO);
       if (omode < 0)
-	{
-	  builtin_error ("invalid file mode: %s", mode);
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("invalid file mode: %s", mode);
+          return (EXECUTION_FAILURE);
+        }
     }
 
   /* Make the new mode */
@@ -108,7 +108,7 @@ mkdir_builtin (WORD_LIST *list)
   umask (original_umask);
 
   nmode = (S_IRWXU | S_IRWXG | S_IRWXO) & ~original_umask;
-  parent_mode = nmode | (S_IWUSR|S_IXUSR);	/* u+wx */
+  parent_mode = nmode | (S_IWUSR|S_IXUSR);      /* u+wx */
 
   /* Adjust new mode based on mode argument */
   nmode &= omode;
@@ -116,10 +116,10 @@ mkdir_builtin (WORD_LIST *list)
   for (rval = EXECUTION_SUCCESS, l = list; l; l = l->next)
     {
       if (pflag && make_path (l->word->word, mflag, nmode, parent_mode))
-	{
-	  rval = EXECUTION_FAILURE;
-	  continue;
-	}
+        {
+          rval = EXECUTION_FAILURE;
+          continue;
+        }
       else if (pflag == 0 && mkdir (l->word->word, nmode) < 0)
         {
           builtin_error ("cannot create directory `%s': %s", l->word->word, strerror (errno));
@@ -144,11 +144,11 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
   if (stat (path, &sb) == 0)
     {
       if (S_ISDIR (sb.st_mode) == 0)
-	{
-	  builtin_error ("`%s': file exists but is not a directory", path);
-	  return 1;
-	}
-	
+        {
+          builtin_error ("`%s': file exists but is not a directory", path);
+          return 1;
+        }
+
       if (user_mode && chmod (path, nmode))
         {
           builtin_error ("%s: %s", path, strerror (errno));
@@ -159,8 +159,8 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
     }
 
   oumask = umask (0);
-  npath = savestring (path);	/* So we can write to it. */
-    
+  npath = savestring (path);    /* So we can write to it. */
+
   /* Check whether or not we need to do anything with intermediate dirs. */
 
   /* Skip leading slashes. */
@@ -172,58 +172,58 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
   while (tail == 0)
     {
       if (*p == '\0')
-	tail = 1;
+        tail = 1;
       else
-	p = strchr (p, '/');
+        p = strchr (p, '/');
       if (p)
-	*p = '\0';
+        *p = '\0';
       else
-	tail = 1;
+        tail = 1;
       if (mkdir (npath, 0) < 0)
-	{
-	  /* "Each dir operand that names an existing directory shall be
-	      ignored without error." */
-	  if (errno == EEXIST || errno == EISDIR)
-	    {
-	      int e = errno;
-	      int fail = 0;
+        {
+          /* "Each dir operand that names an existing directory shall be
+              ignored without error." */
+          if (errno == EEXIST || errno == EISDIR)
+            {
+              int e = errno;
+              int fail = 0;
 
-	      if (stat (npath, &sb) != 0)
-		{
-		  fail = 1;
-		  builtin_error ("cannot create directory `%s': %s", npath, strerror (e));
-		}
-	      else if (e == EEXIST && S_ISDIR (sb.st_mode) == 0)
-		{
-		  fail = 1;
-		  builtin_error ("`%s': file exists but is not a directory", npath);
-		}
-	      if (fail)
-		{
-		  umask (original_umask);
-		  free (npath);
-		  return 1;
-		}
-	    }
-	  else
-	    {
-	      builtin_error ("cannot create directory `%s': %s", npath, strerror (errno));
-	      umask (original_umask);
-	      free (npath);
-	      return 1;
-	    }
-	}
+              if (stat (npath, &sb) != 0)
+                {
+                  fail = 1;
+                  builtin_error ("cannot create directory `%s': %s", npath, strerror (e));
+                }
+              else if (e == EEXIST && S_ISDIR (sb.st_mode) == 0)
+                {
+                  fail = 1;
+                  builtin_error ("`%s': file exists but is not a directory", npath);
+                }
+              if (fail)
+                {
+                  umask (original_umask);
+                  free (npath);
+                  return 1;
+                }
+            }
+          else
+            {
+              builtin_error ("cannot create directory `%s': %s", npath, strerror (errno));
+              umask (original_umask);
+              free (npath);
+              return 1;
+            }
+        }
       if (chmod (npath, (tail == 0) ? parent_mode : nmode) != 0)
-	{
-	  builtin_error ("cannot chmod directory `%s': %s", npath, strerror (errno));
-	  umask (original_umask);
-	  free (npath);
-	  return 1;
-	}
+        {
+          builtin_error ("cannot chmod directory `%s': %s", npath, strerror (errno));
+          umask (original_umask);
+          free (npath);
+          return 1;
+        }
       if (tail == 0)
-	*p++ = '/';	/* restore slash */
-      while (p && *p == '/')	/* skip consecutive slashes or trailing slash */
-	p++;
+        *p++ = '/';     /* restore slash */
+      while (p && *p == '/')    /* skip consecutive slashes or trailing slash */
+        p++;
     }
 
   umask (original_umask);
@@ -232,28 +232,28 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
 }
 
 char *mkdir_doc[] = {
-	"Create directories.",
-	"",
-	"Make directories.  Create the directories named as arguments, in",
-	"the order specified, using mode rwxrwxrwx as modified by the current",
-	"umask (see `help umask').  The -m option causes the file permission",
-	"bits of the final directory to be MODE.  The MODE argument may be",
-	"an octal number or a symbolic mode like that used by chmod(1).  If",
-	"a symbolic mode is used, the operations are interpreted relative to",
-	"an initial mode of \"a=rwx\".  The -p option causes any required",
-	"intermediate directories in PATH to be created.  The directories",
-	"are created with permission bits of rwxrwxrwx as modified by the current",
-	"umask, plus write and search permissions for the owner.  mkdir",
-	"returns 0 if the directories are created successfully, and non-zero",
-	"if an error occurs.",
-	(char *)NULL
+        "Create directories.",
+        "",
+        "Make directories.  Create the directories named as arguments, in",
+        "the order specified, using mode rwxrwxrwx as modified by the current",
+        "umask (see `help umask').  The -m option causes the file permission",
+        "bits of the final directory to be MODE.  The MODE argument may be",
+        "an octal number or a symbolic mode like that used by chmod(1).  If",
+        "a symbolic mode is used, the operations are interpreted relative to",
+        "an initial mode of \"a=rwx\".  The -p option causes any required",
+        "intermediate directories in PATH to be created.  The directories",
+        "are created with permission bits of rwxrwxrwx as modified by the current",
+        "umask, plus write and search permissions for the owner.  mkdir",
+        "returns 0 if the directories are created successfully, and non-zero",
+        "if an error occurs.",
+        (char *)NULL
 };
 
 struct builtin mkdir_struct = {
-	"mkdir",
-	mkdir_builtin,
-	BUILTIN_ENABLED,
-	mkdir_doc,
-	"mkdir [-p] [-m mode] directory [directory ...]",
-	0
+        "mkdir",
+        mkdir_builtin,
+        BUILTIN_ENABLED,
+        mkdir_doc,
+        "mkdir [-p] [-m mode] directory [directory ...]",
+        0
 };

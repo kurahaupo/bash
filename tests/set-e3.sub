@@ -1,8 +1,8 @@
 foo()
 {
-	echo A:
-	. ./set-e3a.sub
-	echo D:
+        echo A:
+        . ./set-e3a.sub
+        echo D:
 }
 
 # should run all the way through; foo being called in a context where set -e

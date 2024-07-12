@@ -59,14 +59,14 @@ static char * const all_digs = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
 #define FMTCHAR(x) all_digs[(x)]
 
 #ifndef FL_PREFIX
-#  define FL_PREFIX	0x01	/* add 0x, 0X, or 0 prefix as appropriate */
-#  define FL_ADDBASE	0x02	/* add base# prefix to converted value */
-#  define FL_HEXUPPER	0x04	/* use uppercase when converting to hex */
-#  define FL_UNSIGNED	0x08	/* don't add any sign */
+#  define FL_PREFIX     0x01    /* add 0x, 0X, or 0 prefix as appropriate */
+#  define FL_ADDBASE    0x02    /* add base# prefix to converted value */
+#  define FL_HEXUPPER   0x04    /* use uppercase when converting to hex */
+#  define FL_UNSIGNED   0x08    /* don't add any sign */
 #endif
 
 #ifndef LONG
-#  define LONG	long
+#  define LONG  long
 #  define UNSIGNED_LONG unsigned long
 #endif
 
@@ -111,45 +111,45 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
     {
     case 10:
       if (ui < 10)
-	{
-	  *p-- = TOCHAR (ui);
-	  break;
-	}
+        {
+          *p-- = TOCHAR (ui);
+          break;
+        }
       /* Favor signed arithmetic over unsigned arithmetic; it is faster on
-	 many machines. */
+         many machines. */
       if ((LONG)ui < 0)
-	{
-	  *p-- = TOCHAR (ui % 10);
-	  si = ui / 10;
-	}
+        {
+          *p-- = TOCHAR (ui % 10);
+          si = ui / 10;
+        }
       else
         si = ui;
       do
-	*p-- = TOCHAR (si % 10);
+        *p-- = TOCHAR (si % 10);
       while (si /= 10);
       break;
 
     case 8:
       do
-	*p-- = TOCHAR (ui & 7);
+        *p-- = TOCHAR (ui & 7);
       while (ui >>= 3);
       break;
 
     case 16:
       do
-	*p-- = (flags & FL_HEXUPPER) ? X_digs[ui & 15] : x_digs[ui & 15];
+        *p-- = (flags & FL_HEXUPPER) ? X_digs[ui & 15] : x_digs[ui & 15];
       while (ui >>= 4);
       break;
 
     case 2:
       do
-	*p-- = TOCHAR (ui & 1);
+        *p-- = TOCHAR (ui & 1);
       while (ui >>= 1);
       break;
 
     default:
       do
-	*p-- = FMTCHAR (ui % base);
+        *p-- = FMTCHAR (ui % base);
       while (ui /= base);
       break;
     }
@@ -157,12 +157,12 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
   if ((flags & FL_PREFIX) && (base == 8 || base == 16))
     {
       if (base == 16)
-	{
-	  *p-- = (flags & FL_HEXUPPER) ? 'X' : 'x';
-	  *p-- = '0';
-	}
+        {
+          *p-- = (flags & FL_HEXUPPER) ? 'X' : 'x';
+          *p-- = '0';
+        }
       else if (p[1] != '0')
-	*p-- = '0';
+        *p-- = '0';
     }
   else if ((flags & FL_ADDBASE) && base != 10)
     {

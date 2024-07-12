@@ -1,5 +1,5 @@
 /* rlprivate.h -- functions and variables global to the readline library,
-		  but not intended for use by applications. */
+                  but not intended for use by applications. */
 
 /* Copyright (C) 1999-2024 Free Software Foundation, Inc.
 
@@ -23,25 +23,25 @@
 #if !defined (_RL_PRIVATE_H_)
 #define _RL_PRIVATE_H_
 
-#include "rlconf.h"	/* for VISIBLE_STATS */
+#include "rlconf.h"     /* for VISIBLE_STATS */
 #include "rlstdc.h"
-#include "posixjmp.h"	/* defines procenv_t */
-#include "rlmbutil.h"	/* for HANDLE_MULTIBYTE */
+#include "posixjmp.h"   /* defines procenv_t */
+#include "rlmbutil.h"   /* for HANDLE_MULTIBYTE */
 
 /*************************************************************************
- *									 *
- * Convenience definitions						 *
- *									 *
+ *                                                                       *
+ * Convenience definitions                                               *
+ *                                                                       *
  *************************************************************************/
 
-#define EMACS_MODE()		(rl_editing_mode == emacs_mode)
-#define VI_COMMAND_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap)
-#define VI_INSERT_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_insertion_keymap)
+#define EMACS_MODE()            (rl_editing_mode == emacs_mode)
+#define VI_COMMAND_MODE()       (rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap)
+#define VI_INSERT_MODE()        (rl_editing_mode == vi_mode && _rl_keymap == vi_insertion_keymap)
 
 #define RL_CHECK_SIGNALS() \
-	do { \
-	  if (_rl_caught_signal) _rl_signal_handler (_rl_caught_signal); \
-	} while (0)
+        do { \
+          if (_rl_caught_signal) _rl_signal_handler (_rl_caught_signal); \
+        } while (0)
 
 #define RL_SIG_RECEIVED() (_rl_caught_signal != 0)
 #define RL_SIGINT_RECEIVED() (_rl_caught_signal == SIGINT)
@@ -51,23 +51,23 @@
 #define CUSTOM_INPUT_FUNC() (rl_getc_function != rl_getc)
 
 /*************************************************************************
- *									 *
+ *                                                                       *
  * Global structs undocumented in texinfo manual and not in readline.h   *
- *									 *
+ *                                                                       *
  *************************************************************************/
 /* search types */
-#define RL_SEARCH_ISEARCH	0x01		/* incremental search */
-#define RL_SEARCH_NSEARCH	0x02		/* non-incremental search */
-#define RL_SEARCH_CSEARCH	0x04		/* intra-line char search */
+#define RL_SEARCH_ISEARCH       0x01            /* incremental search */
+#define RL_SEARCH_NSEARCH       0x02            /* non-incremental search */
+#define RL_SEARCH_CSEARCH       0x04            /* intra-line char search */
 
 /* search flags */
-#define SF_REVERSE		0x01
-#define SF_FOUND		0x02
-#define SF_FAILED		0x04
-#define SF_CHGKMAP		0x08
-#define SF_PATTERN		0x10
-#define SF_NOCASE		0x20		/* unused so far */
-#define SF_FREEPMT		0x40		/* saved prompt separately, need to free it */
+#define SF_REVERSE              0x01
+#define SF_FOUND                0x02
+#define SF_FAILED               0x04
+#define SF_CHGKMAP              0x08
+#define SF_PATTERN              0x10
+#define SF_NOCASE               0x20            /* unused so far */
+#define SF_FREEPMT              0x40            /* saved prompt separately, need to free it */
 
 typedef struct  __rl_search_context
 {
@@ -91,8 +91,8 @@ typedef struct  __rl_search_context
 
   UNDO_LIST *save_undo_list;
 
-  Keymap keymap;	/* used when dispatching commands in search string */
-  Keymap okeymap;	/* original keymap */
+  Keymap keymap;        /* used when dispatching commands in search string */
+  Keymap okeymap;       /* original keymap */
 
   int history_pos;
   int direction;
@@ -112,8 +112,8 @@ typedef struct  __rl_search_context
 } _rl_search_cxt;
 
 /* readstr flags */
-#define READSTR_NOSPACE	0x01	/* don't insert space, use for completion */
-#define READSTR_FREEPMT	0x02	/* called rl_save_prompt, need to free it ourselves */
+#define READSTR_NOSPACE 0x01    /* don't insert space, use for completion */
+#define READSTR_FREEPMT 0x02    /* called rl_save_prompt, need to free it ourselves */
 
 typedef struct  __rl_readstr_context
 {
@@ -143,23 +143,23 @@ extern struct _rl_cmd _rl_pending_command;
 extern struct _rl_cmd *_rl_command_to_execute;
 
 /* Callback data for reading numeric arguments */
-#define NUM_SAWMINUS	0x01
-#define NUM_SAWDIGITS	0x02
-#define NUM_READONE	0x04
+#define NUM_SAWMINUS    0x01
+#define NUM_SAWDIGITS   0x02
+#define NUM_READONE     0x04
 
 typedef int _rl_arg_cxt;
 
 /* A context for reading key sequences longer than a single character when
    using the callback interface. */
-#define KSEQ_DISPATCHED	0x01
-#define KSEQ_SUBSEQ	0x02
-#define KSEQ_RECURSIVE	0x04
+#define KSEQ_DISPATCHED 0x01
+#define KSEQ_SUBSEQ     0x02
+#define KSEQ_RECURSIVE  0x04
 
 typedef struct __rl_keyseq_context
 {
   int flags;
   int subseq_arg;
-  int subseq_retval;		/* XXX */
+  int subseq_retval;            /* XXX */
   int okey;
 
   Keymap dmap;
@@ -170,24 +170,24 @@ typedef struct __rl_keyseq_context
 } _rl_keyseq_cxt;
 
 /* vi-mode commands that use result of motion command to define boundaries */
-#define VIM_DELETE	0x01
-#define VIM_CHANGE	0x02
-#define VIM_YANK	0x04
+#define VIM_DELETE      0x01
+#define VIM_CHANGE      0x02
+#define VIM_YANK        0x04
 
 /* various states for vi-mode commands that use motion commands.  reflects
    RL_READLINE_STATE */
-#define VMSTATE_READ	0x01
-#define VMSTATE_NUMARG	0x02
+#define VMSTATE_READ    0x01
+#define VMSTATE_NUMARG  0x02
 
 typedef struct __rl_vimotion_context
 {
   int op;
   int state;
-  int flags;		/* reserved */
+  int flags;            /* reserved */
   _rl_arg_cxt ncxt;
   int numeric_arg;
-  int start, end;	/* rl_point, rl_end */
-  int key, motion;	/* initial key, motion command */
+  int start, end;       /* rl_point, rl_end */
+  int key, motion;      /* initial key, motion command */
 } _rl_vimotion_cxt;
 
 /* fill in more as needed */
@@ -204,15 +204,15 @@ typedef int _rl_callback_func_t (_rl_callback_generic_arg *);
 typedef void _rl_sigcleanup_func_t (int, void *);
 
 /*************************************************************************
- *									 *
+ *                                                                       *
  * Global functions undocumented in texinfo manual and not in readline.h *
- *									 *
+ *                                                                       *
  *************************************************************************/
 
 /*************************************************************************
- *									 *
+ *                                                                       *
  * Global variables undocumented in texinfo manual and not in readline.h *
- *									 *
+ *                                                                       *
  *************************************************************************/
 
 /* complete.c */
@@ -238,9 +238,9 @@ extern int rl_display_fixed;
 extern int rl_blink_matching_paren;
 
 /*************************************************************************
- *									 *
- * Global functions and variables unused and undocumented		 *
- *									 *
+ *                                                                       *
+ * Global functions and variables unused and undocumented                *
+ *                                                                       *
  *************************************************************************/
 
 /* kill.c */
@@ -256,9 +256,9 @@ extern int _rl_fix_last_undo_of_type (int, int, int);
 extern char *_rl_savestring (const char *);
 
 /*************************************************************************
- *									 *
- * Functions and variables private to the readline library		 *
- *									 *
+ *                                                                       *
+ * Functions and variables private to the readline library               *
+ *                                                                       *
  *************************************************************************/
 
 /* NOTE: Functions and variables prefixed with `_rl_' are
@@ -267,7 +267,7 @@ extern char *_rl_savestring (const char *);
    to be visible to readline callers. */
 
 /*************************************************************************
- * Undocumented private functions					 *
+ * Undocumented private functions                                        *
  *************************************************************************/
 
 #if defined (READLINE_CALLBACKS)
@@ -359,17 +359,17 @@ extern int _rl_search_getchar (_rl_search_cxt *);
 
 /* kill.c */
 #ifndef BRACKETED_PASTE_DEFAULT
-#  define BRACKETED_PASTE_DEFAULT	1	/* XXX - for now */
+#  define BRACKETED_PASTE_DEFAULT       1       /* XXX - for now */
 #endif
 
-#define BRACK_PASTE_PREF	"\033[200~"
-#define BRACK_PASTE_SUFF	"\033[201~"
+#define BRACK_PASTE_PREF        "\033[200~"
+#define BRACK_PASTE_SUFF        "\033[201~"
 
-#define BRACK_PASTE_LAST	'~'
-#define BRACK_PASTE_SLEN	6
+#define BRACK_PASTE_LAST        '~'
+#define BRACK_PASTE_SLEN        6
 
-#define BRACK_PASTE_INIT	"\033[?2004h"
-#define BRACK_PASTE_FINI	"\033[?2004l\r"
+#define BRACK_PASTE_INIT        "\033[?2004h"
+#define BRACK_PASTE_FINI        "\033[?2004l\r"
 
 extern int _rl_read_bracketed_paste_prefix (int);
 extern char *_rl_bracketed_text (size_t *);
@@ -545,7 +545,7 @@ extern void _rl_free_history_entry (HIST_ENTRY *);
 #endif
 
 /*************************************************************************
- * Undocumented private variables					 *
+ * Undocumented private variables                                        *
  *************************************************************************/
 
 /* bind.c */

@@ -19,7 +19,7 @@
 */
 
 #include <config.h>
- 
+
 #include <stdio.h>
 #include <errno.h>
 
@@ -40,13 +40,13 @@
  *     The fields in the 'struct stat' are from the mail directory.
  *     The following fields are emulated:
  *
- *     st_nlink	always 1, unless st_blocks is not present, in which case it's
- *		the total number of messages
- *     st_size	 total number of bytes in all files
+ *     st_nlink always 1, unless st_blocks is not present, in which case it's
+ *              the total number of messages
+ *     st_size   total number of bytes in all files
  *     st_blocks       total number of messages, if present in struct stat
- *     st_atime	access time of newest file in maildir
- *     st_mtime	modify time of newest file in maildir
- *     st_mode	 S_IFDIR changed to S_IFREG
+ *     st_atime access time of newest file in maildir
+ *     st_mtime modify time of newest file in maildir
+ *     st_mode   S_IFDIR changed to S_IFREG
  *
  *     This is good enough for most mail-checking applications.
  */
@@ -125,29 +125,29 @@ mailstat(const char *path, struct stat *st)
       sprintf(file, "%s/", dir);
       l = strlen(file);
       if ((dd = opendir(dir)) == NULL)
-	return 0;
+        return 0;
       while ((fn = readdir(dd)) != NULL)
-	{
-	  if (fn->d_name[0] == '.' || strlen(fn->d_name) + l >= sizeof(file))
-	    continue;
-	  strcpy(file + l, fn->d_name);
-	  if (stat(file, &st_tmp) != 0)
-	    continue;
-	  st_ret.st_size += st_tmp.st_size;
+        {
+          if (fn->d_name[0] == '.' || strlen(fn->d_name) + l >= sizeof(file))
+            continue;
+          strcpy(file + l, fn->d_name);
+          if (stat(file, &st_tmp) != 0)
+            continue;
+          st_ret.st_size += st_tmp.st_size;
 #ifdef HAVE_STRUCT_STAT_ST_BLOCKS
-	  st_ret.st_blocks++;
+          st_ret.st_blocks++;
 #else
-	  st_ret.st_nlink++;
+          st_ret.st_nlink++;
 #endif
-	  if (st_tmp.st_atime != st_tmp.st_mtime && st_tmp.st_atime > atime)
-	    atime = st_tmp.st_atime;
-	  if (st_tmp.st_mtime > mtime)
-	    mtime = st_tmp.st_mtime;
-	}
+          if (st_tmp.st_atime != st_tmp.st_mtime && st_tmp.st_atime > atime)
+            atime = st_tmp.st_atime;
+          if (st_tmp.st_mtime > mtime)
+            mtime = st_tmp.st_mtime;
+        }
       closedir(dd);
     }
 
-/*  if (atime) */	/* Set atime even if cur/ is empty */
+/*  if (atime) */       /* Set atime even if cur/ is empty */
       st_ret.st_atime = atime;
     if (mtime)
       st_ret.st_mtime = mtime;

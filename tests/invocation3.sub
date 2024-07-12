@@ -9,17 +9,16 @@ SCRIPT=$TMPDIR/pretty-print-$$
 cat >$SCRIPT <<\EOF
 for i in 1 2 3
 {
-	select var in a b c; { echo $REPLY; } <<<a
-	echo answer was $REPLY
+        select var in a b c; { echo $REPLY; } <<<a
+        echo answer was $REPLY
 }
 
 for (( i=1; i <= 3; i++ ))
 {
-	echo $(( 2**$i ))
+        echo $(( 2**$i ))
 }
 EOF
 
 ${THIS_SH} --pretty-print $SCRIPT
 
 rm -f $SCRIPT
-	

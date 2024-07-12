@@ -57,7 +57,7 @@ builtin_builtin (WORD_LIST *list)
 
   if (no_options (list))
     return (EX_USAGE);
-  list = loptend;	/* skip over possible `--' */
+  list = loptend;       /* skip over possible `--' */
 
   if (list == 0)
     return (EXECUTION_SUCCESS);
@@ -77,7 +77,7 @@ builtin_builtin (WORD_LIST *list)
   else
     {
       this_command_name = command;
-      this_shell_builtin = function;	/* overwrite "builtin" as this builtin */
+      this_shell_builtin = function;    /* overwrite "builtin" as this builtin */
       list = list->next;
       return ((*function) (list));
     }

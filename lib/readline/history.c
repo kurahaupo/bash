@@ -56,9 +56,9 @@ extern int errno;
 #endif
 
 /* How big to make the_history when we first allocate it. */
-#define DEFAULT_HISTORY_INITIAL_SIZE	502
+#define DEFAULT_HISTORY_INITIAL_SIZE    502
 
-#define MAX_HISTORY_INITIAL_SIZE	8192
+#define MAX_HISTORY_INITIAL_SIZE        8192
 
 /* The number of slots to increase the_history by. */
 #define DEFAULT_HISTORY_GROW_SIZE 256
@@ -66,13 +66,13 @@ extern int errno;
 static char *hist_inittime (void);
 
 static int history_list_grow_size (void);
-static void history_list_resize (int);		/* XXX - size_t? */
+static void history_list_resize (int);          /* XXX - size_t? */
 static void advance_history (void);
 
 /* **************************************************************** */
-/*								    */
-/*			History Functions			    */
-/*								    */
+/*                                                                  */
+/*                      History Functions                           */
+/*                                                                  */
 /* **************************************************************** */
 
 /* An array of HIST_ENTRY.  This is where we store the history. the_history is
@@ -99,7 +99,7 @@ static int history_size;
 /* If HISTORY_STIFLED is non-zero, then this is the maximum number of
    entries to remember. */
 int history_max_entries;
-int max_input_history;	/* backwards compatibility */
+int max_input_history;  /* backwards compatibility */
 
 /* The current location of the interactive history pointer.  Just makes
    life easier for outside callers. */
@@ -235,7 +235,7 @@ _hs_at_end_of_history (void)
 {
   return (the_history == 0 || history_offset == history_length);
 }
- 
+
 /* Return the current history array.  The caller has to be careful, since this
    is the actual array of data, and could be bashed or made corrupt easily.
    The array is terminated with a NULL pointer. */
@@ -251,8 +251,8 @@ HIST_ENTRY *
 current_history (void)
 {
   return ((history_offset == history_length) || the_history == 0)
-		? (HIST_ENTRY *)NULL
-		: the_history[history_offset];
+                ? (HIST_ENTRY *)NULL
+                : the_history[history_offset];
 }
 
 /* Back up history_offset to the previous history entry, and return
@@ -282,8 +282,8 @@ history_get (int offset)
 
   local_index = offset - history_base;
   return (local_index >= history_length || local_index < 0 || the_history == 0)
-		? (HIST_ENTRY *)NULL
-		: the_history[local_index];
+                ? (HIST_ENTRY *)NULL
+                : the_history[local_index];
 }
 
 HIST_ENTRY *
@@ -312,7 +312,7 @@ history_get_time (HIST_ENTRY *hist)
   if (ts[0] != history_comment_char)
     return 0;
   errno = 0;
-  t = (time_t) strtol (ts + 1, (char **)NULL, 10);		/* XXX - should use strtol() here */
+  t = (time_t) strtol (ts + 1, (char **)NULL, 10);              /* XXX - should use strtol() here */
   if (errno == ERANGE)
     return (time_t)0;
   return t;
@@ -325,7 +325,7 @@ hist_inittime (void)
   char ts[64], *ret;
 
   t = getnow ();
-#if defined (HAVE_VSNPRINTF)		/* assume snprintf if vsnprintf exists */
+#if defined (HAVE_VSNPRINTF)            /* assume snprintf if vsnprintf exists */
   snprintf (ts, sizeof (ts) - 1, "X%lu", (unsigned long) t);
 #else
   sprintf (ts, "X%lu", (unsigned long) t);
@@ -389,13 +389,13 @@ add_history (const char *string)
   if (history_stifled && (history_length == history_max_entries))
     {
       /* If the history is stifled, and history_length is zero,
-	 and it equals history_max_entries, we don't save items. */
+         and it equals history_max_entries, we don't save items. */
       if (history_length == 0)
-	return;
+        return;
 
       /* If there is something in the slot, then remove it. */
       if (the_history[0])
-	(void) free_history_entry (the_history[0]);
+        (void) free_history_entry (the_history[0]);
 
       /* Advance the pointer into real_history, resizing if necessary. */
       advance_history ();
@@ -406,23 +406,23 @@ add_history (const char *string)
   else
     {
       if (history_size == 0)
-	{
-	  int initial_size;
-	  if (history_stifled && history_max_entries > 0)
-	    initial_size = (history_max_entries > MAX_HISTORY_INITIAL_SIZE)
-				? MAX_HISTORY_INITIAL_SIZE
-				: history_max_entries + 2;
-	  else
-	    initial_size = DEFAULT_HISTORY_INITIAL_SIZE;
-	  history_list_resize (initial_size);
-	  new_length = 1;
-	}
+        {
+          int initial_size;
+          if (history_stifled && history_max_entries > 0)
+            initial_size = (history_max_entries > MAX_HISTORY_INITIAL_SIZE)
+                                ? MAX_HISTORY_INITIAL_SIZE
+                                : history_max_entries + 2;
+          else
+            initial_size = DEFAULT_HISTORY_INITIAL_SIZE;
+          history_list_resize (initial_size);
+          new_length = 1;
+        }
       else
-	{
-	  if (history_length == (history_size - 1))
-	    history_list_resize (real_history_size + history_list_grow_size ());
-	  new_length = history_length + 1;
-	}
+        {
+          if (history_length == (history_size - 1))
+            history_list_resize (real_history_size + history_list_grow_size ());
+          new_length = history_length + 1;
+        }
     }
 
   temp = alloc_history_entry ((char *)string, hist_inittime ());
@@ -479,7 +479,7 @@ copy_history_entry (HIST_ENTRY *hist)
 
   return ret;
 }
-  
+
 /* Make the history entry at WHICH have LINE and DATA.  This returns
    the old entry so you can dispose of the data.  In the case of an
    invalid WHICH, a NULL pointer is returned. */
@@ -514,13 +514,13 @@ _hs_append_history_line (int which, const char *line)
 
   hent = the_history[which];
   curlen = strlen (hent->line);
-  minlen = curlen + strlen (line) + 2;	/* min space needed */
-  if (curlen > 256)		/* XXX - for now */
+  minlen = curlen + strlen (line) + 2;  /* min space needed */
+  if (curlen > 256)             /* XXX - for now */
     {
-      newlen = 512;		/* now realloc in powers of 2 */
+      newlen = 512;             /* now realloc in powers of 2 */
       /* we recalcluate every time; the operations are cheap */
       while (newlen < minlen)
-	newlen <<= 1;
+        newlen <<= 1;
     }
   else
     newlen = minlen;
@@ -554,7 +554,7 @@ _hs_replace_history_data (int which, histdata_t *old, histdata_t *new)
     {
       entry = the_history[which];
       if (entry && entry->data == old)
-	entry->data = new;
+        entry->data = new;
       return;
     }
 
@@ -563,18 +563,18 @@ _hs_replace_history_data (int which, histdata_t *old, histdata_t *new)
     {
       entry = the_history[i];
       if (entry == 0)
-	continue;
+        continue;
       if (entry->data == old)
-	{
-	  last = i;
-	  if (which == -1)
-	    entry->data = new;
-	}
+        {
+          last = i;
+          if (which == -1)
+            entry->data = new;
+        }
     }
   if (which == -2 && last >= 0)
     {
       entry = the_history[last];
-      entry->data = new;	/* XXX - we don't check entry->old */
+      entry->data = new;        /* XXX - we don't check entry->old */
     }
 }
 
@@ -591,13 +591,13 @@ _hs_search_history_data (histdata_t *needle)
     {
       entry = the_history[i];
       if (entry == 0)
-	continue;
+        continue;
       if (entry->data == needle)
-	return i;
+        return i;
     }
   return -1;
 }
-  
+
 /* Remove history element WHICH from the history.  The removed
    element is returned to you so you can free the line, data,
    and containing structure. */
@@ -682,11 +682,11 @@ stifle_history (int max)
     {
       /* This loses because we cannot free the data. */
       for (i = 0, j = history_length - max; i < j; i++)
-	free_history_entry (the_history[i]);
+        free_history_entry (the_history[i]);
 
       history_base = i;
       for (j = 0, i = history_length - max; j < max; i++, j++)
-	the_history[j] = the_history[i];
+        the_history[j] = the_history[i];
       the_history[j] = (HIST_ENTRY *)NULL;
       history_length = j;
     }
@@ -729,5 +729,5 @@ clear_history (void)
     }
 
   history_offset = history_length = 0;
-  history_base = 1;		/* reset history base to default */
+  history_base = 1;             /* reset history base to default */
 }

@@ -19,42 +19,42 @@ bind 'set enable-bracketed-paste off' 2>/dev/null
 read -t 0.00001 -e var
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 1: ok
+        echo timeout 1: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${var:-unset or null 1}
 
 read -e -t 0.1 var
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 2: ok
+        echo timeout 2: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${var:-unset or null 2}
 
 read -e -t 1 var < /dev/tty
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 3: ok
+        echo timeout 3: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${var:-unset or null 3}
 
 sleep 1 | read -t 0.25 -e a
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 4: ok
+        echo timeout 4: ok
 else
-	echo $estat
+        echo $estat
 fi
 
 # the above should all time out
 echo abcde | {
-	read -e -t 0.5 a
-	echo $a
+        read -e -t 0.5 a
+        echo $a
 }
 
 read -e -t .001 a <<<abcde

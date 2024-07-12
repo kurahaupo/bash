@@ -33,12 +33,12 @@ loaddict()
 
 del()
 {
-	unset -v dict["$1"];
+        unset -v dict["$1"];
 }
 
 declare -A dict
 loaddict
-for k in "${!dict[@]}"; do del "$k"; done 
+for k in "${!dict[@]}"; do del "$k"; done
 declare -p dict
 
 unset 'dict[@]'
@@ -46,7 +46,7 @@ unset 'dict[@]'
 shopt -s assoc_expand_once
 declare -A dict
 loaddict
-for k in "${!dict[@]}"; do del "$k"; done 
+for k in "${!dict[@]}"; do del "$k"; done
 declare -p dict
 
 unset a b dict

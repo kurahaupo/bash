@@ -16,7 +16,7 @@
 
 func()
 {
-	printenv var
+        printenv var
 }
 
 export var=10
@@ -41,7 +41,7 @@ echo expect 50
 var=50 command printenv var
 
 # this behaves the same in bash and posix mode
-export -n var	# make sure it's not exported
+export -n var   # make sure it's not exported
 echo expect 60
 var=60 export var
 declare -p var

@@ -74,7 +74,7 @@ extern void err_unboundvar (const char *);
 extern void err_readonly (const char *);
 
 #ifdef DEBUG
-#  define INTERNAL_DEBUG(x)	internal_debug x
+#  define INTERNAL_DEBUG(x)     internal_debug x
 #else
 #  define INTERNAL_DEBUG(x)
 #endif

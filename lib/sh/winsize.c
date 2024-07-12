@@ -97,12 +97,12 @@ get_new_window_size (int from_sig, int *rp, int *cp)
       sh_set_lines_and_columns (win.ws_row, win.ws_col);
 #if defined (READLINE)
       if ((interactive_shell && no_line_editing == 0) || bash_readline_initialized)
-	rl_set_screen_size (win.ws_row, win.ws_col);
+        rl_set_screen_size (win.ws_row, win.ws_col);
 #endif
       if (rp)
-	*rp = win.ws_row;
+        *rp = win.ws_row;
       if (cp)
-	*cp = win.ws_col;
+        *cp = win.ws_col;
     }
 #endif
 }

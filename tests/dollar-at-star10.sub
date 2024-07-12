@@ -63,4 +63,3 @@ recho "${@}"$x
 
 recho "${a[*]}"
 recho "${a[@]}"
-

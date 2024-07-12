@@ -13,7 +13,7 @@ C=($(echo "${A[@]}" | \
 ${THIS_SH} -c '
 case foo in
 $( esac ; bar=foo ; echo "$bar")) echo bad 2;;
-*)	echo ok 2;;
+*)      echo ok 2;;
 esac
 
 echo we should not see this' case
@@ -32,8 +32,8 @@ ${THIS_SH} -c '( case foo in
 ${THIS_SH} -c '
 {fd}</dev/null {fd2}<$(foo=/dev/null ; echo $foo) exec
 case $fd2 in
-[0-9]*)	echo ok 3 ;;
-*)	echo bad 3 ;;
+[0-9]*) echo ok 3 ;;
+*)      echo bad 3 ;;
 esac' redirlist
 
 # comsub should exit on syntax error while parsing

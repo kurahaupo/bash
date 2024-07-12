@@ -13,16 +13,16 @@
 #
 t1()
 {
-	xxx="echo $@"
+        xxx="echo $@"
 
-	recho "$xxx ; echo $@"
+        recho "$xxx ; echo $@"
 }
 
 t2()
 {
-	xxx="echo $@"
+        xxx="echo $@"
 
-	recho "${xxx} ; echo $@"
+        recho "${xxx} ; echo $@"
 }
 
 t1 1

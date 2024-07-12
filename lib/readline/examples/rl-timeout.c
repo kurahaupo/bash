@@ -50,9 +50,9 @@ int running;
 const char *prompt = "rl-timeout$ ";
 
 /* **************************************************************** */
-/*								    */
-/* Example 1: readline () with rl_readline_state		    */
-/*								    */
+/*                                                                  */
+/* Example 1: readline () with rl_readline_state                    */
+/*                                                                  */
 /* **************************************************************** */
 
 void
@@ -72,9 +72,9 @@ rltest_timeout_readline1 ()
 }
 
 /* **************************************************************** */
-/*								    */
-/* Example 2: readline () with rl_timeout_event_hook		    */
-/*								    */
+/*                                                                  */
+/* Example 2: readline () with rl_timeout_event_hook                */
+/*                                                                  */
 /* **************************************************************** */
 
 static int
@@ -100,9 +100,9 @@ rltest_timeout_readline2 ()
 }
 
 /* **************************************************************** */
-/*								    */
-/* Example 3: rl_callback_* () with rl_timeout_remaining	    */
-/*								    */
+/*                                                                  */
+/* Example 3: rl_callback_* () with rl_timeout_remaining            */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Callback function called for each line when accept-line executed, EOF
@@ -115,11 +115,11 @@ cb_linehandler (char *line)
   if (line == NULL || strcmp (line, "exit") == 0)
     {
       if (line == 0)
-	printf ("\n");
+        printf ("\n");
       printf ("exit\n");
       /* This function needs to be called to reset the terminal settings,
-	 and calling it from the line handler keeps one extra prompt from
-	 being displayed. */
+         and calling it from the line handler keeps one extra prompt from
+         being displayed. */
       rl_callback_handler_remove ();
 
       running = 0;
@@ -127,7 +127,7 @@ cb_linehandler (char *line)
   else
     {
       if (*line)
-	add_history (line);
+        add_history (line);
       printf ("input line: %s\n", line);
       free (line);
     }
@@ -149,34 +149,34 @@ rltest_timeout_callback1 ()
       FD_SET (fileno (rl_instream), &fds);
       r = rl_timeout_remaining (&sec, &usec);
       if (r == 1)
-	{
-	  struct timeval timeout = {sec, usec};
-	  r = select (FD_SETSIZE, &fds, NULL, NULL, &timeout);
-	}
+        {
+          struct timeval timeout = {sec, usec};
+          r = select (FD_SETSIZE, &fds, NULL, NULL, &timeout);
+        }
       if (r < 0 && errno != EINTR)
-	{
-	  perror ("rl-timeout: select");
-	  rl_callback_handler_remove ();
-	  break;
-	}
+        {
+          perror ("rl-timeout: select");
+          rl_callback_handler_remove ();
+          break;
+        }
       else if (r == 0)
-	{
-	  printf ("rl-timeout: timeout\n");
-	  rl_callback_handler_remove ();
-	  break;
-	}
+        {
+          printf ("rl-timeout: timeout\n");
+          rl_callback_handler_remove ();
+          break;
+        }
 
       if (FD_ISSET (fileno (rl_instream), &fds))
-	rl_callback_read_char ();
+        rl_callback_read_char ();
     }
 
   printf ("rl-timeout: Event loop has exited\n");
 }
 
 /* **************************************************************** */
-/*								    */
-/* Example 4: rl_callback_* () with rl_timeout_event_hook	    */
-/*								    */
+/*                                                                  */
+/* Example 4: rl_callback_* () with rl_timeout_event_hook           */
+/*                                                                  */
 /* **************************************************************** */
 
 static int
@@ -209,32 +209,32 @@ main (int argc, char **argv)
   if (argc >= 2)
     {
       if (argc >= 3)
-	{
-	  double timeout = atof (argv[2]);
-	  if (timeout <= 0.0)
-	    {
-	      fprintf (stderr, "rl-timeout: specify a positive number for timeout.\n");
-	      return 2;
-	    }
-	  else if (timeout > UINT_MAX)
-	    {
-	      fprintf (stderr, "rl-timeout: timeout too large.\n");
-	      return 2;
-	    }
-	  timeout_secs = (unsigned) timeout;
-	  timeout_usecs = (unsigned) ((timeout - timeout_secs) * 1000000 + 0.5);
-	}
+        {
+          double timeout = atof (argv[2]);
+          if (timeout <= 0.0)
+            {
+              fprintf (stderr, "rl-timeout: specify a positive number for timeout.\n");
+              return 2;
+            }
+          else if (timeout > UINT_MAX)
+            {
+              fprintf (stderr, "rl-timeout: timeout too large.\n");
+              return 2;
+            }
+          timeout_secs = (unsigned) timeout;
+          timeout_usecs = (unsigned) ((timeout - timeout_secs) * 1000000 + 0.5);
+        }
 
       if (strcmp (argv[1], "readline1") == 0)
-	rltest_timeout_readline1 ();
+        rltest_timeout_readline1 ();
       else if (strcmp (argv[1], "readline2") == 0)
-	rltest_timeout_readline2 ();
+        rltest_timeout_readline2 ();
       else if (strcmp (argv[1], "callback1") == 0)
-	rltest_timeout_callback1 ();
+        rltest_timeout_callback1 ();
       else if (strcmp (argv[1], "callback2") == 0)
-	rltest_timeout_callback2 ();
+        rltest_timeout_callback2 ();
       else
-	return 2;
+        return 2;
     }
   else
     {

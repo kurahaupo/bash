@@ -20,7 +20,7 @@
 
 /*
  * NOTE:  This should be included after config.h, limits.h, stdint.h, and
- *	  inttypes.h
+ *        inttypes.h
  */
 
 #ifndef _SH_TYPEMAX_H
@@ -32,7 +32,7 @@
 
 /* Nonzero if the integer type T is signed.  */
 #ifndef TYPE_SIGNED
-#  define TYPE_SIGNED(t)	(! ((t) 0 < (t) -1))
+#  define TYPE_SIGNED(t)        (! ((t) 0 < (t) -1))
 #endif
 
 #ifndef TYPE_SIGNED_MAGNITUDE
@@ -57,7 +57,7 @@
 #ifdef HAVE_LONG_LONG_INT
 #  ifndef LLONG_MAX
 #    define LLONG_MAX   TYPE_MAXIMUM(long long int)
-#    define LLONG_MIN	TYPE_MINIMUM(long long int)
+#    define LLONG_MIN   TYPE_MINIMUM(long long int)
 #  endif
 #  ifndef ULLONG_MAX
 #    define ULLONG_MAX  TYPE_MAXIMUM(unsigned long long int)
@@ -65,28 +65,28 @@
 #endif
 
 #ifndef ULONG_MAX
-#  define ULONG_MAX	((unsigned long) ~(unsigned long) 0)
+#  define ULONG_MAX     ((unsigned long) ~(unsigned long) 0)
 #endif
 
 #ifndef LONG_MAX
-#  define LONG_MAX	((long int) (ULONG_MAX >> 1))
-#  define LONG_MIN	((long int) (-LONG_MAX - 1L))
+#  define LONG_MAX      ((long int) (ULONG_MAX >> 1))
+#  define LONG_MIN      ((long int) (-LONG_MAX - 1L))
 #endif
 
-#ifndef INT_MAX		/* ouch */
-#  define INT_MAX	TYPE_MAXIMUM(int)
-#  define INT_MIN	TYPE_MINIMUM(int)
-#  define UINT_MAX	((unsigned int) ~(unsigned int)0)
+#ifndef INT_MAX         /* ouch */
+#  define INT_MAX       TYPE_MAXIMUM(int)
+#  define INT_MIN       TYPE_MINIMUM(int)
+#  define UINT_MAX      ((unsigned int) ~(unsigned int)0)
 #endif
 
 #ifndef SHRT_MAX
-#  define SHRT_MAX	TYPE_MAXIMUM(short)
-#  define SHRT_MIN	TYPE_MINIMUM(short)
-#  define USHRT_MAX	((unsigned short) ~(unsigned short)0)
+#  define SHRT_MAX      TYPE_MAXIMUM(short)
+#  define SHRT_MIN      TYPE_MINIMUM(short)
+#  define USHRT_MAX     ((unsigned short) ~(unsigned short)0)
 #endif
 
 #ifndef UCHAR_MAX
-#  define UCHAR_MAX	255
+#  define UCHAR_MAX     255
 #endif
 
 /* workaround for gcc bug in versions < 2.7 */
@@ -99,28 +99,28 @@ static const unsigned long long int maxquad = ULLONG_MAX;
 #if !defined (INTMAX_MAX) || !defined (INTMAX_MIN)
 
 #if SIZEOF_INTMAX_T == SIZEOF_LONG_LONG
-#  define INTMAX_MAX	LLONG_MAX
-#  define INTMAX_MIN	LLONG_MIN
+#  define INTMAX_MAX    LLONG_MAX
+#  define INTMAX_MIN    LLONG_MIN
 #elif SIZEOF_INTMAX_T == SIZEOF_LONG
-#  define INTMAX_MAX	LONG_MAX
-#  define INTMAX_MIN	LONG_MIN
+#  define INTMAX_MAX    LONG_MAX
+#  define INTMAX_MIN    LONG_MIN
 #else
-#  define INTMAX_MAX	INT_MAX
-#  define INTMAX_MIN	INT_MIN
+#  define INTMAX_MAX    INT_MAX
+#  define INTMAX_MIN    INT_MIN
 #endif
 
 #endif
 
 #ifndef SSIZE_MAX
-#  define SSIZE_MAX	INT_MAX
+#  define SSIZE_MAX     INT_MAX
 #endif
 
 #ifndef SIZE_MAX
-#  define SIZE_MAX	((size_t) ~(size_t)0)
+#  define SIZE_MAX      ((size_t) ~(size_t)0)
 #endif
 
 #ifndef sh_imaxabs
-#  define sh_imaxabs(x)	(((x) >= 0) ? (x) : -(x))
+#  define sh_imaxabs(x) (((x) >= 0) ? (x) : -(x))
 #endif
 
 /* Handle signed arithmetic overflow and underflow.  Have to do it this way
@@ -129,13 +129,13 @@ static const unsigned long long int maxquad = ULLONG_MAX;
 /* Make sure that a+b does not exceed MAXV or is smaller than MINV (if b < 0).
    Assumes that b > 0 if a > 0 and b < 0 if a < 0 */
 #define ADDOVERFLOW(a,b,minv,maxv) \
-	((((a) > 0) && ((b) > ((maxv) - (a)))) || \
-	 (((a) < 0) && ((b) < ((minv) - (a)))))
+        ((((a) > 0) && ((b) > ((maxv) - (a)))) || \
+         (((a) < 0) && ((b) < ((minv) - (a)))))
 
 /* Make sure that a-b is not smaller than MINV or exceeds MAXV (if b < 0).
    Assumes that b > 0 if a > 0 and b < 0 if a < 0 */
 #define SUBOVERFLOW(a,b,minv,maxv) \
-	((((b) > 0) && ((a) < ((minv) + (b)))) || \
-	 (((b) < 0) && ((a) > ((maxv) + (b)))))
+        ((((b) > 0) && ((a) < ((minv) + (b)))) || \
+         (((b) < 0) && ((a) > ((maxv) + (b)))))
 
 #endif /* _SH_TYPEMAX_H */

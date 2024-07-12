@@ -17,22 +17,22 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef	_GLOB_H_
-#define	_GLOB_H_
+#ifndef _GLOB_H_
+#define _GLOB_H_
 
 #include "stdc.h"
 
-#define GX_MARKDIRS	0x001	/* mark directory names with trailing `/' */
-#define GX_NOCASE	0x002	/* ignore case */
-#define GX_MATCHDOT	0x004	/* match `.' literally */
-#define GX_MATCHDIRS	0x008	/* match only directory names */
-#define GX_ALLDIRS	0x010	/* match all directory names, no others */
-#define GX_NULLDIR	0x100	/* internal -- no directory preceding pattern */
-#define GX_ADDCURDIR	0x200	/* internal -- add passed directory name */
-#define GX_GLOBSTAR	0x400	/* turn on special handling of ** */
-#define GX_RECURSE	0x800	/* internal -- glob_filename called recursively */
-#define GX_SYMLINK	0x1000	/* internal -- symlink to a directory */
-#define GX_NEGATE	0x2000	/* internal -- extglob pattern being negated */
+#define GX_MARKDIRS     0x001   /* mark directory names with trailing `/' */
+#define GX_NOCASE       0x002   /* ignore case */
+#define GX_MATCHDOT     0x004   /* match `.' literally */
+#define GX_MATCHDIRS    0x008   /* match only directory names */
+#define GX_ALLDIRS      0x010   /* match all directory names, no others */
+#define GX_NULLDIR      0x100   /* internal -- no directory preceding pattern */
+#define GX_ADDCURDIR    0x200   /* internal -- add passed directory name */
+#define GX_GLOBSTAR     0x400   /* turn on special handling of ** */
+#define GX_RECURSE      0x800   /* internal -- glob_filename called recursively */
+#define GX_SYMLINK      0x1000  /* internal -- symlink to a directory */
+#define GX_NEGATE       0x2000  /* internal -- extglob pattern being negated */
 
 extern int glob_pattern_p (const char *);
 extern char **glob_vector (char *, char *, int);

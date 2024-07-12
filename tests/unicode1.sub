@@ -21,8 +21,8 @@ TestCnt=0
 
 localewarn()
 {
-	echo "unicode1.sub: warning: you do not have the $1 locale installed;" >&2
-	echo "unicode1.sub: that will cause some of these tests to be skipped." >&2
+        echo "unicode1.sub: warning: you do not have the $1 locale installed;" >&2
+        echo "unicode1.sub: that will cause some of these tests to be skipped." >&2
 }
 
 function TestCodePage {
@@ -30,14 +30,14 @@ function TestCodePage {
     local EChar RChar Uval x
     local -n Array=${2:?Missing Array Name}
     for x in "${!Array[@]}"; do
-	let TestCnt+=1
-	EChar=${Array[$x]}
-	printf -v UVal '\\U%08x' "${x}"
-	LC_CTYPE=${TargetCharset} printf -v RChar "${UVal}" 2>/dev/null
-	if [ "${EChar}" != "${RChar}" ]; then
-	  let ErrorCnt+=1
-	  printf "%s: Error Encoding U+%08X [ \"%q\" != \"%q\" ]\n" "${TargetCharset}" "${x}" "${EChar}" "${RChar}"
-	fi
+        let TestCnt+=1
+        EChar=${Array[$x]}
+        printf -v UVal '\\U%08x' "${x}"
+        LC_CTYPE=${TargetCharset} printf -v RChar "${UVal}" 2>/dev/null
+        if [ "${EChar}" != "${RChar}" ]; then
+          let ErrorCnt+=1
+          printf "%s: Error Encoding U+%08X [ \"%q\" != \"%q\" ]\n" "${TargetCharset}" "${x}" "${EChar}" "${RChar}"
+        fi
     done
 }
 
@@ -94,21 +94,21 @@ fr_FR_ISO_8859_1=(
  [0x00ec]=$'\354' [0x00ed]=$'\355' [0x00ee]=$'\356' [0x00ef]=$'\357' [0x00f0]=$'\360'
  [0x00f1]=$'\361' [0x00f2]=$'\362' [0x00f3]=$'\363' [0x00f4]=$'\364' [0x00f5]=$'\365'
  [0x00f6]=$'\366' [0x00f7]=$'\367' [0x00f8]=$'\370' [0x00f9]=$'\371' [0x00fa]=$'\372'
- [0x00fb]=$'\373' [0x00fc]=$'\374' [0x00fd]=$'\375' [0x00fe]=$'\376'	
+ [0x00fb]=$'\373' [0x00fc]=$'\374' [0x00fd]=$'\375' [0x00fe]=$'\376'
 )
 
 # this locale causes problems all over the place
 if locale -a | grep -i '^fr_FR\.ISO8859.*1$' >/dev/null ; then
-	TestCodePage fr_FR.ISO8859-1 fr_FR_ISO_8859_1
+        TestCodePage fr_FR.ISO8859-1 fr_FR_ISO_8859_1
 else
-	localewarn fr_FR.ISO8859-1
+        localewarn fr_FR.ISO8859-1
 
 fi
 
 zh_TW_BIG5=(
 # these are the original incorrect tests
 # [0x00f6]=$'\366' [0x00f7]=$'\367' [0x00f8]=$'\370' [0x00f9]=$'\371' [0x00fa]=$'\372'
-# [0x00fb]='\373' [0x00fc]=$'\374' [0x00fd]=$'\375' [0x00fe]=$'\376'	
+# [0x00fb]='\373' [0x00fc]=$'\374' [0x00fd]=$'\375' [0x00fe]=$'\376'
 # some valid encodings
   [0x03A8]=$'\243Z' [0x03A9]=$'\243[' [0x03B1]=$'\243\\' [0x03B2]=$'\243]'
   [0x03B3]=$'\243^' [0x03B4]=$'\243_' [0x03B5]=$'\243`'  [0x03B6]=$'\243a'
@@ -119,9 +119,9 @@ zh_TW_BIG5=(
 
 # this locale causes problems all over the place
 if locale -a | grep -i '^zh_TW\.big5' >/dev/null ; then
-	TestCodePage zh_TW.BIG5 zh_TW_BIG5
+        TestCodePage zh_TW.BIG5 zh_TW_BIG5
 else
-	localewarn zh_TW.BIG5
+        localewarn zh_TW.BIG5
 fi
 
 jp_JP_SHIFT_JIS=(
@@ -319,38 +319,38 @@ jp_JP_SHIFT_JIS=(
 
 #TestCodePage ja_JP.SHIFT_JIS jp_JP_SHIFT_JIS
 if locale -a | grep -i '^ja_JP.SJIS' >/dev/null ; then
-	TestCodePage ja_JP.SJIS jp_JP_SHIFT_JIS
+        TestCodePage ja_JP.SJIS jp_JP_SHIFT_JIS
 else
-	localewarn ja_JP.SJIS
+        localewarn ja_JP.SJIS
 fi
 
 #for ((x=1;x<1000;x++)); do printf -v u '\\U%08x' "$x"; printf ' [0x%04x]=%-11q' "$x" "${u@E}"; [ $(($x%5)) = 0 ] && echo; done
 C_UTF_8=(
- [0x0001]=$'\001'     [0x0002]=$'\002'     [0x0003]=$'\003'     [0x0004]=$'\004'     [0x0005]=$'\005'    
- [0x0006]=$'\006'     [0x0007]=$'\a'       [0x0008]=$'\b'       [0x0009]=$'\t'       [0x000a]=$'\n'         
- [0x000b]=$'\v'       [0x000c]=$'\f'       [0x000d]=$'\r'       [0x000e]=$'\016'     [0x000f]=$'\017'    
- [0x0010]=$'\020'     [0x0011]=$'\021'     [0x0012]=$'\022'     [0x0013]=$'\023'     [0x0014]=$'\024'    
- [0x0015]=$'\025'     [0x0016]=$'\026'     [0x0017]=$'\027'     [0x0018]=$'\030'     [0x0019]=$'\031'    
- [0x001a]=$'\032'     [0x001b]=$'\E'       [0x001c]=$'\034'     [0x001d]=$'\035'     [0x001e]=$'\036'    
- [0x001f]=$'\037'     [0x0020]=\           [0x0021]=\!          [0x0022]=\"          [0x0023]=\#         
- [0x0024]=\$          [0x0025]=%           [0x0026]=\&          [0x0027]=\'          [0x0028]=\(         
- [0x0029]=\)          [0x002a]=\*          [0x002b]=+           [0x002c]=\,          [0x002d]=-          
- [0x002e]=.           [0x002f]=/           [0x0030]=0           [0x0031]=1           [0x0032]=2          
- [0x0033]=3           [0x0034]=4           [0x0035]=5           [0x0036]=6           [0x0037]=7          
- [0x0038]=8           [0x0039]=9           [0x003a]=:           [0x003b]=\;          [0x003c]=\<         
- [0x003d]==           [0x003e]=\>          [0x003f]=\?          [0x0040]=@           [0x0041]=A          
- [0x0042]=B           [0x0043]=C           [0x0044]=D           [0x0045]=E           [0x0046]=F          
- [0x0047]=G           [0x0048]=H           [0x0049]=I           [0x004a]=J           [0x004b]=K          
- [0x004c]=L           [0x004d]=M           [0x004e]=N           [0x004f]=O           [0x0050]=P          
- [0x0051]=Q           [0x0052]=R           [0x0053]=S           [0x0054]=T           [0x0055]=U          
- [0x0056]=V           [0x0057]=W           [0x0058]=X           [0x0059]=Y           [0x005a]=Z          
- [0x005b]=\[          [0x005c]=\\          [0x005d]=\]          [0x005e]=\^          [0x005f]=_          
- [0x0060]=\`          [0x0061]=a           [0x0062]=b           [0x0063]=c           [0x0064]=d          
- [0x0065]=e           [0x0066]=f           [0x0067]=g           [0x0068]=h           [0x0069]=i          
- [0x006a]=j           [0x006b]=k           [0x006c]=l           [0x006d]=m           [0x006e]=n          
- [0x006f]=o           [0x0070]=p           [0x0071]=q           [0x0072]=r           [0x0073]=s          
- [0x0074]=t           [0x0075]=u           [0x0076]=v           [0x0077]=w           [0x0078]=x          
- [0x0079]=y           [0x007a]=z           [0x007b]=\{          [0x007c]=\|          [0x007d]=\}         
+ [0x0001]=$'\001'     [0x0002]=$'\002'     [0x0003]=$'\003'     [0x0004]=$'\004'     [0x0005]=$'\005'
+ [0x0006]=$'\006'     [0x0007]=$'\a'       [0x0008]=$'\b'       [0x0009]=$'\t'       [0x000a]=$'\n'
+ [0x000b]=$'\v'       [0x000c]=$'\f'       [0x000d]=$'\r'       [0x000e]=$'\016'     [0x000f]=$'\017'
+ [0x0010]=$'\020'     [0x0011]=$'\021'     [0x0012]=$'\022'     [0x0013]=$'\023'     [0x0014]=$'\024'
+ [0x0015]=$'\025'     [0x0016]=$'\026'     [0x0017]=$'\027'     [0x0018]=$'\030'     [0x0019]=$'\031'
+ [0x001a]=$'\032'     [0x001b]=$'\E'       [0x001c]=$'\034'     [0x001d]=$'\035'     [0x001e]=$'\036'
+ [0x001f]=$'\037'     [0x0020]=\           [0x0021]=\!          [0x0022]=\"          [0x0023]=\#
+ [0x0024]=\$          [0x0025]=%           [0x0026]=\&          [0x0027]=\'          [0x0028]=\(
+ [0x0029]=\)          [0x002a]=\*          [0x002b]=+           [0x002c]=\,          [0x002d]=-
+ [0x002e]=.           [0x002f]=/           [0x0030]=0           [0x0031]=1           [0x0032]=2
+ [0x0033]=3           [0x0034]=4           [0x0035]=5           [0x0036]=6           [0x0037]=7
+ [0x0038]=8           [0x0039]=9           [0x003a]=:           [0x003b]=\;          [0x003c]=\<
+ [0x003d]==           [0x003e]=\>          [0x003f]=\?          [0x0040]=@           [0x0041]=A
+ [0x0042]=B           [0x0043]=C           [0x0044]=D           [0x0045]=E           [0x0046]=F
+ [0x0047]=G           [0x0048]=H           [0x0049]=I           [0x004a]=J           [0x004b]=K
+ [0x004c]=L           [0x004d]=M           [0x004e]=N           [0x004f]=O           [0x0050]=P
+ [0x0051]=Q           [0x0052]=R           [0x0053]=S           [0x0054]=T           [0x0055]=U
+ [0x0056]=V           [0x0057]=W           [0x0058]=X           [0x0059]=Y           [0x005a]=Z
+ [0x005b]=\[          [0x005c]=\\          [0x005d]=\]          [0x005e]=\^          [0x005f]=_
+ [0x0060]=\`          [0x0061]=a           [0x0062]=b           [0x0063]=c           [0x0064]=d
+ [0x0065]=e           [0x0066]=f           [0x0067]=g           [0x0068]=h           [0x0069]=i
+ [0x006a]=j           [0x006b]=k           [0x006c]=l           [0x006d]=m           [0x006e]=n
+ [0x006f]=o           [0x0070]=p           [0x0071]=q           [0x0072]=r           [0x0073]=s
+ [0x0074]=t           [0x0075]=u           [0x0076]=v           [0x0077]=w           [0x0078]=x
+ [0x0079]=y           [0x007a]=z           [0x007b]=\{          [0x007c]=\|          [0x007d]=\}
  [0x007e]="~"         [0x007f]=$'\177'     [0x0080]=$'\302\200' [0x0081]=$'\302\201' [0x0082]=$'\302\202'
  [0x0083]=$'\302\203' [0x0084]=$'\302\204' [0x0085]=$'\302\205' [0x0086]=$'\302\206' [0x0087]=$'\302\207'
  [0x0088]=$'\302\210' [0x0089]=$'\302\211' [0x008a]=$'\302\212' [0x008b]=$'\302\213' [0x008c]=$'\302\214'

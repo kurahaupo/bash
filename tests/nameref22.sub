@@ -21,7 +21,7 @@ unset foo
 declare foo+='many spaces'
 echo $foo
 
-unset foo	# unsets bar
+unset foo       # unsets bar
 unset -n foo
 
 declare -a bar
@@ -93,5 +93,3 @@ declare -a array
 declare array='(one two three)'
 declare -p array
 unset array
-
-

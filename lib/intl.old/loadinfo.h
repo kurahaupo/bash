@@ -21,7 +21,7 @@
 */
 
 #ifndef _LOADINFO_H
-#define _LOADINFO_H	1
+#define _LOADINFO_H     1
 
 /* Declarations of locale dependent catalog lookup functions.
    Implemented in
@@ -63,17 +63,17 @@
 #endif
 
 /* Encoding of locale name parts.  */
-#define CEN_REVISION		1
-#define CEN_SPONSOR		2
-#define CEN_SPECIAL		4
-#define XPG_NORM_CODESET	8
-#define XPG_CODESET		16
-#define TERRITORY		32
-#define CEN_AUDIENCE		64
-#define XPG_MODIFIER		128
+#define CEN_REVISION            1
+#define CEN_SPONSOR             2
+#define CEN_SPECIAL             4
+#define XPG_NORM_CODESET        8
+#define XPG_CODESET             16
+#define TERRITORY               32
+#define CEN_AUDIENCE            64
+#define XPG_MODIFIER            128
 
-#define CEN_SPECIFIC	(CEN_REVISION|CEN_SPONSOR|CEN_SPECIAL|CEN_AUDIENCE)
-#define XPG_SPECIFIC	(XPG_CODESET|XPG_NORM_CODESET|XPG_MODIFIER)
+#define CEN_SPECIFIC    (CEN_REVISION|CEN_SPONSOR|CEN_SPECIAL|CEN_AUDIENCE)
+#define XPG_SPECIFIC    (XPG_CODESET|XPG_NORM_CODESET|XPG_MODIFIER)
 
 
 struct loaded_l10nfile
@@ -93,7 +93,7 @@ struct loaded_l10nfile
    names.  The return value is dynamically allocated and has to be
    freed by the caller.  */
 extern const char *_nl_normalize_codeset (const char *codeset,
-						  size_t name_len);
+                                                  size_t name_len);
 
 /* Lookup a locale dependent file.
    *L10NFILE_LIST denotes a pool of lookup results of locale dependent
@@ -111,13 +111,13 @@ extern const char *_nl_normalize_codeset (const char *codeset,
    results from which this lookup result inherits.  */
 extern struct loaded_l10nfile *
 _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
-			    const char *dirlist, size_t dirlist_len, int mask,
-			    const char *language, const char *territory,
-			    const char *codeset,
-			    const char *normalized_codeset,
-			    const char *modifier, const char *special,
-			    const char *sponsor, const char *revision,
-			    const char *filename, int do_allocate);
+                            const char *dirlist, size_t dirlist_len, int mask,
+                            const char *language, const char *territory,
+                            const char *codeset,
+                            const char *normalized_codeset,
+                            const char *modifier, const char *special,
+                            const char *sponsor, const char *revision,
+                            const char *filename, int do_allocate);
 
 /* Lookup the real locale name for a locale alias NAME, or NULL if
    NAME is not a locale alias (but possibly a real locale name).
@@ -143,17 +143,17 @@ extern const char *_nl_expand_alias (const char *name);
      CEN_REVISION                for *REVISION.
  */
 extern int _nl_explode_name (char *name, const char **language,
-				     const char **modifier,
-				     const char **territory,
-				     const char **codeset,
-				     const char **normalized_codeset,
-				     const char **special,
-				     const char **sponsor,
-				     const char **revision);
+                                     const char **modifier,
+                                     const char **territory,
+                                     const char **codeset,
+                                     const char **normalized_codeset,
+                                     const char **special,
+                                     const char **sponsor,
+                                     const char **revision);
 
 /* Split a locale name NAME into a leading language part and all the
    rest.  Return a pointer to the first character after the language,
    i.e. to the first byte of the rest.  */
 extern char *_nl_find_language (const char *name);
 
-#endif	/* loadinfo.h */
+#endif  /* loadinfo.h */

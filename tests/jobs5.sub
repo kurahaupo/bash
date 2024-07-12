@@ -32,15 +32,15 @@ disown -a
 
 wait -p wvar -n %2 %3
 case "$wvar" in
-$bgpid1)	echo $?: ok 1;;
-*)		echo bad 1;;
+$bgpid1)        echo $?: ok 1;;
+*)              echo bad 1;;
 esac
 
 { sleep 1 ; exit 2; } & bgpid2=$!
 wait -p wvar -n %8 $!
 case $wvar in
-$bgpid2)	echo $?: ok 2;;
-*)		echo bad 2;;
+$bgpid2)        echo $?: ok 2;;
+*)              echo bad 2;;
 esac
 
 disown -a
@@ -51,8 +51,8 @@ disown -a
 wait -n -p wpid %1 %2 %3 %4
 
 case $wpid in
-$bgpid3)	echo $?: ok 3;;
-*)		echo bad 3 ;;
+$bgpid3)        echo $?: ok 3;;
+*)              echo bad 3 ;;
 esac
 
 disown -a

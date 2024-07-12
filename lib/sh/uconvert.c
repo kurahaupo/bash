@@ -1,5 +1,5 @@
 /* uconvert - convert string representations of decimal numbers into whole
-	      number/fractional value pairs. */
+              number/fractional value pairs. */
 
 /* Copyright (C) 2008,2009,2020,2022 Free Software Foundation, Inc.
 
@@ -35,7 +35,7 @@
 #include "shell.h"
 #include "builtins.h"
 
-#define DECIMAL	'.'		/* XXX - should use locale */
+#define DECIMAL '.'             /* XXX - should use locale */
 
 #define RETURN(x) \
 do { \
@@ -76,14 +76,14 @@ uconvert(const char *s, long *ip, long *up, char **ep)
 
   for ( ; p && *p; p++)
     {
-      if (*p == DECIMAL)		/* decimal point */
-	break;
+      if (*p == DECIMAL)                /* decimal point */
+        break;
       if (DIGIT(*p) == 0)
-	RETURN(0);
+        RETURN(0);
       ipart = (ipart * 10) + (*p - '0');
     }
 
-  if (p == 0 || *p == 0)	/* callers ensure p can never be 0; this is to shut up clang */
+  if (p == 0 || *p == 0)        /* callers ensure p can never be 0; this is to shut up clang */
     RETURN(1);
 
   if (*p == DECIMAL)
@@ -93,14 +93,14 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   for (n = 0; n < 6 && p[n]; n++)
     {
       if (DIGIT(p[n]) == 0)
-	{
-	  if (ep)
-	    {
-	      upart *= multiplier[n];
-	      p += n;		/* To set EP */
-	    }
-	  RETURN(0);
-	}
+        {
+          if (ep)
+            {
+              upart *= multiplier[n];
+              p += n;           /* To set EP */
+            }
+          RETURN(0);
+        }
       upart = (upart * 10) + (p[n] - '0');
     }
 
@@ -108,13 +108,13 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   upart *= multiplier[n];
 
   if (n == 6 && p[6] >= '5' && p[6] <= '9')
-    upart++;			/* round up 1 */
+    upart++;                    /* round up 1 */
 
   if (ep)
     {
       p += n;
       while (DIGIT(*p))
-	p++;
+        p++;
     }
 
   RETURN(1);

@@ -74,7 +74,7 @@ int main()
     perror("open /dev/tty");
     exit_handler(0);
   }
-  
+
   if ( (pgrp = tcgetpgrp(_global_fd)) < 0) {
     perror("Can't get pgrp\n");
     exit_handler(0);
@@ -104,7 +104,7 @@ int main()
 
   {
     struct sigaction siga;
-    
+
     sigemptyset(&siga.sa_mask);
     siga.sa_flags = 0;
 
@@ -123,7 +123,7 @@ int main()
     switch (read(_global_fd,c,1)) {
     case -1:
       if (errno == EINTR)
-	continue;
+        continue;
       perror("stdin read");
       exit_handler(0);
     case 0:
@@ -131,8 +131,8 @@ int main()
       exit_handler(0);
     default:
       if (c[0] == CEOF) { /* From sys/ttydefaults.h */
-	printf("Exiting on stdin EOF (hopefully only in noncannon mode)\n");
-	exit_handler(0);
+        printf("Exiting on stdin EOF (hopefully only in noncannon mode)\n");
+        exit_handler(0);
       }
       printf("You typed: '%c' (0x%X)\n",c[0],c[0]);
     }

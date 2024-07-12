@@ -17,11 +17,11 @@ var=global
 
 f()
 {
-	local $1 var
-	declare -p var
+        local $1 var
+        declare -p var
 
-	var=local
-	declare -p var
+        var=local
+        declare -p var
 }
 
 declare -I var
@@ -35,10 +35,10 @@ f -I
 
 f1()
 {
-	var=$FUNCNAME
+        var=$FUNCNAME
 
-	f
-	f -I
+        f
+        f -I
 }
 
 f1

@@ -88,7 +88,7 @@ stub_charset (void)
       charsetbuf[sizeof (charsetbuf) - 1] = '\0';
       t = strchr (charsetbuf, '@');
       if (t)
-	*t = 0;
+        *t = 0;
       return charsetbuf;
     }
   strncpy (charsetbuf, locale, sizeof (charsetbuf) - 1);
@@ -121,7 +121,7 @@ u32tochar (unsigned long x, char *s)
 
   if (x <= UCHAR_MAX)
     s[0] = x & 0xFF;
-  else if (x <= USHORT_MAX)	/* assume unsigned short = 16 bits */
+  else if (x <= USHORT_MAX)     /* assume unsigned short = 16 bits */
     {
       s[0] = (x >> 8) & 0xFF;
       s[1] = x & 0xFF;
@@ -134,7 +134,7 @@ u32tochar (unsigned long x, char *s)
       s[3] = x & 0xFF;
     }
   s[l] = '\0';
-  return l;  
+  return l;
 }
 
 int
@@ -269,24 +269,24 @@ u32cconv (unsigned long c, char *s)
       utf8locale = locale_utf8locale;
       localconv = (iconv_t)-1;
       if (utf8locale == 0)
-	{
+        {
 #if HAVE_LANGINFO_CODESET
-	  charset = nl_langinfo (CODESET);
+          charset = nl_langinfo (CODESET);
 #elif HAVE_LOCALE_CHARSET
-	  charset = locale_charset ();
+          charset = locale_charset ();
 #else
-	  charset = stub_charset ();
+          charset = stub_charset ();
 #endif
-	  localconv = iconv_open (charset, "UTF-8");
-	  if (localconv == (iconv_t)-1)
-	    /* We assume ASCII when presented with an unknown encoding. */
-	    localconv = iconv_open ("ASCII", "UTF-8");
-	}
+          localconv = iconv_open (charset, "UTF-8");
+          if (localconv == (iconv_t)-1)
+            /* We assume ASCII when presented with an unknown encoding. */
+            localconv = iconv_open ("ASCII", "UTF-8");
+        }
       u32init = 1;
     }
 
   /* NL_LANGINFO and locale_charset used when setting locale_utf8locale */
-  
+
   /* If we have a UTF-8 locale, convert to UTF-8 and return converted value. */
   n = u32toutf8 (c, s);
   if (utf8locale)
@@ -297,7 +297,7 @@ u32cconv (unsigned long c, char *s)
      u32tocesc(). */
   if (localconv == (iconv_t)-1)
     return n;
-    
+
   optr = obuf;
   obytesleft = sizeof (obuf);
   iptr = s;
@@ -307,7 +307,7 @@ u32cconv (unsigned long c, char *s)
 
   if (iconv (localconv, (ICONV_CONST char **)&iptr, &sn, &optr, &obytesleft) == (size_t)-1)
     {
-      /* You get ISO C99 escape sequences if iconv fails */      
+      /* You get ISO C99 escape sequences if iconv fails */
       n = u32tocesc (c, s);
       return n;
     }
@@ -318,12 +318,12 @@ u32cconv (unsigned long c, char *s)
      checking */
   strcpy (s, obuf);
   return (optr - obuf);
-#endif	/* HAVE_ICONV */
+#endif  /* HAVE_ICONV */
 
   if (locale_utf8locale)
     n = u32toutf8 (c, s);
   else
-    n = u32tocesc (c, s);	/* fallback is ISO C99 escape sequences */
+    n = u32tocesc (c, s);       /* fallback is ISO C99 escape sequences */
   return n;
 }
 #else

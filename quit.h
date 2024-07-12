@@ -21,7 +21,7 @@
 #if !defined (_QUIT_H_)
 #define _QUIT_H_
 
-#include "sig.h"	/* for sig_atomic_t */
+#include "sig.h"        /* for sig_atomic_t */
 
 /* Non-zero means SIGINT has already occurred. */
 extern volatile sig_atomic_t interrupt_state;

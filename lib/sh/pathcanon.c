@@ -55,7 +55,7 @@ _is_cygdrive (char *path)
   /* If the path is the first part of a network path, treat it as
      existing. */
   if (path[0] == '/' && path[1] == '/' && !strchr (path + 2, '/'))
-    return 1; 
+    return 1;
   /* Otherwise check for /cygdrive prefix. */
   if (first_time)
     {
@@ -67,7 +67,7 @@ _is_cygdrive (char *path)
     }
   return !strcasecmp (path, user) || !strcasecmp (path, system);
 }
-#endif /* __CYGWIN__ */	
+#endif /* __CYGWIN__ */
 
 /* Return 1 if PATH corresponds to a directory.  A function for debugging. */
 static int
@@ -88,15 +88,15 @@ _path_isdir (char *path)
 
 /* Canonicalize PATH, and return a new path.  The new path differs from PATH
    in that:
-	Multiple `/'s are collapsed to a single `/'.
-	Leading `./'s and trailing `/.'s are removed.
-	Trailing `/'s are removed.
-	Non-leading `../'s and trailing `..'s are handled by removing
-	portions of the path. */
+        Multiple `/'s are collapsed to a single `/'.
+        Leading `./'s and trailing `/.'s are removed.
+        Trailing `/'s are removed.
+        Non-leading `../'s and trailing `..'s are handled by removing
+        portions of the path. */
 
 /* Look for ROOTEDPATH, PATHSEP, DIRSEP, and ISDIRSEP in ../../general.h */
 
-#define DOUBLE_SLASH(p)	((p[0] == '/') && (p[1] == '/') && p[2] != '/')
+#define DOUBLE_SLASH(p) ((p[0] == '/') && (p[1] == '/') && p[2] != '/')
 
 char *
 sh_canonpath (char *path, int flags)
@@ -134,80 +134,80 @@ sh_canonpath (char *path, int flags)
 
   /*
    * invariants:
-   *	  base points to the portion of the path we want to modify
+   *      base points to the portion of the path we want to modify
    *      p points at beginning of path element we're considering.
    *      q points just past the last path element we wrote (no slash).
    *      dotdot points just past the point where .. cannot backtrack
-   *	  any further (no slash).
+   *      any further (no slash).
    */
   p = q = dotdot = base;
 
   while (*p)
     {
       if (ISDIRSEP(p[0])) /* null element */
-	p++;
-      else if(p[0] == '.' && PATHSEP(p[1]))	/* . and ./ */
-	p += 1; 	/* don't count the separator in case it is nul */
+        p++;
+      else if(p[0] == '.' && PATHSEP(p[1]))     /* . and ./ */
+        p += 1;         /* don't count the separator in case it is nul */
       else if (p[0] == '.' && p[1] == '.' && PATHSEP(p[2])) /* .. and ../ */
-	{
-	  p += 2; /* skip `..' */
-	  if (q > dotdot)	/* can backtrack */
-	    {
-	      if (flags & PATH_CHECKDOTDOT)
-		{
-		  char c;
+        {
+          p += 2; /* skip `..' */
+          if (q > dotdot)       /* can backtrack */
+            {
+              if (flags & PATH_CHECKDOTDOT)
+                {
+                  char c;
 
-		  /* Make sure what we have so far corresponds to a valid
-		     path before we chop some of it off. */
-		  c = *q;
-		  *q = '\0';
-		  if (_path_isdir (result) == 0)
-		    {
-		      if ((flags & PATH_NOALLOC) == 0)
-			free (result);
-		      return ((char *)NULL);
-		    }
-		  *q = c;
-		}
+                  /* Make sure what we have so far corresponds to a valid
+                     path before we chop some of it off. */
+                  c = *q;
+                  *q = '\0';
+                  if (_path_isdir (result) == 0)
+                    {
+                      if ((flags & PATH_NOALLOC) == 0)
+                        free (result);
+                      return ((char *)NULL);
+                    }
+                  *q = c;
+                }
 
-	      while (--q > dotdot && ISDIRSEP(*q) == 0)
-		;
-	    }
-	  else if (rooted == 0)
-	    {
-	      /* /.. is / but ./../ is .. */
-	      if (q != base)
-		*q++ = DIRSEP;
-	      *q++ = '.';
-	      *q++ = '.';
-	      dotdot = q;
-	    }
-	}
-      else	/* real path element */
-	{
-	  /* add separator if not at start of work portion of result */
-	  if (q != base)
-	    *q++ = DIRSEP;
-	  while (*p && (ISDIRSEP(*p) == 0))
-	    *q++ = *p++;
-	  /* Check here for a valid directory with _path_isdir. */
-	  if (flags & PATH_CHECKEXISTS)
-	    {
-	      char c;
+              while (--q > dotdot && ISDIRSEP(*q) == 0)
+                ;
+            }
+          else if (rooted == 0)
+            {
+              /* /.. is / but ./../ is .. */
+              if (q != base)
+                *q++ = DIRSEP;
+              *q++ = '.';
+              *q++ = '.';
+              dotdot = q;
+            }
+        }
+      else      /* real path element */
+        {
+          /* add separator if not at start of work portion of result */
+          if (q != base)
+            *q++ = DIRSEP;
+          while (*p && (ISDIRSEP(*p) == 0))
+            *q++ = *p++;
+          /* Check here for a valid directory with _path_isdir. */
+          if (flags & PATH_CHECKEXISTS)
+            {
+              char c;
 
-	      /* Make sure what we have so far corresponds to a valid
-		 path before we chop some of it off. */
-	      c = *q;
-	      *q = '\0';
-	      if (_path_isdir (result) == 0)
-		{
-		  if ((flags & PATH_NOALLOC) == 0)
-		    free (result);
-		  return ((char *)NULL);
-		}
-	      *q = c;
-	    }
-	}
+              /* Make sure what we have so far corresponds to a valid
+                 path before we chop some of it off. */
+              c = *q;
+              *q = '\0';
+              if (_path_isdir (result) == 0)
+                {
+                  if ((flags & PATH_NOALLOC) == 0)
+                    free (result);
+                  return ((char *)NULL);
+                }
+              *q = c;
+            }
+        }
     }
 
   /* Empty string is really ``.'' or `/', depending on what we started with. */
@@ -220,10 +220,10 @@ sh_canonpath (char *path, int flags)
      be true, but it's a sanity check. */
   if (DOUBLE_SLASH(result) && double_slash_path == 0)
     {
-      if (result[2] == '\0')	/* short-circuit for bare `//' */
-	result[1] = '\0';
+      if (result[2] == '\0')    /* short-circuit for bare `//' */
+        result[1] = '\0';
       else
-	memmove (result, result + 1, strlen (result + 1) + 1);
+        memmove (result, result + 1, strlen (result + 1) + 1);
     }
 
   return (result);

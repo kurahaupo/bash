@@ -66,9 +66,9 @@ path_is_devfd (const char *path)
   else if (STREQN (path, "/dev/std", 8))
     {
       if (STREQ (path+8, "in") || STREQ (path+8, "out") || STREQ (path+8, "err"))
-	return 1;
+        return 1;
       else
-	return 0;
+        return 0;
     }
   else
     return 0;
@@ -89,7 +89,7 @@ sh_stat (const char *path, struct stat *finfo)
   if (path[0] == '/' && path[1] == 'd' && strncmp (path, "/dev/fd/", 8) == 0)
     {
       /* If stating /dev/fd/n doesn't produce the same results as fstat of
-	 FD N, then define DEV_FD_STAT_BROKEN */
+         FD N, then define DEV_FD_STAT_BROKEN */
 #if !defined (HAVE_DEV_FD) || defined (DEV_FD_STAT_BROKEN)
       intmax_t fd;
       int r;
@@ -117,13 +117,13 @@ sh_stat (const char *path, struct stat *finfo)
   else if (STREQN (path, "/dev/std", 8))
     {
       if (STREQ (path+8, "in"))
-	return (fstat (0, finfo));
+        return (fstat (0, finfo));
       else if (STREQ (path+8, "out"))
-	return (fstat (1, finfo));
+        return (fstat (1, finfo));
       else if (STREQ (path+8, "err"))
-	return (fstat (2, finfo));
+        return (fstat (2, finfo));
       else
-	return (stat (path, finfo));
+        return (stat (path, finfo));
     }
 #endif /* !HAVE_DEV_STDIN */
   return (stat (path, finfo));
@@ -144,15 +144,15 @@ sh_stataccess (const char *path, int mode)
     {
       /* Root can read or write any file. */
       if ((mode & X_OK) == 0)
-	return (0);
+        return (0);
 
       /* Root can execute any file that has any one of the execute
-	 bits set. */
+         bits set. */
       if (st.st_mode & S_IXUGO)
-	return (0);
+        return (0);
     }
 
-  if (st.st_uid == current_user.euid)	/* owner */
+  if (st.st_uid == current_user.euid)   /* owner */
     mode <<= 6;
   else if (group_member (st.st_gid))
     mode <<= 3;
@@ -186,7 +186,7 @@ sh_euidaccess (const char *path, int mode)
     setregid (current_user.gid, current_user.egid);
 
   errno = e;
-  return r;  
+  return r;
 }
 #endif
 
@@ -201,20 +201,20 @@ sh_eaccess (const char *path, int mode)
 #if (defined (HAVE_FACCESSAT) && defined (AT_EACCESS)) || defined (HAVE_EACCESS)
 #  if defined (HAVE_FACCESSAT) && defined (AT_EACCESS)
   ret = faccessat (AT_FDCWD, path, mode, AT_EACCESS);
-#  else		/* HAVE_EACCESS */	/* FreeBSD */
-  ret = eaccess (path, mode);	/* XXX -- not always correct for X_OK */
-#  endif	/* HAVE_EACCESS */
+#  else         /* HAVE_EACCESS */      /* FreeBSD */
+  ret = eaccess (path, mode);   /* XXX -- not always correct for X_OK */
+#  endif        /* HAVE_EACCESS */
 #  if defined (__FreeBSD__) || defined (SOLARIS) || defined (_AIX)
   if (ret == 0 && current_user.euid == 0 && mode == X_OK)
     return (sh_stataccess (path, mode));
-#  endif	/* __FreeBSD__ || SOLARIS || _AIX */
+#  endif        /* __FreeBSD__ || SOLARIS || _AIX */
   return ret;
-#elif defined (EFF_ONLY_OK)		/* SVR4(?), SVR4.2 */
+#elif defined (EFF_ONLY_OK)             /* SVR4(?), SVR4.2 */
   return access (path, mode|EFF_ONLY_OK);
 #else
   if (mode == F_OK)
     return (sh_stataccess (path, mode));
-    
+
 #  if HAVE_DECL_SETREGID
   if (current_user.uid != current_user.euid || current_user.gid != current_user.egid)
     return (sh_euidaccess (path, mode));
@@ -225,7 +225,7 @@ sh_eaccess (const char *path, int mode)
       ret = access (path, mode);
 #if defined (__FreeBSD__) || defined (SOLARIS)
       if (ret == 0 && current_user.euid == 0 && mode == X_OK)
-	return (sh_stataccess (path, mode));
+        return (sh_stataccess (path, mode));
 #endif
       return ret;
     }

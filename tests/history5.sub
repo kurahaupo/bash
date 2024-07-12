@@ -21,8 +21,8 @@ set -o history
 echo a
 echo b
 
-fc -0	# error
-fc -s -0	# error
+fc -0   # error
+fc -s -0        # error
 
 fc -l
 
@@ -70,4 +70,4 @@ echo e
 
 fc -l
 
-unset HISTFILE	# suppress writing history file
+unset HISTFILE  # suppress writing history file

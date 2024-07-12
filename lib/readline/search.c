@@ -3,7 +3,7 @@
 /* Copyright (C) 1992-2024 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 #ifdef abs
 #  undef abs
 #endif
-#define abs(x)		(((x) >= 0) ? (x) : -(x))
+#define abs(x)          (((x) >= 0) ? (x) : -(x))
 
 _rl_search_cxt *_rl_nscxt = 0;
 
@@ -116,7 +116,7 @@ dispose_saved_search_line (void)
     {
       xlist = _rl_saved_line_for_search ? (UNDO_LIST *)_rl_saved_line_for_search->data : 0;
       if (xlist)
-	_rl_free_undo_list (xlist);
+        _rl_free_undo_list (xlist);
       _rl_saved_line_for_search->data = 0;
       _rl_free_saved_search_line ();
     }
@@ -130,7 +130,7 @@ make_history_line_current (HIST_ENTRY *entry)
 {
   /* Now we create a new undo list with a single insert for this text.
      WE DON'T CHANGE THE ORIGINAL HISTORY ENTRY UNDO LIST */
-  rl_undo_list = 0;	/* XXX */
+  rl_undo_list = 0;     /* XXX */
   _rl_replace_text (entry->line, 0, rl_end);
   _rl_fix_point (1);
 #if defined (VI_MODE)
@@ -165,7 +165,7 @@ noninc_search_from_pos (char *string, int pos, int dir, int flags, int *ncp)
   /* These functions return the match offset in the line; history_offset gives
      the matching line in the history list */
 
-  sflags = 0;		/* Non-anchored search */
+  sflags = 0;           /* Non-anchored search */
   s = string;
   if (*s == '^')
     {
@@ -178,13 +178,13 @@ noninc_search_from_pos (char *string, int pos, int dir, int flags, int *ncp)
   else
     {
       if (_rl_search_case_fold)
-	sflags |= CASEFOLD_SEARCH;
+        sflags |= CASEFOLD_SEARCH;
       ret = _hs_history_search (s, dir, dir, sflags);
     }
   RL_UNSETSTATE(RL_STATE_SEARCH);
 
   if (ncp)
-    *ncp = ret;		/* caller will catch -1 to indicate no-op */
+    *ncp = ret;         /* caller will catch -1 to indicate no-op */
 
   if (ret != -1)
     ret = where_history ();
@@ -227,8 +227,8 @@ noninc_dosearch (char *string, int dir, int flags)
 
   oldpos = where_history ();
   history_set_pos (noninc_history_pos);
-  entry = current_history ();		/* will never be NULL after successful search */
-  
+  entry = current_history ();           /* will never be NULL after successful search */
+
 #if defined (VI_MODE)
   if (rl_editing_mode != vi_mode)
 #endif
@@ -241,11 +241,11 @@ noninc_dosearch (char *string, int dir, int flags)
       rl_point = ind;
       rl_mark = ind + strlen (string);
       if (rl_mark > rl_end)
-	rl_mark = rl_end;	/* can't happen? */
+        rl_mark = rl_end;       /* can't happen? */
       rl_activate_mark ();
     }
   else
-    {  
+    {
       rl_point = 0;
       rl_mark = rl_end;
     }
@@ -262,7 +262,7 @@ _rl_nsearch_init (int dir, int pchar)
 
   cxt = _rl_scxt_alloc (RL_SEARCH_NSEARCH, 0);
   if (dir < 0)
-    cxt->sflags |= SF_REVERSE;		/* not strictly needed */
+    cxt->sflags |= SF_REVERSE;          /* not strictly needed */
 #if defined (VI_MODE)
   if (VI_COMMAND_MODE() && (pchar == '?' || pchar == '/'))
     cxt->sflags |= SF_PATTERN;
@@ -316,7 +316,7 @@ _rl_nsearch_abort (_rl_search_cxt *cxt)
   rl_point = cxt->save_point;
   rl_mark = cxt->save_mark;
   if (cxt->sflags & SF_FREEPMT)
-    rl_restore_prompt ();		/* _rl_make_prompt_for_search saved it */
+    rl_restore_prompt ();               /* _rl_make_prompt_for_search saved it */
   cxt->sflags &= ~SF_FREEPMT;
   rl_clear_message ();
   _rl_fix_point (1);
@@ -328,7 +328,7 @@ int
 _rl_nsearch_sigcleanup (_rl_search_cxt *cxt, int r)
 {
   if (cxt->sflags & SF_FREEPMT)
-    rl_restore_prompt ();		/* _rl_make_prompt_for_search saved it */
+    rl_restore_prompt ();               /* _rl_make_prompt_for_search saved it */
   cxt->sflags &= ~SF_FREEPMT;
   return (_rl_nsearch_cleanup (cxt, r));
 }
@@ -342,7 +342,7 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
   int n;
 
   if (c < 0)
-    c = CTRL ('C');  
+    c = CTRL ('C');
 
   switch (c)
     {
@@ -358,10 +358,10 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
     case CTRL('V'):
       n = rl_quoted_insert (1, c);
       if (n < 0)
-	{
-	  _rl_nsearch_abort (cxt);
-	  return -1;
-	}
+        {
+          _rl_nsearch_abort (cxt);
+          return -1;
+        }
       cxt->lastc = (rl_point > 0) ? rl_line_buffer[rl_point - 1] : rl_line_buffer[0];
       break;
 
@@ -372,10 +372,10 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
     case CTRL('H'):
     case RUBOUT:
       if (rl_point == 0)
-	{
-	  _rl_nsearch_abort (cxt);
-	  return -1;
-	}
+        {
+          _rl_nsearch_abort (cxt);
+          return -1;
+        }
       _rl_rubout_char (1, c);
       break;
 
@@ -387,21 +387,21 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
 
     case ESC:
       /* XXX - experimental code to allow users to bracketed-paste into the
-	 search string. Similar code is in isearch.c:_rl_isearch_dispatch().
-	 The difference here is that the bracketed paste sometimes doesn't
-	 paste everything, so checking for the prefix and the suffix in the
-	 input queue doesn't work well. We just have to check to see if the
-	 number of chars in the input queue is enough for the bracketed paste
-	 prefix and hope for the best. */
+         search string. Similar code is in isearch.c:_rl_isearch_dispatch().
+         The difference here is that the bracketed paste sometimes doesn't
+         paste everything, so checking for the prefix and the suffix in the
+         input queue doesn't work well. We just have to check to see if the
+         number of chars in the input queue is enough for the bracketed paste
+         prefix and hope for the best. */
       if (_rl_enable_bracketed_paste && ((n = _rl_nchars_available ()) >= (BRACK_PASTE_SLEN-1)))
-	{
-	  if (_rl_read_bracketed_paste_prefix (c) == 1)
-	    rl_bracketed_paste_begin (1, c);
-	  else
-	    {
-	      c = rl_read_key ();	/* get the ESC that got pushed back */
-	      _rl_insert_char (1, c);
-	    }
+        {
+          if (_rl_read_bracketed_paste_prefix (c) == 1)
+            rl_bracketed_paste_begin (1, c);
+          else
+            {
+              c = rl_read_key ();       /* get the ESC that got pushed back */
+              _rl_insert_char (1, c);
+            }
         }
       else
         _rl_insert_char (1, c);
@@ -410,10 +410,10 @@ _rl_nsearch_dispatch (_rl_search_cxt *cxt, int c)
     default:
 #if defined (HANDLE_MULTIBYTE)
       if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
-	rl_insert_text (cxt->mb);
+        rl_insert_text (cxt->mb);
       else
 #endif
-	_rl_insert_char (1, c);
+        _rl_insert_char (1, c);
       break;
     }
 
@@ -437,15 +437,15 @@ _rl_nsearch_dosearch (_rl_search_cxt *cxt)
   if (rl_point == 0)
     {
       if (noninc_search_string == 0)
-	{
-	  _rl_free_saved_search_line ();
-	  rl_ding ();
-	  if (cxt->sflags & SF_FREEPMT)
-	    rl_restore_prompt ();
-	  cxt->sflags &= ~SF_FREEPMT;
-	  RL_UNSETSTATE (RL_STATE_NSEARCH);
-	  return -1;
-	}
+        {
+          _rl_free_saved_search_line ();
+          rl_ding ();
+          if (cxt->sflags & SF_FREEPMT)
+            rl_restore_prompt ();
+          cxt->sflags &= ~SF_FREEPMT;
+          RL_UNSETSTATE (RL_STATE_NSEARCH);
+          return -1;
+        }
     }
   else
     {
@@ -455,11 +455,11 @@ _rl_nsearch_dosearch (_rl_search_cxt *cxt)
       noninc_search_string = savestring (rl_line_buffer);
 
       /* We don't want the subsequent undo list generated by the search
-	 matching a history line to include the contents of the search string,
-	 so we need to clear rl_line_buffer here. If we don't want that,
-	 change the #if 1 to an #if 0 below. We clear the undo list
-	 generated by reading the search string.  (If the search fails, the
-	 old undo list will be restored by _rl_unsave_line.) */
+         matching a history line to include the contents of the search string,
+         so we need to clear rl_line_buffer here. If we don't want that,
+         change the #if 1 to an #if 0 below. We clear the undo list
+         generated by reading the search string.  (If the search fails, the
+         old undo list will be restored by _rl_unsave_line.) */
 
       rl_free_undo_list ();
 #if 1
@@ -496,19 +496,19 @@ noninc_search (int dir, int pchar)
       c = _rl_search_getchar (cxt);
 
       if (c < 0)
-	{
-	  _rl_nsearch_abort (cxt);
-	  return 1;
-	}
-	  
+        {
+          _rl_nsearch_abort (cxt);
+          return 1;
+        }
+
       if (c == 0)
-	break;
+        break;
 
       r = _rl_nsearch_dispatch (cxt, c);
       if (r < 0)
         return 1;
       else if (r == 0)
-	break;        
+        break;
     }
 
   r = _rl_nsearch_dosearch (cxt);
@@ -596,7 +596,7 @@ _rl_nsearch_callback (_rl_search_cxt *cxt)
   return ((r >= 0) ? _rl_nsearch_cleanup (cxt, r) : (r != 1));
 }
 #endif
-  
+
 static int
 rl_history_search_internal (int count, int dir)
 {
@@ -623,12 +623,12 @@ rl_history_search_internal (int count, int dir)
       RL_CHECK_SIGNALS ();
       ret = noninc_search_from_pos (history_search_string, _rl_history_search_pos + dir, dir, 0, &newcol);
       if (ret == -1)
-	break;
+        break;
 
       /* Get the history entry we found. */
       _rl_history_search_pos = ret;
       history_set_pos (_rl_history_search_pos);
-      temp = current_history ();	/* will never be NULL after successful search */
+      temp = current_history ();        /* will never be NULL after successful search */
 
       /* Don't find multiple instances of the same line. */
       if (prev_line_found && STREQ (prev_line_found, temp->line))
@@ -653,7 +653,7 @@ rl_history_search_internal (int count, int dir)
           rl_mark = 0;
         }
 #else
-      rl_point = _rl_history_search_len;	/* _rl_unsave_line changes it */
+      rl_point = _rl_history_search_len;        /* _rl_unsave_line changes it */
       rl_mark = rl_end;
 #endif
       return 1;
@@ -668,11 +668,11 @@ rl_history_search_internal (int count, int dir)
 
   /* decide where to put rl_point -- need to change this for pattern search */
   if (_rl_history_search_flags & ANCHORED_SEARCH)
-    rl_point = _rl_history_search_len;	/* easy case */
+    rl_point = _rl_history_search_len;  /* easy case */
   else
     {
 #if 0
-      t = strstr (rl_line_buffer, history_search_string);	/* XXX */
+      t = strstr (rl_line_buffer, history_search_string);       /* XXX */
       rl_point = t ? (int)(t - rl_line_buffer) + _rl_history_search_len : rl_end;
 #else
       rl_point = (newcol >= 0) ? newcol : rl_end;
@@ -697,13 +697,13 @@ rl_history_search_reinit (int flags)
     {
       /* Allocate enough space for anchored and non-anchored searches */
       if (_rl_history_search_len + 2 >= history_string_size)
-	{
-	  history_string_size = _rl_history_search_len + 2;
-	  history_search_string = (char *)xrealloc (history_search_string, history_string_size);
-	}
+        {
+          history_string_size = _rl_history_search_len + 2;
+          history_search_string = (char *)xrealloc (history_search_string, history_string_size);
+        }
       sind = 0;
       if (flags & ANCHORED_SEARCH)
-	history_search_string[sind++] = '^';
+        history_search_string[sind++] = '^';
       strncpy (history_search_string + sind, rl_line_buffer, rl_point);
       history_search_string[rl_point + sind] = '\0';
     }

@@ -29,7 +29,7 @@ touch ./tmp/a/b/c
 
 echo ./tmp/a/b/* "./tmp/a/"b/* "./tmp/a/b"/*
 
-chmod -r ./tmp/a            
+chmod -r ./tmp/a
 echo ./tmp/a/b/* "./tmp/a/"b/* "./tmp/a/b"/*
 echo "./tmp/a/b"/*
 

@@ -50,21 +50,21 @@ mbsncmp (const char *mbs1, const char *mbs2, size_t n)
       len2 = mbrtowc (&c2, mbs2, mb_cur_max, &state2);
 
       if (len1 == 0)
-	return len2 == 0 ? 0 : -1;
+        return len2 == 0 ? 0 : -1;
       else if (len2 == 0)
-	return 1;
+        return 1;
       else if (len1 > 0 && len2 < 0)
         return -1;
       else if (len1 < 0 && len2 > 0)
         return 1;
       else if (len1 < 0 && len2 < 0)
-	{
-	  len1 = strlen (mbs1);
-	  len2 = strlen (mbs2);
-	  return (len1 == len2 ? memcmp (mbs1, mbs2, len1)
-			       : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1)
-						: (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
-	}
+        {
+          len1 = strlen (mbs1);
+          len2 = strlen (mbs2);
+          return (len1 == len2 ? memcmp (mbs1, mbs2, len1)
+                               : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1)
+                                                : (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
+        }
 
       mbs1 += len1;
       mbs2 += len2;

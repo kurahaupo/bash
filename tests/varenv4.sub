@@ -13,20 +13,20 @@
 #
 f()
 {
-	local -a v
-	local -a w
+        local -a v
+        local -a w
 
-	g
-	echo "f: ${v[@]}, ${w[@]}"
+        g
+        echo "f: ${v[@]}, ${w[@]}"
 }
 
 g()
 {
-	aux=v
-	declare -ga "$aux=( asdf fdsa )"
-	declare -ga w=( asdf fdsa )
+        aux=v
+        declare -ga "$aux=( asdf fdsa )"
+        declare -ga w=( asdf fdsa )
 
-	echo "g: ${v[@]}, ${w[@]}"
+        echo "g: ${v[@]}, ${w[@]}"
 }
 
 f
@@ -37,20 +37,20 @@ unset -f f g
 
 f()
 {
-	local  v
-	local  w
+        local  v
+        local  w
 
-	g
-	echo f: v = $v, w = $w
+        g
+        echo f: v = $v, w = $w
 }
 
 g()
 {
-	aux=v
-	declare -g w=one
-	declare -g "$aux=two"
+        aux=v
+        declare -g w=one
+        declare -g "$aux=two"
 
-	echo g: v = $v, w = $w
+        echo g: v = $v, w = $w
 }
 
 f

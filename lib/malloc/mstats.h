@@ -101,7 +101,7 @@ struct bucket_stats {
   int nlesscore;
   int nsplit;
   int ncoalesce;
-  int nmmap;		/* currently unused */
+  int nmmap;            /* currently unused */
 };
 
 extern struct bucket_stats malloc_bucket_stats (int);

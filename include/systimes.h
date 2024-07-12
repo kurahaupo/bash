@@ -17,7 +17,7 @@
 */
 
 /*
- *	POSIX Standard: 4.5.2 Process Times	<sys/times.h>
+ *      POSIX Standard: 4.5.2 Process Times     <sys/times.h>
  */
 
 /*
@@ -25,8 +25,8 @@
  * after config.h
  */
 
-#ifndef	_BASH_SYSTIMES_H
-#define _BASH_SYSTIMES_H	1
+#ifndef _BASH_SYSTIMES_H
+#define _BASH_SYSTIMES_H        1
 
 #if defined (HAVE_SYS_TIMES_H)
 #  include <sys/times.h>
@@ -37,11 +37,11 @@
 /* Structure describing CPU time used by a process and its children.  */
 struct tms
   {
-    clock_t tms_utime;		/* User CPU time.  */
-    clock_t tms_stime;		/* System CPU time.  */
+    clock_t tms_utime;          /* User CPU time.  */
+    clock_t tms_stime;          /* System CPU time.  */
 
-    clock_t tms_cutime;		/* User CPU time of dead children.  */
-    clock_t tms_cstime;		/* System CPU time of dead children.  */
+    clock_t tms_cutime;         /* User CPU time of dead children.  */
+    clock_t tms_cstime;         /* System CPU time of dead children.  */
   };
 
 /* Store the CPU time used by this process and all its

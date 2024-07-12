@@ -49,14 +49,14 @@ push_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "")) != -1)
     {
       switch (opt)
-	{
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
-  list = loptend;  
+  list = loptend;
 
   pid = make_child (savestring ("push"), 0);
   if (pid == -1)
@@ -79,8 +79,8 @@ push_builtin (WORD_LIST *list)
       last_asynchronous_pid = NO_PID;
 
       /* Make sure the job control code has the right values for
-	 the shell's process group and tty process group, and that
-	 the signals are set correctly for job control. */
+         the shell's process group and tty process group, and that
+         the signals are set correctly for job control. */
       initialize_job_control (0);
       initialize_job_signals ();
 
@@ -93,24 +93,24 @@ push_builtin (WORD_LIST *list)
       stop_pipeline (0, (COMMAND *)NULL);
       xstatus = wait_for (pid, 0);
       return (xstatus);
-    }   
+    }
 }
 
 char *push_doc[] = {
-	"Create child shell.",
-	"",
-	"Create a child that is an exact duplicate of the running shell",
-	"and wait for it to exit.  The $SHLVL, $!, $$, and $PPID variables",
-	"are adjusted in the child.  The return value is the exit status",
-	"of the child.",
-	(char *)NULL
+        "Create child shell.",
+        "",
+        "Create a child that is an exact duplicate of the running shell",
+        "and wait for it to exit.  The $SHLVL, $!, $$, and $PPID variables",
+        "are adjusted in the child.  The return value is the exit status",
+        "of the child.",
+        (char *)NULL
 };
 
 struct builtin push_struct = {
-	"push",
-	push_builtin,
-	BUILTIN_ENABLED,
-	push_doc,
-	"push",
-	0
+        "push",
+        push_builtin,
+        BUILTIN_ENABLED,
+        push_doc,
+        "push",
+        0
 };

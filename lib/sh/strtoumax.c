@@ -64,8 +64,8 @@ strtoumax (const char *ptr, char **endptr, int base)
 {
 #if HAVE_UNSIGNED_LONG_LONG_INT
   verify (size_is_that_of_unsigned_long_or_unsigned_long_long,
-	  (sizeof (uintmax_t) == sizeof (unsigned long) ||
-	   sizeof (uintmax_t) == sizeof (unsigned long long)));
+          (sizeof (uintmax_t) == sizeof (unsigned long) ||
+           sizeof (uintmax_t) == sizeof (unsigned long long)));
 
   if (sizeof (uintmax_t) != sizeof (unsigned long))
     return (strtoull (ptr, endptr, base));

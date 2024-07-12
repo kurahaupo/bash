@@ -104,11 +104,11 @@ strvec_remove (char **array, const char *name)
   for (i = 0; array[i]; i++)
     if (STREQ (name, array[i]))
       {
-	x = array[i];
-	for (j = i; array[j]; j++)
-	  array[j] = array[j + 1];
-	free (x);
-	return 1;
+        x = array[i];
+        for (j = i; array[j]; j++)
+          array[j] = array[j + 1];
+        free (x);
+        return 1;
       }
   return 0;
 }
@@ -242,10 +242,10 @@ strvec_to_word_list (char **array, int alloc, int starting_index)
     {
       w = make_bare_word (alloc ? array[i] : "");
       if (alloc == 0)
-	{
-	  free (w->word);
-	  w->word = array[i];
-	}
+        {
+          free (w->word);
+          w->word = array[i];
+        }
       list = make_word_list (w, list);
     }
   return (REVERSE_LIST (list, WORD_LIST *));

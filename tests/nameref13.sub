@@ -15,9 +15,9 @@ declare -nt r=a
 
 f()
 {
-	declare a
-	declare -n r=a
-	declare -p a r
+        declare a
+        declare -n r=a
+        declare -p a r
 }
 
 f
@@ -25,10 +25,10 @@ unset -f f
 
 f()
 {
-	declare a
-	declare -n r
-	r=a
-	declare -p a r
+        declare a
+        declare -n r
+        r=a
+        declare -p a r
 }
 f
 echo $?
@@ -38,9 +38,9 @@ unset -f f
 P=12345
 function foo
 {
-	typeset -n r
-	typeset -n r=P
-	typeset -p r
+        typeset -n r
+        typeset -n r=P
+        typeset -p r
 }
 
 foo
@@ -50,10 +50,10 @@ ref=outside
 
 f()
 {
-	unset var
-	declare -n ref=var
-	declare -n ref;
-	declare -p ref;
+        unset var
+        declare -n ref=var
+        declare -n ref;
+        declare -p ref;
 }
 f
 
@@ -63,12 +63,12 @@ typeset -n r=a
 
 f()
 {
-	typeset a
-	typeset -n r
-	typeset -n r
-	r=a
+        typeset a
+        typeset -n r
+        typeset -n r
+        r=a
 
-	typeset -p a r
+        typeset -p a r
 }
 f
 echo $?
@@ -77,9 +77,9 @@ unset -f f
 
 function foo
 {
-	typeset -n r
-	typeset -n r
-	typeset -p r
+        typeset -n r
+        typeset -n r
+        typeset -p r
 }
 
 foo
@@ -88,28 +88,27 @@ unset -f foo
 
 function foo
 {
-	typeset r
-	typeset -n r
-	typeset -p r
+        typeset r
+        typeset -n r
+        typeset -p r
 }
 foo
 unset -f foo
 
 foo()
 {
-	typeset -n foo
-	typeset foo=12345
-	typeset -p foo
+        typeset -n foo
+        typeset foo=12345
+        typeset -p foo
 }
 foo
 unset -f foo
 
 foo()
 {
-	typeset -n foo
-	typeset -n foo=12345
-	typeset -p foo
+        typeset -n foo
+        typeset -n foo=12345
+        typeset -p foo
 }
 foo
 unset -f foo
-

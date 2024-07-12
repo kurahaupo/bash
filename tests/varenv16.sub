@@ -23,9 +23,9 @@ show2()
 
 showfoo()
 {
-	local foo
+        local foo
 
-	foo=showfoo show2
+        foo=showfoo show2
 }
 
 unset foo

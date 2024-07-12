@@ -21,7 +21,7 @@ _QUEST=
 _QUART=
 
 recho ${!_Q*}
-recho ${!_Q@}		# compatibility
+recho ${!_Q@}           # compatibility
 
 IFS="-$IFS"
 

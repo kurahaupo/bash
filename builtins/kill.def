@@ -30,11 +30,11 @@ SIGSPEC or SIGNUM.  If neither SIGSPEC nor SIGNUM is present, then
 SIGTERM is assumed.
 
 Options:
-  -s sig	SIG is a signal name
-  -n sig	SIG is a signal number
-  -l	list the signal names; if arguments follow `-l' they are
-		assumed to be signal numbers for which names should be listed
-  -L	synonym for -l
+  -s sig        SIG is a signal name
+  -n sig        SIG is a signal number
+  -l    list the signal names; if arguments follow `-l' they are
+                assumed to be signal numbers for which names should be listed
+  -L    synonym for -l
 
 Kill is a shell builtin for two reasons: it allows job IDs to be used
 instead of process IDs, and allows processes to be killed if the limit
@@ -107,62 +107,62 @@ kill_builtin (WORD_LIST *list)
       word = list->word->word;
 
       if (ISOPTION (word, 'l') || ISOPTION (word, 'L'))
-	{
-	  listing++;
-	  list = list->next;
-	}
+        {
+          listing++;
+          list = list->next;
+        }
       else if (ISOPTION (word, 's') || ISOPTION (word, 'n'))
-	{
-	  list = list->next;
-	  if (list)
-	    {
-	      sigspec = list->word->word;
+        {
+          list = list->next;
+          if (list)
+            {
+              sigspec = list->word->word;
 use_sigspec:
-	      if (sigspec[0] == '0' && sigspec[1] == '\0')
-		sig = 0;
-	      else
-		sig = decode_signal (sigspec, dflags);
-	      list = list->next;
-	      saw_signal++;
-	    }
-	  else
-	    {
-	      sh_needarg (word);
-	      return (EXECUTION_FAILURE);
-	    }
-	}
+              if (sigspec[0] == '0' && sigspec[1] == '\0')
+                sig = 0;
+              else
+                sig = decode_signal (sigspec, dflags);
+              list = list->next;
+              saw_signal++;
+            }
+          else
+            {
+              sh_needarg (word);
+              return (EXECUTION_FAILURE);
+            }
+        }
       else if (word[0] == '-' && word[1] == 's' && ISALPHA (word[2]))
-	{
-	  sigspec = word + 2;
-	  goto use_sigspec;
-	}
+        {
+          sigspec = word + 2;
+          goto use_sigspec;
+        }
       else if (word[0] == '-' && word[1] == 'n' && ISDIGIT (word[2]))
-	{
-	  sigspec = word + 2;
-	  goto use_sigspec;
-	}
+        {
+          sigspec = word + 2;
+          goto use_sigspec;
+        }
       else if (ISOPTION (word, '-'))
-	{
-	  list = list->next;
-	  break;
-	}
+        {
+          list = list->next;
+          break;
+        }
       else if (ISOPTION (word, '?'))
-	{
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+          builtin_usage ();
+          return (EX_USAGE);
+        }
       /* If this is a signal specification then process it.  We only process
-	 the first one seen; other arguments may signify process groups (e.g,
-	 -num == process group num). */
+         the first one seen; other arguments may signify process groups (e.g,
+         -num == process group num). */
       else if (*word == '-' && saw_signal == 0)
-	{
-	  sigspec = word + 1;
-	  sig = decode_signal (sigspec, dflags);
-	  saw_signal++;
-	  list = list->next;
-	}
+        {
+          sigspec = word + 1;
+          sig = decode_signal (sigspec, dflags);
+          saw_signal++;
+          list = list->next;
+        }
       else
-	break;
+        break;
     }
 
   if (listing)
@@ -186,74 +186,74 @@ use_sigspec:
       word = list->word->word;
 
       if (*word == '-')
-	word++;
+        word++;
 
       /* Use the entire argument in case of minus sign presence. */
       if (*word && valid_number (list->word->word, &pid_value) && (pid_value == (pid_t)pid_value))
-	{
-	  pid = (pid_t) pid_value;
+        {
+          pid = (pid_t) pid_value;
 
-	  if (kill_pid (pid, sig, pid < -1) < 0)
-	    {
-	      if (errno == EINVAL)
-		sh_invalidsig (sigspec);
-	      else
-		kill_error (pid, errno);
-	      CONTINUE_OR_FAIL;
-	    }
-	  else
-	    any_succeeded++;
-	}
+          if (kill_pid (pid, sig, pid < -1) < 0)
+            {
+              if (errno == EINVAL)
+                sh_invalidsig (sigspec);
+              else
+                kill_error (pid, errno);
+              CONTINUE_OR_FAIL;
+            }
+          else
+            any_succeeded++;
+        }
 #if defined (JOB_CONTROL)
       else if (*list->word->word && *list->word->word != '%')
-	{
-	  builtin_error (_("%s: arguments must be process or job IDs"), list->word->word);
-	  CONTINUE_OR_FAIL;
-	}
+        {
+          builtin_error (_("%s: arguments must be process or job IDs"), list->word->word);
+          CONTINUE_OR_FAIL;
+        }
       else if (*word)
-	/* Posix.2 says you can kill without job control active (4.32.4) */
-	{			/* Must be a job spec.  Check it out. */
-	  int job;
-	  sigset_t set, oset;
-	  JOB *j;
+        /* Posix.2 says you can kill without job control active (4.32.4) */
+        {                       /* Must be a job spec.  Check it out. */
+          int job;
+          sigset_t set, oset;
+          JOB *j;
 
-	  BLOCK_CHILD (set, oset);
-	  job = get_job_spec (list);
+          BLOCK_CHILD (set, oset);
+          job = get_job_spec (list);
 
-	  if (INVALID_JOB (job))
-	    {
-	      if (job != DUP_JOB)
-		sh_badjob (list->word->word);
-	      UNBLOCK_CHILD (oset);
-	      CONTINUE_OR_FAIL;
-	    }
+          if (INVALID_JOB (job))
+            {
+              if (job != DUP_JOB)
+                sh_badjob (list->word->word);
+              UNBLOCK_CHILD (oset);
+              CONTINUE_OR_FAIL;
+            }
 
-	  j = get_job_by_jid (job);
-	  /* Job spec used.  Kill the process group. If the job was started
-	     without job control, then its pgrp == shell_pgrp, so we have
-	     to be careful.  We take the pid of the first job in the pipeline
-	     in that case. */
-	  pid = IS_JOBCONTROL (job) ? j->pgrp : j->pipe->pid;
+          j = get_job_by_jid (job);
+          /* Job spec used.  Kill the process group. If the job was started
+             without job control, then its pgrp == shell_pgrp, so we have
+             to be careful.  We take the pid of the first job in the pipeline
+             in that case. */
+          pid = IS_JOBCONTROL (job) ? j->pgrp : j->pipe->pid;
 
-	  UNBLOCK_CHILD (oset);
+          UNBLOCK_CHILD (oset);
 
-	  if (kill_pid (pid, sig, 1) < 0)
-	    {
-	      if (errno == EINVAL)
-		sh_invalidsig (sigspec);
-	      else
-		kill_error (pid, errno);
-	      CONTINUE_OR_FAIL;
-	    }
-	  else
-	    any_succeeded++;
-	}
+          if (kill_pid (pid, sig, 1) < 0)
+            {
+              if (errno == EINVAL)
+                sh_invalidsig (sigspec);
+              else
+                kill_error (pid, errno);
+              CONTINUE_OR_FAIL;
+            }
+          else
+            any_succeeded++;
+        }
 #endif /* !JOB_CONTROL */
       else
-	{
-	  sh_badpid (list->word->word);
-	  CONTINUE_OR_FAIL;
-	}
+        {
+          sh_badpid (list->word->word);
+          CONTINUE_OR_FAIL;
+        }
     continue_killing:
       list = list->next;
     }

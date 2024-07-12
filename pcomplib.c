@@ -37,9 +37,9 @@
 #include "shell.h"
 #include "pcomplete.h"
 
-#define COMPLETE_HASH_BUCKETS	512	/* must be power of two */
+#define COMPLETE_HASH_BUCKETS   512     /* must be power of two */
 
-#define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
+#define STRDUP(x)       ((x) ? savestring (x) : (char *)NULL)
 
 HASH_TABLE *prog_completes = (HASH_TABLE *)NULL;
 
@@ -94,7 +94,7 @@ compspec_copy (COMPSPEC *cs)
 
   new = (COMPSPEC *)xmalloc (sizeof (COMPSPEC));
 
-  new->refcount = 1; 	/* was cs->refcount, but this is a fresh copy */
+  new->refcount = 1;    /* was cs->refcount, but this is a fresh copy */
   new->actions = cs->actions;
   new->options = cs->options;
 
@@ -131,7 +131,7 @@ free_progcomp (PTR_T data)
   cs = (COMPSPEC *)data;
   compspec_dispose (cs);
 }
-  
+
 void
 progcomp_flush (void)
 {
@@ -159,7 +159,7 @@ progcomp_remove (const char *cmd)
   if (item)
     {
       if (item->data)
-	free_progcomp (item->data);
+        free_progcomp (item->data);
       free (item->key);
       free (item);
       return (1);

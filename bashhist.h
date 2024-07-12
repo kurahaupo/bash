@@ -24,24 +24,24 @@
 #include "stdc.h"
 
 /* Flag values for history_control */
-#define HC_IGNSPACE	0x01
-#define HC_IGNDUPS	0x02
-#define HC_ERASEDUPS	0x04
+#define HC_IGNSPACE     0x01
+#define HC_IGNDUPS      0x02
+#define HC_ERASEDUPS    0x04
 
-#define HC_IGNBOTH	(HC_IGNSPACE|HC_IGNDUPS)
+#define HC_IGNBOTH      (HC_IGNSPACE|HC_IGNDUPS)
 
 #if defined (STRICT_POSIX)
 #  undef HISTEXPAND_DEFAULT
-#  define HISTEXPAND_DEFAULT	0
+#  define HISTEXPAND_DEFAULT    0
 #else
 #  if !defined (HISTEXPAND_DEFAULT)
-#    define HISTEXPAND_DEFAULT	1
+#    define HISTEXPAND_DEFAULT  1
 #  endif /* !HISTEXPAND_DEFAULT */
 #endif
 
 extern int remember_on_history;
-extern int enable_history_list;		/* value for `set -o history' */
-extern int literal_history;		/* controlled by `shopt lithist' */
+extern int enable_history_list;         /* value for `set -o history' */
+extern int literal_history;             /* controlled by `shopt lithist' */
 extern int force_append_history;
 extern int history_lines_this_session;
 extern int history_lines_in_file;

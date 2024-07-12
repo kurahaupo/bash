@@ -32,18 +32,18 @@ unset a ; unset -n b
 #####
 declare -ai a=('4');
 declare -n b='a[0]';
-declare -ni b;		# this should maybe not be allowed, but it is for now
+declare -ni b;          # this should maybe not be allowed, but it is for now
 declare -p a b
 
 b+=2;
-declare -p a b 
+declare -p a b
 
 unset a ; unset -n b
 
 #####
 f()
 {
-	local -a a=('' 'foo');
+        local -a a=('' 'foo');
         local -n b=a[1];
         echo $b;
         b+=\ bar;

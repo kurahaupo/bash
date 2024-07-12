@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-                                 
+
 #if !defined (_SH_MBUTIL_H_)
 #define _SH_MBUTIL_H_
 
@@ -37,23 +37,23 @@ extern size_t mbstrlen (const char *);
 
 extern char *xstrchr (const char *, int);
 
-extern int locale_mb_cur_max;	/* XXX */
-extern int locale_utf8locale;	/* XXX */
+extern int locale_mb_cur_max;   /* XXX */
+extern int locale_utf8locale;   /* XXX */
 
 #ifndef MB_INVALIDCH
-#define MB_INVALIDCH(x)		((x) == (size_t)-1 || (x) == (size_t)-2)
-#define MB_NULLWCH(x)		((x) == 0)
+#define MB_INVALIDCH(x)         ((x) == (size_t)-1 || (x) == (size_t)-2)
+#define MB_NULLWCH(x)           ((x) == 0)
 #endif
 
-#define MBSLEN(s)	(((s) && (s)[0]) ? ((s)[1] ? mbstrlen (s) : 1) : 0)
-#define MB_STRLEN(s)	((MB_CUR_MAX > 1) ? MBSLEN (s) : STRLEN (s))
+#define MBSLEN(s)       (((s) && (s)[0]) ? ((s)[1] ? mbstrlen (s) : 1) : 0)
+#define MB_STRLEN(s)    ((MB_CUR_MAX > 1) ? MBSLEN (s) : STRLEN (s))
 
-#define MBLEN(s, n)	((MB_CUR_MAX > 1) ? mblen ((s), (n)) : 1)
-#define MBRLEN(s, n, p)	((MB_CUR_MAX > 1) ? mbrlen ((s), (n), (p)) : 1)
+#define MBLEN(s, n)     ((MB_CUR_MAX > 1) ? mblen ((s), (n)) : 1)
+#define MBRLEN(s, n, p) ((MB_CUR_MAX > 1) ? mbrlen ((s), (n), (p)) : 1)
 
-#define UTF8_SINGLEBYTE(c)	(((c) & 0x80) == 0)
-#define UTF8_MBFIRSTCHAR(c)	(((c) & 0xc0) == 0xc0)
-#define UTF8_MBCHAR(c)		(((c) & 0xc0) == 0x80)
+#define UTF8_SINGLEBYTE(c)      (((c) & 0x80) == 0)
+#define UTF8_MBFIRSTCHAR(c)     (((c) & 0xc0) == 0xc0)
+#define UTF8_MBCHAR(c)          (((c) & 0xc0) == 0x80)
 
 /* Is an eight-bit quantity a valid character in the current locale? */
 #define VALID_SINGLEBYTE_CHAR(c)  (locale_utf8locale == 0 || ((c) & 0x80) == 0)
@@ -63,28 +63,28 @@ extern int locale_utf8locale;	/* XXX */
 #undef MB_LEN_MAX
 #undef MB_CUR_MAX
 
-#define MB_LEN_MAX	1
-#define MB_CUR_MAX	1
+#define MB_LEN_MAX      1
+#define MB_CUR_MAX      1
 
 #undef xstrchr
-#define xstrchr(s, c)	strchr(s, c)
+#define xstrchr(s, c)   strchr(s, c)
 
 #ifndef MB_INVALIDCH
-#define MB_INVALIDCH(x)		(0)
-#define MB_NULLWCH(x)		(0)
+#define MB_INVALIDCH(x)         (0)
+#define MB_NULLWCH(x)           (0)
 #endif
 
-#define MB_STRLEN(s)		(STRLEN(s))
+#define MB_STRLEN(s)            (STRLEN(s))
 
-#define MBLEN(s, n)		1
-#define MBRLEN(s, n, p)		1
+#define MBLEN(s, n)             1
+#define MBRLEN(s, n, p)         1
 
 #ifndef wchar_t
-#  define wchar_t	int
+#  define wchar_t       int
 #endif
 
-#define UTF8_SINGLEBYTE(c)	(1)
-#define UTF8_MBFIRSTCHAR(c)	(0)
+#define UTF8_SINGLEBYTE(c)      (1)
+#define UTF8_MBFIRSTCHAR(c)     (0)
 
 #defined VALID_SINGLEBYTE_CHAR(c)  (1)
 
@@ -94,8 +94,8 @@ extern int locale_utf8locale;	/* XXX */
    with `;'. */
 #if defined (HANDLE_MULTIBYTE)
 #  define DECLARE_MBSTATE \
-	mbstate_t state; \
-	memset (&state, '\0', sizeof (mbstate_t))
+        mbstate_t state; \
+        memset (&state, '\0', sizeof (mbstate_t))
 #else
 #  define DECLARE_MBSTATE
 #endif  /* !HANDLE_MULTIBYTE */
@@ -114,39 +114,39 @@ extern int locale_utf8locale;	/* XXX */
 #  define ADVANCE_CHAR(_str, _strsize, _i) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _f; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _f; \
 \
-	    _f = is_basic ((_str)[_i]); \
-	    if (_f) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && (((_str)[_i] & 0x80) == 0)) \
-	      mblength = (_str)[_i] != 0; \
-	    else \
-	      { \
-	        state_bak = state; \
-	        mblength = mbrlen ((_str) + (_i), (_strsize) - (_i), &state); \
-	      } \
+            _f = is_basic ((_str)[_i]); \
+            if (_f) \
+              mblength = 1; \
+            else if (locale_utf8locale && (((_str)[_i] & 0x80) == 0)) \
+              mblength = (_str)[_i] != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_str) + (_i), (_strsize) - (_i), &state); \
+              } \
 \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		(_i)++; \
-	      } \
-	    else if (mblength == 0) \
-	      (_i)++; \
-	    else \
-	      (_i) += mblength; \
-	  } \
-	else \
-	  (_i)++; \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                (_i)++; \
+              } \
+            else if (mblength == 0) \
+              (_i)++; \
+            else \
+              (_i) += mblength; \
+          } \
+        else \
+          (_i)++; \
       } \
     while (0)
 #else
-#  define ADVANCE_CHAR(_str, _strsize, _i)	(_i)++
+#  define ADVANCE_CHAR(_str, _strsize, _i)      (_i)++
 #endif  /* !HANDLE_MULTIBYTE */
 
 /* Advance one (possibly multibyte) character in the string _STR of length
@@ -156,31 +156,31 @@ extern int locale_utf8locale;	/* XXX */
 #  define ADVANCE_CHAR_P(_str, _strsize) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _f; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _f; \
 \
-	    _f = is_basic (*(_str)); \
-	    if (_f) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && ((*(_str) & 0x80) == 0)) \
-	      mblength = *(_str) != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_str), (_strsize), &state); \
-	      } \
+            _f = is_basic (*(_str)); \
+            if (_f) \
+              mblength = 1; \
+            else if (locale_utf8locale && ((*(_str) & 0x80) == 0)) \
+              mblength = *(_str) != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_str), (_strsize), &state); \
+              } \
 \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    else \
-	      (_str) += (mblength < 1) ? 0 : (mblength - 1); \
-	  } \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            else \
+              (_str) += (mblength < 1) ? 0 : (mblength - 1); \
+          } \
       } \
     while (0)
 #else
@@ -193,39 +193,39 @@ extern int locale_utf8locale;	/* XXX */
 #  define BACKUP_CHAR(_str, _strsize, _i) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _x, _p; /* _x == temp index into string, _p == prev index */ \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _x, _p; /* _x == temp index into string, _p == prev index */ \
 \
-	    _x = _p = 0; \
-	    while (_x < (_i)) \
-	      { \
-	        state_bak = state; \
-	        mblength = mbrlen ((_str) + (_x), (_strsize) - (_x), &state); \
+            _x = _p = 0; \
+            while (_x < (_i)) \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_str) + (_x), (_strsize) - (_x), &state); \
 \
-		if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-		  { \
-		    state = state_bak; \
-		    _x++; \
-		  } \
-		else if (mblength == 0) \
-		  _x++; \
-		else \
-		  { \
-		    _p = _x; /* _p == start of prev mbchar */ \
-		    _x += mblength; \
-		  } \
-	      } \
-	    (_i) = _p; \
-	  } \
-	else \
-	  (_i)--; \
+                if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+                  { \
+                    state = state_bak; \
+                    _x++; \
+                  } \
+                else if (mblength == 0) \
+                  _x++; \
+                else \
+                  { \
+                    _p = _x; /* _p == start of prev mbchar */ \
+                    _x += mblength; \
+                  } \
+              } \
+            (_i) = _p; \
+          } \
+        else \
+          (_i)--; \
       } \
     while (0)
 #else
-#  define BACKUP_CHAR(_str, _strsize, _i)	(_i)--
+#  define BACKUP_CHAR(_str, _strsize, _i)       (_i)--
 #endif  /* !HANDLE_MULTIBYTE */
 
 /* Back up one (possibly multibyte) character in the string _BASE of length
@@ -235,35 +235,35 @@ extern int locale_utf8locale;	/* XXX */
 #  define BACKUP_CHAR_P(_base, _strsize, _str) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    char *_x, _p; /* _x == temp pointer into string, _p == prev pointer */ \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            char *_x, _p; /* _x == temp pointer into string, _p == prev pointer */ \
 \
-	    _x = _p = _base; \
-	    while (_x < (_str)) \
-	      { \
-	        state_bak = state; \
-	        mblength = mbrlen (_x, (_strsize) - _x, &state); \
+            _x = _p = _base; \
+            while (_x < (_str)) \
+              { \
+                state_bak = state; \
+                mblength = mbrlen (_x, (_strsize) - _x, &state); \
 \
-		if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-		  { \
-		    state = state_bak; \
-		    _x++; \
-		  } \
-		else if (mblength == 0) \
-		  _x++; \
-		else \
-		  { \
-		    _p = _x; /* _p == start of prev mbchar */ \
-		    _x += mblength; \
-		  } \
-	      } \
-	    (_str) = _p; \
-	  } \
-	else \
-	  (_str)--; \
+                if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+                  { \
+                    state = state_bak; \
+                    _x++; \
+                  } \
+                else if (mblength == 0) \
+                  _x++; \
+                else \
+                  { \
+                    _p = _x; /* _p == start of prev mbchar */ \
+                    _x += mblength; \
+                  } \
+              } \
+            (_str) = _p; \
+          } \
+        else \
+          (_str)--; \
       } \
     while (0)
 #else
@@ -276,39 +276,39 @@ extern int locale_utf8locale;	/* XXX */
 #  define COPY_CHAR_P(_dst, _src, _srcend) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _k; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _k; \
 \
-	    _k = is_basic (*(_src)); \
-	    if (_k) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && ((*(_src) & 0x80) == 0)) \
-	      mblength = *(_src) != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src), (_srcend) - (_src), &state); \
-	      } \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    else \
-	      mblength = (mblength < 1) ? 1 : mblength; \
+            _k = is_basic (*(_src)); \
+            if (_k) \
+              mblength = 1; \
+            else if (locale_utf8locale && ((*(_src) & 0x80) == 0)) \
+              mblength = *(_src) != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src), (_srcend) - (_src), &state); \
+              } \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            else \
+              mblength = (mblength < 1) ? 1 : mblength; \
 \
-	    for (_k = 0; _k < mblength; _k++) \
-	      *(_dst)++ = *(_src)++; \
-	  } \
-	else \
-	  *(_dst)++ = *(_src)++; \
+            for (_k = 0; _k < mblength; _k++) \
+              *(_dst)++ = *(_src)++; \
+          } \
+        else \
+          *(_dst)++ = *(_src)++; \
       } \
     while (0)
 #else
-#  define COPY_CHAR_P(_dst, _src, _srcend)	*(_dst)++ = *(_src)++
+#  define COPY_CHAR_P(_dst, _src, _srcend)      *(_dst)++ = *(_src)++
 #endif  /* !HANDLE_MULTIBYTE */
 
 /* Copy a single character from the string _SRC at index _SI to the string
@@ -317,88 +317,88 @@ extern int locale_utf8locale;	/* XXX */
 #  define COPY_CHAR_I(_dst, _di, _src, _srcend, _si) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _k; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _k; \
 \
-	    _k = is_basic ((_src)[(_si)]); \
-	    if (_k) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && ((_src)[(_si)] & 0x80) == 0) \
-	      mblength = (_src)[(_si)] != 0; \
-	    else \
-	      {\
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_srcend) - ((_src)+(_si)), &state); \
-	      } \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    else \
-	      mblength = (mblength < 1) ? 1 : mblength; \
+            _k = is_basic ((_src)[(_si)]); \
+            if (_k) \
+              mblength = 1; \
+            else if (locale_utf8locale && ((_src)[(_si)] & 0x80) == 0) \
+              mblength = (_src)[(_si)] != 0; \
+            else \
+              {\
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_srcend) - ((_src)+(_si)), &state); \
+              } \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            else \
+              mblength = (mblength < 1) ? 1 : mblength; \
 \
-	    for (_k = 0; _k < mblength; _k++) \
-	      _dst[_di++] = _src[_si++]; \
-	  } \
-	else \
-	  _dst[_di++] = _src[_si++]; \
+            for (_k = 0; _k < mblength; _k++) \
+              _dst[_di++] = _src[_si++]; \
+          } \
+        else \
+          _dst[_di++] = _src[_si++]; \
       } \
     while (0)
 #else
-#  define COPY_CHAR_I(_dst, _di, _src, _srcend, _si)	_dst[_di++] = _src[_si++]
+#  define COPY_CHAR_I(_dst, _di, _src, _srcend, _si)    _dst[_di++] = _src[_si++]
 #endif  /* !HANDLE_MULTIBYTE */
 
 /****************************************************************
- *								*
- * The following are only guaranteed to work in subst.c		*
- *								*
+ *                                                              *
+ * The following are only guaranteed to work in subst.c         *
+ *                                                              *
  ****************************************************************/
 
 #if defined (HANDLE_MULTIBYTE)
 #  define SCOPY_CHAR_I(_dst, _escchar, _sc, _src, _si, _slen) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _i; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _i; \
 \
-	    _i = is_basic ((_src)[(_si)]); \
-	    if (_i) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && ((_src)[(_si)] & 0x80) == 0) \
-	      mblength = (_src)[(_si)] != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_slen) - (_si), &state); \
-	      } \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    else \
-	      mblength = (mblength < 1) ? 1 : mblength; \
+            _i = is_basic ((_src)[(_si)]); \
+            if (_i) \
+              mblength = 1; \
+            else if (locale_utf8locale && ((_src)[(_si)] & 0x80) == 0) \
+              mblength = (_src)[(_si)] != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_slen) - (_si), &state); \
+              } \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            else \
+              mblength = (mblength < 1) ? 1 : mblength; \
 \
-	    temp = xmalloc (mblength + 2); \
-	    temp[0] = _escchar; \
-	    for (_i = 0; _i < mblength; _i++) \
-	      temp[_i + 1] = _src[_si++]; \
-	    temp[mblength + 1] = '\0'; \
+            temp = xmalloc (mblength + 2); \
+            temp[0] = _escchar; \
+            for (_i = 0; _i < mblength; _i++) \
+              temp[_i + 1] = _src[_si++]; \
+            temp[mblength + 1] = '\0'; \
 \
-	    goto add_string; \
-	  } \
-	else \
-	  { \
-	    _dst[0] = _escchar; \
-	    _dst[1] = _sc; \
-	  } \
+            goto add_string; \
+          } \
+        else \
+          { \
+            _dst[0] = _escchar; \
+            _dst[1] = _sc; \
+          } \
       } \
     while (0)
 #else
@@ -411,83 +411,83 @@ extern int locale_utf8locale;	/* XXX */
 #  define SCOPY_CHAR_M(_dst, _src, _srcend, _si) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
-	    int _i; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            mbstate_t state_bak; \
+            size_t mblength; \
+            int _i; \
 \
-	    _i = is_basic (*((_src) + (_si))); \
-	    if (_i) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
+            _i = is_basic (*((_src) + (_si))); \
+            if (_i) \
+              mblength = 1; \
+            else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
               mblength = (_src)[_si] != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_srcend) - ((_src) + (_si)), &state); \
-	      } \
-	    if (mblength == (size_t)-2 || mblength == (size_t)-1) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    else \
-	      mblength = (mblength < 1) ? 1 : mblength; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_srcend) - ((_src) + (_si)), &state); \
+              } \
+            if (mblength == (size_t)-2 || mblength == (size_t)-1) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            else \
+              mblength = (mblength < 1) ? 1 : mblength; \
 \
-	    FASTCOPY(((_src) + (_si)), (_dst), mblength); \
+            FASTCOPY(((_src) + (_si)), (_dst), mblength); \
 \
-	    (_dst) += mblength; \
-	    (_si) += mblength; \
-	  } \
-	else \
-	  { \
-	    *(_dst)++ = _src[(_si)]; \
-	    (_si)++; \
-	  } \
+            (_dst) += mblength; \
+            (_si) += mblength; \
+          } \
+        else \
+          { \
+            *(_dst)++ = _src[(_si)]; \
+            (_si)++; \
+          } \
       } \
     while (0)
 #else
 #  define SCOPY_CHAR_M(_dst, _src, _srcend, _si) \
-	*(_dst)++ = _src[(_si)]; \
-	(_si)++
+        *(_dst)++ = _src[(_si)]; \
+        (_si)++
 #endif  /* !HANDLE_MULTIBYTE */
 
 #if HANDLE_MULTIBYTE
 #  define SADD_MBCHAR(_dst, _src, _si, _srcsize) \
     do \
       { \
-	if (locale_mb_cur_max > 1) \
-	  { \
-	    int i; \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
+        if (locale_mb_cur_max > 1) \
+          { \
+            int i; \
+            mbstate_t state_bak; \
+            size_t mblength; \
 \
-	    i = is_basic (*((_src) + (_si))); \
-	    if (i) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
-	      mblength = (_src)[_si] != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
-	      } \
-	    if (mblength == (size_t)-1 || mblength == (size_t)-2) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    if (mblength < 1) \
-	      mblength = 1; \
+            i = is_basic (*((_src) + (_si))); \
+            if (i) \
+              mblength = 1; \
+            else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
+              mblength = (_src)[_si] != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
+              } \
+            if (mblength == (size_t)-1 || mblength == (size_t)-2) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            if (mblength < 1) \
+              mblength = 1; \
 \
-	    _dst = (char *)xmalloc (mblength + 1); \
-	    for (i = 0; i < mblength; i++) \
-	      (_dst)[i] = (_src)[(_si)++]; \
-	    (_dst)[mblength] = '\0'; \
+            _dst = (char *)xmalloc (mblength + 1); \
+            for (i = 0; i < mblength; i++) \
+              (_dst)[i] = (_src)[(_si)++]; \
+            (_dst)[mblength] = '\0'; \
 \
-	    goto add_string; \
-	  } \
+            goto add_string; \
+          } \
       } \
     while (0)
 
@@ -499,66 +499,66 @@ extern int locale_utf8locale;	/* XXX */
 #if defined (HANDLE_MULTIBYTE)
 #  define SADD_MBQCHAR_BODY(_dst, _src, _si, _srcsize) \
 \
-	    int i; \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
+            int i; \
+            mbstate_t state_bak; \
+            size_t mblength; \
 \
-	    i = is_basic (*((_src) + (_si))); \
-	    if (i) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
-	      mblength = (_src)[_si] != 0; \
-	    else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
-	      } \
-	    if (mblength == (size_t)-1 || mblength == (size_t)-2) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    if (mblength < 1) \
-	      mblength = 1; \
+            i = is_basic (*((_src) + (_si))); \
+            if (i) \
+              mblength = 1; \
+            else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
+              mblength = (_src)[_si] != 0; \
+            else \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
+              } \
+            if (mblength == (size_t)-1 || mblength == (size_t)-2) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            if (mblength < 1) \
+              mblength = 1; \
 \
-	    (_dst) = (char *)xmalloc (mblength + 2); \
-	    (_dst)[0] = CTLESC; \
-	    for (i = 0; i < mblength; i++) \
-	      (_dst)[i+1] = (_src)[(_si)++]; \
-	    (_dst)[mblength+1] = '\0'; \
+            (_dst) = (char *)xmalloc (mblength + 2); \
+            (_dst)[0] = CTLESC; \
+            for (i = 0; i < mblength; i++) \
+              (_dst)[i+1] = (_src)[(_si)++]; \
+            (_dst)[mblength+1] = '\0'; \
 \
-	    goto add_string
+            goto add_string
 
 #  define SADD_MBCHAR_BODY(_dst, _src, _si, _srcsize) \
 \
-	    int i; \
-	    mbstate_t state_bak; \
-	    size_t mblength; \
+            int i; \
+            mbstate_t state_bak; \
+            size_t mblength; \
 \
-	    i = is_basic (*((_src) + (_si))); \
-	    if (i) \
-	      mblength = 1; \
-	    else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
+            i = is_basic (*((_src) + (_si))); \
+            if (i) \
+              mblength = 1; \
+            else if (locale_utf8locale && (((_src)[_si] & 0x80) == 0)) \
               mblength = (_src)[_si] != 0; \
             else \
-	      { \
-		state_bak = state; \
-		mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
-	      } \
-	    if (mblength == (size_t)-1 || mblength == (size_t)-2) \
-	      { \
-		state = state_bak; \
-		mblength = 1; \
-	      } \
-	    if (mblength < 1) \
-	      mblength = 1; \
+              { \
+                state_bak = state; \
+                mblength = mbrlen ((_src) + (_si), (_srcsize) - (_si), &state); \
+              } \
+            if (mblength == (size_t)-1 || mblength == (size_t)-2) \
+              { \
+                state = state_bak; \
+                mblength = 1; \
+              } \
+            if (mblength < 1) \
+              mblength = 1; \
 \
-	    (_dst) = (char *)xmalloc (mblength + 1); \
-	    for (i = 0; i < mblength; i++) \
-	      (_dst)[i+1] = (_src)[(_si)++]; \
-	    (_dst)[mblength+1] = '\0'; \
+            (_dst) = (char *)xmalloc (mblength + 1); \
+            for (i = 0; i < mblength; i++) \
+              (_dst)[i+1] = (_src)[(_si)++]; \
+            (_dst)[mblength+1] = '\0'; \
 \
-	    goto add_string
+            goto add_string
 
 #endif /* HANDLE_MULTIBYTE */
 
@@ -568,18 +568,18 @@ mbcharlen(char *s, size_t maxlen)
 {
   size_t l;
   DECLARE_MBSTATE;
-  
+
   if (maxlen == 1 || is_basic (*s))
     return 1;
   else if (locale_utf8locale && UTF8_SINGLEBYTE (*s))
     return (*s != 0);
-  else        
+  else
     l = mbrlen (s, maxlen, &state);
-  if (MB_INVALIDCH (l))  
+  if (MB_INVALIDCH (l))
     return (1);
   return l;
 }
-#else  
+#else
 #define mbcharlen(s, n)      (1)
 #endif /* HANDLE_MULTIBYTE */
 #endif /* _SH_MBUTIL_H_ */

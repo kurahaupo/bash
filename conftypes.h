@@ -25,9 +25,9 @@
    `fat' binary, e.g. on Apple Rhapsody.  These values are used in multiple
    files, so they appear here. */
 #if !defined (RHAPSODY) && !defined (MACOSX)
-#  define HOSTTYPE	CONF_HOSTTYPE
-#  define OSTYPE	CONF_OSTYPE
-#  define MACHTYPE	CONF_MACHTYPE
+#  define HOSTTYPE      CONF_HOSTTYPE
+#  define OSTYPE        CONF_OSTYPE
+#  define MACHTYPE      CONF_MACHTYPE
 #else /* RHAPSODY */
 #  if   defined(__powerpc__) || defined(__ppc__)
 #    define HOSTTYPE "powerpc"

@@ -6,10 +6,10 @@
  * configure also needs to be faked out.  You can create a dummy libdl.a
  * with stub entries for dlopen, dlclose, dlsym, and dlerror:
  *
- *	int dlopen() { return(0);}
- *	int dlclose() { return(0);}
- *	int dlsym() { return(0);}
- *	int dlerror() { return(0);}
+ *      int dlopen() { return(0);}
+ *      int dlclose() { return(0);}
+ *      int dlsym() { return(0);}
+ *      int dlerror() { return(0);}
  *
  * This has not been tested; I just read the manual page and coded this up.
  *

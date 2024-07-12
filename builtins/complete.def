@@ -31,15 +31,15 @@ or NAMEs are supplied, display existing completion specifications in a way
 that allows them to be reused as input.
 
 Options:
-  -p	print existing completion specifications in a reusable format
-  -r	remove a completion specification for each NAME, or, if no
-		NAMEs are supplied, all completion specifications
-  -D	apply the completions and actions as the default for commands
-		without any specific completion defined
-  -E	apply the completions and actions to "empty" commands --
-		completion attempted on a blank line
-  -I	apply the completions and actions to the initial (usually the
-		command) word
+  -p    print existing completion specifications in a reusable format
+  -r    remove a completion specification for each NAME, or, if no
+                NAMEs are supplied, all completion specifications
+  -D    apply the completions and actions as the default for commands
+                without any specific completion defined
+  -E    apply the completions and actions to "empty" commands --
+                completion attempted on a blank line
+  -I    apply the completions and actions to the initial (usually the
+                command) word
 
 When completion is attempted, the actions are applied in the order the
 uppercase-letter options are listed above. If multiple options are supplied,
@@ -142,13 +142,13 @@ static const struct _compopt {
   unsigned long optflag;
 } compopts[] = {
   { "bashdefault", COPT_BASHDEFAULT },
-  { "default",	COPT_DEFAULT },
+  { "default",  COPT_DEFAULT },
   { "dirnames", COPT_DIRNAMES },
   { "filenames",COPT_FILENAMES},
   { "fullquote",COPT_FULLQUOTE},
   { "noquote", COPT_NOQUOTE },
   { "nosort", COPT_NOSORT },
-  { "nospace",	COPT_NOSPACE },
+  { "nospace",  COPT_NOSPACE },
   { "plusdirs", COPT_PLUSDIRS },
   { (char *)NULL, 0 },
 };
@@ -186,9 +186,9 @@ find_compopt (char *name)
    This also sets variables corresponding to options that take arguments as
    a side effect; the caller should ensure that those variables are set to
    NULL before calling build_actions.  Return value:
-   	EX_USAGE = bad option
-   	EXECUTION_SUCCESS = some options supplied
-   	EXECUTION_FAILURE = no options supplied
+        EX_USAGE = bad option
+        EXECUTION_SUCCESS = some options supplied
+        EXECUTION_FAILURE = no options supplied
 */
 
 static int
@@ -206,174 +206,174 @@ build_actions (WORD_LIST *list, struct _optflags *flagp, unsigned long *actp, un
     {
       opt_given = 1;
       switch (opt)
-	{
-	case 'r':
-	  if (flagp)
-	    {
-	      flagp->rflag = 1;
-	      break;
-	    }
-	  else
-	    {
-	      sh_invalidopt ("-r");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
+        {
+        case 'r':
+          if (flagp)
+            {
+              flagp->rflag = 1;
+              break;
+            }
+          else
+            {
+              sh_invalidopt ("-r");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
 
-	case 'p':
-	  if (flagp)
-	    {
-	      flagp->pflag = 1;
-	      break;
-	    }
-	  else
-	    {
-	      sh_invalidopt ("-p");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
+        case 'p':
+          if (flagp)
+            {
+              flagp->pflag = 1;
+              break;
+            }
+          else
+            {
+              sh_invalidopt ("-p");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
 
-	case 'a':
-	  acts |= CA_ALIAS;
-	  break;
-	case 'b':
-	  acts |= CA_BUILTIN;
-	  break;
-	case 'c':
-	  acts |= CA_COMMAND;
-	  break;
-	case 'd':
-	  acts |= CA_DIRECTORY;
-	  break;
-	case 'e':
-	  acts |= CA_EXPORT;
-	  break;
-	case 'f':
-	  acts |= CA_FILE;
-	  break;
-	case 'g':
-	  acts |= CA_GROUP;
-	  break;
-	case 'j':
-	  acts |= CA_JOB;
-	  break;
-	case 'k':
-	  acts |= CA_KEYWORD;
-	  break;
-	case 's':
-	  acts |= CA_SERVICE;
-	  break;
-	case 'u':
-	  acts |= CA_USER;
-	  break;
-	case 'v':
-	  acts |= CA_VARIABLE;
-	  break;
-	case 'o':
-	  ind = find_compopt (list_optarg);
-	  if (ind < 0)
-	    {
-	      sh_invalidoptname (list_optarg);
-	      return (EX_USAGE);
-	    }
-	  copts |= compopts[ind].optflag;
-	  break;
-	case 'A':
-	  ind = find_compact (list_optarg);
-	  if (ind < 0)
-	    {
-	      builtin_error (_("%s: invalid action name"), list_optarg);
-	      return (EX_USAGE);
-	    }
-	  acts |= compacts[ind].actflag;
-	  break;
-	case 'C':
-	  Carg = list_optarg;
-	  break;
-	case 'D':
-	  if (flagp)
-	    {
-	      flagp->Dflag = 1;
-	      break;
-	    }
-	  else
-	    {
-	      sh_invalidopt ("-D");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
-	case 'E':
-	  if (flagp)
-	    {
-	      flagp->Eflag = 1;
-	      break;
-	    }
-	  else
-	    {
-	      sh_invalidopt ("-E");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
-	case 'I':
-	  if (flagp)
-	    {
-	      flagp->Iflag = 1;
-	      break;
-	    }
-	  else
-	    {
-	      sh_invalidopt ("-I");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
-	case 'F':
-	  w.word = Farg = list_optarg;
-	  w.flags = 0;
-	  if (check_identifier (&w, posixly_correct) == 0 || strpbrk (Farg, shell_break_chars) != 0)
-	    {
-	      sh_invalidid (Farg);
-	      return (EX_USAGE);
-	    }
-	  break;
-	case 'G':
-	  Garg = list_optarg;
-	  break;
-	case 'P':
-	  Parg = list_optarg;
-	  break;
-	case 'S':
-	  Sarg = list_optarg;
-	  break;
-	case 'V':
+        case 'a':
+          acts |= CA_ALIAS;
+          break;
+        case 'b':
+          acts |= CA_BUILTIN;
+          break;
+        case 'c':
+          acts |= CA_COMMAND;
+          break;
+        case 'd':
+          acts |= CA_DIRECTORY;
+          break;
+        case 'e':
+          acts |= CA_EXPORT;
+          break;
+        case 'f':
+          acts |= CA_FILE;
+          break;
+        case 'g':
+          acts |= CA_GROUP;
+          break;
+        case 'j':
+          acts |= CA_JOB;
+          break;
+        case 'k':
+          acts |= CA_KEYWORD;
+          break;
+        case 's':
+          acts |= CA_SERVICE;
+          break;
+        case 'u':
+          acts |= CA_USER;
+          break;
+        case 'v':
+          acts |= CA_VARIABLE;
+          break;
+        case 'o':
+          ind = find_compopt (list_optarg);
+          if (ind < 0)
+            {
+              sh_invalidoptname (list_optarg);
+              return (EX_USAGE);
+            }
+          copts |= compopts[ind].optflag;
+          break;
+        case 'A':
+          ind = find_compact (list_optarg);
+          if (ind < 0)
+            {
+              builtin_error (_("%s: invalid action name"), list_optarg);
+              return (EX_USAGE);
+            }
+          acts |= compacts[ind].actflag;
+          break;
+        case 'C':
+          Carg = list_optarg;
+          break;
+        case 'D':
+          if (flagp)
+            {
+              flagp->Dflag = 1;
+              break;
+            }
+          else
+            {
+              sh_invalidopt ("-D");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
+        case 'E':
+          if (flagp)
+            {
+              flagp->Eflag = 1;
+              break;
+            }
+          else
+            {
+              sh_invalidopt ("-E");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
+        case 'I':
+          if (flagp)
+            {
+              flagp->Iflag = 1;
+              break;
+            }
+          else
+            {
+              sh_invalidopt ("-I");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
+        case 'F':
+          w.word = Farg = list_optarg;
+          w.flags = 0;
+          if (check_identifier (&w, posixly_correct) == 0 || strpbrk (Farg, shell_break_chars) != 0)
+            {
+              sh_invalidid (Farg);
+              return (EX_USAGE);
+            }
+          break;
+        case 'G':
+          Garg = list_optarg;
+          break;
+        case 'P':
+          Parg = list_optarg;
+          break;
+        case 'S':
+          Sarg = list_optarg;
+          break;
+        case 'V':
 #if defined (ARRAY_VARS)
-	  if (vnamep)
-	    {
-	      *vnamep = list_optarg;
-	      if (valid_identifier (list_optarg) == 0)
-		{
-		  sh_invalidid (list_optarg);
-		  return (EX_USAGE);
-		}
-	    }
-	  else
+          if (vnamep)
+            {
+              *vnamep = list_optarg;
+              if (valid_identifier (list_optarg) == 0)
+                {
+                  sh_invalidid (list_optarg);
+                  return (EX_USAGE);
+                }
+            }
+          else
 #endif
-	    {
-	      sh_invalidopt ("-V");
-	      builtin_usage ();
-	      return (EX_USAGE);
-	    }
-	  break;
-	case 'W':
-	  Warg = list_optarg;
-	  break;
-	case 'X':
-	  Xarg = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+            {
+              sh_invalidopt ("-V");
+              builtin_usage ();
+              return (EX_USAGE);
+            }
+          break;
+        case 'W':
+          Warg = list_optarg;
+          break;
+        case 'X':
+          Xarg = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   *actp = acts;
@@ -427,16 +427,16 @@ complete_builtin (WORD_LIST *list)
   if (oflags.pflag || (list == 0 && opt_given == 0))
     {
       if (wl)
-	{
-	  rval = print_cmd_completions (wl);
-	  dispose_words (wl);
-	  return rval;
-	}
+        {
+          rval = print_cmd_completions (wl);
+          dispose_words (wl);
+          return rval;
+        }
       else if (list == 0)
-	{
-	  print_all_completions ();
-	  return (EXECUTION_SUCCESS);
-	}
+        {
+          print_all_completions ();
+          return (EXECUTION_SUCCESS);
+        }
       return (print_cmd_completions (list));
     }
 
@@ -444,16 +444,16 @@ complete_builtin (WORD_LIST *list)
   if (oflags.rflag)
     {
       if (wl)
-	{
-	  rval = remove_cmd_completions (wl);
-	  dispose_words (wl);
-	  return rval;
-	}
+        {
+          rval = remove_cmd_completions (wl);
+          dispose_words (wl);
+          return rval;
+        }
       else if (list == 0)
-	{
-	  progcomp_flush ();
-	  return (EXECUTION_SUCCESS);
-	}
+        {
+          progcomp_flush ();
+          return (EXECUTION_SUCCESS);
+        }
       return (remove_cmd_completions (list));
     }
 
@@ -481,7 +481,7 @@ complete_builtin (WORD_LIST *list)
     {
       /* Add CS as the compspec for the specified commands. */
       if (progcomp_insert (l->word->word, cs) == 0)
-	rval = EXECUTION_FAILURE;
+        rval = EXECUTION_FAILURE;
     }
 
   dispose_words (wl);
@@ -497,10 +497,10 @@ remove_cmd_completions (WORD_LIST *list)
   for (ret = EXECUTION_SUCCESS, l = list; l; l = l->next)
     {
       if (progcomp_remove (l->word->word) == 0)
-	{
-	  builtin_error (_("%s: no completion specification"), l->word->word);
-	  ret = EXECUTION_FAILURE;
-	}
+        {
+          builtin_error (_("%s: no completion specification"), l->word->word);
+          ret = EXECUTION_FAILURE;
+        }
     }
   return ret;
 }
@@ -543,7 +543,7 @@ print_arg (const char *arg, const char *flag, int quote)
       x = quote ? sh_single_quote (arg) : (char *)arg;
       printf ("%s %s ", flag, x);
       if (x != arg)
-	free (x);
+        free (x);
     }
 }
 
@@ -558,7 +558,7 @@ print_cmd_name (const char *cmd)
     printf ("-E");
   else if (STREQ (cmd, INITIALWORD))
     printf ("-I");
-  else if (*cmd == 0)		/* XXX - can this happen? */
+  else if (*cmd == 0)           /* XXX - can this happen? */
     printf ("''");
   else if (sh_contains_shell_metas (cmd))
     {
@@ -638,12 +638,12 @@ print_cmd_completions (WORD_LIST *list)
     {
       cs = progcomp_search (l->word->word);
       if (cs)
-	print_one_completion (l->word->word, cs);
+        print_one_completion (l->word->word, cs);
       else
-	{
-	  builtin_error (_("%s: no completion specification"), l->word->word);
-	  ret = EXECUTION_FAILURE;
-	}
+        {
+          builtin_error (_("%s: no completion specification"), l->word->word);
+          ret = EXECUTION_FAILURE;
+        }
     }
 
   return (sh_chkwrite (ret));
@@ -763,10 +763,10 @@ compgen_builtin (WORD_LIST *list)
     {
       var = builtin_find_indexed_array (varname, 1);
       if (var && sl && sl->list && sl->list_len)
-	{
-	  array_from_argv (array_cell (var), sl->list, sl->list_len);
-	  rval = EXECUTION_SUCCESS;
-	}
+        {
+          array_from_argv (array_cell (var), sl->list, sl->list_len);
+          rval = EXECUTION_SUCCESS;
+        }
     }
   else
 #endif
@@ -793,10 +793,10 @@ the completion currently being executed.  If no OPTIONs are given, print
 the completion options for each NAME or the current completion specification.
 
 Options:
-	-o option	Set completion option OPTION for each NAME
-	-D		Change options for the "default" command completion
-	-E		Change options for the "empty" command completion
-	-I		Change options for completion on the initial word
+        -o option       Set completion option OPTION for each NAME
+        -D              Change options for the "default" command completion
+        -E              Change options for the "empty" command completion
+        -I              Change options for completion on the initial word
 
 Using `+o' instead of `-o' turns off the specified option.
 
@@ -829,30 +829,30 @@ compopt_builtin (WORD_LIST *list)
       opts = (list_opttype == '-') ? &opts_on : &opts_off;
 
       switch (opt)
-	{
-	case 'o':
-	  oind = find_compopt (list_optarg);
-	  if (oind < 0)
-	    {
-	      sh_invalidoptname (list_optarg);
-	      return (EX_USAGE);
-	    }
-	  *opts |= compopts[oind].optflag;
-	  break;
-	case 'D':
-	  Dflag = 1;
-	  break;
-	case 'E':
-	  Eflag = 1;
-	  break;
-	case 'I':
-	  Iflag = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'o':
+          oind = find_compopt (list_optarg);
+          if (oind < 0)
+            {
+              sh_invalidoptname (list_optarg);
+              return (EX_USAGE);
+            }
+          *opts |= compopts[oind].optflag;
+          break;
+        case 'D':
+          Dflag = 1;
+          break;
+        case 'E':
+          Eflag = 1;
+          break;
+        case 'I':
+          Iflag = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -868,17 +868,17 @@ compopt_builtin (WORD_LIST *list)
   if (list == 0 && wl == 0)
     {
       if (RL_ISSTATE (RL_STATE_COMPLETING) == 0 || pcomp_curcs == 0)
-	{
-	  builtin_error (_("not currently executing completion function"));
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error (_("not currently executing completion function"));
+          return (EXECUTION_FAILURE);
+        }
       cs = pcomp_curcs;
 
       if (opts_on == 0 && opts_off == 0)
-	{
-	  print_compopts (pcomp_curcmd, cs, 1);
+        {
+          print_compopts (pcomp_curcmd, cs, 1);
           return (sh_chkwrite (ret));
-	}
+        }
 
       /* Set the compspec options */
       pcomp_set_compspec_options (cs, opts_on, 1);
@@ -895,16 +895,16 @@ compopt_builtin (WORD_LIST *list)
     {
       cs = progcomp_search (l->word->word);
       if (cs == 0)
-	{
-	  builtin_error (_("%s: no completion specification"), l->word->word);
-	  ret = EXECUTION_FAILURE;
-	  continue;
-	}
+        {
+          builtin_error (_("%s: no completion specification"), l->word->word);
+          ret = EXECUTION_FAILURE;
+          continue;
+        }
       if (opts_on == 0 && opts_off == 0)
-	{
-	  print_compopts (l->word->word, cs, 1);
-	  continue;			/* XXX -- fill in later */
-	}
+        {
+          print_compopts (l->word->word, cs, 1);
+          continue;                     /* XXX -- fill in later */
+        }
 
       /* Set the compspec options */
       pcomp_set_compspec_options (cs, opts_on, 1);

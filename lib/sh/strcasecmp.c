@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if !defined (HAVE_STRCASECMP)
@@ -43,9 +43,9 @@ strncasecmp (const char *string1, const char *string2, size_t count)
   do
     {
       if ((r = TOLOWER ((unsigned char) *s1) - TOLOWER ((unsigned char) *s2)) != 0)
-	return r;
+        return r;
       if (*s1++ == '\0')
-	break;
+        break;
       s2++;
     }
   while (--count != 0);
@@ -70,7 +70,7 @@ strcasecmp (const char *string1, const char *string2)
   while ((r = TOLOWER ((unsigned char)*s1) - TOLOWER ((unsigned char)*s2)) == 0)
     {
       if (*s1++ == '\0')
-	return 0;
+        return 0;
       s2++;
     }
 

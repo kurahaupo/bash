@@ -17,12 +17,12 @@
 
 shopt -s execfail
 
-trap 'echo EXIT' EXIT 
+trap 'echo EXIT' EXIT
 trap 'echo USR1' USR1
 trap '' TERM
 trap
 
-kill -s USR1 $$		# should run the trap
+kill -s USR1 $$         # should run the trap
 
 exec /tmp/bash-notthere
 
@@ -30,8 +30,8 @@ exec /tmp/bash-notthere
 echo $0: after failed exec: $?
 
 trap
-kill -s USR1 $$		# should run the trap
-kill -s TERM $$		# should still be ignored
+kill -s USR1 $$         # should run the trap
+kill -s TERM $$         # should still be ignored
 
 # this should run the exit trap
 exit 0

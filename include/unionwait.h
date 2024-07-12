@@ -25,16 +25,16 @@
 #if !defined (WORDS_BIGENDIAN)
 union wait
   {
-    int	w_status;		/* used in syscall */
+    int w_status;               /* used in syscall */
 
     /* Terminated process status. */
     struct
       {
-	unsigned short
-	  w_Termsig  : 7,	/* termination signal */
-	  w_Coredump : 1,	/* core dump indicator */
-	  w_Retcode  : 8,	/* exit code if w_termsig==0 */
-	  w_Fill1    : 16;	/* high 16 bits unused */
+        unsigned short
+          w_Termsig  : 7,       /* termination signal */
+          w_Coredump : 1,       /* core dump indicator */
+          w_Retcode  : 8,       /* exit code if w_termsig==0 */
+          w_Fill1    : 16;      /* high 16 bits unused */
       } w_T;
 
     /* Stopped process status.  Returned
@@ -42,10 +42,10 @@ union wait
        with the WUNTRACED option bit. */
     struct
       {
-	unsigned short
-	  w_Stopval : 8,	/* == W_STOPPED if stopped */
-	  w_Stopsig : 8,	/* actually zero on XENIX */
-	  w_Fill2   : 16;	/* high 16 bits unused */
+        unsigned short
+          w_Stopval : 8,        /* == W_STOPPED if stopped */
+          w_Stopsig : 8,        /* actually zero on XENIX */
+          w_Fill2   : 16;       /* high 16 bits unused */
       } w_S;
   };
 
@@ -55,15 +55,15 @@ union wait
 
 union wait
   {
-    int	w_status;		/* used in syscall */
+    int w_status;               /* used in syscall */
 
     /* Terminated process status. */
     struct
       {
-	unsigned short w_Fill1    : 16;	/* high 16 bits unused */
-	unsigned       w_Retcode  : 8;	/* exit code if w_termsig==0 */
-	unsigned       w_Coredump : 1;	/* core dump indicator */
-	unsigned       w_Termsig  : 7;	/* termination signal */
+        unsigned short w_Fill1    : 16; /* high 16 bits unused */
+        unsigned       w_Retcode  : 8;  /* exit code if w_termsig==0 */
+        unsigned       w_Coredump : 1;  /* core dump indicator */
+        unsigned       w_Termsig  : 7;  /* termination signal */
       } w_T;
 
     /* Stopped process status.  Returned
@@ -71,9 +71,9 @@ union wait
        with the WUNTRACED option bit. */
     struct
       {
-	unsigned short w_Fill2   : 16;	/* high 16 bits unused */
-	unsigned       w_Stopsig : 8;	/* signal that stopped us */
-	unsigned       w_Stopval : 8;	/* == W_STOPPED if stopped */
+        unsigned short w_Fill2   : 16;  /* high 16 bits unused */
+        unsigned       w_Stopsig : 8;   /* signal that stopped us */
+        unsigned       w_Stopval : 8;   /* == W_STOPPED if stopped */
       } w_S;
   };
 

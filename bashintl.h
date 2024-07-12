@@ -33,11 +33,11 @@
 #  include <locale.h>
 #endif
 
-#define _(msgid)	gettext(msgid)
-#define N_(msgid)	msgid
-#define D_(d, msgid)	dgettext(d, msgid)
+#define _(msgid)        gettext(msgid)
+#define N_(msgid)       msgid
+#define D_(d, msgid)    dgettext(d, msgid)
 
-#define P_(m1, m2, n)	ngettext(m1, m2, n)
+#define P_(m1, m2, n)   ngettext(m1, m2, n)
 
 #if defined (HAVE_SETLOCALE) && !defined (LC_ALL)
 #  undef HAVE_SETLOCALE
@@ -48,7 +48,7 @@
 #endif
 
 #if !defined (HAVE_LOCALE_H) || !defined (HAVE_LOCALECONV)
-#  define locale_decpoint()	'.'
+#  define locale_decpoint()     '.'
 #endif
 
 #endif /* !_BASHINTL_H_ */

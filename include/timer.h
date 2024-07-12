@@ -30,23 +30,23 @@ typedef struct _shtimer
   int fd;
   int flags;
 
-  int alrmflag;					/* should be set by alrm_handler */
+  int alrmflag;                                 /* should be set by alrm_handler */
 
   SigHandler *alrm_handler;
   SigHandler *old_handler;
 
   procenv_t jmpenv;
 
-  int (*tm_handler) (struct _shtimer *);	/* called on timeout if set */
-  PTR_T	*data;					/* reserved */
+  int (*tm_handler) (struct _shtimer *);        /* called on timeout if set */
+  PTR_T *data;                                  /* reserved */
 } sh_timer;
 
-#define SHTIMER_ALARM	0x01			/* mutually exclusive */
-#define SHTIMER_SELECT	0x02
-#define SHTIMER_LONGJMP	0x04
+#define SHTIMER_ALARM   0x01                    /* mutually exclusive */
+#define SHTIMER_SELECT  0x02
+#define SHTIMER_LONGJMP 0x04
 
-#define SHTIMER_SIGSET	0x100
-#define SHTIMER_ALRMSET	0x200
+#define SHTIMER_SIGSET  0x100
+#define SHTIMER_ALRMSET 0x200
 
 extern sh_timer *shtimer_alloc (void);
 extern void shtimer_flush (sh_timer *);

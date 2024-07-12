@@ -29,14 +29,14 @@
 #endif /* !HAVE_STRING_H */
 
 #if !defined (STREQ)
-#define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
+#define STREQ(a, b)     (((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
 #define STREQN(a, b, n) (((n) == 0) ? (1) \
-				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+                                    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
 #endif
 
 #if !defined (HAVE_STRCASECMP)
-#define strcasecmp(a,b)	strcmp ((a), (b))
-#define strncasecmp(a, b, n)	strncmp ((a), (b), (n))
+#define strcasecmp(a,b) strcmp ((a), (b))
+#define strncasecmp(a, b, n)    strncmp ((a), (b), (n))
 #endif
 
 #ifndef savestring
@@ -60,21 +60,21 @@
 #endif
 
 #ifndef FREE
-#  define FREE(x)	if (x) free (x)
+#  define FREE(x)       if (x) free (x)
 #endif
 
 /* Possible history errors passed to hist_error. */
 #define EVENT_NOT_FOUND 0
-#define BAD_WORD_SPEC	1
-#define SUBST_FAILED	2
-#define BAD_MODIFIER	3
-#define NO_PREV_SUBST	4
+#define BAD_WORD_SPEC   1
+#define SUBST_FAILED    2
+#define BAD_MODIFIER    3
+#define NO_PREV_SUBST   4
 
 /* Possible definitions for history starting point specification. */
-#define NON_ANCHORED_SEARCH	0
-#define ANCHORED_SEARCH		0x01
-#define PATTERN_SEARCH		0x02
-#define CASEFOLD_SEARCH		0x04
+#define NON_ANCHORED_SEARCH     0
+#define ANCHORED_SEARCH         0x01
+#define PATTERN_SEARCH          0x02
+#define CASEFOLD_SEARCH         0x04
 
 /* Possible definitions for what style of writing the history file we want. */
 #define HISTORY_APPEND 0

@@ -13,15 +13,15 @@
 #
 f()
 {
-	local str=F
-	g str
+        local str=F
+        g str
 }
 
 g()
 {
-	local -n ref=$1
-	printf "%s " "$ref"
-	ref=G
+        local -n ref=$1
+        printf "%s " "$ref"
+        ref=G
 }
 
 str=OUTSIDE;

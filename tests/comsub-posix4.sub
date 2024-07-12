@@ -17,7 +17,7 @@ eof)'
 # the third EOF is the correct one
 echo $(cat <<'EOF'
     D.4 error-prone use of here-doc terminator
-EOF 
+EOF
 EOF)
 EOF
 )

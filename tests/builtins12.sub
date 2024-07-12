@@ -24,7 +24,7 @@ popd --
 popd -x
 
 pushd /
-popd dir	# error
+popd dir        # error
 
 dirs -p
 pushd --

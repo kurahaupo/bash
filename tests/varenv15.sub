@@ -15,13 +15,13 @@
 
 f()
 {
-	echo $FUNCNAME: "$@"
+        echo $FUNCNAME: "$@"
 }
 
 f1()
 {
-	f {1..50}
-	echo $FUNCNAME: after: $@
+        f {1..50}
+        echo $FUNCNAME: after: $@
 }
 
 set -- {1..100}
@@ -31,12 +31,12 @@ echo done: $@
 
 f3()
 {
-	echo $FUNCNAME:$1
-	shift
-	if [ $# -le 0 ]; then
-		return
-	fi
-	f3 "$@"
+        echo $FUNCNAME:$1
+        shift
+        if [ $# -le 0 ]; then
+                return
+        fi
+        f3 "$@"
 }
 
 f3 {1..20}

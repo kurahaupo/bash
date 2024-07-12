@@ -51,9 +51,9 @@ static size_t allocated;
 #endif
 
 /* **************************************************************** */
-/*								    */
-/*		   Memory Allocation and Deallocation.		    */
-/*								    */
+/*                                                                  */
+/*                 Memory Allocation and Deallocation.              */
+/*                                                                  */
 /* **************************************************************** */
 
 #if HAVE_SBRK && defined (USING_BASH_MALLOC)
@@ -140,7 +140,7 @@ xreallocarray (PTR_T ptr, size_t nmemb, size_t size)
 
   if (ckd_mul (&nbytes, nmemb, size))
     allocerr ("xreallocarray", (size_t)-1);
-	        
+
   return xrealloc (ptr, nbytes);
 }
 
@@ -212,7 +212,7 @@ sh_xreallocarray (PTR_T ptr, size_t nmemb, size_t size, char *file, int line)
 
   if (ckd_mul (&nbytes, nmemb, size))
     sh_allocerr ("xreallocarray", (size_t)-1, file, line);
-	        
+
   return sh_xrealloc (ptr, nbytes, file, line);
 }
 

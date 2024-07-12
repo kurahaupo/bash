@@ -55,8 +55,8 @@ cb_linehandler (char *line)
         printf ("\n");
       printf ("exit\n");
       /* This function needs to be called to reset the terminal settings,
-	 and calling it from the line handler keeps one extra prompt from
-	 being displayed. */
+         and calling it from the line handler keeps one extra prompt from
+         being displayed. */
       rl_callback_handler_remove ();
 
       running = 0;
@@ -64,7 +64,7 @@ cb_linehandler (char *line)
   else
     {
       if (*line)
-	add_history (line);
+        add_history (line);
       printf ("input line: %s\n", line);
       free (line);
     }
@@ -82,7 +82,7 @@ main (int c, char **v)
   /* Handle window size changes when readline is not active and reading
      characters. */
   signal (SIGWINCH, sighandler);
-  
+
   /* Install the line handler. */
   rl_callback_handler_install (prompt, cb_linehandler);
 
@@ -94,25 +94,25 @@ main (int c, char **v)
   while (running)
     {
       FD_ZERO (&fds);
-      FD_SET (fileno (rl_instream), &fds);    
+      FD_SET (fileno (rl_instream), &fds);
 
       r = select (FD_SETSIZE, &fds, NULL, NULL, NULL);
       if (r < 0 && errno != EINTR)
-	{
-	  perror ("rltest: select");
-	  rl_callback_handler_remove ();
-	  break;
-	}
+        {
+          perror ("rltest: select");
+          rl_callback_handler_remove ();
+          break;
+        }
       if (sigwinch_received)
-	{
-	  rl_resize_terminal ();
-	  sigwinch_received = 0;
-	}
+        {
+          rl_resize_terminal ();
+          sigwinch_received = 0;
+        }
       if (r < 0)
-	continue;
+        continue;
 
       if (FD_ISSET (fileno (rl_instream), &fds))
-	rl_callback_read_char ();
+        rl_callback_read_char ();
     }
 
   printf ("rltest: Event loop has exited\n");

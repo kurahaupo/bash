@@ -29,9 +29,9 @@ shopt -s checkhash
 export BASHOPTS
 # and make sure the child shell sees it enabled
 if ${THIS_SH} -c 'echo $BASHOPTS' | grep checkhash >/dev/null 2>&1; then
-	:
+        :
 else
-	echo 'BASHOPTS: checkhash not inherited correctly'
+        echo 'BASHOPTS: checkhash not inherited correctly'
 fi
 shopt -u checkhash
 export -n BASHOPTS

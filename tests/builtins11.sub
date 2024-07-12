@@ -13,8 +13,8 @@
 #
 # ulimit tests
 
-ulimit unlimited	# default to -f
-ulimit -f		# better be unlimited
+ulimit unlimited        # default to -f
+ulimit -f               # better be unlimited
 ulimit -Sf hard
 
 corelim=${ ulimit -c; }
@@ -22,16 +22,16 @@ corelim=${ ulimit -c; }
 # pick -c because everyone's going to have it
 ulimit -Sc unlimited
 ulimit -c soft
-ulimit -c		# unlimited
+ulimit -c               # unlimited
 # maybe someday the leading `+' will be accepted, but not today
 ulimit -c -S -- +1999
 ulimit -c -S -- 1999
 ulimit -c 0
-ulimit -Hc		# hard and soft 0
-ulimit -Sc hard		# should be 0
+ulimit -Hc              # hard and soft 0
+ulimit -Sc hard         # should be 0
 ulimit -c
 
-ulimit -a >/dev/null	# just make sure we have no errors
+ulimit -a >/dev/null    # just make sure we have no errors
 
 # these are errors
 ulimit -g

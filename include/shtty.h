@@ -18,7 +18,7 @@
 
 /*
  * shtty.h -- include the correct system-dependent files to manipulate the
- *	      tty
+ *            tty
  */
 
 #ifndef __SH_TTY_H_
@@ -41,7 +41,7 @@
  * between sys/ioctl.h and termios.h.  Ditto for the test against SunOS4
  * and the undefining of several symbols.
  */
-      
+
 #ifdef TERMIOS_TTY_DRIVER
 #  if (defined (SunOS4) || defined (SunOS5)) && !defined (_POSIX_SOURCE)
 #    define _POSIX_SOURCE
@@ -57,7 +57,7 @@
 #  ifdef TERMIO_TTY_DRIVER
 #    include <termio.h>
 #    define TTYSTRUCT struct termio
-#  else	/* NEW_TTY_DRIVER */
+#  else /* NEW_TTY_DRIVER */
 #    include <sgtty.h>
 #    define TTYSTRUCT struct sgttyb
 #  endif

@@ -16,20 +16,20 @@
 
 function a=2
 {
-	printf "FUNCNAME: %s\n" $FUNCNAME
+        printf "FUNCNAME: %s\n" $FUNCNAME
 }
 
 function 11111
 {
-	printf "FUNCNAME: %s\n" $FUNCNAME
+        printf "FUNCNAME: %s\n" $FUNCNAME
 }
 
 # but this is still not
 function sys$read
 {
-	printf "FUNCNAME: %s\n" $FUNCNAME
+        printf "FUNCNAME: %s\n" $FUNCNAME
 }
-	
+
 declare -f
 set -o posix
 declare -f
@@ -39,32 +39,32 @@ a\=2
 
 <(:) ()
 {
-	echo $FUNCNAME
+        echo $FUNCNAME
 }
 \<\(:\)
 type '<(:)'
 
 break()
 {
-	echo inside function $FUNCNAME
+        echo inside function $FUNCNAME
 }
 
 testfunc()
 {
-	echo type
-	type break
-	type -t break
-	echo command -v
-	command -v break
-	echo command -V
-	command -V break
+        echo type
+        type break
+        type -t break
+        echo command -v
+        command -v break
+        echo command -V
+        command -V break
 
-	echo type -a
-	type -a break
-	echo declare
-	declare -f break
-	echo execution
-	break
+        echo type -a
+        type -a break
+        echo declare
+        declare -f break
+        echo execution
+        break
 }
 
 set -o posix

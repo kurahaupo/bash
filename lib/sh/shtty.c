@@ -112,8 +112,8 @@ tt_setonechar(TTYSTRUCT *ttp)
   ttp->c_lflag |= IEXTEN;
 #  endif
 
-  ttp->c_iflag |= ICRNL;	/* make sure we get CR->NL on input */
-  ttp->c_iflag &= ~INLCR;	/* but no NL->CR */
+  ttp->c_iflag |= ICRNL;        /* make sure we get CR->NL on input */
+  ttp->c_iflag &= ~INLCR;       /* but no NL->CR */
 
 #  ifdef OPOST
   ttp->c_oflag |= OPOST;

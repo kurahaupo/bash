@@ -48,19 +48,19 @@ echo foo=\( ${foo[@]@K} \)
 
 func()
 {
-	declare -A inside=(a 1 b 2 c 3)
-	declare -p inside
-	echo inside=\( ${inside[@]@K} \)
+        declare -A inside=(a 1 b 2 c 3)
+        declare -p inside
+        echo inside=\( ${inside[@]@K} \)
 }
 func
 
 loaddict()
 {
-	dict=( '"' dquote '`' bquote "'" squote '\' bslash)
-	dict+=( '$' dol @ at * star \{ lbrace \} rbrace ? quest)
+        dict=( '"' dquote '`' bquote "'" squote '\' bslash)
+        dict+=( '$' dol @ at * star \{ lbrace \} rbrace ? quest)
 
-	declare -p dict
-	echo dict=\( ${dict[@]@K} \)
+        declare -p dict
+        echo dict=\( ${dict[@]@K} \)
 }
 declare -A dict
 loaddict

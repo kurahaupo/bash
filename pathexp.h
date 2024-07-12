@@ -21,33 +21,33 @@
 #if !defined (_PATHEXP_H_)
 #define _PATHEXP_H_
 
-#define GLOB_FAILED(glist)	(glist) == (char **)&glob_error_return
+#define GLOB_FAILED(glist)      (glist) == (char **)&glob_error_return
 
 extern int noglob_dot_filenames;
 extern char *glob_error_return;
 
 /* Flag values for quote_string_for_globbing */
-#define QGLOB_CVTNULL	0x01	/* convert QUOTED_NULL strings to '\0' */
-#define QGLOB_FILENAME	0x02	/* do correct quoting for matching filenames */
-#define QGLOB_REGEXP	0x04	/* quote an ERE for regcomp/regexec */
-#define QGLOB_CTLESC	0x08	/* turn CTLESC CTLESC into CTLESC for BREs */
-#define QGLOB_DEQUOTE	0x10	/* like dequote_string but quote glob chars */
+#define QGLOB_CVTNULL   0x01    /* convert QUOTED_NULL strings to '\0' */
+#define QGLOB_FILENAME  0x02    /* do correct quoting for matching filenames */
+#define QGLOB_REGEXP    0x04    /* quote an ERE for regcomp/regexec */
+#define QGLOB_CTLESC    0x08    /* turn CTLESC CTLESC into CTLESC for BREs */
+#define QGLOB_DEQUOTE   0x10    /* like dequote_string but quote glob chars */
 
 #if defined (EXTENDED_GLOB)
 /* Flags to OR with other flag args to strmatch() to enabled the extended
    pattern matching. */
-#  define FNMATCH_EXTFLAG	(extended_glob ? FNM_EXTMATCH : 0)
+#  define FNMATCH_EXTFLAG       (extended_glob ? FNM_EXTMATCH : 0)
 #else
-#  define FNMATCH_EXTFLAG	0
+#  define FNMATCH_EXTFLAG       0
 #endif /* !EXTENDED_GLOB */
 
-#define FNMATCH_IGNCASE		(match_ignore_case ? FNM_CASEFOLD : 0)
-#define FNMATCH_NOCASEGLOB	(glob_ignore_case ? FNM_CASEFOLD : 0)
+#define FNMATCH_IGNCASE         (match_ignore_case ? FNM_CASEFOLD : 0)
+#define FNMATCH_NOCASEGLOB      (glob_ignore_case ? FNM_CASEFOLD : 0)
 
 extern int glob_dot_filenames;
 extern int extended_glob;
 extern int glob_star;
-extern int match_ignore_case;	/* doesn't really belong here */
+extern int match_ignore_case;   /* doesn't really belong here */
 
 extern int unquoted_glob_pattern_p (char *);
 
@@ -91,10 +91,10 @@ struct ign {
 typedef int sh_iv_item_func_t (struct ign *);
 
 struct ignorevar {
-  char *varname;	/* FIGNORE, GLOBIGNORE, or EXECIGNORE */
-  struct ign *ignores;	/* Store the ignore strings here */
-  int num_ignores;	/* How many are there? */
-  char *last_ignoreval;	/* Last value of variable - cached for speed */
+  char *varname;        /* FIGNORE, GLOBIGNORE, or EXECIGNORE */
+  struct ign *ignores;  /* Store the ignore strings here */
+  int num_ignores;      /* How many are there? */
+  char *last_ignoreval; /* Last value of variable - cached for speed */
   sh_iv_item_func_t *item_func; /* Called when each item is parsed from $`varname' */
 };
 
@@ -105,17 +105,17 @@ extern int should_ignore_glob_matches (void);
 extern void ignore_glob_matches (char **);
 
 /* Definitions for glob sorting */
-#define SORT_NONE	0
-#define SORT_NAME	1
-#define SORT_SIZE	2
-#define SORT_MTIME	3
-#define SORT_ATIME	4
-#define SORT_CTIME	5
-#define SORT_BLOCKS	6
-#define SORT_NUMERIC	7
-#define SORT_NOSORT	8
+#define SORT_NONE       0
+#define SORT_NAME       1
+#define SORT_SIZE       2
+#define SORT_MTIME      3
+#define SORT_ATIME      4
+#define SORT_CTIME      5
+#define SORT_BLOCKS     6
+#define SORT_NUMERIC    7
+#define SORT_NOSORT     8
 
-#define SORT_REVERSE	128
+#define SORT_REVERSE    128
 
 extern void setup_globsort (const char *);
 

@@ -1,6 +1,6 @@
 foo()
 {
-	echo < <(cat x1)
+        echo < <(cat x1)
 }
 
 type foo

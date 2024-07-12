@@ -39,19 +39,19 @@ extern int errno;
 #define VAL_LLONG_MIN           -1000
 #define VAL_LLONG_MAX           -1001
 #define VAL_ULLONG_MAX          -1002
-#define VAL_ULONG_MAX		-1003
-#define VAL_SSIZE_MAX		-1004
-#define VAL_SIZE_MAX		-1005
+#define VAL_ULONG_MAX           -1003
+#define VAL_SSIZE_MAX           -1004
+#define VAL_SIZE_MAX            -1005
 
 /* We don't want to collide with anything else. */
 #ifndef _CS_PATH
-#define _CS_PATH	-1001
+#define _CS_PATH        -1001
 #endif
 
 struct conf
   {
     const char *name;
-    const long call_name;	/* or value for CONSTANT */
+    const long call_name;       /* or value for CONSTANT */
     const enum { SYSCONF, CONFSTR, PATHCONF, CONSTANT, UNDEFINED } call;
   };
 
@@ -960,7 +960,7 @@ confstr (int name, char *buf, size_t len)
       p = conf_standard_path ();
       n = STRLEN (p) + 1;
       if (len != 0 && buf != 0)
-	strlcpy (buf, p, len);
+        strlcpy (buf, p, len);
       free (p);
       return n;
     default:
@@ -1033,7 +1033,7 @@ getconf_internal (const struct conf *c, int all)
 
   return (r);
 }
-    
+
 static int
 getconf_all (WORD_LIST *list)
 {
@@ -1047,9 +1047,9 @@ getconf_all (WORD_LIST *list)
     {
 #if 0
       if (c->call == PATHCONF && path == 0)
-	continue;	/* Don't print pathconf vars if no path supplied */
+        continue;       /* Don't print pathconf vars if no path supplied */
       if (c->call != PATHCONF && path)
-	continue;	/* Only print pathconf vars if path supplied */
+        continue;       /* Only print pathconf vars if path supplied */
 #endif
       /* The output format for getconf -a is required by POSIX interp 1808 */
       printf("%s: ", c->name);
@@ -1071,8 +1071,8 @@ getconf_one (WORD_LIST *list)
   for (c = vars; c->name != NULL; ++c)
     {
       if (strcmp (c->name, vname) == 0 || (strncmp (c->name, "_POSIX_", 7) == 0 &&
-					  strcmp (c->name + 7, vname) == 0))
- 	break;
+                                          strcmp (c->name + 7, vname) == 0))
+        break;
     }
   if (c->name == NULL)
     {
@@ -1090,7 +1090,7 @@ getconf_one (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-     
+
   return (getconf_print (c, vpath, 0));
 }
 
@@ -1109,12 +1109,12 @@ getconf_print (const struct conf *c, const char *vpath, int all)
       errno = 0;
       value = pathconf (vpath, cn);
       if (value == -1L)
-	{
-	  if (errno)
-	    builtin_error ("pathconf %s: %s: %s", c->name, vpath, strerror (errno));
-	  printf ("undefined\n");
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          if (errno)
+            builtin_error ("pathconf %s: %s: %s", c->name, vpath, strerror (errno));
+          printf ("undefined\n");
+          return (EXECUTION_FAILURE);
+        }
       else
         printf ("%ld\n", value);
       return (EXECUTION_SUCCESS);
@@ -1123,14 +1123,14 @@ getconf_print (const struct conf *c, const char *vpath, int all)
       errno = 0;
       value = sysconf (cn);
       if (value == -1L)
-	{
-	  if (errno)
-	    builtin_error ("%s: %s", c->name, strerror (errno));
-	  printf ("undefined\n");
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          if (errno)
+            builtin_error ("%s: %s", c->name, strerror (errno));
+          printf ("undefined\n");
+          return (EXECUTION_FAILURE);
+        }
       else
-	printf ("%ld\n", value);
+        printf ("%ld\n", value);
       return (EXECUTION_SUCCESS);
 
     case CONFSTR:
@@ -1143,14 +1143,14 @@ getconf_print (const struct conf *c, const char *vpath, int all)
           return (EXECUTION_FAILURE);
         }
       if (confstr (c->call_name, cvalue, clen) != clen)
-	{
-	  if (errno != 0)
-	    builtin_error ("%s: confstr: %s", c->name, strerror (errno));
-	  printf ("undefined\n");
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          if (errno != 0)
+            builtin_error ("%s: confstr: %s", c->name, strerror (errno));
+          printf ("undefined\n");
+          return (EXECUTION_FAILURE);
+        }
       else
-	printf ("%.*s\n", (int) clen, cvalue);
+        printf ("%.*s\n", (int) clen, cvalue);
       free (cvalue);
       return (EXECUTION_SUCCESS);
 
@@ -1160,7 +1160,7 @@ getconf_print (const struct conf *c, const char *vpath, int all)
     case UNDEFINED:
       builtin_error ("%s: undefined", c->name);
       return (EXECUTION_FAILURE);
-    }   
+    }
 
   /* NOTREACHED */
   return (EX_USAGE);
@@ -1179,20 +1179,20 @@ getconf_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "ahv:")) != -1)
     {
       switch (opt)
-	{
-	case 'a':
-	  aflag = 1;
-	  break;
-	CASE_HELPOPT;
-	case 'h':
-	  builtin_help ();
-	  return (EX_USAGE);
-	case 'v':
-	  return (EX_DISKFALLBACK);
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'a':
+          aflag = 1;
+          break;
+        CASE_HELPOPT;
+        case 'h':
+          builtin_help ();
+          return (EX_USAGE);
+        case 'v':
+          return (EX_DISKFALLBACK);
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   list = loptend;
@@ -1213,18 +1213,18 @@ getconf_builtin (WORD_LIST *list)
 }
 
 static char *getconf_doc[] = {
-	"Display values of system limits and options.",
-	"",
-	"getconf writes the current value of a configurable system limit or",
-	"option variable to the standard output.",
-	(char *)NULL
+        "Display values of system limits and options.",
+        "",
+        "getconf writes the current value of a configurable system limit or",
+        "option variable to the standard output.",
+        (char *)NULL
 };
 
 struct builtin getconf_struct = {
-	"getconf",
-	getconf_builtin,
-	BUILTIN_ENABLED,
-	getconf_doc,
-	"getconf -[ah] [file] or getconf [-v spec] sysvar or getconf [-v spec] pathvar pathname",
-	0
+        "getconf",
+        getconf_builtin,
+        BUILTIN_ENABLED,
+        getconf_doc,
+        "getconf -[ah] [file] or getconf [-v spec] sysvar or getconf [-v spec] pathvar pathname",
+        0
 };

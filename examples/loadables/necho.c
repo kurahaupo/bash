@@ -29,26 +29,25 @@
 int
 necho_builtin (WORD_LIST *list)
 {
-	print_word_list (list, " ");
-	printf("\n");
-	fflush (stdout);
-	return (EXECUTION_SUCCESS);
+        print_word_list (list, " ");
+        printf("\n");
+        fflush (stdout);
+        return (EXECUTION_SUCCESS);
 }
 
 char *necho_doc[] = {
-	"Display arguments.",
-	"",
-	"Print the arguments to the standard output separated",
-	"by space characters and terminated with a newline.",
-	(char *)NULL
+        "Display arguments.",
+        "",
+        "Print the arguments to the standard output separated",
+        "by space characters and terminated with a newline.",
+        (char *)NULL
 };
-	
+
 struct builtin necho_struct = {
-	"echo",
-	necho_builtin,
-	BUILTIN_ENABLED,
-	necho_doc,
-	"echo [args]",
-	0
+        "echo",
+        necho_builtin,
+        BUILTIN_ENABLED,
+        necho_doc,
+        "echo [args]",
+        0
 };
-	

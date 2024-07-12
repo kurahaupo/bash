@@ -33,8 +33,8 @@ IFS=$'\t\r\f\v'
 } < read9.stdin > read9.stdout 2>&1
 
 cmp read9.expout read9.stdout || {
-	echo "read9.sub: expected output and actual output differ"
-	diff read9.expout read9.stdout
+        echo "read9.sub: expected output and actual output differ"
+        diff read9.expout read9.stdout
 }
 
 cd $OLDPWD

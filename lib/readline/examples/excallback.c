@@ -48,7 +48,7 @@ Copyright (C) 1999 Jeff Solomon
 #include <stdlib.h>
 
 #include <stdio.h>
-#include <termios.h>	/* xxx - should make this more general */
+#include <termios.h>    /* xxx - should make this more general */
 
 #include <locale.h>
 

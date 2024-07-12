@@ -17,8 +17,8 @@
 #
 f()
 {
-	echo f-x
-	echo f-y
+        echo f-x
+        echo f-y
 } >&2
 
 type f
@@ -27,13 +27,13 @@ ${THIS_SH} -c 'echo subshell; type f'
 
 f2()
 {
-	echo f2-a
-	f3()
-	{
-		echo f3-a
-		echo f3-b
-	} >&2
-	f3
+        echo f2-a
+        f3()
+        {
+                echo f3-a
+                echo f3-b
+        } >&2
+        f3
 }
 
 type f2
@@ -43,13 +43,13 @@ ${THIS_SH} -c 'echo subshell; type f2'
 
 f4()
 {
-	echo f4-a
-	f5()
-	{
-		echo f5-a
-		echo f5-b
-	} >&2
-	f5
+        echo f4-a
+        f5()
+        {
+                echo f5-a
+                echo f5-b
+        } >&2
+        f5
 } 2>&1
 
 type f4
@@ -58,9 +58,9 @@ ${THIS_SH} -c 'echo subshell; type f4'
 
 testgrp()
 {
-	echo testgrp-a
-	{ echo tg-x; echo tg-y; } >&2
-	echo testgrp-b
+        echo testgrp-a
+        { echo tg-x; echo tg-y; } >&2
+        echo testgrp-b
 }
 type testgrp
 

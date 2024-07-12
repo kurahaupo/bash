@@ -43,7 +43,7 @@ fi
 # FIFO
 mkfifo $TMPDIR/fifo-$$
 echo "echo four - OK" > $TMPDIR/fifo-$$ &
-sleep 1		# allow the child echo to execute
+sleep 1         # allow the child echo to execute
 . $TMPDIR/fifo-$$
 echo $?
 rm -f $TMPDIR/fifo-$$

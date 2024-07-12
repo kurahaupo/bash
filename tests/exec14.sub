@@ -17,20 +17,20 @@
 # also includes optimizing last command in a list separated by `;'
 
 if [ -x /bin/echo ] ; then
-	binecho=/bin/echo
+        binecho=/bin/echo
 elif [ -x /usr/bin/echo ]; then
-	binecho=/usr/bin/echo
+        binecho=/usr/bin/echo
 else
-	enable -n echo
-	binecho=echo
+        enable -n echo
+        binecho=echo
 fi
 
 export binecho
 
 : ${THIS_SH:=./bash} ${TMPDIR:=/var/tmp}
 
-${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$' 
-${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ ; $binecho done' 
+${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$'
+${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ ; $binecho done'
 
 ( trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ )
 

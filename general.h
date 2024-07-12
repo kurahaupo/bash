@@ -47,7 +47,7 @@
 #include "xmalloc.h"
 
 /* Hardly used anymore */
-#define pointer_to_int(x)	(int)((char *)x - (char *)0)
+#define pointer_to_int(x)       (int)((char *)x - (char *)0)
 
 #if !defined (strcpy) && (defined (HAVE_DECL_STRCPY) && !HAVE_DECL_STRCPY)
 extern char *strcpy (char *, const char *);
@@ -67,9 +67,9 @@ extern char *strcpy (char *, const char *);
 
 #ifndef CHAR_MAX
 #  ifdef __CHAR_UNSIGNED__
-#    define CHAR_MAX	0xff
+#    define CHAR_MAX    0xff
 #  else
-#    define CHAR_MAX	0x7f
+#    define CHAR_MAX    0x7f
 #  endif
 #endif
 
@@ -111,11 +111,11 @@ extern char *strcpy (char *, const char *);
 
 /* Define exactly what a legal shell identifier consists of. */
 #define legal_variable_starter(c) (ISALPHA(c) || (c == '_'))
-#define legal_variable_char(c)	(ISALNUM(c) || c == '_')
+#define legal_variable_char(c)  (ISALNUM(c) || c == '_')
 
 /* Definitions used in subst.c and by the `read' builtin for field
    splitting. */
-#define spctabnl(c)	((c) == ' ' || (c) == '\t' || (c) == '\n')
+#define spctabnl(c)     ((c) == ' ' || (c) == '\t' || (c) == '\n')
 
 /* All structs which contain a `next' field should have that field
    as the first field in the struct.  This means that functions
@@ -134,7 +134,7 @@ typedef struct {
 /* A macro to avoid making an unnecessary function call. */
 #define REVERSE_LIST(list, type) \
   ((list && list->next) ? (type)list_reverse ((GENERIC_LIST *)list) \
-			: (type)(list))
+                        : (type)(list))
 
 #if __GNUC__ > 1
 #  define FASTCOPY(s, d, n)  __builtin_memcpy ((d), (s), (n))
@@ -160,9 +160,9 @@ STREQ(const char *a, const char *b)
 static inline int
 STREQN(const char *a, const char *b, size_t n)
 {
-  return ((n == 0) || 
-	  (n == 1 && a[0] == b[0]) ||
-	  ((a)[0] == (b)[0] && strncmp(a, b, n) == 0));
+  return ((n == 0) ||
+          (n == 1 && a[0] == b[0]) ||
+          ((a)[0] == (b)[0] && strncmp(a, b, n) == 0));
 }
 
 /* More convenience definitions that possibly save system or libc calls. */
@@ -182,9 +182,9 @@ STREQN(const char *a, const char *b, size_t n)
   do { \
     if ((cind) + (room) >= csize) \
       { \
-	while ((cind) + (room) >= csize) \
-	  csize += (sincr); \
-	str = xrealloc (str, csize); \
+        while ((cind) + (room) >= csize) \
+          csize += (sincr); \
+        str = xrealloc (str, csize); \
       } \
   } while (0)
 
@@ -212,18 +212,18 @@ typedef int sh_wlist_func_t (WORD_LIST *);
 typedef int sh_glist_func_t (GENERIC_LIST *);
 typedef int sh_gcp_func_t (GENERIC_LIST *, char *);
 
-typedef char *sh_string_func_t (char *);	/* like savestring, et al. */
+typedef char *sh_string_func_t (char *);        /* like savestring, et al. */
 
-typedef int sh_msg_func_t (const char *, ...);	/* printf(3)-like */
-typedef void sh_vmsg_func_t (const char *, ...);	/* printf(3)-like */
+typedef int sh_msg_func_t (const char *, ...);  /* printf(3)-like */
+typedef void sh_vmsg_func_t (const char *, ...);        /* printf(3)-like */
 
 /* Specific function pointer typedefs.  Most of these could be done
    with #defines. */
 typedef void sh_sv_func_t (const char *);
-typedef void sh_free_func_t (PTR_T);	/* sh_vptrfunc_t */
-typedef void sh_resetsig_func_t (int);	/* sh_vintfunc_t */
+typedef void sh_free_func_t (PTR_T);    /* sh_vptrfunc_t */
+typedef void sh_resetsig_func_t (int);  /* sh_vintfunc_t */
 
-typedef int sh_ignore_func_t (const char *);	/* sh_icpfunc_t */
+typedef int sh_ignore_func_t (const char *);    /* sh_icpfunc_t */
 
 typedef int sh_assign_func_t (const char *);
 typedef int sh_wassign_func_t (const WORD_DESC *, int);
@@ -235,20 +235,20 @@ typedef int sh_builtin_func_t (WORD_LIST *); /* sh_wlist_func_t */
 
 #endif /* SH_FUNCTION_TYPEDEF */
 
-#define NOW	getnow()
-#define GETTIME(tv)	gettimeofday(&(tv), NULL)
+#define NOW     getnow()
+#define GETTIME(tv)     gettimeofday(&(tv), NULL)
 
 /* Some defines for calling file status functions. */
-#define FS_EXISTS	  0x1
-#define FS_EXECABLE	  0x2
+#define FS_EXISTS         0x1
+#define FS_EXECABLE       0x2
 #define FS_EXEC_PREFERRED 0x4
-#define FS_EXEC_ONLY	  0x8
-#define FS_DIRECTORY	  0x10
-#define FS_NODIRS	  0x20
-#define FS_READABLE	  0x40
+#define FS_EXEC_ONLY      0x8
+#define FS_DIRECTORY      0x10
+#define FS_NODIRS         0x20
+#define FS_READABLE       0x40
 
 /* Default maximum for move_to_high_fd */
-#define HIGH_FD_MAX	256
+#define HIGH_FD_MAX     256
 
 /* The type of function passed as the fourth argument to qsort(3). */
 typedef int QSFUNC (const void *, const void *);
@@ -257,27 +257,27 @@ typedef int QSFUNC (const void *, const void *);
    x == string, c == character */
 
 #if !defined (__CYGWIN__)
-#  define ABSPATH(x)	((x)[0] == '/')
-#  define RELPATH(x)	((x)[0] != '/')
+#  define ABSPATH(x)    ((x)[0] == '/')
+#  define RELPATH(x)    ((x)[0] != '/')
 #else /* __CYGWIN__ */
-#  define ABSPATH(x)	(((x)[0] && ISALPHA((unsigned char)(x)[0]) && (x)[1] == ':') || ISDIRSEP((x)[0]))
-#  define RELPATH(x)	(ABSPATH(x) == 0)
+#  define ABSPATH(x)    (((x)[0] && ISALPHA((unsigned char)(x)[0]) && (x)[1] == ':') || ISDIRSEP((x)[0]))
+#  define RELPATH(x)    (ABSPATH(x) == 0)
 #endif /* __CYGWIN__ */
 
-#define ROOTEDPATH(x)	(ABSPATH(x))
+#define ROOTEDPATH(x)   (ABSPATH(x))
 
-#define DIRSEP	'/'
+#define DIRSEP  '/'
 #if !defined (__CYGWIN__)
-#  define ISDIRSEP(c)	((c) == '/')
+#  define ISDIRSEP(c)   ((c) == '/')
 #else
-#  define ISDIRSEP(c)	((c) == '/' || (c) == '\\')
+#  define ISDIRSEP(c)   ((c) == '/' || (c) == '\\')
 #endif /* __CYGWIN__ */
-#define PATHSEP(c)	(ISDIRSEP(c) || (c) == 0)
+#define PATHSEP(c)      (ISDIRSEP(c) || (c) == 0)
 
-#define DOT_OR_DOTDOT(s)	(s[0] == '.' && (s[1] == 0 || (s[1] == '.' && s[2] == 0)))
+#define DOT_OR_DOTDOT(s)        (s[0] == '.' && (s[1] == 0 || (s[1] == '.' && s[2] == 0)))
 
 #if defined (HANDLE_MULTIBYTE)
-#define WDOT_OR_DOTDOT(w)	(w[0] == L'.' && (w[1] == L'\0' || (w[1] == L'.' && w[2] == L'\0')))
+#define WDOT_OR_DOTDOT(w)       (w[0] == L'.' && (w[1] == L'\0' || (w[1] == L'.' && w[2] == L'\0')))
 #endif
 
 #if 0
@@ -357,4 +357,4 @@ extern int *get_group_array (int *);
 extern char *conf_standard_path (void);
 extern int default_columns (void);
 
-#endif	/* _GENERAL_H_ */
+#endif  /* _GENERAL_H_ */

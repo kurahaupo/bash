@@ -3,7 +3,7 @@
 /* Copyright (C) 1988,1989-2009,2017 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #  include "ansi_stdlib.h"
 #endif /* HAVE_STDLIB_H */
 
-#include <stdio.h>	/* for FILE * definition for readline.h */
+#include <stdio.h>      /* for FILE * definition for readline.h */
 
 #include "readline.h"
 #include "rlconf.h"
@@ -45,9 +45,9 @@
 #include "xmalloc.h"
 
 /* **************************************************************** */
-/*								    */
-/*		      Functions for manipulating Keymaps.	    */
-/*								    */
+/*                                                                  */
+/*                    Functions for manipulating Keymaps.           */
+/*                                                                  */
 /* **************************************************************** */
 
 
@@ -87,7 +87,7 @@ rl_empty_keymap (Keymap keymap)
   for (i = 0; i < ANYOTHERKEY; i++)
     {
       if (keymap[i].type != ISFUNC || keymap[i].function)
-	return 0;
+        return 0;
     }
   return 1;
 }
@@ -125,7 +125,7 @@ rl_make_keymap (void)
     newmap[i].function = rl_insert;
 
   newmap[TAB].function = rl_insert;
-  newmap[RUBOUT].function = rl_rubout;	/* RUBOUT == 127 */
+  newmap[RUBOUT].function = rl_rubout;  /* RUBOUT == 127 */
   newmap[CTRL('H')].function = rl_rubout;
 
 #if KEYMAP_SIZE > 128
@@ -149,19 +149,19 @@ rl_discard_keymap (Keymap map)
   for (i = 0; i < KEYMAP_SIZE; i++)
     {
       switch (map[i].type)
-	{
-	case ISFUNC:
-	  break;
+        {
+        case ISFUNC:
+          break;
 
-	case ISKMAP:
-	  rl_discard_keymap ((Keymap)map[i].function);
-	  xfree ((char *)map[i].function);
-	  break;
+        case ISKMAP:
+          rl_discard_keymap ((Keymap)map[i].function);
+          xfree ((char *)map[i].function);
+          break;
 
-	case ISMACR:
-	  xfree ((char *)map[i].function);
-	  break;
-	}
+        case ISMACR:
+          xfree ((char *)map[i].function);
+          break;
+        }
     }
 }
 

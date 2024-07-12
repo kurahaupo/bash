@@ -12,245 +12,245 @@
    might wind up being NULL.  */
 
 char *signal_names[NSIG + 3] = {
-  [0]		"EXIT",
+  [0]           "EXIT",
 
 #ifdef SIGLOST
-  [SIGLOST]	"SIGLOST",
+  [SIGLOST]     "SIGLOST",
 #endif
 
 #ifdef SIGMSG
-  [SIGMSG]	"SIGMSG",
+  [SIGMSG]      "SIGMSG",
 #endif
 
 #ifdef SIGDANGER
-  [SIGDANGER]	"SIGDANGER",
+  [SIGDANGER]   "SIGDANGER",
 #endif
 
 #ifdef SIGMIGRATE
-  [SIGMIGRATE]	"SIGMIGRATE",
+  [SIGMIGRATE]  "SIGMIGRATE",
 #endif
 
 #ifdef SIGPRE
-  [SIGPRE]	"SIGPRE",
+  [SIGPRE]      "SIGPRE",
 #endif
 
 #ifdef SIGVIRT
-  [SIGVIRT]	"SIGVIRT",
+  [SIGVIRT]     "SIGVIRT",
 #endif
 
 #ifdef SIGALRM1
-  [SIGALRM1]	"SIGALRM1",
+  [SIGALRM1]    "SIGALRM1",
 #endif
 
 #ifdef SIGWAITING
-  [SIGWAITING]	"SIGWAITING",
+  [SIGWAITING]  "SIGWAITING",
 #endif
 
 #ifdef SIGGRANT
-  [SIGGRANT]	"SIGGRANT",
+  [SIGGRANT]    "SIGGRANT",
 #endif
 
 #ifdef SIGKAP
-  [SIGKAP]	"SIGKAP",
+  [SIGKAP]      "SIGKAP",
 #endif
 
 #ifdef SIGRETRACT
-  [SIGRETRACT]	"SIGRETRACT",
+  [SIGRETRACT]  "SIGRETRACT",
 #endif
 
 #ifdef SIGSOUND
-  [SIGSOUND]	"SIGSOUND",
+  [SIGSOUND]    "SIGSOUND",
 #endif
 
 #ifdef SIGSAK
-  [SIGSAK]	"SIGSAK",
+  [SIGSAK]      "SIGSAK",
 #endif
 
 #ifdef SIGLWP
-  [SIGLWP]	"SIGLWP",
+  [SIGLWP]      "SIGLWP",
 #endif
 
 #ifdef SIGFREEZE
-  [SIGFREEZE]	"SIGFREEZE",
+  [SIGFREEZE]   "SIGFREEZE",
 #endif
 
 #ifdef SIGTHAW
-  [SIGTHAW]	"SIGTHAW",
+  [SIGTHAW]     "SIGTHAW",
 #endif
 
 #ifdef SIGCANCEL
-  [SIGCANCEL]	"SIGCANCEL",
+  [SIGCANCEL]   "SIGCANCEL",
 #endif
 
 #ifdef SIGDIL
-  [SIGDIL]	"SIGDIL",
+  [SIGDIL]      "SIGDIL",
 #endif
 
 #ifdef SIGCLD
 #ifndef SIGCHLD
-  [SIGCLD]	"SIGCLD",
+  [SIGCLD]      "SIGCLD",
 #else
 #if SIGCHLD != SIGCLD
-  [SIGCLD]	"SIGCLD",
+  [SIGCLD]      "SIGCLD",
 #endif
 #endif
 #endif
 
 #ifdef SIGPWR
-  [SIGPWR]	"SIGPWR",
+  [SIGPWR]      "SIGPWR",
 #endif
 
 #ifdef SIGPOLL
 #ifndef SIGIO
-  [SIGPOLL]	"SIGPOLL",
+  [SIGPOLL]     "SIGPOLL",
 #else
 #if SIGIO != SIGPOLL
-  [SIGPOLL]	"SIGPOLL",
+  [SIGPOLL]     "SIGPOLL",
 #endif
 #endif
 #endif
 
 #ifdef SIGWINDOW
-  [SIGWINDOW]	"SIGWINDOW",
+  [SIGWINDOW]   "SIGWINDOW",
 #endif
 
 #ifdef SIGHUP
-  [SIGHUP]	"SIGHUP",
+  [SIGHUP]      "SIGHUP",
 #endif
 
 #ifdef SIGINT
-  [SIGINT]	"SIGINT",
+  [SIGINT]      "SIGINT",
 #endif
 
 #ifdef SIGQUIT
-  [SIGQUIT]	"SIGQUIT",
+  [SIGQUIT]     "SIGQUIT",
 #endif
 
 #ifdef SIGILL
-  [SIGILL]	"SIGILL",
+  [SIGILL]      "SIGILL",
 #endif
 
 #ifdef SIGTRAP
-  [SIGTRAP]	"SIGTRAP",
+  [SIGTRAP]     "SIGTRAP",
 #endif
 
 #ifdef SIGIOT
 #ifndef SIGABRT
-  [SIGIOT]	"SIGIOT",
+  [SIGIOT]      "SIGIOT",
 #else
 #if SIGABRT != SIGIOT
-  [SIGIOT]	"SIGIOT",
+  [SIGIOT]      "SIGIOT",
 #endif
 #endif
 #endif
 
 #ifdef SIGABRT
-  [SIGABRT]	"SIGABRT",
+  [SIGABRT]     "SIGABRT",
 #endif
 
 #ifdef SIGEMT
-  [SIGEMT]	"SIGEMT",
+  [SIGEMT]      "SIGEMT",
 #endif
 
 #ifdef SIGFPE
-  [SIGFPE]	"SIGFPE",
+  [SIGFPE]      "SIGFPE",
 #endif
 
 #ifdef SIGKILL
-  [SIGKILL]	"SIGKILL",
+  [SIGKILL]     "SIGKILL",
 #endif
 
 #ifdef SIGBUS
-  [SIGBUS]	"SIGBUS",
+  [SIGBUS]      "SIGBUS",
 #endif
 
 #ifdef SIGSEGV
-  [SIGSEGV]	"SIGSEGV",
+  [SIGSEGV]     "SIGSEGV",
 #endif
 
 #ifdef SIGSYS
-  [SIGSYS]	"SIGSYS",
+  [SIGSYS]      "SIGSYS",
 #endif
 
 #ifdef SIGPIPE
-  [SIGPIPE]	"SIGPIPE",
+  [SIGPIPE]     "SIGPIPE",
 #endif
 
 #ifdef SIGALRM
-  [SIGALRM]	"SIGALRM",
+  [SIGALRM]     "SIGALRM",
 #endif
 
 #ifdef SIGTERM
-  [SIGTERM]	"SIGTERM",
+  [SIGTERM]     "SIGTERM",
 #endif
 
 #ifdef SIGURG
-  [SIGURG]	"SIGURG",
+  [SIGURG]      "SIGURG",
 #endif
 
 #ifdef SIGSTOP
-  [SIGSTOP]	"SIGSTOP",
+  [SIGSTOP]     "SIGSTOP",
 #endif
 
 #ifdef SIGTSTP
-  [SIGTSTP]	"SIGTSTP",
+  [SIGTSTP]     "SIGTSTP",
 #endif
 
 #ifdef SIGCONT
-  [SIGCONT]	"SIGCONT",
+  [SIGCONT]     "SIGCONT",
 #endif
 
 #ifdef SIGCHLD
-  [SIGCHLD]	"SIGCHLD",
+  [SIGCHLD]     "SIGCHLD",
 #endif
 
 #ifdef SIGTTIN
-  [SIGTTIN]	"SIGTTIN",
+  [SIGTTIN]     "SIGTTIN",
 #endif
 
 #ifdef SIGTTOU
-  [SIGTTOU]	"SIGTTOU",
+  [SIGTTOU]     "SIGTTOU",
 #endif
 
 #ifdef SIGIO
-  [SIGIO]	"SIGIO",
+  [SIGIO]       "SIGIO",
 #endif
 
 #ifdef SIGXCPU
-  [SIGXCPU]	"SIGXCPU",
+  [SIGXCPU]     "SIGXCPU",
 #endif
 
 #ifdef SIGXFSZ
-  [SIGXFSZ]	"SIGXFSZ",
+  [SIGXFSZ]     "SIGXFSZ",
 #endif
 
 #ifdef SIGVTALRM
-  [SIGVTALRM]	"SIGVTALRM",
+  [SIGVTALRM]   "SIGVTALRM",
 #endif
 
 #ifdef SIGPROF
-  [SIGPROF]	"SIGPROF",
+  [SIGPROF]     "SIGPROF",
 #endif
 
 #ifdef SIGWINCH
-  [SIGWINCH]	"SIGWINCH",
+  [SIGWINCH]    "SIGWINCH",
 #endif
 
 #ifdef SIGINFO
-  [SIGINFO]	"SIGINFO",
+  [SIGINFO]     "SIGINFO",
 #endif
 
 #ifdef SIGUSR1
-  [SIGUSR1]	"SIGUSR1",
+  [SIGUSR1]     "SIGUSR1",
 #endif
 
 #ifdef SIGUSR2
-  [SIGUSR2]	"SIGUSR2",
+  [SIGUSR2]     "SIGUSR2",
 #endif
 
-  [NSIG]	"DEBUG",
+  [NSIG]        "DEBUG",
 
-  [NSIG + 1]	"ERR",
+  [NSIG + 1]    "ERR",
 
-  [NSIG + 2]	(char *)0x0
+  [NSIG + 2]    (char *)0x0
 };

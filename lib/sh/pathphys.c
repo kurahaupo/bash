@@ -61,7 +61,7 @@ _path_readlink (char *path, char *buf, size_t bufsiz)
 
 /* Look for ROOTEDPATH, PATHSEP, DIRSEP, and ISDIRSEP in ../../general.h */
 
-#define DOUBLE_SLASH(p)	((p[0] == '/') && (p[1] == '/') && p[2] != '/')
+#define DOUBLE_SLASH(p) ((p[0] == '/') && (p[1] == '/') && p[2] != '/')
 
 /*
  * Return PATH with all symlinks expanded in newly-allocated memory.
@@ -115,7 +115,7 @@ sh_physpath (char *path, int flags)
 
   /*
    * invariants:
-   *	  qbase points to the portion of the result path we want to modify
+   *      qbase points to the portion of the result path we want to modify
    *      p points at beginning of path element we're considering.
    *      q points just past the last path element we wrote (no slash).
    *
@@ -125,106 +125,106 @@ sh_physpath (char *path, int flags)
   while (*p)
     {
       if (ISDIRSEP(p[0])) /* null element */
-	p++;
-      else if(p[0] == '.' && PATHSEP(p[1]))	/* . and ./ */
-	p += 1; 	/* don't count the separator in case it is nul */
+        p++;
+      else if(p[0] == '.' && PATHSEP(p[1]))     /* . and ./ */
+        p += 1;         /* don't count the separator in case it is nul */
       else if (p[0] == '.' && p[1] == '.' && PATHSEP(p[2])) /* .. and ../ */
-	{
-	  p += 2; /* skip `..' */
-	  if (q > qbase)
-	    {
-	      while (--q > qbase && ISDIRSEP(*q) == 0)
-		;
-	    }
-	}
-      else	/* real path element */
-	{
-	  /* add separator if not at start of work portion of result */
-	  qsave = q;
-	  if (q != qbase)
-	    *q++ = DIRSEP;
-	  while (*p && (ISDIRSEP(*p) == 0))
-	    {
-	      if (q - result >= PATH_MAX)
-		{
+        {
+          p += 2; /* skip `..' */
+          if (q > qbase)
+            {
+              while (--q > qbase && ISDIRSEP(*q) == 0)
+                ;
+            }
+        }
+      else      /* real path element */
+        {
+          /* add separator if not at start of work portion of result */
+          qsave = q;
+          if (q != qbase)
+            *q++ = DIRSEP;
+          while (*p && (ISDIRSEP(*p) == 0))
+            {
+              if (q - result >= PATH_MAX)
+                {
 #ifdef ENAMETOOLONG
-		  errno = ENAMETOOLONG;
+                  errno = ENAMETOOLONG;
 #else
-		  errno = EINVAL;
+                  errno = EINVAL;
 #endif
-		  goto error;
-		}
-		
-	      *q++ = *p++;
-	    }
+                  goto error;
+                }
 
-	  *q = '\0';
+              *q++ = *p++;
+            }
 
-	  r = _path_readlink (result, linkbuf, PATH_MAX);
-	  if (r < 0)	/* if errno == EINVAL, it's not a symlink */
-	    {
-	      if (errno != EINVAL)
-		goto error;
-	      continue;
-	    }
-	  linklen = r;
+          *q = '\0';
 
-	  /* It's a symlink, and the value is in LINKBUF. */
-	  nlink++;
-	  if (nlink > MAXSYMLINKS)
-	    {
+          r = _path_readlink (result, linkbuf, PATH_MAX);
+          if (r < 0)    /* if errno == EINVAL, it's not a symlink */
+            {
+              if (errno != EINVAL)
+                goto error;
+              continue;
+            }
+          linklen = r;
+
+          /* It's a symlink, and the value is in LINKBUF. */
+          nlink++;
+          if (nlink > MAXSYMLINKS)
+            {
 #ifdef ELOOP
-	      errno = ELOOP;
+              errno = ELOOP;
 #else
-	      errno = EINVAL;
+              errno = EINVAL;
 #endif
 error:
-	      free (result);
-	      free (workpath);
-	      return ((char *)NULL);
-	    }
+              free (result);
+              free (workpath);
+              return ((char *)NULL);
+            }
 
-	  linkbuf[linklen] = '\0';
+          linkbuf[linklen] = '\0';
 
-	  /* If the new path length would overrun PATH_MAX, punt now. */
-	  if ((strlen (p) + linklen + 2) >= PATH_MAX)
-	    {
+          /* If the new path length would overrun PATH_MAX, punt now. */
+          if ((strlen (p) + linklen + 2) >= PATH_MAX)
+            {
 #ifdef ENAMETOOLONG
-	      errno = ENAMETOOLONG;
+              errno = ENAMETOOLONG;
 #else
-	      errno = EINVAL;
+              errno = EINVAL;
 #endif
-	      goto error;
-	    }
+              goto error;
+            }
 
-	  /* Form the new pathname by copying the link value to a temporary
-	     buffer and appending the rest of `workpath'.  Reset p to point
-	     to the start of the rest of the path.  If the link value is an
-	     absolute pathname, reset p, q, and qbase.  If not, reset p
-	     and q. */
-	  strcpy (tbuf, linkbuf);
-	  tbuf[linklen] = '/';
-	  strcpy (tbuf + linklen, p);
-	  strcpy (workpath, tbuf);
+          /* Form the new pathname by copying the link value to a temporary
+             buffer and appending the rest of `workpath'.  Reset p to point
+             to the start of the rest of the path.  If the link value is an
+             absolute pathname, reset p, q, and qbase.  If not, reset p
+             and q. */
+          strcpy (tbuf, linkbuf);
+          tbuf[linklen] = '/';
+          strcpy (tbuf + linklen, p);
+          strcpy (workpath, tbuf);
 
-	  if (ABSPATH(linkbuf))
-	    {
-	      q = result;
-	      /* Duplicating some code here... */
-	      qbase = workpath + 1;
-	      double_slash_path = DOUBLE_SLASH (workpath);
-	      qbase += double_slash_path;
-    
-	      for (p = workpath; p < qbase; )
-		*q++ = *p++;
-	      qbase = q;
-	    }
-	  else
-	    {
-	      p = workpath;
-	      q = qsave;
-	    }
-	}
+          if (ABSPATH(linkbuf))
+            {
+              q = result;
+              /* Duplicating some code here... */
+              qbase = workpath + 1;
+              double_slash_path = DOUBLE_SLASH (workpath);
+              qbase += double_slash_path;
+
+              for (p = workpath; p < qbase; )
+                *q++ = *p++;
+              qbase = q;
+            }
+          else
+            {
+              p = workpath;
+              q = qsave;
+            }
+        }
     }
 
   *q = '\0';
@@ -235,10 +235,10 @@ error:
      be true, but it's a sanity check. */
   if (DOUBLE_SLASH(result) && double_slash_path == 0)
     {
-      if (result[2] == '\0')	/* short-circuit for bare `//' */
-	result[1] = '\0';
+      if (result[2] == '\0')    /* short-circuit for bare `//' */
+        result[1] = '\0';
       else
-	memmove (result, result + 1, strlen (result + 1) + 1);
+        memmove (result, result + 1, strlen (result + 1) + 1);
     }
 
   return (result);
@@ -259,7 +259,7 @@ sh_realpath (const char *pathname, char *resolved)
     {
       wd = get_working_directory ("sh_realpath");
       if (wd == 0)
-	return ((char *)NULL);
+        return ((char *)NULL);
       tdir = sh_makepath (wd, (char *)pathname, 0);
       free (wd);
     }

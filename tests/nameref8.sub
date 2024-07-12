@@ -13,9 +13,9 @@
 #
 function f1
 {
-	typeset -n v=$1
+        typeset -n v=$1
 
-	v=inside
+        v=inside
 }
 
 v=global
@@ -27,11 +27,11 @@ unset -f f1
 
 function foo
 {
-	typeset x=one
+        typeset x=one
 
-	typeset -n y=$1
-	y=two
-	echo inside: $x
+        typeset -n y=$1
+        y=two
+        echo inside: $x
 }
 
 foo x
@@ -39,9 +39,9 @@ echo outside: $x
 
 function foo2
 {
-	typeset -n x=$1
+        typeset -n x=$1
 
-	x=foo
+        x=foo
 }
 
 foo2 x

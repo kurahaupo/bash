@@ -1,10 +1,10 @@
 /* shell.c -- readline utility functions that are normally provided by
-	      bash when readline is linked as part of the shell. */
+              bash when readline is linked as part of the shell. */
 
 /* Copyright (C) 1997-2009,2017,2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -102,11 +102,11 @@ sh_single_quote (char *string)
       *r++ = c;
 
       if (c == '\'')
-	{
-	  *r++ = '\\';	/* insert escaped single quote */
-	  *r++ = '\'';
-	  *r++ = '\'';	/* start new quoted string */
-	}
+        {
+          *r++ = '\\';  /* insert escaped single quote */
+          *r++ = '\'';
+          *r++ = '\'';  /* start new quoted string */
+        }
     }
 
   *r++ = '\'';
@@ -118,8 +118,8 @@ sh_single_quote (char *string)
 /* Set the environment variables LINES and COLUMNS to lines and cols,
    respectively. */
 static char setenv_buf[INT_STRLEN_BOUND (int) + 1];
-static char putenv_buf1[INT_STRLEN_BOUND (int) + 6 + 1];	/* sizeof("LINES=") == 6 */
-static char putenv_buf2[INT_STRLEN_BOUND (int) + 8 + 1];	/* sizeof("COLUMNS=") == 8 */
+static char putenv_buf1[INT_STRLEN_BOUND (int) + 6 + 1];        /* sizeof("LINES=") == 6 */
+static char putenv_buf2[INT_STRLEN_BOUND (int) + 8 + 1];        /* sizeof("COLUMNS=") == 8 */
 
 void
 sh_set_lines_and_columns (int lines, int cols)
@@ -168,7 +168,7 @@ sh_get_home_dir (void)
 #endif
 
 #if defined (HAVE_GETPWENT)
-  endpwent ();		/* some systems need this */
+  endpwent ();          /* some systems need this */
 #endif
 
   return (home_dir);

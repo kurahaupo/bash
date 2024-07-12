@@ -170,7 +170,7 @@ static void yyerror (struct parse_args *arg, const char *str);
 
 static struct expression *
 new_exp (int nargs, enum expression_operator op,
-	 struct expression * const *args)
+         struct expression * const *args)
 {
   int i;
   struct expression *newp;
@@ -187,7 +187,7 @@ new_exp (int nargs, enum expression_operator op,
       newp->nargs = nargs;
       newp->operation = op;
       for (i = nargs - 1; i >= 0; i--)
-	newp->val.args[i] = args[i];
+        newp->val.args[i] = args[i];
       return newp;
     }
 
@@ -215,7 +215,7 @@ new_exp_1 (enum expression_operator op, struct expression *right)
 
 static struct expression *
 new_exp_2 (enum expression_operator op, struct expression *left,
-	   struct expression *right)
+           struct expression *right)
 {
   struct expression *args[2];
 
@@ -226,7 +226,7 @@ new_exp_2 (enum expression_operator op, struct expression *left,
 
 static inline struct expression *
 new_exp_3 (enum expression_operator op, struct expression *bexp,
-	   struct expression *tbranch, struct expression *fbranch)
+           struct expression *tbranch, struct expression *fbranch)
 {
   struct expression *args[3];
 
@@ -1207,99 +1207,99 @@ yyreduce:
   case 2: /* start: exp  */
 #line 146 "plural.y"
           {
-	    if ((yyvsp[0].exp) == NULL)
-	      YYABORT;
-	    arg->res = (yyvsp[0].exp);
-	  }
+            if ((yyvsp[0].exp) == NULL)
+              YYABORT;
+            arg->res = (yyvsp[0].exp);
+          }
 #line 1215 "plural.c"
     break;
 
   case 3: /* exp: exp '?' exp ':' exp  */
 #line 154 "plural.y"
           {
-	    (yyval.exp) = new_exp_3 (qmop, (yyvsp[-4].exp), (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_3 (qmop, (yyvsp[-4].exp), (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1223 "plural.c"
     break;
 
   case 4: /* exp: exp '|' exp  */
 #line 158 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 (lor, (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 (lor, (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1231 "plural.c"
     break;
 
   case 5: /* exp: exp '&' exp  */
 #line 162 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 (land, (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 (land, (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1239 "plural.c"
     break;
 
   case 6: /* exp: exp EQUOP2 exp  */
 #line 166 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1247 "plural.c"
     break;
 
   case 7: /* exp: exp CMPOP2 exp  */
 #line 170 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1255 "plural.c"
     break;
 
   case 8: /* exp: exp ADDOP2 exp  */
 #line 174 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1263 "plural.c"
     break;
 
   case 9: /* exp: exp MULOP2 exp  */
 #line 178 "plural.y"
           {
-	    (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_2 ((yyvsp[-1].op), (yyvsp[-2].exp), (yyvsp[0].exp));
+          }
 #line 1271 "plural.c"
     break;
 
   case 10: /* exp: '!' exp  */
 #line 182 "plural.y"
           {
-	    (yyval.exp) = new_exp_1 (lnot, (yyvsp[0].exp));
-	  }
+            (yyval.exp) = new_exp_1 (lnot, (yyvsp[0].exp));
+          }
 #line 1279 "plural.c"
     break;
 
   case 11: /* exp: 'n'  */
 #line 186 "plural.y"
           {
-	    (yyval.exp) = new_exp_0 (var);
-	  }
+            (yyval.exp) = new_exp_0 (var);
+          }
 #line 1287 "plural.c"
     break;
 
   case 12: /* exp: NUMBER  */
 #line 190 "plural.y"
           {
-	    if (((yyval.exp) = new_exp_0 (num)) != NULL)
-	      (yyval.exp)->val.num = (yyvsp[0].num);
-	  }
+            if (((yyval.exp) = new_exp_0 (num)) != NULL)
+              (yyval.exp)->val.num = (yyvsp[0].num);
+          }
 #line 1296 "plural.c"
     break;
 
   case 13: /* exp: '(' exp ')'  */
 #line 195 "plural.y"
           {
-	    (yyval.exp) = (yyvsp[-1].exp);
-	  }
+            (yyval.exp) = (yyvsp[-1].exp);
+          }
 #line 1304 "plural.c"
     break;
 
@@ -1536,13 +1536,13 @@ yylex (YYSTYPE *lval, struct parse_args *arg)
   while (1)
     {
       if (exp[0] == '\0')
-	{
-	  arg->cp = exp;
-	  return YYEOF;
-	}
+        {
+          arg->cp = exp;
+          return YYEOF;
+        }
 
       if (exp[0] != ' ' && exp[0] != '\t')
-	break;
+        break;
 
       ++exp;
     }
@@ -1553,65 +1553,65 @@ yylex (YYSTYPE *lval, struct parse_args *arg)
     case '0': case '1': case '2': case '3': case '4':
     case '5': case '6': case '7': case '8': case '9':
       {
-	unsigned long int n = result - '0';
-	while (exp[0] >= '0' && exp[0] <= '9')
-	  {
-	    n *= 10;
-	    n += exp[0] - '0';
-	    ++exp;
-	  }
-	lval->num = n;
-	result = NUMBER;
+        unsigned long int n = result - '0';
+        while (exp[0] >= '0' && exp[0] <= '9')
+          {
+            n *= 10;
+            n += exp[0] - '0';
+            ++exp;
+          }
+        lval->num = n;
+        result = NUMBER;
       }
       break;
 
     case '=':
       if (exp[0] == '=')
-	{
-	  ++exp;
-	  lval->op = equal;
-	  result = EQUOP2;
-	}
+        {
+          ++exp;
+          lval->op = equal;
+          result = EQUOP2;
+        }
       else
-	result = YYERRCODE;
+        result = YYERRCODE;
       break;
 
     case '!':
       if (exp[0] == '=')
-	{
-	  ++exp;
-	  lval->op = not_equal;
-	  result = EQUOP2;
-	}
+        {
+          ++exp;
+          lval->op = not_equal;
+          result = EQUOP2;
+        }
       break;
 
     case '&':
     case '|':
       if (exp[0] == result)
-	++exp;
+        ++exp;
       else
-	result = YYERRCODE;
+        result = YYERRCODE;
       break;
 
     case '<':
       if (exp[0] == '=')
-	{
-	  ++exp;
-	  lval->op = less_or_equal;
-	}
+        {
+          ++exp;
+          lval->op = less_or_equal;
+        }
       else
-	lval->op = less_than;
+        lval->op = less_than;
       result = CMPOP2;
       break;
 
     case '>':
       if (exp[0] == '=')
-	{
-	  ++exp;
-	  lval->op = greater_or_equal;
-	}
+        {
+          ++exp;
+          lval->op = greater_or_equal;
+        }
       else
-	lval->op = greater_than;
+        lval->op = greater_than;
       result = CMPOP2;
       break;
 

@@ -23,10 +23,10 @@ c=`ulimit -n`
 let c+=100
 while let c--
 do
-	while read -ru3 x
-	do
-		echo -n :
-	done 3< <(echo x)
+        while read -ru3 x
+        do
+                echo -n :
+        done 3< <(echo x)
 
 done
 }

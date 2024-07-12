@@ -4,7 +4,7 @@
 /* Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ extern int errno;
 #endif
 
 #ifndef RL_READLINE_VERSION
-#  define RL_READLINE_VERSION	0x0801
+#  define RL_READLINE_VERSION   0x0801
 #endif
 
 /* Forward declarations used in this file. */
@@ -102,9 +102,9 @@ static int _rl_subseq_result (int, Keymap, int, int);
 static int _rl_subseq_getchar (int);
 
 /* **************************************************************** */
-/*								    */
-/*			Line editing input utility		    */
-/*								    */
+/*                                                                  */
+/*                      Line editing input utility                  */
+/*                                                                  */
 /* **************************************************************** */
 
 const char *rl_library_version = RL_LIBRARY_VERSION;
@@ -233,7 +233,7 @@ int _rl_mark_modified_lines = 0;
 /* The style of `bell' notification preferred.  This can be set to NO_BELL,
    AUDIBLE_BELL, or VISIBLE_BELL. */
 int _rl_bell_preference = AUDIBLE_BELL;
-     
+
 /* String inserted into the line by rl_insert_comment (). */
 char *_rl_comment_begin;
 
@@ -275,19 +275,19 @@ int _rl_keyseq_timeout = 500;
   do \
     { \
       if (rl_key_sequence_length + 2 >= _rl_executing_keyseq_size) \
-	{ \
-	  _rl_executing_keyseq_size += 16; \
-	  rl_executing_keyseq = xrealloc (rl_executing_keyseq, _rl_executing_keyseq_size); \
-	} \
+        { \
+          _rl_executing_keyseq_size += 16; \
+          rl_executing_keyseq = xrealloc (rl_executing_keyseq, _rl_executing_keyseq_size); \
+        } \
     } \
   while (0);
-        
+
 /* Forward declarations used by the display, termcap, and history code. */
 
 /* **************************************************************** */
-/*								    */
-/*			`Forward' declarations  		    */
-/*								    */
+/*                                                                  */
+/*                      `Forward' declarations                      */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Non-zero means do not parse any lines other than comments and
@@ -327,13 +327,13 @@ int _rl_enable_bracketed_paste = BRACKETED_PASTE_DEFAULT;
 int _rl_enable_active_region = BRACKETED_PASTE_DEFAULT;
 
 /* **************************************************************** */
-/*								    */
-/*			Top Level Functions			    */
-/*								    */
+/*                                                                  */
+/*                      Top Level Functions                         */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Non-zero means treat 0200 bit in terminal input as Meta bit. */
-int _rl_meta_flag = 0;	/* Forward declaration */
+int _rl_meta_flag = 0;  /* Forward declaration */
 
 /* Set up the prompt and expand it.  Called from readline() and
    rl_callback_handler_install (). */
@@ -347,7 +347,7 @@ rl_set_prompt (const char *prompt)
   rl_visible_prompt_length = rl_expand_prompt (rl_prompt);
   return 0;
 }
-  
+
 /* Read a line of input.  Prompt with PROMPT.  An empty PROMPT means
    none.  A return value of NULL means that EOF was encountered. */
 char *
@@ -440,7 +440,7 @@ readline_internal_setup (void)
 
 #if defined (VI_MODE)
   if (rl_editing_mode == vi_mode)
-    rl_vi_insertion_mode (1, 'i');	/* don't want to reset last */
+    rl_vi_insertion_mode (1, 'i');      /* don't want to reset last */
   else
 #endif /* VI_MODE */
     if (_rl_show_mode_in_prompt)
@@ -452,19 +452,19 @@ readline_internal_setup (void)
   if (_rl_echoing_p == 0 && rl_redisplay_function == rl_redisplay)
     {
       if (rl_prompt && rl_already_prompted == 0)
-	{
-	  nprompt = _rl_strip_prompt (rl_prompt);
-	  fprintf (_rl_out_stream, "%s", nprompt);
-	  fflush (_rl_out_stream);
-	  xfree (nprompt);
-	}
+        {
+          nprompt = _rl_strip_prompt (rl_prompt);
+          fprintf (_rl_out_stream, "%s", nprompt);
+          fflush (_rl_out_stream);
+          xfree (nprompt);
+        }
     }
   else
     {
       if (rl_prompt && rl_already_prompted)
-	rl_on_new_line_with_prompt ();
+        rl_on_new_line_with_prompt ();
       else
-	rl_on_new_line ();
+        rl_on_new_line ();
       (*rl_redisplay_function) ();
     }
 
@@ -506,14 +506,14 @@ readline_common_teardown (void)
   if (rl_undo_list)
     rl_free_undo_list ();
 }
-	
+
 STATIC_CALLBACK char *
 readline_internal_teardown (int eof)
 {
   RL_CHECK_SIGNALS ();
 
   if (eof)
-    RL_SETSTATE (RL_STATE_EOF);		/* XXX */
+    RL_SETSTATE (RL_STATE_EOF);         /* XXX */
 
   readline_common_teardown ();
 
@@ -584,7 +584,7 @@ readline_internal_charloop (void)
       lk = _rl_last_command_was_kill;
 
       /* Save and restore _rl_top_level even though most of the time it
-	 doesn't matter. */
+         doesn't matter. */
       memcpy ((void *)olevel, (void *)_rl_top_level, sizeof (procenv_t));
 #if defined (HAVE_POSIX_SIGSETJMP)
       code = sigsetjmp (_rl_top_level, 0);
@@ -593,123 +593,123 @@ readline_internal_charloop (void)
 #endif
 
       if (code)
-	{
-	  (*rl_redisplay_function) ();
-	  _rl_want_redisplay = 0;
-	  if (RL_ISSTATE (RL_STATE_CALLBACK))
-	    memcpy ((void *)_rl_top_level, (void *)olevel, sizeof (procenv_t));
+        {
+          (*rl_redisplay_function) ();
+          _rl_want_redisplay = 0;
+          if (RL_ISSTATE (RL_STATE_CALLBACK))
+            memcpy ((void *)_rl_top_level, (void *)olevel, sizeof (procenv_t));
 
-	  /* If we longjmped because of a timeout, handle it here. */
-	  if (RL_ISSTATE (RL_STATE_TIMEOUT))
-	    {
-	      RL_SETSTATE (RL_STATE_DONE);
-	      return (rl_done = 1);
-	    }
+          /* If we longjmped because of a timeout, handle it here. */
+          if (RL_ISSTATE (RL_STATE_TIMEOUT))
+            {
+              RL_SETSTATE (RL_STATE_DONE);
+              return (rl_done = 1);
+            }
 
-	  /* If we get here, we're not being called from something dispatched
-	     from _rl_callback_read_char(), which sets up its own value of
-	     _rl_top_level (saving and restoring the old, of course), so
-	     we can just return here. */
-	  if (RL_ISSTATE (RL_STATE_CALLBACK))
-	    return (0);
-	}
+          /* If we get here, we're not being called from something dispatched
+             from _rl_callback_read_char(), which sets up its own value of
+             _rl_top_level (saving and restoring the old, of course), so
+             we can just return here. */
+          if (RL_ISSTATE (RL_STATE_CALLBACK))
+            return (0);
+        }
 
       if (rl_pending_input == 0)
-	{
-	  /* Then initialize the argument and number of keys read. */
-	  _rl_reset_argument ();
-	  rl_executing_keyseq[rl_key_sequence_length = 0] = '\0';
-	}
+        {
+          /* Then initialize the argument and number of keys read. */
+          _rl_reset_argument ();
+          rl_executing_keyseq[rl_key_sequence_length = 0] = '\0';
+        }
 
       RL_SETSTATE(RL_STATE_READCMD);
       c = rl_read_key ();
       RL_UNSETSTATE(RL_STATE_READCMD);
 
       /* look at input.c:rl_getc() for the circumstances under which this will
-	 be returned; punt immediately on read error without converting it to
-	 a newline; assume that rl_read_key has already called the signal
-	 handler. */
+         be returned; punt immediately on read error without converting it to
+         a newline; assume that rl_read_key has already called the signal
+         handler. */
       if (c == READERR)
-	{
+        {
 #if defined (READLINE_CALLBACKS)
-	  RL_SETSTATE(RL_STATE_DONE);
-	  return (rl_done = 1);
+          RL_SETSTATE(RL_STATE_DONE);
+          return (rl_done = 1);
 #else
-	  RL_SETSTATE(RL_STATE_EOF);
-	  eof_found = 1;
-	  break;
+          RL_SETSTATE(RL_STATE_EOF);
+          eof_found = 1;
+          break;
 #endif
-	}
+        }
 
       /* EOF typed to a non-blank line is ^D the first time, EOF the second
-	 time in a row.  This won't return any partial line read from the tty.
-	 If we want to change this, to force any existing line to be returned
-	 when read(2) reads EOF, for example, this is the place to change. */
+         time in a row.  This won't return any partial line read from the tty.
+         If we want to change this, to force any existing line to be returned
+         when read(2) reads EOF, for example, this is the place to change. */
       if (c == EOF && rl_end)
-	{
-	  if (RL_SIG_RECEIVED ())
-	    {
-	      RL_CHECK_SIGNALS ();
-	      if (rl_signal_event_hook)
-		(*rl_signal_event_hook) ();		/* XXX */
-	    }
+        {
+          if (RL_SIG_RECEIVED ())
+            {
+              RL_CHECK_SIGNALS ();
+              if (rl_signal_event_hook)
+                (*rl_signal_event_hook) ();             /* XXX */
+            }
 
-	  /* XXX - reading two consecutive EOFs returns EOF */
-	  if (RL_ISSTATE (RL_STATE_TERMPREPPED))
-	    {
-	      if (lastc == _rl_eof_char || lastc == EOF)
-		rl_end = 0;
-	      else
-	        c = _rl_eof_char;
-	    }
-	  else
-	    c = NEWLINE;
-	}
+          /* XXX - reading two consecutive EOFs returns EOF */
+          if (RL_ISSTATE (RL_STATE_TERMPREPPED))
+            {
+              if (lastc == _rl_eof_char || lastc == EOF)
+                rl_end = 0;
+              else
+                c = _rl_eof_char;
+            }
+          else
+            c = NEWLINE;
+        }
 
       /* The character _rl_eof_char typed to blank line, and not as the
-	 previous character is interpreted as EOF.  This doesn't work when
-	 READLINE_CALLBACKS is defined, so hitting a series of ^Ds will
-	 erase all the chars on the line and then return EOF. */
+         previous character is interpreted as EOF.  This doesn't work when
+         READLINE_CALLBACKS is defined, so hitting a series of ^Ds will
+         erase all the chars on the line and then return EOF. */
       if (((c == _rl_eof_char && lastc != c) || c == EOF) && rl_end == 0)
-	{
+        {
 #if defined (READLINE_CALLBACKS)
-	  RL_SETSTATE(RL_STATE_DONE);
-	  return (rl_done = 1);
+          RL_SETSTATE(RL_STATE_DONE);
+          return (rl_done = 1);
 #else
-	  RL_SETSTATE(RL_STATE_EOF);
-	  eof_found = 1;
-	  break;
+          RL_SETSTATE(RL_STATE_EOF);
+          eof_found = 1;
+          break;
 #endif
-	}
+        }
 
       lastc = c;
       r = _rl_dispatch ((unsigned char)c, _rl_keymap);
       RL_CHECK_SIGNALS ();
 
       if (_rl_command_to_execute)
-	{
-	  (*rl_redisplay_function) ();
+        {
+          (*rl_redisplay_function) ();
 
-	  rl_executing_keymap = _rl_command_to_execute->map;
-	  rl_executing_key = _rl_command_to_execute->key;
+          rl_executing_keymap = _rl_command_to_execute->map;
+          rl_executing_key = _rl_command_to_execute->key;
 
-	  _rl_executing_func = _rl_command_to_execute->func;
+          _rl_executing_func = _rl_command_to_execute->func;
 
-	  rl_dispatching = 1;
-	  RL_SETSTATE(RL_STATE_DISPATCHING);
-	  r = (*(_rl_command_to_execute->func)) (_rl_command_to_execute->count, _rl_command_to_execute->key);
-	  _rl_command_to_execute = 0;
-	  RL_UNSETSTATE(RL_STATE_DISPATCHING);
-	  rl_dispatching = 0;
+          rl_dispatching = 1;
+          RL_SETSTATE(RL_STATE_DISPATCHING);
+          r = (*(_rl_command_to_execute->func)) (_rl_command_to_execute->count, _rl_command_to_execute->key);
+          _rl_command_to_execute = 0;
+          RL_UNSETSTATE(RL_STATE_DISPATCHING);
+          rl_dispatching = 0;
 
-	  RL_CHECK_SIGNALS ();
-	}
+          RL_CHECK_SIGNALS ();
+        }
 
       /* If there was no change in _rl_last_command_was_kill, then no kill
-	 has taken place.  Note that if input is pending we are reading
-	 a prefix command, so nothing has changed yet. */
+         has taken place.  Note that if input is pending we are reading
+         a prefix command, so nothing has changed yet. */
       if (rl_pending_input == 0 && lk == _rl_last_command_was_kill)
-	_rl_last_command_was_kill = 0;
+        _rl_last_command_was_kill = 0;
 
       _rl_internal_char_cleanup ();
 
@@ -772,7 +772,7 @@ _rl_keyseq_cxt_alloc (void)
 
   cxt->okey = 0;
   cxt->ocxt = _rl_kscxt;
-  cxt->childval = 42;		/* sentinel value */
+  cxt->childval = 42;           /* sentinel value */
 
   return cxt;
 }
@@ -828,10 +828,10 @@ _rl_dispatch_callback (_rl_keyseq_cxt *cxt)
     {
       nkey = _rl_subseq_getchar (cxt->okey);
       if (nkey < 0)
-	{
-	  _rl_abort_internal ();
-	  return -1;
-	}
+        {
+          _rl_abort_internal ();
+          return -1;
+        }
       r = _rl_dispatch_subseq (nkey, cxt->dmap, cxt->subseq_arg);
       cxt->flags |= KSEQ_DISPATCHED;
     }
@@ -839,19 +839,19 @@ _rl_dispatch_callback (_rl_keyseq_cxt *cxt)
     r = cxt->childval;
 
   /* For now */
-  if (r != -3)	/* don't do this if we indicate there will be other matches */
+  if (r != -3)  /* don't do this if we indicate there will be other matches */
     r = _rl_subseq_result (r, cxt->oldmap, cxt->okey, (cxt->flags & KSEQ_SUBSEQ));
 
   RL_CHECK_SIGNALS ();
   /* We only treat values < 0 specially to simulate recursion. */
-  if (r >= 0 || (r == -1 && (cxt->flags & KSEQ_SUBSEQ) == 0))	/* success! or failure! */
+  if (r >= 0 || (r == -1 && (cxt->flags & KSEQ_SUBSEQ) == 0))   /* success! or failure! */
     {
       _rl_keyseq_chain_dispose ();
       RL_UNSETSTATE (RL_STATE_MULTIKEY);
       return r;
     }
 
-  if (r != -3)			/* magic value that says we added to the chain */
+  if (r != -3)                  /* magic value that says we added to the chain */
     _rl_kscxt = cxt->ocxt;
   if (_rl_kscxt)
     _rl_kscxt->childval = r;
@@ -861,7 +861,7 @@ _rl_dispatch_callback (_rl_keyseq_cxt *cxt)
   return r;
 }
 #endif /* READLINE_CALLBACKS */
-  
+
 /* Do the command associated with KEY in MAP.
    If the associated command is really a keymap, then read
    another key, and dispatch into that map. */
@@ -885,17 +885,17 @@ _rl_dispatch_subseq (register int key, Keymap map, int got_subseq)
   if (META_CHAR (key) && _rl_convert_meta_chars_to_ascii)
     {
       if (map[ESC].type == ISKMAP)
-	{
-	  if (RL_ISSTATE (RL_STATE_MACRODEF))
-	    _rl_add_macro_char (ESC);
-	  RESIZE_KEYSEQ_BUFFER ();
-	  rl_executing_keyseq[rl_key_sequence_length++] = ESC;
-	  map = FUNCTION_TO_KEYMAP (map, ESC);
-	  key = UNMETA (key);
-	  return (_rl_dispatch (key, map));
-	}
+        {
+          if (RL_ISSTATE (RL_STATE_MACRODEF))
+            _rl_add_macro_char (ESC);
+          RESIZE_KEYSEQ_BUFFER ();
+          rl_executing_keyseq[rl_key_sequence_length++] = ESC;
+          map = FUNCTION_TO_KEYMAP (map, ESC);
+          key = UNMETA (key);
+          return (_rl_dispatch (key, map));
+        }
       else
-	rl_ding ();
+        rl_ding ();
       return 0;
     }
 
@@ -908,196 +908,196 @@ _rl_dispatch_subseq (register int key, Keymap map, int got_subseq)
     case ISFUNC:
       func = map[key].function;
       if (func)
-	{
-	  /* Special case rl_do_lowercase_version (). */
-	  if (func == rl_do_lowercase_version)
-	    {
-	      /* Should we do anything special if key == ANYOTHERKEY? */
-	      newkey = _rl_to_lower ((unsigned char)key);
-	      if (newkey != key)
-		return (_rl_dispatch (newkey, map));
-	      else
-		{
-		  rl_ding ();		/* gentle failure */
-		  return 0;
-		}
-	    }
+        {
+          /* Special case rl_do_lowercase_version (). */
+          if (func == rl_do_lowercase_version)
+            {
+              /* Should we do anything special if key == ANYOTHERKEY? */
+              newkey = _rl_to_lower ((unsigned char)key);
+              if (newkey != key)
+                return (_rl_dispatch (newkey, map));
+              else
+                {
+                  rl_ding ();           /* gentle failure */
+                  return 0;
+                }
+            }
 
-	  rl_executing_keymap = map;
-	  rl_executing_key = key;
+          rl_executing_keymap = map;
+          rl_executing_key = key;
 
-	  _rl_executing_func = func;
+          _rl_executing_func = func;
 
-	  RESIZE_KEYSEQ_BUFFER();
-	  rl_executing_keyseq[rl_key_sequence_length++] = key;
-	  rl_executing_keyseq[rl_key_sequence_length] = '\0';
+          RESIZE_KEYSEQ_BUFFER();
+          rl_executing_keyseq[rl_key_sequence_length++] = key;
+          rl_executing_keyseq[rl_key_sequence_length] = '\0';
 
-	  rl_dispatching = 1;
-	  RL_SETSTATE(RL_STATE_DISPATCHING);
-	  r = (*func) (rl_numeric_arg * rl_arg_sign, key);
-	  RL_UNSETSTATE(RL_STATE_DISPATCHING);
-	  rl_dispatching = 0;
+          rl_dispatching = 1;
+          RL_SETSTATE(RL_STATE_DISPATCHING);
+          r = (*func) (rl_numeric_arg * rl_arg_sign, key);
+          RL_UNSETSTATE(RL_STATE_DISPATCHING);
+          rl_dispatching = 0;
 
-	  /* If we have input pending, then the last command was a prefix
-	     command.  Don't change the state of rl_last_func.  Otherwise,
-	     remember the last command executed in this variable. */
+          /* If we have input pending, then the last command was a prefix
+             command.  Don't change the state of rl_last_func.  Otherwise,
+             remember the last command executed in this variable. */
 #if defined (VI_MODE)
-	  if (rl_pending_input == 0 && map[key].function != rl_digit_argument && map[key].function != rl_vi_arg_digit)
+          if (rl_pending_input == 0 && map[key].function != rl_digit_argument && map[key].function != rl_vi_arg_digit)
 #else
-	  if (rl_pending_input == 0 && map[key].function != rl_digit_argument)
+          if (rl_pending_input == 0 && map[key].function != rl_digit_argument)
 #endif
-	    rl_last_func = map[key].function;
+            rl_last_func = map[key].function;
 
-	  RL_CHECK_SIGNALS ();
-	}
+          RL_CHECK_SIGNALS ();
+        }
       else if (map[ANYOTHERKEY].function)
-	{
-	  /* OK, there's no function bound in this map, but there is a
-	     shadow function that was overridden when the current keymap
-	     was created.  Return -2 to note  that. */
-	  if (RL_ISSTATE (RL_STATE_MACROINPUT))
-	    _rl_prev_macro_key ();
-	  else
-	    _rl_unget_char  (key);
-	  if (rl_key_sequence_length > 0)
-	    rl_executing_keyseq[--rl_key_sequence_length] = '\0';
-	  return -2;
-	}
+        {
+          /* OK, there's no function bound in this map, but there is a
+             shadow function that was overridden when the current keymap
+             was created.  Return -2 to note  that. */
+          if (RL_ISSTATE (RL_STATE_MACROINPUT))
+            _rl_prev_macro_key ();
+          else
+            _rl_unget_char  (key);
+          if (rl_key_sequence_length > 0)
+            rl_executing_keyseq[--rl_key_sequence_length] = '\0';
+          return -2;
+        }
       else if (got_subseq)
-	{
-	  /* Return -1 to note that we're in a subsequence, but  we don't
-	     have a matching key, nor was one overridden.  This means
-	     we need to back up the recursion chain and find the last
-	     subsequence that is bound to a function. */
-	  if (RL_ISSTATE (RL_STATE_MACROINPUT))
-	    _rl_prev_macro_key ();
-	  else
-	    _rl_unget_char (key);
-	  if (rl_key_sequence_length > 0)
-	    rl_executing_keyseq[--rl_key_sequence_length] = '\0';
-	  return -1;
-	}
+        {
+          /* Return -1 to note that we're in a subsequence, but  we don't
+             have a matching key, nor was one overridden.  This means
+             we need to back up the recursion chain and find the last
+             subsequence that is bound to a function. */
+          if (RL_ISSTATE (RL_STATE_MACROINPUT))
+            _rl_prev_macro_key ();
+          else
+            _rl_unget_char (key);
+          if (rl_key_sequence_length > 0)
+            rl_executing_keyseq[--rl_key_sequence_length] = '\0';
+          return -1;
+        }
       else
-	{
+        {
 #if defined (READLINE_CALLBACKS)
-	  RL_UNSETSTATE (RL_STATE_MULTIKEY);
-	  _rl_keyseq_chain_dispose ();
+          RL_UNSETSTATE (RL_STATE_MULTIKEY);
+          _rl_keyseq_chain_dispose ();
 #endif
-	  _rl_abort_internal ();
-	  return -1;
-	}
+          _rl_abort_internal ();
+          return -1;
+        }
       break;
 
     case ISKMAP:
       if (map[key].function != 0)
-	{
+        {
 #if defined (VI_MODE)
-	  /* The only way this test will be true is if a subsequence has been
-	     bound starting with ESC, generally the arrow keys.  What we do is
-	     check whether there's input in the queue, which there generally
-	     will be if an arrow key has been pressed, and, if there's not,
-	     just dispatch to (what we assume is) rl_vi_movement_mode right
-	     away.  This is essentially an input test with a zero timeout (by
-	     default) or a timeout determined by the value of `keyseq-timeout' */
-	  /* _rl_keyseq_timeout specified in milliseconds; _rl_input_queued
-	     takes microseconds, so multiply by 1000 */
-	  if (rl_editing_mode == vi_mode && key == ESC && map == vi_insertion_keymap &&
-	      (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
+          /* The only way this test will be true is if a subsequence has been
+             bound starting with ESC, generally the arrow keys.  What we do is
+             check whether there's input in the queue, which there generally
+             will be if an arrow key has been pressed, and, if there's not,
+             just dispatch to (what we assume is) rl_vi_movement_mode right
+             away.  This is essentially an input test with a zero timeout (by
+             default) or a timeout determined by the value of `keyseq-timeout' */
+          /* _rl_keyseq_timeout specified in milliseconds; _rl_input_queued
+             takes microseconds, so multiply by 1000 */
+          if (rl_editing_mode == vi_mode && key == ESC && map == vi_insertion_keymap &&
+              (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
               _rl_pushed_input_available () == 0 &&
-	      _rl_input_queued ((_rl_keyseq_timeout > 0) ? _rl_keyseq_timeout*1000 : 0) == 0)
-	    return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));
-	  /* This is a very specific test.  It can possibly be generalized in
-	     the future, but for now it handles a specific case of ESC being
-	     the last character in a keyboard macro. */
-	  if (rl_editing_mode == vi_mode && key == ESC && map == vi_insertion_keymap &&
-	      (RL_ISSTATE (RL_STATE_INPUTPENDING) == 0) &&
-	      (RL_ISSTATE (RL_STATE_MACROINPUT) && _rl_peek_macro_key () == 0) &&
-	      _rl_pushed_input_available () == 0 &&
-	      _rl_input_queued ((_rl_keyseq_timeout > 0) ? _rl_keyseq_timeout*1000 : 0) == 0)
-	    return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));	      
+              _rl_input_queued ((_rl_keyseq_timeout > 0) ? _rl_keyseq_timeout*1000 : 0) == 0)
+            return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));
+          /* This is a very specific test.  It can possibly be generalized in
+             the future, but for now it handles a specific case of ESC being
+             the last character in a keyboard macro. */
+          if (rl_editing_mode == vi_mode && key == ESC && map == vi_insertion_keymap &&
+              (RL_ISSTATE (RL_STATE_INPUTPENDING) == 0) &&
+              (RL_ISSTATE (RL_STATE_MACROINPUT) && _rl_peek_macro_key () == 0) &&
+              _rl_pushed_input_available () == 0 &&
+              _rl_input_queued ((_rl_keyseq_timeout > 0) ? _rl_keyseq_timeout*1000 : 0) == 0)
+            return (_rl_dispatch (ANYOTHERKEY, FUNCTION_TO_KEYMAP (map, key)));
 #endif
 
-	  RESIZE_KEYSEQ_BUFFER ();
-	  rl_executing_keyseq[rl_key_sequence_length++] = key;
-	  _rl_dispatching_keymap = FUNCTION_TO_KEYMAP (map, key);
+          RESIZE_KEYSEQ_BUFFER ();
+          rl_executing_keyseq[rl_key_sequence_length++] = key;
+          _rl_dispatching_keymap = FUNCTION_TO_KEYMAP (map, key);
 
-	  /* Allocate new context here.  Use linked contexts (linked through
-	     cxt->ocxt) to simulate recursion */
+          /* Allocate new context here.  Use linked contexts (linked through
+             cxt->ocxt) to simulate recursion */
 #if defined (READLINE_CALLBACKS)
 #  if defined (VI_MODE)
-	  /* If we're redoing a vi mode command and we know there is a shadowed
-	     function corresponding to this key, just call it -- all the redoable
-	     vi mode commands already have all the input they need, and rl_vi_redo
-	     assumes that one call to rl_dispatch is sufficient to complete the
-	     command. */
-	  if (_rl_vi_redoing && RL_ISSTATE (RL_STATE_CALLBACK) &&
-	      map[ANYOTHERKEY].function != 0)
-	    return (_rl_subseq_result (-2, map, key, got_subseq));
+          /* If we're redoing a vi mode command and we know there is a shadowed
+             function corresponding to this key, just call it -- all the redoable
+             vi mode commands already have all the input they need, and rl_vi_redo
+             assumes that one call to rl_dispatch is sufficient to complete the
+             command. */
+          if (_rl_vi_redoing && RL_ISSTATE (RL_STATE_CALLBACK) &&
+              map[ANYOTHERKEY].function != 0)
+            return (_rl_subseq_result (-2, map, key, got_subseq));
 #  endif
-	  if (RL_ISSTATE (RL_STATE_CALLBACK))
-	    {
-	      /* Return 0 only the first time, to indicate success to
-		 _rl_callback_read_char.  The rest of the time, we're called
-		 from _rl_dispatch_callback, so we return -3 to indicate
-		 special handling is necessary. */
-	      r = RL_ISSTATE (RL_STATE_MULTIKEY) ? -3 : 0;
-	      cxt = _rl_keyseq_cxt_alloc ();
+          if (RL_ISSTATE (RL_STATE_CALLBACK))
+            {
+              /* Return 0 only the first time, to indicate success to
+                 _rl_callback_read_char.  The rest of the time, we're called
+                 from _rl_dispatch_callback, so we return -3 to indicate
+                 special handling is necessary. */
+              r = RL_ISSTATE (RL_STATE_MULTIKEY) ? -3 : 0;
+              cxt = _rl_keyseq_cxt_alloc ();
 
-	      if (got_subseq)
-		cxt->flags |= KSEQ_SUBSEQ;
-	      cxt->okey = key;
-	      cxt->oldmap = map;
-	      cxt->dmap = _rl_dispatching_keymap;
-	      cxt->subseq_arg = got_subseq || cxt->dmap[ANYOTHERKEY].function;
+              if (got_subseq)
+                cxt->flags |= KSEQ_SUBSEQ;
+              cxt->okey = key;
+              cxt->oldmap = map;
+              cxt->dmap = _rl_dispatching_keymap;
+              cxt->subseq_arg = got_subseq || cxt->dmap[ANYOTHERKEY].function;
 
-	      RL_SETSTATE (RL_STATE_MULTIKEY);
-	      _rl_kscxt = cxt;
+              RL_SETSTATE (RL_STATE_MULTIKEY);
+              _rl_kscxt = cxt;
 
-	      return r;		/* don't indicate immediate success */
-	    }
+              return r;         /* don't indicate immediate success */
+            }
 #endif
 
-	  /* Tentative inter-character timeout for potential multi-key
-	     sequences?  If no input within timeout, abort sequence and
-	     act as if we got non-matching input. */
-	  /* _rl_keyseq_timeout specified in milliseconds; _rl_input_queued
-	     takes microseconds, so multiply by 1000 */
-	  if (_rl_keyseq_timeout > 0 &&
-	  	(RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
-	  	_rl_pushed_input_available () == 0 &&
-		_rl_dispatching_keymap[ANYOTHERKEY].function &&
-		_rl_input_queued (_rl_keyseq_timeout*1000) == 0)
-	    {
-	      if (rl_key_sequence_length > 0)
-		rl_executing_keyseq[--rl_key_sequence_length] = '\0';
-	      return (_rl_subseq_result (-2, map, key, got_subseq));
-	    }
+          /* Tentative inter-character timeout for potential multi-key
+             sequences?  If no input within timeout, abort sequence and
+             act as if we got non-matching input. */
+          /* _rl_keyseq_timeout specified in milliseconds; _rl_input_queued
+             takes microseconds, so multiply by 1000 */
+          if (_rl_keyseq_timeout > 0 &&
+                (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
+                _rl_pushed_input_available () == 0 &&
+                _rl_dispatching_keymap[ANYOTHERKEY].function &&
+                _rl_input_queued (_rl_keyseq_timeout*1000) == 0)
+            {
+              if (rl_key_sequence_length > 0)
+                rl_executing_keyseq[--rl_key_sequence_length] = '\0';
+              return (_rl_subseq_result (-2, map, key, got_subseq));
+            }
 
-	  newkey = _rl_subseq_getchar (key);
-	  if (newkey < 0)
-	    {
-	      _rl_abort_internal ();
-	      return -1;
-	    }
+          newkey = _rl_subseq_getchar (key);
+          if (newkey < 0)
+            {
+              _rl_abort_internal ();
+              return -1;
+            }
 
-	  r = _rl_dispatch_subseq (newkey, _rl_dispatching_keymap, got_subseq || map[ANYOTHERKEY].function);
-	  return _rl_subseq_result (r, map, key, got_subseq);
-	}
+          r = _rl_dispatch_subseq (newkey, _rl_dispatching_keymap, got_subseq || map[ANYOTHERKEY].function);
+          return _rl_subseq_result (r, map, key, got_subseq);
+        }
       else
-	{
-	  _rl_abort_internal ();	/* XXX */
-	  return -1;
-	}
+        {
+          _rl_abort_internal ();        /* XXX */
+          return -1;
+        }
       break;
 
     case ISMACR:
       if (map[key].function != 0)
-	{
-	  rl_executing_keyseq[rl_key_sequence_length] = '\0';
-	  macro = savestring ((char *)map[key].function);
-	  _rl_with_macro_input (macro);
-	  return 0;
-	}
+        {
+          rl_executing_keyseq[rl_key_sequence_length] = '\0';
+          macro = savestring ((char *)map[key].function);
+          _rl_with_macro_input (macro);
+          return 0;
+        }
       break;
     }
 
@@ -1130,56 +1130,56 @@ _rl_subseq_result (int r, Keymap map, int key, int got_subseq)
       type = m[ANYOTHERKEY].type;
       func = m[ANYOTHERKEY].function;
       if (type == ISFUNC && func == rl_do_lowercase_version)
-	{
-	  int newkey = _rl_to_lower ((unsigned char)key);
-	  /* check that there is actually a lowercase version to avoid infinite recursion */
-	  r = (newkey != key) ? _rl_dispatch (newkey, map) : 1;
-	}
+        {
+          int newkey = _rl_to_lower ((unsigned char)key);
+          /* check that there is actually a lowercase version to avoid infinite recursion */
+          r = (newkey != key) ? _rl_dispatch (newkey, map) : 1;
+        }
       else if (type == ISFUNC)
-	{
-	  /* If we shadowed a function, whatever it is, we somehow need a
-	     keymap with map[key].func == shadowed-function.
-	     Let's use this one.  Then we can dispatch using the original
-	     key, since there are commands (e.g., in vi mode) for which it
-	     matters. */
-	  nt = m[key].type;
-	  nf = m[key].function;
+        {
+          /* If we shadowed a function, whatever it is, we somehow need a
+             keymap with map[key].func == shadowed-function.
+             Let's use this one.  Then we can dispatch using the original
+             key, since there are commands (e.g., in vi mode) for which it
+             matters. */
+          nt = m[key].type;
+          nf = m[key].function;
 
-	  m[key].type = type;
-	  m[key].function = func;
-	  /* Don't change _rl_dispatching_keymap, set it here */
-	  _rl_dispatching_keymap = map;		/* previous map */
-	  r = _rl_dispatch_subseq (key, m, 0);
-	  m[key].type = nt;
-	  m[key].function = nf;
-	}
+          m[key].type = type;
+          m[key].function = func;
+          /* Don't change _rl_dispatching_keymap, set it here */
+          _rl_dispatching_keymap = map;         /* previous map */
+          r = _rl_dispatch_subseq (key, m, 0);
+          m[key].type = nt;
+          m[key].function = nf;
+        }
       else
-	/* We probably shadowed a keymap, so keep going. */
-	r = _rl_dispatch (ANYOTHERKEY, m);
+        /* We probably shadowed a keymap, so keep going. */
+        r = _rl_dispatch (ANYOTHERKEY, m);
     }
   else if (r < 0 && map[ANYOTHERKEY].function)
     {
       /* We didn't match (r is probably -1), so return something to
-	 tell the caller that it should try ANYOTHERKEY for an
-	 overridden function. */
+         tell the caller that it should try ANYOTHERKEY for an
+         overridden function. */
       if (RL_ISSTATE (RL_STATE_MACROINPUT))
-	_rl_prev_macro_key ();
+        _rl_prev_macro_key ();
       else
-	_rl_unget_char (key);
+        _rl_unget_char (key);
       if (rl_key_sequence_length > 0)
-	rl_executing_keyseq[--rl_key_sequence_length] = '\0';
+        rl_executing_keyseq[--rl_key_sequence_length] = '\0';
       _rl_dispatching_keymap = map;
       return -2;
     }
-  else if (r < 0 && got_subseq)		/* XXX */
+  else if (r < 0 && got_subseq)         /* XXX */
     {
       /* OK, back up the chain. */
       if (RL_ISSTATE (RL_STATE_MACROINPUT))
-	_rl_prev_macro_key ();
+        _rl_prev_macro_key ();
       else
-	_rl_unget_char (key);
+        _rl_unget_char (key);
       if (rl_key_sequence_length > 0)
-	rl_executing_keyseq[--rl_key_sequence_length] = '\0';
+        rl_executing_keyseq[--rl_key_sequence_length] = '\0';
       _rl_dispatching_keymap = map;
       return -1;
     }
@@ -1188,9 +1188,9 @@ _rl_subseq_result (int r, Keymap map, int key, int got_subseq)
 }
 
 /* **************************************************************** */
-/*								    */
-/*			Initializations 			    */
-/*								    */
+/*                                                                  */
+/*                      Initializations                             */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Initialize readline (and terminal if not already). */
@@ -1211,7 +1211,7 @@ rl_initialize (void)
       RL_SETSTATE(RL_STATE_INITIALIZED);
     }
   else
-    _rl_reset_locale ();	/* check current locale and set locale variables */
+    _rl_reset_locale ();        /* check current locale and set locale variables */
 
   /* Initialize the current line information. */
   _rl_init_line_state ();
@@ -1315,7 +1315,7 @@ readline_initialize_everything (void)
 
   /* Decide whether we should automatically go into eight-bit mode. */
   _rl_init_eightbit ();
-      
+
   /* Read in the init file. */
   rl_read_init_file ((char *)NULL);
 
@@ -1472,11 +1472,11 @@ bind_bracketed_paste_prefix (void)
 
   _rl_keymap = xkeymap;
 }
-  
+
 /* **************************************************************** */
-/*								    */
-/*		Saving and Restoring Readline's state		    */
-/*								    */
+/*                                                                  */
+/*              Saving and Restoring Readline's state               */
+/*                                                                  */
 /* **************************************************************** */
 
 int

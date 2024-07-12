@@ -32,11 +32,11 @@ recho $r
 
 # Now let's try it with variables expanding to those values
 for c in $'\001' $'\a' $'\177' ; do
-	for r in "$c" "\\$c" "\\[$c]"; do
-		[[ $c =~ $r ]];
-		printf '[[ %q =~ %q ]] -> %d\n' "$c" "$r" "$?";
-	done;
-	printf %s\\n ---
+        for r in "$c" "\\$c" "\\[$c]"; do
+                [[ $c =~ $r ]];
+                printf '[[ %q =~ %q ]] -> %d\n' "$c" "$r" "$?";
+        done;
+        printf %s\\n ---
 done
 
 # try again with literals

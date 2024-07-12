@@ -58,7 +58,7 @@ falarm (unsigned int secs, unsigned int usecs)
   it.it_value.tv_usec = usecs;
 
   if (setitimer(ITIMER_REAL, &it, &oit) < 0)
-    return (-1);		/* XXX will be converted to unsigned */
+    return (-1);                /* XXX will be converted to unsigned */
 
   /* Backwards compatibility with alarm(3) */
   if (oit.it_value.tv_usec)
@@ -99,11 +99,11 @@ nsleep (unsigned int sec, unsigned int usec)
       QUIT;
       r = nanosleep (&req, &rem);
       if (r == 0 || errno != EINTR)
-	return r;
+        return r;
       req = rem;
     }
   return r;
-}	
+}
 #endif
 
 #if defined (HAVE_TIMEVAL) && (defined (HAVE_SELECT) || defined (HAVE_PSELECT))
@@ -144,7 +144,7 @@ ssleep (unsigned int sec, unsigned int usec)
 #  endif
       e = errno;
       if (r < 0 && errno == EINTR)
-	return -1;		/* caller will handle XXX - QUIT;? */
+        return -1;              /* caller will handle XXX - QUIT;? */
       errno = e;
     }
   while (r < 0 && errno == EINTR);
@@ -157,7 +157,7 @@ ssleep (unsigned int sec, unsigned int usec)
 static int
 ancientsleep(unsigned int sec, unsigned int usec)
 {
-  if (usec >= 500000)	/* round */
+  if (usec >= 500000)   /* round */
    sec++;
   return (sleep(sec));
 }

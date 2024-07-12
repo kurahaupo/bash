@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-                                 
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -52,7 +52,7 @@ dprintf(int fd, const char *format, ...)
   fflush (fp);
   va_end (args);
 
-  r2 = fclose (fp);	/* check here */
+  r2 = fclose (fp);     /* check here */
 
   return rc;
-}           
+}

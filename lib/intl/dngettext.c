@@ -46,7 +46,7 @@
    LC_MESSAGES locale and skip message according to the plural form.  */
 char *
 DNGETTEXT (const char *domainname,
-	   const char *msgid1, const char *msgid2, unsigned long int n)
+           const char *msgid1, const char *msgid2, unsigned long int n)
 {
   return DCNGETTEXT (domainname, msgid1, msgid2, n, LC_MESSAGES);
 }

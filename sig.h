@@ -25,7 +25,7 @@
 
 #include "stdc.h"
 
-#include <signal.h>		/* for sig_atomic_t */
+#include <signal.h>             /* for sig_atomic_t */
 
 #if !defined (SIGABRT) && defined (SIGIOT)
 #  define SIGABRT SIGIOT
@@ -34,7 +34,7 @@
 #define sighandler void
 typedef void SigHandler (int);
 
-#define SIGRETURN(n)	return
+#define SIGRETURN(n)    return
 
 /* Here is a definition for set_signal_handler () which simply expands to
    a call to signal () for non-Posix systems.  The code for set_signal_handler
@@ -42,7 +42,7 @@ typedef void SigHandler (int);
 #if !defined (HAVE_POSIX_SIGNALS)
 #  define set_signal_handler(sig, handler) (SigHandler *)signal (sig, handler)
 #else
-extern SigHandler *set_signal_handler (int, SigHandler *);	/* in sig.c */
+extern SigHandler *set_signal_handler (int, SigHandler *);      /* in sig.c */
 #endif /* _POSIX_VERSION */
 
 #if !defined (SIGCHLD) && defined (SIGCLD)
@@ -105,10 +105,10 @@ do { \
 extern volatile sig_atomic_t sigwinch_received;
 extern volatile sig_atomic_t sigterm_received;
 
-extern int interrupt_immediately;	/* no longer used */
+extern int interrupt_immediately;       /* no longer used */
 extern int terminate_immediately;
 
-extern volatile int builtin_catch_sigpipe;	/* not used yet */
+extern volatile int builtin_catch_sigpipe;      /* not used yet */
 
 /* Functions from sig.c. */
 extern sighandler termsig_sighandler (int);

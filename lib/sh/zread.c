@@ -67,7 +67,7 @@ zread (int fd, char *buf, size_t len)
 {
   ssize_t r;
 
-  check_signals ();	/* check for signals before a blocking read */
+  check_signals ();     /* check for signals before a blocking read */
 
   /* If we pushed a char back, return it immediately */
   if (zpushedchar != -1)
@@ -80,20 +80,20 @@ zread (int fd, char *buf, size_t len)
   /* should generalize into a mechanism where different parts of the shell can
      `register' timeouts and have them checked here. */
   while (((r = read_builtin_timeout (fd)) < 0 || (r = read (fd, buf, len)) < 0) &&
-	     errno == EINTR)
+             errno == EINTR)
     {
       int t;
       t = errno;
       /* XXX - bash-5.0 */
       /* We check executing_builtin and run traps here for backwards compatibility */
       if (executing_builtin)
-	{
-	  if (interrupt_state)
-	    zreset ();
-	  check_signals_and_traps ();	/* XXX - should it be check_signals()? */
-	}
+        {
+          if (interrupt_state)
+            zreset ();
+          check_signals_and_traps ();   /* XXX - should it be check_signals()? */
+        }
       else
-	check_signals ();
+        check_signals ();
       errno = t;
     }
 
@@ -126,13 +126,13 @@ zreadretry (int fd, char *buf, size_t len)
     {
       r = read (fd, buf, len);
       if (r >= 0)
-	return r;
+        return r;
       if (r == -1 && errno == EINTR)
-	{
-	  if (++nintr >= NUM_INTR)
-	    return -1;
-	  continue;
-	}
+        {
+          if (++nintr >= NUM_INTR)
+            return -1;
+          continue;
+        }
       return r;
     }
 }
@@ -179,10 +179,10 @@ zreadc (int fd, char *cp)
       nr = zread (fd, lbuf, sizeof (lbuf));
       lind = 0;
       if (nr <= 0)
-	{
-	  lused = 0;
-	  return nr;
-	}
+        {
+          lused = 0;
+          return nr;
+        }
       lused = nr;
     }
   if (cp)
@@ -210,10 +210,10 @@ zreadcintr (int fd, char *cp)
       nr = zreadintr (fd, lbuf, sizeof (lbuf));
       lind = 0;
       if (nr <= 0)
-	{
-	  lused = 0;
-	  return nr;
-	}
+        {
+          lused = 0;
+          return nr;
+        }
       lused = nr;
     }
   if (cp)
@@ -238,14 +238,14 @@ zreadn (int fd, char *cp, size_t len)
   if (lind == lused || lused == 0)
     {
       if (len > sizeof (lbuf))
-	len = sizeof (lbuf);
+        len = sizeof (lbuf);
       nr = zread (fd, lbuf, len);
       lind = 0;
       if (nr <= 0)
-	{
-	  lused = 0;
-	  return nr;
-	}
+        {
+          lused = 0;
+          return nr;
+        }
       lused = nr;
     }
   if (cp)
@@ -264,7 +264,7 @@ zungetc (int c)
 
   if (c == EOF || lind == 0)
     return (EOF);
-  lbuf[--lind] = c;		/* XXX */
+  lbuf[--lind] = c;             /* XXX */
   return c;
 }
 

@@ -41,9 +41,9 @@
 #endif
 #ifndef PRIdMAX
 #  if HAVE_LONG_LONG
-#    define PRIdMAX	"lld"
+#    define PRIdMAX     "lld"
 #  else
-#    define PRIdMAX	"ld"
+#    define PRIdMAX     "ld"
 #  endif
 #endif
 

@@ -1,5 +1,5 @@
 /* pcomplete.h - structure definitions and other stuff for programmable
-		 completion. */
+                 completion. */
 
 /* Copyright (C) 1999-2023 Free Software Foundation, Inc.
 
@@ -41,74 +41,74 @@ typedef struct compspec {
 
 /* Values for COMPSPEC actions.  These are things the shell knows how to
    build internally. */
-#define CA_ALIAS	(1<<0)
-#define CA_ARRAYVAR	(1<<1)
-#define CA_BINDING	(1<<2)
-#define CA_BUILTIN	(1<<3)
-#define CA_COMMAND	(1<<4)
-#define CA_DIRECTORY	(1<<5)
-#define CA_DISABLED	(1<<6)
-#define CA_ENABLED	(1<<7)
-#define CA_EXPORT	(1<<8)
-#define CA_FILE		(1<<9)
-#define CA_FUNCTION	(1<<10)
-#define CA_GROUP	(1<<11)
-#define CA_HELPTOPIC	(1<<12)
-#define CA_HOSTNAME	(1<<13)
-#define CA_JOB		(1<<14)
-#define CA_KEYWORD	(1<<15)
-#define CA_RUNNING	(1<<16)
-#define CA_SERVICE	(1<<17)
-#define CA_SETOPT	(1<<18)
-#define CA_SHOPT	(1<<19)
-#define CA_SIGNAL	(1<<20)
-#define CA_STOPPED	(1<<21)
-#define CA_USER		(1<<22)
-#define CA_VARIABLE	(1<<23)
+#define CA_ALIAS        (1<<0)
+#define CA_ARRAYVAR     (1<<1)
+#define CA_BINDING      (1<<2)
+#define CA_BUILTIN      (1<<3)
+#define CA_COMMAND      (1<<4)
+#define CA_DIRECTORY    (1<<5)
+#define CA_DISABLED     (1<<6)
+#define CA_ENABLED      (1<<7)
+#define CA_EXPORT       (1<<8)
+#define CA_FILE         (1<<9)
+#define CA_FUNCTION     (1<<10)
+#define CA_GROUP        (1<<11)
+#define CA_HELPTOPIC    (1<<12)
+#define CA_HOSTNAME     (1<<13)
+#define CA_JOB          (1<<14)
+#define CA_KEYWORD      (1<<15)
+#define CA_RUNNING      (1<<16)
+#define CA_SERVICE      (1<<17)
+#define CA_SETOPT       (1<<18)
+#define CA_SHOPT        (1<<19)
+#define CA_SIGNAL       (1<<20)
+#define CA_STOPPED      (1<<21)
+#define CA_USER         (1<<22)
+#define CA_VARIABLE     (1<<23)
 
 /* Values for COMPSPEC options field. */
-#define COPT_RESERVED	(1<<0)		/* reserved for other use */
-#define COPT_DEFAULT	(1<<1)
-#define COPT_FILENAMES	(1<<2)
-#define COPT_DIRNAMES	(1<<3)
-#define COPT_NOQUOTE	(1<<4)
-#define COPT_NOSPACE	(1<<5)
+#define COPT_RESERVED   (1<<0)          /* reserved for other use */
+#define COPT_DEFAULT    (1<<1)
+#define COPT_FILENAMES  (1<<2)
+#define COPT_DIRNAMES   (1<<3)
+#define COPT_NOQUOTE    (1<<4)
+#define COPT_NOSPACE    (1<<5)
 #define COPT_BASHDEFAULT (1<<6)
-#define COPT_PLUSDIRS	(1<<7)
-#define COPT_NOSORT	(1<<8)
-#define COPT_FULLQUOTE	(1<<9)
+#define COPT_PLUSDIRS   (1<<7)
+#define COPT_NOSORT     (1<<8)
+#define COPT_FULLQUOTE  (1<<9)
 
-#define COPT_LASTUSER	COPT_FULLQUOTE
+#define COPT_LASTUSER   COPT_FULLQUOTE
 
 #define PCOMP_RETRYFAIL (COPT_LASTUSER << 1)
-#define PCOMP_NOTFOUND	(COPT_LASTUSER << 2)
+#define PCOMP_NOTFOUND  (COPT_LASTUSER << 2)
 
 
 /* List of items is used by the code that implements the programmable
    completions. */
 typedef struct _list_of_items {
   int flags;
-  int (*list_getter) (struct _list_of_items *);	/* function to call to get the list */
+  int (*list_getter) (struct _list_of_items *); /* function to call to get the list */
 
   STRINGLIST *slist;
 
   /* These may or may not be used. */
-  STRINGLIST *genlist;	/* for handing to the completion code one item at a time */
-  int genindex;		/* index of item last handed to completion code */
+  STRINGLIST *genlist;  /* for handing to the completion code one item at a time */
+  int genindex;         /* index of item last handed to completion code */
 
 } ITEMLIST;
 
 /* Values for ITEMLIST -> flags */
-#define LIST_DYNAMIC		0x001
-#define LIST_DIRTY		0x002
-#define LIST_INITIALIZED	0x004
-#define LIST_MUSTSORT		0x008
-#define LIST_DONTFREE		0x010
-#define LIST_DONTFREEMEMBERS	0x020
+#define LIST_DYNAMIC            0x001
+#define LIST_DIRTY              0x002
+#define LIST_INITIALIZED        0x004
+#define LIST_MUSTSORT           0x008
+#define LIST_DONTFREE           0x010
+#define LIST_DONTFREEMEMBERS    0x020
 
-#define EMPTYCMD	"_EmptycmD_"
-#define DEFAULTCMD	"_DefaultCmD_"
-#define INITIALWORD	"_InitialWorD_"
+#define EMPTYCMD        "_EmptycmD_"
+#define DEFAULTCMD      "_DefaultCmD_"
+#define INITIALWORD     "_InitialWorD_"
 
 extern HASH_TABLE *prog_completes;
 

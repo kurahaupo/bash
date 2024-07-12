@@ -59,16 +59,16 @@ static char *print_doc[] = {
 };
 
 struct builtin print_struct = {
-	"print",
-	print_builtin,
-	BUILTIN_ENABLED,
-	print_doc,
-	"print [-Rnprs] [-u unit] [-f format] [arguments]",
-	(char *)0
+        "print",
+        print_builtin,
+        BUILTIN_ENABLED,
+        print_doc,
+        "print [-Rnprs] [-u unit] [-f format] [arguments]",
+        (char *)0
 };
 
 #ifndef ISOPTION
-#define ISOPTION(s, c)	(s[0] == '-' && s[2] == '\0' && s[1] == c)
+#define ISOPTION(s, c)  (s[0] == '-' && s[2] == '\0' && s[1] == c)
 #endif
 
 int
@@ -87,45 +87,45 @@ print_builtin (WORD_LIST *list)
   while ((c = internal_getopt (list, "Rnprsu:f:")) != -1)
     {
       switch (c)
-	{
-	case 'R':
-	  raw = 2;
-	  loptend = lcurrent;
-	  if (loptend && ISOPTION (loptend->word->word, 'n'))
-	    {
-	      loptend = loptend->next;
-	      nflag = 1;
-	    }
-	  goto opt_end;
-	case 'r':
-	  raw = 1;
-	  break;
-	case 'n':
-	  nflag = 1;
-	  break;
-	case 's':
-	  sflag = 1;
-	  break;
-	case 'p':
-	  break;	/* NOP */
-	case 'u':
-	  if (all_digits (list_optarg) && valid_number (list_optarg, &lfd) && lfd == (int)lfd)
-	    ofd = lfd;
-	  else
-	    {
-	      for (l = list; l->next && l->next != lcurrent; l = l->next);
-	      lcurrent = loptend = l;
-	      goto opt_end;
-	    }
-	  break;
-	case 'f':
-	  pfmt = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'R':
+          raw = 2;
+          loptend = lcurrent;
+          if (loptend && ISOPTION (loptend->word->word, 'n'))
+            {
+              loptend = loptend->next;
+              nflag = 1;
+            }
+          goto opt_end;
+        case 'r':
+          raw = 1;
+          break;
+        case 'n':
+          nflag = 1;
+          break;
+        case 's':
+          sflag = 1;
+          break;
+        case 'p':
+          break;        /* NOP */
+        case 'u':
+          if (all_digits (list_optarg) && valid_number (list_optarg, &lfd) && lfd == (int)lfd)
+            ofd = lfd;
+          else
+            {
+              for (l = list; l->next && l->next != lcurrent; l = l->next);
+              lcurrent = loptend = l;
+              goto opt_end;
+            }
+          break;
+        case 'f':
+          pfmt = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
 opt_end:
@@ -149,17 +149,17 @@ opt_end:
   if (raw)
     {
       for (l = list; l; l = l->next)
-	{
-	  fprintf (ofp, "%s", l->word->word);
-	  if (l->next)
-	    fprintf (ofp, " ");
-	}
+        {
+          fprintf (ofp, "%s", l->word->word);
+          if (l->next)
+            fprintf (ofp, " ");
+        }
       if (nflag == 0)
-	fprintf (ofp, "\n");
+        fprintf (ofp, "\n");
       fflush (ofp);
-      return (0);	
+      return (0);
     }
-        
+
   r = printargs (list, ofp);
   if (r && nflag == 0)
     fprintf (ofp, "\n");
@@ -179,7 +179,7 @@ printargs (WORD_LIST *list, FILE *ofp)
     {
       ostr = ansicstr (l->word->word, strlen (l->word->word), 0, &sawc, 0);
       if (ostr)
-	fprintf (ofp, "%s", ostr);
+        fprintf (ofp, "%s", ostr);
       free (ostr);
       if (sawc)
         return (0);

@@ -32,7 +32,7 @@
 #ifdef STRDUP
 #  undef STRDUP
 #endif
-#define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
+#define STRDUP(x)       ((x) ? savestring (x) : (char *)NULL)
 
 /* Allocate a new STRINGLIST, with room for N strings. */
 
@@ -48,7 +48,7 @@ strlist_create (size_t n)
       ret->list = strvec_create (n+1);
       ret->list_size = n;
       for (i = 0; i < n; i++)
-	ret->list[i] = (char *)NULL;
+        ret->list[i] = (char *)NULL;
     }
   else
     {
@@ -71,7 +71,7 @@ strlist_resize (STRINGLIST *sl, size_t n)
     {
       sl->list = strvec_resize (sl->list, n + 1);
       for (i = sl->list_size; i <= n; i++)
-	sl->list[i] = (char *)NULL;
+        sl->list[i] = (char *)NULL;
       sl->list_size = n;
     }
   return sl;
@@ -85,7 +85,7 @@ strlist_flush (STRINGLIST *sl)
   strvec_flush (sl->list);
   sl->list_len = 0;
 }
-  
+
 void
 strlist_dispose (STRINGLIST *sl)
 {
@@ -123,7 +123,7 @@ strlist_copy (STRINGLIST *sl)
   if (sl->list)
     {
       for (i = 0; i < sl->list_size; i++)
-	new->list[i] = STRDUP (sl->list[i]);
+        new->list[i] = STRDUP (sl->list[i]);
     }
   new->list_size = sl->list_size;
   new->list_len = sl->list_len;
@@ -170,7 +170,7 @@ strlist_append (STRINGLIST *m1, STRINGLIST *m2)
     {
       m1 = strlist_resize (m1, len1 + len2 + 1);
       for (i = 0, n = len1; i < len2; i++, n++)
-	m1->list[n] = STRDUP (m2->list[i]);
+        m1->list[n] = STRDUP (m2->list[i]);
       m1->list[n] = (char *)NULL;
       m1->list_len = n;
     }
@@ -199,17 +199,17 @@ strlist_prefix_suffix (STRINGLIST *sl, const char *prefix, const char *suffix)
       tlen = plen + llen + slen + 1;
       t = (char *)xmalloc (tlen + 1);
       if (plen)
-	strcpy (t, prefix);
+        strcpy (t, prefix);
       strcpy (t + plen, sl->list[i]);
       if (slen)
-	strcpy (t + plen + llen, suffix);
+        strcpy (t + plen + llen, suffix);
       free (sl->list[i]);
       sl->list[i] = t;
     }
 
-  return (sl);	 
+  return (sl);
 }
-   
+
 void
 strlist_print (STRINGLIST *sl, const char *prefix)
 {
@@ -231,8 +231,8 @@ strlist_walk (STRINGLIST *sl, sh_strlist_map_func_t *func)
   for (i = 0; i < sl->list_len; i++)
     if ((*func)(sl->list[i]) < 0)
       break;
-} 
-     
+}
+
 void
 strlist_sort (STRINGLIST *sl)
 {

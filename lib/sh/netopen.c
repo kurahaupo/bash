@@ -1,4 +1,4 @@
-/*   
+/*
  * netopen.c -- functions to make tcp/udp connections
  *
  * Chet Ramey
@@ -31,7 +31,7 @@
 #  include <unistd.h>
 #endif
 
-#include <stdio.h> 
+#include <stdio.h>
 #include <sys/types.h>
 
 #if defined (HAVE_SYS_SOCKET_H)
@@ -90,10 +90,10 @@ _getaddr (const char *host, struct in_addr *ap)
   if (host[0] >= '0' && host[0] <= '9')
     {
       /* If the first character is a digit, guess that it's an
-	 Internet address and return immediately if inet_aton succeeds. */
+         Internet address and return immediately if inet_aton succeeds. */
       r = inet_aton (host, ap);
       if (r)
-	return r;
+        return r;
     }
 #if !defined (HAVE_GETHOSTBYNAME)
   return 0;
@@ -106,11 +106,11 @@ _getaddr (const char *host, struct in_addr *ap)
     }
 #endif
   return 0;
-  
+
 }
 
 /* Return 1 if SERV is a valid port number and stuff the converted value into
-   PP in network byte order. */   
+   PP in network byte order. */
 static int
 _getserv (const char *serv, int proto, unsigned short *pp)
 {
@@ -121,10 +121,10 @@ _getserv (const char *serv, int proto, unsigned short *pp)
     {
       s = (unsigned short)(l & 0xFFFF);
       if (s != l)
-	return (0);
+        return (0);
       s = htons (s);
       if (pp)
-	*pp = s;
+        *pp = s;
       return 1;
     }
   else
@@ -134,9 +134,9 @@ _getserv (const char *serv, int proto, unsigned short *pp)
 
       se = getservbyname (serv, (proto == 't') ? "tcp" : "udp");
       if (se == 0)
-	return 0;
+        return 0;
       if (pp)
-	*pp = se->s_port;	/* ports returned in network byte order */
+        *pp = se->s_port;       /* ports returned in network byte order */
       return 1;
     }
 #else /* !HAVE_GETSERVBYNAME */
@@ -148,7 +148,7 @@ _getserv (const char *serv, int proto, unsigned short *pp)
  * Open a TCP or UDP connection to HOST on port SERV.  Uses the
  * traditional BSD mechanisms.  Returns the connected socket or -1 on error.
  */
-static int 
+static int
 _netopen4(const char *host, const char *serv, int typ)
 {
   struct in_addr ina;
@@ -169,7 +169,7 @@ _netopen4(const char *host, const char *serv, int typ)
       errno = EINVAL;
       return -1;
     }
-	
+
   memset ((char *)&sin, 0, sizeof(sin));
   sin.sin_family = AF_INET;
   sin.sin_port = p;
@@ -210,7 +210,7 @@ _netopen6 (const char *host, const char *serv, int typ)
 
   memset ((char *)&hints, 0, sizeof (hints));
   /* XXX -- if problems with IPv6, set to PF_INET for IPv4 only */
-#ifdef DEBUG	/* PF_INET is the one that works for me */
+#ifdef DEBUG    /* PF_INET is the one that works for me */
   hints.ai_family = PF_INET;
 #else
   hints.ai_family = PF_UNSPEC;
@@ -221,9 +221,9 @@ _netopen6 (const char *host, const char *serv, int typ)
   if (gerr)
     {
       if (gerr == EAI_SERVICE)
-	internal_error ("%s: %s", serv, gai_strerror (gerr));
+        internal_error ("%s: %s", serv, gai_strerror (gerr));
       else
-	internal_error ("%s: %s", host, gai_strerror (gerr));
+        internal_error ("%s: %s", host, gai_strerror (gerr));
       errno = EINVAL;
       return -1;
     }
@@ -231,27 +231,27 @@ _netopen6 (const char *host, const char *serv, int typ)
   for (res = res0; res; res = res->ai_next)
     {
       if ((s = socket (res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
-	{
-	  if (res->ai_next)
-	    continue;
-	  sys_error ("socket");
-	  freeaddrinfo (res0);
-	  return -1;
-	}
+        {
+          if (res->ai_next)
+            continue;
+          sys_error ("socket");
+          freeaddrinfo (res0);
+          return -1;
+        }
       if (connect (s, res->ai_addr, res->ai_addrlen) < 0)
-	{
-	  if (res->ai_next)
-	    {
-	      close (s);
-	      continue;
-	    }
-	  e = errno;
-	  sys_error ("connect");
-	  close (s);
-	  freeaddrinfo (res0);
-	  errno = e;
-	  return -1;
-	}
+        {
+          if (res->ai_next)
+            {
+              close (s);
+              continue;
+            }
+          e = errno;
+          sys_error ("connect");
+          close (s);
+          freeaddrinfo (res0);
+          errno = e;
+          return -1;
+        }
       freeaddrinfo (res0);
       break;
     }
@@ -264,7 +264,7 @@ _netopen6 (const char *host, const char *serv, int typ)
  * if available, falling back to the traditional BSD mechanisms otherwise.
  * Returns the connected socket or -1 on error.
  */
-static int 
+static int
 _netopen(const char *host, const char *serv, int typ)
 {
 #ifdef HAVE_GETADDRINFO

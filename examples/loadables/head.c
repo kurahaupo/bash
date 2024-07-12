@@ -63,7 +63,7 @@ munge_list (WORD_LIST *list)
       l->word->word[1] = 'n';
       l->word->word[2] = '\0';
       l->next = nl;
-      l = nl;	/* skip over new argument */
+      l = nl;   /* skip over new argument */
     }
 }
 
@@ -75,17 +75,17 @@ file_head (FILE *fp, int cnt)
   while (cnt--)
     {
       while ((ch = getc (fp)) != EOF)
-	{
-	  QUIT;
-	  if (putchar (ch) == EOF)
-	    {
-	      builtin_error ("write error: %s", strerror (errno));
-	      return EXECUTION_FAILURE;
-	    }
-	  QUIT;
-	  if (ch == '\n')
-	    break;
-	}
+        {
+          QUIT;
+          if (putchar (ch) == EOF)
+            {
+              builtin_error ("write error: %s", strerror (errno));
+              return EXECUTION_FAILURE;
+            }
+          QUIT;
+          if (ch == '\n')
+            break;
+        }
     }
   return (EXECUTION_SUCCESS);
 }
@@ -99,27 +99,27 @@ head_builtin (WORD_LIST *list)
 
   char *t;
 
-  munge_list (list);	/* change -num into -n num */
+  munge_list (list);    /* change -num into -n num */
 
   reset_internal_getopt ();
   nline = 10;
   while ((opt = internal_getopt (list, "n:")) != -1)
     {
       switch (opt)
-	{
-	case 'n':
-	  nline = atoi (list_optarg);
-	  if (nline <= 0)
-	    {
-	      builtin_error ("bad line count: %s", list_optarg);
-	      return (EX_USAGE);
-	    }
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'n':
+          nline = atoi (list_optarg);
+          if (nline <= 0)
+            {
+              builtin_error ("bad line count: %s", list_optarg);
+              return (EX_USAGE);
+            }
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -130,37 +130,37 @@ head_builtin (WORD_LIST *list)
     {
       fp = fopen (l->word->word, "r");
       if (fp == NULL)
-	{
-	  builtin_error ("%s: %s", l->word->word, strerror (errno));
-	  continue;
-	}
-      if (list->next)	/* more than one file */
-	{
-	  printf ("%s==> %s <==\n", opt ? "" : "\n", l->word->word);
-	  opt = 0;
-	}
+        {
+          builtin_error ("%s: %s", l->word->word, strerror (errno));
+          continue;
+        }
+      if (list->next)   /* more than one file */
+        {
+          printf ("%s==> %s <==\n", opt ? "" : "\n", l->word->word);
+          opt = 0;
+        }
       QUIT;
       rval = file_head (fp, nline);
       fclose (fp);
     }
-   
+
   return (rval);
 }
 
 char *head_doc[] = {
-	"Display lines from beginning of file.",
-	"",
-	"Copy the first N lines from the input files to the standard output.",
-	"N is supplied as an argument to the `-n' option.  If N is not given,",
-	"the first ten lines are copied.",
-	(char *)NULL
+        "Display lines from beginning of file.",
+        "",
+        "Copy the first N lines from the input files to the standard output.",
+        "N is supplied as an argument to the `-n' option.  If N is not given,",
+        "the first ten lines are copied.",
+        (char *)NULL
 };
 
 struct builtin head_struct = {
-	"head",			/* builtin name */
-	head_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	head_doc,		/* array of long documentation strings. */
-	"head [-n num] [file ...]", /* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "head",                 /* builtin name */
+        head_builtin,           /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        head_doc,               /* array of long documentation strings. */
+        "head [-n num] [file ...]", /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

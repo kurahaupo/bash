@@ -13,20 +13,20 @@
 #
 foo()
 {
-	local -a myvar=()
-	local -r myvar=0
+        local -a myvar=()
+        local -r myvar=0
 
-	echo "${myvar[@]}"
-	local -p myvar
+        echo "${myvar[@]}"
+        local -p myvar
 }
 
 foo2()
 {
-	local -i myvar=0
-	local -r myvar=1
+        local -i myvar=0
+        local -r myvar=1
 
-	echo "${myvar}"
-	local -p myvar
+        echo "${myvar}"
+        local -p myvar
 }
 
 declare -a outside=()
@@ -54,8 +54,8 @@ readonly var=outside
 
 func()
 {
-	local var=inside
-	echo "inside: $var"
+        local var=inside
+        echo "inside: $var"
 }
 
 func
@@ -67,9 +67,9 @@ export VAR1=abc VAR2=abc
 
 f()
 {
-	local VAR1; local VAR2
-	echo local: ${VAR1-unset1} ${VAR2-unset2}
-	printenv VAR1 ; printenv VAR2
+        local VAR1; local VAR2
+        echo local: ${VAR1-unset1} ${VAR2-unset2}
+        printenv VAR1 ; printenv VAR2
 }
 
 f

@@ -50,10 +50,10 @@ write_signames (FILE *stream)
   register int i;
 
   fprintf (stream, "/* This file was automatically created by %s.\n",
-	   progname);
+           progname);
   fprintf (stream, "   Do not edit.  Edit support/mksignames.c instead. */\n\n");
   fprintf (stream,
-	   "/* A translation list so we can be polite to our users. */\n");
+           "/* A translation list so we can be polite to our users. */\n");
 #if defined (CROSS_COMPILING)
   fprintf (stream, "extern char *signal_names[];\n\n");
   fprintf (stream, "extern void initialize_signames (void);\n\n");
@@ -96,7 +96,7 @@ main (int argc, char **argv)
   if (!stream)
     {
       fprintf (stderr, "%s: %s: cannot open for writing\n",
-	       progname, stream_name);
+               progname, stream_name);
       exit (2);
     }
 

@@ -126,24 +126,24 @@ wait_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "fnp:")) != -1)
     {
       switch (opt)
-	{
+        {
 #if defined (JOB_CONTROL)
-	case 'n':
-	  nflag = 1;
-	  break;
-	case 'f':
-	  wflags |= JWAIT_FORCE;
-	  break;
-	case 'p':
-	  vname = list_optarg;
-	  vflags = list_optflags;	  
-	  break;	
+        case 'n':
+          nflag = 1;
+          break;
+        case 'f':
+          wflags |= JWAIT_FORCE;
+          break;
+        case 'p':
+          vname = list_optarg;
+          vflags = list_optflags;
+          break;
 #endif
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -159,12 +159,12 @@ wait_builtin (WORD_LIST *list)
       bindflags = 0;
       if (valid_identifier (vname) == 0)
 #endif
-	{
-	  sh_invalidid (vname);
-	  WAIT_RETURN (EXECUTION_FAILURE);
-	}
+        {
+          sh_invalidid (vname);
+          WAIT_RETURN (EXECUTION_FAILURE);
+        }
       if (builtin_unbind_variable (vname) == -2)
-	WAIT_RETURN (EXECUTION_FAILURE);
+        WAIT_RETURN (EXECUTION_FAILURE);
     }
 
   /* POSIX.2 says:  When the shell is waiting (by means of the wait utility)
@@ -185,7 +185,7 @@ wait_builtin (WORD_LIST *list)
       wait_sigint_cleanup ();
 #if defined (JOB_CONTROL)
       if (wflags & JWAIT_WAITING)
-	unset_waitlist ();
+        unset_waitlist ();
 #endif
       WAIT_RETURN (status);
     }
@@ -222,7 +222,7 @@ wait_builtin (WORD_LIST *list)
 	    {
 	      if (vname)
 		builtin_bind_var_to_int (vname, pstat.pid, bindflags);
-	      WAIT_RETURN (status);	      
+	      WAIT_RETURN (status);
 	    }
 	}
 #endif
@@ -246,7 +246,7 @@ wait_builtin (WORD_LIST *list)
       WAIT_RETURN (status);
     }
 #endif
-      
+
   /* But wait without any arguments means to wait for all of the shell's
      currently active background processes. */
   if (list == 0)
@@ -304,7 +304,7 @@ wait_builtin (WORD_LIST *list)
 	      if (job != DUP_JOB)
 		sh_badjob (list->word->word);
 	      UNBLOCK_CHILD (oset);
-	      status = 127;	/* As per Posix.2, section 4.70.2 */
+	      status = 127;     /* As per Posix.2, section 4.70.2 */
 	      pstat.pid = NO_PID;
 	      pstat.status = status;
 	      list = list->next;
@@ -433,7 +433,7 @@ check_nonjobs (WORD_LIST *list, struct procstat *pstat)
   for (l = list; l; l = l->next)
     {
       if (l && valid_number (l->word->word, &ipid) && ipid == (pid_t) ipid && ipid >= 0)
-        pid = ipid;
+	pid = ipid;
       else if (l && l->word->word[0] == '%')
 	continue;	/* skip job ids for now */
       else

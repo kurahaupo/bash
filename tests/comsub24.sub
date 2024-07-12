@@ -17,7 +17,7 @@ set -- 1 2 3
 
 func()
 {
-	echo "$@"
+        echo "$@"
 }
 
 x=${ func a b c; }
@@ -29,9 +29,9 @@ echo "$x" == "$@"
 unset -f func
 func()
 {
-	echo before return
-	return 12
-	echo after return
+        echo before return
+        return 12
+        echo after return
 }
 
 x=${ func; echo after func; }

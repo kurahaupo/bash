@@ -38,7 +38,7 @@
 
 #include "shell.h"
 #include "flags.h"
-#include <y.tab.h>	/* use <...> so we pick it up from the build directory */
+#include <y.tab.h>      /* use <...> so we pick it up from the build directory */
 #include "input.h"
 
 #include "shmbutil.h"
@@ -46,7 +46,7 @@
 #include "builtins/common.h"
 
 #if !HAVE_DECL_PRINTF
-extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
+extern int printf (const char *, ...);  /* Yuck.  Double yuck. */
 #endif
 
 static int indentation;
@@ -109,7 +109,7 @@ int command_string_index = 0;
 int xtrace_fd = -1;
 FILE *xtrace_fp = 0;
 
-#define CHECK_XTRACE_FP	xtrace_fp = (xtrace_fp ? xtrace_fp : stderr)
+#define CHECK_XTRACE_FP xtrace_fp = (xtrace_fp ? xtrace_fp : stderr)
 
 /* shell expansion characters: used in print_redirection_list */
 #define EXPCHAR(c) ((c) == '{' || (c) == '~' || (c) == '$' || (c) == '`')
@@ -182,197 +182,197 @@ make_command_string_internal (COMMAND *command)
   else
     {
       if (skip_this_indent)
-	skip_this_indent--;
+        skip_this_indent--;
       else
-	indent (indentation);
+        indent (indentation);
 
       if (command->flags & CMD_TIME_PIPELINE)
-	{
-	  cprintf ("time ");
-	  if (command->flags & CMD_TIME_POSIX)
-	    cprintf ("-p ");
-	}
+        {
+          cprintf ("time ");
+          if (command->flags & CMD_TIME_POSIX)
+            cprintf ("-p ");
+        }
 
       if (command->flags & CMD_INVERT_RETURN)
-	cprintf ("! ");
+        cprintf ("! ");
 
       switch (command->type)
-	{
-	case cm_for:
-	  print_for_command (command->value.For);
-	  break;
+        {
+        case cm_for:
+          print_for_command (command->value.For);
+          break;
 
 #if defined (ARITH_FOR_COMMAND)
-	case cm_arith_for:
-	  print_arith_for_command (command->value.ArithFor);
-	  break;
+        case cm_arith_for:
+          print_arith_for_command (command->value.ArithFor);
+          break;
 #endif
 
 #if defined (SELECT_COMMAND)
-	case cm_select:
-	  print_select_command (command->value.Select);
-	  break;
+        case cm_select:
+          print_select_command (command->value.Select);
+          break;
 #endif
 
-	case cm_case:
-	  print_case_command (command->value.Case);
-	  break;
+        case cm_case:
+          print_case_command (command->value.Case);
+          break;
 
-	case cm_while:
-	  print_while_command (command->value.While);
-	  break;
+        case cm_while:
+          print_while_command (command->value.While);
+          break;
 
-	case cm_until:
-	  print_until_command (command->value.While);
-	  break;
+        case cm_until:
+          print_until_command (command->value.While);
+          break;
 
-	case cm_if:
-	  print_if_command (command->value.If);
-	  break;
+        case cm_if:
+          print_if_command (command->value.If);
+          break;
 
 #if defined (DPAREN_ARITHMETIC)
-	case cm_arith:
-	  print_arith_command (command->value.Arith->exp);
-	  break;
+        case cm_arith:
+          print_arith_command (command->value.Arith->exp);
+          break;
 #endif
 
 #if defined (COND_COMMAND)
-	case cm_cond:
-	  print_cond_command (command->value.Cond);
-	  break;
+        case cm_cond:
+          print_cond_command (command->value.Cond);
+          break;
 #endif
 
-	case cm_simple:
-	  print_simple_command (command->value.Simple);
-	  break;
+        case cm_simple:
+          print_simple_command (command->value.Simple);
+          break;
 
-	case cm_connection:
+        case cm_connection:
 
-	  skip_this_indent++;
-	  printing_connection++;
-	  make_command_string_internal (command->value.Connection->first);
+          skip_this_indent++;
+          printing_connection++;
+          make_command_string_internal (command->value.Connection->first);
 
-	  switch (command->value.Connection->connector)
-	    {
-	    case '&':
-	    case '|':
-	      {
-		char c = command->value.Connection->connector;
+          switch (command->value.Connection->connector)
+            {
+            case '&':
+            case '|':
+              {
+                char c = command->value.Connection->connector;
 
-		s[0] = ' ';
-		s[1] = c;
-		s[2] = '\0';
-		
-		print_deferred_heredocs (s);
+                s[0] = ' ';
+                s[1] = c;
+                s[2] = '\0';
 
-		if (c != '&' || command->value.Connection->second)
-		  {
-		    cprintf (" ");
-		    skip_this_indent++;
-		  }
-	      }
-	      break;
+                print_deferred_heredocs (s);
 
-	    case AND_AND:
-	      print_deferred_heredocs (" && ");
-	      if (command->value.Connection->second)
-		skip_this_indent++;
-	      break;
+                if (c != '&' || command->value.Connection->second)
+                  {
+                    cprintf (" ");
+                    skip_this_indent++;
+                  }
+              }
+              break;
 
-	    case OR_OR:
-	      print_deferred_heredocs (" || ");
-	      if (command->value.Connection->second)
-		skip_this_indent++;
-	      break;
+            case AND_AND:
+              print_deferred_heredocs (" && ");
+              if (command->value.Connection->second)
+                skip_this_indent++;
+              break;
 
-	    case ';':
-	    case '\n':				/* special case this */
-	      {
-		char c = command->value.Connection->connector;
-		int was_newline;
+            case OR_OR:
+              print_deferred_heredocs (" || ");
+              if (command->value.Connection->second)
+                skip_this_indent++;
+              break;
 
-		s[0] = printing_comsub ? c : ';';
-		s[1] = '\0';
+            case ';':
+            case '\n':                          /* special case this */
+              {
+                char c = command->value.Connection->connector;
+                int was_newline;
 
-		was_newline = deferred_heredocs == 0 && was_heredoc == 0 && c == '\n';
-		if (deferred_heredocs == 0)
-		  {
-		    if (was_heredoc == 0)
-		      cprintf ("%s", s);	/* inside_function_def? */
-		    else
-		      was_heredoc = 0;
-		  }
-		else
-		  /* print_deferred_heredocs special-cases `;' */
-		  print_deferred_heredocs (inside_function_def ? "" : ";");
+                s[0] = printing_comsub ? c : ';';
+                s[1] = '\0';
 
-		if (inside_function_def)
-		  cprintf ("\n");
-		else if (printing_comsub && c == '\n' && was_newline == 0)
-		  cprintf ("\n");	/* preserve newlines in comsubs but don't double them */
-		else
-		  {
-		    if (c == ';')
-		      cprintf (" ");
-		    if (command->value.Connection->second)
-		      skip_this_indent++;
-		  }
-		break;
-	      }
+                was_newline = deferred_heredocs == 0 && was_heredoc == 0 && c == '\n';
+                if (deferred_heredocs == 0)
+                  {
+                    if (was_heredoc == 0)
+                      cprintf ("%s", s);        /* inside_function_def? */
+                    else
+                      was_heredoc = 0;
+                  }
+                else
+                  /* print_deferred_heredocs special-cases `;' */
+                  print_deferred_heredocs (inside_function_def ? "" : ";");
 
-	    default:
-	      cprintf (_("print_command: bad connector `%d'"),
-		       command->value.Connection->connector);
-	      break;
-	    }
+                if (inside_function_def)
+                  cprintf ("\n");
+                else if (printing_comsub && c == '\n' && was_newline == 0)
+                  cprintf ("\n");       /* preserve newlines in comsubs but don't double them */
+                else
+                  {
+                    if (c == ';')
+                      cprintf (" ");
+                    if (command->value.Connection->second)
+                      skip_this_indent++;
+                  }
+                break;
+              }
 
-	  make_command_string_internal (command->value.Connection->second);
-	  /* If this is a recursive call to make_command_string_internal to
-	     print a connection with more than two components, defer printing
-	     the here-document bodies until our caller can print the
-	     connector. Remember that the parser builds lists to be left-side
-	     heavy. */
-	  if (printing_connection == 1)
-	    PRINT_DEFERRED_HEREDOCS ("");
-	  printing_connection--;	  	  
-	  break;
+            default:
+              cprintf (_("print_command: bad connector `%d'"),
+                       command->value.Connection->connector);
+              break;
+            }
 
-	case cm_function_def:
-	  print_function_def (command->value.Function_def);
-	  break;
+          make_command_string_internal (command->value.Connection->second);
+          /* If this is a recursive call to make_command_string_internal to
+             print a connection with more than two components, defer printing
+             the here-document bodies until our caller can print the
+             connector. Remember that the parser builds lists to be left-side
+             heavy. */
+          if (printing_connection == 1)
+            PRINT_DEFERRED_HEREDOCS ("");
+          printing_connection--;
+          break;
 
-	case cm_group:
-	  print_group_command (command->value.Group);
-	  break;
+        case cm_function_def:
+          print_function_def (command->value.Function_def);
+          break;
 
-	case cm_subshell:
-	  cprintf ("( ");
-	  skip_this_indent++;
-	  make_command_string_internal (command->value.Subshell->command);
-	  PRINT_DEFERRED_HEREDOCS ("");
-	  cprintf (" )");
-	  was_heredoc = 0;	/* last wasn't heredoc/newline */
-	  break;
+        case cm_group:
+          print_group_command (command->value.Group);
+          break;
 
-	case cm_coproc:
-	  cprintf ("coproc ");
-	  if (command->value.Coproc->command->type != cm_simple)
-	    cprintf ("%s ", command->value.Coproc->name);
-	  skip_this_indent++;
-	  make_command_string_internal (command->value.Coproc->command);
-	  break;
+        case cm_subshell:
+          cprintf ("( ");
+          skip_this_indent++;
+          make_command_string_internal (command->value.Subshell->command);
+          PRINT_DEFERRED_HEREDOCS ("");
+          cprintf (" )");
+          was_heredoc = 0;      /* last wasn't heredoc/newline */
+          break;
 
-	default:
-	  command_error ("print_command", CMDERR_BADTYPE, command->type, 0);
-	  break;
-	}
+        case cm_coproc:
+          cprintf ("coproc ");
+          if (command->value.Coproc->command->type != cm_simple)
+            cprintf ("%s ", command->value.Coproc->name);
+          skip_this_indent++;
+          make_command_string_internal (command->value.Coproc->command);
+          break;
+
+        default:
+          command_error ("print_command", CMDERR_BADTYPE, command->type, 0);
+          break;
+        }
 
 
       if (command->redirects)
-	{
-	  cprintf (" ");
-	  print_redirection_list (command->redirects);
-	}
+        {
+          cprintf (" ");
+          print_redirection_list (command->redirects);
+        }
     }
 }
 
@@ -406,7 +406,7 @@ xtrace_set (int fd, FILE *fp)
     }
   if (fd >= 0 && fileno (fp) != fd)
     internal_warning (_("xtrace fd (%d) != fileno xtrace fp (%d)"), fd, fileno (fp));
-  
+
   xtrace_fd = fd;
   xtrace_fp = fp;
 }
@@ -497,10 +497,10 @@ indirection_level_string (void)
   for (i = j = 0; ps4_firstc[0] && j < indirection_level && i < indirection_stringsiz - 1; i += ps4_firstc_len, j++)
     {
       if (ps4_firstc_len == 1)
-	indirection_string[i] = ps4_firstc[0];
+        indirection_string[i] = ps4_firstc[0];
       else
-	memcpy (indirection_string+i, ps4_firstc, ps4_firstc_len);
-    }      
+        memcpy (indirection_string+i, ps4_firstc, ps4_firstc_len);
+    }
 
   for (j = ps4_firstc_len; *ps4 && ps4[j] && i < indirection_stringsiz - 1; i++, j++)
     indirection_string[i] = ps4[j];
@@ -560,23 +560,23 @@ xtrace_print_word_list (WORD_LIST *list, int xtflags)
     {
       t = w->word->word;
       if (t == 0 || *t == '\0')
-	fprintf (xtrace_fp, "''%s", w->next ? " " : "");
+        fprintf (xtrace_fp, "''%s", w->next ? " " : "");
       else if (xtflags & 2)
-	fprintf (xtrace_fp, "%s%s", t, w->next ? " " : "");
+        fprintf (xtrace_fp, "%s%s", t, w->next ? " " : "");
       else if (ansic_shouldquote (t))
-	{
-	  x = ansic_quote (t, 0, (int *)0);
-	  fprintf (xtrace_fp, "%s%s", x, w->next ? " " : "");
-	  free (x);
-	}
+        {
+          x = ansic_quote (t, 0, (int *)0);
+          fprintf (xtrace_fp, "%s%s", x, w->next ? " " : "");
+          free (x);
+        }
       else if (sh_contains_shell_metas (t))
-	{
-	  x = sh_single_quote (t);
-	  fprintf (xtrace_fp, "%s%s", x, w->next ? " " : "");
-	  free (x);
-	}
+        {
+          x = sh_single_quote (t);
+          fprintf (xtrace_fp, "%s%s", x, w->next ? " " : "");
+          free (x);
+        }
       else
-	fprintf (xtrace_fp, "%s%s", t, w->next ? " " : "");
+        fprintf (xtrace_fp, "%s%s", t, w->next ? " " : "");
     }
   fprintf (xtrace_fp, "\n");
   fflush (xtrace_fp);
@@ -700,8 +700,8 @@ print_group_command (GROUP_COM *group_command)
   else
     {
       /* This is a group command { ... } inside of a function
-	 definition, and should be printed as a multiline group
-	 command, using the current indentation. */
+         definition, and should be printed as a multiline group
+         command, using the current indentation. */
       cprintf ("\n");
       indentation += indentation_amount;
     }
@@ -722,7 +722,7 @@ print_group_command (GROUP_COM *group_command)
     }
 
   cprintf ("}");
-  was_heredoc = 0;	/* last wasn't heredoc/newline */
+  was_heredoc = 0;      /* last wasn't heredoc/newline */
 
   group_command_nesting--;
 }
@@ -765,20 +765,20 @@ print_case_clauses (PATTERN_LIST *clauses)
   while (clauses)
     {
       /* If we're printing a comsub, the result will be reparsed later, so
-	 we don't want to insert a newline after the `in': that could cause
-	 the parser to parse a reserved word in error, since the newline
-	 inserts a token after the `in'. */
+         we don't want to insert a newline after the `in': that could cause
+         the parser to parse a reserved word in error, since the newline
+         inserts a token after the `in'. */
       if (printing_comsub == 0 || first == 0)
-	newline ("");
+        newline ("");
       first = 0;
       /* "The grammar shows that reserved words can be used as patterns,
-	 even if one is the first word on a line. Obviously, the reserved
-	 word esac cannot be used in this manner." */
+         even if one is the first word on a line. Obviously, the reserved
+         word esac cannot be used in this manner." */
       /* If the first word of the pattern list is literal "esac", the only
-	 way it could have gotten through the parser is to have been
-	 preceded by a left paren. */
+         way it could have gotten through the parser is to have been
+         preceded by a left paren. */
       if (STREQ (clauses->patterns->word->word, "esac"))
-	cprintf("(");
+        cprintf("(");
       command_print_word_list (clauses->patterns, " | ");
       cprintf (")\n");
       indentation += indentation_amount;
@@ -786,11 +786,11 @@ print_case_clauses (PATTERN_LIST *clauses)
       indentation -= indentation_amount;
       PRINT_DEFERRED_HEREDOCS ("");
       if (clauses->flags & CASEPAT_FALLTHROUGH)
-	newline (";&");
+        newline (";&");
       else if (clauses->flags & CASEPAT_TESTNEXT)
-	newline (";;&");
+        newline (";;&");
       else
-	newline (";;");
+        newline (";;");
       clauses = clauses->next;
     }
   indentation -= indentation_amount;
@@ -823,7 +823,7 @@ print_until_or_while (WHILE_COM *while_command, char *which)
       was_heredoc = 0;
     }
   else
-    cprintf (" do\n");	/* was newline ("do\n"); */
+    cprintf (" do\n");  /* was newline ("do\n"); */
   indentation += indentation_amount;
   make_command_string_internal (while_command->action);
   PRINT_DEFERRED_HEREDOCS ("");
@@ -917,7 +917,7 @@ print_cond_node (COND_COM *cond)
     }
   else if (cond->type == COND_TERM)
     {
-      cprintf ("%s", cond->op->word);		/* need to add quoting here */
+      cprintf ("%s", cond->op->word);           /* need to add quoting here */
     }
 }
 
@@ -977,7 +977,7 @@ xtrace_print_cond_term (int type, int invert, WORD_DESC *op, char *arg1, char *a
   fprintf (xtrace_fp, " ]]\n");
 
   fflush (xtrace_fp);
-}	  
+}
 #endif /* COND_COMMAND */
 
 #if defined (DPAREN_ARITHMETIC) || defined (ARITH_FOR_COMMAND)
@@ -1009,7 +1009,7 @@ print_simple_command (SIMPLE_COM *simple_command)
   if (simple_command->redirects)
     {
       if (simple_command->words)
-	cprintf (" ");
+        cprintf (" ");
       print_redirection_list (simple_command->redirects);
     }
 }
@@ -1019,7 +1019,7 @@ print_heredocs (REDIRECT *heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf (" "); 
+  cprintf (" ");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_redirection (hdtail);
@@ -1033,7 +1033,7 @@ print_heredoc_bodies (REDIRECT *heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf ("\n"); 
+  cprintf ("\n");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_heredoc_body (hdtail);
@@ -1054,18 +1054,18 @@ print_deferred_heredocs (const char *cstring)
 {
   /* We now print the heredoc headers in print_redirection_list */
   if (cstring && cstring[0] && (cstring[0] != ';' || cstring[1]))
-    cprintf ("%s", cstring); 
+    cprintf ("%s", cstring);
   if (deferred_heredocs)
     {
       print_heredoc_bodies (deferred_heredocs);
       if (cstring && cstring[0] && (cstring[0] != ';' || cstring[1]))
-	cprintf (" ");	/* make sure there's at least one space */
+        cprintf (" ");  /* make sure there's at least one space */
       dispose_redirects (deferred_heredocs);
       was_heredoc = 1;
     }
   deferred_heredocs = (REDIRECT *)NULL;
 }
-      
+
 static void
 print_redirection_list (REDIRECT *redirects)
 {
@@ -1080,26 +1080,26 @@ print_redirection_list (REDIRECT *redirects)
       /* Defer printing the here document bodies until we've printed the rest of the
          redirections, but print the headers in the order they're given.  */
       if (redirects->instruction == r_reading_until || redirects->instruction == r_deblank_reading_until)
-	{
-	  newredir = copy_redirect (redirects);
-	  newredir->next = (REDIRECT *)NULL;
+        {
+          newredir = copy_redirect (redirects);
+          newredir->next = (REDIRECT *)NULL;
 
-	  print_heredoc_header (newredir);
+          print_heredoc_header (newredir);
 
-	  if (heredocs)
-	    {
-	      hdtail->next = newredir;
-	      hdtail = newredir;
-	    }
-	  else
-	    hdtail = heredocs = newredir;
-	}
+          if (heredocs)
+            {
+              hdtail->next = newredir;
+              hdtail = newredir;
+            }
+          else
+            hdtail = heredocs = newredir;
+        }
       else
-	print_redirection (redirects);
+        print_redirection (redirects);
 
       redirects = redirects->next;
       if (redirects)
-	cprintf (" ");
+        cprintf (" ");
     }
 
   /* Now that we've printed all the other redirections (on one line),
@@ -1162,45 +1162,45 @@ print_redirection (REDIRECT *redirect)
     {
     case r_input_direction:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 0)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
       cprintf ("< %s", redirectee->word);
       break;
 
     case r_output_direction:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 1)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
       cprintf ("> %s", redirectee->word);
       break;
 
-    case r_inputa_direction:	/* Redirection created by the shell. */
+    case r_inputa_direction:    /* Redirection created by the shell. */
       cprintf ("&");
       break;
 
     case r_output_force:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 1)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
       cprintf (">| %s", redirectee->word);
       break;
 
     case r_appending_to:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 1)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
       cprintf (">> %s", redirectee->word);
       break;
 
     case r_input_output:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 1)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
       cprintf ("<> %s", redirectee->word);
       break;
 
@@ -1213,90 +1213,90 @@ print_redirection (REDIRECT *redirect)
 
     case r_reading_string:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}", redir_word->word);
+        cprintf ("{%s}", redir_word->word);
       else if (redirector != 0)
-	cprintf ("%d", redirector);
+        cprintf ("%d", redirector);
 #if 0
       /* Don't need to check whether or not to requote, since original quotes
          are still intact.  The only thing that has happened is that $'...'
          has been replaced with 'expanded ...'. */
       if (ansic_shouldquote (redirect->redirectee.filename->word))
-	{
-	  char *x;
-	  x = ansic_quote (redirect->redirectee.filename->word, 0, (int *)0);
-	  cprintf ("<<< %s", x);
-	  free (x);
-	}
+        {
+          char *x;
+          x = ansic_quote (redirect->redirectee.filename->word, 0, (int *)0);
+          cprintf ("<<< %s", x);
+          free (x);
+        }
       else
 #endif
-	cprintf ("<<< %s", redirect->redirectee.filename->word);
+        cprintf ("<<< %s", redirect->redirectee.filename->word);
       break;
 
     case r_duplicating_input:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}<&%d", redir_word->word, redir_fd);
+        cprintf ("{%s}<&%d", redir_word->word, redir_fd);
       else
-	cprintf ("%d<&%d", redirector, redir_fd);
+        cprintf ("%d<&%d", redirector, redir_fd);
       break;
 
     case r_duplicating_output:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}>&%d", redir_word->word, redir_fd);
+        cprintf ("{%s}>&%d", redir_word->word, redir_fd);
       else
-	cprintf ("%d>&%d", redirector, redir_fd);
+        cprintf ("%d>&%d", redirector, redir_fd);
       break;
 
     case r_duplicating_input_word:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}<&%s", redir_word->word, redirectee->word);
+        cprintf ("{%s}<&%s", redir_word->word, redirectee->word);
       else if (redirector == 0)
-	cprintf ("<&%s", redirectee->word);
+        cprintf ("<&%s", redirectee->word);
       else
-	cprintf ("%d<&%s", redirector, redirectee->word);
+        cprintf ("%d<&%s", redirector, redirectee->word);
       break;
 
     case r_duplicating_output_word:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}>&%s", redir_word->word, redirectee->word);
+        cprintf ("{%s}>&%s", redir_word->word, redirectee->word);
       else if (redirector == 1)
-	cprintf (">&%s", redirectee->word);
+        cprintf (">&%s", redirectee->word);
       else
-	cprintf ("%d>&%s", redirector, redirectee->word);
+        cprintf ("%d>&%s", redirector, redirectee->word);
       break;
 
     case r_move_input:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}<&%d-", redir_word->word, redir_fd);
+        cprintf ("{%s}<&%d-", redir_word->word, redir_fd);
       else
-	cprintf ("%d<&%d-", redirector, redir_fd);
+        cprintf ("%d<&%d-", redirector, redir_fd);
       break;
 
     case r_move_output:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}>&%d-", redir_word->word, redir_fd);
+        cprintf ("{%s}>&%d-", redir_word->word, redir_fd);
       else
-	cprintf ("%d>&%d-", redirector, redir_fd);
+        cprintf ("%d>&%d-", redirector, redir_fd);
       break;
 
     case r_move_input_word:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}<&%s-", redir_word->word, redirectee->word);
+        cprintf ("{%s}<&%s-", redir_word->word, redirectee->word);
       else
-	cprintf ("%d<&%s-", redirector, redirectee->word);
+        cprintf ("%d<&%s-", redirector, redirectee->word);
       break;
 
     case r_move_output_word:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}>&%s-", redir_word->word, redirectee->word);
+        cprintf ("{%s}>&%s-", redir_word->word, redirectee->word);
       else
-	cprintf ("%d>&%s-", redirector, redirectee->word);
+        cprintf ("%d>&%s-", redirector, redirectee->word);
       break;
 
     case r_close_this:
       if (redirect->rflags & REDIR_VARASSIGN)
-	cprintf ("{%s}>&-", redir_word->word);
+        cprintf ("{%s}>&-", redir_word->word);
       else
-	cprintf ("%d>&-", redirector);
+        cprintf ("%d>&-", redirector);
       break;
 
     case r_err_and_out:
@@ -1327,7 +1327,7 @@ print_function_def (FUNCTION_DEF *func)
   WORD_DESC *w;
 
   w = pretty_print_mode ? dequote_word (func->name) : func->name;
-  /* we're just pretty-printing, so this can be destructive */      
+  /* we're just pretty-printing, so this can be destructive */
 
   func_redirects = NULL;
   /* When in posix mode, print functions as posix specifies them, but prefix
@@ -1343,7 +1343,7 @@ print_function_def (FUNCTION_DEF *func)
   add_unwind_protect (uw_reset_locals, 0);
 
   indent (indentation);
-  cprintf ("{ \n");	/* } */
+  cprintf ("{ \n");     /* } */
 
   inside_function_def++;
   indentation += indentation_amount;
@@ -1356,8 +1356,8 @@ print_function_def (FUNCTION_DEF *func)
       cmdcopy->redirects = (REDIRECT *)NULL;
     }
   make_command_string_internal (cmdcopy->type == cm_group
-					? cmdcopy->value.Group->command
-					: cmdcopy);
+                                        ? cmdcopy->value.Group->command
+                                        : cmdcopy);
   PRINT_DEFERRED_HEREDOCS ("");
 
   indentation -= indentation_amount;
@@ -1373,7 +1373,7 @@ print_function_def (FUNCTION_DEF *func)
     {
       /* { */
       newline ("}");
-      was_heredoc = 0;		/* not printing any here-documents now */
+      was_heredoc = 0;          /* not printing any here-documents now */
     }
 
   discard_unwind_frame ("function-def");
@@ -1402,7 +1402,7 @@ named_function_string (char *name, COMMAND *command, int flags)
   if (name && *name)
     {
       if (valid_function_name (name, posixly_correct) == 0)
-	cprintf ("function ");
+        cprintf ("function ");
       cprintf ("%s ", name);
     }
 
@@ -1421,7 +1421,7 @@ named_function_string (char *name, COMMAND *command, int flags)
 
   inside_function_def++;
 
-  cprintf ((flags & FUNC_MULTILINE) ? "{ \n" : "{ ");	/* }} */
+  cprintf ((flags & FUNC_MULTILINE) ? "{ \n" : "{ ");   /* }} */
 
   cmdcopy = command;
   unwind_protect_pointer (cmdcopy);
@@ -1435,8 +1435,8 @@ named_function_string (char *name, COMMAND *command, int flags)
       cmdcopy->redirects = (REDIRECT *)NULL;
     }
   make_command_string_internal (cmdcopy->type == cm_group
-					? cmdcopy->value.Group->command
-					: cmdcopy);
+                                        ? cmdcopy->value.Group->command
+                                        : cmdcopy);
   PRINT_DEFERRED_HEREDOCS ("");
 
   indentation = old_indent;
@@ -1450,18 +1450,18 @@ named_function_string (char *name, COMMAND *command, int flags)
       cmdcopy->redirects = func_redirects;
     }
   else
-    {	/* { */
+    {   /* { */
       newline ("}");
       was_heredoc = 0;
     }
 
-  remove_unwind_protect ();	/* unwind_protect_pointer */
+  remove_unwind_protect ();     /* unwind_protect_pointer */
   result = the_printed_command;
 
   if ((flags & FUNC_MULTILINE) == 0)
     {
       if (result[2] == '\n')
-	memmove (result + 2, result + 3, strlen (result) - 2);	
+        memmove (result + 2, result + 3, strlen (result) - 2);
     }
 
   if (flags & FUNC_EXTERNAL)
@@ -1499,10 +1499,10 @@ static void
 semicolon (void)
 {
   if ((command_string_index > 0 &&
-	the_printed_command[command_string_index - 1] == '\n') ||
-      (command_string_index > 1 && 
-	the_printed_command[command_string_index - 1] == '&' &&
-	the_printed_command[command_string_index - 2] == ' '))
+        the_printed_command[command_string_index - 1] == '\n') ||
+      (command_string_index > 1 &&
+        the_printed_command[command_string_index - 1] == '&' &&
+        the_printed_command[command_string_index - 2] == ' '))
     return;
   cprintf (";");
 }
@@ -1529,61 +1529,61 @@ cprintf (const char *control, ...)
       c = *s++;
       argp = (char *)NULL;
       if (c != '%' || !*s)
-	{
-	  char_arg[0] = c;
-	  argp = char_arg;
-	  arg_len = 1;
-	}
+        {
+          char_arg[0] = c;
+          argp = char_arg;
+          arg_len = 1;
+        }
       else
-	{
-	  c = *s++;
-	  switch (c)
-	    {
-	    case '%':
-	      char_arg[0] = c;
-	      argp = char_arg;
-	      arg_len = 1;
-	      break;
+        {
+          c = *s++;
+          switch (c)
+            {
+            case '%':
+              char_arg[0] = c;
+              argp = char_arg;
+              arg_len = 1;
+              break;
 
-	    case 's':
-	      argp = va_arg (args, char *);
-	      arg_len = strlen (argp);
-	      break;
+            case 's':
+              argp = va_arg (args, char *);
+              arg_len = strlen (argp);
+              break;
 
-	    case 'd':
-	      /* Represent an out-of-range file descriptor with an out-of-range
-		 integer value.  We can do this because the only use of `%d' in
-		 the calls to cprintf is to output a file descriptor number for
-		 a redirection. */
-	      digit_arg = va_arg (args, int);
-	      if (digit_arg < 0)
-		{
-		  sprintf (intbuf, "%u", (unsigned int)-1);
-		  argp = intbuf;
-		}
-	      else
-		argp = inttostr (digit_arg, intbuf, sizeof (intbuf));
-	      arg_len = strlen (argp);
-	      break;
+            case 'd':
+              /* Represent an out-of-range file descriptor with an out-of-range
+                 integer value.  We can do this because the only use of `%d' in
+                 the calls to cprintf is to output a file descriptor number for
+                 a redirection. */
+              digit_arg = va_arg (args, int);
+              if (digit_arg < 0)
+                {
+                  sprintf (intbuf, "%u", (unsigned int)-1);
+                  argp = intbuf;
+                }
+              else
+                argp = inttostr (digit_arg, intbuf, sizeof (intbuf));
+              arg_len = strlen (argp);
+              break;
 
-	    case 'c':
-	      char_arg[0] = va_arg (args, int);
-	      argp = char_arg;
-	      arg_len = 1;
-	      break;
+            case 'c':
+              char_arg[0] = va_arg (args, int);
+              argp = char_arg;
+              arg_len = 1;
+              break;
 
-	    default:
-	      programming_error (_("cprintf: `%c': invalid format character"), c);
-	      /*NOTREACHED*/
-	    }
-	}
+            default:
+              programming_error (_("cprintf: `%c': invalid format character"), c);
+              /*NOTREACHED*/
+            }
+        }
 
       if (argp && arg_len)
-	{
-	  the_printed_command_resize (arg_len + 1);
-	  FASTCOPY (argp, the_printed_command + command_string_index, arg_len);
-	  command_string_index += arg_len;
-	}
+        {
+          the_printed_command_resize (arg_len + 1);
+          FASTCOPY (argp, the_printed_command + command_string_index, arg_len);
+          command_string_index += arg_len;
+        }
     }
 
   va_end (args);

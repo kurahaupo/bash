@@ -29,9 +29,9 @@ typeset -p b
 
 add_X_echo()
 {
-	typeset -n ref=$1
-	ref+=X
-	echo inside $ref
+        typeset -n ref=$1
+        ref+=X
+        echo inside $ref
 }
 
 ref=
@@ -42,10 +42,10 @@ unset ref
 # same test, but assigning nameref variable circular reference directly
 xxx_func()
 {
-	typeset -n xxx=xxx
-	xxx=foo
-	declare -p xxx
-	echo $FUNCNAME: inside: xxx = $xxx
+        typeset -n xxx=xxx
+        xxx=foo
+        declare -p xxx
+        echo $FUNCNAME: inside: xxx = $xxx
 }
 
 xxx=7

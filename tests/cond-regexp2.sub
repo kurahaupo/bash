@@ -33,7 +33,7 @@ exp='a(xb'
 
 [[ dog =~ [[=d=]].. ]] && echo ok 1
 [[ d.. =~ [[=d=]]\.\. ]] && echo ok 2
-[[ dog =~ ['[=d=]'].. ]] && echo ok 3	# dubious
+[[ dog =~ ['[=d=]'].. ]] && echo ok 3   # dubious
 
 [[ dog =~ [[=d=]].[[=G=][=g=]] ]] && echo ok 4
 [[ dog =~ [[=d=]].[\[=G=][=g=]] ]] && echo ok 4a

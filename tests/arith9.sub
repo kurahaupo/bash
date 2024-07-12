@@ -1,8 +1,8 @@
 # test expression evaluation with unset variables
 set -u
 
-( echo $(( a > 4 )) ; echo after 1 )	# error
-( echo $(( a[0] > 4 )); echo after 2)	# error
+( echo $(( a > 4 )) ; echo after 1 )    # error
+( echo $(( a[0] > 4 )); echo after 2)   # error
 
 set +u
 ( echo $(( a > 4 )) ; echo after 3 $? )

@@ -20,11 +20,11 @@ t1=$(mktemp)
 t2=$(mktemp)
 
 if [ ! -e "$t1" ] ; then
-	S1=$RANDOM
-	S2=$RANDOM
-	t1=$TMPDIR/s-$S1
-	t2=$TMPDIR/s-$S2
-	touch "$t1" "$t2"
+        S1=$RANDOM
+        S2=$RANDOM
+        t1=$TMPDIR/s-$S1
+        t2=$TMPDIR/s-$S2
+        touch "$t1" "$t2"
 fi
 
 chmod +x "$t1" "$t2"
@@ -36,16 +36,16 @@ echo "shopt" >> "$t2"
 
 for o in $(compgen -A shopt)
 do
-	case $o in
-	extdebug)	;;
-	*)		shopt -s $o ;;
-	esac
+        case $o in
+        extdebug)       ;;
+        *)              shopt -s $o ;;
+        esac
 done
 diff <("$t1") <("$t2")
 
 for o in $(compgen -A shopt)
 do
-	shopt -u $o;
+        shopt -u $o;
 done
 diff <("$t1") <("$t2")
 

@@ -13,11 +13,11 @@
 #
 # test function names that cannot be exported
 
-unset foo		# remove from environment if necessary
+unset foo               # remove from environment if necessary
 
 function foo=bar
 {
-	echo equals-1
+        echo equals-1
 }
 
 export -f 'foo=bar'
@@ -29,7 +29,7 @@ ${THIS_SH} -c 'foo\=bar 2>/dev/null'
 
 function /bin/echo
 {
-	echo bad echo
+        echo bad echo
 }
 
 /bin/echo foo

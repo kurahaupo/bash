@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2017 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -58,9 +58,9 @@
 #include "rlshell.h"
 
 /* **************************************************************** */
-/*								    */
-/*			Utility Functions			    */
-/*								    */
+/*                                                                  */
+/*                      Utility Functions                           */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Return 0 if C is not a member of the class of characters that belong
@@ -76,7 +76,7 @@ rl_alphabetic (int c)
     return (1);
 
   return (_rl_allow_pathname_alphabetic_chars &&
-	    strchr (pathname_alphabetic_chars, c) != NULL);
+            strchr (pathname_alphabetic_chars, c) != NULL);
 }
 
 #if defined (HANDLE_MULTIBYTE)
@@ -86,11 +86,11 @@ _rl_walphabetic (WCHAR_T wc)
   int c;
 
   if (iswalnum (wc))
-    return (1);     
+    return (1);
 
   c = wc & 0177;
   return (_rl_allow_pathname_alphabetic_chars &&
-	    strchr (pathname_alphabetic_chars, c) != NULL);
+            strchr (pathname_alphabetic_chars, c) != NULL);
 }
 #endif
 
@@ -99,7 +99,7 @@ int
 _rl_abort_internal (void)
 {
   if (RL_ISSTATE (RL_STATE_TIMEOUT) == 0)
-    rl_ding ();			/* Don't ring the bell on a timeout */
+    rl_ding ();                 /* Don't ring the bell on a timeout */
   rl_clear_message ();
   _rl_reset_argument ();
   rl_clear_pending_input ();
@@ -109,7 +109,7 @@ _rl_abort_internal (void)
     _rl_pop_executing_macro ();
   _rl_kill_kbd_macro ();
 
-  RL_UNSETSTATE (RL_STATE_MULTIKEY);	/* XXX */
+  RL_UNSETSTATE (RL_STATE_MULTIKEY);    /* XXX */
 
   rl_last_func = (rl_command_func_t *)NULL;
 
@@ -262,9 +262,9 @@ _rl_errmsg (const char *format, ...)
 }
 
 /* **************************************************************** */
-/*								    */
-/*			String Utility Functions		    */
-/*								    */
+/*                                                                  */
+/*                      String Utility Functions                    */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Determine if s2 occurs in s1.  If so, return a pointer to the
@@ -299,17 +299,17 @@ _rl_strpbrk (const char *string1, const char *string2)
   for (; *string1; string1++)
     {
       for (scan = string2; *scan; scan++)
-	{
-	  if (*string1 == *scan)
-	    return ((char *)string1);
-	}
+        {
+          if (*string1 == *scan)
+            return ((char *)string1);
+        }
 #if defined (HANDLE_MULTIBYTE)
       if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
-	{
-	  v = _rl_get_char_len (string1, &ps);
-	  if (v > 1)
-	    string1 += v - 1;	/* -1 to account for auto-increment in loop */
-	}
+        {
+          v = _rl_get_char_len (string1, &ps);
+          if (v > 1)
+            string1 += v - 1;   /* -1 to account for auto-increment in loop */
+        }
 #endif
     }
   return ((char *)NULL);
@@ -333,9 +333,9 @@ _rl_strnicmp (const char *string1, const char *string2, int count)
   s2 = string2;
   do
     {
-      d = _rl_to_lower (*s1) - _rl_to_lower (*s2);	/* XXX - cast to unsigned char? */
+      d = _rl_to_lower (*s1) - _rl_to_lower (*s2);      /* XXX - cast to unsigned char? */
       if (d != 0)
-	return d;
+        return d;
       if (*s1++ == '\0')
         break;
       s2++;
@@ -389,9 +389,9 @@ _rl_strcaseeqn(const char *s1, const char *s2, size_t n, int flags)
 
       d = c1 - c2;
       if ((*s1 == '-' || *s1 == '_') && (*s2 == '-' || *s2 == '_'))
-	d = 0;		/* case insensitive character mapping */
+        d = 0;          /* case insensitive character mapping */
       if (d != 0)
-	return 0;
+        return 0;
       s1++;
       s2++;
       n--;
@@ -430,7 +430,7 @@ _rl_qsort_string_compare (char **s1, char **s2)
 }
 
 /* Function equivalents for the macros defined in chardefs.h. */
-#define FUNCTION_FOR_MACRO(f)	int (f) (int c) { return f (c); }
+#define FUNCTION_FOR_MACRO(f)   int (f) (int c) { return f (c); }
 
 FUNCTION_FOR_MACRO (_rl_digit_p)
 FUNCTION_FOR_MACRO (_rl_digit_value)

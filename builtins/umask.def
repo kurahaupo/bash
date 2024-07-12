@@ -32,8 +32,8 @@ If MODE begins with a digit, it is interpreted as an octal number;
 otherwise it is a symbolic mode string like that accepted by chmod(1).
 
 Options:
-  -p	if MODE is omitted, output in a form that may be reused as input
-  -S	makes the output symbolic; otherwise an octal number is output
+  -p    if MODE is omitted, output in a form that may be reused as input
+  -S    makes the output symbolic; otherwise an octal number is output
 
 Exit Status:
 Returns success unless MODE is invalid or an invalid option is given.
@@ -83,18 +83,18 @@ umask_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "Sp")) != -1)
     {
       switch (opt)
-	{
-	case 'S':
-	  print_symbolically++;
-	  break;
-	case 'p':
-	  pflag++;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'S':
+          print_symbolically++;
+          break;
+        case 'p':
+          pflag++;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
 
   list = loptend;
@@ -102,41 +102,41 @@ umask_builtin (WORD_LIST *list)
   if (list)
     {
       if (DIGIT (*list->word->word))
-	{
-	  umask_value = read_octal (list->word->word);
+        {
+          umask_value = read_octal (list->word->word);
 
-	  /* Note that other shells just let you set the umask to zero
-	     by specifying a number out of range.  This is a problem
-	     with those shells.  We don't change the umask if the input
-	     is lousy. */
-	  if (umask_value == -1)
-	    {
-	      sh_erange (list->word->word, _("octal number"));
-	      return (EXECUTION_FAILURE);
-	    }
-	}
+          /* Note that other shells just let you set the umask to zero
+             by specifying a number out of range.  This is a problem
+             with those shells.  We don't change the umask if the input
+             is lousy. */
+          if (umask_value == -1)
+            {
+              sh_erange (list->word->word, _("octal number"));
+              return (EXECUTION_FAILURE);
+            }
+        }
       else
-	{
-	  umask_value = symbolic_umask (list);
-	  if (umask_value == -1)
-	    return (EXECUTION_FAILURE);
-	}
+        {
+          umask_value = symbolic_umask (list);
+          if (umask_value == -1)
+            return (EXECUTION_FAILURE);
+        }
       umask_arg = (mode_t)umask_value;
       umask (umask_arg);
       if (print_symbolically)
-	print_symbolic_umask (umask_arg);
+        print_symbolic_umask (umask_arg);
     }
-  else				/* Display the UMASK for this user. */
+  else                          /* Display the UMASK for this user. */
     {
       umask_arg = umask (022);
       umask (umask_arg);
 
       if (pflag)
-	printf ("umask%s ", (print_symbolically ? " -S" : ""));
+        printf ("umask%s ", (print_symbolically ? " -S" : ""));
       if (print_symbolically)
-	print_symbolic_umask (umask_arg);
+        print_symbolic_umask (umask_arg);
       else
-	printf ("%04lo\n", (unsigned long)umask_arg);
+        printf ("%04lo\n", (unsigned long)umask_arg);
     }
 
   return (sh_chkwrite (EXECUTION_SUCCESS));
@@ -147,7 +147,7 @@ umask_builtin (WORD_LIST *list)
 static void
 print_symbolic_umask (mode_t um)
 {
-  char ubits[4], gbits[4], obits[4];		/* u=rwx,g=rwx,o=rwx */
+  char ubits[4], gbits[4], obits[4];            /* u=rwx,g=rwx,o=rwx */
   int i;
 
   i = 0;
@@ -184,24 +184,24 @@ static inline mode_t
 copyuser (mode_t mask)
 {
   return ((mask & S_IRUSR) ? S_IRUGO : 0) |
-	 ((mask & S_IWUSR) ? S_IWUGO : 0) |
-	 ((mask & S_IXUSR) ? S_IXUGO : 0);
+         ((mask & S_IWUSR) ? S_IWUGO : 0) |
+         ((mask & S_IXUSR) ? S_IXUGO : 0);
 }
 
 static inline mode_t
 copygroup (mode_t mask)
 {
   return ((mask & S_IRGRP) ? S_IRUGO : 0) |
-	 ((mask & S_IWGRP) ? S_IWUGO : 0) |
-	 ((mask & S_IXGRP) ? S_IXUGO : 0);
+         ((mask & S_IWGRP) ? S_IWUGO : 0) |
+         ((mask & S_IXGRP) ? S_IXUGO : 0);
 }
 
 static inline mode_t
 copyother (mode_t mask)
 {
   return ((mask & S_IROTH) ? S_IRUGO : 0) |
-	 ((mask & S_IWOTH) ? S_IWUGO : 0) |
-	 ((mask & S_IXOTH) ? S_IXUGO : 0);
+         ((mask & S_IWOTH) ? S_IWUGO : 0) |
+         ((mask & S_IXOTH) ? S_IXUGO : 0);
 }
 
 int
@@ -218,129 +218,129 @@ parse_symbolic_mode (char *mode, mode_t initial_bits)
 
       /* Parse the `who' portion of the symbolic mode clause. */
       while (member (*s, "agou"))
-	{
-	  switch (c = *s++)
-	    {
-	    case 'u':
-	      who |= S_IRWXU;
-	      continue;
-	    case 'g':
-	      who |= S_IRWXG;
-	      continue;
-	    case 'o':
-	      who |= S_IRWXO;
-	      continue;
-	    case 'a':
-	      who |= S_IRWXU | S_IRWXG | S_IRWXO;
-	      continue;
-	    default:
-	      break;
-	    }
-	}
+        {
+          switch (c = *s++)
+            {
+            case 'u':
+              who |= S_IRWXU;
+              continue;
+            case 'g':
+              who |= S_IRWXG;
+              continue;
+            case 'o':
+              who |= S_IRWXO;
+              continue;
+            case 'a':
+              who |= S_IRWXU | S_IRWXG | S_IRWXO;
+              continue;
+            default:
+              break;
+            }
+        }
 
       /* default `who' is `a' */
       if (who == 0)
-	who = S_IRWXU | S_IRWXG | S_IRWXO;
+        who = S_IRWXU | S_IRWXG | S_IRWXO;
 
       /* The operation is now sitting in *s. */
 start_op:
       perm = 0;
       op = *s++;
       switch (op)
-	{
-	case '+':
-	case '-':
-	case '=':
-	  break;
-	default:
-	  builtin_error (_("`%c': invalid symbolic mode operator"), op);
-	  return (-1);
-	}
+        {
+        case '+':
+        case '-':
+        case '=':
+          break;
+        default:
+          builtin_error (_("`%c': invalid symbolic mode operator"), op);
+          return (-1);
+        }
 
       /* Parse out the `action' section of the symbolic mode clause. An
-	 action can be a set of permissions (rwxXst), a copy specification
-	 (ugo), or another op (+-=). */
+         action can be a set of permissions (rwxXst), a copy specification
+         (ugo), or another op (+-=). */
       while (member (*s, "rwxXstugo"))
-	{
-	  switch (*s)
-	    {
-	    /* First the copy specification */
-	    case 'u':
-	      perm = copyuser (initial_bits);
-	      break;
-	    case 'g':
-	      perm = copygroup (initial_bits);
-	      break;
-	    case 'o':
-	      perm = copyother (initial_bits);
-	      break;
+        {
+          switch (*s)
+            {
+            /* First the copy specification */
+            case 'u':
+              perm = copyuser (initial_bits);
+              break;
+            case 'g':
+              perm = copygroup (initial_bits);
+              break;
+            case 'o':
+              perm = copyother (initial_bits);
+              break;
 
-	    /* Then the permissions. */
-	    case 'r':
-	      perm |= S_IRUGO;
-	      break;
-	    case 'w':
-	      perm |= S_IWUGO;
-	      break;
-	    case 'X':
-	      /* for chmod, this includes S_ISDIR but that doesn't make sense here */
-	      if ((initial_bits & S_IXUGO) == 0)
-		break;		/* no-op if original mask doesn't include execute bits */
-	      /* FALLTHROUGH */
-	    case 'x':
-	      perm |= S_IXUGO;
-	      break;
-	    case 's':
+            /* Then the permissions. */
+            case 'r':
+              perm |= S_IRUGO;
+              break;
+            case 'w':
+              perm |= S_IWUGO;
+              break;
+            case 'X':
+              /* for chmod, this includes S_ISDIR but that doesn't make sense here */
+              if ((initial_bits & S_IXUGO) == 0)
+                break;          /* no-op if original mask doesn't include execute bits */
+              /* FALLTHROUGH */
+            case 'x':
+              perm |= S_IXUGO;
+              break;
+            case 's':
 #ifdef S_ISUID
-	      perm |= S_ISUID | S_ISGID;
-	      break;
+              perm |= S_ISUID | S_ISGID;
+              break;
 #else
-	      goto spec_error;
+              goto spec_error;
 #endif
-	    case 't':
+            case 't':
 #ifdef S_ISVTX
-	      perm |= S_ISVTX;
-	      break;
+              perm |= S_ISVTX;
+              break;
 #else
-	      goto spec_error;
+              goto spec_error;
 #endif
-	    }
-	  s++;
-	}
+            }
+          s++;
+        }
 
       /* Now perform the operation or return an error for a
-	 bad permission string. */
+         bad permission string. */
       perm &= who;
 
       switch (op)
-	{
-	case '+':
-	  bits |= perm;
-	  break;
-	case '-':
-	  bits &= ~perm;
-	  break;
-	case '=':
-	  bits &= ~who;
-	  bits |= perm;
-	  break;
-	}
+        {
+        case '+':
+          bits |= perm;
+          break;
+        case '-':
+          bits &= ~perm;
+          break;
+        case '=':
+          bits &= ~who;
+          bits |= perm;
+          break;
+        }
 
       /* Break if the end of the action string, loop if we're going to parse
-	 another `who', go back to parsing another op if we have an op spec
-	 (+-=). Return an invalid mode character error for everything else. */
+         another `who', go back to parsing another op if we have an op spec
+         (+-=). Return an invalid mode character error for everything else. */
       if (*s == '\0')
-	break;
+        break;
       else if (*s == ',')
-	s++;	/* skip past ',' */
+        s++;    /* skip past ',' */
       else if (*s == '+' || *s == '-' || *s == '=')
-	goto start_op;
+        goto start_op;
       else
-	{
+        {
 spec_error:
-	  builtin_error (_("`%c': invalid symbolic mode character"), *s);
-	  return (-1);
-	}
+          builtin_error (_("`%c': invalid symbolic mode character"), *s);
+          return (-1);
+        }
     }
 
   return (bits);

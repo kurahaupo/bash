@@ -13,36 +13,36 @@
 #
 fff()
 {
-	typeset i=0 x=10
-	echo "|$i|$x|"
-	export x
-	printenv x
+        typeset i=0 x=10
+        echo "|$i|$x|"
+        export x
+        printenv x
 }
 
 fff2()
 {
-	echo "|$x|"
-	export x
-	printenv x
+        echo "|$x|"
+        export x
+        printenv x
 }
 
 fff3()
 {
-	typeset i=0 x="${x-10}"
-	echo "|$i|$x|"
+        typeset i=0 x="${x-10}"
+        echo "|$i|$x|"
 }
 
 fff4()
 {
-	typeset i=0 x
-	x="${x-10}"
-	echo "|$i|$x|"
+        typeset i=0 x
+        x="${x-10}"
+        echo "|$i|$x|"
 }
 
 fff5()
 {
-	z=y typeset z
-	echo "|$z|"
+        z=y typeset z
+        echo "|$z|"
 }
 
 fff

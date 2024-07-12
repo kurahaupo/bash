@@ -46,7 +46,7 @@
 #  include "ansi_stdlib.h"
 #endif /* HAVE_STDLIB_H */
 
-#include "rldefs.h"	// STREQ, savestring
+#include "rldefs.h"     // STREQ, savestring
 #include "readline.h"
 #include "rlprivate.h"
 #include "rlshell.h"
@@ -102,31 +102,31 @@ struct bin_str _rl_color_indicator[] =
 
 static bool
 get_funky_string (char **dest, const char **src, bool equals_end, size_t *output_count) {
-  char num;			/* For numerical codes */
-  size_t count;			/* Something to count with */
+  char num;                     /* For numerical codes */
+  size_t count;                 /* Something to count with */
   enum {
     ST_GND, ST_BACKSLASH, ST_OCTAL, ST_HEX, ST_CARET, ST_END, ST_ERROR
   } state;
   const char *p;
   char *q;
 
-  p = *src;			/* We don't want to double-indirect */
-  q = *dest;			/* the whole darn time.  */
+  p = *src;                     /* We don't want to double-indirect */
+  q = *dest;                    /* the whole darn time.  */
 
-  count = 0;			/* No characters counted in yet.  */
+  count = 0;                    /* No characters counted in yet.  */
   num = 0;
 
-  state = ST_GND;		/* Start in ground state.  */
+  state = ST_GND;               /* Start in ground state.  */
   while (state < ST_END)
     {
       switch (state)
         {
-        case ST_GND:		/* Ground state (no escapes) */
+        case ST_GND:            /* Ground state (no escapes) */
           switch (*p)
             {
             case ':':
             case '\0':
-              state = ST_END;	/* End of string */
+              state = ST_END;   /* End of string */
               break;
             case '\\':
               state = ST_BACKSLASH; /* Backslash scape sequence */
@@ -150,7 +150,7 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
             }
           break;
 
-        case ST_BACKSLASH:	/* Backslash escaped character */
+        case ST_BACKSLASH:      /* Backslash escaped character */
           switch (*p)
             {
             case '0':
@@ -161,48 +161,48 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
             case '5':
             case '6':
             case '7':
-              state = ST_OCTAL;	/* Octal sequence */
+              state = ST_OCTAL; /* Octal sequence */
               num = *p - '0';
               break;
             case 'x':
             case 'X':
-              state = ST_HEX;	/* Hex sequence */
+              state = ST_HEX;   /* Hex sequence */
               num = 0;
               break;
-            case 'a':		/* Bell */
+            case 'a':           /* Bell */
               num = '\a';
               break;
-            case 'b':		/* Backspace */
+            case 'b':           /* Backspace */
               num = '\b';
               break;
-            case 'e':		/* Escape */
+            case 'e':           /* Escape */
               num = 27;
               break;
-            case 'f':		/* Form feed */
+            case 'f':           /* Form feed */
               num = '\f';
               break;
-            case 'n':		/* Newline */
+            case 'n':           /* Newline */
               num = '\n';
               break;
-            case 'r':		/* Carriage return */
+            case 'r':           /* Carriage return */
               num = '\r';
               break;
-            case 't':		/* Tab */
+            case 't':           /* Tab */
               num = '\t';
               break;
-            case 'v':		/* Vtab */
+            case 'v':           /* Vtab */
               num = '\v';
               break;
-            case '?':		/* Delete */
+            case '?':           /* Delete */
               num = 127;
               break;
-            case '_':		/* Space */
+            case '_':           /* Space */
               num = ' ';
               break;
-            case '\0':		/* End of string */
-              state = ST_ERROR;	/* Error! */
+            case '\0':          /* End of string */
+              state = ST_ERROR; /* Error! */
               break;
-            default:		/* Escaped character like \ ^ : = */
+            default:            /* Escaped character like \ ^ : = */
               num = *p;
               break;
             }
@@ -215,7 +215,7 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
           ++p;
           break;
 
-        case ST_OCTAL:		/* Octal sequence */
+        case ST_OCTAL:          /* Octal sequence */
           if (*p < '0' || *p > '7')
             {
               *(q++) = num;
@@ -226,7 +226,7 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
             num = (num << 3) + (*(p++) - '0');
           break;
 
-        case ST_HEX:		/* Hex sequence */
+        case ST_HEX:            /* Hex sequence */
           switch (*p)
             {
             case '0':
@@ -265,8 +265,8 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
             }
           break;
 
-        case ST_CARET:		/* Caret escape */
-          state = ST_GND;	/* Should be the next state... */
+        case ST_CARET:          /* Caret escape */
+          state = ST_GND;       /* Should be the next state... */
           if (*p >= '@' && *p <= '~')
             {
               *(q++) = *(p++) & 037;
@@ -282,8 +282,8 @@ get_funky_string (char **dest, const char **src, bool equals_end, size_t *output
           break;
 
         default:
-	  /* should we ? */
-          /* abort ();	no, we should not */
+          /* should we ? */
+          /* abort ();  no, we should not */
           state = ST_ERROR;
           break;
         }
@@ -310,18 +310,18 @@ free_color_ext_list (void)
       free (e2);
     }
 
-  _rl_color_ext_list = 0;  
+  _rl_color_ext_list = 0;
 }
 
 void _rl_parse_colors(void)
 {
 #if defined (COLOR_SUPPORT)
-  const char *p;		/* Pointer to character being parsed */
-  char *buf;			/* color_buf buffer pointer */
-  int state;			/* State of parser */
-  int ind_no;			/* Indicator number */
-  char label[3];		/* Indicator label */
-  COLOR_EXT_TYPE *ext;		/* Extension we are working on */
+  const char *p;                /* Pointer to character being parsed */
+  char *buf;                    /* color_buf buffer pointer */
+  int state;                    /* State of parser */
+  int ind_no;                   /* Indicator number */
+  char label[3];                /* Indicator label */
+  COLOR_EXT_TYPE *ext;          /* Extension we are working on */
 
   p = sh_get_env_value ("LS_COLORS");
   if (p == 0 || *p == '\0')
@@ -344,7 +344,7 @@ void _rl_parse_colors(void)
     {
       switch (state)
         {
-        case 1:		/* First label character */
+        case 1:         /* First label character */
           switch (*p)
             {
             case ':':
@@ -369,28 +369,28 @@ void _rl_parse_colors(void)
               break;
 
             case '\0':
-              state = 0;	/* Done! */
+              state = 0;        /* Done! */
               break;
 
-            default:	/* Assume it is file type label */
+            default:    /* Assume it is file type label */
               label[0] = *(p++);
               state = 2;
               break;
             }
           break;
 
-        case 2:		/* Second label character */
+        case 2:         /* Second label character */
           if (*p)
             {
               label[1] = *(p++);
               state = 3;
             }
           else
-            state = -1;	/* Error */
+            state = -1; /* Error */
           break;
 
-        case 3:		/* Equal sign after indicator label */
-          state = -1;	/* Assume failure...  */
+        case 3:         /* Equal sign after indicator label */
+          state = -1;   /* Assume failure...  */
           if (*(p++) == '=')/* It *should* be...  */
             {
               for (ind_no = 0; indicator_name[ind_no] != NULL; ++ind_no)
@@ -405,20 +405,20 @@ void _rl_parse_colors(void)
                     }
                 }
               if (state == -1)
-		{
+                {
                   _rl_errmsg ("LS_COLORS: unrecognized prefix: %s", label);
                   /* recover from an unrecognized prefix */
                   while (p && *p && *p != ':')
-		    p++;
-		  if (p && *p == ':')
-		    state = 1;
-		  else if (p && *p == 0)
-		    state = 0;
-		}
+                    p++;
+                  if (p && *p == ':')
+                    state = 1;
+                  else if (p && *p == 0)
+                    state = 0;
+                }
             }
           break;
 
-        case 4:		/* Equal sign after *.ext */
+        case 4:         /* Equal sign after *.ext */
           if (*(p++) == '=')
             {
               ext->seq.string = buf;
@@ -429,7 +429,7 @@ void _rl_parse_colors(void)
             state = -1;
           /* XXX - recover here as with an unrecognized prefix? */
           if (state == -1 && ext->ext.string)
-	    _rl_errmsg ("LS_COLORS: syntax error: %s", ext->ext.string);
+            _rl_errmsg ("LS_COLORS: syntax error: %s", ext->ext.string);
           break;
         }
     }
@@ -439,10 +439,10 @@ void _rl_parse_colors(void)
 
       _rl_errmsg ("unparsable value for LS_COLORS environment variable");
       free (color_buf);
-      free_color_ext_list ();      
+      free_color_ext_list ();
 
-      _rl_colored_stats = 0;	/* can't have colored stats without colors */
-      _rl_colored_completion_prefix = 0;	/* or colored prefixes */
+      _rl_colored_stats = 0;    /* can't have colored stats without colors */
+      _rl_colored_completion_prefix = 0;        /* or colored prefixes */
     }
 #else /* !COLOR_SUPPORT */
   ;
@@ -456,9 +456,9 @@ rl_reparse_colors (void)
 
   v = sh_get_env_value ("LS_COLORS");
   if (v == 0 && color_buf == 0)
-    return;		/* no change */
+    return;             /* no change */
   if (v && color_buf && STREQ (v, color_buf))
-    return;		/* no change */
+    return;             /* no change */
 
   free (color_buf);
   free_color_ext_list ();

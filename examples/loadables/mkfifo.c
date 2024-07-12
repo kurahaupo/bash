@@ -40,7 +40,7 @@
 extern int errno;
 #endif
 
-#define ISOCTAL(c)	((c) >= '0' && (c) <= '7')
+#define ISOCTAL(c)      ((c) >= '0' && (c) <= '7')
 
 extern int parse_symbolic_mode (char *, mode_t);
 
@@ -60,14 +60,14 @@ mkfifo_builtin (WORD_LIST *list)
   while ((opt = internal_getopt(list, "m:")) != -1)
     switch (opt)
       {
-	case 'm':
-	  mflag = 1;
-	  mode = list_optarg;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage();
-	  return (EX_USAGE);
+        case 'm':
+          mflag = 1;
+          mode = list_optarg;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage();
+          return (EX_USAGE);
       }
   list = loptend;
 
@@ -80,24 +80,24 @@ mkfifo_builtin (WORD_LIST *list)
   basemode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
   if (mode == NULL)
     omode = basemode;
-  else if (ISOCTAL (*mode))	/* octal number */
+  else if (ISOCTAL (*mode))     /* octal number */
     {
       omode = read_octal (mode);
       if (omode < 0)
-	{
-	  builtin_error ("invalid file mode: %s", mode);
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("invalid file mode: %s", mode);
+          return (EXECUTION_FAILURE);
+        }
     }
-  else 				/* symbolic mode */
+  else                          /* symbolic mode */
     {
       /* initial bits are a=rwx; the mode argument modifies them */
       omode = parse_symbolic_mode (mode, basemode);
       if (omode < 0)
-	{
-	  builtin_error ("invalid file mode: %s", mode);
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("invalid file mode: %s", mode);
+          return (EXECUTION_FAILURE);
+        }
     }
 
   /* Make the new mode */
@@ -121,25 +121,25 @@ mkfifo_builtin (WORD_LIST *list)
 
 
 char *mkfifo_doc[] = {
-	"Create FIFOs (named pipes).",
-	"",
-	"Make FIFOs.  Create the FIFOs named as arguments, in",
-	"the order specified, using mode a=rw as modified by the current",
-	"umask (see `help umask').  The -m option causes the file permission",
-	"bits of the final FIFO to be MODE.  The MODE argument may be",
-	"an octal number or a symbolic mode like that used by chmod(1).  If",
-	"a symbolic mode is used, the operations are interpreted relative to",
-	"an initial mode of \"a=rw\".  mkfifo returns 0 if the FIFOs are",
-	"umask, plus write and search permissions for the owner.  mkdir",
-	"created successfully, and non-zero if an error occurs.",
-	(char *)NULL
+        "Create FIFOs (named pipes).",
+        "",
+        "Make FIFOs.  Create the FIFOs named as arguments, in",
+        "the order specified, using mode a=rw as modified by the current",
+        "umask (see `help umask').  The -m option causes the file permission",
+        "bits of the final FIFO to be MODE.  The MODE argument may be",
+        "an octal number or a symbolic mode like that used by chmod(1).  If",
+        "a symbolic mode is used, the operations are interpreted relative to",
+        "an initial mode of \"a=rw\".  mkfifo returns 0 if the FIFOs are",
+        "umask, plus write and search permissions for the owner.  mkdir",
+        "created successfully, and non-zero if an error occurs.",
+        (char *)NULL
 };
 
 struct builtin mkfifo_struct = {
-	"mkfifo",
-	mkfifo_builtin,
-	BUILTIN_ENABLED,
-	mkfifo_doc,
-	"mkfifo [-m mode] fifo_name [fifo_name ...]",
-	0
+        "mkfifo",
+        mkfifo_builtin,
+        BUILTIN_ENABLED,
+        mkfifo_doc,
+        "mkfifo [-m mode] fifo_name [fifo_name ...]",
+        0
 };

@@ -55,16 +55,16 @@ main (int argc, char **argv)
   for (i = strlen (progname); i > 0; i--)
     if (progname[i] == '/')
       {
-	progname = progname + i + 1;
-	break;
+        progname = progname + i + 1;
+        break;
       }
 
   strcpy (source_name, progname);
   for (i = strlen (source_name); i > 0; i--)
     if (source_name[i] == '.')
       {
-	source_name[i] = '\0';
-	break;
+        source_name[i] = '\0';
+        break;
       }
 
   strcat (source_name, ".c");
@@ -88,7 +88,7 @@ main (int argc, char **argv)
   if (!stream)
     {
       fprintf (stderr, "%s: %s Cannot be opened or written to.\n",
-	       progname, stream_name);
+               progname, stream_name);
       exit (2);
     }
 
@@ -113,8 +113,8 @@ main (int argc, char **argv)
   else
     {
       fprintf (stderr,
-	       "%s: sizeof (long int) = %d, which isn't handled here.\n",
-	       progname, sizeof (long int));
+               "%s: sizeof (long int) = %d, which isn't handled here.\n",
+               progname, sizeof (long int));
       exit (2);
     }
 
@@ -132,7 +132,7 @@ main (int argc, char **argv)
 "/* This file was automatically created by `%s'.  You shouldn't\n\
    edit this file, because your changes will be overwritten.  Instead,\n\
    edit the source code file `%s'. */\n\n",
-	   progname, source_name);
+           progname, source_name);
 
   fprintf (stream, "#if !defined (%s)\n", endian_define);
   fprintf (stream, "#  define %s\n", endian_define);

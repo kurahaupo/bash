@@ -77,8 +77,8 @@ unset -f setexit
 # posix interp 1602: return in function does not cause end of trap action
 ReturnFalse()
 {
-	false ; return
+        false ; return
 }
 
 trap 'ReturnFalse && echo "woops"' EXIT
-(exit 0)	# set exit status
+(exit 0)        # set exit status

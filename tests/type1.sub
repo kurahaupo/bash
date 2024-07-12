@@ -1,6 +1,6 @@
 foo()
 {
-	echo $(<x1)
+        echo $(<x1)
 }
 
 type foo

@@ -1,5 +1,5 @@
 /* input_avail.c -- check whether or not data is available for reading on a
-		    specified file descriptor. */
+                    specified file descriptor. */
 
 /* Copyright (C) 2008,2009-2019,2022 Free Software Foundation, Inc.
 
@@ -55,7 +55,7 @@ extern int errno;
 #endif /* !errno */
 
 #if !defined (O_NDELAY) && defined (O_NONBLOCK)
-#  define O_NDELAY O_NONBLOCK	/* Posix style */
+#  define O_NDELAY O_NONBLOCK   /* Posix style */
 #endif
 
 /* Return >= 1 if select/FIONREAD indicates data available for reading on

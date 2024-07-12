@@ -34,5 +34,5 @@ foo_word='foo'
 case "$foo_word"
 in
         foo) ;;
-	*) echo failed 3;;
+        *) echo failed 3;;
 esac

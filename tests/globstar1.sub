@@ -18,8 +18,8 @@ wdir=$PWD
 DIR=$TMPDIR/globstar-$$
 mkdir -p $DIR
 cd $DIR || {
-	echo "$DIR: cannot cd" >&2
-	exit 1
+        echo "$DIR: cannot cd" >&2
+        exit 1
 }
 mkdir -p foo/{a,b} bar/{c,d,foo/{e,f}} baz/{g,h}
 

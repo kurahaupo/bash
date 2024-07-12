@@ -3,7 +3,7 @@
 /* Copyright (C) 1996-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ static int utf8locale (char *);
 #define RL_DEFAULT_LOCALE "C"
 static char *_rl_current_locale = 0;
 
-#if !defined (HAVE_SETLOCALE)    
+#if !defined (HAVE_SETLOCALE)
 /* A list of legal values for the LANG or LC_CTYPE environment variables.
    If a locale name in this list is the value for the LC_ALL, LC_CTYPE,
    or LANG environment variable (using the first of those with a value),
@@ -141,7 +141,7 @@ _rl_init_locale (void)
     lspec = setlocale (LC_CTYPE, (char *)NULL);
   if (lspec == 0)
     lspec = "";
-  ret = setlocale (LC_CTYPE, lspec);	/* ok, since it does not change locale */
+  ret = setlocale (LC_CTYPE, lspec);    /* ok, since it does not change locale */
   if (ret == 0 || *ret == 0)
     ret = setlocale (LC_CTYPE, (char *)NULL);
   if (ret == 0 || *ret == 0)
@@ -199,13 +199,13 @@ _rl_set_localevars (char *localestr, int force)
   for (i = 0; t && legal_lang_values[i]; i++)
     if (STREQ (t, legal_lang_values[i]))
       {
-	_rl_meta_flag = 1;
-	_rl_convert_meta_chars_to_ascii = 0;
-	_rl_output_meta_chars = 1;
-	break;
+        _rl_meta_flag = 1;
+        _rl_convert_meta_chars_to_ascii = 0;
+        _rl_output_meta_chars = 1;
+        break;
       }
 
-  if (force && legal_lang_values[i] == 0)	/* didn't find it */
+  if (force && legal_lang_values[i] == 0)       /* didn't find it */
     {
       /* Default "C" locale settings. */
       _rl_meta_flag = 0;
@@ -229,7 +229,7 @@ _rl_init_eightbit (void)
   char *t, *ol;
 
   ol = _rl_current_locale;
-  t = _rl_init_locale ();	/* resets _rl_current_locale, returns static pointer */
+  t = _rl_init_locale ();       /* resets _rl_current_locale, returns static pointer */
   xfree (ol);
 
   return (_rl_set_localevars (t, 0));
@@ -252,10 +252,10 @@ normalize_codeset (char *codeset)
   for (len = 0, i = 0; i < namelen; i++)
     {
       if (ISALNUM ((unsigned char)codeset[i]))
-	{
-	  len++;
-	  all_digits &= _rl_digit_p (codeset[i]);
-	}
+        {
+          len++;
+          all_digits &= _rl_digit_p (codeset[i]);
+        }
     }
 
   retval = (char *)malloc ((all_digits ? 3 : 0) + len + 1);
@@ -297,7 +297,7 @@ find_codeset (char *name, size_t *lenp)
   /* This does not make sense: language has to be specified.  As
      an exception we allow the variable to contain only the codeset
      name.  Perhaps there are funny codeset names.  */
-  if (language == cp) 
+  if (language == cp)
     {
       *lenp = strlen (language);
       result = language;
@@ -306,27 +306,27 @@ find_codeset (char *name, size_t *lenp)
     {
       /* Next is the territory. */
       if (*cp == '_')
-	do
-	  ++cp;
-	while (*cp && *cp != '.' && *cp != '@' && *cp != '+' && *cp != ',' && *cp != '_');
+        do
+          ++cp;
+        while (*cp && *cp != '.' && *cp != '@' && *cp != '+' && *cp != ',' && *cp != '_');
 
       /* Now, finally, is the codeset. */
       result = cp;
       if (*cp == '.')
-	do
-	  ++cp;
-	while (*cp && *cp != '@');
+        do
+          ++cp;
+        while (*cp && *cp != '@');
 
       if (cp - result > 2)
-	{
-	  result++;
-	  *lenp = cp - result;
-	}
+        {
+          result++;
+          *lenp = cp - result;
+        }
       else
-	{
-	  *lenp = strlen (language);
-	  result = language;
-	}
+        {
+          *lenp = strlen (language);
+          result = language;
+        }
     }
 
   return result;
@@ -340,7 +340,7 @@ _rl_reset_locale (void)
   /* This should not be NULL; _rl_init_eightbit sets it on the first call to
      readline() or rl_initialize(). */
   ol = _rl_current_locale;
-  nl = _rl_init_locale ();		/* resets _rl_current_locale */
+  nl = _rl_init_locale ();              /* resets _rl_current_locale */
 
   if ((ol == 0 && nl) || (ol && nl && (STREQ (ol, nl) == 0)))
     (void)_rl_set_localevars (nl, 1);

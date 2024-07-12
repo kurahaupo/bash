@@ -3,7 +3,7 @@
 /* Copyright (C) 1987, 1989, 1992-2015, 2017, 2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -119,11 +119,11 @@ rl_insert_close (int count, int invoking_key)
       _rl_insert_char (1, invoking_key);
       (*rl_redisplay_function) ();
       match_point =
-	find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
+        find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
 
       /* Emacs might message or ring the bell here, but I don't. */
       if (match_point < 0)
-	return 1;
+        return 1;
 
       FD_ZERO (&readfds);
       FD_SET (fileno (rl_instream), &readfds);
@@ -160,22 +160,22 @@ find_matching_open (char *string, int from, int closer)
       return (-1);
     }
 
-  level = 1;			/* The closer passed in counts as 1. */
-  delimiter = 0;		/* Delimited state unknown. */
+  level = 1;                    /* The closer passed in counts as 1. */
+  delimiter = 0;                /* Delimited state unknown. */
 
   for (i = from; i > -1; i--)
     {
       if (delimiter && (string[i] == delimiter))
-	delimiter = 0;
+        delimiter = 0;
       else if (rl_basic_quote_characters && strchr (rl_basic_quote_characters, string[i]))
-	delimiter = string[i];
+        delimiter = string[i];
       else if (!delimiter && (string[i] == closer))
-	level++;
+        level++;
       else if (!delimiter && (string[i] == opener))
-	level--;
+        level--;
 
       if (!level)
-	break;
+        break;
     }
   return (i);
 }

@@ -40,9 +40,9 @@
 #endif
 
 /* **************************************************************** */
-/*								    */
-/*		Functions to manage arrays of strings		    */
-/*								    */
+/*                                                                  */
+/*              Functions to manage arrays of strings               */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Find STRING in ALIST, a list of string key/int value pairs.  If FLAGS
@@ -57,13 +57,13 @@ find_string_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
     {
 #if defined (EXTENDED_GLOB)
       if (flags)
-	r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
+        r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
       else
 #endif
-	r = STREQ (string, alist[i].word);
+        r = STREQ (string, alist[i].word);
 
       if (r)
-	return (alist[i].token);
+        return (alist[i].token);
     }
   return -1;
 }
@@ -94,22 +94,22 @@ find_index_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
     {
 #if defined (EXTENDED_GLOB)
       if (flags)
-	r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
+        r = strmatch (alist[i].word, string, FNM_EXTMATCH) != FNM_NOMATCH;
       else
 #endif
-	r = STREQ (string, alist[i].word);
+        r = STREQ (string, alist[i].word);
 
       if (r)
-	return (i);
+        return (i);
     }
 
   return -1;
 }
 
 /* **************************************************************** */
-/*								    */
-/*		    String Management Functions			    */
-/*								    */
+/*                                                                  */
+/*                  String Management Functions                     */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Cons a new string from STRING starting at START and ending at END,
@@ -142,26 +142,26 @@ strsub (const char *string, const char *pat, const char *rep, int global)
   for (temp = NULL, i = templen = tempsize = 0, repl = 1; string[i]; )
     {
       if (repl && STREQN (string + i, pat, patlen))
-	{
-	  if (replen)
-	    RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
+        {
+          if (replen)
+            RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
 
 #if 0
-	  for (r = (char *)rep; *r; )	/* can rep == "" */
-	    temp[templen++] = *r++;
+          for (r = (char *)rep; *r; )   /* can rep == "" */
+            temp[templen++] = *r++;
 #else
-	  memcpy (temp + templen, rep, replen);
-	  templen += replen;
+          memcpy (temp + templen, rep, replen);
+          templen += replen;
 #endif
 
-	  i += patlen ? patlen : 1;	/* avoid infinite recursion */
-	  repl = global != 0;
-	}
+          i += patlen ? patlen : 1;     /* avoid infinite recursion */
+          repl = global != 0;
+        }
       else
-	{
-	  RESIZE_MALLOCED_BUFFER (temp, templen, 1, tempsize, 16);
-	  temp[templen++] = string[i++];
-	}
+        {
+          RESIZE_MALLOCED_BUFFER (temp, templen, 1, tempsize, 16);
+          temp[templen++] = string[i++];
+        }
     }
   if (temp)
     temp[templen] = 0;
@@ -192,40 +192,40 @@ strcreplace (const char *string, int c, const char *text, int flags)
   for (p = string, r = ret; p && *p; )
     {
       if (*p == c)
-	{
-	  if (len)
-	    {
-	      ind = r - ret;
-	      if (do_glob && (glob_pattern_p (text) || strchr (text, '\\')))
-		{
-		  t = quote_globbing_chars (text);
-		  tlen = strlen (t);
-		  RESIZE_MALLOCED_BUFFER (ret, ind, tlen, rlen, rlen);
-		  r = ret + ind;	/* in case reallocated */
-		  strcpy (r, t);
-		  r += tlen;
-		  free (t);
-		}
-	      else
-		{
-		  RESIZE_MALLOCED_BUFFER (ret, ind, len, rlen, rlen);
-		  r = ret + ind;	/* in case reallocated */
-		  strcpy (r, text);
-		  r += len;
-		}
-	    }
-	  p++;
-	  continue;
-	}
+        {
+          if (len)
+            {
+              ind = r - ret;
+              if (do_glob && (glob_pattern_p (text) || strchr (text, '\\')))
+                {
+                  t = quote_globbing_chars (text);
+                  tlen = strlen (t);
+                  RESIZE_MALLOCED_BUFFER (ret, ind, tlen, rlen, rlen);
+                  r = ret + ind;        /* in case reallocated */
+                  strcpy (r, t);
+                  r += tlen;
+                  free (t);
+                }
+              else
+                {
+                  RESIZE_MALLOCED_BUFFER (ret, ind, len, rlen, rlen);
+                  r = ret + ind;        /* in case reallocated */
+                  strcpy (r, text);
+                  r += len;
+                }
+            }
+          p++;
+          continue;
+        }
 
       if (*p == '\\' && p[1] == c)
-	p++;
+        p++;
       else if (escape_backslash && *p == '\\' && p[1] == '\\')
-	p++;
+        p++;
 
       ind = r - ret;
       RESIZE_MALLOCED_BUFFER (ret, ind, 2, rlen, rlen);
-      r = ret + ind;			/* in case reallocated */
+      r = ret + ind;                    /* in case reallocated */
       *r++ = *p++;
     }
   *r = '\0';
@@ -262,16 +262,16 @@ strip_trailing (char *string, int len, int newlines_only)
   while (len >= 0)
     {
       if ((newlines_only && string[len] == '\n') ||
-	  (!newlines_only && whitespace (string[len])))
-	{
-	  len--;
+          (!newlines_only && whitespace (string[len])))
+        {
+          len--;
 #ifdef __MSYS__
-	  if (newlines_only && string[len + 1] == '\n' && string[len] == '\r')
-	    len--;
+          if (newlines_only && string[len + 1] == '\n' && string[len] == '\r')
+            len--;
 #endif
-	}
+        }
       else
-	break;
+        break;
     }
   string[len + 1] = '\0';
 }
@@ -295,7 +295,7 @@ str_lastsame (const char *old, const char *new)
   const char *o, *n;
 
   if (old == 0 || *old == '\0' || new == 0 || *new == '\0')
-    return 0;	/* XXX */
+    return 0;   /* XXX */
 
   o = old + STRLEN (old) - 1;
   n = new + STRLEN (new) - 1;

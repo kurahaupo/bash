@@ -59,7 +59,7 @@ unset A
 declare -A A
 
 for k in $'\t' ' ' ']' '*' '@'; do
-	printf -v "A[$k]" "%s" X
+        printf -v "A[$k]" "%s" X
 done
 declare -p A
 
@@ -104,4 +104,3 @@ test -v assoc["$key"] ; echo $?
 
 unset assoc
 shopt -u assoc_expand_once
-

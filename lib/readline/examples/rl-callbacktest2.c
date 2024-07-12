@@ -75,33 +75,33 @@ cb_readline (void)
     {
       r = err = 0;
       /* Enter a simple event loop.  This waits until something is available
-	 to read on readline's input stream (defaults to standard input) and
-	 calls the builtin character read callback to read it.  It does not
-	 have to modify the user's terminal settings. */
+         to read on readline's input stream (defaults to standard input) and
+         calls the builtin character read callback to read it.  It does not
+         have to modify the user's terminal settings. */
       while (r == 0)
-	{
-	  struct timeval timeout = {0, 100000};
-	  struct timeval *timeoutp = NULL;
+        {
+          struct timeval timeout = {0, 100000};
+          struct timeval *timeoutp = NULL;
 
-	  timeoutp = &timeout;
-	  FD_SET (fileno (rl_instream), &fds);
-	  r = select (FD_SETSIZE, &fds, NULL, NULL, timeoutp);
-	  err = errno;
-	}
+          timeoutp = &timeout;
+          FD_SET (fileno (rl_instream), &fds);
+          r = select (FD_SETSIZE, &fds, NULL, NULL, timeoutp);
+          err = errno;
+        }
 
       if (saw_signal)
         sigint_handler (saw_signal);
 
       if (r < 0)
-	{
-	  perror ("rltest: select");
-	  rl_callback_handler_remove ();
-	  break;
-	}
+        {
+          perror ("rltest: select");
+          rl_callback_handler_remove ();
+          break;
+        }
 
       /* if (FD_ISSET (fileno (rl_instream), &fds)) */
       if (r > 0)
-	rl_callback_read_char ();
+        rl_callback_read_char ();
     }
   return input_string;
 }
@@ -120,7 +120,7 @@ sigint_handler (int s)
   rl_cleanup_after_signal ();
   rl_callback_handler_remove ();
   saw_signal = 0;
-  return s;  
+  return s;
 }
 
 int

@@ -1,5 +1,5 @@
 /* wcsnwidth.c - compute display width of wide character string, up to max
-		 specified width, return length. */
+                 specified width, return length. */
 
 /* Copyright (C) 2012,2022 Free Software Foundation, Inc.
 
@@ -42,7 +42,7 @@ wcsnwidth(const wchar_t *pwcs, size_t n, size_t max)
     {
       l = wcwidth (wc);
       if (l < 0)
-	return (-1);
+        return (-1);
       else if (l == max - len)
         return (ws - pwcs);
       else if (l > max - len)

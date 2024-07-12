@@ -253,31 +253,31 @@ initialize_terminating_signals (void)
     {
       /* If we've already trapped it, don't do anything. */
       if (signal_is_trapped (XSIG (i)))
-	continue;
+        continue;
       if (signal_is_async_ignored (XSIG (i)))
-	continue;
+        continue;
 
       sigaction (XSIG (i), &act, &oact);
       XHANDLER(i) = oact.sa_handler;
       XSAFLAGS(i) = oact.sa_flags;
 
 #if 0
-      set_original_signal (XSIG(i), XHANDLER(i));	/* optimization */
+      set_original_signal (XSIG(i), XHANDLER(i));       /* optimization */
 #else
-      set_original_signal (XSIG(i), act.sa_handler);	/* optimization */
+      set_original_signal (XSIG(i), act.sa_handler);    /* optimization */
 #endif
 
       /* Don't do anything with signals that are ignored at shell entry
-	 if the shell is not interactive. */
+         if the shell is not interactive. */
       /* XXX - should we do this for interactive shells, too? */
       if (interactive_shell == 0 && XHANDLER (i) == SIG_IGN)
-	{
-	  sigaction (XSIG (i), &oact, &act);
-	  set_signal_hard_ignored (XSIG (i));
-	}
+        {
+          sigaction (XSIG (i), &oact, &act);
+          set_signal_hard_ignored (XSIG (i));
+        }
 #if defined (SIGPROF) && !defined (_MINIX)
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
-	sigaction (XSIG (i), &oact, (struct sigaction *)NULL);
+        sigaction (XSIG (i), &oact, (struct sigaction *)NULL);
 #endif /* SIGPROF && !_MINIX */
     }
 #else /* !HAVE_POSIX_SIGNALS */
@@ -286,21 +286,21 @@ initialize_terminating_signals (void)
     {
       /* If we've already trapped it, don't do anything. */
       if (signal_is_trapped (XSIG (i)))
-	continue;
+        continue;
 
       XHANDLER(i) = signal (XSIG (i), termsig_sighandler);
       XSAFLAGS(i) = 0;
       /* Don't do anything with signals that are ignored at shell entry
-	 if the shell is not interactive. */
+         if the shell is not interactive. */
       /* XXX - should we do this for interactive shells, too? */
       if (interactive_shell == 0 && XHANDLER (i) == SIG_IGN)
-	{
-	  signal (XSIG (i), SIG_IGN);
-	  set_signal_hard_ignored (XSIG (i));
-	}
+        {
+          signal (XSIG (i), SIG_IGN);
+          set_signal_hard_ignored (XSIG (i));
+        }
 #ifdef SIGPROF
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
-	signal (XSIG (i), XHANDLER (i));
+        signal (XSIG (i), XHANDLER (i));
 #endif
     }
 
@@ -358,9 +358,9 @@ reset_terminating_signals (void)
   for (i = 0; i < TERMSIGS_LENGTH; i++)
     {
       /* Skip a signal if it's trapped or handled specially, because the
-	 trap code will restore the correct value. */
+         trap code will restore the correct value. */
       if (signal_is_trapped (XSIG (i)) || signal_is_special (XSIG (i)))
-	continue;
+        continue;
 
       act.sa_handler = XHANDLER (i);
       act.sa_flags = XSAFLAGS (i);
@@ -370,7 +370,7 @@ reset_terminating_signals (void)
   for (i = 0; i < TERMSIGS_LENGTH; i++)
     {
       if (signal_is_trapped (XSIG (i)) || signal_is_special (XSIG (i)))
-	continue;
+        continue;
 
       signal (XSIG (i), XHANDLER (i));
     }
@@ -398,7 +398,7 @@ top_level_cleanup (void)
   loop_level = continuing = breaking = funcnest = 0;
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
-  variable_context = 0;		/* XXX */
+  variable_context = 0;         /* XXX */
 }
 
 /* What to do when we've been interrupted, and it is safe to handle it. */
@@ -410,7 +410,7 @@ throw_to_top_level (void)
   if (interrupt_state)
     {
       if (last_command_exit_value < 128)
-	last_command_exit_value = 128 + SIGINT;
+        last_command_exit_value = 128 + SIGINT;
       set_pipestatus_from_exit (last_command_exit_value);
       print_newline = 1;
       DELINTERRUPT;
@@ -420,7 +420,7 @@ throw_to_top_level (void)
     return;
 
   last_command_exit_signal = (last_command_exit_value > 128) ?
-				(last_command_exit_value - 128) : 0;
+                                (last_command_exit_value - 128) : 0;
   last_command_exit_value |= 128;
   set_pipestatus_from_exit (last_command_exit_value);
 
@@ -444,7 +444,7 @@ throw_to_top_level (void)
 
   /* This needs to stay because jobs.c:make_child() uses it without resetting
      the signal mask. */
-  restore_sigmask ();  
+  restore_sigmask ();
 
   reset_parser ();
 
@@ -452,10 +452,10 @@ throw_to_top_level (void)
   if (interactive)
     {
       if (RL_ISSTATE (RL_STATE_SIGHANDLER) == 0)
-	rl_cleanup_after_signal ();
+        rl_cleanup_after_signal ();
       bashline_reset ();
     }
-      
+
 #endif /* READLINE */
 
 #if defined (PROCESS_SUBSTITUTION)
@@ -553,7 +553,7 @@ termsig_sighandler (int sig)
      the shell with this signal. This code implements the latter; to implement
      the former, replace the kill_shell(sig) with return. */
   if (handling_termsig)
-    kill_shell (sig);		/* just short-circuit now */
+    kill_shell (sig);           /* just short-circuit now */
 
   terminating_signal = sig;
 
@@ -594,8 +594,8 @@ termsig_handler (int sig)
   if (handling_termsig)
     return;
 
-  handling_termsig = terminating_signal;	/* for termsig_sighandler */
-  terminating_signal = 0;	/* keep macro from re-testing true. */
+  handling_termsig = terminating_signal;        /* for termsig_sighandler */
+  terminating_signal = 0;       /* keep macro from re-testing true. */
 
   if (sig == SIGPIPE && builtin_catch_sigpipe)
     sigpipe_handler (sig);
@@ -637,7 +637,7 @@ termsig_handler (int sig)
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
 
-  run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
+  run_exit_trap ();     /* XXX - run exit trap possibly in signal context? */
 
   kill_shell (sig);
 }
@@ -660,7 +660,7 @@ kill_shell (int sig)
   kill (getpid (), sig);
 
   if (dollar_dollar_pid != 1)
-    exit (128+sig);		/* just in case the kill fails? */
+    exit (128+sig);             /* just in case the kill fails? */
 
   /* We get here only under extraordinarily rare circumstances. */
 
@@ -676,12 +676,12 @@ kill_shell (int sig)
       set_signal_handler (XSIG (i), SIG_DFL);
       sigdelset (&mask, XSIG (i));
       if (sig == XSIG (i))
-	core = XCOREDUMP (i);
+        core = XCOREDUMP (i);
     }
   sigprocmask (SIG_SETMASK, &mask, (sigset_t *)NULL);
 
   if (core)
-    *((volatile unsigned long *) NULL) = 0xdead0000 + sig;	/* SIGSEGV */
+    *((volatile unsigned long *) NULL) = 0xdead0000 + sig;      /* SIGSEGV */
 
   exit (128+sig);
 }
@@ -768,7 +768,7 @@ unset_sigwinch_handler (void)
 sighandler
 sigterm_sighandler (int sig)
 {
-  sigterm_received = 1;		/* XXX - counter? */
+  sigterm_received = 1;         /* XXX - counter? */
   SIGRETURN (0);
 }
 
@@ -779,7 +779,7 @@ sigpipe_handler (int sig)
   builtin_catch_sigpipe = 0;
   last_command_exit_value = 128 + sig;
   throw_to_top_level ();
-}  
+}
 
 /* Signal functions used by the rest of the code. */
 #if !defined (HAVE_POSIX_SIGNALS)
@@ -835,18 +835,18 @@ set_signal_handler (int sig, SigHandler *handler)
      if we take the time to reap children */
 #if defined (SIGCHLD)
   if (sig == SIGCHLD)
-    act.sa_flags |= SA_RESTART;		/* XXX */
+    act.sa_flags |= SA_RESTART;         /* XXX */
 #endif
   /* Let's see if we can keep SIGWINCH from interrupting interruptible system
      calls, like open(2)/read(2)/write(2) */
 #if defined (SIGWINCH)
   if (sig == SIGWINCH)
-    act.sa_flags |= SA_RESTART;		/* XXX */
+    act.sa_flags |= SA_RESTART;         /* XXX */
 #endif
   /* If we're installing a SIGTERM handler for interactive shells, we want
      it to be as close to SIG_IGN as possible. */
   if (sig == SIGTERM && handler == sigterm_sighandler)
-    act.sa_flags |= SA_RESTART;		/* XXX */
+    act.sa_flags |= SA_RESTART;         /* XXX */
 
   sigemptyset (&act.sa_mask);
   sigemptyset (&oact.sa_mask);

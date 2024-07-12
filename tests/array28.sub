@@ -15,13 +15,13 @@
 # tests for assigning empty string array elements without subscripts
 function foo()
 {
-	local bug=("" "5" "" 1 "")
-	declare -a bug2=("")
-	declare -ga bug3=("" "5" "" 1 "")
-	local not_bug=("no" "nulls")
-	local workaround; workaround=("")
+        local bug=("" "5" "" 1 "")
+        declare -a bug2=("")
+        declare -ga bug3=("" "5" "" 1 "")
+        local not_bug=("no" "nulls")
+        local workaround; workaround=("")
 
-	declare -p bug bug2 bug3 not_bug workaround
+        declare -p bug bug2 bug3 not_bug workaround
 }
 
 declare -a bug4=("" "5" "" 1 "")

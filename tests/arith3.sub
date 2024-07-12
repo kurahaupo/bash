@@ -56,5 +56,5 @@ unset t; for i in ${dice2[@]}; do ((t+=i)); done; echo $t
 bar="${dice2[@]}"
 
 if [ "$foo" != "$bar" ]; then
-	echo "random sequences differ"
+        echo "random sequences differ"
 fi

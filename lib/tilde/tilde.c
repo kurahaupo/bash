@@ -34,7 +34,7 @@
 #  include <string.h>
 #else /* !HAVE_STRING_H */
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */  
+#endif /* !HAVE_STRING_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
@@ -133,16 +133,16 @@ tilde_find_prefix (const char *string, int *len)
   if (prefixes)
     {
       for (i = 0; i < string_len; i++)
-	{
-	  for (j = 0; prefixes[j]; j++)
-	    {
-	      if (strncmp (string + i, prefixes[j], strlen (prefixes[j])) == 0)
-		{
-		  *len = strlen (prefixes[j]) - 1;
-		  return (i + *len);
-		}
-	    }
-	}
+        {
+          for (j = 0; prefixes[j]; j++)
+            {
+              if (strncmp (string + i, prefixes[j], strlen (prefixes[j])) == 0)
+                {
+                  *len = strlen (prefixes[j]) - 1;
+                  return (i + *len);
+                }
+            }
+        }
     }
   return (string_len);
 }
@@ -166,13 +166,13 @@ tilde_find_suffix (const char *string)
 #else
       if (string[i] == '/' /* || !string[i] */)
 #endif
-	break;
+        break;
 
       for (j = 0; suffixes && suffixes[j]; j++)
-	{
-	  if (strncmp (string + i, suffixes[j], strlen (suffixes[j])) == 0)
-	    return (i);
-	}
+        {
+          if (strncmp (string + i, suffixes[j], strlen (suffixes[j])) == 0)
+            return (i);
+        }
     }
   return (i);
 }
@@ -202,7 +202,7 @@ tilde_expand (const char *string)
 
       /* Copy the skipped text into the result. */
       if ((result_index + start + 1) > result_size)
-	result = (char *)xrealloc (result, 1 + (result_size += (start + 20)));
+        result = (char *)xrealloc (result, 1 + (result_size += (start + 20)));
 
       strncpy (result + result_index, string, start);
       result_index += start;
@@ -211,12 +211,12 @@ tilde_expand (const char *string)
       string += start;
 
       /* Make END be the index of one after the last character of the
-	 username. */
+         username. */
       end = tilde_find_suffix (string);
 
       /* If both START and END are zero, we are all done. */
       if (!start && !end)
-	break;
+        break;
 
       /* Expand the entire tilde word, and copy it into RESULT. */
       tilde_word = (char *)xmalloc (1 + end);
@@ -227,23 +227,23 @@ tilde_expand (const char *string)
       expansion = tilde_expand_word (tilde_word);
 
       if (expansion == 0)
-	expansion = tilde_word;
+        expansion = tilde_word;
       else
-	xfree (tilde_word);	
+        xfree (tilde_word);
 
       len = strlen (expansion);
 #ifdef __CYGWIN__
       /* Fix for Cygwin to prevent ~user/xxx from expanding to //xxx when
-	 $HOME for `user' is /.  On cygwin, // denotes a network drive. */
+         $HOME for `user' is /.  On cygwin, // denotes a network drive. */
       if (len > 1 || *expansion != '/' || *string != '/')
 #endif
-	{
-	  if ((result_index + len + 1) > result_size)
-	    result = (char *)xrealloc (result, 1 + (result_size += (len + 20)));
+        {
+          if ((result_index + len + 1) > result_size)
+            result = (char *)xrealloc (result, 1 + (result_size += (len + 20)));
 
-	  strcpy (result + result_index, expansion);
-	  result_index += len;
-	}
+          strcpy (result + result_index, expansion);
+          result_index += len;
+        }
       xfree (expansion);
     }
 
@@ -290,7 +290,7 @@ tilde_find_word (const char *fname, int flags, int *lenp)
     {
       r = savestring (fname);
       if (lenp)
-	*lenp = 0;
+        *lenp = 0;
     }
   else
     {
@@ -298,7 +298,7 @@ tilde_find_word (const char *fname, int flags, int *lenp)
       strncpy (r, fname, x);
       r[x] = '\0';
       if (lenp)
-	*lenp = x;
+        *lenp = x;
     }
 
   return r;
@@ -347,13 +347,13 @@ tilde_expand_word (const char *filename)
       expansion = sh_get_env_value ("HOME");
 #if defined (_WIN32)
       if (expansion == 0)
-	expansion = sh_get_env_value ("APPDATA");
+        expansion = sh_get_env_value ("APPDATA");
 #endif
 
       /* If there is no HOME variable, look up the directory in
-	 the password database. */
+         the password database. */
       if (expansion == 0)
-	expansion = sh_get_home_dir ();
+        expansion = sh_get_home_dir ();
 
       return (glue_prefix_and_suffix (expansion, filename, 1));
     }
@@ -364,12 +364,12 @@ tilde_expand_word (const char *filename)
     {
       expansion = (*tilde_expansion_preexpansion_hook) (username);
       if (expansion)
-	{
-	  dirname = glue_prefix_and_suffix (expansion, filename, user_len);
-	  xfree (username);
-	  xfree (expansion);
-	  return (dirname);
-	}
+        {
+          dirname = glue_prefix_and_suffix (expansion, filename, user_len);
+          xfree (username);
+          xfree (expansion);
+          return (dirname);
+        }
     }
 
   /* No preexpansion hook, or the preexpansion hook failed.  Look in the
@@ -383,20 +383,20 @@ tilde_expand_word (const char *filename)
   if (user_entry == 0)
     {
       /* If the calling program has a special syntax for expanding tildes,
-	 and we couldn't find a standard expansion, then let them try. */
+         and we couldn't find a standard expansion, then let them try. */
       if (tilde_expansion_failure_hook)
-	{
-	  expansion = (*tilde_expansion_failure_hook) (username);
-	  if (expansion)
-	    {
-	      dirname = glue_prefix_and_suffix (expansion, filename, user_len);
-	      xfree (expansion);
-	    }
-	}
+        {
+          expansion = (*tilde_expansion_failure_hook) (username);
+          if (expansion)
+            {
+              dirname = glue_prefix_and_suffix (expansion, filename, user_len);
+              xfree (expansion);
+            }
+        }
       /* If we don't have a failure hook, or if the failure hook did not
-	 expand the tilde, return a copy of what we were passed. */
+         expand the tilde, return a copy of what we were passed. */
       if (dirname == 0)
-	dirname = savestring (filename);
+        dirname = savestring (filename);
     }
 #if defined (HAVE_GETPWENT)
   else
@@ -426,15 +426,15 @@ main (int argc, char **argv)
       fflush (stdout);
 
       if (!gets (line))
-	strcpy (line, "done");
+        strcpy (line, "done");
 
       if ((strcmp (line, "done") == 0) ||
-	  (strcmp (line, "quit") == 0) ||
-	  (strcmp (line, "exit") == 0))
-	{
-	  done = 1;
-	  break;
-	}
+          (strcmp (line, "quit") == 0) ||
+          (strcmp (line, "exit") == 0))
+        {
+          done = 1;
+          break;
+        }
 
       result = tilde_expand (line);
       printf ("  --> %s\n", result);

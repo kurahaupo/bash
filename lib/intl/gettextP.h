@@ -18,7 +18,7 @@
 #ifndef _GETTEXTP_H
 #define _GETTEXTP_H
 
-#include <stddef.h>		/* Get size_t.  */
+#include <stddef.h>             /* Get size_t.  */
 
 #ifdef _LIBC
 # include "../iconv/gconv_int.h"
@@ -41,24 +41,24 @@ struct loaded_domain;
 extern char *__gettext (const char *__msgid);
 extern char *__dgettext (const char *__domainname, const char *__msgid);
 extern char *__dcgettext (const char *__domainname, const char *__msgid,
-			  int __category);
+                          int __category);
 extern char *__ngettext (const char *__msgid1, const char *__msgid2,
-			 unsigned long int __n);
+                         unsigned long int __n);
 extern char *__dngettext (const char *__domainname,
-			  const char *__msgid1, const char *__msgid2,
-			  unsigned long int n);
+                          const char *__msgid1, const char *__msgid2,
+                          unsigned long int n);
 extern char *__dcngettext (const char *__domainname,
-			   const char *__msgid1, const char *__msgid2,
-			   unsigned long int __n, int __category);
+                           const char *__msgid1, const char *__msgid2,
+                           unsigned long int __n, int __category);
 extern char *__dcigettext (const char *__domainname,
-			   const char *__msgid1, const char *__msgid2,
-			   int __plural, unsigned long int __n,
-			   int __category);
+                           const char *__msgid1, const char *__msgid2,
+                           int __plural, unsigned long int __n,
+                           int __category);
 extern char *__textdomain (const char *__domainname);
 extern char *__bindtextdomain (const char *__domainname,
-			       const char *__dirname);
+                               const char *__dirname);
 extern char *__bind_textdomain_codeset (const char *__domainname,
-					const char *__codeset);
+                                        const char *__codeset);
 extern void _nl_finddomain_subfreeres (void) attribute_hidden;
 extern void _nl_unload_domain (struct loaded_domain *__domain)
      internal_function attribute_hidden;
@@ -71,21 +71,21 @@ extern void _nl_unload_domain (struct loaded_domain *__domain)
 # include "libgnuintl.h"
 # ifdef IN_LIBGLOCALE
 extern char *gl_dcigettext (const char *__domainname,
-			    const char *__msgid1, const char *__msgid2,
-			    int __plural, unsigned long int __n,
-			    int __category,
-			    const char *__localename, const char *__encoding);
+                            const char *__msgid1, const char *__msgid2,
+                            int __plural, unsigned long int __n,
+                            int __category,
+                            const char *__localename, const char *__encoding);
 # else
 extern char *libintl_dcigettext (const char *__domainname,
-				 const char *__msgid1, const char *__msgid2,
-				 int __plural, unsigned long int __n,
-				 int __category);
+                                 const char *__msgid1, const char *__msgid2,
+                                 int __plural, unsigned long int __n,
+                                 int __category);
 # endif
 #endif
 
 #include "loadinfo.h"
 
-#include "gmo.h"		/* Get nls_uint32.  */
+#include "gmo.h"                /* Get nls_uint32.  */
 
 /* @@ end of prolog @@ */
 
@@ -237,45 +237,45 @@ extern void _nl_locale_name_canonicalize (char *name);
 /* extern const char *_nl_locale_name_from_win32_LCID (LCID lcid); */
 # define gl_locale_name_thread_unsafe _nl_locale_name_thread_unsafe
 extern const char *_nl_locale_name_thread_unsafe (int category,
-						  const char *categoryname);
+                                                  const char *categoryname);
 # define gl_locale_name_thread _nl_locale_name_thread
 /* extern const char *_nl_locale_name_thread (int category,
-					      const char *categoryname); */
+                                              const char *categoryname); */
 # define gl_locale_name_posix _nl_locale_name_posix
 extern const char *_nl_locale_name_posix (int category,
-					  const char *categoryname);
+                                          const char *categoryname);
 # define gl_locale_name_environ _nl_locale_name_environ
 extern const char *_nl_locale_name_environ (int category,
-					    const char *categoryname);
+                                            const char *categoryname);
 # define gl_locale_name_default _nl_locale_name_default
 extern const char *_nl_locale_name_default (void);
 # define gl_locale_name _nl_locale_name
 /* extern const char *_nl_locale_name (int category,
-				       const char *categoryname); */
+                                       const char *categoryname); */
 #endif
 
 struct loaded_l10nfile *_nl_find_domain (const char *__dirname,
 #if defined _WIN32 && !defined __CYGWIN__
-					 const wchar_t *__wdirname,
+                                         const wchar_t *__wdirname,
 #endif
-					 char *__locale,
-					 const char *__domainname,
-					 struct binding *__domainbinding)
+                                         char *__locale,
+                                         const char *__domainname,
+                                         struct binding *__domainbinding)
      internal_function;
 void _nl_load_domain (struct loaded_l10nfile *__domain,
-		      struct binding *__domainbinding)
+                      struct binding *__domainbinding)
      internal_function;
 
 #ifdef IN_LIBGLOCALE
 char *_nl_find_msg (struct loaded_l10nfile *domain_file,
-		    struct binding *domainbinding, const char *encoding,
-		    const char *msgid,
-		    size_t *lengthp)
+                    struct binding *domainbinding, const char *encoding,
+                    const char *msgid,
+                    size_t *lengthp)
      internal_function;
 #else
 char *_nl_find_msg (struct loaded_l10nfile *domain_file,
-		    struct binding *domainbinding, const char *msgid,
-		    int convert, size_t *lengthp)
+                    struct binding *domainbinding, const char *msgid,
+                    int convert, size_t *lengthp)
      internal_function;
 #endif
 

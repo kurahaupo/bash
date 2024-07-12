@@ -39,16 +39,16 @@
 
 #if defined (SHELL)
 #  include "shell.h"
-#  include "parser.h"		/* FUNSUB_CHAR */
+#  include "parser.h"           /* FUNSUB_CHAR */
 #else
 #  if defined (TEST)
 typedef char *WORD_DESC;
 typedef char **WORD_LIST;
-#define _(X)	X
+#define _(X)    X
 #  endif /* TEST */
 #endif /* SHELL */
 
-#include "typemax.h"		/* INTMAX_MIN, INTMAX_MAX */
+#include "typemax.h"            /* INTMAX_MIN, INTMAX_MAX */
 #include "general.h"
 #include "shmbutil.h"
 #include "chartypes.h"
@@ -59,7 +59,7 @@ extern int errno;
 
 #define brace_whitespace(c) (!(c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
 
-#define BRACE_SEQ_SPECIFIER	".."
+#define BRACE_SEQ_SPECIFIER     ".."
 
 extern int asprintf (char **, const char *, ...) __attribute__((__format__ (printf, 2, 3)));
 
@@ -110,36 +110,36 @@ brace_expand (char *text)
   tlen = strlen (text);
   i = 0;
 #if defined (CSH_BRACE_COMPAT)
-  c = brace_gobbler (text, tlen, &i, '{');	/* } */
+  c = brace_gobbler (text, tlen, &i, '{');      /* } */
 #else
   /* Make sure that when we exit this loop, c == 0 or text[i] begins a
      valid brace expansion sequence. */
   do
     {
-      c = brace_gobbler (text, tlen, &i, '{');	/* } */
+      c = brace_gobbler (text, tlen, &i, '{');  /* } */
       if (i >= tlen)
-	break;
+        break;
       c1 = c;
       /* Verify that c begins a valid brace expansion word.  If it doesn't, we
-	 go on.  Loop stops when there are no more open braces in the word. */
+         go on.  Loop stops when there are no more open braces in the word. */
       if (c)
-	{
-	  start = j = i + 1;	/* { */
-	  c = brace_gobbler (text, tlen, &j, '}');
-	  if (c == 0)		/* it's not */
-	    {
-	      i++;
-	      c = c1;
-	      continue;
-	    }
-	  else			/* it is */
-	    {
-	      c = c1;
-	      break;
-	    }
-	}
+        {
+          start = j = i + 1;    /* { */
+          c = brace_gobbler (text, tlen, &j, '}');
+          if (c == 0)           /* it's not */
+            {
+              i++;
+              c = c1;
+              continue;
+            }
+          else                  /* it is */
+            {
+              c = c1;
+              break;
+            }
+        }
       else
-	break;
+        break;
     }
   while (c);
 #endif /* !CSH_BRACE_COMPAT */
@@ -167,28 +167,28 @@ brace_expand (char *text)
     {
 #if defined (NOTDEF)
       /* Well, if we found an unquoted BRACE_ARG_SEPARATOR between START
-	 and I, then this should be an error.  Otherwise, it isn't. */
+         and I, then this should be an error.  Otherwise, it isn't. */
       j = start;
       while (j < i)
-	{
-	  if (text[j] == '\\')
-	    {
-	      j++;
-	      ADVANCE_CHAR (text, tlen, j);
-	      continue;
-	    }
+        {
+          if (text[j] == '\\')
+            {
+              j++;
+              ADVANCE_CHAR (text, tlen, j);
+              continue;
+            }
 
-	  if (text[j] == brace_arg_separator)
-	    {	/* { */
-	      strvec_dispose (result);
-	      set_exit_status (EXECUTION_FAILURE);
-	      report_error ("no closing `%c' in %s", '}', text);
-	      throw_to_top_level ();
-	    }
-	  ADVANCE_CHAR (text, tlen, j);
-	}
+          if (text[j] == brace_arg_separator)
+            {   /* { */
+              strvec_dispose (result);
+              set_exit_status (EXECUTION_FAILURE);
+              report_error ("no closing `%c' in %s", '}', text);
+              throw_to_top_level ();
+            }
+          ADVANCE_CHAR (text, tlen, j);
+        }
 #endif
-      free (preamble);		/* Same as result[0]; see initialization. */
+      free (preamble);          /* Same as result[0]; see initialization. */
       result[0] = savestring (text);
       return (result);
     }
@@ -212,14 +212,14 @@ brace_expand (char *text)
   while (amble[j])
     {
       if (amble[j] == '\\')
-	{
-	  j++;
-	  ADVANCE_CHAR (amble, alen, j);
-	  continue;
-	}
+        {
+          j++;
+          ADVANCE_CHAR (amble, alen, j);
+          continue;
+        }
 
       if (amble[j] == brace_arg_separator)
-	break;
+        break;
 
       ADVANCE_CHAR (amble, alen, j);
     }
@@ -228,27 +228,27 @@ brace_expand (char *text)
     {
       tack = expand_seqterm (amble, alen);
       if (tack)
-	goto add_tack;
+        goto add_tack;
       else if (i < tlen && text[i + 1])
-	{
-	  /* If the sequence expansion fails (e.g., because the integers
-	     overflow), but there is more in the string, try and process
-	     the rest of the string, which may contain additional brace
-	     expansions.  Treat the unexpanded sequence term as a simple
-	     string (including the braces). */
-	  tack = strvec_create (2);
-	  tack[0] = savestring (text+start-1);
-	  tack[0][i-start+2] = '\0';
-	  tack[1] = (char *)0;
-	  goto add_tack;
-	}
+        {
+          /* If the sequence expansion fails (e.g., because the integers
+             overflow), but there is more in the string, try and process
+             the rest of the string, which may contain additional brace
+             expansions.  Treat the unexpanded sequence term as a simple
+             string (including the braces). */
+          tack = strvec_create (2);
+          tack[0] = savestring (text+start-1);
+          tack[0][i-start+2] = '\0';
+          tack[1] = (char *)0;
+          goto add_tack;
+        }
       else
-	{
-	  free (amble);
-	  free (preamble);
-	  result[0] = savestring (text);
-	  return (result);
-	}
+        {
+          free (amble);
+          free (preamble);
+          result[0] = savestring (text);
+          return (result);
+        }
     }
 #endif /* SHELL */
 
@@ -266,7 +266,7 @@ add_tack:
       tack = brace_expand (postamble);
       result = array_concat (result, tack);
       if (tack != result)
-	strvec_dispose (tack);
+        strvec_dispose (tack);
     }
 
   return (result);
@@ -305,34 +305,34 @@ expand_amble (char *text, size_t tlen, int flags)
       partial = brace_expand (tem);
 
       if (!result)
-	result = partial;
+        result = partial;
       else
-	{
-	  size_t lr, lp;
-	  int j;
+        {
+          size_t lr, lp;
+          int j;
 
-	  lr = strvec_len (result);
-	  lp = strvec_len (partial);
+          lr = strvec_len (result);
+          lp = strvec_len (partial);
 
-	  tresult = strvec_mresize (result, lp + lr + 1);
-	  if (tresult == 0)
-	    {
-	      internal_error (_("brace expansion: cannot allocate memory for %s"), tem);
-	      free (tem);
-	      strvec_dispose (partial);
-	      strvec_dispose (result);
-	      result = (char **)NULL;
-	      return result;
-	    }
-	  else
-	    result = tresult;
+          tresult = strvec_mresize (result, lp + lr + 1);
+          if (tresult == 0)
+            {
+              internal_error (_("brace expansion: cannot allocate memory for %s"), tem);
+              free (tem);
+              strvec_dispose (partial);
+              strvec_dispose (result);
+              result = (char **)NULL;
+              return result;
+            }
+          else
+            result = tresult;
 
-	  for (j = 0; j < lp; j++)
-	    result[lr + j] = partial[j];
+          for (j = 0; j < lp; j++)
+            result[lr + j] = partial[j];
 
-	  result[lr + j] = (char *)NULL;
-	  free (partial);
-	}
+          result[lr + j] = (char *)NULL;
+          free (partial);
+        }
       free (tem);
 #if defined (SHELL)
       ADVANCE_CHAR (text, tlen, i);
@@ -344,10 +344,10 @@ expand_amble (char *text, size_t tlen, int flags)
   return (result);
 }
 
-#define ST_BAD	0
-#define ST_INT	1
-#define ST_CHAR	2
-#define ST_ZINT	3
+#define ST_BAD  0
+#define ST_INT  1
+#define ST_CHAR 2
+#define ST_ZINT 3
 
 static char **
 mkseq (intmax_t start, intmax_t end, intmax_t incr, int type, size_t width)
@@ -399,50 +399,50 @@ mkseq (intmax_t start, intmax_t end, intmax_t incr, int type, size_t width)
       QUIT;
 #endif
       if (type == ST_INT)
-	t = itos (n);
+        t = itos (n);
       else if (type == ST_ZINT)
-	{
-	  size_t tlen;
+        {
+          size_t tlen;
 
-	  t = itos (n);
-	  tlen = strlen (t);
-	  if (tlen < width)	/* zero-pad the result directly to avoid sprintf */
-	    {
-	      char *t0;
-	      t0 = t;
-	      t = realloc (t, width + 1);
-	      if (t == 0)
-		free (t0);
-	      else
-		{
-		  memmove (t + (width - tlen), t, tlen + 1);
-		  memset (t + (n < 0), '0', width - tlen);
-		}
-	    }
-	}
+          t = itos (n);
+          tlen = strlen (t);
+          if (tlen < width)     /* zero-pad the result directly to avoid sprintf */
+            {
+              char *t0;
+              t0 = t;
+              t = realloc (t, width + 1);
+              if (t == 0)
+                free (t0);
+              else
+                {
+                  memmove (t + (width - tlen), t, tlen + 1);
+                  memset (t + (n < 0), '0', width - tlen);
+                }
+            }
+        }
       else
-	{
-	  if (t = (char *)malloc (2))
-	    {
-	      t[0] = n;
-	      t[1] = '\0';
-	    }
-	}
+        {
+          if (t = (char *)malloc (2))
+            {
+              t[0] = n;
+              t[1] = '\0';
+            }
+        }
 
       result[i++] = t;
 
       /* We failed to allocate memory for this number, so we bail. */
       if (t == 0)
-	{
-	  char *p;
+        {
+          char *p;
 
-	  /* Easier to do this than mess around with various intmax_t printf
-	     formats (%ld? %lld? %jd?) and PRIdMAX. */
-	  p = uinttostr (n, lbuf, sizeof (lbuf));
-	  internal_error (_("brace expansion: failed to allocate memory for `%s'"), p);
-	  strvec_dispose (result);
-	  return ((char **)NULL);
-	}
+          /* Easier to do this than mess around with various intmax_t printf
+             formats (%ld? %lld? %jd?) and PRIdMAX. */
+          p = uinttostr (n, lbuf, sizeof (lbuf));
+          internal_error (_("brace expansion: failed to allocate memory for `%s'"), p);
+          strvec_dispose (result);
+          return ((char **)NULL);
+        }
 
       n += incr;
     }
@@ -466,7 +466,7 @@ expand_seqterm (char *text, size_t tlen)
   if (t == 0)
     return ((char **)NULL);
 
-  lhs_l = t - text;		/* index of start of BRACE_SEQ_SPECIFIER */
+  lhs_l = t - text;             /* index of start of BRACE_SEQ_SPECIFIER */
   lhs = substring (text, 0, lhs_l);
   rhs = substring (text, lhs_l + sizeof(BRACE_SEQ_SPECIFIER) - 1, tlen);
 
@@ -480,7 +480,7 @@ expand_seqterm (char *text, size_t tlen)
   /* Now figure out whether LHS and RHS are integers or letters.  Both
      sides have to match. */
   lhs_t = (valid_number (lhs, &tl)) ? ST_INT :
-  		((ISALPHA (lhs[0]) && lhs[1] == 0) ?  ST_CHAR : ST_BAD);
+                ((ISALPHA (lhs[0]) && lhs[1] == 0) ?  ST_CHAR : ST_BAD);
 
   /* Decide on rhs and whether or not it looks like the user specified
      an increment */
@@ -491,7 +491,7 @@ expand_seqterm (char *text, size_t tlen)
       errno = 0;
       tr = strtoimax (rhs, &ep, 10);
       if (errno == ERANGE || (ep && *ep != 0 && *ep != '.'))
-	rhs_t = ST_BAD;			/* invalid */
+        rhs_t = ST_BAD;                 /* invalid */
     }
   else if (ISALPHA (rhs[0]) && (rhs[1] == 0 || rhs[1] == '.'))
     {
@@ -510,9 +510,9 @@ expand_seqterm (char *text, size_t tlen)
       oep = ep;
       errno = 0;
       if (ep && *ep == '.' && ep[1] == '.' && ep[2])
-	incr = strtoimax (ep + 2, &ep, 10);
+        incr = strtoimax (ep + 2, &ep, 10);
       if (*ep != 0 || errno == ERANGE)
-	rhs_t = ST_BAD;			/* invalid incr or overflow */
+        rhs_t = ST_BAD;                 /* invalid incr or overflow */
       tlen -= ep - oep;
     }
 
@@ -526,7 +526,7 @@ expand_seqterm (char *text, size_t tlen)
   /* OK, we have something.  It's either a sequence of integers, ascending
      or descending, or a sequence or letters, ditto.  Generate the sequence,
      put it into a string vector, and return it. */
-  
+
   if (lhs_t == ST_CHAR)
     {
       lhs_v = (unsigned char)lhs[0];
@@ -535,20 +535,20 @@ expand_seqterm (char *text, size_t tlen)
     }
   else
     {
-      lhs_v = tl;		/* integer truncation */
+      lhs_v = tl;               /* integer truncation */
       rhs_v = tr;
 
       /* Decide whether or not the terms need zero-padding */
       rhs_l = tlen - lhs_l - sizeof (BRACE_SEQ_SPECIFIER) + 1;
       width = 0;
       if (lhs_l > 1 && lhs[0] == '0')
-	width = lhs_l, lhs_t = ST_ZINT;
+        width = lhs_l, lhs_t = ST_ZINT;
       if (lhs_l > 2 && lhs[0] == '-' && lhs[1] == '0')
-	width = lhs_l, lhs_t = ST_ZINT;
+        width = lhs_l, lhs_t = ST_ZINT;
       if (rhs_l > 1 && rhs[0] == '0' && width < rhs_l)
-	width = rhs_l, lhs_t = ST_ZINT;
+        width = rhs_l, lhs_t = ST_ZINT;
       if (rhs_l > 2 && rhs[0] == '-' && rhs[1] == '0' && width < rhs_l)
-	width = rhs_l, lhs_t = ST_ZINT;
+        width = rhs_l, lhs_t = ST_ZINT;
 
       if (width < lhs_l && lhs_t == ST_ZINT)
         width = lhs_l;
@@ -570,8 +570,8 @@ expand_seqterm (char *text, size_t tlen)
    this is either the same as SATISFY, or 0. */
 /* If SATISFY is `}', we are looking for a brace expression, so we
    should enforce the rules that govern valid brace expansions:
-	1) to count as an arg separator, a comma or `..' has to be outside
-	   an inner set of braces.	 
+        1) to count as an arg separator, a comma or `..' has to be outside
+           an inner set of braces.
 */
 static int
 brace_gobbler (char *text, size_t tlen, int *indx, int satisfy)
@@ -594,132 +594,132 @@ brace_gobbler (char *text, size_t tlen, int *indx, int satisfy)
   while (c = text[i])
     {
       if (pass_next)
-	{
-	  pass_next = 0;
+        {
+          pass_next = 0;
 #if defined (SHELL)
-	  ADVANCE_CHAR (text, tlen, i);
+          ADVANCE_CHAR (text, tlen, i);
 #else
-	  i++;
+          i++;
 #endif
-	  continue;
-	}
+          continue;
+        }
 
       /* A backslash escapes the next character.  This allows backslash to
-	 escape the quote character in a double-quoted string. */
+         escape the quote character in a double-quoted string. */
       if (c == '\\' && (quoted == 0 || quoted == '"' || quoted == '`'))
-	{
-	  pass_next = 1;
-	  i++;
-	  continue;
-	}
+        {
+          pass_next = 1;
+          i++;
+          continue;
+        }
 
 #if defined (SHELL)
       /* If compiling for the shell, treat ${...} like \{...} */
-      if (c == '$' && i < tlen && text[i+1] == '{' && quoted != '\'')		/* } */
-	{
+      if (c == '$' && i < tlen && text[i+1] == '{' && quoted != '\'')           /* } */
+        {
 #if 1
-	  /* nofork command substitution */
-	  if (i < tlen - 1 && FUNSUB_CHAR (text[i+2]))
-	    {
-	      int o, f;
+          /* nofork command substitution */
+          if (i < tlen - 1 && FUNSUB_CHAR (text[i+2]))
+            {
+              int o, f;
 funsub:
-	      o = no_longjmp_on_fatal_error;
-	      no_longjmp_on_fatal_error = 1;
-	      f = (quoted == '"') ? Q_DOUBLE_QUOTES : 0;
-	      si = i + 2;
-	      t = extract_function_subst (text, &si, f, SX_NOALLOC|SX_NOLONGJMP|SX_NOERROR);
-	      i = si + 1;
-	      no_longjmp_on_fatal_error = o;
-	      if (i > tlen)
-		{
-	          i = tlen;
-	          c = 0;
-	          break;
-		}
-	      continue;
-	    }
+              o = no_longjmp_on_fatal_error;
+              no_longjmp_on_fatal_error = 1;
+              f = (quoted == '"') ? Q_DOUBLE_QUOTES : 0;
+              si = i + 2;
+              t = extract_function_subst (text, &si, f, SX_NOALLOC|SX_NOLONGJMP|SX_NOERROR);
+              i = si + 1;
+              no_longjmp_on_fatal_error = o;
+              if (i > tlen)
+                {
+                  i = tlen;
+                  c = 0;
+                  break;
+                }
+              continue;
+            }
 #endif
-	  pass_next = 1;
-	  i++;
-	  if (quoted == 0)
-	    level++;
-	  continue;
-	}
+          pass_next = 1;
+          i++;
+          if (quoted == 0)
+            level++;
+          continue;
+        }
 #endif
 
       if (quoted)
-	{
-	  if (c == quoted)
-	    quoted = 0;
+        {
+          if (c == quoted)
+            quoted = 0;
 #if defined (SHELL)
-	  /* The shell allows quoted command substitutions */
-	  if (quoted == '"' && c == '$' && i < tlen && text[i+1] == '(')	/*)*/
-	    goto comsub;
+          /* The shell allows quoted command substitutions */
+          if (quoted == '"' && c == '$' && i < tlen && text[i+1] == '(')        /*)*/
+            goto comsub;
 #endif
 #if defined (SHELL)
-	  ADVANCE_CHAR (text, tlen, i);
+          ADVANCE_CHAR (text, tlen, i);
 #else
-	  i++;
+          i++;
 #endif
-	  continue;
-	}
+          continue;
+        }
 
       if (c == '"' || c == '\'' || c == '`')
-	{
-	  quoted = c;
-	  i++;
-	  continue;
-	}
+        {
+          quoted = c;
+          i++;
+          continue;
+        }
 
 #if defined (SHELL)
       /* Pass new-style command and process substitutions through unchanged. */
-      if ((c == '$' || c == '<' || c == '>') && i < tlen && text[i+1] == '(')	/* ) */
-	{
-	  int o;
+      if ((c == '$' || c == '<' || c == '>') && i < tlen && text[i+1] == '(')   /* ) */
+        {
+          int o;
 
 comsub:
-	  o = no_longjmp_on_fatal_error;
-	  no_longjmp_on_fatal_error = 1;
-	  si = i + 2;
-	  t = extract_command_subst (text, &si, SX_NOALLOC|SX_NOLONGJMP|SX_NOERROR);
-	  i = si + 1;
-	  no_longjmp_on_fatal_error = o;
-	  if (i > tlen)
-	    {
-	      i = tlen;
-	      c = 0;
-	      break;
-	    }
-	  continue;
-	}
+          o = no_longjmp_on_fatal_error;
+          no_longjmp_on_fatal_error = 1;
+          si = i + 2;
+          t = extract_command_subst (text, &si, SX_NOALLOC|SX_NOLONGJMP|SX_NOERROR);
+          i = si + 1;
+          no_longjmp_on_fatal_error = o;
+          if (i > tlen)
+            {
+              i = tlen;
+              c = 0;
+              break;
+            }
+          continue;
+        }
 #endif
 
       if (c == satisfy && level == 0 && quoted == 0 && commas > 0)
-	{
-	  /* We ignore an open brace surrounded by whitespace, and also
-	     an open brace followed immediately by a close brace preceded
-	     by whitespace.  */
-	  if (c == '{' &&
-	      ((!i || brace_whitespace (text[i - 1])) &&
-	       (brace_whitespace (text[i + 1]) || text[i + 1] == '}')))
-	    {
-	      i++;
-	      continue;
-	    }
+        {
+          /* We ignore an open brace surrounded by whitespace, and also
+             an open brace followed immediately by a close brace preceded
+             by whitespace.  */
+          if (c == '{' &&
+              ((!i || brace_whitespace (text[i - 1])) &&
+               (brace_whitespace (text[i + 1]) || text[i + 1] == '}')))
+            {
+              i++;
+              continue;
+            }
 
-	    break;
-	}
+            break;
+        }
 
       if (c == '{')
-	level++;
+        level++;
       else if (c == '}' && level)
-	level--;
+        level--;
 #if !defined (CSH_BRACE_COMPAT)
       else if (satisfy == '}' && c == brace_arg_separator && level == 0)
-	commas++;
+        commas++;
       else if (satisfy == '}' && STREQN (text+i, BRACE_SEQ_SPECIFIER, 2) &&
-      		text[i+2] != satisfy && level == 0)
-	commas++;
+                text[i+2] != satisfy && level == 0)
+        commas++;
 #endif
 
 #if defined (SHELL)
@@ -746,10 +746,10 @@ array_concat (char **arr1, char **arr2)
   char **result;
 
   if (arr1 == 0)
-    return (arr2);		/* XXX - see if we can get away without copying? */
+    return (arr2);              /* XXX - see if we can get away without copying? */
 
   if (arr2 == 0)
-    return (arr1);		/* XXX - caller expects us to free arr1 */
+    return (arr1);              /* XXX - caller expects us to free arr1 */
 
   /* We can only short-circuit if the array consists of a single null element;
      otherwise we need to replicate the contents of the other array and
@@ -757,11 +757,11 @@ array_concat (char **arr1, char **arr2)
   if (arr1[0] && arr1[0][0] == 0 && arr1[1] == 0)
     {
       strvec_dispose (arr1);
-      return (arr2);		/* XXX - use flags to see if we can avoid copying here */
+      return (arr2);            /* XXX - use flags to see if we can avoid copying here */
     }
 
   if (arr2[0] && arr2[0][0] == 0 && arr2[1] == 0)
-    return (arr1);		/* XXX - rather than copying and freeing it */
+    return (arr1);              /* XXX - rather than copying and freeing it */
 
   len1 = strvec_len (arr1);
   len2 = strvec_len (arr2);
@@ -776,23 +776,23 @@ array_concat (char **arr1, char **arr2)
       int strlen_1 = strlen (arr1[i]);
 
       for (j = 0; j < len2; j++)
-	{
+        {
 #if defined (SHELL)
-	  if (ISINTERRUPT)
-	    {
-	      result[len] = (char *)NULL;
-	      strvec_dispose (result);
-	      result = (char **)NULL;
-	      strvec_dispose (arr1);	/* caller expects us to free arr1 */
-	    }
-	  QUIT;
+          if (ISINTERRUPT)
+            {
+              result[len] = (char *)NULL;
+              strvec_dispose (result);
+              result = (char **)NULL;
+              strvec_dispose (arr1);    /* caller expects us to free arr1 */
+            }
+          QUIT;
 #endif
-	
-	  result[len] = (char *)xmalloc (1 + strlen_1 + strlen (arr2[j]));
-	  strcpy (result[len], arr1[i]);
-	  strcpy (result[len] + strlen_1, arr2[j]);
-	  len++;
-	}
+
+          result[len] = (char *)xmalloc (1 + strlen_1 + strlen (arr2[j]));
+          strcpy (result[len], arr1[i]);
+          strcpy (result[len] + strlen_1, arr2[j]);
+          len++;
+        }
       free (arr1[i]);
     }
   free (arr1);
@@ -822,7 +822,7 @@ internal_error (char *format, char *arg1, char *arg2)
   fprintf (stderr, format, arg1, arg2);
   fprintf (stderr, "\n");
 }
-      
+
 main (int c, char **v)
 {
   char example[256];
@@ -835,16 +835,16 @@ main (int c, char **v)
       fprintf (stderr, "brace_expand> ");
 
       if ((!fgets (example, 256, stdin)) ||
-	  (strncmp (example, "quit", 4) == 0))
-	break;
+          (strncmp (example, "quit", 4) == 0))
+        break;
 
       if (strlen (example))
-	example[strlen (example) - 1] = '\0';
+        example[strlen (example) - 1] = '\0';
 
       result = brace_expand (example);
 
       for (i = 0; result[i]; i++)
-	printf ("%s\n", result[i]);
+        printf ("%s\n", result[i]);
 
       strvec_dispose (result);
     }

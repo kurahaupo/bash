@@ -46,18 +46,18 @@ zwrite (int fd, char *buf, size_t nb)
     {
       i = write (fd, buf, n);
       if (i > 0)
-	{
-	  n -= i;
-	  if (n <= 0)
-	    return nb;
-	  buf += i;
-	}
+        {
+          n -= i;
+          if (n <= 0)
+            return nb;
+          buf += i;
+        }
       else if (i == 0)
-	{
-	  if (++nt > 3)
-	    return (nb - n);
-	}
+        {
+          if (++nt > 3)
+            return (nb - n);
+        }
       else if (errno != EINTR)
-	return -1;
+        return -1;
     }
 }

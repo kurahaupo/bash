@@ -6,6 +6,6 @@ foo_word='foo'
 #
 case "$foo_word"
 in
-	foo) ;;
-	*) echo bad 1;;
+        foo) ;;
+        *) echo bad 1;;
 esac

@@ -22,9 +22,9 @@
 */
 
 /* **************************************************************** */
-/*								    */
-/*		      Unwind Protection Scheme for Bash		    */
-/*								    */
+/*                                                                  */
+/*                    Unwind Protection Scheme for Bash             */
+/*                                                                  */
 /* **************************************************************** */
 #include "config.h"
 
@@ -40,8 +40,8 @@
 #include "unwind_prot.h"
 #include "sig.h"
 #include "quit.h"
-#include "bashintl.h"	/* for _() */
-#include "error.h"	/* for internal_warning */
+#include "bashintl.h"   /* for _() */
+#include "error.h"      /* for internal_warning */
 #include "ocache.h"
 
 /* Structure describing a saved variable and the value to restore it to.  */
@@ -81,16 +81,16 @@ static void unwind_protect_mem_internal (void *, int);
 static UNWIND_ELT *unwind_protect_list = (UNWIND_ELT *)NULL;
 
 /* Allocating from a cache of unwind-protect elements */
-#define UWCACHESIZE	128
+#define UWCACHESIZE     128
 
 sh_obj_cache_t uwcache = {0, 0, 0};
 
 #if 0
-#define uwpalloc(elt)	(elt) = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT))
-#define uwpfree(elt)	free(elt)
+#define uwpalloc(elt)   (elt) = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT))
+#define uwpfree(elt)    free(elt)
 #else
-#define uwpalloc(elt)	ocache_alloc (uwcache, UNWIND_ELT, elt)
-#define uwpfree(elt)	ocache_free (uwcache, UNWIND_ELT, elt)
+#define uwpalloc(elt)   ocache_alloc (uwcache, UNWIND_ELT, elt)
+#define uwpfree(elt)    ocache_free (uwcache, UNWIND_ELT, elt)
 #endif
 
 void
@@ -168,16 +168,16 @@ unwind_protect_tag_on_stack (const char *tag)
   while (elt)
     {
       if (elt->head.cleanup == 0 && STREQ (elt->arg.v, tag))
-	return 1;
+        return 1;
       elt = elt->head.next;
     }
   return 0;
 }
 
 /* **************************************************************** */
-/*								    */
-/*			The Actual Functions		 	    */
-/*								    */
+/*                                                                  */
+/*                      The Actual Functions                        */
+/*                                                                  */
 /* **************************************************************** */
 
 static void
@@ -217,7 +217,7 @@ clear_unwind_protects_internal (int flag)
   if (flag)
     {
       while (unwind_protect_list)
-	remove_unwind_protect_internal ();
+        remove_unwind_protect_internal ();
     }
   unwind_protect_list = (UNWIND_ELT *)NULL;
 }
@@ -233,13 +233,13 @@ unwind_frame_discard_internal (char *tag)
     {
       unwind_protect_list = unwind_protect_list->head.next;
       if (elt->head.cleanup == 0 && (STREQ (elt->arg.v, tag)))
-	{
-	  uwpfree (elt);
-	  found = 1;
-	  break;
-	}
+        {
+          uwpfree (elt);
+          found = 1;
+          break;
+        }
       else
-	uwpfree (elt);
+        uwpfree (elt);
     }
 
   if (found == 0)
@@ -270,21 +270,21 @@ unwind_frame_run_internal (char *tag)
 
       /* If tag, then compare. */
       if (elt->head.cleanup == 0)
-	{
-	  if (tag && STREQ (elt->arg.v, tag))
-	    {
-	      uwpfree (elt);
-	      found = 1;
-	      break;
-	    }
-	}
+        {
+          if (tag && STREQ (elt->arg.v, tag))
+            {
+              uwpfree (elt);
+              found = 1;
+              break;
+            }
+        }
       else
-	{
-	  if (elt->head.cleanup == restore_variable)
-	    restore_variable (&elt->sv.v);
-	  else
-	    (*(elt->head.cleanup)) (elt->arg.v);
-	}
+        {
+          if (elt->head.cleanup == restore_variable)
+            restore_variable (&elt->sv.v);
+          else
+            (*(elt->head.cleanup)) (elt->arg.v);
+        }
 
       uwpfree (elt);
     }

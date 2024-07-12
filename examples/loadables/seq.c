@@ -107,22 +107,22 @@ long_double_format (char const *fmt)
   for (i = 0; ! (fmt[i] == '%' && fmt[i + 1] != '%'); i += (fmt[i] == '%') + 1)
     {
       if (!fmt[i])
-	{
-	  builtin_error ("format %s has no %% directive", fmt);
-	  return 0;
-	}
+        {
+          builtin_error ("format %s has no %% directive", fmt);
+          return 0;
+        }
     }
 
   i++;
-  i += strspn (fmt + i, "-+#0 '");	/* zero or more flags */
-  i += strspn (fmt + i, "0123456789");	/* optional minimum field width */
-  if (fmt[i] == '.')			/* optional precision */
+  i += strspn (fmt + i, "-+#0 '");      /* zero or more flags */
+  i += strspn (fmt + i, "0123456789");  /* optional minimum field width */
+  if (fmt[i] == '.')                    /* optional precision */
     {
       i++;
       i += strspn (fmt + i, "0123456789");
     }
 
-  length_modifier_offset = i;		/* optional length modifier */
+  length_modifier_offset = i;           /* optional length modifier */
   /* we could ignore an 'l' length modifier here */
   has_L = (fmt[i] == 'L');
   i += has_L;
@@ -174,7 +174,7 @@ getprec (const char *numbuf)
   char *dp;
 
   if (dp = strchr (numbuf, decimal_point))
-    dp++;		/* skip over decimal point */
+    dp++;               /* skip over decimal point */
   for (p = 0; dp && *dp && ISDIGIT (*dp); dp++)
     p++;
   return p;
@@ -198,7 +198,7 @@ genformat (floatmax_t first, floatmax_t incr, floatmax_t last)
 
   wfirst = snprintf (buf, sizeof (buf), FLOATMAX_FMT, first);
   fprec = getprec (buf);
-    
+
   prec = MAX (fprec, iprec);
 
   wlast = snprintf (buf, sizeof (buf), FLOATMAX_FMT, last);
@@ -211,11 +211,11 @@ genformat (floatmax_t first, floatmax_t incr, floatmax_t last)
   wlast += (prec - lprec);
 
   if (lprec && prec == 0)
-    wlast--;		/* no decimal point */
+    wlast--;            /* no decimal point */
   if (lprec == 0 && prec)
-    wlast++;		/* include decimal point */
+    wlast++;            /* include decimal point */
   if (fprec == 0 && prec)
-    wfirst++;		/* include decimal point */
+    wfirst++;           /* include decimal point */
 
   width = MAX (wfirst, wlast);
   if (width)
@@ -233,15 +233,15 @@ print_fltseq (const char *fmt, floatmax_t first, floatmax_t last, floatmax_t inc
   floatmax_t next;
   const char *s;
 
-  n = 0;		/* iteration counter */
+  n = 0;                /* iteration counter */
   s = "";
   for (next = first; incr >= 0 ? (next <= last) : (next >= last); next = first + n * incr)
     {
       QUIT;
       if (*s && fputs (s, stdout) == EOF)
-	return (sh_chkwrite (EXECUTION_FAILURE));
+        return (sh_chkwrite (EXECUTION_FAILURE));
       if (printf (fmt, next) < 0)
-	return (sh_chkwrite (EXECUTION_FAILURE));
+        return (sh_chkwrite (EXECUTION_FAILURE));
       s = separator;
       n++;
     }
@@ -257,7 +257,7 @@ width_needed (intmax_t num)
 {
   int ret;
 
-  ret = num < 0;		/* sign */
+  ret = num < 0;                /* sign */
   if (ret)
     num = -num;
   do
@@ -274,7 +274,7 @@ print_intseq (intmax_t ifirst, intmax_t ilast, intmax_t iincr)
   intmax_t i, next;
 
   /* compute integer format string */
-  if (equal_width)	/* -w supplied */
+  if (equal_width)      /* -w supplied */
     {
       int wfirst, wlast, width;
 
@@ -293,7 +293,7 @@ print_intseq (intmax_t ifirst, intmax_t ilast, intmax_t iincr)
       QUIT;
       /* The leading %s is for the separator */
       if (printf (equal_width ?  intwfmt : "%s%" PRIdMAX, s, i) < 0)
-	return (sh_chkwrite (EXECUTION_FAILURE));
+        return (sh_chkwrite (EXECUTION_FAILURE));
       s = separator;
       next = i + iincr;
     }
@@ -311,7 +311,7 @@ seq_builtin (WORD_LIST *list)
   WORD_LIST *l;
   int opt, nargs, intseq, freefmt;
   char *first_str, *incr_str, *last_str;
-  char const *fmtstr;		/* The printf(3) format used for output.  */
+  char const *fmtstr;           /* The printf(3) format used for output.  */
 
   equal_width = 0;
   separator = "\n";
@@ -319,7 +319,7 @@ seq_builtin (WORD_LIST *list)
 
   first = 1.0;
   last = 0.0;
-  incr = 0.0;		/* set later */
+  incr = 0.0;           /* set later */
   ifirst = ilast = iincr = 0;
   first_str = incr_str = last_str = 0;
 
@@ -331,30 +331,30 @@ seq_builtin (WORD_LIST *list)
     {
       l = lcurrent ? lcurrent : list;
       if (l && l->word && l->word->word && l->word->word[0] == '-' &&
-	   (l->word->word[1] == '.' || DIGIT (l->word->word[1])))
-	{
-	  loptend = l;
-	  break;	/* negative number */
-	}
+           (l->word->word[1] == '.' || DIGIT (l->word->word[1])))
+        {
+          loptend = l;
+          break;        /* negative number */
+        }
       if ((opt = internal_getopt (list, "f:s:w")) == -1)
         break;
 
       switch (opt)
-	{
-	case 'f':
-	  fmtstr = list_optarg;
-	  break;
-	case 's':
-	  separator = list_optarg;
-	  break;
-	case 'w':
-	  equal_width = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'f':
+          fmtstr = list_optarg;
+          break;
+        case 's':
+          separator = list_optarg;
+          break;
+        case 'w':
+          equal_width = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -384,7 +384,7 @@ seq_builtin (WORD_LIST *list)
       conversion_error = 0;
       first = getfloatmax (first_str = list->word->word);
       if (conversion_error)
-	return (EXECUTION_FAILURE);
+        return (EXECUTION_FAILURE);
     }
 
   /* FIRST INCR LAST */
@@ -393,12 +393,12 @@ seq_builtin (WORD_LIST *list)
       conversion_error = 0;
       incr = getfloatmax (incr_str = list->next->word->word);
       if (conversion_error)
-	return (EXECUTION_FAILURE);
+        return (EXECUTION_FAILURE);
       if (incr == 0.0)
-	{
-	  builtin_error ("zero %screment", (first < last) ?  "in" : "de");
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("zero %screment", (first < last) ?  "in" : "de");
+          return (EXECUTION_FAILURE);
+        }
     }
 
   /* Sanitize arguments */
@@ -416,9 +416,9 @@ seq_builtin (WORD_LIST *list)
       fmtstr = long_double_format (fmtstr);
       freefmt = 1;
       if (fmtstr == 0)
-	return (EXECUTION_FAILURE);
+        return (EXECUTION_FAILURE);
     }
-      
+
   if (fmtstr != NULL && equal_width)
     {
       builtin_warning ("-w ignored when the format string is specified");
@@ -454,29 +454,29 @@ seq_builtin (WORD_LIST *list)
 
 /* Taken largely from GNU seq. */
 char *seq_doc[] = {
-	"Print numbers from FIRST to LAST, in steps of INCREMENT.",
-	"",
-	"-f FORMAT    use printf style floating-point FORMAT",
-	"-s STRING    use STRING to separate numbers (default: \\n)",
-	"-w           equalize width by padding with leading zeroes",
-	"",
-	"If FIRST or INCREMENT is omitted, it defaults to 1.  However, an",
-	"omitted INCREMENT defaults to -1 when LAST is smaller than FIRST.",
-	"The sequence of numbers ends when the sum of the current number and",
-	"INCREMENT would become greater than LAST.",
-	"FIRST, INCREMENT, and LAST are interpreted as floating point values.",
-	"",
-	"FORMAT must be suitable for printing one argument of type 'double';",
-	"it defaults to %.PRECf if FIRST, INCREMENT, and LAST are all fixed point",
-	"decimal numbers with maximum precision PREC, and to %g otherwise.",
-	(char *)NULL
-};	
+        "Print numbers from FIRST to LAST, in steps of INCREMENT.",
+        "",
+        "-f FORMAT    use printf style floating-point FORMAT",
+        "-s STRING    use STRING to separate numbers (default: \\n)",
+        "-w           equalize width by padding with leading zeroes",
+        "",
+        "If FIRST or INCREMENT is omitted, it defaults to 1.  However, an",
+        "omitted INCREMENT defaults to -1 when LAST is smaller than FIRST.",
+        "The sequence of numbers ends when the sum of the current number and",
+        "INCREMENT would become greater than LAST.",
+        "FIRST, INCREMENT, and LAST are interpreted as floating point values.",
+        "",
+        "FORMAT must be suitable for printing one argument of type 'double';",
+        "it defaults to %.PRECf if FIRST, INCREMENT, and LAST are all fixed point",
+        "decimal numbers with maximum precision PREC, and to %g otherwise.",
+        (char *)NULL
+};
 
 struct builtin seq_struct = {
-	"seq",
-	seq_builtin,
-	BUILTIN_ENABLED,
-	seq_doc,
-	"seq [-f format] [-s separator] [-w] [FIRST [INCR]] LAST",
-	0
+        "seq",
+        seq_builtin,
+        BUILTIN_ENABLED,
+        seq_doc,
+        "seq [-f format] [-s separator] [-w] [FIRST [INCR]] LAST",
+        0
 };

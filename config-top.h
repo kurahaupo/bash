@@ -146,12 +146,12 @@
 
 /* Define to 0 if you want the checkwinsize option off by default, 1 if you
    want it on. */
-#define CHECKWINSIZE_DEFAULT	1
+#define CHECKWINSIZE_DEFAULT    1
 
 /* Define to 1 if you want to optimize for sequential array assignment when
    using indexed arrays, 0 if you want bash-4.2 behavior, which favors
    random access but is O(N) for each array assignment. */
-#define OPTIMIZE_SEQUENTIAL_ARRAY_ASSIGNMENT	1
+#define OPTIMIZE_SEQUENTIAL_ARRAY_ASSIGNMENT    1
 
 /* Define to 1 if you want to be able to export indexed arrays to processes
    using the foo=([0]=one [1]=two) and so on */
@@ -190,7 +190,7 @@
 /* Define to 0 if you want history expansion to be disabled by default in
    interactive shells; define to 1 for the historical behavior of enabling
    when the shell is interactive. */
-#define HISTEXPAND_DEFAULT	1
+#define HISTEXPAND_DEFAULT      1
 
 /* Undefine or define to 0 if you don't want to allow associative array
    assignment using a compound list of key-value pairs. */
@@ -199,10 +199,10 @@
 /* Define if you want read errors in non-interactive shells to be fatal
    errors instead of the historical practice of treating them as EOF. The
    next version of POSIX will require this (interp 1629). */
-#define FATAL_READERROR	1
+#define FATAL_READERROR 1
 
 /* Define to 0 if you want the `patsub_replacement' shell option to be disabled
    by default. */
 #ifndef PATSUB_REPLACE_DEFAULT
-#define PATSUB_REPLACE_DEFAULT	1
+#define PATSUB_REPLACE_DEFAULT  1
 #endif

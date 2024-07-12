@@ -15,11 +15,11 @@
 
 f()
 {
-	local -n ref=var
-	local -A ref=([1]=)
-#	declare -p ref var
-	ref=([2]=)
-	declare -p ref var
+        local -n ref=var
+        local -A ref=([1]=)
+#       declare -p ref var
+        ref=([2]=)
+        declare -p ref var
 }
 
 unset ref  var
@@ -32,11 +32,11 @@ unset var
 unset -f f
 
 f()
-{	
-	local -n ref=var
-	local -a ref=([1]=)
-	ref=([2]=)
-	declare -p ref var
+{
+        local -n ref=var
+        local -a ref=([1]=)
+        ref=([2]=)
+        declare -p ref var
 }
 
 unset ref var
@@ -66,4 +66,3 @@ f
 
 unset var
 unset -f f
-

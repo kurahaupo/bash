@@ -27,13 +27,13 @@
 #include "stdc.h"
 
 /* Functions from expr.c. */
-#define EXP_EXPANDED	0x01
+#define EXP_EXPANDED    0x01
 
 extern intmax_t evalexp (const char *, int, int *);
 
 /* Functions from print_cmd.c. */
-#define FUNC_MULTILINE	0x01
-#define FUNC_EXTERNAL	0x02
+#define FUNC_MULTILINE  0x01
+#define FUNC_EXTERNAL   0x02
 
 extern char *make_command_string (COMMAND *);
 extern char *print_comsub (COMMAND *);
@@ -190,16 +190,16 @@ extern char *sh_modcase (const char *, char *, int);
 
 /* Defines for flags argument to sh_modcase.  These need to agree with what's
    in lib/sh/casemode.c */
-#define CASE_LOWER	0x0001
-#define CASE_UPPER	0x0002
-#define CASE_CAPITALIZE	0x0004
-#define CASE_UNCAP	0x0008
-#define CASE_TOGGLE	0x0010
-#define CASE_TOGGLEALL	0x0020
-#define CASE_UPFIRST	0x0040
-#define CASE_LOWFIRST	0x0080
+#define CASE_LOWER      0x0001
+#define CASE_UPPER      0x0002
+#define CASE_CAPITALIZE 0x0004
+#define CASE_UNCAP      0x0008
+#define CASE_TOGGLE     0x0010
+#define CASE_TOGGLEALL  0x0020
+#define CASE_UPFIRST    0x0040
+#define CASE_LOWFIRST   0x0080
 
-#define CASE_USEWORDS	0x1000
+#define CASE_USEWORDS   0x1000
 
 /* declarations for functions defined in lib/sh/clktck.c */
 extern long get_clk_tck (void);
@@ -269,10 +269,10 @@ extern char *uinttostr (uintmax_t, char *, size_t);
 extern char *uitos (uintmax_t);
 
 /* declarations for functions defined in lib/sh/makepath.c */
-#define MP_DOTILDE	0x01
-#define MP_DOCWD	0x02
-#define MP_RMDOT	0x04
-#define MP_IGNDOT	0x08
+#define MP_DOTILDE      0x01
+#define MP_DOCWD        0x02
+#define MP_RMDOT        0x04
+#define MP_IGNDOT       0x08
 
 extern char *sh_makepath (const char *, const char *, int);
 
@@ -315,10 +315,10 @@ extern int getmaxgroups (void);
 extern long getmaxchild (void);
 
 /* declarations for functions defined in lib/sh/pathcanon.c */
-#define PATH_CHECKDOTDOT	0x0001
-#define PATH_CHECKEXISTS	0x0002
-#define PATH_HARDPATH		0x0004
-#define PATH_NOALLOC		0x0008
+#define PATH_CHECKDOTDOT        0x0001
+#define PATH_CHECKEXISTS        0x0002
+#define PATH_HARDPATH           0x0004
+#define PATH_NOALLOC            0x0008
 
 extern char *sh_canonpath (char *, int);
 
@@ -328,8 +328,8 @@ extern char *sh_realpath (const char *, char *);
 
 /* declarations for functions defined in lib/sh/random.c */
 extern int brand (void);
-extern void sbrand (unsigned long);		/* set bash random number generator. */
-extern void seedrand (void);			/* seed generator randomly */
+extern void sbrand (unsigned long);             /* set bash random number generator. */
+extern void seedrand (void);                    /* seed generator randomly */
 extern void seedrand32 (void);
 extern u_bits32_t get_urandom32 (void);
 
@@ -348,8 +348,8 @@ extern int sh_eaccess (const char *, int);
 extern int sh_regmatch (const char *, const char *, int, char **);
 
 /* defines for flags argument to sh_regmatch. */
-#define SHMAT_SUBEXP		0x001	/* save subexpressions in SH_REMATCH */
-#define SHMAT_PWARN		0x002	/* print a warning message on invalid regexp */
+#define SHMAT_SUBEXP            0x001   /* save subexpressions in SH_REMATCH */
+#define SHMAT_PWARN             0x002   /* print a warning message on invalid regexp */
 
 /* declarations for functions defined in lib/sh/shmbchar.c */
 extern size_t mbstrlen (const char *);
@@ -505,11 +505,11 @@ extern void print_timeval (FILE *, struct timeval *);
 #endif
 
 /* declarations for functions defined in lib/sh/tmpfile.c */
-#define MT_USETMPDIR		0x0001
-#define MT_READWRITE		0x0002
-#define MT_USERANDOM		0x0004
-#define MT_TEMPLATE		0x0008
-#define MT_UNLINK		0x0010	/* unlink after opening */
+#define MT_USETMPDIR            0x0001
+#define MT_READWRITE            0x0002
+#define MT_USERANDOM            0x0004
+#define MT_TEMPLATE             0x0008
+#define MT_UNLINK               0x0010  /* unlink after opening */
 
 extern char *sh_mktmpname (const char *, int);
 extern int sh_mktmpfd (const char *, int, char **);

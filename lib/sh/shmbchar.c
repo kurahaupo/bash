@@ -62,13 +62,13 @@ mbstrlen (const char *s)
   while (*s && (clen = (f = is_basic (*s)) ? 1 : mbrlen(s, mb_cur_max, &mbs)) != 0)
     {
       if (MB_INVALIDCH(clen))
-	{
-	  clen = 1;	/* assume single byte */
-	  mbs = mbsbak;
-	}
+        {
+          clen = 1;     /* assume single byte */
+          mbs = mbsbak;
+        }
 
       if (f == 0)
-	mbsbak = mbs;
+        mbsbak = mbs;
 
       s += clen;
       nc++;
@@ -88,26 +88,26 @@ mbsmbchar (const char *s)
   int mb_cur_max;
 
   if (locale_utf8locale)
-    return (utf8_mbsmbchar (s));	/* XXX */
+    return (utf8_mbsmbchar (s));        /* XXX */
 
   mb_cur_max = MB_CUR_MAX;
   for (t = (char *)s; *t; t++)
     {
       if (is_basic (*t))
-	continue;
+        continue;
 
-      if (locale_utf8locale)		/* not used if above code active */
-	clen = utf8_mblen (t, mb_cur_max);
+      if (locale_utf8locale)            /* not used if above code active */
+        clen = utf8_mblen (t, mb_cur_max);
       else
-	clen = mbrlen (t, mb_cur_max, &mbs);
+        clen = mbrlen (t, mb_cur_max, &mbs);
 
       if (clen == 0)
         return 0;
       if (MB_INVALIDCH(clen))
-	continue;
+        continue;
 
       if (clen > 1)
-	return t;
+        return t;
     }
   return 0;
 }
@@ -121,7 +121,7 @@ sh_mbsnlen(const char *src, size_t srclen, int maxlen)
 
   for (sind = count = 0; src[sind]; )
     {
-      count++;		/* number of multibyte characters */
+      count++;          /* number of multibyte characters */
       ADVANCE_CHAR (src, srclen, sind);
       if (sind > maxlen)
         break;

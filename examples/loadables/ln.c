@@ -66,22 +66,22 @@ ln_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "fs")) != -1)
     {
       switch (opt)
-	{
-	case 'f':
-	  flags |= LN_UNLINK;
-	  break;
-	case 's':
-	  flags |= LN_SYMLINK;
-	  break;
-	case 'h':
-	case 'n':
-	  flags |= LN_NOFOLLOW;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'f':
+          flags |= LN_UNLINK;
+          break;
+        case 's':
+          flags |= LN_SYMLINK;
+          break;
+        case 'h':
+        case 'n':
+          flags |= LN_NOFOLLOW;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -90,20 +90,20 @@ ln_builtin (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-    
-  linkfn = (flags & LN_SYMLINK) ? symlink : link;  
 
-  if (list->next == 0)			/* ln target, equivalent to ln target . */
+  linkfn = (flags & LN_SYMLINK) ? symlink : link;
+
+  if (list->next == 0)                  /* ln target, equivalent to ln target . */
     return (dolink (list->word->word, ".", flags));
 
-  if (list->next->next == 0)		/* ln target source */
+  if (list->next->next == 0)            /* ln target source */
     return (dolink (list->word->word, list->next->word->word, flags));
 
   /* ln target1 target2 ... directory */
 
   /* find last argument: target directory, and make sure it's an existing
      directory. */
-  for (l = list; l->next; l = l->next)  
+  for (l = list; l->next; l = l->next)
     ;
   sdir = l->word->word;
 
@@ -121,7 +121,7 @@ ln_builtin (WORD_LIST *list)
 
   for (rval = EXECUTION_SUCCESS; list != l; list = list->next)
     rval += dolink (list->word->word, sdir, flags);
-  
+
   return rval;
 }
 
@@ -145,10 +145,10 @@ mkdirpath (char *dir, char *file)
 
 #if defined (HAVE_LSTAT)
 #  define LSTAT lstat
-#  define LSTAT_OR_STAT_IF(c, f, b)	((c) ? lstat((f), (b)) : stat((f), (b)))
+#  define LSTAT_OR_STAT_IF(c, f, b)     ((c) ? lstat((f), (b)) : stat((f), (b)))
 #else
 #  define LSTAT stat
-#  define LSTAT_OR_STAT_IF(c, f, b)	(stat((f), (b)))
+#  define LSTAT_OR_STAT_IF(c, f, b)     (stat((f), (b)))
 #endif
 
 static int
@@ -158,21 +158,21 @@ dolink (char *src, char *dst, int flags)
   int exists;
   char *dst_path, *p;
 
-  /* If we're not doing symlinks, the source must exist and not be a 
+  /* If we're not doing symlinks, the source must exist and not be a
      directory. */
   if ((flags & LN_SYMLINK) == 0)
     {
       if (stat (src, &ssb) != 0)
-	{
-	  builtin_error ("%s: %s", src, strerror (errno));
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          builtin_error ("%s: %s", src, strerror (errno));
+          return (EXECUTION_FAILURE);
+        }
       if (S_ISDIR (ssb.st_mode))
-	{
-	  errno = EISDIR;
-	  builtin_error ("%s: %s", src, strerror (errno));
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          errno = EISDIR;
+          builtin_error ("%s: %s", src, strerror (errno));
+          return (EXECUTION_FAILURE);
+        }
     }
 
   /* If the destination is a directory, create the final filename by appending
@@ -181,9 +181,9 @@ dolink (char *src, char *dst, int flags)
   if ((LSTAT_OR_STAT_IF((flags & LN_NOFOLLOW), dst, &dsb) == 0) && S_ISDIR (dsb.st_mode))
     {
       if ((p = strrchr (src, '/')) == 0)
-	p = src;
+        p = src;
       else
-	p++;
+        p++;
 
       dst_path = mkdirpath (dst, p);
       dst = dst_path;
@@ -212,23 +212,23 @@ dolink (char *src, char *dst, int flags)
 }
 
 char *ln_doc[] = {
-	"Link files.",
-	"",
-	"Create a new directory entry with the same modes as the original",
-	"file.  The -f option means to unlink any existing file, permitting",
-	"the link to occur.  The -s option means to create a symbolic link.",
-	"By default, ln makes hard links.  Specifying -n or its synonym -h",
-	"causes ln to not resolve symlinks in the target file or directory.",
-	(char *)NULL
+        "Link files.",
+        "",
+        "Create a new directory entry with the same modes as the original",
+        "file.  The -f option means to unlink any existing file, permitting",
+        "the link to occur.  The -s option means to create a symbolic link.",
+        "By default, ln makes hard links.  Specifying -n or its synonym -h",
+        "causes ln to not resolve symlinks in the target file or directory.",
+        (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin ln_struct = {
-	"ln",		/* builtin name */
-	ln_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	ln_doc,		/* array of long documentation strings. */
-	"ln [-fhns] file1 [file2] OR ln [-fhns] file ... directory",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+        "ln",           /* builtin name */
+        ln_builtin,             /* function implementing the builtin */
+        BUILTIN_ENABLED,        /* initial flags for builtin */
+        ln_doc,         /* array of long documentation strings. */
+        "ln [-fhns] file1 [file2] OR ln [-fhns] file ... directory",    /* usage synopsis; becomes short_doc */
+        0                       /* reserved for internal use */
 };

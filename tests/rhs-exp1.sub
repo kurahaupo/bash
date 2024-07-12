@@ -52,23 +52,23 @@ recho "${foo:-''}"
 recho "${foo:-}"
 
 if [[ $var == "" ]]; then
-	echo good 1
+        echo good 1
 fi
 
 if [[ "$var"X == ""X ]]; then
-	echo good 2
+        echo good 2
 fi
 
 if [ "$var"X == ""X"" ]; then
-	echo good 3
+        echo good 3
 fi
 
 if [ X"" == X ]; then
-	echo good 4
+        echo good 4
 fi
 
 if [[ X"" == X ]]; then
-	echo good 5
+        echo good 5
 fi
 
 case x"" in
@@ -84,33 +84,33 @@ case x"" in
 esac
 
 if [[ x"" == x ]]; then
-	echo ok 2
+        echo ok 2
 fi
 
 if [[ x"" == x"" ]]; then
-	echo ok 3
+        echo ok 3
 else
-	echo bad 3
+        echo bad 3
 fi
 
 case x"" in
-x"")	echo ok 4 ;;
-*)	echo bad 4;;
+x"")  echo ok 4 ;;
+*)      echo bad 4;;
 esac
 
 if [[ x"" == x"" ]]; then
-	echo ok 5
+        echo ok 5
 else
-	echo bad 5
+        echo bad 5
 fi
 
 case x"" in
-"x")	echo ok 6 ;;
-*)	echo bad 6;;
+"x")  echo ok 6 ;;
+*)      echo bad 6;;
 esac
 
 case x"" in
-"x")	echo CTLNUL 7 ;;
-x)	echo ok 7 ;;
-*)	echo bad 7 ;;
+"x")  echo CTLNUL 7 ;;
+x)      echo ok 7 ;;
+*)      echo bad 7 ;;
 esac

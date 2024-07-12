@@ -71,22 +71,22 @@ declare -p var
 
 pv()
 {
-	local -A foo
-	eval foo=\( "${var[@]@k}" \)
-	declare -p foo
+        local -A foo
+        eval foo=\( "${var[@]@k}" \)
+        declare -p foo
 }
 pv
 
 pv1()
 {
-	local -A foo=( $'\x01' "${var[two]}" )
-	declare -p foo
+        local -A foo=( $'\x01' "${var[two]}" )
+        declare -p foo
 }
 pv1
 
 pv2()
 {
-	local -A foo=( [$'\x01']="${var[one]}" )
-	declare -p foo
+        local -A foo=( [$'\x01']="${var[one]}" )
+        declare -p foo
 }
 pv2

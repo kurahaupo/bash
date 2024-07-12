@@ -53,40 +53,40 @@ extern int EOF_Reached;
 #define EXECUTION_SUCCESS 0
 
 /* Usage messages by builtins result in a return status of 2. */
-#define EX_BADUSAGE	2
+#define EX_BADUSAGE     2
 
-#define EX_MISCERROR	2
+#define EX_MISCERROR    2
 
 /* Special exit statuses used by the shell, internally and externally. */
-#define EX_RETRYFAIL	124
-#define EX_WEXPCOMSUB	125
-#define EX_BINARY_FILE	126
-#define EX_NOEXEC	126
-#define EX_NOINPUT	126
-#define EX_NOTFOUND	127
+#define EX_RETRYFAIL    124
+#define EX_WEXPCOMSUB   125
+#define EX_BINARY_FILE  126
+#define EX_NOEXEC       126
+#define EX_NOINPUT      126
+#define EX_NOTFOUND     127
 
-#define EX_SHERRBASE	256	/* all special error values are > this. */
+#define EX_SHERRBASE    256     /* all special error values are > this. */
 
-#define EX_BADSYNTAX	257	/* shell syntax error */
-#define EX_USAGE	258	/* syntax error in usage */
-#define EX_REDIRFAIL	259	/* redirection failed */
-#define EX_BADASSIGN	260	/* variable assignment error */
-#define EX_EXPFAIL	261	/* word expansion failed */
-#define EX_DISKFALLBACK	262	/* fall back to disk command from builtin */
-#define EX_UTILERROR	263	/* Posix special builtin utility error */
+#define EX_BADSYNTAX    257     /* shell syntax error */
+#define EX_USAGE        258     /* syntax error in usage */
+#define EX_REDIRFAIL    259     /* redirection failed */
+#define EX_BADASSIGN    260     /* variable assignment error */
+#define EX_EXPFAIL      261     /* word expansion failed */
+#define EX_DISKFALLBACK 262     /* fall back to disk command from builtin */
+#define EX_UTILERROR    263     /* Posix special builtin utility error */
 
 /* Flag values that control parameter pattern substitution. */
-#define MATCH_ANY	0x000
-#define MATCH_BEG	0x001
-#define MATCH_END	0x002
+#define MATCH_ANY       0x000
+#define MATCH_BEG       0x001
+#define MATCH_END       0x002
 
-#define MATCH_TYPEMASK	0x003
+#define MATCH_TYPEMASK  0x003
 
-#define MATCH_GLOBREP	0x010
-#define MATCH_QUOTED	0x020
-#define MATCH_ASSIGNRHS	0x040
-#define MATCH_STARSUB	0x080
-#define MATCH_EXPREP	0x100	/* for pattern substitution, expand replacement */
+#define MATCH_GLOBREP   0x010
+#define MATCH_QUOTED    0x020
+#define MATCH_ASSIGNRHS 0x040
+#define MATCH_STARSUB   0x080
+#define MATCH_EXPREP    0x100   /* for pattern substitution, expand replacement */
 
 /* Some needed external declarations. */
 extern char **shell_environment;
@@ -154,7 +154,7 @@ struct user_info {
   uid_t uid, euid, saveuid;
   gid_t gid, egid, savegid;
   char *user_name;
-  char *shell;		/* shell from the password file */
+  char *shell;          /* shell from the password file */
   char *home_dir;
 };
 
@@ -163,7 +163,7 @@ extern struct user_info current_user;
 /* Force gcc to not clobber X on a longjmp().  Old versions of gcc mangle
    this badly. */
 #if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 8)
-#  define USE_VAR(x)	((void) &(x))
+#  define USE_VAR(x)    ((void) &(x))
 #else
 #  define USE_VAR(x)
 #endif

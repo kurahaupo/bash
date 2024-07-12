@@ -31,7 +31,7 @@ recho "${!foo-unset}"
 readonly bar=two
 typeset -n foo=bar
 
-unset foo	# this should fail because bar is readonly
+unset foo       # this should fail because bar is readonly
 
 echo "expect <two>"
 echo ${bar-unset}

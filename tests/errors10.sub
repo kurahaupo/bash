@@ -19,13 +19,13 @@ POSIX_SH="${THIS_SH} -o posix"
 echo invalid numeric argument
 # default mode
 for b in exit break continue shift; do
-	BUILTIN=$b ${THIS_SH} -c 'set -- a b c; (exit 45); for f in _; do $BUILTIN abcde; done; echo after $BUILTIN: $?' bash
+        BUILTIN=$b ${THIS_SH} -c 'set -- a b c; (exit 45); for f in _; do $BUILTIN abcde; done; echo after $BUILTIN: $?' bash
 done
 ${THIS_SH} -c 'func() { return abcde; echo in func: $?; }; func; echo after return: $?' bash
 
 # posix mode
 for b in exit break continue shift; do
-	BUILTIN=$b ${POSIX_SH} -c 'set -- a b c; (exit 45); for f in _; do $BUILTIN abcde; done; echo after $BUILTIN: $?' bash
+        BUILTIN=$b ${POSIX_SH} -c 'set -- a b c; (exit 45); for f in _; do $BUILTIN abcde; done; echo after $BUILTIN: $?' bash
 done
 ${POSIX_SH} -c 'func() { return abcde; echo in func: $?; }; func; echo after return: $?' bash
 
@@ -59,11 +59,11 @@ EOF
 
 # default mode
 for b in exit return shift break continue; do
-	BUILTIN=$b ${THIS_SH} $TFILE	# TFILE for consistent error messages
+        BUILTIN=$b ${THIS_SH} $TFILE    # TFILE for consistent error messages
 done
 # posix mode
 for b in exit return shift break continue; do
-	BUILTIN=$b ${POSIX_SH} $TFILE	# TFILE for consistent error messages
+        BUILTIN=$b ${POSIX_SH} $TFILE   # TFILE for consistent error messages
 done
 
 cd $OLDPWD

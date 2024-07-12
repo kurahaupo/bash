@@ -32,8 +32,8 @@ typedef struct alias {
 } alias_t;
 
 /* Values for `flags' member of struct alias. */
-#define AL_EXPANDNEXT		0x1
-#define AL_BEINGEXPANDED	0x2
+#define AL_EXPANDNEXT           0x1
+#define AL_BEINGEXPANDED        0x2
 
 /* The list of known aliases. */
 extern HASH_TABLE *aliases;

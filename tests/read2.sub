@@ -18,27 +18,27 @@ a=4
 read -t 1 a < /dev/tty
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 1: ok
+        echo timeout 1: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${a:-unset or null 1}
 
 read -t 0.000001 a < /dev/tty
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 2: ok
+        echo timeout 2: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${a:-unset or null 2}
 
 sleep 1 | read -t 0.25 a
 estat=$?
 if [ $estat -gt 128 ]; then
-	echo timeout 3: ok
+        echo timeout 3: ok
 else
-	echo $estat
+        echo $estat
 fi
 echo ${a:-unset or null 3}
 
@@ -49,8 +49,8 @@ echo $a
 
 # the above should all time out
 echo abcde | {
-	read -t 0.5 a
-	echo $a
+        read -t 0.5 a
+        echo $a
 }
 
 read -t .001 a <<<abcde
@@ -69,9 +69,8 @@ for c in {0..2000}; do
 done
 
 cd $OLDPWD
-rm -f $TMPDIR/a.pipe		# paranoia
+rm -f $TMPDIR/a.pipe            # paranoia
 
 TMOUT=.001
 read a <<<abcde
 echo $a
-

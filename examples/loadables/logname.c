@@ -54,20 +54,19 @@ logname_builtin (WORD_LIST *list)
 }
 
 char *logname_doc[] = {
-	"Display user login name.",
-	"",
-	"Write the current user's login name to the standard output",
-	"and exit.  logname ignores the LOGNAME and USER variables.",
-	"logname ignores any non-option arguments.",
-	(char *)NULL
+        "Display user login name.",
+        "",
+        "Write the current user's login name to the standard output",
+        "and exit.  logname ignores the LOGNAME and USER variables.",
+        "logname ignores any non-option arguments.",
+        (char *)NULL
 };
-	
+
 struct builtin logname_struct = {
-	"logname",
-	logname_builtin,
-	BUILTIN_ENABLED,
-	logname_doc,
-	"logname",
-	0
+        "logname",
+        logname_builtin,
+        BUILTIN_ENABLED,
+        logname_doc,
+        "logname",
+        0
 };
-	

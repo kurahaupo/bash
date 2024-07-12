@@ -127,7 +127,7 @@
 #endif
 
 /************************************************/
-/* check multibyte capability for I18N code	*/
+/* check multibyte capability for I18N code     */
 /************************************************/
 
 /* For platforms which support the ISO C amendment 1 functionality we
@@ -183,13 +183,13 @@
 #endif
 
 /************************************************/
-/* end of multibyte capability checks for I18N	*/
+/* end of multibyte capability checks for I18N  */
 /************************************************/
 
 /******************************************************************/
 /* Placeholder for builders to #undef any unwanted features from  */
 /* config-top.h or created by configure (such as the default mail */
-/* file for mail checking).					  */
+/* file for mail checking).                                       */
 /******************************************************************/
 
 /* If you don't want bash to provide a default mail file to check. */

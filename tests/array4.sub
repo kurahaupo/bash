@@ -14,7 +14,7 @@
 # compound assignment parsing problems in bash-3.1-release
 func()
 {
-	local -a x=() y=()
+        local -a x=() y=()
 }
 
 a=() b=()

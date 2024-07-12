@@ -35,8 +35,8 @@
 #include "hashlib.h"
 
 /* tunable constants for rehashing */
-#define HASH_REHASH_MULTIPLIER	4
-#define HASH_REHASH_FACTOR	2
+#define HASH_REHASH_MULTIPLIER  4
+#define HASH_REHASH_FACTOR      2
 
 #define HASH_SHOULDGROW(table) \
   ((table)->nentries >= (table)->nbuckets * HASH_REHASH_FACTOR)
@@ -110,13 +110,13 @@ copy_bucket_array (BUCKET_CONTENTS *ba, sh_string_func_t *cpdata)
 
       n->key = savestring (e->key);
       n->data = e->data ? (cpdata ? (*cpdata) (e->data) : savestring (e->data))
-			: NULL;
+                        : NULL;
       n->khash = e->khash;
       n->times_found = e->times_found;
       n->next = (BUCKET_CONTENTS *)NULL;
     }
 
-  return new_bucket;  
+  return new_bucket;
 }
 
 static void
@@ -139,12 +139,12 @@ hash_rehash (HASH_TABLE *table, int nsize)
   for (j = 0; j < osize; j++)
     {
       for (item = old_bucket_array[j]; item; item = next)
-	{
-	  next = item->next;
-	  i = item->khash & (table->nbuckets - 1);
-	  item->next = table->bucket_array[i];
-	  table->bucket_array[i] = item;
-	}
+        {
+          next = item->next;
+          i = item->khash & (table->nbuckets - 1);
+          item->next = table->bucket_array[i];
+          table->bucket_array[i] = item;
+        }
     }
 
   free (old_bucket_array);
@@ -156,7 +156,7 @@ hash_grow (HASH_TABLE *table)
   int nsize;
 
   nsize = table->nbuckets * HASH_REHASH_MULTIPLIER;
-  if (nsize > 0)		/* overflow */
+  if (nsize > 0)                /* overflow */
     hash_rehash (table, nsize);
 }
 
@@ -198,8 +198,8 @@ hash_copy (HASH_TABLE *table, sh_string_func_t *cpdata)
 #define FNV_PRIME 16777619
 
 /* If you want to use 64 bits, use
-FNV_OFFSET	14695981039346656037
-FNV_PRIME	1099511628211
+FNV_OFFSET      14695981039346656037
+FNV_PRIME       1099511628211
 */
 
 /* The `khash' check below requires that strings that compare equally with
@@ -250,33 +250,33 @@ hash_search (const char *string, HASH_TABLE *table, int flags)
     {
       /* This is the comparison function */
       if (hv == list->khash && STREQ (list->key, string))
-	{
-	  list->times_found++;
-	  return (list);
-	}
+        {
+          list->times_found++;
+          return (list);
+        }
     }
 
   if (flags & HASH_CREATE)
     {
       if (HASH_SHOULDGROW (table))
-	{
-	  hash_grow (table);
-	  bucket = HASH_BUCKET (string, table, hv);
-	}
+        {
+          hash_grow (table);
+          bucket = HASH_BUCKET (string, table, hv);
+        }
 
       list = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
       list->next = table->bucket_array[bucket];
       table->bucket_array[bucket] = list;
 
       list->data = NULL;
-      list->key = (char *)string;	/* XXX fix later */
+      list->key = (char *)string;       /* XXX fix later */
       list->khash = hv;
       list->times_found = 0;
 
       table->nentries++;
       return (list);
     }
-      
+
   return (BUCKET_CONTENTS *)NULL;
 }
 
@@ -298,15 +298,15 @@ hash_remove (const char *string, HASH_TABLE *table, int flags)
   for (temp = table->bucket_array[bucket]; temp; temp = temp->next)
     {
       if (hv == temp->khash && STREQ (temp->key, string))
-	{
-	  if (prev)
-	    prev->next = temp->next;
-	  else
-	    table->bucket_array[bucket] = temp->next;
+        {
+          if (prev)
+            prev->next = temp->next;
+          else
+            table->bucket_array[bucket] = temp->next;
 
-	  table->nentries--;
-	  return (temp);
-	}
+          table->nentries--;
+          return (temp);
+        }
       prev = temp;
     }
   return ((BUCKET_CONTENTS *) NULL);
@@ -325,12 +325,12 @@ hash_insert (char *string, HASH_TABLE *table, int flags)
     table = hash_create (0);
 
   item = (flags & HASH_NOSRCH) ? (BUCKET_CONTENTS *)NULL
-  			       : hash_search (string, table, 0);
+                               : hash_search (string, table, 0);
 
   if (item == 0)
     {
       if (HASH_SHOULDGROW (table))
-	hash_grow (table);
+        hash_grow (table);
 
       bucket = HASH_BUCKET (string, table, hv);
 
@@ -366,17 +366,17 @@ hash_flush (HASH_TABLE *table, sh_free_func_t *free_data)
       bucket = table->bucket_array[i];
 
       while (bucket)
-	{
-	  item = bucket;
-	  bucket = bucket->next;
+        {
+          item = bucket;
+          bucket = bucket->next;
 
-	  if (free_data)
-	    (*free_data) (item->data);
-	  else
-	    free (item->data);
-	  free (item->key);
-	  free (item);
-	}
+          if (free_data)
+            (*free_data) (item->data);
+          else
+            free (item->data);
+          free (item->key);
+          free (item);
+        }
       table->bucket_array[i] = (BUCKET_CONTENTS *)NULL;
     }
 
@@ -405,8 +405,8 @@ hash_walk (HASH_TABLE *table, hash_wfunc *func)
   for (i = 0; i < table->nbuckets; i++)
     {
       for (item = hash_items (i, table); item; item = item->next)
-	if ((*func) (item) < 0)
-	  return;
+        if ((*func) (item) < 0)
+          return;
     }
 }
 
@@ -430,7 +430,7 @@ hash_pstats (HASH_TABLE *table, char *name)
 
       fprintf (stderr, "\tslot %3d: ", slot);
       for (bcount = 0; bc; bc = bc->next)
-	bcount++;
+        bcount++;
 
       fprintf (stderr, "%d\n", bcount);
     }
@@ -492,20 +492,20 @@ main (int c, char **v)
     {
       char *temp_string;
       if (fgets (string, sizeof (string), stdin) == 0)
-	break;
+        break;
       if (!*string)
-	break;
+        break;
       temp_string = savestring (string);
       tt = hash_insert (temp_string, table, 0);
       if (tt->times_found)
-	{
-	  fprintf (stderr, "You have already added item `%s'\n", string);
-	  free (temp_string);
-	}
+        {
+          fprintf (stderr, "You have already added item `%s'\n", string);
+          free (temp_string);
+        }
       else
-	{
-	  count++;
-	}
+        {
+          count++;
+        }
     }
 
   hash_pstats (table, "hash test");

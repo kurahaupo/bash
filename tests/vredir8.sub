@@ -37,4 +37,3 @@ unset fd
 : {fd}>&1
 echo redir 4 >&$fd
 unset fd
-

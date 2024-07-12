@@ -26,7 +26,7 @@
 #if defined (HAVE_DIRENT_H)
 #  include <dirent.h>
 #  if defined (HAVE_STRUCT_DIRENT_D_NAMLEN)
-#    define D_NAMLEN(d)	((d)->d_namlen)
+#    define D_NAMLEN(d) ((d)->d_namlen)
 #  else
 #    define D_NAMLEN(d)   (strlen ((d)->d_name))
 #  endif /* !HAVE_STRUCT_DIRENT_D_NAMLEN */

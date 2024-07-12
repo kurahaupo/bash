@@ -9,6 +9,5 @@ trap 'echo DEBUG' DEBUG
 
 for (( -- ; ++; -- ))
 do
-	echo bogus
+        echo bogus
 done
-

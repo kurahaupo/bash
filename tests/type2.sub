@@ -13,11 +13,11 @@
 #
 foo()
 {
-	echo
-	cat <<END
+        echo
+        cat <<END
 bar
 END
-	cat <<EOF
+        cat <<EOF
 qux
 EOF
 }

@@ -67,19 +67,19 @@ extern struct bin_str _rl_color_indicator[];
 /* The LS_COLORS variable is in a termcap-like format. */
 typedef struct _color_ext_type
   {
-    struct bin_str ext;         	/* The extension we're looking for */
-    struct bin_str seq;         	/* The sequence to output when we do */
-    struct _color_ext_type *next;	/* Next in list */
+    struct bin_str ext;                 /* The extension we're looking for */
+    struct bin_str seq;                 /* The sequence to output when we do */
+    struct _color_ext_type *next;       /* Next in list */
   } COLOR_EXT_TYPE;
 
 /* file extensions indicators (.txt, .log, .jpg, ...)
    Values are taken from $LS_COLORS in rl_parse_colors(). */
 extern COLOR_EXT_TYPE *_rl_color_ext_list;
 
-#define FILETYPE_INDICATORS				\
-  {							\
-    C_ORPHAN, C_FIFO, C_CHR, C_DIR, C_BLK, C_FILE,	\
-    C_LINK, C_SOCK, C_FILE, C_DIR			\
+#define FILETYPE_INDICATORS                             \
+  {                                                     \
+    C_ORPHAN, C_FIFO, C_CHR, C_DIR, C_BLK, C_FILE,      \
+    C_LINK, C_SOCK, C_FILE, C_DIR                       \
   }
 
 /* Whether we used any colors in the output so far.  If so, we will
@@ -115,7 +115,7 @@ enum filetype
   };
 
 /* Prefix color, currently same as socket */
-#define C_PREFIX	C_SOCK
+#define C_PREFIX        C_SOCK
 
 extern void _rl_put_indicator (const struct bin_str *ind);
 extern void _rl_set_normal_color (void);

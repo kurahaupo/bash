@@ -12,8 +12,8 @@
 
 main(int c, char **v)
 {
-	printf ("%d\n", INT_MAX);
-	printf ("%ld\n", LONG_MAX);
-	printf ("%lld\n", INTMAX_MAX);
-	exit(0);
+        printf ("%d\n", INT_MAX);
+        printf ("%ld\n", LONG_MAX);
+        printf ("%lld\n", INTMAX_MAX);
+        exit(0);
 }

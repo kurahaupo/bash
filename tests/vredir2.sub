@@ -47,7 +47,7 @@ echo $v
 
 while read line <&$v
 do
-	echo $line
+        echo $line
 done
 
 iclosev
@@ -57,7 +57,7 @@ type iclosev
 
 while read -r -u ${fd}
 do
-	echo $REPLY
+        echo $REPLY
 done {fd}<$SHELLSFILE
 
 rm -f $SHELLSFILE

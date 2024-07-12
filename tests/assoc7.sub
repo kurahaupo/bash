@@ -26,4 +26,4 @@ declare -a ary
 printf -v ary[0] "%b" ""
 echo "after printf"
 x="${ary[*]}"  # segfaults here
-echo "after use: $?" 
+echo "after use: $?"

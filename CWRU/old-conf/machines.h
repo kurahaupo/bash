@@ -76,9 +76,9 @@
 #define MACHINE_CFLAGS
 
 /* **************************************************************** */
-/*								    */
-/*			Sun Microsystems Machines	      	    */
-/*								    */
+/*                                                                  */
+/*                      Sun Microsystems Machines                   */
+/*                                                                  */
 /* **************************************************************** */
 
 /* NetBSD running on a sparc. */
@@ -86,7 +86,7 @@
 #  define M_MACHINE "sun4"
 #  define M_OS "NetBSD"
 #  define SYSDEP_CFLAGS -DOPENDIR_NOT_ROBUST -DINT_GROUPS_ARRAY \
-			-DRLIMTYPE=quad_t
+                        -DRLIMTYPE=quad_t
 #  define SYSDEP_LDFLAGS -static
 #  define HAVE_SYS_SIGLIST
 #  define HAVE_SETLINEBUF
@@ -117,7 +117,7 @@
 #  if defined (SunOS5)
 #    define M_OS "SunOS5"
 #    define SYSDEP_CFLAGS -DUSGr4 -DUSG -DSolaris -DOPENDIR_NOT_ROBUST \
-			  -DSBRK_DECLARED -DINT_GROUPS_ARRAY
+                          -DSBRK_DECLARED -DINT_GROUPS_ARRAY
 #    define EXTRA_LIB_SEARCH_PATH /usr/ccs/lib
 #    if !defined (HAVE_GCC)
 #      define REQUIRED_LIBRARIES -ldl
@@ -131,7 +131,7 @@
 #  if defined (SunOS4)
 #    define M_OS "SunOS4"
 #    define SYSDEP_CFLAGS -DHAVE_BSD_PGRP -DOPENDIR_NOT_ROBUST -DTERMIOS_LDISC \
-			  -DINT_GROUPS_ARRAY
+                          -DINT_GROUPS_ARRAY
 #    define HAVE_DIRENT
 #    define HAVE_DLOPEN
 #    define HAVE_DLSYM
@@ -174,9 +174,9 @@
 #endif /* sun && !M_MACHINE */
 
 /* **************************************************************** */
-/*								    */
-/*			DEC Machines (vax, decstations)   	    */
-/*								    */
+/*                                                                  */
+/*                      DEC Machines (vax, decstations)             */
+/*                                                                  */
 /* **************************************************************** */
 
 /* ************************ */
@@ -205,9 +205,9 @@
 #endif /* __alpha || alpha */
 
 /* ************************ */
-/*			    */
-/*	    Ultrix	    */
-/*			    */
+/*                          */
+/*          Ultrix          */
+/*                          */
 /* ************************ */
 #if defined (ultrix)
 #  if defined (MIPSEL)
@@ -217,7 +217,7 @@
 #    define M_MACHINE "vax"
 #  endif /* !MIPSEL */
 #  define SYSDEP_CFLAGS -DHAVE_BSD_PGRP -DTERMIOS_MISSING -DTERMIOS_LDISC \
-			-DINT_GROUPS_ARRAY
+                        -DINT_GROUPS_ARRAY
 #  define M_OS "Ultrix"
 #  define HAVE_DIRENT
 #  define VOID_SIGHANDLER
@@ -229,9 +229,9 @@
 #endif /* ultrix */
 
 /* ************************ */
-/*			    */
-/*	VAX 4.3 BSD	    */
-/*			    */
+/*                          */
+/*      VAX 4.3 BSD         */
+/*                          */
 /* ************************ */
 #if defined (vax) && !defined (ultrix)
 #  define M_MACHINE "vax"
@@ -243,9 +243,9 @@
 #endif /* vax && !ultrix */
 
 /* ************************ */
-/*			    */
-/*	Tahoe 4.3 BSD	    */
-/*			    */
+/*                          */
+/*      Tahoe 4.3 BSD       */
+/*                          */
 /* ************************ */
 #if defined (tahoe)
 #  define M_MACHINE "tahoe"
@@ -257,15 +257,15 @@
 #endif /* tahoe */
 
 /* **************************************************************** */
-/*								    */
-/*		Machines with MIPSco processors			    */
-/*								    */
+/*                                                                  */
+/*              Machines with MIPSco processors                     */
+/*                                                                  */
 /* **************************************************************** */
 
 /* **************************************** */
-/*					    */
-/*		SGI Iris/IRIX	    	    */
-/*					    */
+/*                                          */
+/*              SGI Iris/IRIX               */
+/*                                          */
 /* **************************************** */
 #if defined (sgi)
 #  if defined (Irix3)
@@ -314,18 +314,18 @@
 #  endif /* !__EXTENSIONS__ || __STDC__ */
 #  if defined (Irix5) || defined (Irix6)
 #    define SGI_CFLAGS -DUSG -DPGRP_PIPE -DHAVE_BCOPY -DHAVE_GETPW_DECLS \
-		       -DHAVE_SOCKETS -DSBRK_DECLARED
+                       -DHAVE_SOCKETS -DSBRK_DECLARED
 #  else
 #    define SGI_CFLAGS -DUSG -DPGRP_PIPE -DHAVE_BCOPY -DHAVE_GETPW_DECLS \
-		       -DHAVE_SOCKETS
+                       -DHAVE_SOCKETS
 #  endif /* !Irix5 */
 #  define SYSDEP_CFLAGS SGI_CFLAGS MACHINE_CFLAGS ANSIC
 #endif  /* sgi */
 
 /* ************************ */
-/*			    */
-/* 	  NEC EWS 4800	    */
-/*			    */
+/*                          */
+/*        NEC EWS 4800      */
+/*                          */
 /* ************************ */
 #if defined (nec_ews)
 #  if defined (SYSTYPE_SYSV) || defined (USGr4)
@@ -360,9 +360,9 @@
 #endif /* nec_ews */
 
 /* ************************ */
-/*			    */
+/*                          */
 /*  Generic MIPS SVR4, 4.2  */
-/*			    */
+/*                          */
 /* ************************ */
 #if defined (MIPSEB) && defined (USGr4)
 #  define M_MACHINE "MIPSEB"
@@ -393,9 +393,9 @@
 #endif
 
 /* ************************ */
-/*			    */
-/*	    Sony	    */
-/*			    */
+/*                          */
+/*          Sony            */
+/*                          */
 /* ************************ */
 #if defined (sony) && !defined (M_MACHINE)
 #  if defined (MIPSEB)
@@ -435,9 +435,9 @@
 #endif /* sony */
 
 /* ******************************* */
-/*			           */
+/*                                 */
 /*  Ardent Titan OS v2.2 and later */
-/*			           */
+/*                                 */
 /* ******************************* */
 #if defined (ardent)
 #  define M_MACHINE "Ardent Titan"
@@ -458,9 +458,9 @@
 #endif /* ardent */
 
 /* ************************ */
-/*			    */
-/*	  Stardent	    */
-/*			    */
+/*                          */
+/*        Stardent          */
+/*                          */
 /* ************************ */
 #if defined (stardent) && !defined (M_MACHINE)
 #  define M_MACHINE "Stardent"
@@ -473,9 +473,9 @@
 #endif /* stardent */
 
 /* ******************************** */
-/*				    */
-/*	   MIPS RISC/os		    */
-/*				    */
+/*                                  */
+/*         MIPS RISC/os             */
+/*                                  */
 /* ******************************** */
 
 /* Notes on compiling with "make":
@@ -514,7 +514,7 @@
 #  endif /* !HAVE_RESOURCE */
 #  if defined (bsd4_4)
 #    define VOID_SIGHANDLER
-#    define HAVE_UNISTD_H	/* ??? atsuo@harl.hitachi.co.jp */
+#    define HAVE_UNISTD_H       /* ??? atsuo@harl.hitachi.co.jp */
 #    define SYSDEP_CFLAGS MACHINE_CFLAGS MIPS_CFLAGS -D__BSD_4_4__
 #  else
      /* /usr/include/sys/wait.h appears not to work correctly, so why use it? */
@@ -524,9 +524,9 @@
 #endif /* mips */
 
 /* ************************ */
-/*			    */
-/*	  Pyramid	    */
-/*			    */
+/*                          */
+/*        Pyramid           */
+/*                          */
 /* ************************ */
 #if defined (pyr)
 #  define M_MACHINE "Pyramid"
@@ -540,9 +540,9 @@
 #endif /* pyr */
 
 /* ************************ */
-/*			    */
-/*	    IBMRT	    */
-/*			    */
+/*                          */
+/*          IBMRT           */
+/*                          */
 /* ************************ */
 #if defined (ibm032)
 #  define M_MACHINE "IBMRT"
@@ -559,9 +559,9 @@
 #endif /* ibm032 */
 
 /* **************************************************************** */
-/*								    */
-/*	  All Intel 386 Processor Machines are Defined Here!	    */
-/*								    */
+/*                                                                  */
+/*        All Intel 386 Processor Machines are Defined Here!        */
+/*                                                                  */
 /* **************************************************************** */
 
 #if defined (i386)
@@ -572,7 +572,7 @@
 #    define M_MACHINE "Symmetry"
 #    define M_OS "Dynix"
 #    define DYNIX_CFLAGS -DHAVE_GETDTABLESIZE -DHAVE_SETDTABLESIZE \
-			 -DHAVE_GETPW_DECLS -DHAVE_SOCKETS
+                         -DHAVE_GETPW_DECLS -DHAVE_SOCKETS
 #    define SYSDEP_CFLAGS -DUSG -DUSGr3 DYNIX_CFLAGS
 #    define HAVE_DIRENT
 #    define HAVE_VPRINTF
@@ -636,7 +636,7 @@
 #    define M_OS "AIX"
 #    define HAVE_VPRINTF
 #    define VOID_SIGHANDLER
-#    if defined (AIX_13)	/* AIX PS/2 1.3 */
+#    if defined (AIX_13)        /* AIX PS/2 1.3 */
 #      define SYSDEP_CFLAGS -DTERMIOS_LDISC
 #      define REQUIRED_LIBRARIES -lc_s
 #    else
@@ -810,7 +810,7 @@
 #    define M_MACHINE "i386"
 #    define M_OS "NetBSD"
 #    define SYSDEP_CFLAGS -DOPENDIR_NOT_ROBUST -DINT_GROUPS_ARRAY \
-			  -DRLIMTYPE=quad_t
+                          -DRLIMTYPE=quad_t
 #    define HAVE_SYS_SIGLIST
 #    define HAVE_SETLINEBUF
 #    define HAVE_GETGROUPS
@@ -863,7 +863,7 @@
 #    define M_MACHINE "i386"
 #    define M_OS "Linux"
 #    define SYSDEP_CFLAGS -DHAVE_GETDTABLESIZE -DHAVE_BCOPY \
-			  -DHAVE_GETPW_DECLS -DHAVE_GETHOSTNAME
+                          -DHAVE_GETPW_DECLS -DHAVE_GETHOSTNAME
 #    define REQUIRED_LIBRARIES
 #    define HAVE_GETGROUPS
 #    define HAVE_STRERROR
@@ -936,9 +936,9 @@
 #endif /* All i386 Machines with an `i386' define in cpp. */
 
 /* **************************************************************** */
-/*			                                            */
-/*	                 Alliant FX/800                             */
-/*			                                            */
+/*                                                                  */
+/*                       Alliant FX/800                             */
+/*                                                                  */
 /* **************************************************************** */
 /* Original descs flushed.  FX/2800 machine desc 1.13 bfox@ai.mit.edu.
    Do NOT use -O with the stock compilers.  If you must optimize, use
@@ -956,7 +956,7 @@
 #  define USE_GNU_MALLOC
 #  define LD_HAS_NO_DASH_L
 #  define SYSDEP_CFLAGS -DTERMIOS_MISSING -DMKFIFO_MISSING \
-	-DHAVE_BSD_PGRP -DRLOGIN_PGRP_BUG -w
+        -DHAVE_BSD_PGRP -DRLOGIN_PGRP_BUG -w
    /* Actually, Alliant does have unistd.h, but it defines _POSIX_VERSION,
       and doesn't supply a fully compatible job control package.  We just
       pretend that it doesn't have it. */
@@ -1012,11 +1012,11 @@
 #  endif  /* m68k && __linux__ */
 
 /* **************************************************************** */
-/*								    */
-/*		      Gould 9000 - UTX/32 R2.1A			    */
-/*								    */
+/*                                                                  */
+/*                    Gould 9000 - UTX/32 R2.1A                     */
+/*                                                                  */
 /* **************************************************************** */
-#if defined (gould)		/* Maybe should be GOULD_PN ? */
+#if defined (gould)             /* Maybe should be GOULD_PN ? */
 #  define M_MACHINE "gould"
 #  define M_OS "Bsd"
 #  define HAVE_SYS_SIGLIST
@@ -1025,9 +1025,9 @@
 #endif /* gould */
 
 /* ************************ */
-/*			    */
-/*	    NeXT	    */
-/*			    */
+/*                          */
+/*          NeXT            */
+/*                          */
 /* ************************ */
 #if defined (NeXT) && !defined (M_MACHINE)
 #  define M_MACHINE "NeXT"
@@ -1060,7 +1060,7 @@
 #  define M_OS "NetBSD"
 /* os/netbsd.h */
 #  define SYSDEP_CFLAGS -DOPENDIR_NOT_ROBUST -DINT_GROUPS_ARRAY \
-			-DRLIMTYPE=quad_t
+                        -DRLIMTYPE=quad_t
 #  define HAVE_SYS_SIGLIST
 #  define HAVE_SETLINEBUF
 #  define HAVE_GETGROUPS
@@ -1072,9 +1072,9 @@
 #endif /* m68k && __NetBSD__ */
 
 /* ************************ */
-/*			    */
-/*	hp9000 4.4 BSD	    */
-/*			    */
+/*                          */
+/*      hp9000 4.4 BSD      */
+/*                          */
 /* ************************ */
 #if defined (hp9000) && defined (__BSD_4_4__)
 #  define M_MACHINE "hp9000"
@@ -1091,9 +1091,9 @@
 #endif /* hp9000 && __BSD_4_4__ */
 
 /* ************************ */
-/*			    */
-/*	hp9000 4.3 BSD	    */
-/*			    */
+/*                          */
+/*      hp9000 4.3 BSD      */
+/*                          */
 /* ************************ */
 #if defined (hp9000) && !defined (hpux) && !defined (M_MACHINE)
 #  define M_MACHINE "hp9000"
@@ -1167,15 +1167,15 @@
 #    endif /* HPUX_7 */
 
      /* HP-UX 8.x systems do not have a working alloca () on all platforms.
-	This can cause us problems, especially when globbing.  HP has the
-	same YP bug as Sun, so we #undef USE_GNU_MALLOC. */
+        This can cause us problems, especially when globbing.  HP has the
+        same YP bug as Sun, so we #undef USE_GNU_MALLOC. */
 #    if defined (HPUX_8)
 #      define M_OS "hpux_8"
 #      if !defined (__GNUC__)
 #        undef HAVE_ALLOCA
-#	 define HPUX_ANSI +O3 -Aa -D_HPUX_SOURCE
+#        define HPUX_ANSI +O3 -Aa -D_HPUX_SOURCE
 #      else
-#	 define HPUX_ANSI
+#        define HPUX_ANSI
 #      endif
 #      undef HAVE_GETWD
 #      undef USE_GNU_MALLOC
@@ -1188,9 +1188,9 @@
 #      define M_OS "hpux_9"
 #      if !defined (__GNUC__)
 #        undef HAVE_ALLOCA
-#	 define HPUX_ANSI +O3 -Ae
+#        define HPUX_ANSI +O3 -Ae
 #      else
-#	 define HPUX_ANSI
+#        define HPUX_ANSI
 #      endif
 #      undef HAVE_GETWD
 #      undef USE_GNU_MALLOC
@@ -1304,7 +1304,7 @@
 #  define VOID_SIGHANDLER
 #  define HAVE_STRERROR
 #  define HAVE_SYS_SIGLIST
-#  define HAVE_ALLOCA_H		/* hack for AIX/ESA, which has malloc.h */
+#  define HAVE_ALLOCA_H         /* hack for AIX/ESA, which has malloc.h */
 #  undef USE_GNU_MALLOC
 #endif /* AIXESA || (__ibmesa && _AIX) */
 
@@ -1333,9 +1333,9 @@
 #endif /* __i860 && USGr4 */
 
 /* ************************ */
-/*			    */
-/*	    Xenix286	    */
-/*			    */
+/*                          */
+/*          Xenix286        */
+/*                          */
 /* ************************ */
 #if defined (Xenix286)
 #  define M_MACHINE "i286"
@@ -1365,9 +1365,9 @@
 #endif /* Xenix286 */
 
 /* ************************ */
-/*			    */
-/*	    convex	    */
-/*			    */
+/*                          */
+/*          convex          */
+/*                          */
 /* ************************ */
 #if defined (convex)
 #  define M_MACHINE "convex"
@@ -1403,9 +1403,9 @@
 #endif /* aix && !aixpc */
 
 /* **************************************** */
-/*					    */
-/*		IBM RISC 6000		    */
-/*					    */
+/*                                          */
+/*              IBM RISC 6000               */
+/*                                          */
 /* **************************************** */
 #if defined (RISC6000) || defined (_IBMR2)
 #  define M_MACHINE "RISC6000"
@@ -1424,9 +1424,9 @@
 #endif /* RISC6000 */
 
 /* **************************************** */
-/*					    */
-/*	u370 IBM AIX/370		    */
-/*					    */
+/*                                          */
+/*      u370 IBM AIX/370                    */
+/*                                          */
 /* **************************************** */
 #if defined (u370)
 #  if defined (_AIX370)
@@ -1460,9 +1460,9 @@
 #endif /* u370 */
 
 /* ************************ */
-/*			    */
-/*	    ATT 3B	    */
-/*			    */
+/*                          */
+/*          ATT 3B          */
+/*                          */
 /* ************************ */
 #if defined (att3b) || defined (u3b2)
 #  if defined (att3b)
@@ -1485,9 +1485,9 @@
 #endif /* att3b */
 
 /* ************************ */
-/*			    */
-/*	    ATT 386	    */
-/*			    */
+/*                          */
+/*          ATT 386         */
+/*                          */
 /* ************************ */
 #if defined (att386)
 #  define M_MACHINE "att386"
@@ -1506,9 +1506,9 @@
 #endif /* att386 */
 
 /* ************************ */
-/*			    */
-/*	 ATT UNIX PC	    */
-/*			    */
+/*                          */
+/*       ATT UNIX PC        */
+/*                          */
 /* ************************ */
 #if defined (unixpc)
 #  define M_MACHINE "unixpc"
@@ -1527,9 +1527,9 @@
 #endif /* unixpc */
 
 /* ************************ */
-/*			    */
-/*	    Encore	    */
-/*			    */
+/*                          */
+/*          Encore          */
+/*                          */
 /* ************************ */
 #if defined (MULTIMAX)
 #  if defined (n16)
@@ -1559,9 +1559,9 @@
 #endif  /* MULTIMAX */
 
 /* ******************************************** */
-/*						*/
-/*   Encore Series 91 (88K BCS w Job Control)	*/
-/*						*/
+/*                                              */
+/*   Encore Series 91 (88K BCS w Job Control)   */
+/*                                              */
 /* ******************************************** */
 #if defined (__m88k) && defined (__UMAXV__)
 #  define M_MACHINE "Gemini"
@@ -1573,13 +1573,13 @@
 #  define HAVE_VPRINTF
 #  define VOID_SIGHANDLER
 #  define SYSDEP_CFLAGS -q ext=pcc -D_POSIX_JOB_CONTROL -D_POSIX_VERSION \
-			-Dmalloc=_malloc -Dfree=_free -Drealloc=_realloc
+                        -Dmalloc=_malloc -Dfree=_free -Drealloc=_realloc
 #endif  /* m88k && __UMAXV__ */
 
 /* ******************************************** */
-/*						*/
+/*                                              */
 /*    System V Release 4 on the ICL DRS6000     */
-/*						*/
+/*                                              */
 /* ******************************************** */
 #if defined (drs6000)
 #  define M_MACHINE "drs6000"
@@ -1601,9 +1601,9 @@
 #endif /* drs6000 */
 
 /* ******************************************** */
-/*						*/
+/*                                              */
 /*   System V Release 4 on the Sparc (generic)  */
-/*						*/
+/*                                              */
 /* ******************************************** */
 #if defined (sparc) && defined (__svr4__) && !defined (M_MACHINE)
 #  define M_MACHINE "sparc"
@@ -1624,15 +1624,15 @@
 #endif /* sparc && __svr4__ */
 
 /* ******************* */
-/*		       */
+/*                     */
 /*   Commodore Amiga   */
-/*		       */
+/*                     */
 /* ******************* */
 #if defined (amiga) && defined (__NetBSD__)
 #  define M_MACHINE "amiga"
 #  define M_OS "NetBSD"
 #  define SYSDEP_CFLAGS -DOPENDIR_NOT_ROBUST -DINT_GROUPS_ARRAY \
-			-DRLIMTYPE=quad_t
+                        -DRLIMTYPE=quad_t
 #  define HAVE_SYS_SIGLIST
 #  define HAVE_SETLINEBUF
 #  define HAVE_GETGROUPS
@@ -1662,9 +1662,9 @@
 #endif /* System V Release 4 on amiga */
 
 /* ************************ */
-/*			    */
-/*	    clipper	    */
-/*			    */
+/*                          */
+/*          clipper         */
+/*                          */
 /* ************************ */
 /* This is for the Orion 1/05 (A BSD 4.2 box based on a Clipper processor) */
 #if defined (clipper) && !defined (M_MACHINE)
@@ -1675,9 +1675,9 @@
 #endif  /* clipper */
 
 /* ******************************** */
-/*				    */
+/*                                  */
 /*    Integrated Solutions 68020?   */
-/*				    */
+/*                                  */
 /* ******************************** */
 #if defined (is68k)
 #  define M_MACHINE "is68k"
@@ -1690,9 +1690,9 @@
 #endif /* is68k */
 
 /* ******************************** */
-/*				    */
-/*	   Omron Luna/Mach 2.5	    */
-/*				    */
+/*                                  */
+/*         Omron Luna/Mach 2.5      */
+/*                                  */
 /* ******************************** */
 #if defined (luna88k)
 #  define M_MACHINE "Luna88k"
@@ -1706,10 +1706,10 @@
 #endif /* luna88k */
 
 /* ************************ */
-/*			    */
+/*                          */
 /*   BBN Butterfly GP1000   */
-/*   Mach 1000 v2.5	    */
-/*			    */
+/*   Mach 1000 v2.5         */
+/*                          */
 /* ************************ */
 #if defined (butterfly) && defined (BFLY1)
 #define M_MACHINE "BBN Butterfly"
@@ -1724,26 +1724,26 @@ MAKE = make
 #endif /* butterfly */
 
 /* **************************************** */
-/*					    */
-/*	    Apollo/SR10.2/BSD4.3	    */
-/*					    */
+/*                                          */
+/*          Apollo/SR10.2/BSD4.3            */
+/*                                          */
 /* **************************************** */
 /* This is for the Apollo DN3500 running SR10.2 BSD4.3 */
 #if defined (apollo)
 #  define M_MACHINE "apollo"
 #  define M_OS "Bsd"
 #  define SYSDEP_CFLAGS -D_POSIX_VERSION -D_INCLUDE_BSD_SOURCE \
-			-D_INCLUDE_POSIX_SOURCE -DTERMIOS_MISSING \
-			-DHAVE_BSD_PGRP -Dpid_t=int
+                        -D_INCLUDE_POSIX_SOURCE -DTERMIOS_MISSING \
+                        -DHAVE_BSD_PGRP -Dpid_t=int
 #  define HAVE_SYS_SIGLIST
 #  define HAVE_SETLINEBUF
 #  define HAVE_GETGROUPS
 #endif /* apollo */
 
 /* ************************ */
-/*			    */
-/*	DG AViiON	    */
-/*			    */
+/*                          */
+/*      DG AViiON           */
+/*                          */
 /* ************************ */
 /* This is for the DG AViiON box (runs DG/UX with both AT&T & BSD features.) */
 /* DG/UX comes standard with Gcc. */
@@ -1778,9 +1778,9 @@ MAKE = make
 #endif /* __DGUX__ */
 
 /* ************************ */
-/*			    */
-/*    Harris Night Hawk	    */
-/*			    */
+/*                          */
+/*    Harris Night Hawk     */
+/*                          */
 /* ************************ */
 /* This is for the Harris Night Hawk family. */
 #if defined (_CX_UX)
@@ -1797,7 +1797,7 @@ MAKE = make
 #  endif /* !_M88K */
 #  define M_OS "USG"
 #  define SYSDEP_CFLAGS -g -Xa -v -Dgetwd=bash_getwd -D_POSIX_SOURCE \
-			-D_POSIX_JOB_CONTROL
+                        -D_POSIX_JOB_CONTROL
 #  define USE_TERMCAP_EMULATION
 #  define HAVE_VPRINTF
 #  define HAVE_GETGROUPS
@@ -1807,9 +1807,9 @@ MAKE = make
 #endif /* _CX_UX */
 
 /* **************************************** */
-/*					    */
-/*	    	Tektronix	    	    */
-/*					    */
+/*                                          */
+/*              Tektronix                   */
+/*                                          */
 /* **************************************** */
 /* These are unproven as yet. */
 #if defined (Tek4132)
@@ -1870,9 +1870,9 @@ MAKE = make
 #endif /* m88k && M88100 */
 
 /* ************************ */
-/*			    */
+/*                          */
 /*     Sequent Balances     */
-/*       (Dynix 3.x)	    */
+/*       (Dynix 3.x)        */
 /* ************************ */
 #if defined (sequent) && !defined (M_MACHINE)
 #  define M_MACHINE "Sequent"
@@ -1885,9 +1885,9 @@ MAKE = make
 #endif /* sequent */
 
 /* ****************************************** */
-/*					      */
-/*    NCR Tower 32, System V Release 3	      */
-/*					      */
+/*                                            */
+/*    NCR Tower 32, System V Release 3        */
+/*                                            */
 /* ****************************************** */
 #if defined (tower32)
 #  define M_MACHINE "tower32"
@@ -1906,9 +1906,9 @@ MAKE = make
 #endif /* tower32 */
 
 /* ************************ */
-/*			    */
-/*	Concurrent	    */
-/*			    */
+/*                          */
+/*      Concurrent          */
+/*                          */
 /* ************************ */
 #if defined (concurrent)
 #  define M_MACHINE "Concurrent"
@@ -1933,7 +1933,7 @@ MAKE = make
 
 /* **************************************************************** */
 /*                                                                  */
-/*             Honeywell Bull X20 (lele@idea.sublink.org)	    */
+/*             Honeywell Bull X20 (lele@idea.sublink.org)           */
 /*                                                                  */
 /* **************************************************************** */
 #if defined (hbullx20)
@@ -1971,9 +1971,9 @@ MAKE = make
 #endif  /* DPX2 */
 
 /* ************************ */
-/*			    */
-/*	    CRAY	    */
-/*			    */
+/*                          */
+/*          CRAY            */
+/*                          */
 /* ************************ */
 #if defined (cray)
 #  include <sys/param.h>
@@ -1999,7 +1999,7 @@ MAKE = make
 #  endif
 #  define M_OS "Unicos"
 #  define SYSDEP_CFLAGS -DUSG -DPGRP_PIPE -DOPENDIR_NOT_ROBUST \
-			-DHAVE_BCOPY CRAY_STACK
+                        -DHAVE_BCOPY CRAY_STACK
 #  define HAVE_VPRINTF
 #  define HAVE_MULTIPLE_GROUPS
 #  define VOID_SIGHANDLER
@@ -2010,9 +2010,9 @@ MAKE = make
 #endif /* cray */
 
 /* ************************ */
-/*			    */
-/*	MagicStation	    */
-/*			    */
+/*                          */
+/*      MagicStation        */
+/*                          */
 /* ************************ */
 #if defined (MagicStation)
 #  define M_MACHINE "MagicStation"
@@ -2027,9 +2027,9 @@ MAKE = make
 #endif /* MagicStation */
 
 /* ************************ */
-/*			    */
-/*	   Plexus	    */
-/*			    */
+/*                          */
+/*         Plexus           */
+/*                          */
 /* ************************ */
 #if defined (plexus)
 #  define M_MACHINE "plexus"
@@ -2039,13 +2039,13 @@ MAKE = make
 #  undef HAVE_DUP2
 #  undef HAVE_GETWD
 #  define HAVE_VPRINTF
-#  undef HAVE_ALLOCA		/* -lPW doesn't work w/bash-cc? */
+#  undef HAVE_ALLOCA            /* -lPW doesn't work w/bash-cc? */
 #endif /* plexus */
 
 /* ************************ */
-/*			    */   
+/*                          */
 /*     Siemens MX500        */
-/*      (SINIX 5.2x)	    */
+/*      (SINIX 5.2x)        */
 /* ************************ */
 #if defined (sinix)
 #define M_MACHINE "Siemens MX500"
@@ -2066,9 +2066,9 @@ MAKE = make
 #endif /* sinix */
 
 /* ************************ */
-/*			    */
+/*                          */
 /*  Symmetric 375 (4.2 BSD) */
-/*			    */
+/*                          */
 /* ************************ */
 #if defined (scs) && !defined (M_MACHINE)
 #  define M_MACHINE "Symmetric_375"
@@ -2082,9 +2082,9 @@ MAKE = make
 #endif /* scs */
 
 /* ************************ */
-/*			    */
+/*                          */
 /*    Tandem running SVR3   */
-/*			    */
+/*                          */
 /* ************************ */
 #if defined (tandem) && !defined (M_MACHINE)
 #  define M_MACHINE "tandem"
@@ -2119,9 +2119,9 @@ MAKE = make
 #endif  /* UTS */
 
 /* ************************ */
-/*			    */
-/*    PCS Cadmus System	    */
-/*			    */
+/*                          */
+/*    PCS Cadmus System     */
+/*                          */
 /* ************************ */
 #if defined (cadmus) && !defined (M_MACHINE)
 #  define M_MACHINE "cadmus"
@@ -2137,9 +2137,9 @@ MAKE = make
 #endif /* cadmus */
 
 /* **************************************************************** */
-/*								    */
-/*			Generic Entry   			    */
-/*								    */
+/*                                                                  */
+/*                      Generic Entry                               */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Use this entry for your machine if it isn't represented here.  It
@@ -2204,59 +2204,59 @@ MAKE = make
 /* This is a summary of the semi-machine-independent definitions that
    can go into SYSDEP_CFLAGS:
 
-	AFS	-	The Andrew File System is being used
-	AFS_CREATE_BUG - AFS has a bug with file creation if O_CREAT is
-			 specified
-	BROKEN_SIGSUSPEND - sigsuspend(2) does not work to wake up processes
-			    on SIGCHLD
-	HAVE_BSD_PGRP -	getpgrp(2) takes a pid argument, a la 4.3 BSD
-	HAVE_BCOPY -	bcopy(3) exists and works as in BSD
-	HAVE_GETDTABLESIZE - getdtablesize(2) exists and works correctly
-	HAVE_GETHOSTNAME - gethostname(2) or gethostname(3) is present and
-			   works as in BSD
-	HAVE_GETPW_DECLS - USG machines with the getpw* functions defined in
-			   <pwd.h> that cannot handle redefinitions in the
-			   bash source
-	HAVE_RESOURCE -	<sys/resource.h> and [gs]rlimit exist and work
-	HAVE_SETDTABLESIZE - setdtablesize(2) exists and works correctly
-	HAVE_SOCKETS - this system has BSD sockets added to a System V base
-	HAVE_UID_T -	Definitions for uid_t and gid_t are in <sys/types.h>
-	INT_GROUPS_ARRAY - the second argument to getgroups(3) is an array
-			   of integers
-	MEMMOVE_MISSING - the system does not have memmove(3)
-	MKFIFO_MISSING - named pipes do not work or mkfifo(3) is missing
-	NO_DEV_TTY_JOB_CONTROL - system can't do job control on /dev/tty
-	SBRK_DECLARED - don't declare sbrk as extern char *sbrk() in
-		       lib/malloc/malloc.c
-	OPENDIR_NOT_ROBUST - opendir(3) allows you to open non-directory files
-	PGRP_PIPE -	Requires parent-child synchronization via pipes to
-			make job control work right
-	SETVBUF_REVERSED - brain-damaged implementation of setvbuf that
-				has args 2 and 3 reversed from the SVID and
-				ANSI standard
-	RLOGIN_PGRP_BUG - processes started by rlogind have a process group
-			  of 0
-     	TERMIOS_LDISC - system has a c_line line discipline member in struct
-			termios
-	TERMIOS_MISSING - the termios(3) functions are not present or don't
-			  work, even though _POSIX_VERSION is defined
-	USG	-	The machine is running some sort of System V Unix
-	USGr3	-	The machine is running SVR3.x
-	USGr4	-	The machine is running SVR4
-	USGr4_2 -	The machine is running SVR4.2
+        AFS     -       The Andrew File System is being used
+        AFS_CREATE_BUG - AFS has a bug with file creation if O_CREAT is
+                         specified
+        BROKEN_SIGSUSPEND - sigsuspend(2) does not work to wake up processes
+                            on SIGCHLD
+        HAVE_BSD_PGRP - getpgrp(2) takes a pid argument, a la 4.3 BSD
+        HAVE_BCOPY -    bcopy(3) exists and works as in BSD
+        HAVE_GETDTABLESIZE - getdtablesize(2) exists and works correctly
+        HAVE_GETHOSTNAME - gethostname(2) or gethostname(3) is present and
+                           works as in BSD
+        HAVE_GETPW_DECLS - USG machines with the getpw* functions defined in
+                           <pwd.h> that cannot handle redefinitions in the
+                           bash source
+        HAVE_RESOURCE - <sys/resource.h> and [gs]rlimit exist and work
+        HAVE_SETDTABLESIZE - setdtablesize(2) exists and works correctly
+        HAVE_SOCKETS - this system has BSD sockets added to a System V base
+        HAVE_UID_T -    Definitions for uid_t and gid_t are in <sys/types.h>
+        INT_GROUPS_ARRAY - the second argument to getgroups(3) is an array
+                           of integers
+        MEMMOVE_MISSING - the system does not have memmove(3)
+        MKFIFO_MISSING - named pipes do not work or mkfifo(3) is missing
+        NO_DEV_TTY_JOB_CONTROL - system can't do job control on /dev/tty
+        SBRK_DECLARED - don't declare sbrk as extern char *sbrk() in
+                       lib/malloc/malloc.c
+        OPENDIR_NOT_ROBUST - opendir(3) allows you to open non-directory files
+        PGRP_PIPE -     Requires parent-child synchronization via pipes to
+                        make job control work right
+        SETVBUF_REVERSED - brain-damaged implementation of setvbuf that
+                                has args 2 and 3 reversed from the SVID and
+                                ANSI standard
+        RLOGIN_PGRP_BUG - processes started by rlogind have a process group
+                          of 0
+        TERMIOS_LDISC - system has a c_line line discipline member in struct
+                        termios
+        TERMIOS_MISSING - the termios(3) functions are not present or don't
+                          work, even though _POSIX_VERSION is defined
+        USG     -       The machine is running some sort of System V Unix
+        USGr3   -       The machine is running SVR3.x
+        USGr4   -       The machine is running SVR4
+        USGr4_2 -       The machine is running SVR4.2
 
-	Some other machine-dependent options:
-	CPCC	-	Dynix
-	NLS	-	Alpha, AIX
-	_BSD	- 	Alpha
-	_DGUX_SOURCE -	DG/UX
-	_INCLUDE_BSD_SOURCE - Apollo
-	_INCLUDE_POSIX_SOURCE - Apollo
+        Some other machine-dependent options:
+        CPCC    -       Dynix
+        NLS     -       Alpha, AIX
+        _BSD    -       Alpha
+        _DGUX_SOURCE -  DG/UX
+        _INCLUDE_BSD_SOURCE - Apollo
+        _INCLUDE_POSIX_SOURCE - Apollo
 
-	Posix.1 options that are normally set in <unistd.h>:
-	_POSIX_VERSION -	Encore, Apollo
-	_POSIX_SOURCE -	ISC, QNX, Harris
-	_POSIX_JOB_CONTROL - NEC EWS, Encore, Harris, Motorola, Bull
+        Posix.1 options that are normally set in <unistd.h>:
+        _POSIX_VERSION -        Encore, Apollo
+        _POSIX_SOURCE - ISC, QNX, Harris
+        _POSIX_JOB_CONTROL - NEC EWS, Encore, Harris, Motorola, Bull
 */
 #  define SYSDEP_CFLAGS
 
@@ -2293,9 +2293,9 @@ MAKE = make
    the -L argument, which gives the name of an alternate directory to search
    for libraries specified with -llib.  For example, the HPUX ld requires
    this:
-   	-L lib/readline -lreadline
+        -L lib/readline -lreadline
    instead of:
-   	-Llib/readline -lreadline
+        -Llib/readline -lreadline
  */
 /* #  define SEARCH_LIB_NEEDS_SPACE */
 
@@ -2306,7 +2306,7 @@ MAKE = make
 /* Define GCC_STANDARD if the standard `cc' is gcc and you don't want
    to use the compiler named `gcc' for some reason. */
 /* #  define GCC_STANDARD */
-   
+
 #  if defined (LD_HAS_NO_DASH_L)
 #   undef SEARCH_LIB_NEEDS_SPACE
 #  endif /* LD_HAS_NO_DASH_L */

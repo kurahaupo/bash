@@ -50,7 +50,7 @@ eval_builtin (WORD_LIST *list)
 {
   if (no_options (list))
     return (EX_USAGE);
-  list = loptend;	/* skip over possible `--' */
+  list = loptend;       /* skip over possible `--' */
 
   return (list ? evalstring (string_list (list), "eval", SEVAL_NOHIST|SEVAL_NOOPTIMIZE) : EXECUTION_SUCCESS);
 }

@@ -30,26 +30,26 @@ is trapped and flagged as an error.  The following list of operators is
 grouped into levels of equal-precedence operators.  The levels are listed
 in order of decreasing precedence.
 
-	id++, id--	variable post-increment, post-decrement
-	++id, --id	variable pre-increment, pre-decrement
-	-, +		unary minus, plus
-	!, ~		logical and bitwise negation
-	**		exponentiation
-	*, /, %		multiplication, division, remainder
-	+, -		addition, subtraction
-	<<, >>		left and right bitwise shifts
-	<=, >=, <, >	comparison
-	==, !=		equality, inequality
-	&		bitwise AND
-	^		bitwise XOR
-	|		bitwise OR
-	&&		logical AND
-	||		logical OR
-	expr ? expr : expr
-			conditional operator
-	=, *=, /=, %=,
-	+=, -=, <<=, >>=,
-	&=, ^=, |=	assignment
+        id++, id--      variable post-increment, post-decrement
+        ++id, --id      variable pre-increment, pre-decrement
+        -, +            unary minus, plus
+        !, ~            logical and bitwise negation
+        **              exponentiation
+        *, /, %         multiplication, division, remainder
+        +, -            addition, subtraction
+        <<, >>          left and right bitwise shifts
+        <=, >=, <, >    comparison
+        ==, !=          equality, inequality
+        &               bitwise AND
+        ^               bitwise XOR
+        |               bitwise OR
+        &&              logical AND
+        ||              logical OR
+        expr ? expr : expr
+                        conditional operator
+        =, *=, /=, %=,
+        +=, -=, <<=, >>=,
+        &=, ^=, |=      assignment
 
 Shell variables are allowed as operands.  The name of the variable
 is replaced by its value (coerced to a fixed-width integer) within
@@ -101,7 +101,7 @@ let_builtin (WORD_LIST *list)
     {
       ret = evalexp (list->word->word, EXP_EXPANDED, &expok);
       if (expok == 0)
-	return (EXECUTION_FAILURE);
+        return (EXECUTION_FAILURE);
     }
 
   return ((ret == 0) ? EXECUTION_FAILURE : EXECUTION_SUCCESS);

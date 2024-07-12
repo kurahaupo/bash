@@ -55,17 +55,17 @@ zcatfd (int fd, int ofd, const char *fn)
     {
       nr = zread (fd, lbuf, sizeof (lbuf));
       if (nr == 0)
-	break;
+        break;
       else if (nr < 0)
-	{
-	  rval = -1;
-	  break;
-	}
+        {
+          rval = -1;
+          break;
+        }
       else if (zwrite (ofd, lbuf, nr) < 0)
-	{
-	  rval = -1;
-	  break;
-	}
+        {
+          rval = -1;
+          break;
+        }
     }
 
   return rval;

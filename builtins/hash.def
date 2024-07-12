@@ -29,16 +29,16 @@ Determine and remember the full pathname of each command NAME.  If
 no arguments are given, information about remembered commands is displayed.
 
 Options:
-  -d	forget the remembered location of each NAME
-  -l	display in a format that may be reused as input
-  -p pathname	use PATHNAME as the full pathname of NAME
-  -r	forget all remembered locations
-  -t	print the remembered location of each NAME, preceding
-		each location with the corresponding NAME if multiple
-		NAMEs are given
+  -d    forget the remembered location of each NAME
+  -l    display in a format that may be reused as input
+  -p pathname   use PATHNAME as the full pathname of NAME
+  -r    forget all remembered locations
+  -t    print the remembered location of each NAME, preceding
+                each location with the corresponding NAME if multiple
+                NAMEs are given
 Arguments:
-  NAME	Each NAME is searched for in $PATH and added to the list
-		of remembered commands.
+  NAME  Each NAME is searched for in $PATH and added to the list
+                of remembered commands.
 
 Exit Status:
 Returns success unless NAME is not found or an invalid option is given.
@@ -95,27 +95,27 @@ hash_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "dlp:rt")) != -1)
     {
       switch (opt)
-	{
-	case 'd':
-	  delete = 1;
-	  break;
-	case 'l':
-	  list_portably = 1;
-	  break;
-	case 'p':
-	  pathname = list_optarg;
-	  break;
-	case 'r':
-	  expunge_hash_table = 1;
-	  break;
-	case 't':
-	  list_targets = 1;
-	  break;
-	CASE_HELPOPT;
-	default:
-	  builtin_usage ();
-	  return (EX_USAGE);
-	}
+        {
+        case 'd':
+          delete = 1;
+          break;
+        case 'l':
+          list_portably = 1;
+          break;
+        case 'p':
+          pathname = list_optarg;
+          break;
+        case 'r':
+          expunge_hash_table = 1;
+          break;
+        case 't':
+          list_targets = 1;
+          break;
+        CASE_HELPOPT;
+        default:
+          builtin_usage ();
+          return (EX_USAGE);
+        }
     }
   list = loptend;
 
@@ -140,8 +140,8 @@ hash_builtin (WORD_LIST *list)
     {
       opt = print_hashed_commands (list_portably);
       if (opt == 0 && posixly_correct == 0 &&
-	    (list_portably == 0 || shell_compatibility_level <= 50))
-	printf (_("%s: hash table empty\n"), this_command_name);
+            (list_portably == 0 || shell_compatibility_level <= 50))
+        printf (_("%s: hash table empty\n"), this_command_name);
 
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
@@ -160,16 +160,16 @@ hash_builtin (WORD_LIST *list)
 	{
           sh_restricted (pathname);
           return (EXECUTION_FAILURE);
-	}
+        }
       /* If we are changing the hash table in a restricted shell, make sure the
-	 target pathname can be found using a $PATH search. */
+         target pathname can be found using a $PATH search. */
       w = find_user_command (pathname);
       if (w == 0 || *w == 0 || executable_file (w) == 0)
-	{
-	  sh_notfound (pathname);
-	  free (w);
-	  return (EXECUTION_FAILURE);
-	}
+        {
+          sh_notfound (pathname);
+          free (w);
+          return (EXECUTION_FAILURE);
+        }
       free (w);
     }
 #endif
@@ -179,31 +179,31 @@ hash_builtin (WORD_LIST *list)
       /* Add, remove or rehash the specified commands. */
       w = list->word->word;
       if (absolute_program (w))
-	continue;
+        continue;
       else if (pathname)
-	{
-	  if (file_isdir (pathname))
-	    {
+        {
+          if (file_isdir (pathname))
+            {
 #ifdef EISDIR
-	      builtin_error ("%s: %s", pathname, strerror (EISDIR));
+              builtin_error ("%s: %s", pathname, strerror (EISDIR));
 #else
-	      builtin_error (_("%s: is a directory"), pathname);
+              builtin_error (_("%s: is a directory"), pathname);
 #endif
-	      opt = EXECUTION_FAILURE;
-	    }
-	  else
-	    phash_insert (w, pathname, 0, 0);
-	}
+              opt = EXECUTION_FAILURE;
+            }
+          else
+            phash_insert (w, pathname, 0, 0);
+        }
       else if (delete)
-	{
-	  if (phash_remove (w))
-	    {
-	      sh_notfound (w);
-	      opt = EXECUTION_FAILURE;
-	    }
-	}
+        {
+          if (phash_remove (w))
+            {
+              sh_notfound (w);
+              opt = EXECUTION_FAILURE;
+            }
+        }
       else if (add_hashed_command (w, 0))
-	opt = EXECUTION_FAILURE;
+        opt = EXECUTION_FAILURE;
     }
 
   fflush (stdout);
@@ -222,13 +222,13 @@ add_hashed_command (char *w, int quiet)
       phash_remove (w);
       full_path = find_user_command (w);
       if (full_path && executable_file (full_path))
-	phash_insert (w, full_path, dot_found_in_search, 0);
+        phash_insert (w, full_path, dot_found_in_search, 0);
       else
-	{
-	  if (quiet == 0)
-	    sh_notfound (w);
-	  rv++;
-	}
+        {
+          if (quiet == 0)
+            sh_notfound (w);
+          rv++;
+        }
       FREE (full_path);
     }
   return (rv);
@@ -283,19 +283,19 @@ list_hashed_filename_targets (WORD_LIST *list, int fmt)
     {
       target = phash_search (l->word->word);
       if (target == 0)
-	{
-	  all_found = 0;
-	  sh_notfound (l->word->word);
-	  continue;
-	}
+        {
+          all_found = 0;
+          sh_notfound (l->word->word);
+          continue;
+        }
       if (fmt)
-	printf ("builtin hash -p %s %s\n", target, l->word->word);
+        printf ("builtin hash -p %s %s\n", target, l->word->word);
       else
-	{
-	  if (multiple)
-	    printf ("%s\t", l->word->word);
-	  printf ("%s\n", target);
-	}
+        {
+          if (multiple)
+            printf ("%s\t", l->word->word);
+          printf ("%s\n", target);
+        }
       free (target);
     }
 

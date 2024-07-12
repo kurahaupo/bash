@@ -124,15 +124,15 @@ dup2 (int fd1, int fd2)
  * lots of ways to emulate this on non-BSD systems.
  *
  * On System V.3, this can be obtained via a call to ulimit:
- *	return (ulimit(4, 0L));
+ *      return (ulimit(4, 0L));
  *
  * On other System V systems, NOFILE is defined in /usr/include/sys/param.h
  * (this is what we assume below), so we can simply use it:
- *	return (NOFILE);
+ *      return (NOFILE);
  *
  * On POSIX systems, there are specific functions for retrieving various
  * configuration parameters:
- *	return (sysconf(_SC_OPEN_MAX));
+ *      return (sysconf(_SC_OPEN_MAX));
  *
  */
 
@@ -141,15 +141,15 @@ int
 getdtablesize (void)
 {
 #  if defined (_POSIX_VERSION) && defined (HAVE_SYSCONF) && defined (_SC_OPEN_MAX)
-  return (sysconf(_SC_OPEN_MAX));	/* Posix systems use sysconf */
+  return (sysconf(_SC_OPEN_MAX));       /* Posix systems use sysconf */
 #  else /* ! (_POSIX_VERSION && HAVE_SYSCONF && _SC_OPEN_MAX) */
 #    if defined (ULIMIT_MAXFDS)
-  return (ulimit (4, 0L));	/* System V.3 systems use ulimit(4, 0L) */
+  return (ulimit (4, 0L));      /* System V.3 systems use ulimit(4, 0L) */
 #    else /* !ULIMIT_MAXFDS */
-#      if defined (NOFILE)	/* Other systems use NOFILE */
+#      if defined (NOFILE)      /* Other systems use NOFILE */
   return (NOFILE);
 #      else /* !NOFILE */
-  return (20);			/* XXX - traditional value is 20 */
+  return (20);                  /* XXX - traditional value is 20 */
 #      endif /* !NOFILE */
 #    endif /* !ULIMIT_MAXFDS */
 #  endif /* ! (_POSIX_VERSION && _SC_OPEN_MAX) */
@@ -231,7 +231,7 @@ mkfifo (char *path, mode_t mode)
 #endif /* !HAVE_MKFIFO && PROCESS_SUBSTITUTION */
 
 #define DEFAULT_MAXGROUPS 64
-#define MIN_MAXGROUPS 32	/* work around macOS issue */
+#define MIN_MAXGROUPS 32        /* work around macOS issue */
 
 int
 getmaxgroups (void)
@@ -252,7 +252,7 @@ getmaxgroups (void)
 #    else /* !NGROUPS */
   maxgroups = DEFAULT_MAXGROUPS;
 #    endif /* !NGROUPS */
-#  endif /* !NGROUPS_MAX */  
+#  endif /* !NGROUPS_MAX */
 #endif /* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
 
   if (maxgroups <= 0)

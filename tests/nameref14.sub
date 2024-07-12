@@ -22,7 +22,7 @@ ref+=$str    printenv ref    # var
 ref+="$str"  printenv ref    # var
 ref=$ref$str printenv ref    # var
 
-export ref		# follows nameref and exports var
+export ref              # follows nameref and exports var
 
 printenv var                 # foo
 ref+=$str    printenv var    # foo

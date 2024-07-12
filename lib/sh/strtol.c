@@ -71,7 +71,7 @@ extern int errno;
 #  define STRTOL_LONG_MIN LLONG_MIN
 #  define STRTOL_LONG_MAX LLONG_MAX
 #  define STRTOL_ULONG_MAX ULLONG_MAX
-#else	/* !QUAD */
+#else   /* !QUAD */
 #  define LONG long
 #  define STRTOL_LONG_MIN LONG_MIN
 #  define STRTOL_LONG_MAX LONG_MAX
@@ -124,12 +124,12 @@ strtol (const char *nptr, char **endptr, int base)
   if (*s == '0')
     {
       if ((base == 0 || base == 16) && TOUPPER ((unsigned char) s[1]) == 'X')
-	{
-	  s += 2;
-	  base = 16;
-	}
+        {
+          s += 2;
+          base = 16;
+        }
       else if (base == 0)
-	base = 8;
+        base = 8;
     }
   else if (base == 0)
     base = 10;
@@ -151,53 +151,53 @@ strtol (const char *nptr, char **endptr, int base)
       unsigned long int jmax = ULONG_MAX / base;
 
       for (;c != '\0'; c = *++s)
-	{
-	  if (s == end)
-	    break;
-	  if (DIGIT (c))
-	    c -= '0';
-	  else if (ISALPHA (c))
-	    c = TOUPPER (c) - 'A' + 10;
-	  else
-	    break;
+        {
+          if (s == end)
+            break;
+          if (DIGIT (c))
+            c -= '0';
+          else if (ISALPHA (c))
+            c = TOUPPER (c) - 'A' + 10;
+          else
+            break;
 
-	  if ((int) c >= base)
-	    break;
-	  /* Note that we never can have an overflow.  */
-	  else if (j >= jmax)
-	    {
-	      /* We have an overflow.  Now use the long representation.  */
-	      i = (unsigned LONG int) j;
-	      goto use_long;
-	    }
-	  else
-	    j = j * (unsigned long int) base + c;
-	}
+          if ((int) c >= base)
+            break;
+          /* Note that we never can have an overflow.  */
+          else if (j >= jmax)
+            {
+              /* We have an overflow.  Now use the long representation.  */
+              i = (unsigned LONG int) j;
+              goto use_long;
+            }
+          else
+            j = j * (unsigned long int) base + c;
+        }
 
       i = (unsigned LONG int) j;
     }
   else
     for (;c != '\0'; c = *++s)
       {
-	if (s == end)
-	  break;
-	if (DIGIT (c))
-	  c -= '0';
-	else if (ISALPHA (c))
-	  c = TOUPPER (c) - 'A' + 10;
-	else
-	  break;
-	if ((int) c >= base)
-	  break;
-	/* Check for overflow.  */
-	if (i > cutoff || (i == cutoff && c > cutlim))
-	  overflow = 1;
-	else
-	  {
-	  use_long:
-	    i *= (unsigned LONG int) base;
-	    i += c;
-	  }
+        if (s == end)
+          break;
+        if (DIGIT (c))
+          c -= '0';
+        else if (ISALPHA (c))
+          c = TOUPPER (c) - 'A' + 10;
+        else
+          break;
+        if ((int) c >= base)
+          break;
+        /* Check for overflow.  */
+        if (i > cutoff || (i == cutoff && c > cutlim))
+          overflow = 1;
+        else
+          {
+          use_long:
+            i *= (unsigned LONG int) base;
+            i += c;
+          }
       }
 
   /* Check if anything actually happened.  */
@@ -214,8 +214,8 @@ strtol (const char *nptr, char **endptr, int base)
      `unsigned LONG int', but outside the range of `LONG int'.  */
   if (overflow == 0
       && i > (negative
-	      ? -((unsigned LONG int) (STRTOL_LONG_MIN + 1)) + 1
-	      : (unsigned LONG int) STRTOL_LONG_MAX))
+              ? -((unsigned LONG int) (STRTOL_LONG_MIN + 1)) + 1
+              : (unsigned LONG int) STRTOL_LONG_MAX))
     overflow = 1;
 #endif
 
@@ -240,10 +240,10 @@ noconv:
   if (endptr != NULL)
     {
       if (save - nptr >= 2 && TOUPPER ((unsigned char) save[-1]) == 'X' && save[-2] == '0')
-	*endptr = (char *) &save[-1];
+        *endptr = (char *) &save[-1];
       else
-	/*  There was no number to convert.  */
-	*endptr = (char *) nptr;
+        /*  There was no number to convert.  */
+        *endptr = (char *) nptr;
     }
 
   return 0L;

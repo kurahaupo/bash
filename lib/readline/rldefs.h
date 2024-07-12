@@ -5,7 +5,7 @@
 /* Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ extern int _rl_strnicmp (const char *, const char *, int);
 #endif
 
 #if defined (HAVE_STRPBRK) && !defined (HANDLE_MULTIBYTE)
-#  define _rl_strpbrk(a,b)	strpbrk((a),(b))
+#  define _rl_strpbrk(a,b)      strpbrk((a),(b))
 #else
 extern char *_rl_strpbrk (const char *, const char *);
 #endif
@@ -86,10 +86,10 @@ extern char *_rl_strpbrk (const char *, const char *);
 #endif
 
 #if !defined (RL_IM_INSERT)
-#  define RL_IM_INSERT		1
-#  define RL_IM_OVERWRITE	0
+#  define RL_IM_INSERT          1
+#  define RL_IM_OVERWRITE       0
 #
-#  define RL_IM_DEFAULT		RL_IM_INSERT
+#  define RL_IM_DEFAULT         RL_IM_INSERT
 #endif
 
 /* If you cast map[key].function to type (Keymap) on a Cray,
@@ -98,11 +98,11 @@ extern char *_rl_strpbrk (const char *, const char *);
    to functions and pointers to structs are different sizes).
    This is not what is wanted. */
 #if defined (CRAY)
-#  define FUNCTION_TO_KEYMAP(map, key)	(Keymap)((int)map[key].function)
-#  define KEYMAP_TO_FUNCTION(data)	(rl_command_func_t *)((int)(data))
+#  define FUNCTION_TO_KEYMAP(map, key)  (Keymap)((int)map[key].function)
+#  define KEYMAP_TO_FUNCTION(data)      (rl_command_func_t *)((int)(data))
 #else
-#  define FUNCTION_TO_KEYMAP(map, key)	(Keymap)(map[key].function)
-#  define KEYMAP_TO_FUNCTION(data)	(rl_command_func_t *)(data)
+#  define FUNCTION_TO_KEYMAP(map, key)  (Keymap)(map[key].function)
+#  define KEYMAP_TO_FUNCTION(data)      (rl_command_func_t *)(data)
 #endif
 
 #ifndef savestring
@@ -116,26 +116,26 @@ extern char *_rl_strpbrk (const char *, const char *);
 
 /* Definitions used when searching the line for characters. */
 /* NOTE: it is necessary that opposite directions are inverses */
-#define	FTO	 1		/* forward to */
-#define BTO	-1		/* backward to */
-#define FFIND	 2		/* forward find */
-#define BFIND	-2		/* backward find */
+#define FTO      1              /* forward to */
+#define BTO     -1              /* backward to */
+#define FFIND    2              /* forward find */
+#define BFIND   -2              /* backward find */
 
 /* Possible values for the found_quote flags word used by the completion
    functions.  It says what kind of (shell-like) quoting we found anywhere
    in the line. */
-#define RL_QF_SINGLE_QUOTE	0x01
-#define RL_QF_DOUBLE_QUOTE	0x02
-#define RL_QF_BACKSLASH		0x04
-#define RL_QF_OTHER_QUOTE	0x08
+#define RL_QF_SINGLE_QUOTE      0x01
+#define RL_QF_DOUBLE_QUOTE      0x02
+#define RL_QF_BACKSLASH         0x04
+#define RL_QF_OTHER_QUOTE       0x08
 
 /* Default readline line buffer length. */
 #define DEFAULT_BUFFER_SIZE 256
 
 #if !defined (STREQ)
-#define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
-#define STREQN(a, b, n)	(((n) == 0) ? (1) \
-				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+#define STREQ(a, b)     (((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
+#define STREQN(a, b, n) (((n) == 0) ? (1) \
+                                    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
 #endif
 
 #if !defined (RL_STRLEN)
@@ -143,7 +143,7 @@ extern char *_rl_strpbrk (const char *, const char *);
 #endif
 
 #if !defined (FREE)
-#  define FREE(x)	if (x) free (x)
+#  define FREE(x)       if (x) free (x)
 #endif
 
 #if !defined (SWAP)

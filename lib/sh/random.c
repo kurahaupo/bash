@@ -91,12 +91,12 @@ genseed (void)
   u_bits32_t iv;
 
   gettimeofday (&tv, NULL);
-  iv = (uintptr_t)seedrand;		/* let the compiler truncate */
+  iv = (uintptr_t)seedrand;             /* let the compiler truncate */
   iv = tv.tv_sec ^ tv.tv_usec ^ getpid () ^ getppid () ^ current_user.uid ^ iv;
   return (iv);
 }
 
-#define BASH_RAND_MAX	32767		/* 0x7fff - 16 bits */
+#define BASH_RAND_MAX   32767           /* 0x7fff - 16 bits */
 
 /* Returns a pseudo-random number between 0 and 32767. */
 int
@@ -134,7 +134,7 @@ static int last_rand32;
 
 static int urandfd = -1;
 
-#define BASH_RAND32_MAX	0x7fffffff	/* 32 bits */
+#define BASH_RAND32_MAX 0x7fffffff      /* 32 bits */
 
 /* Returns a 32-bit pseudo-random number between 0 and 4294967295. */
 static u_bits32_t
@@ -199,22 +199,22 @@ getrandom (void *buf, size_t len, unsigned int flags)
     {
       oflags = O_RDONLY;
       if (flags & GRND_NONBLOCK)
-	oflags |= O_NONBLOCK;
+        oflags |= O_NONBLOCK;
       urandfd = open ("/dev/urandom", oflags, 0);
       if (urandfd >= 0)
-	SET_CLOSE_ON_EXEC (urandfd);
+        SET_CLOSE_ON_EXEC (urandfd);
       else
-	{
-	  urand_unavail = 1;
-	  return -1;
-	}
+        {
+          urand_unavail = 1;
+          return -1;
+        }
     }
   if (urandfd >= 0 && (r = read (urandfd, buf, len)) == len)
     return (r);
   return -1;
 }
 #endif
-      
+
 u_bits32_t
 get_urandom32 (void)
 {

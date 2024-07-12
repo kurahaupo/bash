@@ -23,13 +23,13 @@ what you give them.   Help stamp out software-hoarding!  */
 /*
  * @(#)nmalloc.c 1 (Caltech) 2/21/82
  *
- *	U of M Modified: 20 Jun 1983 ACT: strange hacks for Emacs
+ *      U of M Modified: 20 Jun 1983 ACT: strange hacks for Emacs
  *
- *	Nov 1983, Mike@BRL, Added support for 4.1C/4.2 BSD.
+ *      Nov 1983, Mike@BRL, Added support for 4.1C/4.2 BSD.
  *
- * This is a very fast storage allocator.  It allocates blocks of a small 
+ * This is a very fast storage allocator.  It allocates blocks of a small
  * number of different sizes, and keeps free lists of each size.  Blocks
- * that don't exactly fit are passed up to the next larger size.  In this 
+ * that don't exactly fit are passed up to the next larger size.  In this
  * implementation, the available sizes are (2^n)-4 (or -16) bytes long.
  * This is designed for use in a program that uses vast quantities of
  * memory, but bombs when it runs out.  To make it a little better, it
@@ -117,13 +117,13 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #define start_of_data() &etext
 
-#define ISALLOC ((char) 0xf7)	/* magic byte that implies allocation */
-#define ISFREE ((char) 0x54)	/* magic byte that implies free block */
-				/* this is for error checking only */
+#define ISALLOC ((char) 0xf7)   /* magic byte that implies allocation */
+#define ISFREE ((char) 0x54)    /* magic byte that implies free block */
+                                /* this is for error checking only */
 #define ISMEMALIGN ((char) 0xd6)  /* Stored before the value returned by
-				     memalign, with the rest of the word
-				     being the distance to the true
-				     beginning of the block.  */
+                                     memalign, with the rest of the word
+                                     being the distance to the true
+                                     beginning of the block.  */
 extern char etext;
 
 #if !defined (SBRK_DECLARED)
@@ -152,13 +152,13 @@ static int nmal, nfre;
    is allocated, so the 'size' field is never used. */
 
 struct mhead {
-	char     mh_alloc;	/* ISALLOC or ISFREE */
-	char     mh_index;	/* index in nextf[] */
+        char     mh_alloc;      /* ISALLOC or ISFREE */
+        char     mh_index;      /* index in nextf[] */
 /* Remainder are valid only when block is allocated */
-	unsigned short mh_size;	/* size, if < 0x10000 */
+        unsigned short mh_size; /* size, if < 0x10000 */
 #ifdef RCHECK
-	unsigned int mh_nbytes;	/* number of bytes allocated */
-	int      mh_magic4;	/* should be == MAGIC4 */
+        unsigned int mh_nbytes; /* number of bytes allocated */
+        int      mh_magic4;     /* should be == MAGIC4 */
 #endif /* RCHECK */
 };
 
@@ -197,7 +197,7 @@ extern void botch();
   /* Written in the 4 bytes before the block's real space */
 #  define MAGIC4 0x55555555
 #  define ASSERT(p) if (!(p)) botch(__STRING(p)); else
-#  define EXTRA  4		/* 4 bytes extra for MAGIC1s */
+#  define EXTRA  4              /* 4 bytes extra for MAGIC1s */
 #else /* !RCHECK */
 #  define ASSERT(p)
 #  define EXTRA  0
@@ -259,8 +259,8 @@ malloc_usable_size (mem)
 }
 
 static void
-morecore (nu)			/* ask system for more memory */
-     register int nu;		/* size index to get more of  */
+morecore (nu)                   /* ask system for more memory */
+     register int nu;           /* size index to get more of  */
 {
   register char *cp;
   register int nblks;
@@ -301,30 +301,30 @@ morecore (nu)			/* ask system for more memory */
   if (warnfunction)
     switch (warnlevel)
       {
-      case 0: 
-	if (siz > (lim_data / 4) * 3)
-	  {
-	    warnlevel++;
-	    (*warnfunction) ("Warning: past 75% of memory limit");
-	  }
-	break;
-      case 1: 
-	if (siz > (lim_data / 20) * 17)
-	  {
-	    warnlevel++;
-	    (*warnfunction) ("Warning: past 85% of memory limit");
-	  }
-	break;
-      case 2: 
-	if (siz > (lim_data / 20) * 19)
-	  {
-	    warnlevel++;
-	    (*warnfunction) ("Warning: past 95% of memory limit");
-	  }
-	break;
+      case 0:
+        if (siz > (lim_data / 4) * 3)
+          {
+            warnlevel++;
+            (*warnfunction) ("Warning: past 75% of memory limit");
+          }
+        break;
+      case 1:
+        if (siz > (lim_data / 20) * 17)
+          {
+            warnlevel++;
+            (*warnfunction) ("Warning: past 85% of memory limit");
+          }
+        break;
+      case 2:
+        if (siz > (lim_data / 20) * 19)
+          {
+            warnlevel++;
+            (*warnfunction) ("Warning: past 95% of memory limit");
+          }
+        break;
       }
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
+  if ((int) cp & 0x3ff) /* land on 1K boundaries */
     sbrk (1024 - ((int) cp & 0x3ff));
 
  /* Take at least 2k, and figure out how many blocks of the desired size
@@ -334,10 +334,10 @@ morecore (nu)			/* ask system for more memory */
     nblks = 1 << ((siz = 8) - nu);
 
   if ((cp = sbrk (1 << (siz + 3))) == (char *) -1)
-    return;			/* no more room! */
+    return;                     /* no more room! */
 
   if ((int) cp & 7)
-    {		/* shouldn't happen, but just in case */
+    {           /* shouldn't happen, but just in case */
       cp = (char *) (((int) cp + 8) & ~7);
       nblks--;
     }
@@ -370,7 +370,7 @@ getpool ()
   register int nu;
   register char *cp = sbrk (0);
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
+  if ((int) cp & 0x3ff) /* land on 1K boundaries */
     sbrk (1024 - ((int) cp & 0x3ff));
 
   /* Record address of start of space allocated by malloc.  */
@@ -419,7 +419,7 @@ zmemset (s, c, n)
 #endif /* MEMSCRAMBLE || !NO_CALLOC */
 
 char *
-malloc (n)		/* get a block */
+malloc (n)              /* get a block */
      unsigned int n;
 {
   register struct mhead *p;
@@ -481,7 +481,7 @@ malloc (n)		/* get a block */
   p -> mh_size = n;
 #endif /* not RCHECK */
 #ifdef MEMSCRAMBLE
-  zmemset ((char *)(p + 1), 0xdf, n);	/* scramble previous contents */
+  zmemset ((char *)(p + 1), 0xdf, n);   /* scramble previous contents */
 #endif
 #ifdef MSTATS
   nmalloc[nunits]++;
@@ -506,11 +506,11 @@ free (mem)
     if (p -> mh_alloc == ISMEMALIGN)
       {
 #ifdef RCHECK
-	ap -= p->mh_nbytes;
+        ap -= p->mh_nbytes;
 #else
-	ap -= p->mh_size;	/* XXX */
+        ap -= p->mh_size;       /* XXX */
 #endif
-	p = (struct mhead *) ap - 1;
+        p = (struct mhead *) ap - 1;
       }
 
 #ifndef RCHECK
@@ -520,10 +520,10 @@ free (mem)
 #else /* RCHECK */
     if (p -> mh_alloc != ISALLOC)
       {
-	if (p -> mh_alloc == ISFREE)
-	  botch ("free: Called with already freed block argument\n");
-	else
-	  botch ("free: Called with unallocated block argument\n");
+        if (p -> mh_alloc == ISFREE)
+          botch ("free: Called with already freed block argument\n");
+        else
+          botch ("free: Called with unallocated block argument\n");
       }
 
     ASSERT (p -> mh_magic4 == MAGIC4);
@@ -535,7 +535,7 @@ free (mem)
 #ifdef MEMSCRAMBLE
   {
     register int n;
-    
+
 #ifdef RCHECK
     n = p->mh_nbytes;
 #else /* not RCHECK */
@@ -677,7 +677,7 @@ calloc (n, s)
   result = malloc (total);
   if (result)
     zmemset (result, 0, total);
-  return result;  
+  return result;
 }
 
 void
@@ -726,10 +726,10 @@ malloc_stats (size)
 #endif /* MSTATS */
 
 /*
- *	This function returns the total number of bytes that the process
- *	will be allowed to allocate via the sbrk(2) system call.  On
- *	BSD systems this is the total space allocatable to stack and
- *	data.  On USG systems this is the data space only.
+ *      This function returns the total number of bytes that the process
+ *      will be allowed to allocate via the sbrk(2) system call.  On
+ *      BSD systems this is the total space allocatable to stack and
+ *      data.  On USG systems this is the data space only.
  */
 
 #if !defined (HAVE_RESOURCE)
@@ -737,7 +737,7 @@ extern long ulimit ();
 
 static void
 get_lim_data ()
-{    
+{
   lim_data = ulimit (3, 0);
   lim_data -= (long) data_space_start;
 }
@@ -752,7 +752,7 @@ get_lim_data ()
 #ifdef RLIM_INFINITY
   lim_data = XXrlimit.rlim_cur & RLIM_INFINITY; /* soft limit */
 #else
-  lim_data = XXrlimit.rlim_cur;	/* soft limit */
+  lim_data = XXrlimit.rlim_cur; /* soft limit */
 #endif
 }
 

@@ -35,13 +35,13 @@
 #include "version.h"
 #include "conftypes.h"
 
-#define RFLAG	0x0001
-#define VFLAG	0x0002
-#define MFLAG	0x0004
-#define PFLAG	0x0008
-#define SFLAG	0x0010
-#define LFLAG	0x0020
-#define XFLAG	0x0040
+#define RFLAG   0x0001
+#define VFLAG   0x0002
+#define MFLAG   0x0004
+#define PFLAG   0x0008
+#define SFLAG   0x0010
+#define LFLAG   0x0020
+#define XFLAG   0x0040
 
 extern char *dist_version;
 extern int patch_level;
@@ -73,35 +73,35 @@ main (int argc, char **argv)
   while ((opt = getopt(argc, argv, "hrvmpslx")) != EOF)
     {
       switch (opt)
-	{
-	case 'h':
-	  usage ();
-	  exit (0);
-	case 'r':
-	  oflags |= RFLAG;	/* release */
-	  break;
-	case 'v':
-	  oflags |= VFLAG;	/* version */
-	  break;
-	case 'm':
-	  oflags |= MFLAG;	/* machtype */
-	  break;
-	case 'p':
-	  oflags |= PFLAG;	/* patchlevel */
-	  break;
-	case 's':		/* short version string */
-	  oflags |= SFLAG;
-	  break;
-	case 'l':		/* long version string */
-	  oflags |= LFLAG;
-	  break;
-	case 'x':		/* extended version information */
-	  oflags |= XFLAG;
-	  break;
-	default:
-	  usage ();
-	  exit (2);
-	}
+        {
+        case 'h':
+          usage ();
+          exit (0);
+        case 'r':
+          oflags |= RFLAG;      /* release */
+          break;
+        case 'v':
+          oflags |= VFLAG;      /* version */
+          break;
+        case 'm':
+          oflags |= MFLAG;      /* machtype */
+          break;
+        case 'p':
+          oflags |= PFLAG;      /* patchlevel */
+          break;
+        case 's':               /* short version string */
+          oflags |= SFLAG;
+          break;
+        case 'l':               /* long version string */
+          oflags |= LFLAG;
+          break;
+        case 'x':               /* extended version information */
+          oflags |= XFLAG;
+          break;
+        default:
+          usage ();
+          exit (2);
+        }
     }
 
   argc -= optind;
@@ -113,7 +113,7 @@ main (int argc, char **argv)
       exit (2);
     }
 
-  /* default behavior */  
+  /* default behavior */
   if (oflags == 0)
     oflags = SFLAG;
 

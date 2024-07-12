@@ -3,7 +3,7 @@
 /* Copyright (C) 1994-2009,2017 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -52,9 +52,9 @@
 #define MAX_MACRO_LEVEL 16
 
 /* **************************************************************** */
-/*								    */
-/*			Hacking Keyboard Macros 		    */
-/*								    */
+/*                                                                  */
+/*                      Hacking Keyboard Macros                     */
+/*                                                                  */
 /* **************************************************************** */
 
 /* The currently executing macro string.  If this is non-zero,
@@ -100,7 +100,7 @@ _rl_with_macro_input (char *string)
     }
 
 #if 0
-  if (rl_executing_macro)		/* XXX - later */
+  if (rl_executing_macro)               /* XXX - later */
 #endif
     _rl_push_executing_macro ();
   rl_executing_macro = string;
@@ -210,9 +210,9 @@ _rl_add_macro_char (int c)
   if (current_macro_index + 1 >= current_macro_size)
     {
       if (current_macro == 0)
-	current_macro = (char *)xmalloc (current_macro_size = 25);
+        current_macro = (char *)xmalloc (current_macro_size = 25);
       else
-	current_macro = (char *)xrealloc (current_macro, current_macro_size += 25);
+        current_macro = (char *)xrealloc (current_macro, current_macro_size += 25);
     }
 
   current_macro[current_macro_index++] = c;
@@ -254,7 +254,7 @@ rl_start_kbd_macro (int ignore1, int ignore2)
   if (rl_explicit_arg)
     {
       if (current_macro)
-	_rl_with_macro_input (savestring (current_macro));
+        _rl_with_macro_input (savestring (current_macro));
     }
   else
     current_macro_index = 0;
@@ -295,8 +295,8 @@ rl_call_last_kbd_macro (int count, int ignore)
 
   if (RL_ISSTATE (RL_STATE_MACRODEF))
     {
-      rl_ding ();		/* no recursive macros */
-      current_macro[--current_macro_index] = '\0';	/* erase this char */
+      rl_ding ();               /* no recursive macros */
+      current_macro[--current_macro_index] = '\0';      /* erase this char */
       return 0;
     }
 

@@ -61,17 +61,17 @@ zmapfd (int fd, char **ostr, const char *fn)
     {
       nr = zread (fd, lbuf, sizeof (lbuf));
       if (nr == 0)
-	{
-	  rval = rind;
-	  break;
-	}
+        {
+          rval = rind;
+          break;
+        }
       else if (nr < 0)
-	{
-	  free (result);
-	  if (ostr)
-	    *ostr = (char *)NULL;
-	  return -1;
-	}
+        {
+          free (result);
+          if (ostr)
+            *ostr = (char *)NULL;
+          return -1;
+        }
 
       RESIZE_MALLOCED_BUFFER (result, rind, nr, rsize, ZBUFSIZ);
       memcpy (result+rind, lbuf, nr);

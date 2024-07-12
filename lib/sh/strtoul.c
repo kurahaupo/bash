@@ -22,7 +22,7 @@
 
 #ifndef HAVE_STRTOUL
 
-#define	UNSIGNED	1
+#define UNSIGNED        1
 #undef HAVE_STRTOL
 
 #include <strtol.c>

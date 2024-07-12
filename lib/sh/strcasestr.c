@@ -1,5 +1,5 @@
 /* strcasestr.c - Find if one string appears as a substring of another string,
-		  without regard to case. */
+                  without regard to case. */
 
 /* Copyright (C) 2000,2022 Free Software Foundation, Inc.
 
