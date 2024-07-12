@@ -1,48 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!--
-    This document has been adjusted to be compliant XHTML, so the assertion in
-    the original message (below) of being "clean HTML 2.0" is no longer valid;
-    furthermore, the message has been truncated to avoid double-dashes. --><!--
-From J.J.Troup@dcsun7.comp.brad.ac.uk Tue Jul  9 11:54:33 1996
-Flags: 10
-Return-Path: J.J.Troup@dcsun7.comp.brad.ac.uk
-Received: from babar.INS.CWRU.Edu (root@babar.INS.CWRU.Edu [129.22.8.213]) by odin.INS.CWRU.Edu with ESMTP (8.6.12+cwru/CWRU-2.2-ins)
-	id LAA05781; Tue, 9 Jul 1996 11:54:32 -0400 (from J.J.Troup@dcsun7.comp.brad.ac.uk for <chet@odin.INS.CWRU.Edu>)
-Received: from dcsun7.comp.brad.ac.uk (dcsun7.comp.brad.ac.uk [143.53.28.202]) by babar.INS.CWRU.Edu with ESMTP (8.6.13+cwru/CWRU-2.4)
-	id LAA12069; Tue, 9 Jul 1996 11:54:03 -0400 (from J.J.Troup@dcsun7.comp.brad.ac.uk for <chet@po.CWRU.Edu>)
-Received: from dcsun4.comp.brad.ac.uk (jjtroup@dcsun4.comp.brad.ac.uk [143.53.28.201]) by dcsun7.comp.brad.ac.uk (8.7.5/8.7.3) with ESMTP id QAA29654 for <chet@po.CWRU.Edu>; Tue, 9 Jul 1996 16:54:06 +0100 (BST)
-Received: (from jjtroup@localhost) by dcsun4.comp.brad.ac.uk (8.7.5/8.7.3) id QAA22933; Tue, 9 Jul 1996 16:53:52 +0100 (BST)
-Date: Tue, 9 Jul 1996 16:53:52 +0100 (BST)
-Message-Id: <199607091553.QAA22933@dcsun4.comp.brad.ac.uk>
-From: JJ TROUP <J.J.Troup@comp.brad.ac.uk>
-To: chet@po.CWRU.Edu
-Subject: Re: Bash FAQ in HTML?
-In-Reply-To: <9607091537.AA05105.SM@odin.INS.CWRU.Edu>
-References: <199607091532.QAA22766@dcsun4.comp.brad.ac.uk>
-	<9607091537.AA05105.SM@odin.INS.CWRU.Edu>
-
-Chet Ramey writes:
-
-> >   Is there a HTML version of the Bash FAQ? If not do you want one?  I
-> > have converted it to HTML and if there isn't already a HTML-ised FAQ,
-> > I wondered if you wanted one?
->
-> Sure, send it along.  Thanks.
-
-  Here it is.  It is (with the exception of the <CENTER></CENTER> tags
-at the beginning) clean HTML 2.0.  Although there were a couple of
-places which really warranted tables, I opted for <PRE> instead as
-there is still no text based browser that I know of which fully
-supports tables.
-  If you like it, I would be happy to update as and when the FAQ
-is. If there are bits you don't like please do tell me.  If you don't
-like it at all, that's cool too... :)
-
-
-Regards
-Cajun
--->
-
+    Please read the historical background at the end of this file. -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>The Bash FAQ</title>
@@ -104,7 +62,9 @@ Cajun
     <li><a href="#q34">When will the next release appear?</a></li>
   </ol>
 
-  <h3><a name="q1" id="q1">1) What is it?</a></h3>
+  <hr />
+
+  <h2><a name="q1" id="q1">1) What is it?</a></h2>
 
   <p>Bash is a Unix command interpreter (shell). It is an implementation of the Posix 1003.2 shell standard, and resembles the Korn and System V shells.</p>
 
@@ -112,11 +72,13 @@ Cajun
 
   <p>Bash was originally written by Brian Fox of the Free Software Foundation. The current developer and maintainer is Chet Ramey of Case Western Reserve University.</p>
 
-  <h3><a name="q2" id="q2">2) What's the latest version?</a></h3>
+
+  <h2><a name="q2" id="q2">2) What's the latest version?</a></h2>
 
   <p>The latest version is 1.14.6, first made available on December 19, 1995.</p>
 
-  <h3><a name="q3" id="q3">3) Where can I get it?</a></h3>
+
+  <h2><a name="q3" id="q3">3) Where can I get it?</a></h2>
 
   <p>Bash is the GNU project's shell, and so is available from the master GNU archive site, prep.ai.mit.edu, and its mirrors. The latest version is also available for FTP from slc2.ins.cwru.edu, the maintainer's machine. The following URLs tell how to get version 1.14.6:</p>
 
@@ -124,17 +86,20 @@ Cajun
     <li><a href="ftp://prep.ai.mit.edu/pub/gnu/bash-1.14.6.tar.gz">ftp://prep.ai.mit.edu/pub/gnu/bash-1.14.6.tar.gz</a></li>
     <li><a href="ftp://slc2.ins.cwru.edu/pub/dist/bash-1.14.6.tar.gz">ftp://slc2.ins.cwru.edu/pub/dist/bash-1.14.6.tar.gz</a></li>
   </ul>
-  <h3><a name="q4" id="q4">4) What's the `Posix 1003.2 standard'?</a></h3>
+
+  <h2><a name="q4" id="q4">4) What's the `Posix 1003.2 standard'?</a></h2>
   <p>POSIX is a name originally coined by Richard Stallman for a family of open system standards based on UNIX. There are a number of aspects of UNIX under consideration for standardization, from the basic system services at the system call and C library level to applications and tools to system administration and management. Each area of standardization is assigned to a working group in the 1003 series.</p>
   <p>The POSIX Shell and Utilities standard has been developed by IEEE Working Group 1003.2 (POSIX.2). It concentrates on the command interpreter interface and utility programs commonly executed from the command line or by other programs. An initial version of the standard has been approved and published by the IEEE, and work is currently underway to update it.</p>
   <p>Bash is concerned with the aspects of the shell's behavior defined by POSIX.2. The shell command language has of course been standardized, including the basic flow control and program execution constructs, I/O redirection and pipelining, argument handling, variable expansion, and quoting.</p>
   <p>The `special' builtins, which must be implemented as part of the shell to provide the desired functionality, are specified as being part of the shell; examples of these are `eval' and `export'. Other utilities appear in the sections of POSIX.2 not devoted to the shell which are commonly (and in some cases must be) implemented as builtin commands, such as `read' and `test'. POSIX.2 also specifies aspects of the shell's interactive behavior as part of the UPE, including job control and command line editing. Only vi-style line editing commands have been standardized; emacs editing commands were left out due to objections.</p>
-  <h3><a name="q5" id="q5">5) On what machines will bash run?</a></h3>
+
+  <h2><a name="q5" id="q5">5) On what machines will bash run?</a></h2>
   <p>Bash has been ported to nearly every version of UNIX. All you should have to do to build it on a machine for which a port exists is to type `make'. The build process will attempt to discover the version of UNIX you have and tailor itself accordingly, using a combination of saved definitions in the file `machines.h' and a file `sysdefs.h' created by inspecting the environment for various things.</p>
   <p>More information appears in the file `INSTALL' in the distribution.</p>
-  <h3><a name="q6" id="q6">6) How does bash differ from sh, the Bourne shell?</a></h3>
+
+  <h2><a name="q6" id="q6">6) How does bash differ from sh, the Bourne shell?</a></h2>
   <p>This is a non-comprehensive list of features that differentiate bash from the SVR4 shell. The bash manual page explains these completely.</p>
-  <h4>Things bash has that sh does not:</h4>
+  <h3>Things bash has that sh does not:</h3>
   <ul>
     <li>long invocation options</li>
     <li>`!' reserved word to invert pipeline return value</li>
@@ -165,7 +130,7 @@ Cajun
     <li>exported functions</li>
     <li>filename generation when using output redirection (command &gt;a*)</li>
   </ul>
-  <h4>Things sh has that bash does not:</h4>
+  <h3>Things sh has that bash does not:</h3>
   <ul>
     <li>uses variable SHACCT to do shell accounting</li>
     <li>includes `stop' builtin (bash can use alias stop='kill -s STOP')</li>
@@ -173,7 +138,7 @@ Cajun
     <li>turns on job control if called as `jsh'</li>
     <li>ulimit attempts to set both soft &amp; hard limits if -S/-H not given</li>
   </ul>
-  <h4>New things in the SVR4.2 sh:</h4>
+  <h3>New things in the SVR4.2 sh:</h3>
   <ul>
     <li>internationalization: $LANG, $LC_CTYPE, $LC_MESSAGES, setlocale, etc.</li>
     <li>$TIMEOUT (like bash $TMOUT)</li>
@@ -181,7 +146,7 @@ Cajun
     <li>`read' builtin has -r</li>
     <li>kill -s is present</li>
   </ul>
-  <h4>Implementation differences:</h4>
+  <h3>Implementation differences:</h3>
   <ul>
     <li>redirection to/from compound commands causes sh to create a subshell</li>
     <li>bash does not allow unbalanced quotes; sh silently inserts them at EOF</li>
@@ -191,8 +156,9 @@ Cajun
     <li>sh does not allow MAILCHECK to be unset (?)</li>
     <li>sh does not allow traps on SIGALRM or SIGCHLD</li>
   </ul>
-  <h3><a name="q7" id="q7">7) How does bash differ from the Korn shell, version ksh88?</a></h3>
-  <h4>Things bash has or uses that ksh88 does not:</h4>
+
+  <h2><a name="q7" id="q7">7) How does bash differ from the Korn shell, version ksh88?</a></h2>
+  <h3>Things bash has or uses that ksh88 does not:</h3>
   <ul>
     <li>long invocation options</li>
     <li>`!' reserved word</li>
@@ -208,7 +174,7 @@ Cajun
     <li>$[...] synonym for $((...))</li>
     <li>`!' csh-style history expansion</li>
   </ul>
-  <h4>Things ksh88 has or uses that bash does not:</h4>
+  <h3>Things ksh88 has or uses that bash does not:</h3>
   <ul>
     <li>new version of test: [[...]]</li>
     <li>((...)) equivalent to let "..."</li>
@@ -224,7 +190,7 @@ Cajun
     <li>text of command history kept in a file, not memory</li>
     <li>builtins: alias -x, cd old new, fc -e -, newgrp, print, read -p/-s/u/var?prompt, set -A/-o gmacs/-o keyword/-o bgnice/-o markdirs/-o nolog/-o trackall/-o viraw/-s, typeset -H/-L/-R/-A/-ft/-fu/-fx/-l/-u/-t, whence</li>
   </ul>
-  <h4>Implementation differences:</h4>
+  <h3>Implementation differences:</h3>
   <ul>
     <li>ksh runs last command of a pipeline in parent shell context</li>
     <li>ksh ulimit sets hard and soft limits by default</li>
@@ -233,18 +199,22 @@ Cajun
     <li>bash has exported functions</li>
     <li>bash command search finds functions before builtins</li>
   </ul>
-  <h3><a name="q8" id="q8">8) What is the bash `posix mode'?</a></h3>
+
+  <h2><a name="q8" id="q8">8) What is the bash `posix mode'?</a></h2>
   <p>Although bash is an implementation of the Posix.2 shell specification, there are areas where the bash default behavior differs from that spec. The bash `posix mode' changes the bash behavior in these areas so that it obeys the spec more closely.</p>
   <p>Posix mode is entered by starting bash with the -posix option or executing `set -o posix' after bash is running.</p>
   <p>The specific aspects of bash which change when posix mode is active are listed in the file CWRU/POSIX.NOTES in the bash distribution.</p>
-  <h3><a name="q9" id="q9">9) How can I build bash with gcc?</a></h3>
+
+  <h2><a name="q9" id="q9">9) How can I build bash with gcc?</a></h2>
   <p>Type</p>
   <pre>
         make CC=gcc CPPNAME='$(CC) -E'
 </pre>
-  <h3><a name="q10" id="q10">10) Why does bash run a different version of `command' than `which command' says it will?</a></h3>
+
+  <h2><a name="q10" id="q10">10) Why does bash run a different version of `command' than `which command' says it will?</a></h2>
   <p>`which' is actually a csh script that assumes you're running csh. It reads the csh startup files from your home directory and uses those to determine which `command' will be invoked. Since bash doesn't use any of those startup files, there's a good chance that your bash environment differs from your csh environment.</p>
-  <h3><a name="q11" id="q11">11) How can I make my csh aliases work when I convert to bash?</a></h3>
+
+  <h2><a name="q11" id="q11">11) How can I make my csh aliases work when I convert to bash?</a></h2>
   <p>Bash uses a different syntax to support aliases than csh does. The details can be found in the documentation. We have provided a shell script which does most of the work of conversion for you; this script can be found in ./examples/alias-conv.sh. Here is how you use it:</p>
   <p>Start csh in the normal way for you. (e.g., `csh')</p>
   <p>Pipe the output of `alias' through `alias-conv.sh', saving the results into `bash_aliases':</p>
@@ -264,7 +234,8 @@ cd () { cd $*; echo $cwd; }
 cd () { builtin cd "$@"; echo "$PWD"; }
 </pre>
   <p>Merge the edited file into your ~/.bashrc.</p>
-  <h3><a name="q12" id="q12">12) Now that I've converted from ksh to bash, are there equivalents to ksh features like autoloaded functions and the `whence' command?</a></h3>
+
+  <h2><a name="q12" id="q12">12) Now that I've converted from ksh to bash, are there equivalents to ksh features like autoloaded functions and the `whence' command?</a></h2>
   <p>There are features in ksh-88 that do not have direct bash equivalents. Most, however, can be emulated with very little trouble.</p>
   <pre>
 ksh-88 feature          Bash equivalent
@@ -285,7 +256,8 @@ cd, print, whence       function subsitutes in examples/functions/kshenv
 autoloaded functions    examples/functions/autoload is the same as typeset -fu
 read var?prompt         [ -t 0 ] &amp;&amp; echo -n prompt &gt;&amp;2; read var
 </pre>
-  <h3><a name="q13" id="q13">13) Why is the bash builtin `test' slightly different from /bin/test?</a></h3>
+
+  <h2><a name="q13" id="q13">13) Why is the bash builtin `test' slightly different from /bin/test?</a></h2>
   <p>The specific example used here is [ ! x -o x ], which is false.</p>
   <p>Bash's builtin `test' implements the Posix.2 spec, which can be summarized as follows (the wording is due to David Korn):</p>
   <p>Here is the set of rules for processing test arguments.</p>
@@ -305,13 +277,15 @@ read var?prompt         [ -t 0 ] &amp;&amp; echo -n prompt &gt;&amp;2; read var
 </pre>
   <p>The operators -a and -o are considered binary operators for the purpose of the 3 Arg case.</p>
   <p>As you can see, the test becomes (not (x or x)), which is false.</p>
-  <h3><a name="q14" id="q14">14) Why does bash sometimes say `Broken pipe'?</a></h3>
+
+  <h2><a name="q14" id="q14">14) Why does bash sometimes say `Broken pipe'?</a></h2>
   <p>If a sequence of commands appears in a pipeline, and one of the reading commands finishes before the writer has finished, the writer receives a SIGPIPE signal. Many other shells special-case SIGPIPE as an exit status in the pipeline and do not report it. For example, in:</p>
   <pre>
       ps -aux | head
 </pre>
   <p>`head' can finish before `ps' writes all of its output, and ps will try to write on a pipe without a reader. In that case, bash will print `Broken pipe' to stderr when ps is killed by a SIGPIPE.</p>
-  <h3><a name="q15" id="q15">15) How can I get bash to read and display eight-bit characters?</a></h3>
+
+  <h2><a name="q15" id="q15">15) How can I get bash to read and display eight-bit characters?</a></h2>
   <p>This is a process requiring several steps.</p>
   <p>First, you must ensure that the `physical' data path is a full eight bits. For xterms, for example, the `vt100' resources `eightBitInput' and `eightBitOutput' should be set to `true'.</p>
   <p>Once you have set up an eight-bit path, you must tell the kernel and tty driver to leave the eigth bit of characters alone when processing keyboard input. Use `stty' to do this:</p>
@@ -333,7 +307,8 @@ read var?prompt         [ -t 0 ] &amp;&amp; echo -n prompt &gt;&amp;2; read var
         bash$ bind 'set output-meta on'
 </pre>
   <p>The `set' commands between the single quotes may also be placed in ~/.inputrc.</p>
-  <h3><a name="q16" id="q16">16) Why can't I use command line editing in my `cmdtool'?</a></h3>
+
+  <h2><a name="q16" id="q16">16) Why can't I use command line editing in my `cmdtool'?</a></h2>
   <p>The problem is `cmdtool' and bash fighting over the input. When scrolling is enabled in a cmdtool window, cmdtool puts the tty in `raw mode' to permit command-line editing using the mouse for applications that cannot do it themselves. As a result, bash and cmdtool each try to read keyboard input immediately, with neither getting enough of it to be useful.</p>
   <p>This mode also causes cmdtool to not implement many of the terminal functions and control sequences appearing in the `sun-cmd' termcap entry. For a more complete explanation, see that file examples/suncmd.termcap in the bash distribution.</p>
   <p>`xterm' is a better choice, and gets along with bash much more smoothly.</p>
@@ -342,7 +317,8 @@ read var?prompt         [ -t 0 ] &amp;&amp; echo -n prompt &gt;&amp;2; read var
 TERMCAP='Mu|sun-cmd:am:bs:km:pt:li#34:co#80:cl=^L:ce=\E[K:cd=\E[J:rs=\E[s:'
 </pre>
   <p>Then export TERMCAP and start a new cmdtool window from that shell. The bash command-line editing should behave better in the new cmdtool. If this works, you can put the assignment to TERMCAP in your bashrc file.</p>
-  <h3><a name="q17" id="q17">17) How do I write a function `x' to replace builtin command `x', but still invoke the command from within the function?</a></h3>
+
+  <h2><a name="q17" id="q17">17) How do I write a function `x' to replace builtin command `x', but still invoke the command from within the function?</a></h2>
   <p>This is what the `command' and `builtin' builtins are for. The `command' builtin executes the command supplied as its first argument, skipping over any function defined with that name. The `builtin' builtin executes the builtin command given as its first argument directly.</p>
   <p>For example, to write a function to replace `cd' that writes the hostname and current directory to an xterm title bar, use something like the following:</p>
   <pre>
@@ -352,37 +328,44 @@ TERMCAP='Mu|sun-cmd:am:bs:km:pt:li#34:co#80:cl=^L:ce=\E[K:cd=\E[J:rs=\E[s:'
         }
 </pre>
   <p>This could also be written using `command' instead of `builtin'; the version above is marginally more efficient.</p>
-  <h3><a name="q18" id="q18">18) When I have terminal escape sequences in my prompt, why does bash wrap lines at the wrong column?</a></h3>
+
+  <h2><a name="q18" id="q18">18) When I have terminal escape sequences in my prompt, why does bash wrap lines at the wrong column?</a></h2>
   <p>Bash does not know that the terminal escape sequences do not take up space on the screen. The redisplay code assumes, unless told otherwise, that each character in the prompt is a `printable' character that takes up one character position on the screen.</p>
   <p>You can use the bash prompt expansion facility (see the PROMPTING section in the manual page) to tell readline that sequences of characters in the prompt strings take up no screen space.</p>
   <p>Use the \[ escape to begin a sequence of non-printing characters, and the \] escape to signal the end of such a sequence.</p>
-  <h3><a name="q19" id="q19">19) I built bash on Solaris 2. Why do globbing expansions and filename completion chop off the first few characters of each filename?</a></h3>
+
+  <h2><a name="q19" id="q19">19) I built bash on Solaris 2. Why do globbing expansions and filename completion chop off the first few characters of each filename?</a></h2>
   <p>This is the consequence of building bash on SunOS 5 and linking with the libraries in /usr/ucblib, but using the definitions and structures from files in /usr/include.</p>
   <p>The actual conflict is between the dirent structure in /usr/include/dirent.h and the struct returned by the version of `readdir' in libucb.a (a 4.3-BSD style `struct direct').</p>
   <p>Make sure you've got /usr/ccs/bin ahead of /usr/ucb in your $PATH when building bash. This will ensure that you use /usr/ccs/bin/cc or acc instead of /usr/ucb/cc and that you link with libc before libucb.</p>
   <p>If you have installed the Sun C compiler, you may also need to put /usr/ccs/bin and /opt/SUNWspro/bin into your $PATH before /usr/ucb.</p>
-  <h3><a name="q20" id="q20">20) Why doesn't bash treat brace expansions exactly like csh?</a></h3>
+
+  <h2><a name="q20" id="q20">20) Why doesn't bash treat brace expansions exactly like csh?</a></h2>
   <p>The only difference between bash and csh brace expansion is that bash requires a brace expression to contain at least one unquoted comma if it is to be expanded. Any brace-surrounded word not containing an unquoted comma is left unchanged by the brace expansion code. This affords the greatest degree of sh compatibility.</p>
   <p>Bash, ksh, zsh, and pd-ksh all implement brace expansion this way.</p>
-  <h3><a name="q21" id="q21">21) Why does bash dump core after I interrupt username completion or `~user' tilde expansion on a machine running NIS?</a></h3>
+
+  <h2><a name="q21" id="q21">21) Why does bash dump core after I interrupt username completion or `~user' tilde expansion on a machine running NIS?</a></h2>
   <p>This is a famous and long-standing bug in the SunOS YP (sorry, NIS) client library, which is part of libc.</p>
   <p>The YP library code keeps static state -- a pointer into the data returned from the server. When YP initializes itself (setpwent), it looks at this pointer and calls free on it if it's non-null. So far, so good.</p>
   <p>If one of the YP functions is interrupted during getpwent (the exact function is interpretwithsave()), and returns NULL, the pointer is freed without being reset to NULL, and the function returns. The next time getpwent is called, it sees that this pointer is non-null, calls free, and the bash free() blows up because it's being asked to free freed memory.</p>
   <p>The traditional Unix mallocs allow memory to be freed multiple times; that's probably why this has never been fixed. You can probably stop it by adding an #undef USE_GNU_MALLOC to the appropriate machine description in machines.h.</p>
-  <h3><a name="q22" id="q22">22) I'm running SVR4.2. Why is the line erased every time I type `@'?</a></h3>
+
+  <h2><a name="q22" id="q22">22) I'm running SVR4.2. Why is the line erased every time I type `@'?</a></h2>
   <p>The `@' character is the default `line kill' character in most versions of System V, including SVR4.2. You can change this character to whatever you want using `stty'. For example, to change the line kill character to control-u, type</p>
   <pre>
         stty kill ^U
 </pre>
   <p>where the `^' and `U' can be two separate characters.</p>
-  <h3><a name="q23" id="q23">23) How can I find the value of a shell variable whose name is the value of another shell variable?</a></h3>
+
+  <h2><a name="q23" id="q23">23) How can I find the value of a shell variable whose name is the value of another shell variable?</a></h2>
   <p>Use the `eval' builtin. The important thing to remember is that `eval' expands the arguments you give it again, so you need to quote the parts of the arguments that you want `eval' to act on.</p>
   <p>For example, this expression prints the value of the last positional parameter:</p>
   <pre>
         eval echo \"\$\{$#\}\"
 </pre>
   <p>The expansion of the quoted portions of this expression will be deferred until `eval' runs, while the `$#' will be expanded before `eval' is executed.</p>
-  <h3><a name="q24" id="q24">24) If I pipe the output of a command into `read variable', why doesn't the output show up in $variable when the read command finishes?</a></h3>
+
+  <h2><a name="q24" id="q24">24) If I pipe the output of a command into `read variable', why doesn't the output show up in $variable when the read command finishes?</a></h2>
   <p>This has to do with the parent-child relationship between Unix processes.</p>
   <p>Each element of a pipeline runs in a separate process, a child of the shell running the pipeline. A subprocess cannot affect its parent's environment. When the `read' command sets the variable to the input, that variable is set only in the subshell, not the parent shell. When the subshell exits, the value of the variable is lost.</p>
   <p>Many pipelines that end with `read variable' can be converted into command substitutions, which will capture the output of a specified command. The output can then be assigned to a variable:</p>
@@ -413,13 +396,16 @@ host `hostname` | awk '/address/ {print $NF}'
 </pre>
   <p>Beware, however, that this will change the shell's positional parameters. If you need them, you should save them before doing this.</p>
   <p>This is the general approach -- in most cases you will not need to set $IFS to a different value.</p>
-  <h3><a name="q25" id="q25">25) I just changed my shell to bash, and now I can't FTP into my machine. Why not?</a></h3>
+
+  <h2><a name="q25" id="q25">25) I just changed my shell to bash, and now I can't FTP into my machine. Why not?</a></h2>
   <p>You must add the full pathname to bash to the file /etc/shells. Many versions of ftpd use this file to prohibit `special' users such as `uucp' and `news' from using FTP.</p>
-  <h3><a name="q26" id="q26">26) I have a bunch of shell scripts that use backslash-escaped characters in arguments to `echo'. Bash doesn't interpret these characters. Why not, and how can I make it understand them?</a></h3>
+
+  <h2><a name="q26" id="q26">26) I have a bunch of shell scripts that use backslash-escaped characters in arguments to `echo'. Bash doesn't interpret these characters. Why not, and how can I make it understand them?</a></h2>
   <p>This is the behavior of echo on most Unix System V machines.</p>
   <p>The bash builtin `echo' is modelled after the 9th Edition Research Unix version of `echo'. It does not interpret backslash-escaped characters in its argument strings by default; it requires the use of the -e option to enable the interpretation. The System V echo provides no way to disable the special characters; the bash echo has a -E option to disable them.</p>
   <p>There is a compile-time option that will make bash behave like the System V echo and interpret things like \t by default. Change config.h so that DEFAULT_ECHO_TO_USG is defined, remove builtins/libbuiltins.a and builtins/echo.o, and rebuild.</p>
-  <h3><a name="q27" id="q27">27) Why doesn't bash have csh variable modifiers?</a></h3>
+
+  <h2><a name="q27" id="q27">27) Why doesn't bash have csh variable modifiers?</a></h2>
   <p>Posix has specified a more powerful, albeit somewhat more confusing, mechanism cribbed from ksh, and bash implements it.</p>
   <dl>
     <dt>${parameter%word}</dt>
@@ -470,25 +456,29 @@ host `hostname` | awk '/address/ {print $NF}'
         $b:r                    ${b%.*}            b
         $b:e                    ${b##*.}           xxx
 </pre>
-  <h3><a name="q28" id="q28">28) Why does bash report syntax errors when my C News scripts use a redirection before a subshell command?</a></h3>
+
+  <h2><a name="q28" id="q28">28) Why does bash report syntax errors when my C News scripts use a redirection before a subshell command?</a></h2>
   <p>The actual command in question is something like</p>
   <pre>
         &lt; file ( command )
 </pre>
   <p>According to the grammar given in the Posix.2 standard, this construct is, in fact, a syntax error. Redirections may only precede `simple commands'. A subshell construct such as the above is one of the shell's `compound commands'. A redirection may only follow a compound command.</p>
   <p>The file CWRU/sh-redir-hack in the 1.14.6 distribution is an (unofficial) patch to parse.y that will modify the grammar to support this construct. It will not apply with `patch'; you must modify parse.y by hand. Note that if you apply this, you must recompile with -DREDIRECTION_HACK. This introduces a large number of reduce/reduce conflicts into the shell grammar.</p>
-  <h3><a name="q29" id="q29">29) How can I pipe standard output and standard error from one command to another, like csh does with `|&amp;'?</a></h3>
+
+  <h2><a name="q29" id="q29">29) How can I pipe standard output and standard error from one command to another, like csh does with `|&amp;'?</a></h2>
   <p>Use</p>
   <pre>
         command 2&gt;&amp;1 | command2
 </pre>
   <p>The key is to remember that piping is performed before redirection, so file descriptor 1 points to the pipe when it is duplicated onto file descriptor 2.</p>
-  <h3><a name="q30" id="q30">30) How do I report bugs in bash, and where should I look for fixes and advice?</a></h3>
+
+  <h2><a name="q30" id="q30">30) How do I report bugs in bash, and where should I look for fixes and advice?</a></h2>
   <p>Use the `bashbug' script to report bugs. It is built and installed at the same time as bash. It provides a standard template for reporting a problem and automatically includes information about your configuration and build environment.</p>
   <p>`bashbug' sends its reports to <a href="mailto:bug-bash@prep.ai.mit.edu">bug-bash@prep.ai.mit.edu</a>, which is a large mailing list gatewayed to the usenet newsgroup <a href="news:gnu.bash.bug">gnu.bash.bug</a>.</p>
   <p>Bug fixes, answers to questions, and announcements of new releases are all posted to <a href="news:gnu.bash.bug">gnu.bash.bug</a>. Discussions concerning bash features and problems also take place there.</p>
   <p>To reach the bash maintainers directly, send mail to <a href="mailto:bash-maintainers@prep.ai.mit.edu">bash-maintainers@prep.ai.mit.edu</a>.</p>
-  <h3><a name="q31" id="q31">31) What kind of bash documentation is there?</a></h3>
+
+  <h2><a name="q31" id="q31">31) What kind of bash documentation is there?</a></h2>
   <p>First, look in the documentation directory in the bash distribution. It should contain the following files:</p>
   <ul>
     <li>bash.1 - an extensive, thorough Unix-style manual page</li>
@@ -501,7 +491,8 @@ host `hostname` | awk '/address/ {print $NF}'
   <p>Postscript files created from the above source are also present in the distribution.</p>
   <p>There is additional documentation available for <a href="ftp://slc2.ins.cwru.edu/pub/bash/">anonymous FTP from host slc2.ins.cwru.edu</a> in the `pub/bash' directory.</p>
   <p>Cameron Newham has written a book on bash, published by O'Reilly and Associates. The title is ``Learning the Bash Shell''. The ISBN number s 1-56592-147-X. Look for it in fine bookstores near you.</p>
-  <h3><a name="q32" id="q32">32) What's coming in future versions?</a></h3>
+
+  <h2><a name="q32" id="q32">32) What's coming in future versions?</a></h2>
   <p>There will be no new features in future releases of version 1.14.</p>
   <p>The next major release, bash-2.0, will contain extensive changes and new features. Here's a short list:</p>
   <ul>
@@ -521,7 +512,7 @@ host `hostname` | awk '/address/ {print $NF}'
     <li>expanded (and now documented) restricted shell mode</li>
     <li>the `time' reserved word to time pipelines, shell builtins, and shell functions</li>
   </ul>
-  <h4>implementation stuff:</h4>
+  <h3>implementation stuff:</h3>
   <ul>
     <li>autoconf-based configuration</li>
     <li>nearly all of the bugs reported since version 1.14 have been fixed</li>
@@ -531,7 +522,8 @@ host `hostname` | awk '/address/ {print $NF}'
     <li>lots of code now smaller and faster</li>
     <li>test suite greatly expanded</li>
   </ul>
-  <h3><a name="q33" id="q33">33) What's on the bash `wish list' for future versions?</a></h3>
+
+  <h2><a name="q33" id="q33">33) What's on the bash `wish list' for future versions?</a></h2>
   <ul>
     <li>Programmable completion a la zsh</li>
     <li>menu completion a la tcsh</li>
@@ -542,13 +534,12 @@ host `hostname` | awk '/address/ {print $NF}'
     <li>an option to use external files for the long `help' text</li>
     <li>a bash debugger</li>
   </ul>
-
   <p>Much of this will not be in bash-2.0.</p>
 
-  <h3><a name="q34" id="q34">34) When will the next release appear?</a></h3>
+  <h2><a name="q34" id="q34">34) When will the next release appear?</a></h2>
   <p>Version 1.14.6 will probably be the last release for version 1.14.</p>
-
   <p>The next version will appear sometime in 1996. Never make predictions.</p>
+
   <hr />
 
   <p>This document is Copyright 1995, 1996 by Chester Ramey.</p>
@@ -560,3 +551,51 @@ host `hostname` | awk '/address/ {print $NF}'
   Chet Ramey, Case Western Reserve University - Internet: <a href="mailto:chet@po.cwru.edu">chet@po.CWRU.Edu</a></p>
 </body>
 </html>
+<!--
+
+This document has been adjusted to be compliant XHTML, so the assertion (below)
+that it is "clean HTML 2.0" is no longer valid; furthermore, the message has
+been truncated to avoid double-dashes.
+
+This document was originally a pre-MIME email attachment; the text of the
+original message follows:
+
+From J.J.Troup@dcsun7.comp.brad.ac.uk Tue Jul  9 11:54:33 1996
+Flags: 10
+Return-Path: J.J.Troup@dcsun7.comp.brad.ac.uk
+Received: from babar.INS.CWRU.Edu (root@babar.INS.CWRU.Edu [129.22.8.213]) by odin.INS.CWRU.Edu with ESMTP (8.6.12+cwru/CWRU-2.2-ins)
+	id LAA05781; Tue, 9 Jul 1996 11:54:32 -0400 (from J.J.Troup@dcsun7.comp.brad.ac.uk for <chet@odin.INS.CWRU.Edu>)
+Received: from dcsun7.comp.brad.ac.uk (dcsun7.comp.brad.ac.uk [143.53.28.202]) by babar.INS.CWRU.Edu with ESMTP (8.6.13+cwru/CWRU-2.4)
+	id LAA12069; Tue, 9 Jul 1996 11:54:03 -0400 (from J.J.Troup@dcsun7.comp.brad.ac.uk for <chet@po.CWRU.Edu>)
+Received: from dcsun4.comp.brad.ac.uk (jjtroup@dcsun4.comp.brad.ac.uk [143.53.28.201]) by dcsun7.comp.brad.ac.uk (8.7.5/8.7.3) with ESMTP id QAA29654 for <chet@po.CWRU.Edu>; Tue, 9 Jul 1996 16:54:06 +0100 (BST)
+Received: (from jjtroup@localhost) by dcsun4.comp.brad.ac.uk (8.7.5/8.7.3) id QAA22933; Tue, 9 Jul 1996 16:53:52 +0100 (BST)
+Date: Tue, 9 Jul 1996 16:53:52 +0100 (BST)
+Message-Id: <199607091553.QAA22933@dcsun4.comp.brad.ac.uk>
+From: JJ TROUP <J.J.Troup@comp.brad.ac.uk>
+To: chet@po.CWRU.Edu
+Subject: Re: Bash FAQ in HTML?
+In-Reply-To: <9607091537.AA05105.SM@odin.INS.CWRU.Edu>
+References: <199607091532.QAA22766@dcsun4.comp.brad.ac.uk>
+	<9607091537.AA05105.SM@odin.INS.CWRU.Edu>
+
+Chet Ramey writes:
+
+> >   Is there a HTML version of the Bash FAQ? If not do you want one?  I
+> > have converted it to HTML and if there isn't already a HTML-ised FAQ,
+> > I wondered if you wanted one?
+>
+> Sure, send it along.  Thanks.
+
+  Here it is.  It is (with the exception of the <CENTER></CENTER> tags
+at the beginning) clean HTML 2.0.  Although there were a couple of
+places which really warranted tables, I opted for <PRE> instead as
+there is still no text based browser that I know of which fully
+supports tables.
+  If you like it, I would be happy to update as and when the FAQ
+is. If there are bits you don't like please do tell me.  If you don't
+like it at all, that's cool too... :)
+
+
+Regards
+Cajun
+-->
