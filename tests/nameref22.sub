@@ -93,5 +93,3 @@ declare -a array
 declare array='(one two three)'
 declare -p array
 unset array
-
-

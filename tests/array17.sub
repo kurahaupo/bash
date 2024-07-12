@@ -87,5 +87,3 @@ echo ${a[" bar "]}
 
 HOME=2
 echo $(( ~ ))
-
-

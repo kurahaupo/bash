@@ -46,5 +46,3 @@ unset aa
 
 declare -A aa=([~/key]=~/Desktop:~/Documents:~/Applications [~/Documents]=~/Library)
 declare -p aa
-
-

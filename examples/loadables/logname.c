@@ -70,4 +70,3 @@ struct builtin logname_struct = {
 	"logname",
 	0
 };
-

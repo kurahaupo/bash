@@ -62,4 +62,3 @@ case $z in
 $y) echo ok 8 ;;
 *) echo oops 8;;
 esac
-

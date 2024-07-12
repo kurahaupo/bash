@@ -112,6 +112,3 @@ for i in "${!blah[@]}"; do echo "$i"; done
 for i in "${!blah[@]}"; do unset blah["$i"]; done
 declare -p blah
 unset blah
-
-
-

@@ -104,4 +104,3 @@ foo>&2
 
 alias a='printf "<%s>\n" \'
 a|cat
-

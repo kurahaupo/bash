@@ -38,5 +38,3 @@ ${THIS_SH} -c 'readonly AA[4] ; echo array: $?' bash
 
 ${THIS_SH} -o posix -c 'export AA[4] ; echo array: $?' sh
 ${THIS_SH} -o posix -c 'readonly AA[4] ; echo array: $?' sh
-
-

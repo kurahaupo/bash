@@ -14,4 +14,3 @@ EOF
 
 # this has to be last
 trap 'echo trap:$FUNCNAME' EXIT ; trap; f() { exit; } ; f
-

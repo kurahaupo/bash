@@ -8,5 +8,3 @@ main()
 	fprintf(stderr, "to stderr\n");
 	exit(0);
 }
-
-
