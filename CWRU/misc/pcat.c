@@ -14,7 +14,7 @@ static char *rcsid = "$Header:cat.c 12.0$";
 
 #ifndef lint
 static char sccsid[] = "@(#)cat.c	5.2 (Berkeley) 12/6/85";
-#endif not lint
+#endif /*not lint*/
 
 /*
  * Concatenate files.
@@ -23,14 +23,18 @@ static char sccsid[] = "@(#)cat.c	5.2 (Berkeley) 12/6/85";
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <malloc.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
-/* #define OPTSIZE BUFSIZ	/* define this only if not 4.2 BSD or beyond */
+#if 0
+#define OPTSIZE BUFSIZ	/* define this only if not 4.2 BSD or beyond */
+#endif
 
-int	bflg, eflg, nflg, sflg, tflg, uflg, vflg;
-int	spaced, col, lno, inline, ibsize, obsize;
+int	bflg, eflg, show_line_numbers, sflg, tflg, use_stdio, vflg;
+int	lno, ibsize, obsize;
 
 static void
 sigpipe(int signum)
@@ -39,12 +43,15 @@ sigpipe(int signum)
 	exit(1);
 }
 
+void copyopt(FILE *f);
+int fastcat(int fd);
+
 int
 main(int argc, char **argv)
 {
 	int fflg = 0;
 	register FILE *fi;
-	register c;
+	register int c;
 	int dev, ino = -1;
 	struct stat statb;
 	int retval = 0;
@@ -57,14 +64,14 @@ main(int argc, char **argv)
 			break;
 		case 'u':
 			setbuf(stdout, (char *)NULL);
-			uflg++;
+			use_stdio++;
 			continue;
 		case 'n':
-			nflg++;
+			show_line_numbers++;
 			continue;
 		case 'b':
 			bflg++;
-			nflg++;
+			show_line_numbers++;
 			continue;
 		case 'v':
 			vflg++;
@@ -100,7 +107,7 @@ main(int argc, char **argv)
 		fflg++;
 	}
 	while (--argc > 0) {
-		if (fflg || (*++argv)[0]=='-' && (*argv)[1]=='\0')
+		if (fflg || ((*++argv)[0]=='-' && (*argv)[1]=='\0'))
 			fi = stdin;
 		else {
 			if ((fi = fopen(*argv, "r")) == NULL) {
@@ -124,9 +131,9 @@ main(int argc, char **argv)
 		}
 		else
 			ibsize = 0;
-		if (nflg||sflg||vflg)
+		if (show_line_numbers||sflg||vflg)
 			copyopt(fi);
-		else if (uflg) {
+		else if (use_stdio) {
 			while ((c = getc(fi)) != EOF)
 				putchar(c);
 		} else
@@ -144,51 +151,49 @@ main(int argc, char **argv)
 	exit(retval);
 }
 
-int
+void
 copyopt(FILE *f)
 {
 	register int c;
+        static int inl, spaced;
 
-top:
-	c = getc(f);
-	if (c == EOF)
-		return;
-	if (c == '\n') {
-		if (inline == 0) {
-			if (sflg && spaced)
-				goto top;
-			spaced = 1;
-		}
-		if (nflg && bflg==0 && inline == 0)
-			printf("%6d\t", lno++);
-		if (eflg)
-			putchar('$');
-		putchar('\n');
-		inline = 0;
-		goto top;
-	}
-	if (nflg && inline == 0)
-		printf("%6d\t", lno++);
-	inline = 1;
-	if (vflg) {
-		if (tflg==0 && c == '\t')
-			putchar(c);
-		else {
-			if (c > 0177) {
-				printf("M-");
-				c &= 0177;
+	for (c = getc(f) ; c != EOF ; c = getc(f)) {
+		if (c == '\n') {
+			if (! inl) {
+				if (sflg && spaced)
+					continue;
+				spaced = 1;
 			}
-			if (c < ' ')
-				printf("^%c", c+'@');
-			else if (c == 0177)
-				printf("^?");
-			else
-				putchar(c);
+			if (show_line_numbers && ! bflg && ! inl)
+				printf("%6d\t", lno++);
+			if (eflg)
+				putchar('$');
+			putchar('\n');
+			inl = 0;
+			continue;
 		}
-	} else
-		putchar(c);
-	spaced = 0;
-	goto top;
+		if (show_line_numbers && ! inl)
+			printf("%6d\t", lno++);
+		inl = 1;
+		if (vflg) {
+			if (! tflg && c == '\t')
+				putchar(c);
+			else {
+				if (c > 0177) {
+					printf("M-");
+					c &= 0177;
+				}
+				if (c < ' ')
+					printf("^%c", c+'@');
+				else if (c == 0177)
+					printf("^?");
+				else
+					putchar(c);
+			}
+		} else
+			putchar(c);
+		spaced = 0;
+	}
 }
 
 int
@@ -197,7 +202,6 @@ fastcat(int fd)
 	register int	buffsize, n, nwritten, offset;
 	register char	*buff;
 	struct stat	statbuff;
-	char		*malloc();
 
 #ifndef	OPTSIZE
 	if (obsize)
