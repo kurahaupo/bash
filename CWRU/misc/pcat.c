@@ -294,6 +294,8 @@ pretty_cat(FILE *fi,
             pending_spaces += output_column - prev;
             continue;
         }
+        for (;pending_spaces; --pending_spaces)
+            putchar(' ');
         if (o.show_nonprinting != sccLiteral && !(c == '\t' && o.show_nonprinting & sccExceptTab)) {
             if (c & 0x80) {
                 putchar('M'); ++output_column;
