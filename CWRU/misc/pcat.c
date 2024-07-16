@@ -158,8 +158,8 @@ static inline char const * scc(ShowControlChars x) {
 
 static inline char const * ny(bool x) {
     static char const *_ny[2] = {
-        [false]="no",
-        [true]="yes",
+        [false] = "no",
+        [true]  = "yes",
     };
     return _ny[x] ?: "unknown";
 }
@@ -380,24 +380,24 @@ int cat_one(char const *arg,
             Options o)
 {
     fprintf(stderr,
-                    "cat_one(name=%s\n"
-                    "        show_line_numbers=%s\n"
-                    "        squash_blank_lines=%s\n"
-                    "        show_nonprinting=%s\n"
-                    "        squash_space=%s\n"
-                    "        show_eol_marker=%s\n"
-                    "        use_stdio=%s\n"
-                    "        block_size=[in=%jd,out=%jd]\n"
-                    "        dev:inode=%jd:%jd)\n",
-                    arg,
-                    lns(o.show_line_numbers),
-                    ny(o.squash_blank_lines),
-                    scc(o.show_nonprinting),
-                    ny(o.squash_space),
-                    ny(o.show_eol_marker),
-                    ny(o.use_stdio),
-                    ji(o.ibsize), ji(o.obsize),
-                    ji(o.dev), ji(o.ino));
+            "cat_one(name=%s\n"
+            "        show_line_numbers=%s\n"
+            "        squash_blank_lines=%s\n"
+            "        show_nonprinting=%s\n"
+            "        squash_space=%s\n"
+            "        show_eol_marker=%s\n"
+            "        use_stdio=%s\n"
+            "        block_size=[in=%jd,out=%jd]\n"
+            "        dev:inode=%jd:%jd)\n",
+            arg,
+            lns(o.show_line_numbers),
+            ny(o.squash_blank_lines),
+            scc(o.show_nonprinting),
+            ny(o.squash_space),
+            ny(o.show_eol_marker),
+            ny(o.use_stdio),
+            ji(o.ibsize), ji(o.obsize),
+            ji(o.dev), ji(o.ino));
 
     FILE *fi = stdin;
     bool close_when_done = false;
