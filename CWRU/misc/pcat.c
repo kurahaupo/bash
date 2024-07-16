@@ -26,14 +26,38 @@ static char sccsid[] __attribute((__unused__)) = "@(#)cat.c\t5.2 (Berkeley) 12/6
 #include <sys/stat.h>
 
 #include <assert.h>
+#include <errno.h>      /* required for errno in die */
 #include <malloc.h>
+#include <math.h>       /* required for frexp in sxbuf.h */
+#include <memory.h>     /* required for memcpy in sxbuf.h */
 #include <signal.h>
-#include <stdbool.h>
+#include <stdarg.h>     /* required for vsprintf in sxbuf.h */
+#include <stdbool.h>    /* also required for sxbuf.h */
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>      /* also required for fprintf, stderr in sxbuf.h */
+#include <stdlib.h>     /* also required for sxbuf.h */
 #include <string.h>
 #include <unistd.h>
+
+static inline void __attribute__((__noreturn__)) vdie(int excode, char *f, va_list v)
+{
+    if (excode < 0)
+        excode = errno != 0;
+    vfprintf(stderr, f, v);
+    fputc('\n', stderr);
+    if (excode < 0) {
+        // kill self with signal instead of exiting
+        fflush(NULL);
+        raise(-excode);
+        abort();
+    }
+    exit(excode);
+}
+static inline void __attribute__((__noreturn__)) die(int excode, char *f, ...) { va_list v; va_start(v, f); vdie(excode, f, v); }
+static inline void __attribute__((__noreturn__)) pdie(int excode, char *msg) { die(excode, "%s: %s\n", msg, strerror(errno)); }
+
+#include "sxbuf.h"
+
 
 #ifndef EXIT_ERROR
 #define EXIT_ERROR 2
@@ -89,53 +113,27 @@ typedef struct cat_opts_s {
 #define array_count(Array) (sizeof(Array) / sizeof(*Array))
 #endif
 
+
 static inline char const *describe_bits(uintmax_t x, char const*const*descriptions, size_t array_size, size_t modulus) {
     if (!x)
         return descriptions[0];
-
-    static char *b = NULL;
-    static size_t cap = 0;
-    char *p = b;
-
-    if (!cap) {
-        //fprintf(stderr, "before realloc b=%p, p=%p, p-b=%zd (state 1)\n", b, p, p-b);
-        p = b = malloc(cap = 0x100);
-        //fprintf(stderr, " after realloc b=%p, p=%p, p-b=%zd\n", b, p, p-b);
-    }
-    for (uintmax_t z = 1 ; z && x ; z<<=1 ) {
+    SX s;
+    sxinit(s);
+    for ( uintmax_t z = 1 ; z && x ; z <<= 1 ) {
         size_t i = z%modulus;
         if (i >= array_size) continue;
         char const *r = descriptions[i];
         if (!r || !*r) continue;
-        size_t needed = p-b + strlen(r) + 1 + 1;
-        if (cap < needed) {
-            //fprintf(stderr, "before realloc b=%p, p=%p, p-b=%zd (state 2)\n", b, p, p-b);
-            char *n = realloc(b, cap = needed |= cap * 99 / 70);    /* ≈√2 */
-            p = n+(p-b);
-            b = n;
-            //fprintf(stderr, " after realloc b=%p, p=%p, p-b=%zd\n", b, p, p-b);
-        }
-        p = stpcpy(p, r);
-        *p++ = ',';
+        sxcat(s, r);
+        sxcat(s, ",");
         x &=~ z;
     }
     if (x) {
-        size_t needed = p-b + 2+16+1;   /* assuming 64-bit, "0x" + 16 digits + NUL */
-        if (cap < needed) {
-            //fprintf(stderr, "before realloc b=%p, p=%p, p-b=%zd (state 3)\n", b, p, p-b);
-            char *n = realloc(b, cap = needed);
-            p = n+(p-b);
-            b = n;
-            //fprintf(stderr, " after realloc b=%p, p=%p, p-b=%zd\n", b, p, p-b);
-        }
-        snprintf(p, cap - (p-b), "%#jx", (intmax_t) x);
+        sxprintf(s, "%#jx", (intmax_t) x);
     }
-    else if (p>b)
-        *--p = 0;   /* trim off trailing comma */
     else
-        *p = 0,
-        assert(0);  /* should never happen */
-    return b;
+        sxtrim(s, 1, false);    /* trim off trailing comma */
+    return sxfinal(s);
 }
 
 static inline char const * lns(LineNumbering x) {
