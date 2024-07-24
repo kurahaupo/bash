@@ -482,7 +482,7 @@ expect '<hi>' '<K>' '<}>'
 recho ${abc:-G { I } K }
 
 # reset IFS to the default
-IFS=' 	
+IFS=' ''	''
 '
 
 # nested ${...} inside ${...} are handled specially
