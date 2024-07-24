@@ -5,5 +5,5 @@ getdate.c:	getdate.y
 	mv y.tab.c getdate.c
 
 getdate:	getdate.c
-	$(CC) -o $@ getdate.c 
+	$(CC) -o $@ getdate.c
 	rm -f getdate.c getdate.o

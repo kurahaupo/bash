@@ -51,9 +51,9 @@ while let "M <= MM"; do
 
 
     let "N=N+1"
-    $EMPTYLINE  
+    $EMPTYLINE
   done
-  $EMPTYLINE  
+  $EMPTYLINE
   let "M=M+1"
 done
 
