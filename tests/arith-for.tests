@@ -86,7 +86,7 @@ done
 type fx
 fx
 
-# errors 
+# errors
 {
 ${THIS_SH} -c 'for (( i=0; "i < 3" ))
 do

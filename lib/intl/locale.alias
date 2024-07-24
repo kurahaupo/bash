@@ -36,7 +36,7 @@
 # which broke applications in UTF-8 locales.  See:
 # https://sourceware.org/bugzilla/show_bug.cgi?id=18412
 
-# Packages using this file: 
+# Packages using this file:
 
 bokmal		nb_NO.ISO-8859-1
 catalan		ca_ES.ISO-8859-1

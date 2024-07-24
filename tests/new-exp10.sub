@@ -19,7 +19,7 @@ printf "<%s>" "${x@P}" ; echo
 printf "<%s>" "${x@A}" ; echo
 
 x="ab 'cd' ef"
-printf "<%s> " "${x@Q}" ; echo 
+printf "<%s> " "${x@Q}" ; echo
 
 # this needs to be run in a subshell because invalid transformation operators
 # are now treated as substitution errors, fatal in non-interactive shells
@@ -57,7 +57,7 @@ unset -v v
 
 declare x
 declare -r x="ab 'cd' ef"
-printf "%s" "${x@A}" ; echo 
+printf "%s" "${x@A}" ; echo
 
 set -- ab 'cd ef' '' gh
 printf "%s " "${@@A}" ; echo
@@ -75,7 +75,7 @@ printf "%s " "${A[@]@A}" ; echo
 unset X
 declare X
 declare -r X="ab 'cd' ef"
-printf "%s" "${X@a}" ; echo 
+printf "%s" "${X@a}" ; echo
 
 set -- 1 2 3 4
 
@@ -89,7 +89,7 @@ A=( [one]=1 [two]='b c' [three]='' [four]=de )
 printf "%s " "${A@a}" ; echo
 
 declare -ir Y=0
-printf "%s" "${Y@a}" ; echo 
+printf "%s" "${Y@a}" ; echo
 
 # make sure we still handle ${#@} and ${@} as posix requires
 set -- a b c d e

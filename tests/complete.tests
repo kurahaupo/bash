@@ -144,7 +144,7 @@ printf '%s\n' "${vv[@]}"
 compgen -A helptopic
 builtin compgen -A setopt
 compgen -A shopt
-command compgen -b 
+command compgen -b
 compgen -A enabled
 compgen -k
 

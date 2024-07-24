@@ -79,7 +79,7 @@ readline/readline.c
 	- added a new function rl_stop_output (), the non-emacs version of
 	  ^S, to go with rl_restart_output.  Haven't done anything with it
 	  yet.
-	- added Posix support in the form of tcflow() calls to 
+	- added Posix support in the form of tcflow() calls to
 	  rl_restart_output and rl_stop_output
 
 readline/readline.h
@@ -145,7 +145,7 @@ nojobs.c
                                      ---
 
 shell.c, execute_cmd.c, shell.h
-	- shell now exits with status 127 when asked to execute a binary	
+	- shell now exits with status 127 when asked to execute a binary
 	  file as a shell script
 
 builtins.c

@@ -9,7 +9,7 @@
 ;;Xenix has the Microsoft C compiler and the Microsoft macro assembler,
 ;;called "masm".  MASM's assembler syntax is quite different from AT&T's
 ;;in all sorts of ways.  Xenix people can't use the AT&T version.
-;;-- 
+;;--
 ;;Chip Salzenberg at ComDev/TCT     <chip@tct.uucp>, <uunet!ateng!tct!chip>
 
 	TITLE   $alloca386

@@ -59,7 +59,7 @@
 # project.
 #
 # This file contains all the capability information present in John Kunze's
-# last version of the termcap master file, except as noted in the change 
+# last version of the termcap master file, except as noted in the change
 # comments at end of file.  Some information about very ancient obsolete
 # capabilities has been moved to comments.  Some all-numeric names of older
 # terminals have been retired.
@@ -146,7 +146,7 @@
 # All primary names of terminals now have alphanumeric prefixes.
 #
 # Comments marked "esr" are mostly results of applying the termcap-compiler
-# code packaged with ncurses and contemplating the resulting error messages. 
+# code packaged with ncurses and contemplating the resulting error messages.
 # In many cases, these indicated obvious fixes to syntax garbled by the
 # composers.  In a few cases, I was able to deduce corrected forms for garbled
 # capabilities by looking at context.  All the information in the original
@@ -195,14 +195,14 @@
 #	%c	Accept any character
 #	%[...]	Accept any number of characters in the given set
 #
-# The cursor position report (u6) string must contain two scanf(3)-style 
+# The cursor position report (u6) string must contain two scanf(3)-style
 # %d format elements.  The first of these must correspond to the Y coordinate
 # and the second to the %d.  The typical CPR value is \E[%d;%dR (on VT100/
 # ANSI-compatible terminals).
 #
 # These capabilities are used by tac(1m), the terminfo action checker soon
 # to be distributed with ncurses.
-# 
+#
 # REQUEST FOR CONTACT INFORMATION AND HISTORICAL MATERIAL:
 #
 # As the ANSI standard and variants take firmer hold, and as character-cell
@@ -222,7 +222,7 @@
 # of heaviest use, popularity, and interesting features.
 #
 # I'm especially interested in identifying the obscure entries listed under
-# `Manufacturer unknown' and `Utter unknowns', before the tribal wisdom 
+# `Manufacturer unknown' and `Utter unknowns', before the tribal wisdom
 # about them gets lost.
 #
 # If you have been around long enough to contribute, please read the file
@@ -234,7 +234,7 @@
 # California copyright with dates from 1980 to 1993.
 #
 # Some information has been merged in from a terminfo file SCO distributes.
-# It has an obnoxious boilerplate copyright which I'm ignoring because they 
+# It has an obnoxious boilerplate copyright which I'm ignoring because they
 # took so much of the content from the ancestral BSD versions of this file
 # and didn't attribute it, thereby violating the BSD Regents' copyright.
 #
@@ -244,7 +244,7 @@
 # graffiti -- it's legally dubious, ethically bogus, and patently ridiculous.
 #
 # This file deliberately has no copyright.  It belongs to no one and everyone.
-# If you claim you own it, you will merely succeed in looking like a fool. 
+# If you claim you own it, you will merely succeed in looking like a fool.
 # Use it as you like.  Use it at your own risk.  Copy and redistribute freely.
 # There are no guarantees anywhere.  Svaha!
 
@@ -434,7 +434,7 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 #
 # Note: there are numerous broken linux entries out there, which didn't screw
 # up BSD termcap but hose ncurses's smarter cursor-movement optimization.
-# One common pathology is an incorrect tab length of 4.  Also note that the 
+# One common pathology is an incorrect tab length of 4.  Also note that the
 # hpa=\E[%dG/vpa=\E[%dd capabilities seem not to be reliable.  To reproduce
 # the bug, re-introduce them and run worm -T 200 212 from the ncurses
 # test suite, save the trace, then worm -N -T 200 212.  Observe that the first
@@ -540,8 +540,8 @@ pc6300plus|6300plus:\
 #	*     into font memory slot #1.  Once the font has been loaded,
 #	*     it can be used as an alternative character set.
 #	*
-#	*     The call to ioctl with the argument WIOCLFONT is the key 
-#	*     to this routine.  For more information, see window(7) in 
+#	*     The call to ioctl with the argument WIOCLFONT is the key
+#	*     to this routine.  For more information, see window(7) in
 #	*     the PC 7300 documentation.
 #	***************************************************************/
 #	#include <string.h>		/* needed for strcpy call */
@@ -556,7 +556,7 @@ pc6300plus|6300plus:\
 #	*     cfont <filename>.  For further information on fonts see
 #	*     cfont(1) in the PC 7300 documentation.
 #	*/
-#	
+#
 #	struct altfdata 	/* structure for alt font data */
 #	{
 #	short	altf_slot;		/* memory slot number */
@@ -713,7 +713,7 @@ pcvt25h|386BSD pcvt rel 2.10 vt220 emulator video driver:\
 #
 # Except where noted, these entries are DEC's official terminfos.
 # Contact Bill Hedberg <hedberg@hannah.enet.dec.com> of Terminal Support
-# Engineering for more information.  Updated terminfos and termcaps 
+# Engineering for more information.  Updated terminfos and termcaps
 # are kept available at ftp://gatekeeper.dec.com/pub/DEC/termcaps.
 #
 
@@ -725,23 +725,23 @@ pcvt25h|386BSD pcvt rel 2.10 vt220 emulator video driver:\
 # you output the char in column 80, immediately output CR LF
 # and then assume you are in column 1 of the next line. If xenl
 # is on, am should be on too.
-# 
+#
 # I assume you have smooth scroll off or are at a slow enough baud
 # rate that it doesn't matter (1200? or less). Also this assumes
-# that you set auto-nl to "on", if you set it off use vt100-nam 
+# that you set auto-nl to "on", if you set it off use vt100-nam
 # below.
-# 
+#
 # The padding requirements listed here are guesses. It is strongly
 # recommended that xon/xoff be enabled, as this is assumed here.
-# 
-# The vt100 uses rs2 and rf rather than is2/tbc/hts because the 
-# tab settings are in non-volatile memory and don't need to be 
-# reset upon login. Also setting the number of columns glitches 
+#
+# The vt100 uses rs2 and rf rather than is2/tbc/hts because the
+# tab settings are in non-volatile memory and don't need to be
+# reset upon login. Also setting the number of columns glitches
 # the screen annoyingly. You can type "reset" to get them set.
 #
 # This is how the keypad gets assigned in Application Keypad mode.
 #	PF1 = kf1	  PF2 = kf2	    PF3   = kf3	      PF4 = kf4
-#	7   = kf9	  8   = kf10	    9     = kf0	      - 
+#	7   = kf9	  8   = kf10	    9     = kf0	      -
 #	4   = kf5	  5   = kf6	    6     = kf7	      ,   = kf8
 #	1   = ka1	  2   = kb2	    3     = ka3
 #	0   = kc1	  .   = kc3	    ENTER = kent
@@ -793,7 +793,7 @@ vt100-s|vt100-s-top|vt100-top-s|vt100 for use with sysline:\
 	:ds=\E7\E[1;24r\E8:fs=\E8:ho=\E[2;1H:\
 	:is=\E7\E[2;24r\E8:ts=\E7\E[1;%p1%dH\E[1K:tc=vt100-am:
 
-# Status line at bottom. 
+# Status line at bottom.
 # Clearing the screen will clobber status line.
 vt100-s-bot|vt100-bot-s|vt100 for use with sysline:\
 	:es:hs:\
@@ -837,7 +837,7 @@ vt100-avo|DEC VT100 with AVO:\
 
 # Most of the `vt100' emulators out there actually emulate a vt102
 # This entry (or vt102-nsgr) is probably the right thing to use for
-# these.  
+# these.
 vt102|dec vt102:\
 	:mi:\
 	:al=\E[L:dc=\E[P:dl=\E[M:ei=\E[4l:im=\E[4h:tc=vt100:
@@ -847,7 +847,7 @@ vt102|dec vt102:\
 # string in the canonical vt100 entry above leaves the screen littered
 # with little  snowflake or star characters (IBM PC ROM character \017 = ^O)
 # after highlight turnoffs.  This entry should fix that, and even leave
-# ACS support working, at the cost of making multiple-highlight changes 
+# ACS support working, at the cost of making multiple-highlight changes
 # slightly more expensive.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995
 vt102-nsgr|dec vt102 with ACS support disabled:\
@@ -859,8 +859,8 @@ vt125|vt125 graphics terminal:\
 
 # vt132 - like vt100 but slower and has ins/del line and such.
 # I'm told that smir/rmir are backwards in the terminal from the
-# manual and from the ANSI standard, this describes the actual 
-# terminal. I've never actually used a vt132 myself, so this 
+# manual and from the ANSI standard, this describes the actual
+# terminal. I've never actually used a vt132 myself, so this
 # is untested.
 #
 vt132|DEC vt132:\
@@ -897,7 +897,7 @@ vt220|DEC VT220 in vt100 emulation mode:\
 # at the top of the keyboard.  This mapping follows the description given
 # in the VT220 Programmer Reference Manual and agrees with the labeling
 # on some terminals that emulate the vt220.  There is no support for an F5.
-# See vt220 for an alternate mapping. 
+# See vt220 for an alternate mapping.
 #
 vt220d|DEC VT220 in vt100 mode with DEC function key labeling:\
 	:F1=\E[23~:F2=\E[24~:F3=\E[25~:F4=\E[26~:F5=\E[28~:\
@@ -967,9 +967,9 @@ vt420nam|vt420-nam|v420n|DEC VT420 in vt100 emul. mode with NO AUTO WRAP mode:\
 	:tc=vt420:
 
 #
-#  DECUDK   
+#  DECUDK
 #               if (key < 16) then  value = key;
-#               else if (key < 21) then value = key + 1; 
+#               else if (key < 21) then value = key + 1;
 #               else if (key < 25) then value = key + 2;
 #               else if (key < 27) then value = key + 3;
 #               else if (key < 30) then value = key + 4;
@@ -1178,8 +1178,8 @@ xterm-pcolor|xterm with color used for highlights and status line:\
 ######## UNIX VIRTUAL TERMINALS AND VIRTUAL CONSOLES
 #
 
-# Columbus UNIX virtual terminal. This terminal also appears in 
-# UNIX 4.0 and successors as line discipline 1 (?), but is 
+# Columbus UNIX virtual terminal. This terminal also appears in
+# UNIX 4.0 and successors as line discipline 1 (?), but is
 # undocumented and does not really work quite right.
 cbunix|cb unix virtual terminal:\
 	:am:bs:da:db:\
@@ -1374,7 +1374,7 @@ psterm-fast:\
 
 #### Apollo consoles
 #
-# Apollo got bought by Hewlett-Packard.  The Apollo workstations are 
+# Apollo got bought by Hewlett-Packard.  The Apollo workstations are
 # labeled HP700s now.
 #
 
@@ -1411,7 +1411,7 @@ apollo_color|apollo color display:\
 # to force both magic cookie glitches off.  Once upon a time, I
 # used a Fortune myself, so I know the capabilities of the form ^A[a-z]\r are
 # function keys; thus the "Al" value for HM was certainly an error.  I renamed
-# EN/PD/PU/CO/CF according to the XENIX/TC mappings, but not HM/DL/RF/RC/RT.  
+# EN/PD/PU/CO/CF according to the XENIX/TC mappings, but not HM/DL/RF/RC/RT.
 # I think rv and re are start and end reverse video and rg is a nonexistent
 # "reverse-video-glitch" capability; I have put rv and re in with standard
 # names below.  I've removed obsolete ":nl=5^J:" as there is a :do: -- esr)
@@ -1529,7 +1529,7 @@ altos7pc|alt7pc|altos PC VII:\
 #### Hewlett-Packard (hp)
 #
 #	Hewlett-Packard
-#	8000 Foothills Blvd 
+#	8000 Foothills Blvd
 #	Roseville, CA 95747
 #	Vox: 1-(916)-785-4363	(Technical response line for VDTs)
 #	     1-(800)-633-3600	(General customer support)
@@ -1557,9 +1557,9 @@ hp+pfk-cr|hp function keys w/o CR:\
 	:k1=\Ep:k2=\Eq:k3=\Er:k4=\Es:k5=\Et:k6=\Eu:k7=\Ev:\
 	:k8=\Ew:
 
-# The 2621s use the same keys for the arrows and function keys, 
-# but not separate escape sequences. These definitions allow the 
-# user to use those keys as arrow keys rather than as function 
+# The 2621s use the same keys for the arrows and function keys,
+# but not separate escape sequences. These definitions allow the
+# user to use those keys as arrow keys rather than as function
 # keys.
 hp+pfk+arrows|hp alternate arrow definitions:\
 	:k1@:k2@:k3@:k4@:k5@:k6@:k7@:k8@:kF=\Er\r:kH=\Eq\r:\
@@ -1584,16 +1584,16 @@ hp262x:\
 # Due to severe 2621 braindamage, the only way to get the arrow keys to
 # transmit anything at all is to turn on the function key labels
 # with smkx, and even then the user has to hold down shift!
-# The default 2621 turns off the labels except when it has to to 
-# enable the function keys. If your installation prefers labels 
-# on all the time, or off all the time (at the "expense" of the 
-# function keys) move the # 2621-nl or 2621-wl labels to the 
+# The default 2621 turns off the labels except when it has to to
+# enable the function keys. If your installation prefers labels
+# on all the time, or off all the time (at the "expense" of the
+# function keys) move the # 2621-nl or 2621-wl labels to the
 # front using reorder.
-# Note: there are newer ROMs for 2621's that allow you to set 
-# strap A so the regular arrow keys xmit \EA, etc, as with the 
-# 2645. However, even with this strap set, the terminal stops 
+# Note: there are newer ROMs for 2621's that allow you to set
+# strap A so the regular arrow keys xmit \EA, etc, as with the
+# 2645. However, even with this strap set, the terminal stops
 # xmitting if you reset it, until you unset and reset the strap!
-# Since there is no way to set/unset the strap with an escape 
+# Since there is no way to set/unset the strap with an escape
 # sequence, we don't use it in the default.
 # If you like, you can use 2621-ba (braindmaged arrow keys).
 hp2621-ba|2621-ba|2621 w/new rom and strap A set:\
@@ -1641,31 +1641,31 @@ hp2645|hp45|hp 264x series:\
 	:us=\E&dD:tc=hpgeneric:
 
 # Hp 2624 B with 4 or 10 pages of memory.
-# 
-# Some assumptions are made with this entry. These settings are 
+#
+# Some assumptions are made with this entry. These settings are
 # NOT set up by the initialization strings.
-# 
+#
 # Port Configuration
 # 	RecvPace=Xon/Xoff
 # 	XmitPace=Xon/Xoff
 # 	StripNulDel=Yes
-# 
+#
 # Terminal Configuration
 # 	InhHndShk=Yes
 # 	InhDC2=Yes
 # 	XmitFnctn(A)=No
 # 	InhEolWrp=No
-# 
+#
 # Note: the 2624 DOES have a true "home," believe it or not!
-# 
-# The 2624 has an "error line" to which messages can be sent. 
+#
+# The 2624 has an "error line" to which messages can be sent.
 # This is CLOSE to what is expected for a "status line". However,
-# after a message is sent to the "error line", the next carriage 
-# return is EATEN and the "error line" is turned back off again! 
+# after a message is sent to the "error line", the next carriage
+# return is EATEN and the "error line" is turned back off again!
 # So I guess we can't define hs, eslok, wsl, dsl, fsl, tsl
-# 
-# This entry supports emacs (and any other program that uses raw 
-# mode) at 4800 baud and less. I couldn't get the padding right 
+#
+# This entry supports emacs (and any other program that uses raw
+# mode) at 4800 baud and less. I couldn't get the padding right
 # for 9.6.
 #
 hp2624|hp2624a|hp2624b|hp2624b-4p|2624-4p|2624|2624a|2624b|Hewlett Packard 2624 B:\
@@ -1674,33 +1674,33 @@ hp2624|hp2624a|hp2624b|hp2624b-4p|2624-4p|2624|2624a|2624b|Hewlett Packard 2624 
 	:vb=\E&w13F\200\200\200\200\E&w12F\200\200\200\200\E&w13F\200\200\200\200\E&w12F:tc=hp+labels:tc=scrhp:
 
 # These attributes are not set above:
-# 
-# civis, cmdch, cnorm, csr, cub, cud, cuf, cuu, cvvis, dch, dl, 
+#
+# civis, cmdch, cnorm, csr, cub, cud, cuf, cuu, cvvis, dch, dl,
 # ech, eo, eslok, fsl, gn, hc, hd, hu, hz, ich, ich1, if, il, in,
-# indn, iprog, is2, is3, it, ka1, ka3, kb2, kc1, kc3, kclr, kf0, 
-# kf10, khts, km, ktbc, lf0, lf1, lf10, lf2, lf3, lf4, lf5, lf6, 
-# lf7, lf8, lf9, mc5p, os, pad, pfkey*, pfloc*, pfx*, prot, rc, 
+# indn, iprog, is2, is3, it, ka1, ka3, kb2, kc1, kc3, kclr, kf0,
+# kf10, khts, km, ktbc, lf0, lf1, lf10, lf2, lf3, lf4, lf5, lf6,
+# lf7, lf8, lf9, mc5p, os, pad, pfkey*, pfloc*, pfx*, prot, rc,
 # rep, rin, rmcup, rmdc, rmm, rs2, rs3, sc, smcup, smdc, smm, tsl,
 # uc, ul, vt, wind, wsl, xenl, xmc, xsb, xt
-# 
+#
 # not needed if tset is used:
 # 	if=/usr/lib/tabset/std,
-# 
-# This hp2626 entry does not use any of the fancy windowing stuff 
+#
+# This hp2626 entry does not use any of the fancy windowing stuff
 # of the 2626.
-# 
-# Indeed, terminfo does not yet handle such stuff. Since changing 
-# any window clears memory, it is probably not possible to use 
+#
+# Indeed, terminfo does not yet handle such stuff. Since changing
+# any window clears memory, it is probably not possible to use
 # this for screen opt.
-# 
-# ed is incredibly slow most of the time - I am guessing at the 
-# exact padding. Since the terminal uses xoff/xon this is intended 
-# only for cost computation, so that the terminal will prefer el 
+#
+# ed is incredibly slow most of the time - I am guessing at the
+# exact padding. Since the terminal uses xoff/xon this is intended
+# only for cost computation, so that the terminal will prefer el
 # or even dl1 which is probably faster!
-# 
-# \ED\EJ\EC hack for ed from Ed Bradford - apparently ed is only 
-# extra slow # on the last line of the window. 
-# 
+#
+# \ED\EJ\EC hack for ed from Ed Bradford - apparently ed is only
+# extra slow # on the last line of the window.
+#
 # The padding probably should be changed.
 #
 hp2626|hp2626a|hp2626p|2626|2626a|2626p|2626A|2626P|hp 2626:\
@@ -1708,10 +1708,10 @@ hp2626|hp2626a|hp2626p|2626|2626a|2626p|2626A|2626P|hp 2626:\
 	:lm#0:pb#19200:\
 	:SF=\E&r%dD:SR=\E&r%dU:cd=\ED\EJ\EC:ip=:is=\E&j@\r:tc=hp+pfk+cr:tc=hp+labels:tc=scrhp:
 
-# This entry is for sysline. It allocates a 23 line window with 
-# a 115 line workspace for regular use, and a 1 line window for 
+# This entry is for sysline. It allocates a 23 line window with
+# a 115 line workspace for regular use, and a 1 line window for
 # the status line.
-# 
+#
 # This assumes port 2 is being used.
 # Turn off horizontal line, Create ws #1 with 115 lines,
 # Create ws #2 with 1 line, Create window #1 lines 1-23,
@@ -1748,7 +1748,7 @@ hp2626-12-s|2626-12-s:\
 hp2648|hp2648a|2648a|2648A|2648|HP 2648a graphics terminal:\
 	:cl=\EH\EJ:cm=\E&a%r%dc%dY:dc=\EP:ip=:tc=hp2645:
 
-# 2640a doesn't have the Y cursor addressing feature, and C is 
+# 2640a doesn't have the Y cursor addressing feature, and C is
 # memory relative instead of screen relative, as we need.
 #
 hp2640a|2640a|hp 2640a:\
@@ -1757,7 +1757,7 @@ hp2640a|2640a|hp 2640a:\
 hp2640b|hp2644a|hp 264x series:\
 	:ke@:ks@:tc=hp2645:
 
-# 2621 using all 48 lines of memory, only 24 visible at any time.  
+# 2621 using all 48 lines of memory, only 24 visible at any time.
 #
 hp2621-48|48 line 2621:\
 	:li#48:\
@@ -1768,20 +1768,20 @@ hp2621-48|48 line 2621:\
 hp2621-nl|hp 2621 with no labels:\
 	:kd@:ke@:kh@:kl@:kr@:ks@:ku@:tc=hp2621-fl:
 
-# Needed for UCB ARPAVAX console, since lsi-11 expands tabs 
+# Needed for UCB ARPAVAX console, since lsi-11 expands tabs
 # (wrong).
 #
 hp2621-nt|hp 2621 w/no tabs:\
 	:ta@:tc=hp2621:
 
-# The HP 150 terminal is a fairly vanilla HP terminal, with the 
-# clreol standout problem. It also has graphics capabilities and 
+# The HP 150 terminal is a fairly vanilla HP terminal, with the
+# clreol standout problem. It also has graphics capabilities and
 # a touch screen, which we don't describe here.
 hp150|hewlett packard Model 150:\
 	:tc=hp2622:
 
-# Hp 2382a terminals, "the little ones." They don't have any 
-# alternate character set support and sending out ^N/^O will 
+# Hp 2382a terminals, "the little ones." They don't have any
+# alternate character set support and sending out ^N/^O will
 # leave the screen blank.
 hp2382a|hp2382|hewlett packard 2382a:\
 	:da:db:\
@@ -1837,8 +1837,8 @@ hp+printer| "standard" printer info for HP ttys:\
 
 
 # The new hp2621b is kind of a cross between the old 2621 and the
-# new 262x series of machines. It has dip-switched options. 
-# The firmware has a bug in it such that if you give it a null 
+# new 262x series of machines. It has dip-switched options.
+# The firmware has a bug in it such that if you give it a null
 # length label, the following character is eaten!
 hp2621b|2621b|hp 2621b with old style keyboard:\
 	:Nl#8:lh#1:lm#48:lw#8:\
@@ -1859,15 +1859,15 @@ hp2621b-kx-p|2621b-kx-p|hp 2621b with new keyboard & printer:\
 
 # Some assumptions are made in the following entries.
 # These settings are NOT set up by the initialization strings.
-# 
+#
 #    Port Configuration
 # RecvPace=Xon/Xoff	XmitPace=Xon/Xoff	StripNulDel=Yes
-# 
+#
 #    Terminal Configuration
 # InhHndShk(G)=Yes	InhDC2(H)=Yes
 # XmitFnctn(A)=No		InhEolWrp=No
 #
-# 
+#
 # Hp 2622a & hp2623a display and graphics terminals
 #
 hp2622|hp2622a|2622|2622a|hp 2622:\
@@ -1883,7 +1883,7 @@ hp2623|hp2623a|2623|2623a|hp 2623:\
 hp2624b-p|hp2624b-4p-p|hewlett packard 2624 B with printer:\
 	:tc=hp+printer:tc=hp2624:
 
-# The hewlett packard B can have an optional extra 6 pages of 
+# The hewlett packard B can have an optional extra 6 pages of
 # memory.
 hp2624-10p|hp2624a-10p|hp2624b-10p|2624-10p|2624a-10p|2624b-10p|hewlett packard 2624 B w/ 10 pages of memory:\
 	:lm#240:\
@@ -1906,7 +1906,7 @@ hp+color|hp with colors:\
 hp2397a|2397a|hp2397|2397|hewlett packard 2397A color terminal:\
 	:is=\E&w6f80X:tc=memhp:tc=hp+labels:tc=hp+color:
 
-#  HP 700/44 Setup parameters:  
+#  HP 700/44 Setup parameters:
 # Terminal Mode		HP-PCterm
 # Inhibit Auto Wrap	NO
 # Status Line		Host Writable
@@ -2094,7 +2094,7 @@ dku7003-dumb|Honeywell Bull DKU 7003, dumb mode:\
 # Honeywell Bull terminal.  Its cursor and function keys send single
 # control characters and it has standout/underline glitch.  Most programs
 # do not like these features/bugs.  The following entry may cause problems
-# with some programs.  Visual bell is realized by flashing the "keyboard 
+# with some programs.  Visual bell is realized by flashing the "keyboard
 # locked" LED.
 dku7003|Honeywell Bull DKU 7003, all features described:\
 	:ms:\
@@ -2229,8 +2229,8 @@ adm42|lsi adm42:\
 	:im=\Eq:ip=:kd=^J:kh=^^:kl=^H:kr=^L:ku=^K:le=^H:\
 	:nd=^L:pc=\177:se=\EG0:sf=^J:so=\EG4:ta=^I:up=^K:\
 	:vs=\EC\E3 \E3(:
-# The following termcap for the Lear Siegler ADM-42 leaves the 
-# "system line" at the bottom of the screen blank (for those who 
+# The following termcap for the Lear Siegler ADM-42 leaves the
+# "system line" at the bottom of the screen blank (for those who
 # find it distracting otherwise)
 adm42-nl|lsi adm-42 with no system line:\
 	:al=\EE\EF \011:bt=\EI\EF \011:cd=\EY\EF \011:\
@@ -2450,8 +2450,8 @@ tvi912c|tvi912b|912c|912b|tvi|new televideo 912:\
 # reset to page 0 when exiting ex (\E-07 )
 tvi912-2p|tvi920-2p|912-2p|920-2p|tvi-2p|televideo w/2 pages:\
 	:te=\E-07 :ti=\E-17 :tc=tvi912:
-# We got some new tvi912c terminals that act really weird on the regular 
-# termcap, so one of our gurus worked this up. Seems that cursor 
+# We got some new tvi912c terminals that act really weird on the regular
+# termcap, so one of our gurus worked this up. Seems that cursor
 # addressing is broken.
 tvi912cc|tvi912 at cowell college:\
 	:cm@:tc=tvi912c:
@@ -2504,7 +2504,7 @@ tvi925n|925n|televideo model 925 no standout or underline:\
 tvi925vbn|925vbn|televideo model 925 visual bells no so or ul:\
 	:vb=\Eb\200\200\200\200\200\200\200\200\200\200\200\200\200\200\200\Ed:tc=tvi925n:
 
-# From: Tim Curry, Univ. of Central Fla. <duke!ucf-cs!tim> 5/21/82 
+# From: Tim Curry, Univ. of Central Fla. <duke!ucf-cs!tim> 5/21/82
 # (tvi925a: removed obsolete ":kn#12:"; mapped ":pt:" to ":it#8:" --esr)
 tvi925a|925a|TeleVideo Model 925:\
 	:am:bs:bw:pt:\
@@ -2519,7 +2519,7 @@ tvi925a|925a|TeleVideo Model 925:\
 
 # From: Todd Litwin <litwin@litwin.jpl.nasa.gov> 28 May 1993
 # Originally Tim Curry, Univ. of Central Fla., <duke!ucf-cs!tim> 5/21/82
-# for additional capabilities, 
+# for additional capabilities,
 # The following tvi descriptions from B:pjphar and virus!mike
 # is for all 950s.  It sets the following attributes:
 # full duplex (\EDF)		write protect off (\E()
@@ -2654,7 +2654,7 @@ tvi970|televideo970:\
 	:sr=\EM:ue=\E[0m:up=\EM:us=\E[4m:\
 	:vb=\E[5;m\200\200\200\200\200\200\200\200\200\E[0;m:\
 	:vs=\E[1Q:
-# From Gene Rochlin <armsis@amber> 9/19/84. 
+# From Gene Rochlin <armsis@amber> 9/19/84.
 # Works with vi and rogue.  NOTE: Esc v sets autowrap on, Esc u sets 80 chars
 # per line (rather than 40), Esc K chooses the normal character set.  Not sure
 # padding is needed, but adapted from the tvi920c termcap.  The :so: and :us:
@@ -2908,7 +2908,7 @@ wy50-wvb|wyse50-wvb|wyse 50 132-column visible bell:\
 #	    To further complicate things one of the attributes must be
 #	black (either the foreground or the background).  In reverse video
 #	the background changes color with black letters.  In normal video
-#	the foreground changes colors on a black background.  
+#	the foreground changes colors on a black background.
 #	    This terminfo uses some of the more advanced features of curses
 #	to display both color and blink.  In the final analysis I am not
 #	sure that the wy350 runs better with this terminfo than it does
@@ -3419,7 +3419,7 @@ wy325|wyse325|Wyse-epc:\
 	:vi=\E`0:
 
 #
-# lines 24  columns 80  vb 
+# lines 24  columns 80  vb
 #
 wy325-vb|wyse325-vb|wy150-vb:\
 	:vb=\E`8\E`9:tc=wy325:
@@ -3443,7 +3443,7 @@ wy325-25w|wyse325-25w|wy325 132 columns:\
 	:Nl@:lh@:li#25:lw@:\
 	:pn@:r3=\EwG\Ee):tc=wy325-w:
 #
-# lines 25  columns 132  vb 
+# lines 25  columns 132  vb
 #
 wy325-w-vb|wy325-wvb|wyse325-wvb:\
 	:vb=\E`8\E`9:tc=wy325-w:
@@ -3461,7 +3461,7 @@ wy325-42w|wyse325-42w:\
 	:Nl@:lh@:li#42:lw@:\
 	:pn@:r3=\EwG\Ee):tc=wy325-w:
 #
-# lines 42  columns 132  vb 
+# lines 42  columns 132  vb
 #
 wy325-42w-vb|wy325-42wvb:\
 	:vb=\E`8\E`9:tc=wy325-w:
@@ -3478,7 +3478,7 @@ wy325-43w|wyse325-43w:\
 	:Nl@:lh@:li#43:lw@:\
 	:pn@:r3=\EwG\Ee):tc=wy325-w:
 #
-# lines 43  columns 132  vb 
+# lines 43  columns 132  vb
 #
 wy325-43w-vb|wy325-43wvb:\
 	:vb=\E`8\E`9:tc=wy325-w:
@@ -3833,7 +3833,7 @@ v5410|5410 in terms of a vt100:\
 	:sc=\E7:se=\E[m:sf=^J:so=\E[1;7m:sr=\EM:st=\EH:ta=^I:\
 	:ue=\E[m:up=\E[A:us=\E[4m:
 
-# 
+#
 # Teletype Model 5420 -- A souped up 5410, with multiple windows,
 # even! the 5420 has three modes: scroll, window or page mode
 # this terminfo should work in scroll or window mode, but doesn't
@@ -3861,7 +3861,7 @@ v5410|5410 in terms of a vt100:\
 # is3 set screen color to black,
 # No representation in terminfo for the delete word key: kdw1=\Ed
 # Key capabilities assume the power-up send sequence...
-# This rmcup is not strictly necessary, but it helps maximize 
+# This rmcup is not strictly necessary, but it helps maximize
 # memory usefulness: rmcup=\Ez,
 # Alternate sgr0:	sgr0=\E[0m\EW^O,
 # Alternate sgr:	sgr=\E[%?%p1%t2;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m%?%p8%t\EV%;%?%p9%t^N%e^O%;,
@@ -3906,7 +3906,7 @@ att4415-w-rv|tty5420-w-rv|att5420-w-rv|AT&T model 4415/5420 132 columns in rever
 
 # Note that this mode permits programming USER PF KEYS and labels
 # However, when you program user pf labels you have to reselect
-# user pf keys to make them appear! 
+# user pf keys to make them appear!
 att4415+nl|4415+nl|tty5420+nl|att5420+nl|generic AT&T 4415/5420 changes for not changing labels:\
 	:k1@:k2@:k3@:k4@:k5@:k6@:k7@:k8@:\
 	:..pn=\E[%p1%d;0;0;1q%p2%\072-16.16s:\
@@ -3990,13 +3990,13 @@ tty4420|teletype 4420:\
 #  The following is a termcap entry for the Teletype 4424
 #  asynchronous keyboard-display terminal.  It supports
 #  the vi editor.  The terminal must be "set up" as follows,
-# 	
+#
 # 	HIGHLIGHT DEFINITION	3-TONE
 # 	DISPLAY FUNCTION	GROUP III
-# 	
+#
 #  The second entry below provides limited (a la adm3a)
 #  operation under GROUP II.
-# 	
+#
 #  This must be used with DISPLAY FUNCTION GROUP I or III
 # 	and HIGHLIGHT DEFINITION 3-TONE
 # The terminal has either bold or blink, depending on options
@@ -4020,12 +4020,12 @@ att4424|tty4424|4424-3|teletype 4424:\
 att4424-1|tty4424-1|teletype 4424 in display function group I:\
 	:kC@:kd=\EB:kh@:kl=\ED:kr=\EC:ku=\EA:tc=att4424:
 
-# The Teletype 5425 is really version 2 of the Teletype 5420. It 
-# is quite similar, except for some minor differences. No page 
-# mode, for example, so all of the cup sequences used above have 
-# to change back to what's being used for the 5410. Many of the 
+# The Teletype 5425 is really version 2 of the Teletype 5420. It
+# is quite similar, except for some minor differences. No page
+# mode, for example, so all of the cup sequences used above have
+# to change back to what's being used for the 5410. Many of the
 # option settings have changed their numbering as well.
-# 
+#
 # This has been tested on a preliminary model.
 #
 att5425|tty5425|att4425|AT&T 4425/5425:\
@@ -4073,8 +4073,8 @@ att5425-w|att4425-w|tty5425-w|teletype 4425/5425 in 132 column mode:\
 tty5425-w-fk|att4425-w-fk|att5425-w-fk|AT&T 4425/5425 without function keys in wide mode:\
 	:ke@:ks@:tc=att5425-w:
 
-	
-# This had bogus capabilities: ri=\EM, ri=\E[1U, 
+
+# This had bogus capabilities: ri=\EM, ri=\E[1U,
 att4426|tty4426|teletype 4426S:\
 	:am:da:db:xo:\
 	:co#80:li#24:lm#48:\
@@ -4094,7 +4094,7 @@ att4426|tty4426|teletype 4426S:\
 
 
 # Terminfo entry for the AT&T 510 A Personal Terminal
-# Function keys 9 - 16 are available only after the 
+# Function keys 9 - 16 are available only after the
 # screen labeled (soft keys/action blocks) are labeled.  Function key
 # 9 corresponds to the leftmost touch target on the screen,
 # function key 16 corresponds to the rightmost.
@@ -4130,9 +4130,9 @@ att510a|510a|bct510a|510A|AT&T 510A Personal Terminal:\
 # Function key 9 corresponds to the leftmost touch target on the screen,
 # function key 16 corresponds to the rightmost.
 #
-# There are problems with soft key labeling.  These are due to 
+# There are problems with soft key labeling.  These are due to
 # strangenesses in the native terminal that are impossible to
-# describe in a terminfo.  
+# describe in a terminfo.
 att510d|510d|bct510d|510D|AT&T 510D Personal Terminal:\
 	:am:da:db:mi:ms:xn:xo:\
 	:Nl#8:co#80:lh#2:li#24:lm#48:lw#7:\
@@ -4440,7 +4440,7 @@ att630-24|5630-24|5630DMD-24|630MTG-24|AT&T 630 windowing terminal 24 lines:\
 # has status line of 80 chars
 # These were commented out: indn=\E[%p1%dS, rin=\E[%p1%dT,
 # the k25 and up keys are used for shifted system Fkeys
-# NOTE: JWE 3/13/90 The 98 key keyboard translation for shift/HOME is 
+# NOTE: JWE 3/13/90 The 98 key keyboard translation for shift/HOME is
 # currently the same as khome (unshifted HOME or \E[H).  On the 102, 102+1
 # and 122 key keyboards, the 730's translation is \E[2J.  For consistency
 # kHOM has been commented out.  The user can uncomment kHOM if using the
@@ -4882,7 +4882,7 @@ att505|pt505|att5430|gs5430|AT&T Personal Terminal 505 or 5430 GETSET terminal:\
 #
 # 							05-Aug-86
 #
-# 
+#
 att505-24|pt505-24|gs5430-24| AT&T PT505 or 5430 GETSET version 1 24 lines:\
 	:am:xo:\
 	:co#80:it#8:li#24:\
@@ -5317,7 +5317,7 @@ aaa-rv-unk:\
 #	Vox: (800)-231-5445
 #	Fax: (516)-342-7378
 #
-# Their voice mail describes the place as "SunRiver (formerly ADDS)". 
+# Their voice mail describes the place as "SunRiver (formerly ADDS)".
 
 # Regent: lowest common denominator, works on all regents.
 # (regent: renamed ":bc:" to ":le:" -- esr)
@@ -5375,7 +5375,7 @@ fviewpoint|flaky adds viewpoint with ^O bug:\
 	:dl=\El:do=^J:is=^G:kd=^J:kh=^A:kl=^U:kr=^F:ku=^Z:\
 	:le=^H:ll=^A:nd=^F:sf=^J:up=^Z:
 # From: Jay S. Rouman <jsr@dexter.mi.org> 5 Jul 92
-# The civis/cnorm/sgr/sgr0 strings were added by ESR from specs.  
+# The civis/cnorm/sgr/sgr0 strings were added by ESR from specs.
 # Theory; the 3a+ wants \E0%c to set highlights, where normal=01000000,
 # underline=01100000, rev=01010000, blink=01000010,dim=01000001,
 # invis=01000100 and %c is the logical or of desired attributes.
@@ -5442,7 +5442,7 @@ cit80|cit-80|citoh 80:\
 # Alternate cit101 (vt100 em) file used in vt100.
 #	    Uses 23 lines so can run citsys (like h19sys).
 #	24 May 85 (mtxinu!sybase!tim) - removed 2-byte limit on :cm: cursor
-#	  coordinates otherwise there is garbling on long lines in 
+#	  coordinates otherwise there is garbling on long lines in
 #	  co#132 mode; also added support for multipage	memory on the Itoh.
 # From: Tim Wood <mtxinu!sybase!tim> Fri Sep 27 09:39:12 PDT 1985
 citc|Citoh fast vt100:\
@@ -5531,7 +5531,7 @@ cdc456tst:\
 #	Vox: (610)-277-8300
 #	Fax: (610)-275-5739
 #	Net: support@hds.com
-# 
+#
 # John Martin <john@hds.com> is their termcap expert.  They're mostly out of
 # the character-terminal business now (1995) and making X terminals.  In
 # particular, the whole `Concept' line described here was discontinued long
@@ -5543,29 +5543,29 @@ cdc456tst:\
 #
 # There seem to be a number of different versions of the C108 PROMS
 # (with bug fixes in its Z-80 program).
-# 
+#
 # The first one that we had would lock out the keyboard of you
 # sent lots of short lines (like /usr/dict/words) at 9600 baud.
 # Try that on your C108 and see if it sends a ^S when you type it.
 # If so, you have an old version of the PROMs.
-# 
+#
 # You should configure the C108 to send ^S/^Q before running this.
 # It is much faster (at 9600 baud) than the c100 because the delays
 # are not fixed.
 # new status line display entries for c108-8p:
-# is3 - init str #3 - setup term for status display - 
-# set programmer mode, select window 2, define window at last 
+# is3 - init str #3 - setup term for status display -
+# set programmer mode, select window 2, define window at last
 # line of memory, set bkgnd stat mesg there, select window 0.
-# 
-# tsl - to status line - select window 2, home cursor, erase to 
+#
+# tsl - to status line - select window 2, home cursor, erase to
 # end-of-window, 1/2 bright on, goto(line#0, col#?)
-# 
+#
 # fsl - from status line - 1/2 bright off, select window 0
-# 
-# dsl - disable status display - set bkgnd status mesg with 
+#
+# dsl - disable status display - set bkgnd status mesg with
 # illegal window #
-# 
-# There are probably more function keys that should be added but 
+#
+# There are probably more function keys that should be added but
 # I don't know what they are.
 #
 c108|concept108|c108-8p|concept108-8p|concept 108 w/8 pages:\
@@ -5610,42 +5610,42 @@ c108-w-acs|c108-w w/ acs:\
 	:tc=c108+acs:tc=c108-w:
 
 # Concept 100:
-# These have only window relative cursor addressing, not screen 
-# relative. To get it to work right here, smcup/rmcup (which 
-# were invented for the concept) lock you into a one page 
+# These have only window relative cursor addressing, not screen
+# relative. To get it to work right here, smcup/rmcup (which
+# were invented for the concept) lock you into a one page
 # window for screen style programs.
-# 
+#
 # To get out of the one page window, we use a clever trick:
-# we set the window size to zero ("\Ev    " in rmcup) which the 
-# terminal recognizes as an error and resets the window to all 
+# we set the window size to zero ("\Ev    " in rmcup) which the
+# terminal recognizes as an error and resets the window to all
 # of memory.
-# 
+#
 # This trick works on c100 but does not on c108, sigh.
-# 
-# Some tty drivers use cr3 for concept, others use nl3, hence 
-# the delays on cr and ind below. This padding is only needed at 
-# 9600 baud. One or the other is commented out depending on 
+#
+# Some tty drivers use cr3 for concept, others use nl3, hence
+# the delays on cr and ind below. This padding is only needed at
+# 9600 baud. One or the other is commented out depending on
 # local conventions.
-# 
-# 2 ms padding on rmcup isn't always enough. 6 works fine. Maybe 
+#
+# 2 ms padding on rmcup isn't always enough. 6 works fine. Maybe
 # less than 6 but more than 2 will work.
-# 
-# Note: can't use function keys f7-f10 because they are 
-# indistinguishable from arrow keys (!), also, del char and 
+#
+# Note: can't use function keys f7-f10 because they are
+# indistinguishable from arrow keys (!), also, del char and
 # clear eol use xon/xoff so they probably won't work very well.
-# 
-# Also note that we don't define insrt/del char/delline/eop/send 
-# because they don't transmit unless we reset them - I figured 
+#
+# Also note that we don't define insrt/del char/delline/eop/send
+# because they don't transmit unless we reset them - I figured
 # it was a bad idea to clobber their definitions.
-# 
-# The mc5 sequence changes the escape character to ^^ so that 
-# escapes will be passed through to the printer. Only trouble 
-# is that ^^ won't be - ^^ was chosen to be unlikely. 
-# Unfortunately, if you're sending raster bits through to be 
+#
+# The mc5 sequence changes the escape character to ^^ so that
+# escapes will be passed through to the printer. Only trouble
+# is that ^^ won't be - ^^ was chosen to be unlikely.
+# Unfortunately, if you're sending raster bits through to be
 # plotted, any character you choose will be likely, so we lose.
 #
-# \EQ"\EY(^W (send anything from printer to host, for xon/xoff) 
-# cannot be # in is2 because it will hang a c100 with no printer 
+# \EQ"\EY(^W (send anything from printer to host, for xon/xoff)
+# cannot be # in is2 because it will hang a c100 with no printer
 # if sent twice.
 c100|concept100|concept|c104|c100-4p|hds concept 100:\
 	:am:eo:mi:ul:xn:\
@@ -5727,10 +5727,10 @@ avt-w-rv|avt-rv-w|avt-w-s-rv|avt-w-rv-s|avt 132 cols w/status line:\
 	:i1=\E[=103h\E[=205h:ti=\E[H\E[1;24;1;132w:\
 	:vb=\E[=205l\E[=205h:tc=avt+s:tc=avt-ns:
 
-#### Contel Business Systems. 
+#### Contel Business Systems.
 #
 
-# Contel c300 and c320 terminals. 
+# Contel c300 and c320 terminals.
 contel300|contel320|c300|Contel Business Systems C-300 or C-320:\
 	:am:in:xo:\
 	:co#80:li#24:sg#1:\
@@ -5777,7 +5777,7 @@ dg450|dg6134|data general 6134:\
 # mode rather than DG mode because standard UNIX tty drivers assume that ^H is
 # backspace on all terminals.  This is not so in DG mode.
 # (dg460-ansi: removed obsolete ":kn#6:"; also removed ":mu=\EW:", on the
-# grounds that there is no matching ":ml:"; mapped ":pt:" to default tabs; 
+# grounds that there is no matching ":ml:"; mapped ":pt:" to default tabs;
 # fixed garbled ":k9=\E[00\:z:" capability -- esr)
 dg460-ansi|Data General Dasher 460, ANSI-mode:\
 	:am:bs:ms:pt:ul:\
@@ -5792,7 +5792,7 @@ dg460-ansi|Data General Dasher 460, ANSI-mode:\
 	:me=\E[0m:mh=\E[2m:mr=\E[7m:nd=\E[C:nl=\ED:se=\E[0m:\
 	:sf=\E[S:so=\E[7m:sr=\E[T:ue=\E[05:up=\E[A:us=\E[4m:
 # From: Wayne Throop <mcnc!rti-sel!rtp47!throopw>
-# Data General 605x     
+# Data General 605x
 # Ought to work for a Model 6242, Type D210 as well as a 605x.
 # Note that the cursor-down key transmits ^Z.  Job control users, beware!
 dg6053|data general 6053:\
@@ -5976,7 +5976,7 @@ beacon|FCG Beacon System:\
 #### Fluke
 #
 
-# The 1720a differences from ANSI: no auto margin, destructive 
+# The 1720a differences from ANSI: no auto margin, destructive
 # tabs, # of lines, funny highlighting and underlining
 f1720|f1720a|fluke 1720A:\
 	:xt:\
@@ -6014,12 +6014,12 @@ f100-rv|freedom-rv|freedom 100 in reverse video:\
 # as ^V, the Control Character Quoting capability (^V in insert mode)
 # is lost! It cannot be remapped in vi because it is necessary to enter
 # a ^V to to quote the ^V that is being remapped!!!
-# 
+#
 # f110 users will have to decide whether
 # to lose the down cursor key or the quoting capability. We will opt
 # initially for leaving the quoting capability out, since use of VI
 # is not generally applicable to most interactive applications
-# 
+#
 # The same applies to f200 users, except that another option exists.
 # This option has been chosen locally. It will not be distributed unless
 # a user runs into this problem and requests assistance. Very few users,
@@ -6146,58 +6146,58 @@ go225|go-225|Graphon 225:\
 # so we must have early Superbee2 (Model 600, according to phone conversation
 # with mfr.). It has proved reliable except for some missing padding
 # (notably after \EK and nl at bottom of screen).
-# 
-# The key idea is that AEP mode is poison for cup & that US's in 
-# the local memory should be avoided like the plague. That means 
-# that the 2048 character local buffer is used as 25 lines of 80 
-# characters, period. No scrolling local memory, folks. It also 
+#
+# The key idea is that AEP mode is poison for cup & that US's in
+# the local memory should be avoided like the plague. That means
+# that the 2048 character local buffer is used as 25 lines of 80
+# characters, period. No scrolling local memory, folks. It also
 # appears that we cannot use naked INS LINE feature since it uses
-# US. The sbi fakes il1 with an 80-space insert that may be too 
-# slow at low speeds; also spaces get converted to \040 which is 
+# US. The sbi fakes il1 with an 80-space insert that may be too
+# slow at low speeds; also spaces get converted to \040 which is
 # too long for some programs (not vi).  DEL LINE is ok but slow.
-# 
-# The nl string is designed for last line of screen ONLY; cup to 
+#
+# The nl string is designed for last line of screen ONLY; cup to
 # 25th line corrects the motion inherent in scrolling to Page 1.
-# 
+#
 # There is one understood bug. It is that the screen appears to
-# pop to a new (blank) page after a nel, or leave a half-line 
-# elipsis to a quad that is the extra 48 memory locations. The 
-# data received is dumped into memory but not displayed.  Not to 
-# worry if cup is being used; the lines not displayed will be, 
-# whenever the cursor is moved up there. Since cup is addressed 
-# relative to MEMORY of window, nothing is lost; but beware of 
-# relative cursor motion (cuu1,cud1,cuf1,cub1). Recommended, therefore, 
+# pop to a new (blank) page after a nel, or leave a half-line
+# elipsis to a quad that is the extra 48 memory locations. The
+# data received is dumped into memory but not displayed.  Not to
+# worry if cup is being used; the lines not displayed will be,
+# whenever the cursor is moved up there. Since cup is addressed
+# relative to MEMORY of window, nothing is lost; but beware of
+# relative cursor motion (cuu1,cud1,cuf1,cub1). Recommended, therefore,
 # is setenv MORE -c .
-# 
+#
 # WARNING: Not all features tested.
-# 
-# Timings are assembled from 3 sources. Some timings may reflect 
+#
+# Timings are assembled from 3 sources. Some timings may reflect
 # SB2/Model 300 that were used if more conservative.
 # Tested on a Model 600 at 1200 and 9600 bd.
-# 
-# The BACKSPACEkb option is cute. The NEWLINE key, so cleverly 
-# placed on the keyboard and useless because of AEP, is made 
+#
+# The BACKSPACEkb option is cute. The NEWLINE key, so cleverly
+# placed on the keyboard and useless because of AEP, is made
 # into a backspace key. In use ESC must be pressed twice (to send)
-# and sending ^C must be prefixed by ESC to avoid that wierd 
+# and sending ^C must be prefixed by ESC to avoid that wierd
 # transmit mode associated with ENTER key.
-# 
-# IF TERMINAL EVER GOES CATATONIC with the cursor buzzing across 
-# the screen, then it has dropped into ENTER mode; hit 
+#
+# IF TERMINAL EVER GOES CATATONIC with the cursor buzzing across
+# the screen, then it has dropped into ENTER mode; hit
 # RESET--ONLINE--!tset.
-# 
-# As delivered this machine has a FATAL feature that will throw 
-# it into that strange transmit state (SPOW) if the space bar is 
-# hit after a CR is received, but before receiving a LF (or a 
+#
+# As delivered this machine has a FATAL feature that will throw
+# it into that strange transmit state (SPOW) if the space bar is
+# hit after a CR is received, but before receiving a LF (or a
 # few others).
-# 
-# The circuits MUST be modified to eliminate the SPOW latch. 
-# This is done by strapping on chip A46 of the I/O board; cut 
-# the p.c. connection to Pin 5 and strap Pin 5 to Pin 8 of that 
+#
+# The circuits MUST be modified to eliminate the SPOW latch.
+# This is done by strapping on chip A46 of the I/O board; cut
+# the p.c. connection to Pin 5 and strap Pin 5 to Pin 8 of that
 # chip. This mod has been checked out on a Mod 600 of Superbee II.
-# With this modification absurdly high timings on cr are 
+# With this modification absurdly high timings on cr are
 # unnecessary.
-# 
-# NOTE WELL that the rear panel switch should be set to CR/LF, 
+#
+# NOTE WELL that the rear panel switch should be set to CR/LF,
 # not AEP!
 #
 sb1|beehive superbee:\
@@ -6297,7 +6297,7 @@ ha8686|harris 8686:\
 
 #### Hazeltine
 #
-# Hazeltine appears to be out of the business now (1995).  These guys were 
+# Hazeltine appears to be out of the business now (1995).  These guys were
 # co-owners of the Terminal Brain Damage Hall Of Fame along with Harris.
 # Good riddance.
 #
@@ -6370,7 +6370,7 @@ h2000|hazeltine 2000:\
 # characters very fast vi seems not able to keep up and hangs while trying
 # to insert. That's in insert mode while trying to insert in the middle of
 # a line. It might be because the Esprit doesn't have insert char and delete
-# char as a built in function. Vi has to delete to end of line and then 
+# char as a built in function. Vi has to delete to end of line and then
 # redraw the rest of the line.
 esprit|Hazeltine Esprit I:\
 	:am:bw:\
@@ -6406,7 +6406,7 @@ ibm3151|i3151:\
 	:me=\E4@:\
 	:..sa=\E4%{64}%?%p1%{0}%>%p1%{4}%<%&%t%{8}%|%;%?%p1%{7}%=%t%{16}%|%;%?%p2%t%{1}%|%;%?%p3%t%{4}%|%;%?%p4%t%{2}%|%;%c:\
 	:se=\E4@:so=\E4A:ue=\E4@:us=\E4B:tc=ibm3163:
-# From: Mark Easter <marke@fsi-ssd.csg.ssd.fsi.com> 29 Oct 1992 
+# From: Mark Easter <marke@fsi-ssd.csg.ssd.fsi.com> 29 Oct 1992
 # I commented out some IBM extensions.
 ibm3161|ibm3163|wy60-316X|wyse60-316X|IBM 3161/3163 display:\
 	:am:mi:ms:\
@@ -6432,7 +6432,7 @@ ibm3161|ibm3163|wy60-316X|wyse60-316X|IBM 3161/3163 display:\
 #	%?%p4%t%{2}%|%; # if p4 set, then OR the 2 bit for underline
 #	%c              # pop Pa1
 #	%{39}%p1%-	# calculate 32 + (7 - p1) for foreground
-#	%c		# pop Pa2 
+#	%c		# pop Pa2
 #	%{64}		# use only black background for now
 #	%c		# pop Pa3
 ibm3164|i3164|3164:\
@@ -6450,7 +6450,7 @@ ibmaed|IBM Experimental display:\
 ibm-apl|apl|IBM apl terminal simulator:\
 	:li#25:\
 	:tc=dm1520:
-# (ibmmono: this had an unknown `sb' boolean, I changed it to `bs'.  
+# (ibmmono: this had an unknown `sb' boolean, I changed it to `bs'.
 # Also it had ":I0=f10:" which pretty obviously should be "l0=f10" -- esr)
 ibmmono|ibm5151|IBM workstation monochrome:\
 	:bs:es:hs:\
@@ -6478,7 +6478,7 @@ ibmapa8c-c|ibm6154-c|IBM 6154 Advanced Color Graphics Display:\
 # (hft-c: this entry had :kb=\E[D:kf=\E[C: on the line with ku/kd/kh; this was
 # pretty obviously mislabeled for :le: and :nd:; also ":ul=\E[4m:" was clearly
 # a typo for ":us=\E[4m:"; also ":el=\E[K:" was a typo for ":ce=\E[K:".
-# There was an unknown boolean ":ht:" which I assume was meant to set 
+# There was an unknown boolean ":ht:" which I assume was meant to set
 # hardware tabs, so I have insrted it#8. Finally, "ac=^N" paired with the
 # ae looked like a typo for ":as=^N:" -- esr)
 ibm8512|ibm8513|hft-c|IBM High Function Terminal:\
@@ -6668,8 +6668,8 @@ kt7|kimtron model kt-7:\
 #
 
 # New "safe" cursor movement (5/87) from reuss@umd5.umd.edu.  Prevents freakout with
-# out-of-range args on Sytek multiplexors.  No ":so=^N:" and ":se=^N:" since 
-# it gets confused and it's too dim anyway.  No ic since Sytek insists ^S 
+# out-of-range args on Sytek multiplexors.  No ":so=^N:" and ":se=^N:" since
+# it gets confused and it's too dim anyway.  No ic since Sytek insists ^S
 # means xoff.
 # (act4: found ":ic=2^S:ei=:im=:ip=.1*^V:" commented out in 8.3 -- esr)
 act4|microterm|microterm act iv:\
@@ -6734,7 +6734,7 @@ mime3ax|mime-3ax|mime1 emulating enhanced 3a:\
 	:al=\001:cd=^_:ce=^X:dl=\027:ta=\011:tc=mime3a:
 # Wed Mar  9 18:53:21 1983
 # We run our terminals at 2400 baud, so there might be some timing problems at
-# higher speeds. The major improvements in this model are the terminal now 
+# higher speeds. The major improvements in this model are the terminal now
 # scrolls down and insert mode works without redrawing the rest of the line
 # to the right of the cursor. This is done with a bit of a kludge using the
 # exit graphics mode to get out of insert, but it does not appear to hurt
@@ -6750,9 +6750,9 @@ mime314|mm314|mime 314:\
 # This entry works for the ergo 4000 with the following setups:
 # ansi,wraparound,newline disabled, xon/xoff disabled in both
 # setup a & c.
-#	
+#
 # WARNING!!! There are multiple versions of ERGO 4000 microcode
-# Be advised that very early versions DO NOT WORK RIGHT !!  
+# Be advised that very early versions DO NOT WORK RIGHT !!
 # Microterm does have a ROM exchange program- use it or lose big
 ergo4000|microterm ergo 4000:\
 	:da:db:ms:\
@@ -6766,7 +6766,7 @@ ergo4000|microterm ergo 4000:\
 	:le=^H:nd=\E[C:se=\E[0m:sf=\ED:so=\E[7m:sr=\EM:ta=^I:\
 	:up=\E[A:
 
-#### NCR 
+#### NCR
 #
 # NCR's terminal group was merged with AT&T's when AT&T bought the company.
 # For what happened to that group, see the ADDS section.
@@ -6862,8 +6862,8 @@ pe7000c|perkin elmer 7000 series colour monitor:\
 # Sperry Univac has merged with Burroughs to form Unisys.
 #
 
-# This entry is for the Sperry UTS30 terminal running the TTY 
-# utility under control of CP/M Plus 1R1. The functionality 
+# This entry is for the Sperry UTS30 terminal running the TTY
+# utility under control of CP/M Plus 1R1. The functionality
 # provided is comparable to the DEC vt100.
 uts30|sperry uts30 with cp/m@1R1:\
 	:am:bw:hs:\
@@ -6962,7 +6962,7 @@ pt210|TRS-80 PT-210 printing terminal:\
 
 #### Tektronix (tek)
 #
-# Tektronix tubes are graphics terminals.  Most of them use modified 
+# Tektronix tubes are graphics terminals.  Most of them use modified
 # oscilloscope technology incorporating a long-persistence green phosphor,
 # and support vector graphics on a main screen with an attached "dialogue
 # area" for interactive text.
@@ -6994,14 +6994,14 @@ tek4023|4023|tex|tektronix 4023:\
 # bottom of memory (try "cat /usr/dict/words"); ^S and ^Q typed
 # on keyboard don't work.  You have to hit BREAK twice to get
 # one break at any speed - this is a documented feature.
-# Can't use cursor motion because it's memory relative, and 
-# because it only works in the workspace, not the monitor.  
+# Can't use cursor motion because it's memory relative, and
+# because it only works in the workspace, not the monitor.
 # Same for home. Likewise, standout only works in the workspace.
-# 
-# el was commented out since vi and rogue seem to work better 
+#
+# el was commented out since vi and rogue seem to work better
 # simulating it with lots of spaces!
-# 
-# il1 and il had 145ms of padding, but that slowed down vi's ^U 
+#
+# il1 and il had 145ms of padding, but that slowed down vi's ^U
 # and didn't seem necessary.
 #
 tek4024|tek4025|tek4027|tektronix 4024/4025/4027:\
@@ -7133,14 +7133,14 @@ tek4207-s|Tektronix 4207 with sysline but no memory:\
 # look good for screen editing.  In the dialog area, you can't move the cursor
 # off the bottom line.  Out of the dialog area, ^K moves it up, but there
 # is no way to scroll.
-# 
-# Note that there is a floppy for free from Tek that makes the 
+#
+# Note that there is a floppy for free from Tek that makes the
 # 4112 emulate the vt52 (use the vt52 termcap). There is also
 # an expected enhancement that will use ANSI standard sequences.
-# 
-# 4112 in non-dialog area pretending to scroll. It really wraps 
+#
+# 4112 in non-dialog area pretending to scroll. It really wraps
 # but vi is said to work (more or less) in this mode.
-# 
+#
 # 'vi' works reasonably well with this entry.
 #
 otek4112|o4112-nd|otek4113|otek4114|tektronix 4110 series:\
@@ -7177,7 +7177,7 @@ tek4113|tektronix 4113 color graphics, 5 line dialog area:\
 tek4113-34|4113-34|tektronix 4113 color graphics, 34 line dialog area:\
 	:li#34:\
 	:is=\EKA1\ELLB2\ELV0\ELV1:tc=tek4113:
-# :ns: left off to allow vi visual mode. APL font (:as=\E^N:/:ae=\E^O:) not 
+# :ns: left off to allow vi visual mode. APL font (:as=\E^N:/:ae=\E^O:) not
 # supported here. :uc: is slow, but looks nice. Suggest setenv MORE -up .
 # :vb: needs enough delay to let you see the background color being toggled.
 # (tek4113-nd: mapped ":pt:" to default tabs -- esr)
@@ -7231,7 +7231,7 @@ tek4125|4125:\
 
 # From: <jcoker@ucbic>
 # (tek4107: mapped ":pt:" to default tabs.  This was the termcap file's
-# entry for the 4107/4207, but SCO supplied another, less capable 4107 entry. 
+# entry for the 4107/4207, but SCO supplied another, less capable 4107 entry.
 # So we'll use that for 4107 and note that if jcoker wasn't confused you
 # may be able to use this one. -- esr)
 tek4207|Tektronix 4207 graphics terminal with memory:\
@@ -7260,7 +7260,7 @@ tek4404|4404:\
 	:ta=\E[2I:te=\E[1;1H\E[0J\E[?6h\E[?1l:\
 	:ti=\E%\E!1\E[1;32r\E[?6l\E>:ue=\E[m:up=\E[A:\
 	:us=\E[4m:
-# t500 is a local entry for the oddball Tek 500 owned by Fluke 
+# t500 is a local entry for the oddball Tek 500 owned by Fluke
 # Labs
 #
 t500|Tek series 500:\
@@ -7268,9 +7268,9 @@ t500|Tek series 500:\
 	:co#80:li#25:\
 	:bl=^G:cl=\005:cm=\E=%+ %+ :cr=^M:do=^J:ho=^T:le=^H:\
 	:sf=^J:
-# I added the is string - straight Unix has ESC ; in the login 
-# string which sets a ct8500 into monitor mode (aka 4025 snoopy 
-# mode). The is string here cleans up a few things (but not 
+# I added the is string - straight Unix has ESC ; in the login
+# string which sets a ct8500 into monitor mode (aka 4025 snoopy
+# mode). The is string here cleans up a few things (but not
 # everything).
 #
 ct8500|tektronix ct8500:\
@@ -7291,7 +7291,7 @@ ct8500|tektronix ct8500:\
 # Bold, dim, and standout are simulated by colors and thus not allowed
 # with colors.  The tektronix color table is mapped into the RGB color
 # table by setf/setb. All colors are reset to factory specifications by oc.
-# The initc cap uses RGB notation to define colors.  for arguments 1-3 the 
+# The initc cap uses RGB notation to define colors.  for arguments 1-3 the
 # interval (0-1000) is broken into 8 smaller sub-intervals (125).  Each sub-
 # interval then maps into pre-defined value.
 # (untranslatable capabilities removed to fit entry within 1023 bytes)
@@ -7456,7 +7456,7 @@ ibmpc|ibm-pc|ibm5051|5051|IBM Personal Computer (no ANSI.SYS):\
 
 # apple -- works with an Apple ][+ that is equipped with a Videx 80 column
 # card in slot 3. A special routine must be installed at the apple end to
-# enable scroll down, here indicated with a ^U.  The Videx card must have 
+# enable scroll down, here indicated with a ^U.  The Videx card must have
 # inverse char set, which is used as standout.
 apple|apple-v80|Apple][+ w/Videx80 & custom scroll down:\
 	:am:xn:\
@@ -7681,7 +7681,7 @@ ex3000:\
 	:bl=^G:cr=^M:do=^J:ho=^Q:sf=^J:
 # This came from the comp ctr who got it from some user.  Smart indeed!
 # (sexidy: looks like an Exidy Sorcerer in some bizarre emulation mode;
-# removed obsolete ":ma=^x^J:"; removed obsolete ":bc=^A:"; removed 
+# removed obsolete ":ma=^x^J:"; removed obsolete ":bc=^A:"; removed
 # incorrect (and overridden) ":le=^H:" -- esr)
 sexidy|exidy smart:\
 	:bs:\
@@ -7692,16 +7692,16 @@ sexidy|exidy smart:\
 #### Osborne
 #
 # Thu Jul  7 03:55:16 1983
-#	
-# As an aside, be careful; it may sound like an anomaly on the 
-# Osborne, but with the 80-column upgrade, it's too easy to 
+#
+# As an aside, be careful; it may sound like an anomaly on the
+# Osborne, but with the 80-column upgrade, it's too easy to
 # enter lines >80 columns!
-#	
+#
 # I've already had several comments...
-# The Osborne-1 with the 80-col option is capable of being 
-# 52,80, or 104 characters wide; default to 80 for compatibility 
+# The Osborne-1 with the 80-col option is capable of being
+# 52,80, or 104 characters wide; default to 80 for compatibility
 # with most systems.
-#	
+#
 # The tab is destructive on the Ozzie; make sure to 'stty -tabs'.
 ozzie|osborne|osborne1|osborne 1:\
 	:ms:ul:xt:\
@@ -7726,7 +7726,7 @@ pc-coherent|pcz19|coherent|IBM PC console running Coherent:\
 	:sf=^J:so=\Ep:sr=\EI:ta=^I:up=\EA:
 
 # According to the Venix 1.1 manual, the PC console is similar
-# to a DEC vt52.  Differences seem to be (1) arrow keys send 
+# to a DEC vt52.  Differences seem to be (1) arrow keys send
 # different strings, (2) enhanced standout, (3) added insert/delete line.
 # Note in particular that it doesn't have automatic margins (am).
 # There are other keys (f1-f10, pgup, pgdn, backtab, insch, delch)
@@ -7800,7 +7800,7 @@ m2-nam|minitel|minitel-2|minitel-2-nam|France Telecom Minitel:\
 	:ku=\E[A:nd=\E[C:se=\E[m:sf=^J:so=\E[7m:sr=\EM:\
 	:ue=\E[m:up=\E[A:us=\E[4m:
 # From: Joel Rubin <jmrubin@coral.berkeley.edu>
-# This is a preliminary TERMCAP for VIDTEX, a terminal program sold by 
+# This is a preliminary TERMCAP for VIDTEX, a terminal program sold by
 # Compuserve.  Line and column numbers are computer-dependent (I have a
 # Commodore '64); you should use the meta-B option to shut off clean-breaking
 # of lines.  No key codes included since some of them are programmable and
@@ -7914,15 +7914,15 @@ daleblit|daleterm|blit running Dale DeJager's ROM:\
 # still around.
 #
 
-# Entries for the BitGraph terminals.  The problem 
-# with scrolling in vi can only be fixed by getting BBN to put 
-# smarter scroll logic in the terminal or changing vi or padding 
+# Entries for the BitGraph terminals.  The problem
+# with scrolling in vi can only be fixed by getting BBN to put
+# smarter scroll logic in the terminal or changing vi or padding
 # scrolls with about 500 ms delay.
-#	
-# I always thought the problem was related to the terminal 
-# counting newlines in its input buffer before scrolling and 
-# then moving the screen that much. Then vi comes along and 
-# paints lines in on the bottom line of the screen, so you get 
+#
+# I always thought the problem was related to the terminal
+# counting newlines in its input buffer before scrolling and
+# then moving the screen that much. Then vi comes along and
+# paints lines in on the bottom line of the screen, so you get
 # this big white gap.
 
 bitgraph|bbn bitgraph:\
@@ -7962,15 +7962,15 @@ bg1.25|bbn bitgraph:\
 #### Chromatics
 #
 
-# cg7900: Following is revised version. As I mentioned, I recompiled 
+# cg7900: Following is revised version. As I mentioned, I recompiled
 # curses in order to accomadate the large amount of definition.
-# I have put the long strings in ti/te. Ti sets up a window 
-# that is smaller than the screen, and puts up a warning message 
-# outside the window. Te erases the warning message, puts the 
+# I have put the long strings in ti/te. Ti sets up a window
+# that is smaller than the screen, and puts up a warning message
+# outside the window. Te erases the warning message, puts the
 # window back to be the whole screen, and puts the cursor at just
-# below the small window. A defined vs and ve to really turn 
-# the cursor on and off, but I have taken this out since I don't 
-# like the cursor being turned off when vi exits.   
+# below the small window. A defined vs and ve to really turn
+# the cursor on and off, but I have taken this out since I don't
+# like the cursor being turned off when vi exits.
 cg7900|chromatics|chromatics 7900:\
 	:am:\
 	:co#80:li#40:\
@@ -8030,7 +8030,7 @@ dp3360|datapoint|datapoint 3360:\
 #
 # These entries are DEC's official terminfos for its older terminals.
 # Contact Bill Hedberg <hedberg@hannah.enet.dec.com> of Terminal Support
-# Engineering for more information.  Updated terminfos and termcaps 
+# Engineering for more information.  Updated terminfos and termcaps
 # are kept available at ftp://gatekeeper.dec.com/pub/DEC/termcaps.
 #
 
@@ -8108,7 +8108,7 @@ dw2|decwriter|dw|decwriter II:\
 # \E[4g		clear vertical tab stops
 # \E>		disable alternate keypad mode (so it transmits numbers!)
 # \E[%i%du	set tab stop at column %d (origin == 1)
-#		(Full syntax is \E[n;n;n;n;n;...;nu where each 'n' is 
+#		(Full syntax is \E[n;n;n;n;n;...;nu where each 'n' is
 #		a tab stop)
 #
 #       The dw3 does standout with wide characters.
@@ -8200,45 +8200,45 @@ alto-h19|altoh19|altoheath|alto-heath|alto emulating heathkit h19:\
 	:li#60:\
 	:al=\EL:dl=\EM:tc=h19:
 
-# The major problem with the Z29 is that it requires more 
-# padding than the Z19. Once again, here's a little termcap 
-# entry for it that will do the trick. 
-# 
+# The major problem with the Z29 is that it requires more
+# padding than the Z19. Once again, here's a little termcap
+# entry for it that will do the trick.
+#
 # The problem declaring an H19 to be synonomous with a Z29 is that
 # it needs more padding. It especially loses if a program attempts
 # to put the Z29 into insert mode and insert text at 9600 baud. It
 # even loses worse if the program attempts to insert tabs at 9600
-# baud. Adding padding to text that is inserted loses because in 
+# baud. Adding padding to text that is inserted loses because in
 # order to make the Z29 not die, one must add so much padding that
-# whenever the program tries to use insert mode, the effective 
+# whenever the program tries to use insert mode, the effective
 # rate is about 110 baud.
-# 
-# What program would want to put the terminal into insert mode 
-# and shove stuff at it at 9600 baud you ask?  
-# 
-# Emacs. Emacs seems to want to do the mathematically optimal 
+#
+# What program would want to put the terminal into insert mode
+# and shove stuff at it at 9600 baud you ask?
+#
+# Emacs. Emacs seems to want to do the mathematically optimal
 # thing in doing a redisplay rather than the practical thing.
-# When it is about to output a line on top of a line that is 
-# already on the screen, instead of just killing to the end of 
-# the line and outputing the new line, it compares the old line 
-# and the new line and if there are any similarities, it 
-# constructs the new line by deleting the text on the old line 
+# When it is about to output a line on top of a line that is
+# already on the screen, instead of just killing to the end of
+# the line and outputing the new line, it compares the old line
+# and the new line and if there are any similarities, it
+# constructs the new line by deleting the text on the old line
 # on the terminal that is already there and then inserting new
-# text into the line to transform it into the new line that is 
+# text into the line to transform it into the new line that is
 # to be displayed. The Z29 does not react kindly to this.
-# 
+#
 # But don't cry for too long.... There is a solution. You can make
 # a termcap entry for the Z29 that says the Z29 has no insert mode.
-# Then Emacs cannot use it. "Oh, no, but now inserting into a 
+# Then Emacs cannot use it. "Oh, no, but now inserting into a
 # line will be really slow", you say. Well there is a sort of a
-# solution to that too. There is an insert character option on 
-# the Z29 that will insert one character. Unfortunately, it 
-# involves putting the terminal into ansi mode, inserting the 
-# character, and changing it back to H19 mode. All this takes 12 
-# characters. Pretty expensive to insert one character, but it 
-# works. Either Emacs doesn't try to use its inserting hack when 
-# it's only given an insert character ability or the Z29 doesn't 
-# require padding with this (the former is probably more likely, 
+# solution to that too. There is an insert character option on
+# the Z29 that will insert one character. Unfortunately, it
+# involves putting the terminal into ansi mode, inserting the
+# character, and changing it back to H19 mode. All this takes 12
+# characters. Pretty expensive to insert one character, but it
+# works. Either Emacs doesn't try to use its inserting hack when
+# it's only given an insert character ability or the Z29 doesn't
+# require padding with this (the former is probably more likely,
 # but I haven't checked it out).
 z29|zenith29|z29b|zenith z29b:\
 	:am:ms:\
@@ -8281,9 +8281,9 @@ ztx|ztx11|zt-1|htx11|ztx-1-a|ztx-10/11:\
 
 #### IMS International (ims)
 #
-# There was a company called IMS International located in Carson City, 
+# There was a company called IMS International located in Carson City,
 # Nevada, that flourished from the mid-70s to mid-80s.  They made S-100
-# bus/Z80 hardware and a line of terminals called Ultimas.  
+# bus/Z80 hardware and a line of terminals called Ultimas.
 
 # From: Erik Fair <fair@ucbarpa.berkeley.edu>  Sun Oct 27 07:21:05 1985
 ims950-b|bare ims950 no init string:\
@@ -8366,7 +8366,7 @@ modgraph2|modgraph gx-1000, set to 80x24, keypad not enabled:\
 	:nd=2\EC:sr=5\EI:up=2\EA:
 
 #### Morrow Designs
-# 
+#
 # This was George Morrow's company.  They started in the late 1970s making
 # S100-bus machines.  They used to be reachable at:
 #
@@ -8377,7 +8377,7 @@ modgraph2|modgraph gx-1000, set to 80x24, keypad not enabled:\
 # but they're long gone now (1995).
 #
 
-# The mt70 terminal was shipped with the Morrow MD-3 microcomputer. 
+# The mt70 terminal was shipped with the Morrow MD-3 microcomputer.
 # Jeff's specimen was dated June 1984.
 # From: Jeff Wieland <wieland@acn.purdue.edu> 24 Feb 1995
 mt70|mt-70|Morrow MD-70; native Morrow mode:\
@@ -8455,7 +8455,7 @@ soroc140|iq140|soroc iq140:\
 
 #### Southwest Technical Products
 #
-# These guys made an early personal micro called the M6800.  
+# These guys made an early personal micro called the M6800.
 # The ct82 was probably its console terminal.
 #
 
@@ -8494,7 +8494,7 @@ swtp|ct82|southwest technical products ct82:\
 # CRT). It wasn't much different from the KTM-2 hardware-wise, but the
 # control and escape sequences are very different. The KTM-3 was always
 # real broken, at least according to the folks I've talked to about it.
-# 
+#
 # The padding in the entry is probably off--these terminals were very
 # slow (it takes like 100ms for the KTM-2 to clear the screen...) And
 # anyone with any sanity replaced the ROMs with something that provided
@@ -8502,7 +8502,7 @@ swtp|ct82|southwest technical products ct82:\
 # obviously very primitive... oh, you could get an upgraded ROM from
 # Synertek for some incredible amount of money, but what hacker with an
 # EPROM burner would do that? :)
-# 
+#
 # Sorry I don't have any contact info; I believe they were located in
 # Sunnyvale, and I'm fairly sure they are still manufacturing ICs
 # (they've gone to ASICs and FPGAs), but I doubt they're in the computer
@@ -8747,7 +8747,7 @@ zen50|z50|zentec zephyr:\
 #
 
 # CTRM terminal emulator
-# 1. underlining is not allowed with colors: first, is is simulated by 
+# 1. underlining is not allowed with colors: first, is is simulated by
 # black on white, second, it disables background color manipulations.
 # 2. BLINKING, REVERSE and BOLD are allowed with colors,
 # so we have to save their status in the static registers A, B and H
@@ -8755,7 +8755,7 @@ zen50|z50|zentec zephyr:\
 # (because any color change turns off ALL attributes)
 # 3. "enter_bold_mode" and "enter_reverse_mode" sequences alternates modes,
 # rather then simply  entering them.  Thus we have to check the
-# static register B and H to determine the status, before sending the 
+# static register B and H to determine the status, before sending the
 # escape sequence.
 # 4. sgr0 now must set the status of all 3 register (A,B,H) to zero
 # and then reset colors
@@ -8947,7 +8947,7 @@ diablo1740-lm|630-lm|1730-lm|x1700-lm:\
 	:tc=diablo1640-lm:
 # DTC 382 with VDU.  Has no :cd: so we fake it with :ce:.  Standout
 # (so="^P \002^PF:") works but won't go away without dynamite (":se=^P \200:").
-# The terminal has tabs, but I'm getting tired of fighting the braindamage. 
+# The terminal has tabs, but I'm getting tired of fighting the braindamage.
 # If no tab is set or the terminal's in a bad mood, it glitches the screen
 # around all of memory.  Note that return puts a blank ("a return character")
 # in the space the cursor was at, so we use ^P return (and thus ^P newline for
@@ -9011,7 +9011,7 @@ xerox1720|x1720|x1750|xerox 1720:\
 
 #### Miscellaneous obsolete terminals, manufacturers unknown
 #
-# If you have any information about these (like, a manufacturer's name, 
+# If you have any information about these (like, a manufacturer's name,
 # and a date on the serial-number plate) please send it!
 
 cad68-3|cgc3|cad68 basic monitor transparent mode size 3 chars:\
@@ -9313,7 +9313,7 @@ ttywilliams:\
 ######## ANSI/VT100/PC-TERM TERMINAL STANDARDS
 #
 # ANSI Standard (X3.64) Control Sequences for Video Terminals and Peripherals
-# 
+#
 # Most of the content of this comment is adapted from a table prepared by
 # Richard Shuford, based on a 1984 Byte article.  Terminfo correspondences
 # and discussion of some terminfo-related issues have been added.
@@ -9406,7 +9406,7 @@ ttywilliams:\
 # VPA  Vert Position Absolute    \E [ Pn d           1         FE     vpa
 # VPR  Vert Position Relative    \E [ Pn e           1         FE     (8)
 # VTS  Vertical Tabulation Set   \E J                -         FE     -
-# 
+#
 # ---------------------------------------------------------------------------
 #
 # Notes:
@@ -9425,7 +9425,7 @@ ttywilliams:\
 # HVP, but always allow CUP as an alternate.
 #
 # (5) See the VT100 discussion for the meaning of the ED parameter.
-# 
+#
 # (6) Some ANSI.SYS versions accept HPR, but more commonly `ANSI' terminals
 # use CUF for this function and ignore HPR
 #
@@ -9435,66 +9435,66 @@ ttywilliams:\
 # use CUD for this function and ignore VPR.
 #
 # ---------------------------------------------------------------------------
-# 
+#
 # Abbreviations:
 #
 # Intro  an Introducer of some kind of defined sequence; the normal 7-bit
 #        X3.64 Control Sequence Introducer is the two characters "Escape ["
-# 
+#
 # Delim  a Delimiter
-# 
+#
 # x/y    identifies a character by position in the ASCII table (column/row)
-# 
+#
 # eF     editor function (see explanation)
-# 
+#
 # FE     format effector (see explanation)
-# 
+#
 # F      is a Final character in
 #             an Escape sequence (F from 3/0 to 7/14 in the ASCII table)
 #             a control sequence (F from 4/0 to 7/14)
-# 
+#
 # Gs     is a graphic character appearing in strings (Gs ranges from
 #        2/0 to 7/14) in the ASCII table
-# 
+#
 # Ce     is a control represented as a single bit combination in the C1 set
 #        of controls in an 8-bit character set
-# 
+#
 # C0     the familiar set of 7-bit ASCII control characters
-# 
+#
 # C1     roughly, the set of control characters available only in 8-bit systems.
 #        This is too complicated to explain fully here, so read Jim Fleming's
 #        article in the February 1983 BYTE, especially pages 214 through 224.
-# 
+#
 # Fe     is a Final character of a 2-character Escape sequence that has an
 #        equivalent representation in an 8-bit environment as a Ce-type
 #        (Fe ranges from 4/0 to 5/15)
-# 
+#
 # Fs     is a Final character of a 2-character Escape sequence that is
 #        standardized internationally with identical representation in 7-bit
 #        and 8-bit environments and is independent of the currently
 #        designated C0 and C1 control sets (Fs ranges from 6/0 to 7/14)
-# 
+#
 # I      is an Intermediate character from 2/0 to 2/15 (inclusive) in the
 #        ASCII table
-# 
+#
 # P      is a parameter character from 3/0 to 3/15 (inclusive) in the ASCII
 #        table
-# 
+#
 # Pn     is a numeric parameter in a control sequence, a string of zero or
 #        more characters ranging from 3/0 to 3/9 in the ASCII table
-# 
+#
 # Ps     is a variable number of selective parameters in a control sequence
 #        with each selective parameter separated from the other by the code
 #        3/11 (which usually represents a semicolon); Ps ranges from
 #        3/0 to 3/9 and includes 3/11
-# 
+#
 # Format Effectors versus Editor Functions
-# 
+#
 # A format effector specifies how following output is to be displayed.
 # An editor function allows you to modify the display.  Informally
 # format effectors may be destructive; format effectors should not be.
-# 
-# For instance, a format effector that moves the "active position" (the 
+#
+# For instance, a format effector that moves the "active position" (the
 # cursor or equivalent) one space to the left would be useful when you want to
 # create an overstrike, a compound character made of two standard characters
 # overlaid. Control-H, the Backspace character, is actually supposed to be a
@@ -9508,66 +9508,66 @@ ttywilliams:\
 # return, linefeed, formfeed, etc., are defined as format effectors.
 #
 # The ANSI Standard
-# 
+#
 # The complete document describing the standard,  "ANSI X3.64-1979:
 # Additional Controls for Use with the American National Standard
 # Code for Information Interchange," can be ordered for $13.50 (plus
 # $4 postage) from
-# 
+#
 #      Standards Sales Department
 #      American National Standards Institute
 #      1430 Broadway
 #      New York, NY 10018
 #      212/354-3300
-# 
+#
 # It's best to read the full standard before using it. It also helps
 # to have copies of the related standards "X3.4-1977: American
 # National Standard Code for Information Interchange" (the ASCII
 # standard) and "X3.41.1974: Code-Extension Techniques for Use with
 # the 7-Bit Coded Character Set of American National Standard for
 # Information Interchange."
-# 
+#
 # NOTES ON THE DEC VT100 IMPLEMENTATION
-# 
+#
 # Control sequences implemented in the VT100 are as follows:
-# 
+#
 #      CPR, CUB, CUD, CUF, CUP, CUU, DA, DSR, ED, EL, HTS, HVP, IND,
 #      LNM, NEL, RI, RIS, RM, SGR, SM, TBC
-# 
+#
 # plus several private DEC commands.
-# 
+#
 # Erasing parts of the display (EL and ED) in the VT100 is performed thus:
-# 
+#
 #      Erase from cursor to end of line           Esc [ 0 K    or Esc [ K
 #      Erase from beginning of line to cursor     Esc [ 1 K
 #      Erase line containing cursor               Esc [ 2 K
 #      Erase from cursor to end of screen         Esc [ 0 J    or Esc [ J
 #      Erase from beginning of screen to cursor   Esc [ 1 J
 #      Erase entire screen                        Esc [ 2 J
-# 
+#
 # The VT100 responds to receiving the DA (Device Attributes) control
-# 
+#
 #      Esc [ c    (or Esc [ 0 c)
-# 
+#
 # by transmitting the sequence
-# 
+#
 #      Esc [ ? l ; Ps c
-# 
+#
 # where Ps is a character that describes installed options.
-# 
+#
 # The VT100's cursor location can be read with the DSR (Device Status
 # Report) control
-# 
+#
 #      Esc [ 6 n
-# 
+#
 # The VT100 reports by transmitting the CPR sequence
-# 
+#
 #      Esc [ Pl ; Pc R
-# 
+#
 # where Pl is the line number and Pc is the column number (in decimal).
-# 
+#
 # The specification for the DEC VT100 is document EK-VT100-UG-003.
-# 
+#
 # NOTES ON `PC-TERM' COMPATIBILITY
 #
 # The MS-DOS ANSI.SYS driver has set the de-facto standard for attribute
@@ -9587,7 +9587,7 @@ ttywilliams:\
 # 3n	set foreground color       / 0=black, 1=red,     2=green, 3=brown,
 # 4n	set background color       \ 4=blue,  5=magenta, 6=cyan,  7=white
 # Bright black becomes gray.  Bright brown becomes yellow,
-#	
+#
 # * Many VGA cards (such as the Paradise and compatibles) do the wrong thing
 #   when you try to set a "bright brown" (yellow) background with attribute
 #   5 (you get a blinking yellow foreground instead).  A few displays
@@ -9737,7 +9737,7 @@ ttywilliams:\
 #	* Replaced the translated BBN Bitgraph entries with purpose-built
 #	  ones from AT&T's SVr3.
 #	* Replaced the AT&T entries with AT&T's official terminfos.
-#	* Added teleray 16, vc415, cops10. 
+#	* Added teleray 16, vc415, cops10.
 #	* Merged in many individual capabilities from SCO terminfo files.
 # 9.4.3 (Mon Mar 13 02:37:53 EST 1995):
 #	* Typo fixes.
@@ -9761,7 +9761,7 @@ ttywilliams:\
 # 9.4.7 (Tue Apr  4 11:27:11 EDT 1995)
 #	* Added apple (Videx card), adm1a, oadm31.
 #	* Fixed malformed ampex csr.
-#	* Fixed act4, cyb110; they had old-style prefix padding left in. 
+#	* Fixed act4, cyb110; they had old-style prefix padding left in.
 #	* Changed mandatory to advisory padding in many entries.
 #	* Replaced HP entries up to hpsub with purpose-built ones.
 #	* Blank rmir/smir/rmdc/smdc capabilities removed.
@@ -9793,7 +9793,7 @@ ttywilliams:\
 #	* Added the new BSDI pc3 entry.
 #
 # 9.5.2 (Tue Apr 25 17:27:52 EDT 1995)
-#	* A change in the tic -C logic now ensures that all entries in 
+#	* A change in the tic -C logic now ensures that all entries in
 #	  the termcap translation will fit in < 1024 bytes.
 #	* Added `bobcat' and `gator' HP consoles and the Nu machine entries
 #	  from GNU termcap file.  This merges in all their local information.
@@ -9850,7 +9850,7 @@ ttywilliams:\
 #	* Added csr capability to linux entry.
 #	* Peter Wemm says the at386 hpa should be \E[%i%p1%dG, not \E[%p1%dG.
 #	* Added vt102-nsgr to cope with stupid IBM PC `VT100' emulators.
-#	* Some commented-out caps in long entries come back in, my code 
+#	* Some commented-out caps in long entries come back in, my code
 #	  for computing string-table lengths had a bug in it.
 #	* pcansi series modified to fit comm-program reality better.
 #

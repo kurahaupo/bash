@@ -139,7 +139,7 @@ if [ -f /xenix ]; then
     echo ""				>>$sysdefs
     echo "#if !defined (i386)"		>>$sysdefs
     echo "#  define i386"		>>$sysdefs
-    echo "#endif /* !i386 */"		>>$sysdefs	
+    echo "#endif /* !i386 */"		>>$sysdefs
   fi
 
   # Pass the release number of the OS through to the machine descriptions
@@ -233,7 +233,7 @@ fi
 
 if [ "$SYSDEF" = "" ]; then
 	case "$UNAME_M" in
-	ESA) SYSDEF=AIXESA ;;    
+	ESA) SYSDEF=AIXESA ;;
 	XD88*) SYSDEF=XD88 ;;
 	M88100) SYSDEF=M88100 ;;	# Motorola Delta 88K
 	esac

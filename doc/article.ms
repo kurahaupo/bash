@@ -261,7 +261,7 @@ replace builtins; it makes the capabilities of the builtin
 available to the function.  The reserved word \*Q!\*U was added
 to negate the return value of a command or pipeline; it was nearly
 impossible to express \*Qif not x\*U cleanly using the sh language.
-There exist multiple incompatible implementations of the 
+There exist multiple incompatible implementations of the
 .B test
 builtin, which tests files for type and other attributes and performs
 arithmetic and string comparisons.
@@ -395,7 +395,7 @@ other shells do not allow themselves to be stopped like that.
 .B Type,
 the Bash answer to
 .B which
-and 
+and
 .B whence,
 shows what will happen when a word is typed as a command:
 .SE
@@ -436,7 +436,7 @@ the command line editing standardized by POSIX.2.
 .PP
 Readline is fully customizable.  In addition to the basic commands
 and key bindings, the library allows users to define additional
-key bindings using a startup file.  The 
+key bindings using a startup file.  The
 .I inputrc
 file, which defaults to the file
 .I ~/.inputrc ,
@@ -518,7 +518,7 @@ character (usually TAB) is typed, readline looks at the word currently
 being entered and computes the set of filenames of which the current
 word is a valid prefix.
 If there is only one possible completion, the
-rest of the characters are inserted directly, otherwise the 
+rest of the characters are inserted directly, otherwise the
 common prefix of the set of filenames is added to the current word.
 A second TAB character entered immediately after a non-unique
 completion causes readline to list the possible completions; there is
@@ -668,18 +668,18 @@ and
 the primary and secondary prompts, are expanded before being
 displayed.  Parameter and variable expansion is performed when
 the prompt string is expanded, so any shell variable can be
-put into the prompt (e.g., 
+put into the prompt (e.g.,
 .B $SHLVL ,
 which indicates how deeply the current shell is nested).
 Bash specially interprets characters in the prompt string
 preceded by a backslash.  Some of these backslash escapes are
-replaced with 
+replaced with
 the current time, the date, the current working directory,
 the username, and the command number or history number of the command
 being entered.  There is even a backslash escape to cause the shell
 to change its prompt when running as root after an \fIsu\fP.
-Before printing each primary prompt, Bash expands the variable 
-.B $PROMPT_COMMAND 
+Before printing each primary prompt, Bash expands the variable
+.B $PROMPT_COMMAND
 and, if it has a value, executes the expanded value as a command,
 allowing additional prompt customization.  For example, this assignment
 causes the current user, the current host, the time, the last
@@ -763,7 +763,7 @@ One problem with this, of
 course, arises when programs that do not understand the shell's logical
 notion of the file system interpret \*Q..\*U differently.  This generally
 happens when Bash completes filenames containing \*Q..\*U according to a
-logical hierarchy which does not correspond to their physical location. 
+logical hierarchy which does not correspond to their physical location.
 For users who find this troublesome, a corresponding
 .I physical
 view of the file system is available:
@@ -815,7 +815,7 @@ is set when Bash is started or assigned a value during execution.
 .B $POSIX_PEDANTIC
 is accepted as well, to be compatible with some older GNU utilities.
 When Bash is started in POSIX mode, for example, it sources the
-file named by the value of 
+file named by the value of
 .B $ENV
 rather than the \*Qnormal\*U startup files, and does not allow
 reserved words to be aliased.
@@ -975,7 +975,7 @@ shared object specified as an argument), and the documentation to be
 printed by the
 .B help
 command (possibly present in the shared object as well).  It would
-manage the details of extending the internal table of builtins. 
+manage the details of extending the internal table of builtins.
 .PP
 A few other builtins would also be desirable: two are the POSIX.2
 .B getconf

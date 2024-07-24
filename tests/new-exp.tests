@@ -62,9 +62,9 @@ recho "$(echo "$(echo "${HOME}")")"
 
 P=*@*
 expect '<*@>'
-recho "${P%"*"}"	# 
+recho "${P%"*"}"	#
 expect '<*@>'
-recho "${P%'*'}"	# 
+recho "${P%'*'}"	#
 expect '<@*>'
 recho "${P#\*}"		# should be @*
 
@@ -572,7 +572,7 @@ set a b c d e
 recho ${@: -3:-2}
 
 XPATH=/bin:/usr/bin:/usr/ucb:/usr/local/bin:.:/sbin:/usr/sbin
-set $( IFS=: ; echo $XPATH ) 
+set $( IFS=: ; echo $XPATH )
 
 recho ${@##*/}
 recho ${@%%[!/]*}

@@ -17,7 +17,7 @@ diff -urp bash-3.2.orig/config-bot.h bash-3.2/config-bot.h
 @@ -97,6 +97,11 @@
  #  define RESTRICTED_SHELL_NAME "rbash"
  #endif
- 
+
 +/* If the shell is called by this name, it will become audited. */
 +#if defined (AUDIT_SHELL)
 +#  define AUDIT_SHELL_NAME "aubash"
@@ -32,7 +32,7 @@ diff -urp bash-3.2.orig/config.h.in bash-3.2/config.h.in
 @@ -81,6 +81,11 @@
     flag. */
  #undef RESTRICTED_SHELL
- 
+
 +/* Define AUDIT_SHELL if you want the generated shell to audit all
 +   actions performed by root account.  The shell thus generated can become
 +   audited by being run with the name "aubash". */
@@ -85,7 +85,7 @@ diff -urp bash-3.2.orig/configure.in bash-3.2/configure.in
 @@ -355,6 +361,8 @@ AC_SUBST(HELPDIRDEFINE)
  AC_SUBST(HELPINSTALL)
  AC_SUBST(HELPSTRINGS)
- 
+
 +AC_SUBST(AUDIT_LIB)
 +
  echo ""
@@ -107,7 +107,7 @@ diff -urp bash-3.2.orig/doc/bash.1 bash-3.2/doc/bash.1
  .B \-\-debugger
  Arrange for the debugger profile to be executed before the shell
  starts.
-@@ -8770,6 +8776,17 @@ turns off any restrictions in the shell 
+@@ -8770,6 +8776,17 @@ turns off any restrictions in the shell
  script.
  .\" end of rbash.1
  .if \n(zY=1 .ig zY
@@ -131,7 +131,7 @@ diff -urp bash-3.2.orig/eval.c bash-3.2/eval.c
 @@ -45,6 +45,11 @@
  #  include "bashhist.h"
  #endif
- 
+
 +#if defined (AUDIT_SHELL)
 +#  include <libaudit.h>
 +#  include <errno.h>
@@ -143,7 +143,7 @@ diff -urp bash-3.2.orig/eval.c bash-3.2/eval.c
 @@ -58,6 +63,38 @@ extern int rpm_requires;
  static void send_pwd_to_eterm __P((void));
  static sighandler alrm_catcher __P((int));
- 
+
 +#if defined (AUDIT_SHELL)
 +static int audit_fd = -1;
 +
@@ -180,7 +180,7 @@ diff -urp bash-3.2.orig/eval.c bash-3.2/eval.c
     the input source has already been initialized. */
  int
 @@ -145,7 +182,25 @@ reader_loop ()
- 
+
  	      executing = 1;
  	      stdin_redir = 0;
 +#if defined (AUDIT_SHELL)
@@ -202,7 +202,7 @@ diff -urp bash-3.2.orig/eval.c bash-3.2/eval.c
 +                audit (shell_input_line, last_command_exit_value);
 +              }
 +#endif
- 
+
  	    exec_done:
  	      QUIT;
 diff -urp bash-3.2.orig/externs.h bash-3.2/externs.h
@@ -211,21 +211,21 @@ diff -urp bash-3.2.orig/externs.h bash-3.2/externs.h
 @@ -77,6 +77,10 @@ extern int shell_is_restricted __P((char
  extern int maybe_make_restricted __P((char *));
  #endif
- 
+
 +#if defined (AUDIT_SHELL)
 +extern int maybe_make_audited __P((char *));
 +#endif
 +
  extern void unset_bash_input __P((int));
  extern void get_current_user_info __P((void));
- 
+
 diff -urp bash-3.2.orig/flags.c bash-3.2/flags.c
 --- bash-3.2.orig/flags.c	2007-01-03 09:01:06.000000000 -0500
 +++ bash-3.2/flags.c	2007-01-20 11:59:23.000000000 -0500
 @@ -142,6 +142,12 @@ int restricted = 0;		/* currently restri
  int restricted_shell = 0;	/* shell was started in restricted mode. */
  #endif /* RESTRICTED_SHELL */
- 
+
 +#if defined (AUDIT_SHELL)
 +/* Non-zero means that this shell is audited. An audited shell records
 +   each command that the root user executes. */
@@ -241,7 +241,7 @@ diff -urp bash-3.2.orig/flags.h bash-3.2/flags.h
 @@ -66,6 +66,10 @@ extern int restricted;
  extern int restricted_shell;
  #endif /* RESTRICTED_SHELL */
- 
+
 +#if defined (AUDIT_SHELL)
 +extern int audited;
 +#endif /* AUDIT_SHELL */
@@ -256,7 +256,7 @@ diff -urp bash-3.2.orig/Makefile.in bash-3.2/Makefile.in
 @@ -366,6 +366,8 @@ MALLOC_LIBRARY = @MALLOC_LIBRARY@
  MALLOC_LDFLAGS = @MALLOC_LDFLAGS@
  MALLOC_DEP = @MALLOC_DEP@
- 
+
 +AUDIT_LIB = @AUDIT_LIB@
 +
  ALLOC_HEADERS = $(ALLOC_LIBSRC)/getpagesize.h $(ALLOC_LIBSRC)/shmalloc.h \
@@ -264,18 +264,18 @@ diff -urp bash-3.2.orig/Makefile.in bash-3.2/Makefile.in
  		$(ALLOC_LIBSRC)/table.h $(ALLOC_LIBSRC)/watch.h
 @@ -386,7 +388,7 @@ BASHINCFILES =	 $(BASHINCDIR)/posixstat.
  		 $(BASHINCDIR)/ocache.h
- 
+
  LIBRARIES = $(SHLIB_LIB) $(READLINE_LIB) $(HISTORY_LIB) $(TERMCAP_LIB) $(GLOB_LIB) \
 -	    $(TILDE_LIB) $(MALLOC_LIB) $(INTL_LIB) $(LOCAL_LIBS)
 +	    $(TILDE_LIB) $(MALLOC_LIB) $(INTL_LIB) $(LOCAL_LIBS) $(AUDIT_LIB)
- 
+
  LIBDEP = $(SHLIB_DEP) $(INTL_DEP) $(READLINE_DEP) $(HISTORY_DEP) $(TERMCAP_DEP) $(GLOB_DEP) \
  	 $(TILDE_DEP) $(MALLOC_DEP)
 diff -urp bash-3.2.orig/parse.y bash-3.2/parse.y
 --- bash-3.2.orig/parse.y	2007-01-03 09:01:06.000000000 -0500
 +++ bash-3.2/parse.y	2007-01-20 11:59:23.000000000 -0500
 @@ -258,7 +258,7 @@ int need_here_doc;
- 
+
  /* Where shell input comes from.  History expansion is performed on each
     line when the shell is interactive. */
 -static char *shell_input_line = (char *)NULL;
@@ -299,7 +299,7 @@ diff -urp bash-3.2.orig/shell.c bash-3.2/shell.c
 @@ -644,6 +647,10 @@ main (argc, argv, env)
      maybe_make_restricted (shell_name);
  #endif /* RESTRICTED_SHELL */
- 
+
 +#if defined (AUDIT_SHELL)
 +    maybe_make_audited (shell_name);
 +#endif
@@ -310,7 +310,7 @@ diff -urp bash-3.2.orig/shell.c bash-3.2/shell.c
 @@ -1143,6 +1150,29 @@ maybe_make_restricted (name)
  }
  #endif /* RESTRICTED_SHELL */
- 
+
 +#if defined (AUDIT_SHELL)
 +/* Perhaps make this shell an `audited' one, based on NAME.  If the
 +   basename of NAME is "aubash", then this shell is audited.  The

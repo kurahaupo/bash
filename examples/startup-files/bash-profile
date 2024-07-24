@@ -21,7 +21,7 @@ LESS='-i -e -M -P%t?f%f :stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
 LOGNAME=${USER-$(whoami)}
 TZ=US/Eastern
 
-export HOME VISUAL EDITOR MAIL SHELL PATH TERM 
+export HOME VISUAL EDITOR MAIL SHELL PATH TERM
 export PAGER LESS TERMCAP HISTSIZE HISTFILE MAIL MAILCHECK LOGNAME TZ
 
 PS1="${HOSTNAME}\$ "

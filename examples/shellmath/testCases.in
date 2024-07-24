@@ -1,5 +1,5 @@
 ################################################################
-# The general testcase syntax is 
+# The general testcase syntax is
 #    assertionType  expectedValue   functionUnderTest [args ... ]
 #
 # where assertionType is either of:

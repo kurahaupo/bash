@@ -50,7 +50,7 @@ TEMPDIR=$TMPDIR/bbug.$$
 
 TEMPFILE1=$TEMPDIR/bbug1
 TEMPFILE2=$TEMPDIR/bbug2
-        
+
 USAGE="Usage: $0 [--help] [--version] [bug-report-email-address]"
 VERSTR="GNU bashbug, version ${RELEASE}.${PATCHLEVEL}-${RELSTATUS}"
 

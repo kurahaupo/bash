@@ -313,7 +313,7 @@ double quotes.
 When using the shell, only @samp{\} and @samp{'} may be used to escape the
 history expansion character, but the history expansion character is
 also treated as quoted if it immediately precedes the closing double quote
-in a double-quoted string. 
+in a double-quoted string.
 @end ifset
 
 There is a special abbreviation for substitution, active when the
@@ -450,7 +450,7 @@ the letters @code{fi}.
 
 @need 0.75
 Here are the word designators:
- 
+
 @table @code
 
 @item 0 (zero)

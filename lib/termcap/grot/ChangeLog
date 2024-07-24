@@ -65,7 +65,7 @@ Wed May 25 19:05:30 1994  Roland McGrath  (roland@churchy.gnu.ai.mit.edu)
 
 Wed Jan  5 22:20:15 1993  Morten Welinder  (terra@diku.dk)
 
-	* termcap.c (tgetent) [INTERNAL_TERMINAL]: Fake internal terminal 
+	* termcap.c (tgetent) [INTERNAL_TERMINAL]: Fake internal terminal
 	without reading any files.
 	(valid_file_name, tgetent) [MSDOS]: Drive letter support.
 	(tgetent) [MSDOS]: Use text mode for database.

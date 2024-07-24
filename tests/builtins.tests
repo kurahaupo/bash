@@ -230,7 +230,7 @@ AVAR=foo :
 echo $AVAR
 set +o posix
 
-# but assignment statements preceding `export' are always reflected in 
+# but assignment statements preceding `export' are always reflected in
 # the environment
 foo="" export foo
 declare -p foo

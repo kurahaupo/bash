@@ -18,7 +18,7 @@
 #    _shellmath_add 44.2 -87
 #    _shellmath_getReturnValue mySum
 #    echo $mySum
-# 
+#
 ################################################################################
 
 
@@ -85,7 +85,7 @@ function _shellmath_handleError()
     returnCode=${BASH_REMATCH[1]}
     msgTemplate=${BASH_REMATCH[2]}
     shift
-    
+
     # Display error msg, making parameter substitutions as needed
     msgParameters="$*"
     printf  "$msgTemplate" "${msgParameters[@]}"
@@ -181,7 +181,7 @@ function _shellmath_validateAndParse()
     local numericType returnCode
 
     ((returnCode = __shellmath_SUCCESS))
-    
+
     # Accept decimals: leading digits (optional), decimal point, trailing digits
     if [[ "$n" =~ ^[-]?([0-9]*)\.([0-9]+)$ ]]; then
         local integerPart=${BASH_REMATCH[1]:-0}
@@ -442,7 +442,7 @@ function _shellmath_add()
         ((isNegative2)) && ((integerPart2*=-1))
         local sum=$((integerPart1 + integerPart2))
         if (( (!isSubcall) && (isScientific1 || isScientific2) )); then
-            _shellmath_numToScientific $sum "" 
+            _shellmath_numToScientific $sum ""
             _shellmath_getReturnValue sum
         fi
         _shellmath_setReturnValue $sum
@@ -841,7 +841,7 @@ function _shellmath_multiply()
             _shellmath_getReturnValue product
         fi
         if (( (!isSubcall) && (isScientific1 || isScientific2) )); then
-            _shellmath_numToScientific $product "" 
+            _shellmath_numToScientific $product ""
             _shellmath_getReturnValue product
         fi
         _shellmath_setReturnValue $product

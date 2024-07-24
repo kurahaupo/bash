@@ -200,7 +200,7 @@ builtin_help (void)
 
   ind = current_builtin - shell_builtins;
   printf ("%s: %s\n", this_command_name, _(shell_builtins[ind].short_doc));
-  show_longdoc (ind);  
+  show_longdoc (ind);
 }
 
 static int
@@ -271,7 +271,7 @@ show_desc (char *name, int i)
       if (line[j] == '\n')
 	break;
     }
-  
+
   fflush (stdout);
 
   if (usefile)
@@ -473,7 +473,7 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
   /* dispchars == number of characters that will be displayed */
   dispchars = wcsnwidth (wcstr+1, slen, width - 2);
   dispcols = wcswidth (wcstr+1, dispchars) + 1;	/* +1 for ' ' or '*' */
-  
+
   wcstr[0] = (shell_builtins[i+height].flags & BUILTIN_ENABLED) ? L' ' : L'*';
 
   /* The dispchars-1 is there for terminals that behave strangely when you

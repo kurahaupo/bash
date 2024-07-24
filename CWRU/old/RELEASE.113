@@ -42,7 +42,7 @@ and to avoid `M_MACHINE redefined' warnings
 Fixes to the CRAY machine description
 
 Fixes to the mailpath code to make it Posix.2-compliant -- backslash
-may now quote `%' and `?' 
+may now quote `%' and `?'
 
 The namespace was further cleaned up, and more functions and variables
 were made static
@@ -117,7 +117,7 @@ Readline vi-mode now allows replacement to be redoable with `.'
 2. New Features
 
 A `strict Posix.2' mode, enabled with the -posix startup option or
-setting the POSIXLY_CORRECT variable (see CWRU/POSIX.NOTES for a 
+setting the POSIXLY_CORRECT variable (see CWRU/POSIX.NOTES for a
 description of the changed behavior)
 
 `ONESHOT' is now an option in config.h

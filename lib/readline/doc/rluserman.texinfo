@@ -41,7 +41,7 @@ except that this permission notice may be stated in a translation approved
 by the Free Software Foundation.
 @end ifinfo
 
-@titlepage  
+@titlepage
 @title GNU Readline Library User Interface
 @subtitle Edition @value{EDITION}, for @code{Readline Library} Version @value{VERSION}.
 @subtitle @value{UPDATE-MONTH}

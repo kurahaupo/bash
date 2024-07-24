@@ -4,7 +4,7 @@
 # $FPATH (which works the same as $PATH), then that definition will be run.
 #
 # To do this without source support, we define a dummy function that, when
-# executed, will load the file (thereby re-defining the function), then 
+# executed, will load the file (thereby re-defining the function), then
 # execute that newly-redefined function with the original arguments.
 #
 # It's not identical to ksh because ksh apparently does lazy evaluation
@@ -21,7 +21,7 @@
 
 #
 # Declare a function ($1) to be autoloaded from a file ($2) when it is first
-# called.  This defines a `temporary' function that will `.' the file 
+# called.  This defines a `temporary' function that will `.' the file
 # containing the real function definition, then execute that new definition with
 # the arguments given to this `fake' function.  The autoload function defined
 # by the file and the file itself *must* be named identically.
@@ -93,7 +93,7 @@ autoload()
 
 		while [ $# -ne 0 ] ; do
 			if [ -f $1/$FUNC ] ; then
-				break			# found it! 
+				break			# found it!
 			fi
 			shift
 		done

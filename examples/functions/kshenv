@@ -1,5 +1,5 @@
 #
-# .kshenv -- functions and aliases to provide the beginnings of a ksh 
+# .kshenv -- functions and aliases to provide the beginnings of a ksh
 #	     environment for bash.
 #
 # Chet Ramey
@@ -38,10 +38,10 @@ alias redirect="command exec"
 alias hist="fc"
 
 #
-# An almost-ksh compatible `whence' command.  This is as hairy as it is 
+# An almost-ksh compatible `whence' command.  This is as hairy as it is
 # because of the desire to exactly mimic ksh (whose behavior was determined
 # empirically).
-# 
+#
 # This depends somewhat on knowing the format of the output of the bash
 # `builtin type' command.
 #

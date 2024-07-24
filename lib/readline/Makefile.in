@@ -104,7 +104,7 @@ OBJECTS = readline.o vi_mode.o funmap.o keymaps.o parens.o search.o \
 	  rltty.o complete.o bind.o isearch.o display.o signals.o \
 	  util.o kill.o undo.o macro.o input.o callback.o terminal.o \
 	  text.o nls.o misc.o $(HISTOBJ) $(TILDEOBJ) $(COLORSOBJ) \
-	  xmalloc.o xfree.o compat.o 
+	  xmalloc.o xfree.o compat.o
 
 # The texinfo files which document this library.
 DOCSOURCE = doc/rlman.texinfo doc/rltech.texinfo doc/rluser.texinfo
@@ -318,10 +318,10 @@ colors.o: rlprivate.h
 parse-colors.o: rlprivate.h
 
 bind.o: xmalloc.h
-complete.o: xmalloc.h  
+complete.o: xmalloc.h
 display.o: xmalloc.h
 funmap.o: xmalloc.h
-histexpand.o: xmalloc.h   
+histexpand.o: xmalloc.h
 histfile.o: xmalloc.h
 history.o: xmalloc.h
 input.o: xmalloc.h
@@ -330,17 +330,17 @@ keymaps.o: xmalloc.h
 kill.o: xmalloc.h
 macro.o: xmalloc.h
 mbutil.o: xmalloc.h
-misc.o: xmalloc.h  
-readline.o: xmalloc.h   
+misc.o: xmalloc.h
+readline.o: xmalloc.h
 savestring.o: xmalloc.h
 search.o: xmalloc.h
-shell.o: xmalloc.h   
-terminal.o: xmalloc.h  
+shell.o: xmalloc.h
+terminal.o: xmalloc.h
 text.o: xmalloc.h
-tilde.o: xmalloc.h 
+tilde.o: xmalloc.h
 undo.o: xmalloc.h
 util.o: xmalloc.h
-vi_mode.o: xmalloc.h 
+vi_mode.o: xmalloc.h
 xfree.o: xmalloc.h
 xmalloc.o: xmalloc.h
 colors.o: xmalloc.h

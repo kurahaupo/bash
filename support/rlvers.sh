@@ -93,7 +93,7 @@ cd $TDIR || {
 	echo 0
 	exit 1
 }
-	
+
 if eval ${CC} -L${RL_LIBDIR} -I${RL_INCDIR} -o $TDIR/rlvers $TDIR/rlvers.c -lreadline ${TERMCAP_LIB};
 then
 	v=`$TDIR/rlvers`

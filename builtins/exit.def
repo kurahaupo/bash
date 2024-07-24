@@ -141,7 +141,7 @@ exit_or_logout (WORD_LIST *list)
      commands (trap_saved_exit_value). */
   exit_value = (running_trap == 1 && list == 0) ? trap_saved_exit_value : get_exitstat (list);
   if (exit_value > EX_SHERRBASE)	/* some kind of error */
-    return (exit_value);    
+    return (exit_value);
 
   bash_logout ();
 

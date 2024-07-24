@@ -1920,7 +1920,7 @@ lib/readline/callback.c
 lib/readline/macro.c
 	- use a slightly different strategy upon encountering the end of a macro
 	  when using the callback interface:  when the last character of a
-	  macro is read, and we are reading a command, pop the macro off the	
+	  macro is read, and we are reading a command, pop the macro off the
 	  stack immediately so the loop in rl_callback_read_char terminates
 	  when it should
 
@@ -2520,7 +2520,7 @@ execute_cmd.c
 				   9/30
 				   ----
 bashhist.c
-	- make $HISTCMD available anytime remember_on_history is non-zero,	
+	- make $HISTCMD available anytime remember_on_history is non-zero,
 	  which indicates that we're saving commands to the history, and
 	  let it evaluate to 1 if we're not
 
@@ -2539,7 +2539,7 @@ jobs.c
 	  dispose a copy of the pointer so we don't mess with the_pipeline
 	  while we're in the process of destroying it
 	- block and unblock SIGCHLD around manipulating the_pipeline in
-	  cleanup_the_pipeline	
+	  cleanup_the_pipeline
 
 				   10/7
 				   ----
@@ -2733,7 +2733,7 @@ lib/readline/terminal.c
 lib/readline/terminal.c
 	- new function, rl_reset_screen_size, calls _rl_get_screen_size to
 	  reset readline's idea of the terminal size
-	- don't call _rl_get_screen_size in _rl_init_terminal_io if both	
+	- don't call _rl_get_screen_size in _rl_init_terminal_io if both
 	  _rl_screenheight and _rl_screenwidth are > 0
 	- don't initialize _rl_screenheight and _rl_screenwidth to 0 in
 	  _rl_init_terminal_io; let caller take care of it
@@ -3936,7 +3936,7 @@ lib/readline/histexpand.c
 	- add support for `<<<' here-string redirection operator to
 	  history_tokenize_word.  Bug reported by agriffis@gentoo.org
 
-externs.h	
+externs.h
 	- don't add prototype for strerror() if HAVE_STRERROR defined
 
 				   7/29
@@ -4107,7 +4107,7 @@ parse.y
 parse.y
 	- add new parser_state flag: PST_REGEXP; means we are parsing a
 	  regular expression following the =~ conditional operator
-	- cond_node sets PST_REGEXP after reading the `=~' operator	
+	- cond_node sets PST_REGEXP after reading the `=~' operator
 	- change read_token to call read_token_word immediately if the
 	  PST_REGEXP bit is set in parser_state
 	- change read_token_word to skip over `(' and `|' if PST_REGEXP is
@@ -4144,7 +4144,7 @@ support/shobj-conf
 subst.c
 	- fix bug in parameter_brace_patsub so if the first character of the
 	  expanded pattern is a `/', it is not taken as a global replacement
-	  specifier.  Bug reported on forums.nekochan.net 
+	  specifier.  Bug reported on forums.nekochan.net
 
 				   10/27
 				   -----
@@ -4417,7 +4417,7 @@ builtins/help.def
 	  help topics, leaving two characters of whitespace between horizontal
 	  descriptions instead of 1
 	- change to print in columns with entries sorted down rather than across
-	  (that is, like `ls' rather than `ls -x').  Change inspired by Benno 
+	  (that is, like `ls' rather than `ls -x').  Change inspired by Benno
 	  Schulenberg <bensberg@justemail.net>
 
 jobs.h
@@ -4878,7 +4878,7 @@ subst.c
 	  like unwind-protects and the loop levels cleaned up
 
 {arrayfunc,expr,variables}.c
-	- add calls to top_level_cleanup before jump_to_top_level() 
+	- add calls to top_level_cleanup before jump_to_top_level()
 
 				   4/27
 				   ----
@@ -5422,7 +5422,7 @@ jobs.c
 	  don't do job control
 	- in wait_for, if a child run as part of a command substitution exits
 	  due to SIGINT, resend the SIGINT to the waiting shell with kill(2).
-	  This makes sure the exit status propagates 
+	  This makes sure the exit status propagates
 
 doc/{bash.1,bashref.texi}
 	- tighten up the language describing when bash tries to see if its
@@ -5553,7 +5553,7 @@ subst.c
 	  set no_longjmp_on_fatal_error; set this flag when calling from the
 	  readline completion code
 
-subst.h	
+subst.h
 	- update extern declaration for skip_to_delim
 
 				   1/17
@@ -7753,7 +7753,7 @@ subst.c
 	  pass down to param_expand; changed callers
 	- changed call to parameter_brace_expand_word in parameter_brace_expand
 	  to add PF_IGNUNBOUND flag so ${@:-foo} doesn't cause the shell to
-	  exit (but ${@} does) when there are no positional parameters.  Fixes	
+	  exit (but ${@} does) when there are no positional parameters.  Fixes
 	  Debian bug 519165 from Dan Jacobson <jidanni@jidanni.org>
 
 parse.y
@@ -7797,12 +7797,12 @@ execute_cmd.c
 				   3/21
 				   ----
 builtins/fc.def
-	- Even though command substitution through parse_and_execute turns 
+	- Even though command substitution through parse_and_execute turns
 	  off remember_on_history, command substitution in a shell when
 	  set -o history has been enabled (interactive or not) should use it
 	  in the last_hist calculation as if it were on.  Same calculation
 	  in fc_gethnum and fc_builtin.  Fixes bug reported by
-	  Ian Kelling <smallnow@gmail.com> 
+	  Ian Kelling <smallnow@gmail.com>
 
 sig.c
 	- change termsig_sighandler to terminate immediately if it gets called
@@ -8758,7 +8758,7 @@ general.c
 	  it never is)
 
 builtins/mapfile.def
-	- fix to mapfile() to avoid possible null pointer dereference pointed	
+	- fix to mapfile() to avoid possible null pointer dereference pointed
 	  out by clang/scan-build
 
 variables.c
@@ -8829,7 +8829,7 @@ parse.y
 	  for err_and_out ones
 
 redir.c
-	- handle REDIR_VARASSIGN semantics for rest of redirection constructs 
+	- handle REDIR_VARASSIGN semantics for rest of redirection constructs
 	- accommodate REDIR_VARASSIGN when translating redirections
 	- new function, redir_varvalue, does variable lookup for {v} when
 	  redirection needs the value (e.g., r_close_this)
@@ -9245,7 +9245,7 @@ execute_cmd.c
 	  call nesting
 
 general.c
-	- fix off-by-one error in trim_pathname that caused it to short-circuit	
+	- fix off-by-one error in trim_pathname that caused it to short-circuit
 	  when PROMPT_DIRTRIM == number of directories - 1.  Fixes bug
 	  reported by Dennis Williamson <dennistwilliamson@gmail.com>
 
@@ -9633,7 +9633,7 @@ lib/readline/complete.c
 	- rl_filename_completion_function needs to call
 	  rl_filename_dequoting_function with `dirname' (which has already
 	  been tilde-expanded) instead of `users_dirname', because it calls
-	  opendir with `dirname'.  Fixes bug reported by Stefan H. Holek 
+	  opendir with `dirname'.  Fixes bug reported by Stefan H. Holek
 	  <stefan@jarn.com>
 
 				   3/27
@@ -9905,7 +9905,7 @@ execute_cmd.c
 	  revision of Posix will require this
 
 doc/{bashref.texi,bash.1}
-	- document new posix mode use of `time' 
+	- document new posix mode use of `time'
 
 parse.y
 	- add production to pipeline_command that permits `!' by itself to
@@ -10055,7 +10055,7 @@ builtins/shopt.def
 lib/readline/vi_mode.c
 	- finish restructuring rl_vi_domove and the functions that call it so
 	  it works in callback mode, including numeric arguments.  Requested
-	  a long time ago by Bob Rossi 
+	  a long time ago by Bob Rossi
 
 lib/readline/callback.c
 	- arrange to call appropriate callback when readline state indicates
@@ -10847,7 +10847,7 @@ lib/readline/doc/
 
 bashline.c
 	- make sure that bash_directory_completion_hook consistently returns
-	  non-zero whenever it modifies its directory name argument 
+	  non-zero whenever it modifies its directory name argument
 
 lib/readline/terminal.c
 	- don't bother with the declarations (extern or not) for PC, BS, and
@@ -11025,7 +11025,7 @@ lib/glob/gmisc.c
 jobs.c
 	- change wait_for to call restore_sigint_handler right after exiting
 	  the wait loop, instead of right before function returns.  Reduces
-	  the window for a SIGINT to be lost because a child does not exit	
+	  the window for a SIGINT to be lost because a child does not exit
 	  due to SIGINT
 
 				    2/7

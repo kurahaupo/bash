@@ -7,7 +7,7 @@ shell, `rbash', organized by changes to various source files.
 	Moved the declaration of restricted to flags.c; it is now declared
 	extern here.  Changed the detection of a restricted shell; now, any
 	instance of the shell for which *(basename(argv[0])) == 'r' (where
-	basename returns either everything after the last '/' in its 
+	basename returns either everything after the last '/' in its
 	argument or its argument is restricted.  Also, if SHELL is set on
 	entry to the shell, and it's basename is "rbash", the shell is
 	restricted.
@@ -35,7 +35,7 @@ shell, `rbash', organized by changes to various source files.
 4.  flags.c
 
 	The variable `restricted' is now declared here.  A new flag `-r',
-	to turn on restricted mode, has been added.  `change_flag' has 
+	to turn on restricted mode, has been added.  `change_flag' has
 	been modified to disallow `set +r' if restricted == 1.
 
 5.  execute_cmd.c

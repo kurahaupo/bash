@@ -61,7 +61,7 @@ wait $pid2
 exec 2>&5
 unset -v pid pid2
 
-# 
+#
 echo wait-for-pid
 sleep 4 &
 wait $!

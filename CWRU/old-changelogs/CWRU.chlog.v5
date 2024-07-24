@@ -457,7 +457,7 @@ readline/vi_mode.c
 	  respectively
 	- made rl_vi_complete handle all three kinds of vi_mode completion
 	- changed rl_vi_char_search to check boundary conditions and avoid
-	  going off the end or start of the current line searching for a 
+	  going off the end or start of the current line searching for a
 	  character
 	- changed rl_vi_domove to implement the `yy' command
 
@@ -721,7 +721,7 @@ subst.c, shell.h
 	  distinct bit values so that they can be masked and OR'd together.
 
 execute_cmd.c
-	  execute_cmd.c now calls expand_word with an argument of 
+	  execute_cmd.c now calls expand_word with an argument of
 	  Q_KEEP_BACKSLASH, so that only parameter expansions and "" and ''
 	  removal are performed
 

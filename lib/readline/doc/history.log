@@ -194,7 +194,7 @@ texinfo.tex: doing @include of hstech.texi
 
  [5
 @numsecentry{History Functions}{2.3}{History Functions}{5}
-@numsubsecentry{Initializing History and State Management}{2.3.1}{Initializing 
+@numsubsecentry{Initializing History and State Management}{2.3.1}{Initializing
 History and State Management}{5}
 @numsubsecentry{History List Management}{2.3.2}{History List Management}{5}
 ] [6
@@ -228,7 +228,7 @@ texinfo.tex: doing @include of fdl.texi
 @appentry{Concept Index}{B}{Concept Index}{20}
 ] [21
 @appentry{Function and Variable Index}{C}{Function and Variable Index}{21}
-] ) 
+] )
 Here is how much of TeX's memory you used:
  3182 strings out of 497114
  31680 string characters out of 6207173

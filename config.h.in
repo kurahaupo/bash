@@ -150,7 +150,7 @@
    characters, even if the OS supports them. */
 #undef NO_MULTIBYTE_SUPPORT
 
-/* Define DEBUGGER if you want to compile in some features used only by the 
+/* Define DEBUGGER if you want to compile in some features used only by the
    bash debugger. */
 #undef DEBUGGER
 
@@ -1224,7 +1224,7 @@
 #undef HAVE_LOCALE_NULL
 #undef HAVE_NAMELESS_LOCALES
 #undef HAVE_PER_THREAD_LOCALE
-#undef HAVE_SOLARIS114_LOCALES 
+#undef HAVE_SOLARIS114_LOCALES
 
 /* Compiler characteristics */
 #undef FLEXIBLE_ARRAY_MEMBER
@@ -1271,8 +1271,8 @@
 #undef HAVE_XLOCALE_H
 
 /* Declarations */
-#undef HAVE_DECL_FEOF_UNLOCKED 
-#undef HAVE_DECL_FGETS_UNLOCKED 
+#undef HAVE_DECL_FEOF_UNLOCKED
+#undef HAVE_DECL_FGETS_UNLOCKED
 #undef HAVE_DECL__SNPRINTF
 #undef HAVE_DECL__SNWPRINTF
 
@@ -1319,12 +1319,12 @@
 #undef HAVE_POSIX_PRINTF
 
 #undef HAVE_PTHREAD_API
-#undef HAVE_PTHREAD_MUTEX_RECURSIVE 
+#undef HAVE_PTHREAD_MUTEX_RECURSIVE
 #undef HAVE_PTHREAD_RWLOCK
-#undef HAVE_PTHREAD_RWLOCK_RDLOCK_PREFER_WRITER 
+#undef HAVE_PTHREAD_RWLOCK_RDLOCK_PREFER_WRITER
 
-#undef HAVE_SNPRINTF_RETVAL_C99 
-#undef HAVE_SNPRINTF_TRUNCATION_C99 
+#undef HAVE_SNPRINTF_RETVAL_C99
+#undef HAVE_SNPRINTF_TRUNCATION_C99
 
 /* Define if you have the `stpcpy' function. */
 #undef HAVE_STPCPY

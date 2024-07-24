@@ -23,7 +23,7 @@ complete -j -P '%' fg jobs disown
 complete -j -P '%' -W '$(ps -x | tail +2 | cut -c1-5)' wait
 complete -c type
 complete -a unalias
-complete -v getopts read unset 
+complete -v getopts read unset
 complete -v -S '=' declare export local readonly typeset
 complete -f -- . source
 complete -A shopt shopt

@@ -459,7 +459,7 @@ examples/loadables/rm.c
 
 execute_cmd.c
 	- execute_simple_command: if executing a builtin returns EX_DISKFALLBACK,
-	  try running execute_disk_command instead 
+	  try running execute_disk_command instead
 
 bashline.c
 	- shell_expand_line: use expand_word to expand the readline line
@@ -914,7 +914,7 @@ tests/run-all
 tests/execscript
 	- use $PWD/exec8.sub to protect against someone who has a cd command
 	  in his bashrc.  Report from  Vladimir Marek
-	  <Vladimir.Marek@oracle.com> 
+	  <Vladimir.Marek@oracle.com>
 
 				   12/2
 				   ----
@@ -952,7 +952,7 @@ bashline.c
 Makefile.in
 	- bashbug: use `^' as the sed delimiter instead of `%'; some compilers
 	  use `%' in CFLAGS.  Report from  Vladimir Marek
-	  <Vladimir.Marek@oracle.com> 
+	  <Vladimir.Marek@oracle.com>
 
 				   12/6
 				   ----
@@ -1251,11 +1251,11 @@ execute_cmd.h
 
 shell.h
 	- added extern declarations for variables declared in shell.c,
-	  changed files that declare lots of extern variables 
+	  changed files that declare lots of extern variables
 
 parser.h
 	- added extern declarations for variables declared in parse.y,
-	  changed files that declare lots of extern variables 
+	  changed files that declare lots of extern variables
 
 [lots of changes to reduce the number of extern declarations in C and DEF files]
 
@@ -1375,7 +1375,7 @@ jobs.c
 	  child process to terminate instead of change state
 
 builtins/wait.def
-	- takes a new `-f' option, signifying to wait until the specified job 
+	- takes a new `-f' option, signifying to wait until the specified job
 	  or process terminates, instead of changes state
 
 doc/{bash.1,bashref.texi}
@@ -2745,7 +2745,7 @@ lib/readline/isearch.c
 execute_cmd.c
 	- time_command: only restore command->flags if CODE indicates we didn't
 	  perform a longjmp back to top_level. If we did, `command' has already
-	  been freed. Fixes bug reported on savannah by 
+	  been freed. Fixes bug reported on savannah by
 	  ukuvbu oibws <xyzdr4gon333@googlemail.com>
 	  https://savannah.gnu.org/support/?109403
 
@@ -4426,7 +4426,7 @@ subst.c
 	  effectively becoming a process group leader without changing
 	  its own process group. Fixes stray SIGHUP issue reported by
 	  Jeremy Townshend <jeremy.townshend@gmail.com>
- 
+
 				   9/23
 				   ----
 arrayfunc.c
@@ -4741,7 +4741,7 @@ subst.c
 	- param_expand: if expanding $! when set -u is enabled, honor the
 	  PF_IGNUNBOUND flag and just return NULL, relying on the caller to
 	  take care of understanding that the variable is unset
-	  From a report by Grisha Levit <grishalevit@gmail.com>	
+	  From a report by Grisha Levit <grishalevit@gmail.com>
 	- parameter_brace_expand: if we are checking nullness, and we have a
 	  valid array expansion, a quoted null string resulting from the array
 	  expansion of a * or @ subscript satisfies the nullness check.
@@ -4973,7 +4973,7 @@ lib/glob/glob_loop.c
 				 --------
 
 examples/loadables/basename.c
-	- make sure to include bashgetopt.h. Reported by Angel 
+	- make sure to include bashgetopt.h. Reported by Angel
 	  <angel@16bits.net>
 
 lib/malloc/malloc.c
@@ -6122,7 +6122,7 @@ builtins/set.def
 	- unset_builtin: if neither -f nor -v is supplied, and a NAME cannot
 	  be a shell variable because it's not a shell identifier, try to
 	  unset a shell function whether we're in posix mode or not. Suggested
-	  back in 1/2019 by PePa65 <solusos@passchier.net> and Robert Elz	
+	  back in 1/2019 by PePa65 <solusos@passchier.net> and Robert Elz
 	  <kre@bmunnari.oz.au>
 
 execute_cmd.c
@@ -7396,7 +7396,7 @@ subst.c
 	  we've already computed what kind of index the array reference uses
 	  in get_var_and_type, and passing VARNAME to figure out the index
 	  type doesn't do the right thing when we're using indirect variable
-	  expansion. Fixes bug reported by 
+	  expansion. Fixes bug reported by
 	  Arfrever Frehtes Taifersar Arahesis <arfrever.fta@gmail.com>
 	- array_remove_pattern: take the same new STARSUB argument for the
 	  same reason
@@ -7421,7 +7421,7 @@ subst.c
 	  one while attempting to assign the value, but the errors to not
 	  cause the function to return immediately. Fixes inconsistency
 	  reported by Arfrever Frehtes Taifersar Arahesis <arfrever.fta@gmail.com>
-	  
+
 
 				   2/23
 				   ----
@@ -7991,7 +7991,7 @@ lib/readline/mbutil.c
 	  EXPERIMENTAL
 	- _rl_find_prev_mbchar_internal: for now, call _rl_find_prev_utf8char
 	  if we are in a UTF-8 locale. EXPERIMENTAL
-				   
+
 				   4/15
 				   ----
 lib/readline/mbutil.c
@@ -8079,7 +8079,7 @@ builtins/read.def
 
 				   4/20
 				   ----
-hashlib.c 
+hashlib.c
 	- hash_rehash: function to rehash a table, after increasing or decreasing
 	  the number of buckets. From patches from Thomas Kremer
 	  (https://savannah.gnu.org/patch/?9850) and Koichi Murase
@@ -8623,7 +8623,7 @@ xmalloc.c
 
 examples/loadables/finfo.c
 	- st_dev,st_nlink: cast to unsigned long, report from Jessica Clarke
-	  <jrtc27@jrtc27.com> 
+	  <jrtc27@jrtc27.com>
 
 unwind_prot.c
 	- unwind_protect_mem_internal: make sure we allocate at least as many
@@ -8762,7 +8762,7 @@ general.c
 	- assignment: if (FLAGS & 1), we are parsing the contents of a compound
 	  assignment, and a word must begin with a `[' and have a valid
 	  subscript terminated by `]' before the `=' to be considered an
-	  assignment statemen and subsequently expanded like one. Report from 
+	  assignment statemen and subsequently expanded like one. Report from
 	  Alexey Izbyshev <izbyshev@ispras.ru>
 
 				   7/30
@@ -8810,7 +8810,7 @@ lib/readline/signals.c
 				    ---
 jobs.c
 	- start_job: don't allow `fg' or `bg' in a command substitution to
-	  attempt to start a parent's jobs. Suggested by  OÄuz 
+	  attempt to start a parent's jobs. Suggested by  OÄuz
 	  <oguzismailuysal@gmail.com>
 
 builtins/set.def

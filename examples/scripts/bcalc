@@ -55,9 +55,9 @@ reset()
 	kill -1 $coproc_pid >/dev/null 2>&1	# make sure the coproc is dead
 	unset coproc_pid
 
-	init		
+	init
 }
-	
+
 # set a read timeout of a half second to avoid synchronization problems
 calc()
 {

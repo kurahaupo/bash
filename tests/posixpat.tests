@@ -204,7 +204,7 @@ case 'c' in
 esac
 
 case 'p' in
-[[.a.]-[.Z.]])		echo oops -- bad range ;; 
+[[.a.]-[.Z.]])		echo oops -- bad range ;;
 *)			echo ok 11;;
 esac
 

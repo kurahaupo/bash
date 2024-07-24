@@ -262,7 +262,7 @@ Sun Jul  7 02:37:05 1991  Brian Fox  (bfox at gnuwest.fsf.org)
 	* readline.c:(rl_parse_and_bind) Allow leading whitespace.
 	  Make sure TERMIO and TERMIOS systems treat CR and NL
 	  disctinctly.
-	
+
 Tue Jun 25 04:09:27 1991  Brian Fox  (bfox at gnuwest.fsf.org)
 
 	* readline.c: Rework parsing conditionals to pay attention to the
@@ -387,7 +387,7 @@ Tue Jul 11 06:25:01 1989  Brian Fox  (bfox at aurel)
 	  the standard meaning for expanding a tilde fails.  The function is
 	  called with the text sans tilde (as in "foo"), and returns a
 	  malloc()'ed string which is the expansion, or a NULL pointer if
-	  there is no expansion. 
+	  there is no expansion.
 
 	* readline.h - new file chardefs.h
 	  Separates things that only readline.c needs from the standard

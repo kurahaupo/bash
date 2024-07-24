@@ -26,14 +26,14 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Resent-From: bug-bash-request@prep.ai.mit.edu
 
-> I've had no luck making either bash-1.11 or bash-1.12 for 
+> I've had no luck making either bash-1.11 or bash-1.12 for
 > SCO Unix v 3.2.2 or 3.2.4...
-> 
+>
 > bash-1.12 says (specifically) that it's making for 3.2.2, but
 > still has problems.
-> 
+>
 > It locks up after a few commnds...
-> 
+>
 > I don't have GCC right now, so I did have to tell it that I don't
 > have 'alloca' by undefining it in machines.h - if that could be a problem.
 

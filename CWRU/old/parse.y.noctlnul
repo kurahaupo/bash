@@ -169,7 +169,7 @@ static REDIRECTEE redir;
 %type <command> function_def if_command elif_clause subshell
 %type <redirect> redirection redirection_list
 %type <element> simple_command_element
-%type <word_list> word_list pattern 
+%type <word_list> word_list pattern
 %type <pattern> pattern_list case_clause_sequence case_clause
 
 %start inputunit
@@ -213,7 +213,7 @@ inputunit:	simple_list '\n'
 			}
 	|	yacc_EOF
 			{
-			  /* Case of EOF seen by itself.  Do ignoreeof or 
+			  /* Case of EOF seen by itself.  Do ignoreeof or
 			     not. */
 			  global_command = (COMMAND *)NULL;
 			  handle_eof_input_unit ();
@@ -357,7 +357,7 @@ redirection:	'>' WORD
 			{
 			  redir.filename = $2;
 			  $$ = make_redirection (0, r_input_output, redir);
-			}			  
+			}
 	|	GREATER_BAR WORD
 			{
 			  redir.filename = $2;
@@ -383,12 +383,12 @@ redirection_list: redirection
 			  $$ = $1;
 			}
 	|	redirection_list redirection
-			{ 
+			{
 			  register REDIRECT *t;
 
 			  for (t = $1; t->next; t = t->next)
 			    ;
-			  t->next = $2; 
+			  t->next = $2;
 			  $$ = $1;
 			}
 	;
@@ -513,7 +513,7 @@ function_def:	WORD '(' ')' newline_list group_command
 subshell:	'(' compound_list ')'
 			{ $2->flags |= CMD_WANT_SUBSHELL; $$ = $2; }
 	;
-	
+
 if_command:	IF list THEN list FI
 			{ $$ = make_if_command ($2, $4, (COMMAND *)NULL); }
 	|	IF list THEN list ELSE list FI
@@ -901,7 +901,7 @@ yy_readline_unget (c)
   return (c);
 }
 
-void  
+void
 with_input_from_stdin ()
 {
   INPUT_STREAM location;
@@ -1120,7 +1120,7 @@ static int in_case_pattern_list = 0;
 static int expand_next_token;
 
 /*
- * Pushing and popping strings.  This works together with shell_getc to 
+ * Pushing and popping strings.  This works together with shell_getc to
  * implement alias expansion on a per-token basis.
  */
 
@@ -1572,7 +1572,7 @@ shell_getc (remove_quoted_newline)
 	  shell_input_line[shell_input_line_len + 1] = '\0';
 	}
     }
-  
+
   c = shell_input_line[shell_input_line_index];
 
   if (c)
@@ -1736,7 +1736,7 @@ int delimiter_depth = 0;
 
 /* How many slots are allocated to DELIMITERS. */
 static int delimiter_space = 0;
-  
+
 void
 gather_here_documents ()
 {
@@ -1891,7 +1891,7 @@ special_case_tokens (token)
       (token[0] == 'd' && token[1] == 'o' && !token[2]))
     return (DO);
 
-  /* Ditto for ESAC in the CASE case. 
+  /* Ditto for ESAC in the CASE case.
      Specifically, this handles "case word in esac", which is a legal
      construct, certainly because someone will pass an empty arg to the
      case construct, and we don't want it to barf.  Of course, we should
@@ -1964,7 +1964,7 @@ reset_parser ()
   token_to_read = '\n';
 }
 
-/* Read the next token.  Command can be READ (normal operation) or 
+/* Read the next token.  Command can be READ (normal operation) or
    RESET (to normalize state). */
 static int
 read_token (command)
@@ -2124,7 +2124,7 @@ read_token (command)
   /* Hack <&- (close stdin) case. */
   if (character == '-' && (last_read_token == LESS_AND || last_read_token == GREATER_AND))
     return (character);
-     
+
   /* Okay, if we got this far, we have to read a word.  Read one,
      and then check it against the known ones. */
   result = read_token_word (character);
@@ -2226,7 +2226,7 @@ read_token_word (character)
 
       /* Handle backslashes.  Quote lots of things when not inside of
 	 double-quotes, quote some things inside of double-quotes. */
-	   
+
       if (character == '\\' && (delimiter_depth == 0 || cd != '\''))
 	{
 	  peek_char = shell_getc (0);
@@ -2278,7 +2278,7 @@ read_token_word (character)
 		  embedded_quoted_string = 1 - embedded_quoted_string;
 		  goto got_character;
 		}
-		
+
 	      delimiter_depth--;
 	      goto got_character;
 	    }
@@ -2462,7 +2462,7 @@ got_token:
 
   token[token_index] = '\0';
 
-  /* EOF while reading a multi-char word construct generates an error. */	
+  /* EOF while reading a multi-char word construct generates an error. */
   if ((delimiter_depth || dollar_paren_level || dollar_bracket_level) &&
       character == EOF)
     {
@@ -2713,7 +2713,7 @@ print_prompt ()
 
 /* Return a string which will be printed as a prompt.  The string
    may contain special characters which are decoded as follows:
-   
+
 	\a	bell (ascii 07)
 	\e	escape (ascii 033)
 	\d	the date in Day Mon Date format
@@ -2771,7 +2771,7 @@ decode_prompt_string (string)
 		string--;	/* add_string increments string again. */
 		goto add_string;
 	    }
-	} 
+	}
       if (c == '\\')
 	{
 	  c = *string;
@@ -2813,7 +2813,7 @@ decode_prompt_string (string)
 
 	      c = 0;
 	      goto add_string;
-	  
+
 	    case 't':
 	    case 'd':
 	    case 'T':
@@ -2859,7 +2859,7 @@ decode_prompt_string (string)
 	      temp = base_pathname (shell_name);
 	      temp = savestring (temp);
 	      goto add_string;
-	
+
 	    case 'w':
 	    case 'W':
 	      {
@@ -2884,7 +2884,7 @@ decode_prompt_string (string)
 		  temp = savestring (polite_directory_format (t_string));
 		goto add_string;
 	      }
-      
+
 	    case 'u':
 	      temp = savestring (current_user.user_name);
 	      goto add_string;
@@ -3087,7 +3087,7 @@ report_syntax_error (message)
       else
 	{
 	  /* This file uses EOF_Reached only for error reporting
-	     when the shell is interactive.  Other mechanisms are 
+	     when the shell is interactive.  Other mechanisms are
 	     used to decide whether or not to exit. */
 	  EOF_Reached = 0;
 	  report_error (msg);
@@ -3106,7 +3106,7 @@ discard_parser_constructs (error_p)
      int error_p;
 {
 }
-   
+
 /* Do that silly `type "bye" to exit' stuff.  You know, "ignoreeof". */
 
 /* A flag denoting whether or not ignoreeof is set. */
@@ -3148,7 +3148,7 @@ handle_eof_input_unit ()
 	      prompt_again ();
 	      last_read_token = current_token = '\n';
 	      return;
-	    } 
+	    }
 	}
 
       /* In this case EOF should exit the shell.  Do it now. */

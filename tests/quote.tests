@@ -92,7 +92,7 @@ echo `recho 'foo\\
 bar'`
 
 echo `recho 'foo\
-bar'`  
+bar'`
 
 echo $(recho 'foo\
 bar')

@@ -224,7 +224,7 @@ gnored[] |
 texinfo.tex: doing @include of fdl.texi
 
  (./fdl.texi
-[24] [25] [26] [27] [28] [29] [30]) [31] ) 
+[24] [25] [26] [27] [28] [29] [30]) [31] )
 Here is how much of TeX's memory you used:
  3182 strings out of 497114
  31669 string characters out of 6207173

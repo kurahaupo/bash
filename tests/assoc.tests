@@ -223,7 +223,7 @@ echo ${assoc[@]}
 # weird syntax required to append to multiple existing array elements using
 # compound assignment syntax
 unset assoc
-declare -A assoc 
+declare -A assoc
 assoc=( [one]=one [two]=two [three]=three )
 assoc+=( [one]+=more [two]+=less )
 declare -p assoc

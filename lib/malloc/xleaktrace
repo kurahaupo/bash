@@ -32,7 +32,7 @@ $1 == "free"	{
 #				printf "freed: %s %d\n", $2, alloc[$2];
 			} else
 				printf "freeing unallocated pointer: %s\n", $2;
-				
+
 		}
 
 END {
@@ -43,5 +43,5 @@ END {
 		}
 	}
 }
-	
-	
+
+

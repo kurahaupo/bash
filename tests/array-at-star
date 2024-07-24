@@ -81,7 +81,7 @@ recho $3
 
 A=(bob 'tom dick harry' joe)
 set ${A[@]}
-recho $#                                              
+recho $#
 recho $1
 recho $2
 recho $3

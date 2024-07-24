@@ -114,7 +114,7 @@ autoload()
     do
 	case $opt in
 	    p) _autoload_dump printable; return;;
-	    u) shift $((OPTIND-1)); _autoload_remove "$@"; return;; 
+	    u) shift $((OPTIND-1)); _autoload_remove "$@"; return;;
 	    *) echo "autoload: usage: autoload [-pu] [function ...]" >&2; return;;
 	esac
     done

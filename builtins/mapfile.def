@@ -134,7 +134,7 @@ do_chop(char *line, unsigned char delim)
   int length;
 
   length = strlen (line);
-  if (length && (unsigned char)line[length-1] == delim) 
+  if (length && (unsigned char)line[length-1] == delim)
     line[length-1] = '\0';
 }
 
@@ -148,7 +148,7 @@ mapfile (int fd, long line_count_goal, long origin, long nskip, long callback_qu
   SHELL_VAR *entry;
   struct stat sb;
   int unbuffered_read;
-  
+
   line = NULL;
   line_length = 0;
   unbuffered_read = 0;
@@ -180,19 +180,19 @@ mapfile (int fd, long line_count_goal, long origin, long nskip, long callback_qu
       break;
 
   line = 0;
-  line_length = 0;    
+  line_length = 0;
 
   /* Reset the buffer for bash own stream */
-  for (array_index = origin, line_count = 1; 
+  for (array_index = origin, line_count = 1;
  	zgetline (fd, &line, &line_length, delim, unbuffered_read) != -1;
-	array_index++) 
+	array_index++)
     {
       /* Remove trailing newlines? */
       if (flags & MAPF_CHOP)
 	do_chop (line, delim);
-	  
+
       /* Has a callback been registered and if so is it time to call it? */
-      if (callback && line_count && (line_count % callback_quantum) == 0) 
+      if (callback && line_count && (line_count % callback_quantum) == 0)
 	{
 	  /* Reset the buffer for bash own stream. */
 	  if (unbuffered_read == 0)
@@ -207,7 +207,7 @@ mapfile (int fd, long line_count_goal, long origin, long nskip, long callback_qu
 
       /* Have we exceeded # of lines to store? */
       line_count++;
-      if (line_count_goal != 0 && line_count > line_count_goal) 
+      if (line_count_goal != 0 && line_count > line_count_goal)
 	break;
     }
 
@@ -257,7 +257,7 @@ mapfile_builtin (WORD_LIST *list)
 	      builtin_error ("%d: %s: %s", fd, _("invalid file descriptor"), strerror (errno));
 	      return (EXECUTION_FAILURE);
 	    }
-	  break;	  
+	  break;
 
 	case 'n':
 	  code = valid_number (list_optarg, &intval);
@@ -315,7 +315,7 @@ mapfile_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  if (list == 0) 
+  if (list == 0)
     array_name = DEFAULT_ARRAY_NAME;
   else if (list->word == 0 || list->word->word == 0)
     {
@@ -326,10 +326,10 @@ mapfile_builtin (WORD_LIST *list)
     {
       builtin_error (_("empty array variable name"));
       return (EX_USAGE);
-    } 
+    }
   else
     array_name = list->word->word;
-  
+
   if (valid_identifier (array_name) == 0)
     {
       sh_invalidid (array_name);

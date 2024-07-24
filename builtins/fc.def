@@ -378,7 +378,7 @@ fc_builtin (WORD_LIST *list)
 
   if (histbeg == HIST_INVALID || histend == HIST_INVALID)
     {
-      sh_erange ((char *)NULL, _("history specification")); 
+      sh_erange ((char *)NULL, _("history specification"));
       return (EXECUTION_FAILURE);
     }
   else if (histbeg == HIST_ERANGE || histend == HIST_ERANGE)
@@ -422,7 +422,7 @@ fc_builtin (WORD_LIST *list)
 
   if (histbeg == HIST_INVALID || histend == HIST_INVALID)
     {
-      sh_erange ((char *)NULL, _("history specification")); 
+      sh_erange ((char *)NULL, _("history specification"));
       return (EXECUTION_FAILURE);
     }
   else if (histbeg == HIST_ERANGE || histend == HIST_ERANGE)

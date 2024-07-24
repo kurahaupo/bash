@@ -1908,7 +1908,7 @@ omitted, the operator tests only for existence.
      $ echo ${string:7}
      7890abcdefgh
      $ echo ${string:7:0}
-     
+
      $ echo ${string:7:2}
      78
      $ echo ${string:7:-2}
@@ -1916,7 +1916,7 @@ omitted, the operator tests only for existence.
      $ echo ${string: -7}
      bcdefgh
      $ echo ${string: -7:0}
-     
+
      $ echo ${string: -7:2}
      bc
      $ echo ${string: -7:-2}
@@ -1925,7 +1925,7 @@ omitted, the operator tests only for existence.
      $ echo ${1:7}
      7890abcdefgh
      $ echo ${1:7:0}
-     
+
      $ echo ${1:7:2}
      78
      $ echo ${1:7:-2}
@@ -1933,7 +1933,7 @@ omitted, the operator tests only for existence.
      $ echo ${1: -7}
      bcdefgh
      $ echo ${1: -7:0}
-     
+
      $ echo ${1: -7:2}
      bc
      $ echo ${1: -7:-2}
@@ -1942,7 +1942,7 @@ omitted, the operator tests only for existence.
      $ echo ${array[0]:7}
      7890abcdefgh
      $ echo ${array[0]:7:0}
-     
+
      $ echo ${array[0]:7:2}
      78
      $ echo ${array[0]:7:-2}
@@ -1950,7 +1950,7 @@ omitted, the operator tests only for existence.
      $ echo ${array[0]: -7}
      bcdefgh
      $ echo ${array[0]: -7:0}
-     
+
      $ echo ${array[0]: -7:2}
      bc
      $ echo ${array[0]: -7:-2}
@@ -1970,7 +1970,7 @@ omitted, the operator tests only for existence.
      $ echo ${@:7}
      7 8 9 0 a b c d e f g h
      $ echo ${@:7:0}
-     
+
      $ echo ${@:7:2}
      7 8
      $ echo ${@:7:-2}
@@ -1982,7 +1982,7 @@ omitted, the operator tests only for existence.
      $ echo ${@:0:2}
      ./bash 1
      $ echo ${@: -7:0}
-     
+
 
      If PARAMETER is an indexed array name subscripted by ‘@’ or ‘*’,
      the result is the LENGTH members of the array beginning with
@@ -2007,7 +2007,7 @@ omitted, the operator tests only for existence.
      $ echo ${array[@]:0:2}
      0 1
      $ echo ${array[@]: -7:0}
-     
+
 
      Substring expansion applied to an associative array produces
      undefined results.

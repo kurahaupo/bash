@@ -374,7 +374,7 @@ string_extract_double_quoted (string, sindex, stripdq)
 	  continue;
 	}
 
-      /* c == '"' */	
+      /* c == '"' */
       if (stripdq)
 	{
 	  dquote ^= 1;
@@ -988,7 +988,7 @@ string_list_internal (list, sep)
       r += word_len;
     }
 
-  *r = '\0';    
+  *r = '\0';
   return (result);
 }
 
@@ -1181,7 +1181,7 @@ get_word_from_string (stringp, separators, endptr)
 
   if (!stringp || !*stringp || !**stringp)
     return ((char *)NULL);
-    
+
   s = *stringp;
 
   sh_style_split =
@@ -1207,7 +1207,7 @@ get_word_from_string (stringp, separators, endptr)
      Now extract a word, stopping at a separator, save a pointer to
      the first character after the word, then skip sequences of spc,
      tab, or nl as long as they are separators.
-     
+
      This obeys the field splitting rules in Posix.2. */
   sindex = 0;
   current_word = string_extract_verbatim (s, &sindex, separators);
@@ -1241,7 +1241,7 @@ strip_trailing_ifs_whitespace (string, separators, saw_escape)
      int saw_escape;
 {
   char *s;
-  
+
   s = string + STRLEN (string) - 1;
   while (s > string && ((spctabnl (*s) && issep (*s)) ||
 			(saw_escape && *s == CTLESC && spctabnl (s[1]))))
@@ -1274,7 +1274,7 @@ list_string_with_quotes (string)
 	  i++;
 	  if (s[i])
 	    i++;
-	} 
+	}
       else if (c == '\'')
         i = skip_single_quoted (s, ++i);
       else if (c == '"')
@@ -1321,7 +1321,7 @@ maybe_expand_string (string, quoted, func)
   WORD_LIST *list;
   int i, saw_quote;
   char *ret;
-     
+
   for (i = saw_quote = 0; string[i]; i++)
     {
       if (EXP_CHAR (string[i]))
@@ -1331,7 +1331,7 @@ maybe_expand_string (string, quoted, func)
     }
 
   if (string[i])
-    {	  
+    {
       list = (*func) (string, quoted);
       if (list)
 	{
@@ -1705,7 +1705,7 @@ expand_string_for_rhs (string, quoted, dollar_at_p, has_dollar_at)
   tresult = call_expand_word_internal (&td, quoted, dollar_at_p, has_dollar_at);
   return (tresult);
 }
-    
+
 /* Expand STRING just as if you were expanding a word.  This also returns
    a list of words.  Note that filename globbing is *NOT* done for word
    or string expansion, just when the shell is expanding a command.  This
@@ -2319,7 +2319,7 @@ process_substitute (string, open_for_read_in_child)
 #endif /* HAVE_DEV_FD */
 #if defined (JOB_CONTROL)
   pid_t old_pipeline_pgrp;
-#endif  
+#endif
 
   if (!string || !*string)
     return ((char *)NULL);
@@ -3149,7 +3149,7 @@ parameter_brace_expand_rhs (name, value, c, quoted, qdollaratp, hasdollarat)
       free (temp);
       temp = t;
     }
-    
+
   hasdol = 0;
   /* XXX was 0 not quoted */
   l = *temp ? expand_string_for_rhs (temp, quoted, &hasdol, (int *)NULL)
@@ -3170,7 +3170,7 @@ parameter_brace_expand_rhs (name, value, c, quoted, qdollaratp, hasdollarat)
     }
   else if ((quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES)) && hasdol)
     {
-      /* The brace expansion occurred between double quotes and there was 
+      /* The brace expansion occurred between double quotes and there was
 	 a $@ in TEMP.  It does not matter if the $@ is quoted, as long as
  	 it does not expand to anything.  In this case, we want to return
  	 a quoted empty string. */
@@ -3305,11 +3305,11 @@ verify_substring_values (value, substr, vtype, e1p, e2p)
      char *value, *substr;
      int vtype, *e1p, *e2p;
 {
-  char *t, *temp1; 
+  char *t, *temp1;
   int len;
 #if defined (ARRAY_VARS)
  ARRAY *a;
-#endif  
+#endif
 
   t = strchr (substr, ':');
   if (t)
@@ -3409,7 +3409,7 @@ get_var_and_type (varname, value, varp, valp)
 #if defined (ARRAY_VARS)
   SHELL_VAR *v;
 #endif
-  
+
   vtype = varname[0] == '@' && varname[1] == '\0';	/* VT_POSPARMS */
   *varp = (SHELL_VAR *)NULL;
 
@@ -3842,7 +3842,7 @@ parameter_brace_expand (string, indexp, quoted, quoted_dollar_atp, contains_doll
     value = (char *)NULL;
 
   *indexp = sindex;
-  
+
   /* If this is a substring spec, process it and add the result. */
   if (want_substring)
     {
@@ -3859,8 +3859,8 @@ parameter_brace_expand (string, indexp, quoted, quoted_dollar_atp, contains_doll
       FREE (value);
       FREE (temp);
       return (temp1);
-    }    	
-		    
+    }
+
   /* Do the right thing based on which character ended the variable name. */
   switch (c)
     {
@@ -4153,7 +4153,7 @@ expand_word_internal (word, quoted, contains_dollar_at, expanded_something)
 		    (temp, istring, &istring_index, &istring_size);
 		  temp = (char *)0;
 		}
-	      
+
 	      break;
 
 	      /* $# -- number of positional parameters. */
@@ -4202,7 +4202,7 @@ expand_word_internal (word, quoted, contains_dollar_at, expanded_something)
 		  temp = (char *)NULL;
 		}
 	      /* In the case of a quoted string, quote the entire arg-list.
-		 "$1 $2 $3". */		 
+		 "$1 $2 $3". */
 	      if ((quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES)) && temp)
 		{
 		  temp1 = temp;
@@ -5194,7 +5194,7 @@ expand_word_list_internal (list, do_vars)
 	  /* By convention, each time this error is returned,
 	     tlist->word->word has already been freed. */
 	  tlist->word->word = (char *)NULL;
-	  
+
 	  /* Dispose our copy of the original list. */
 	  dispose_words (orig_list);
 	  /* Dispose the  new list we're building. */
@@ -5505,7 +5505,7 @@ sv_hostfile (name)
    the history.  Otherwise, if there is NO value for this variable,
    unstifle the history.  If name is HISTFILESIZE, and its value is
    numeric, truncate the history file to hold no more than that many
-   lines. */   
+   lines. */
 void
 sv_histsize (name)
      char *name;

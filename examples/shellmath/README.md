@@ -40,10 +40,10 @@ Addition and multiplication are of arbitrary arity; try this on for size:
     _shellmath_getReturnValue   sixFactorial
     echo "6 factorial is $sixFactorial"
 ```
-Subtraction and division, OTOH, are exclusively binary operations. 
+Subtraction and division, OTOH, are exclusively binary operations.
 
 ## The demos
-For a gentle introduction to `shellmath` run the demo `slower_e_demo.sh` 
+For a gentle introduction to `shellmath` run the demo `slower_e_demo.sh`
 with a small whole-number argument, say 15:
 ```
 $ slower_e_demo.sh 15
@@ -51,13 +51,13 @@ e = 2.7182818284589936
 ```
 
 This script uses a few `shellmath` API calls to calculate *e*, the mathematical
-constant also known as [Euler's number](https://oeis.org/A001113). The argument 
+constant also known as [Euler's number](https://oeis.org/A001113). The argument
 *15* tells the script to evaluate the *15th-degree* Maclaurin polynomial for *e*.
 (That's the Taylor polynomial centered at 0.) Take a look inside the script to
 see how it uses the `shellmath` APIs.
 
 There is another demo script very much like this one but *different*, and the
-sensitive user can *feel* the difference. Try the following, but don't blink 
+sensitive user can *feel* the difference. Try the following, but don't blink
 or you'll miss it ;)
 ```
 $ faster_e_demo.sh 15
@@ -91,13 +91,13 @@ The comment header in `faster_e_demo.sh` explains the optimization and shows
 how to put this faster version to work for you.
 
 ## Runtime efficiency competitive with awk and bc
-The file `timingData.txt` captures the results of some timing experiments that compare 
+The file `timingData.txt` captures the results of some timing experiments that compare
 `shellmath` against the GNU versions of the calculators `awk` and `bc`. The experiments
 exercised each of the arithmetic operations and captured the results in a shell variable.
 The result summary below shows that `shellmath` is competitive with `awk` and runs faster
 than `bc` in these experiments. (One commenter noted that the differences in execution speed
-can be partially explained by the fact that `shellmath` and `awk` use finite precision 
-whereas `bc` uses arbitrary precision. Another factor in these measurements is the need to 
+can be partially explained by the fact that `shellmath` and `awk` use finite precision
+whereas `bc` uses arbitrary precision. Another factor in these measurements is the need to
 subshell 'awk' and 'bc' to capture their results, whereas 'shellmath' writes directly to
 the shell's global memory.)
 
@@ -110,8 +110,8 @@ Here are the run times of `shellmath` as a percentage of the `awk` and `bc` equi
    Division:          80.3%         43.2%
 ```
 
-Astute observers will note the experiments provide approximations to the sum, difference, 
-product, and quotient of *pi* and *e*. Unfortunately I did not gain insight as to which 
+Astute observers will note the experiments provide approximations to the sum, difference,
+product, and quotient of *pi* and *e*. Unfortunately I did not gain insight as to which
 of these values, if any, are
 [transcendental](https://en.wikipedia.org/wiki/Transcendental_number#Possible_transcendental_numbers).
 
@@ -126,15 +126,15 @@ for *other* languages and tools. Their widespread availability has diverted atte
 from the possibility of *implementing* decimal arithmetic in Bash and it's easy to assume
 that this ***cannot*** be done:
 
-+ From the indispensable _Bash FAQ_ (on _Greg's Wiki_): [How can I calculate with floating point numbers?](http://mywiki.wooledge.org/BashFAQ/022)  
++ From the indispensable _Bash FAQ_ (on _Greg's Wiki_): [How can I calculate with floating point numbers?](http://mywiki.wooledge.org/BashFAQ/022)
   *"For most operations... an external program must be used."*
-+ From Mendel Cooper's wonderful and encyclopedic _Advanced Bash Scripting Guide_:  
++ From Mendel Cooper's wonderful and encyclopedic _Advanced Bash Scripting Guide_:
   [Bash does not understand floating point arithmetic. Use bc instead.](https://tldp.org/LDP/abs/html/ops.html#NOFLOATINGPOINT)
-+ From a community discussion on Stack Overflow, _How do I use floating point division in bash?_  
++ From a community discussion on Stack Overflow, _How do I use floating point division in bash?_
   The user's [preferred answer](https://stackoverflow.com/questions/12722095/how-do-i-use-floating-point-division-in-bash#12722107)
   is a good example of _prevailing thought_ on this subject.
 
-Meanwhile, 
+Meanwhile,
 
 + Bash maintainer (BDFL?) Chet Ramey sounds a (brighter?) note in [The Bash Reference Guide, Section 6.5](https://tiswww.case.edu/php/chet/bash/bashref.html#Shell-Arithmetic)
   by emphasizing what the built-in arithmetic operators ***can*** do.
@@ -142,7 +142,7 @@ Meanwhile,
 But finally, a glimmer of hope:
 
 + A [diamond-in-the-rough](http://stackoverflow.com/a/24431665/3776858) buried elsewhere
-  on Stack Overflow.  
+  on Stack Overflow.
   This down-and-dirty milestone computes the decimal quotient of two integer arguments. At a casual
   glance, it seems to have drawn inspiration from the [Euclidean algorithm](https://mathworld.wolfram.com/EuclideanAlgorithm.html)
   for computing GCDs, an entirely different approach than `shellmath`'s.

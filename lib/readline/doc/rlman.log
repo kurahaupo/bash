@@ -295,7 +295,7 @@ texinfo.tex: doing @include of fdl.texi
 
  (./fdl.texi [65]
 [66] [67] [68] [69] [70] [71]) (Concept Index) [72]
-(Function and Variable Index) [73] [74] [75] [76] ) 
+(Function and Variable Index) [73] [74] [75] [76] )
 Here is how much of TeX's memory you used:
  3278 strings out of 497114
  33958 string characters out of 6207173

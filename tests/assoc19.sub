@@ -15,12 +15,12 @@
 
 HOME=/homes/cj
 
-declare -A aa=([key]=~/Desktop) 
+declare -A aa=([key]=~/Desktop)
 declare -p aa
 unset aa
 
 declare -A aa
-aa=([key]=~/Desktop) 
+aa=([key]=~/Desktop)
 declare -p aa
 unset aa
 
@@ -28,18 +28,18 @@ declare -A aa=([key]=~/Desktop [k2]=~/Library )
 declare -p aa
 unset aa
 
-declare -A aa=([~/key]=~/Desktop) 
+declare -A aa=([~/key]=~/Desktop)
 declare -p aa
 unset aa
 
 declare -A aa
-aa=([~/key]=~/Desktop) 
+aa=([~/key]=~/Desktop)
 aa[~/Documents]=~/Library
 declare -p aa
 unset aa
 
 declare -A aa
-aa=([~/key]=~/Desktop:~/Documents:~/Applications) 
+aa=([~/key]=~/Desktop:~/Documents:~/Applications)
 aa[~/Documents]=~/Library
 declare -p aa
 unset aa

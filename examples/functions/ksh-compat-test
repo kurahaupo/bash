@@ -30,7 +30,7 @@ function test()
                                                 builtin test "$n1" $2 "$n3"
                                                 return $?;;
                 *)      builtin test "$@" ;;
-                esac;;                                                          
+                esac;;
         *)      builtin test "$@" ;;
         esac
 }
@@ -45,7 +45,7 @@ function [()
                                                 builtin [ "$n1" $2 "$n3" ]
                                                 return $?;;
                 *)      builtin [ "$@" ;;
-                esac;;                                                          
+                esac;;
         *)      builtin [ "$@" ;;
         esac
 }

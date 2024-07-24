@@ -171,7 +171,7 @@ darwin*)
 		;;
 	esac
 
-	SHLIB_LIBS='-lncurses'	# see if -lcurses works on MacOS X 10.1 
+	SHLIB_LIBS='-lncurses'	# see if -lcurses works on MacOS X 10.1
 	;;
 
 openbsd*|netbsd*|mirbsd*)
@@ -311,7 +311,7 @@ hpux9*)
 #
 #	SHLIB_XLDFLAGS='+b $(libdir)'
 #	SHLIB_LIBSUFF='sl'
-#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'	
+#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
 
 	;;
 
@@ -343,7 +343,7 @@ hpux10*)
 #
 #	SHLIB_XLDFLAGS='+b $(libdir)'
 #	SHLIB_LIBSUFF='sl'
-#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'	
+#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
 
 	;;
 
@@ -371,7 +371,7 @@ hpux11*)
 #
 #	SHLIB_XLDFLAGS='-Wl,+b,$(libdir)'
 #	SHLIB_LIBSUFF='so'
-#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'	
+#	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
 #	SHLIB_LIBS='$(TERMCAP_LIB)'
 	;;
 

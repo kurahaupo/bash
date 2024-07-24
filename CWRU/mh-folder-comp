@@ -25,9 +25,9 @@ Gregory F. March <march@tudor.com> wrote:
 : different prefixes. Bash right now knows about '@', '~', and '$' (any
 : others?). It would be really helpful if one could define something
 : like:
-: 
+:
 : 	completion '+' "$HOME/Mail"
-: 
+:
 : in a config file someplace. Would this be easy? Is there a list of
 : TODO item that someone might want to add this to?
 
@@ -65,7 +65,7 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
   static char *command_word_completion_function ();
   static char *command_subst_completion_function ();
 + static char *mh_folder_completion_function ();
-  
+
   static void snarf_hosts_from_file (), add_host_name ();
   static void sort_hostname_list ();
 ***************
@@ -85,7 +85,7 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
     rl_instream = stdin;
     rl_outstream = stderr;
 !   rl_special_prefixes = "$@";
-  
+
     /* Allow conditional parsing of the ~/.inputrc file. */
     rl_readline_name = "Bash";
 --- 137,143 ----
@@ -93,7 +93,7 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
     rl_instream = stdin;
     rl_outstream = stderr;
 !   rl_special_prefixes = "$@+";
-  
+
     /* Allow conditional parsing of the ~/.inputrc file. */
     rl_readline_name = "Bash";
 ***************
@@ -101,13 +101,13 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 --- 196,207 ----
     rl_bind_key_in_map ('@', bash_possible_hostname_completions,
   		      emacs_ctlx_keymap);
-  
+
 +   rl_add_defun ("complete-mh-folder", bash_complete_mh_folder, META('+'));
 +   rl_add_defun ("possible-mh-folder-completions",
 + 		bash_possible_mh_folder_completions, -1);
 +   rl_bind_key_in_map ('+', bash_possible_mh_folder_completions,
 + 		      emacs_ctlx_keymap);
-+ 
++
     rl_add_defun ("complete-variable", bash_complete_variable, -1);
     rl_bind_key_in_map ('$', bash_complete_variable, emacs_meta_keymap);
     rl_add_defun ("possible-variable-completions",
@@ -116,14 +116,14 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 --- 665,677 ----
     if (!matches && *text == '@')
       matches = completion_matches (text, hostname_completion_function);
-  
+
 +   /* Another one.  Why not?  If the word starts in '+', then look for
 +      matching mh folders for completion first. */
 +   if (!matches && *text == '+')
 +     {
 +       matches = completion_matches (text, mh_folder_completion_function);
 +     }
-+ 
++
     /* And last, (but not least) if this word is in a command position, then
        complete over possible command names, including aliases, functions,
        and command names. */
@@ -132,7 +132,7 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 --- 1093,1185 ----
       return ((char *)NULL);
   }
-  
+
 + /* How about a completion function for mh folders? */
 + static char *
 + mh_folder_completion_function (text, state)
@@ -140,52 +140,52 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 +      char *text;
 + {
 +   extern int rl_filename_completion_desired;
-+ 
++
 +   extern char *get_mh_path ();
-+ 
++
 +   static char *mh_path = (char *)NULL;
 +   static int len;
 +   static int istate;
 +   static char *val;
 +   char *hint;
-+ 
++
 +   static char *mh_folder_hint = (char *)NULL;
-+ 
++
 +   /* If we don't have any state, make some. */
 +   if (!state)
 +     {
 +       val = (char *)NULL;
-+ 
++
 +       if (mh_path)
 + 	free (mh_path);
-+ 
++
 +       mh_path = get_mh_path ();
 +       if (!mh_path && !(hint[1] == '/' || hint[1] == '.'))
 + 	return ((char *)NULL);
-+ 
++
 +       len = strlen (mh_path);
 +     }
-+ 
++
 +   if (mh_folder_hint)
 +     free (mh_folder_hint);
-+ 
++
 +   hint = text;
 +   if (*hint == '+')
 +     hint++;
-+ 
++
 +   mh_folder_hint = (char *)xmalloc (2 + len + strlen (hint));
 +   if (*hint == '/' || *hint == '.') {
 +     len = -1;
 +     sprintf (mh_folder_hint, "%s", hint);
 +   } else
 +     sprintf (mh_folder_hint, "%s/%s", mh_path, hint);
-+ 
++
 +   istate = (val != (char *)NULL);
-+ 
++
 +  again:
 +   val = filename_completion_function (mh_folder_hint, istate);
 +   istate = 1;
-+ 
++
 +   if (!val)
 +     {
 +       return ((char *)NULL);
@@ -195,21 +195,21 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 +       char *ptr = val + len + 1, *temp;
 +       struct stat sb;
 +       int status = stat (val, &sb);
-+ 
++
 +       if (status != 0)
 + 	return ((char *)NULL);
-+ 
++
 +       if ((sb.st_mode & S_IFDIR) == S_IFDIR)
 + 	{
 + 	  temp = (char *)xmalloc (2 + strlen (ptr));
 + 	  *temp = '+';
 + 	  strcpy (temp + 1, ptr);
-+ 
++
 + 	  free (val);
 + 	  val = "";
-+ 
++
 + 	  rl_filename_completion_desired = 1;
-+ 
++
 + 	  return (temp);
 + 	}
 +       else
@@ -219,7 +219,7 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 +       goto again;
 +     }
 + }
-+ 
++
   /* History and alias expand the line. */
   static char *
   history_expand_line_internal (line)
@@ -230,21 +230,21 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
     bash_specific_completion
       (what_to_do, (Function *)username_completion_function);
 + }
-+ 
++
 + static void
 + bash_complete_mh_folder (ignore, ignore2)
 +      int ignore, ignore2;
 + {
 +   bash_complete_mh_folder_internal (TAB);
 + }
-+ 
++
 + static void
 + bash_possible_mh_folder_completions (ignore, ignore2)
 +      int ignore, ignore2;
 + {
 +   bash_complete_mh_folder_internal ('?');
 + }
-+ 
++
 + static void
 + bash_complete_mh_folder_internal (what_to_do)
 +      int what_to_do;
@@ -253,21 +253,21 @@ diff -rc bash-1.14.2/bashline.c bash-1.14.2.local/bashline.c
 +   CPPFunction *orig_attempt_func;
 +   char *orig_rl_completer_word_break_characters;
 +   extern char *rl_completer_word_break_characters;
-+ 
++
 +   orig_func = rl_completion_entry_function;
 +   orig_attempt_func = rl_attempted_completion_function;
 +   orig_rl_completer_word_break_characters = rl_completer_word_break_characters;
 +   rl_completion_entry_function = (Function *)mh_folder_completion_function;
 +   rl_attempted_completion_function = (CPPFunction *)NULL;
 +   rl_completer_word_break_characters = " \t\n\"\'";
-+ 
++
 +   rl_complete_internal (what_to_do);
-+ 
++
 +   rl_completion_entry_function = orig_func;
 +   rl_attempted_completion_function = orig_attempt_func;
 +   rl_completer_word_break_characters = orig_rl_completer_word_break_characters;
   }
-  
+
   static void
 Only in bash-1.14.2.local: bashline.c.orig
 diff -rc bash-1.14.2/lib/readline/complete.c bash-1.14.2.local/lib/readline/complete.c
@@ -279,7 +279,7 @@ diff -rc bash-1.14.2/lib/readline/complete.c bash-1.14.2.local/lib/readline/comp
   		{
   		  struct stat finfo;
 ! 		  char *filename = tilde_expand (matches[0]);
-  
+
 ! 		  if ((stat (filename, &finfo) == 0) && S_ISDIR (finfo.st_mode))
   		    {
 ! 		      if (rl_line_buffer[rl_point] != '/')
@@ -301,7 +301,7 @@ diff -rc bash-1.14.2/lib/readline/complete.c bash-1.14.2.local/lib/readline/comp
 ! 		  char *tilde_expand ();
 ! 		  char *plus_expand ();
 ! 		  char *filename = (char *) NULL;
-  
+
 ! 		  switch (*matches[0])
   		    {
 ! 		    case '+':
@@ -312,7 +312,7 @@ diff -rc bash-1.14.2/lib/readline/complete.c bash-1.14.2.local/lib/readline/comp
 ! 		      filename = tilde_expand (matches[0]);
 ! 		      break;
   		    }
-! 
+!
 ! 		  if (filename)
   		    {
 ! 		      if ((stat (filename, &finfo) == 0)
@@ -339,7 +339,7 @@ diff -rc bash-1.14.2/lib/readline/readline.c bash-1.14.2.local/lib/readline/read
 *** 23,28 ****
 --- 23,29 ----
   #define READLINE_LIBRARY
-  
+
   #include <stdio.h>
 + #include <string.h>
   #include <sys/types.h>
@@ -349,11 +349,11 @@ diff -rc bash-1.14.2/lib/readline/readline.c bash-1.14.2.local/lib/readline/read
 *** 3518,3523 ****
 --- 3519,3616 ----
   }
-  
+
   #endif /* TEST */
-+ 
++
 + #define cr_whitespace(c) ((c) == '\r' || (c) == '\n' || whitespace(c))
-+ 
++
 + char *
 + get_mh_path ()
 + {
@@ -363,21 +363,21 @@ diff -rc bash-1.14.2/lib/readline/readline.c bash-1.14.2.local/lib/readline/read
 +   char *bp;
 +   char *temp_home;
 +   char *temp_path;
-+ 
++
 +   temp_home = (char *)getenv ("HOME");
 +   if (!temp_home)
 +     return ((char *)NULL);
-+ 
++
 +   strcpy (profile, temp_home);
 +   strcat (profile, "/.mh_profile");
-+ 
++
 +   if (fp)
 +     fclose (fp);
-+ 
++
 +   fp = fopen (profile, "r");
 +   if (fp == (FILE *)NULL)
 +     return ((char *)NULL);
-+ 
++
 +   while (fgets (buf, 512, fp) != (char *)NULL)  /* XXX */
 +     {
 +       if ((bp = strstr (buf, "Path:")) != (char *)NULL)
@@ -385,30 +385,30 @@ diff -rc bash-1.14.2/lib/readline/readline.c bash-1.14.2.local/lib/readline/read
 + 	  bp += 5;
 + 	  while (whitespace (*bp))
 + 	    bp++;
-+ 
++
 + 	  if (*bp == '\0')
 + 	    return ((char *)NULL);
-+ 
++
 + 	  temp_path = (char *)xmalloc (3 + strlen (bp) + strlen (temp_home));
-+ 
++
 + 	  strcpy (temp_path, temp_home);
 + 	  strcat (temp_path, "/");
 + 	  strcat (temp_path, bp);
-+ 
++
 + 	  bp = temp_path;
-+ 
++
 + 	  while (!(cr_whitespace (*bp)))
 + 	    bp++;
-+ 
++
 + 	  *bp = '\0';
-+ 
++
 + 	  return temp_path;
 + 	}
 +     }
-+ 
++
 +   return ((char *)NULL);
 + }
-+ 
++
 + /* Expand FILENAME if it begins with a plus.  This always returns
 +    a new string. */
 + char *
@@ -416,34 +416,34 @@ diff -rc bash-1.14.2/lib/readline/readline.c bash-1.14.2.local/lib/readline/read
 +      char *filename;
 + {
 +   static char *dirname = (char *)NULL;
-+ 
++
 +   if (filename && *filename == '+')
 +     {
 +       char *mh_path = get_mh_path ();
-+ 
++
 +       if (filename[1] == '/' || filename[1] == '.')
 + 	{
 + 	  dirname = (char *)xmalloc (1 + strlen (filename));
-+ 
++
 + 	  strcpy(dirname, filename+1);
-+ 
++
 + 	  return dirname;
 + 	}
-+ 
++
 +       if (mh_path)
 + 	{
 + 	  dirname = (char *)xmalloc (1 + strlen (filename) + strlen (mh_path));
-+ 
++
 + 	  strcpy (dirname, mh_path);
 + 	  strcat (dirname, "/");
 + 	  strcat (dirname, filename+1);
-+ 
++
 + 	  return dirname;
 + 	}
 +     }
 +   return (char *)NULL;
 + }
-  
+
   
   /*
 

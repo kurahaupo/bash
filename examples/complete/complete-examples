@@ -76,7 +76,7 @@ _bash_def_completion ()
 	fi
 }
 
-# 
+#
 # Return 1 if $1 appears to contain a redirection operator.  Handles backslash
 # quoting (barely).
 #
@@ -138,7 +138,7 @@ complete -A shopt shopt
 complete -c type
 
 complete -a unalias
-complete -v unset 
+complete -v unset
 
 #
 # Job control builtins: fg, bg, disown, kill, wait
@@ -445,7 +445,7 @@ _make_targets ()
 	if [ -n "$2" ]; then gcmd='grep "^$2"' ; else gcmd=cat ; fi
 
 	# if we don't want to use *.mk, we can take out the cat and use
-	# test -f $makef and input redirection	
+	# test -f $makef and input redirection
 	COMPREPLY=( $(cat $makef 2>/dev/null | awk 'BEGIN {FS=":"} /^[^.# 	][^=]*:/ {print $1}' | tr -s ' ' '\012' | sort -u | eval $gcmd ) )
 }
 complete -F _make_targets -X '+($*|*.[cho])' make gmake pmake

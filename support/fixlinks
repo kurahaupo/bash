@@ -41,7 +41,7 @@ fi
 if [ $# -eq 0 ]; then
 	linkfile=$SRCDIR/support/SYMLINKS
 else
-	linkfile=$1	
+	linkfile=$1
 fi
 
 if [ ! -f "$linkfile" ]; then

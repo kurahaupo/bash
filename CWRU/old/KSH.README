@@ -6,7 +6,7 @@ compatibility.
 
 	"Each time this parameter is referenced, the number of seconds
 	 since shell invocation is returned.  If this parameter is assigned
-	 a value, then the value returned will be the value that was 
+	 a value, then the value returned will be the value that was
 	 assigned plus the number of seconds since the assignment."
 
 	Files changed:	variables.c
@@ -26,7 +26,7 @@ compatibility.
 
 3.  $RANDOM
 
-	"Each time this parameter is referenced, a random integer is 
+	"Each time this parameter is referenced, a random integer is
 	 generated.  The sequence of random numbers can be initialized
 	 by assigning a numeric value to RANDOM."
 
@@ -35,7 +35,7 @@ compatibility.
 
 4.  $REPLY
 
-	"This parameter is set by the `read' special command when no 
+	"This parameter is set by the `read' special command when no
 	 arguments are supplied."
 
 	Files changed:	builtins.c

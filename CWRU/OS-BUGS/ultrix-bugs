@@ -27,7 +27,7 @@ Not (gasp) Real Work!
 Works for me.
 
 > I have two new bugs for you in 1.06.
-> 
+>
 > - Typeahead is very weird.  Often, I will be in a state where a
 >   command is busy, and I type a new one.  The shell prompts and
 >   nothing happens; I have to type the line again.  Later, if I enter
@@ -58,7 +58,7 @@ I'll look at it today.
 
 This only happens under Ultrix, too.  It's another consequence of Dec's
 dup2 fuckup (I am *really*pissed*off* about it; it's caused me to waste a
-lot of time already).  File descriptor 1 is getting set to close-on-exec. 
+lot of time already).  File descriptor 1 is getting set to close-on-exec.
 I haven't decided whether to hack around it in the code or to just make
 Ultrix use the dup2 emulation in general.c.
 

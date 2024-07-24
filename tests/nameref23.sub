@@ -36,7 +36,7 @@ declare -ni b;		# this should maybe not be allowed, but it is for now
 declare -p a b
 
 b+=2;
-declare -p a b 
+declare -p a b
 
 unset a ; unset -n b
 

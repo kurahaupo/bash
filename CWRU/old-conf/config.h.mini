@@ -13,7 +13,7 @@
 	the `select' command
 	the `help' builtin
 */
-	
+
 /* Copyright (C) 1987,1991 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
@@ -143,7 +143,7 @@
 #define BREAK_COMPLAINS
 
 /* Define HELP_BUILTIN if you want the `help' shell builtin and the long
-   documentation strings compiled into the shell. */   
+   documentation strings compiled into the shell. */
 /* #define HELP_BUILTIN */
 
 /* Define RESTRICTED_SHELL if you want the generated shell to have the

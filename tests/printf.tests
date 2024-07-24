@@ -253,7 +253,7 @@ printf "%.*s" 0 foo
 printf '%.0b-%.0s\n' foo bar
 printf '(%*b)(%*s)\n' -4 foo -4 bar
 
-format='%'`printf '%0100384d' 0`'d\n' 
+format='%'`printf '%0100384d' 0`'d\n'
 printf $format 0
 
 # failures in all bash versions through bash-3.0 - undercounted characters

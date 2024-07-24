@@ -104,7 +104,7 @@ caller_builtin (WORD_LIST *list)
       printf("%s %s\n", lineno_s ? lineno_s : "NULL", source_s ? source_s : "NULL");
       return (EXECUTION_SUCCESS);
     }
-  
+
   if (funcname_a == 0 || array_empty (funcname_a))
     return (EXECUTION_FAILURE);
 

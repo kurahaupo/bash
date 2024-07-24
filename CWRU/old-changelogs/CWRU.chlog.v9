@@ -754,7 +754,7 @@ execute_cmd.c
 	- moved the code that checks command words for `/' down into
 	  execute_disk_command, and made it check only the first command
 	  word, like sh and ksh
-        - vfree() is no longer static, so other code that needs to add 
+        - vfree() is no longer static, so other code that needs to add
           unwind-protects that use free can use it
 
 trap.c
@@ -1562,7 +1562,7 @@ execute_cmd.c
 				     6/23
 				     ----
 execute_cmd.c
-	- fixed execute_subshell_builtin_or_function to exit with 
+	- fixed execute_subshell_builtin_or_function to exit with
 	  last_command_exit_value if a builtin longjmps to top_level
 	  with value EXITPROG, rather than with EXITPROG (3)
 
@@ -1974,7 +1974,7 @@ subst.c
 	- broke the code that quotes strings for the globbing functions
 	  into a separate function: quote_string_for_globbing (), so
 	  there are not two copies of it
-	
+
 execute_cmd.c
 	- rewrote execute_case_command so that quote_string_for_globbing
 	  is called for the patterns in a pattern list and reordered some
@@ -2607,7 +2607,7 @@ expr.c, general.c, hash.c, jobs.c, mailcheck.c, make_cmd.c, print_cmd.c,
 trap.c, variables.c, parse.y
         - make sure that string.h or strings.h is included before general.h
           (which is included by shell.h)
-        
+
 builtins/mkbuiltins.c
         - add extern declaration of strcpy if __STDC__ and strcpy not defined
         - include <string.h> or <strings.h> as needed
@@ -2735,7 +2735,7 @@ lib/readline/readline.c
 				   1/13
 				   ----
 machines.h
-	- added -I/usr/ucbinclude to SYSDEP_CFLAGS and a #define 
+	- added -I/usr/ucbinclude to SYSDEP_CFLAGS and a #define
 	  USE_GNU_TERMCAP for the ICL DRS6000 description
 
 support/bashbug.c
@@ -3249,13 +3249,13 @@ execute_cmd.c
 	- fixed a memory leak in execute_builtin_or_function by adding an
 	  unwind_protect to dispose of saved_undo_list
 	- anywhere do_redirections is called with INTERNAL==1 (which means
-	  we make redirection_undo_list), arrange to clean up 
+	  we make redirection_undo_list), arrange to clean up
 	  exec_redirection_undo_list
 
 print_cmd.c
 	- massive namespace cleanups -- made almost all functions static
 	- new function `colon' to be called in place of `cprintf(";")'
-	  to ensure that we don't print a `;' right after a `&' from 
+	  to ensure that we don't print a `;' right after a `&' from
 	  compound command printing functions (if, while, until, for)
 
 [put code out for FTP on 3/10]
@@ -3343,10 +3343,10 @@ mailcheck.c
 				   3/13
 				   ----
 bashline.c
-	- fixed memory leak in bash_symbolic_link_hook -- 
+	- fixed memory leak in bash_symbolic_link_hook --
 	  get_working_directory always returns newly-allocated memory
 	  that must be freed
-	- fixed memory leak in bash_symbolic_link_hook -- 
+	- fixed memory leak in bash_symbolic_link_hook --
 	  if `*dirname' is going to be replaced, the current contents
 	  have to be freed (if non-null)
 	- make bash_symbolic_link_hook call get_working_directory with
@@ -3372,7 +3372,7 @@ shell.c
 	  for getdtablesize returning -1 and default to 20 in that case
 
 jobs.c
-	- if getdtablesize returns something < 0, default to 20 
+	- if getdtablesize returns something < 0, default to 20
 	- check that getdtablesize() leaves `nds' set to something valid
 	  before trying to dup2 shell_tty to it
 
@@ -3864,7 +3864,7 @@ subst.c
 				    ---
 input.c
 	- make check_bash_input change the value of default_buffered_fd
-	  if it moves the input fd to a new fd as the result of a 
+	  if it moves the input fd to a new fd as the result of a
 	  redirection
 
 execute_cmd.c
@@ -4045,7 +4045,7 @@ execute_cmd.c
 	  execute_disk_command, since there's no reason to do it if we're
 	  already in a subshell and simply going to exit if the redirections
 	  fail
-	- set up the unwind-protect on saved_undo_list in 
+	- set up the unwind-protect on saved_undo_list in
 	  execute_builtin_or_function only if there are redirections saved
 	  in saved_undo_list
 	- only call do_redirections in execute_disk_command if there are
@@ -4511,7 +4511,7 @@ shell.c
 subst.c
 	- new function sv_strict_posix, sets value of posixly_correct
 	  depending on $POSIXLY_CORRECT
-	- if posixly_correct is set, don't do tilde expansion on 
+	- if posixly_correct is set, don't do tilde expansion on
 	  =~ in words that are not shell assignment statements
 
 execute_cmd.c, jobs.c

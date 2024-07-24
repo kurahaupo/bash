@@ -22,9 +22,9 @@
 #   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 bs=$'\b'
- 
+
 chars="|${bs} \\${bs} -${bs} /${bs}"
- 
+
 # Infinite loop for demo. purposes
 while :
 do

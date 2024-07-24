@@ -21,11 +21,11 @@ echo "${foo[@]}"
 
 unset foo
 declare -ia -g foo=(1 2 xx 3)
-echo "${foo[@]}" 
+echo "${foo[@]}"
 
 unset foo
 declare -ia -g foo='(1 2 xx 3)'
-echo "${foo[@]}" 
+echo "${foo[@]}"
 
 unset foo
 func()
@@ -34,7 +34,7 @@ func()
 }
 
 func
-echo "${foo[@]}" 
+echo "${foo[@]}"
 
 unset foo
 
@@ -46,7 +46,7 @@ unset foo
 
 unset arr
 declare -i -a arr=(1+1 2+2 3+3)
-declare -p arr 
+declare -p arr
 
 declare +i arr=(hello world)
 declare -p arr

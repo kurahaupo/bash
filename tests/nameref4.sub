@@ -22,7 +22,7 @@ ckval()
 		(( errors++ ))
 	fi
 }
-		
+
 ckref()
 {
 	typeset -n one=$1 two=$2

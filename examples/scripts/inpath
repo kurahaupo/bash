@@ -10,7 +10,7 @@ set `echo $PATH | sed 's/^:/.:/
 			s/::/:.:/g
 			s/:$/:./
 			s/:/ /g'`
-	
+
 while [ $# -ne 0 ] ; do
 	[ -f $1/$command ] && exit 0	# test -x not universal
 	shift

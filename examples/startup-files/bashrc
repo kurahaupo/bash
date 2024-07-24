@@ -4,7 +4,7 @@ case $- in
 esac
 
 # bogus
-if [ -f /unix ] ; then	
+if [ -f /unix ] ; then
 	alias ls='/bin/ls -CF'
 else
 	alias ls='/bin/ls -F'
@@ -58,8 +58,8 @@ term()
 	tset
 }
 
-xtitle () 
-{ 
+xtitle ()
+{
 	echo -n -e "\033]0;$*\007"
 }
 

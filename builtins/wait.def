@@ -136,8 +136,8 @@ wait_builtin (WORD_LIST *list)
 	  break;
 	case 'p':
 	  vname = list_optarg;
-	  vflags = list_optflags;	  
-	  break;	
+	  vflags = list_optflags;
+	  break;
 #endif
 	CASE_HELPOPT;
 	default:
@@ -222,7 +222,7 @@ wait_builtin (WORD_LIST *list)
 	    {
 	      if (vname)
 		builtin_bind_var_to_int (vname, pstat.pid, bindflags);
-	      WAIT_RETURN (status);	      
+	      WAIT_RETURN (status);
 	    }
 	}
 #endif
@@ -246,7 +246,7 @@ wait_builtin (WORD_LIST *list)
       WAIT_RETURN (status);
     }
 #endif
-      
+
   /* But wait without any arguments means to wait for all of the shell's
      currently active background processes. */
   if (list == 0)

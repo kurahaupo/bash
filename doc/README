@@ -30,7 +30,7 @@ All these files are identical as follows:
 
 jaws@jaws(264)$ cat alias.1
 .so man1/builtins.1
-jaws@jaws(265)$ 
+jaws@jaws(265)$
 
 Make sure you adjust the .so line in builtins.1 to reflect where you
 put it.

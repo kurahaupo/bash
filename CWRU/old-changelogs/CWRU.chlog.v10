@@ -279,7 +279,7 @@ documentation/bash.1
 documentation/texinfo.tex
 	- upgraded to the latest version from the texinfo-3.1 distribution
 
-documentation/features.texi, lib/readline/doc/rluser.texinfo, 
+documentation/features.texi, lib/readline/doc/rluser.texinfo,
 lib/readline/doc/hsuser.texinfo
 	- a major overhaul and expansion
 
@@ -548,7 +548,7 @@ builtins/hash.def
 	- include posixstat.h for definition of struct stat to use in
 	  function prototype declarations
 
-expr.c                                 
+expr.c
 	- renamed local function `assignment' to `expassign' to avoid
 	  clashing with the global `assignment' defined in variables.c
 
@@ -592,7 +592,7 @@ lib/readline/readline.c
 
 
 				  10/15
-				  ----- 
+				  -----
 
 lib/readline/display.c
 	- laid the groundwork for expanding special characters in
@@ -600,7 +600,7 @@ lib/readline/display.c
 	- rl_redisplay now has static local prompt variables:
 		local_prompt: expanded prompt string after last newline
 		local_prompt_prefix: expanded prompt string before last newline
-		visible_length: number of visible chars in local_prompt	
+		visible_length: number of visible chars in local_prompt
 		prefix_length: number of visible chars in local_prompt_prefix
 	  changed when rl_display_prompt changes
 
@@ -1619,7 +1619,7 @@ parse.y
 	- made execute_prompt_command global, not static
 
 input.h
-	- new declaration for execute_prompt_command 
+	- new declaration for execute_prompt_command
 
 jobs.c
 	- made give_terminal_to return -1 if tcsetpgrp fails
@@ -1956,7 +1956,7 @@ lib/readline/funmap.c
 	- tilde-expand is now a bindable command that calls rl_tilde_expand
 	- added emacs-editing-mode as a bindable command
 	- added more bindable vi-mode readline commands: vi-redo,
-	  vi-tilde-expand 
+	  vi-tilde-expand
 
 lib/readline/emacs_keymap.c
 	- M-C-H is now bound to backward-kill-word
@@ -2245,7 +2245,7 @@ builtins/set.def, builtins/test.def, builtins/fg_bg.def, builtins/type.def,
 builtins/enable.def, builtins/exec.def, builtins/declare.def,
 builtins/ulimit.def, builtins/cd.def, builtins/fc.def
 	- removed calls to strcmp, strncmp wherever possible, replacing
-	  them with incline 
+	  them with incline
 
 builtins/common.h
 	- new define ISOPTION, to test whether a string s is setting
@@ -2587,13 +2587,13 @@ machines.h
 				   3/30
 				   ----
 bashline.c
-	- fix to set_saved_history to simplify the code by using 
+	- fix to set_saved_history to simplify the code by using
 	  rl_get_previous_history
 
 				   3/31
 				   ----
 error.c
-	- change the bug report message 
+	- change the bug report message
 
 support/mksysdefs
 	- removed `WHOAMI' junk for setting the `maintainer'

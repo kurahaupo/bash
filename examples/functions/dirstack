@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #	@(#)	dirstack
 
 ###
@@ -41,9 +41,9 @@ unset tab
 tab[INDTOP]="$(pwd)"
 
 
-function cdir      
+function cdir
 {
-	local -i ind 
+	local -i ind
 	local    dir
 
 dir="${1:-$HOME}"
@@ -54,7 +54,7 @@ case "$dir" in
 		  ;;
  -+([[:digit:]]) )	# cd -n
 		ind=$INDTOP-${dir#-}
-		cd_by_number  $ind 
+		cd_by_number  $ind
 		  ;;
  *)			# cd ~   or    cd dir_name
 		cd_by_name  "$dir"
@@ -65,16 +65,16 @@ esac
 function  cd_by_number
 {
 	local -i  k=$1
-	local -i  j 
+	local -i  j
 	local     dirtmp
 
 if (( k < 0 ))
- then 		
+ then
    echo Impossible to change directory >&2
    return 1
  else
    dirtmp="${tab[k]}"
-   j=k+1 
+   j=k+1
    while (( j <= INDTOP ))
     do
       tab[j-1]="${tab[j]}"
@@ -93,12 +93,12 @@ function cd_by_name
 
 rep=$( \cd "$1" &>/dev/null && pwd)
 if [[ -z "$rep" ]]
-  then 
+  then
     echo cd : "$1" unknown >&2
     return 1
 fi
 
-	i=$INDTOP 
+	i=$INDTOP
 	while (( i >= 0 ))
   	 do
 	   if [[ "${tab[i]}" == "$rep" ]]
@@ -109,14 +109,14 @@ fi
 
 if (( i == INDTOP ))
   then	#  cd -0	=> we do nothing !
-     return 0	
+     return 0
   elif (( i == -1 ))
      then	# the directory isn't in the stack
        if (( INDTOP == INDMAX ))
          then 	# the stack is FULL
 		# the oldest directory is removed
             local -i  m
-       
+
           m=1
 	  while (( m <= INDMAX ))
 	   do
@@ -129,8 +129,8 @@ if (( i == INDTOP ))
       tab[INDTOP]="$rep"
       \cd "${tab[INDTOP]}"
       return 0
-  
-     else # the directory is already in the stack 
+
+     else # the directory is already in the stack
 	# $i gives its index
        cd_by_number $i
 fi
@@ -139,7 +139,7 @@ fi
 
 function d	# display the directory stack
 {
-	local -i  i 
+	local -i  i
 	local     rep
 
 i=0
@@ -151,7 +151,7 @@ while (( $i <= $INDTOP ))
     /*   )   :  ;;
     *    )  rep="~/$rep"
    esac
-   
+
    echo "$i )		$rep"
    i=i+1
  done

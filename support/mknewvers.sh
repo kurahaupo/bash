@@ -94,7 +94,7 @@ fi
 if [ -n "$minor_version" ]; then
 	$MINOR=`echo $minor_version | awk '{printf "%02d\n", $1+1}'`
 fi
-	
+
 if [ -n "$patch_level" ]; then
 	PATCH=`expr $PATCH + 1`
 fi
