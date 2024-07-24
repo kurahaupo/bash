@@ -25,17 +25,17 @@ bar"
 echo "foo
 bar"
 echo "foo\
-bar" 
+bar"
 
-echo "Backslash Single Quote"
+echo "Backtick Single Quote"
 echo `echo 'foo
-bar'`   
-echo `echo 'foo  
-bar'`   
+bar'`
+echo `echo 'foo  ''
+bar'`
 echo `echo 'foo\
-bar'`  
+bar'`
 
-echo "Backslash Double Quote"
+echo "Backtick Double Quote"
 echo `echo "foo
 bar"`
 echo `echo "foo
@@ -43,7 +43,7 @@ bar"`
 echo `echo "foo\
 bar"`
 
-echo "Double Quote Backslash Single Quote"
+echo "Double Quote Backtick Single Quote"
 echo "`echo 'foo
 bar'`"
 echo "`echo 'foo

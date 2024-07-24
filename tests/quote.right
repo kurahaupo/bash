@@ -11,15 +11,15 @@ bar
 foo
 bar
 foobar
-Backslash Single Quote
+Backtick Single Quote
 foo bar
 foo bar
 foobar
-Backslash Double Quote
+Backtick Double Quote
 foo bar
 foo bar
 foobar
-Double Quote Backslash Single Quote
+Double Quote Backtick Single Quote
 foo
 bar
 foo
