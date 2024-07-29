@@ -165,7 +165,7 @@ extern void check_read_timeout (void);
 extern int minus_o_option_value (char *);
 extern void list_minus_o_opts (int, int);
 extern char **get_minus_o_opts (void);
-extern int set_minus_o_option (int, char *);
+extern int set_minus_o_option (char, char const *);
 
 extern void set_shellopts (void);
 extern void parse_shellopts (char *);
@@ -183,7 +183,7 @@ extern char **get_shopt_options (void);
 extern int shopt_setopt (char *, int);
 extern int shopt_listopt (char *, int);
 
-extern int set_login_shell (char *, int);
+extern int set_login_shell (int);
 
 extern void set_bashopts (void);
 extern void parse_bashopts (char *);

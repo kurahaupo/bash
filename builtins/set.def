@@ -52,6 +52,44 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+typedef int option_value_t;
+
+#define OPTION_INVALID_VALUE ((option_value_t)-1)
+
+typedef enum optset_status_e {
+  OptSet_OK        = EXECUTION_SUCCESS,
+  OptSet_Unchanged = EXECUTION_SUCCESS,
+  OptSet_Ignored   = EXECUTION_SUCCESS,
+  OptSet_NotFound  = EX_BADUSAGE,
+  OptSet_ReadOnly  = EX_BADUSAGE,
+  OptSet_BadValue  = EX_BADASSIGN,
+  OptSet_Forbidden = EX_BADASSIGN,
+} optset_status_t;
+
+struct option_def_s;  /* forward ref */
+
+typedef optset_status_t opt_set_func_t (struct option_def_s const *option_def,
+					_Bool set_vs_shopt,
+					option_value_t new_value);
+typedef option_value_t opt_get_func_t (struct option_def_s const *option_def,
+				       _Bool set_vs_shopt);
+
+struct option_def_s {
+  char *name;
+  option_value_t *store;
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+  int   reference_value;
+  char  letter;
+  _Bool hide_set_o:1,
+	hide_shopt:1,
+	hide_when_unset:1,
+	skip_bashopts:1,
+	readonly:1;
+};
+
+opt_set_func_t forbid_setting;
+
 $BUILTIN set
 $FUNCTION set_builtin
 $SHORT_DOC set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
@@ -61,7 +99,7 @@ Change the value of shell attributes and positional parameters, or
 display the names and values of shell variables.
 
 Options:
-  -a  Mark variables which are modified or created for export.
+  -a  Mark for export variables which are subsequently modified or created.
   -b  Notify of job termination immediately.
   -e  Exit immediately if a command exits with a non-zero status.
   -f  Disable file name generation (globbing).
@@ -71,6 +109,9 @@ Options:
   -m  Job control is enabled.
   -n  Read commands but do not execute them.
   -o option-name
+      Same as shopt -s option-name
+  +o option-name
+      Same as shopt -u option-name
       Set the variable corresponding to option-name:
           allexport    same as -a
           braceexpand  same as -B
@@ -147,7 +188,8 @@ If -o is supplied with no option-name, set prints the current shell
 option settings. If +o is supplied with no option-name, set prints a
 series of set commands to recreate the current option settings.
 
-Using + rather than - causes these flags to be turned off.  The
+Using + rather than - causes these flags to be turned off (so that
+‘set +o optionname’ is equivalent to ‘shopt -u optionname’).  The
 flags can also be used upon invocation of the shell.  The current
 set of flags may be found in $-.  The remaining n ARGs are positional
 parameters and are assigned, in order, to $1, $2, .. $n.  If no
@@ -157,19 +199,16 @@ Exit Status:
 Returns success unless an invalid option is given.
 $END
 
-typedef int setopt_set_func_t (int, char *);
-typedef int setopt_get_func_t (char *);
-
-static int set_ignoreeof (int, char *);
-static int set_posix_mode (int, char *);
+static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_posix_mode;
 
 #if defined (READLINE)
-static int set_edit_mode (int, char *);
-static int get_edit_mode (char *);
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
 #endif
 
 #if defined (HISTORY)
-static int bash_set_history (int, char *);
+static opt_set_func_t bash_set_history;
 #endif
 
 static const char * const on = "on";
@@ -177,102 +216,146 @@ static const char * const off = "off";
 
 static int previous_option_value;
 
+#if 0
+extern int
+    mark_modified_vars,
+#if defined (JOB_CONTROL)
+    asynchronous_notification,
+#endif /* JOB_CONTROL */
+    errexit_flag,
+    disallow_filename_globbing,
+    hashing_enabled,
+    forced_interactive,
+    place_keywords_in_env,
+#if defined (JOB_CONTROL)
+    jobs_m_flag,
+#endif /* JOB_CONTROL */
+    read_but_dont_execute,
+    privileged_mode,
+#if defined (RESTRICTED_SHELL)
+    restricted,
+#endif /* RESTRICTED_SHELL */
+    just_one_command,
+    unbound_vars_is_error,
+    verbose_flag,
+    echo_command_at_execute,	/* New flags that control non-standard things. */
+#if 0
+    lexical_scoping,
+#endif
+#if defined (BRACE_EXPANSION)
+    brace_expansion,
+#endif
+    noclobber,
+    error_trace_mode,
+#if defined (BANG_HISTORY)
+    histexp_flag,
+#endif /* BANG_HISTORY */
+    no_symbolic_links,
+    function_trace_mode;
+#endif
+
 /* A struct used to match long options for set -o to the corresponding
    option letter or internal variable.  The functions can be called to
    dynamically generate values.  If you add a new variable name here
    that doesn't have a corresponding single-character option letter, make
    sure to set the value appropriately in reset_shell_options. */
-const struct {
-  char *name;
-  int letter;
-  int *variable;
-  setopt_set_func_t *set_func;
-  setopt_get_func_t *get_func;
-} o_options[] = {
-  { "allexport",  'a', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+static const struct option_def_s o_options[] = {
+  { "allexport",			.letter = 'a',	.hide_shopt = 1,	.store = &mark_modified_vars },
 #if defined (BRACE_EXPANSION)
-  { "braceexpand",'B', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "braceexpand",			.letter = 'B',	.hide_shopt = 1,	.store = &brace_expansion },
 #endif
 #if defined (READLINE)
-  { "emacs",     '\0', (int *)NULL, set_edit_mode, get_edit_mode },
+  { "emacs",						.hide_shopt = 1,	.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = 1 },
 #endif
-  { "errexit",	  'e', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "errtrace",	  'E', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "functrace",  'T', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "hashall",    'h', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "errexit",				.letter = 'e',	.hide_shopt = 1,	.store = &errexit_flag },
+  { "errtrace",				.letter = 'E',	.hide_shopt = 1,	.store = &error_trace_mode },
+  { "force-interactive",		.letter = 'i',	.hide_shopt = 1,	.hide_set_o = 1,	.store = &forced_interactive,	.set_func = forbid_setting },
+  { "functrace",			.letter = 'T',	.hide_shopt = 1,	.store = &function_trace_mode },
+  { "hashall",				.letter = 'h',	.hide_shopt = 1,	.store = &hashing_enabled },
 #if defined (BANG_HISTORY)
-  { "histexpand", 'H', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "histexpand",			.letter = 'H',	.hide_shopt = 1,	.store = &histexp_flag },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
-  { "history",   '\0', &enable_history_list, bash_set_history, (setopt_get_func_t *)NULL },
+  { "history",						.hide_shopt = 1,	.store = &enable_history_list,	.set_func = bash_set_history },
 #endif
-  { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (setopt_get_func_t *)NULL },
-  { "interactive-comments", '\0', &interactive_comments, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
-  { "keyword",    'k', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "ignoreeof",					.hide_shopt = 1,	.store = &ignoreeof,	.set_func = set_ignoreeof },
+  { "interactive-comments",				.hide_shopt = 1,	.store = &interactive_comments },
+  { "keyword",				.letter = 'k',	.hide_shopt = 1,	.store = &place_keywords_in_env },
 #if defined (JOB_CONTROL)
-  { "monitor",	  'm', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "monitor",				.letter = 'm',	.hide_shopt = 1,	.store = &jobs_m_flag },
 #endif
-  { "noclobber",  'C', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "noexec",	  'n', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "noglob",	  'f', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "noclobber",			.letter = 'C',	.hide_shopt = 1,	.store = &noclobber },
+  { "noexec",				.letter = 'n',	.hide_shopt = 1,	.store = &read_but_dont_execute },
+  { "noglob",				.letter = 'f',	.hide_shopt = 1,	.store = &disallow_filename_globbing },
 #if defined (HISTORY)
-  { "nolog",     '\0', &dont_save_function_defs, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+  { "nolog",						.hide_shopt = 1,	.store = &dont_save_function_defs },
 #endif
 #if defined (JOB_CONTROL)
-  { "notify",	  'b', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "notify",				.letter = 'b',	.hide_shopt = 1,	.store = &asynchronous_notification },
 #endif /* JOB_CONTROL */
-  { "nounset",	  'u', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "onecmd",	  't', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
-  { "physical",   'P', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "pipefail",  '\0', &pipefail_opt, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "posix",     '\0', &posixly_correct, set_posix_mode, (setopt_get_func_t *)NULL },
-  { "privileged", 'p', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "verbose",	  'v', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "nounset",				.letter = 'u',	.hide_shopt = 1,	.store = &unbound_vars_is_error },
+  { "onecmd",				.letter = 't',	.hide_shopt = 1,	.store = &just_one_command },
+  { "physical",				.letter = 'P',	.hide_shopt = 1,	.store = &no_symbolic_links },
+  { "pipefail",						.hide_shopt = 1,	.store = &pipefail_opt },
+  { "posix",						.hide_shopt = 1,	.store = &posixly_correct,	.set_func = set_posix_mode },
+  { "privileged",			.letter = 'p',	.hide_shopt = 1,	.store = &privileged_mode },
+#if defined (RESTRICTED_SHELL)
+  { "restricted",			.letter = 'r',	.hide_shopt = 1,	.hide_set_o = 1,	.store = &restricted,	.set_func = forbid_setting },
+#endif /* RESTRICTED_SHELL */
+  { "verbose",				.letter = 'v',	.hide_shopt = 1,	.store = &verbose_flag },
 #if defined (READLINE)
-  { "vi",        '\0', (int *)NULL, set_edit_mode, get_edit_mode },
+  { "vi",						.hide_shopt = 1,	.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = 0 },
 #endif
-  { "xtrace",	  'x', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  {(char *)NULL, 0 , (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+  { "xtrace",				.letter = 'x',	.hide_shopt = 1,	.store = &echo_command_at_execute },
+  {0}
 };
 
 #define N_O_OPTIONS	(sizeof (o_options) / sizeof (o_options[0]))
 
-#define GET_BINARY_O_OPTION_VALUE(i, name) \
-  ((o_options[i].get_func) ? (*o_options[i].get_func) (name) \
-			   : (*o_options[i].variable))
-
-#define SET_BINARY_O_OPTION_VALUE(i, onoff, name) \
-  ((o_options[i].set_func) ? (*o_options[i].set_func) (onoff, name) \
-			   : (*o_options[i].variable = (onoff == FLAG_ON)))
-
-static int
-find_minus_o_option (char *name)
-{
-  register int i;
-
-  for (i = 0; o_options[i].name; i++)
-    if (STREQ (name, o_options[i].name))
-      return i;
+static inline int
+get_option_value(struct option_def_s const *d, _Bool set_o_mode) {
+  if (!d)
+    return -1;
+  if (d->get_func)
+    return d->get_func(d, set_o_mode);
+  if (d->store)
+    return *d->store;
   return -1;
+}
+
+static inline optset_status_t
+set_option_value(struct option_def_s const *d, _Bool set_o_mode, option_value_t new_value) {
+  if (!d)
+    return EXECUTION_FAILURE;
+  if (d->set_func)
+    return d->set_func(d, set_o_mode, new_value);
+  if (d->store)
+    *d->store = new_value;
+  return EXECUTION_SUCCESS;
+}
+
+/* This is a clone of find_shopt */
+static struct option_def_s const *
+find_option (char const *name)
+{
+  struct option_def_s const *d;
+
+  for (d = o_options; d->name; d++)
+    if (STREQ (name, d->name))
+      return d;
+  return NULL;
 }
 
 int
 minus_o_option_value (char *name)
 {
   register int	i;
-  int *on_or_off;
 
-  i = find_minus_o_option (name);
-  if (i < 0)
-    return (-1);
+  struct option_def_s const *d = find_option (name);
+  if (!d)
+    return -1;
 
-  if (o_options[i].letter)
-    {
-      on_or_off = find_flag (o_options[i].letter);
-      return ((on_or_off == FLAG_UNKNOWN) ? -1 : *on_or_off);
-    }
-  else
-    return (GET_BINARY_O_OPTION_VALUE (i, name));
+  return get_option_value (d, true);
 }
 
 #define MINUS_O_FORMAT "%-15s\t%s\n"
@@ -287,28 +370,14 @@ print_minus_o_option (char *name, int value, int pflag)
 }
 
 void
-list_minus_o_opts (int mode, int reusable)
+list_minus_o_opts (option_value_t mode, int reusable)
 {
-  register int	i;
-  int *on_or_off, value;
-
-  for (i = 0; o_options[i].name; i++)
+  struct option_def_s const *d;
+  for (d = o_options; d->name; d++)
     {
-      if (o_options[i].letter)
-	{
-	  value = 0;
-	  on_or_off = find_flag (o_options[i].letter);
-	  if (on_or_off == FLAG_UNKNOWN)
-	    on_or_off = &value;
-	  if (mode == -1 || mode == *on_or_off)
-	    print_minus_o_option (o_options[i].name, *on_or_off, reusable);
-	}
-      else
-	{
-	  value = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-	  if (mode == -1 || mode == value)
-	    print_minus_o_option (o_options[i].name, value, reusable);
-	}
+      option_value_t value = get_option_value (d, true);
+      if (mode == OPTION_INVALID_VALUE || mode == value)
+	print_minus_o_option (d->name, value, reusable);
     }
 }
 
@@ -329,64 +398,49 @@ char *
 get_current_options (void)
 {
   char *temp;
-  int i;
-  size_t posixopts;
+  size_t i, num_posixopts;
 
-  posixopts = num_posix_options ();	/* shopts modified by posix mode */
+  num_posixopts = num_posix_options ();	/* shopts modified by posix mode */
   /* Make the buffer big enough to hold the set -o options and the shopt
      options modified by posix mode. */
-  temp = (char *)xmalloc (1 + N_O_OPTIONS + posixopts);
+  temp = (char *)xmalloc (1 + N_O_OPTIONS + num_posixopts);
   for (i = 0; o_options[i].name; i++)
     {
-      if (o_options[i].letter)
-	temp[i] = *(find_flag (o_options[i].letter));
-      else
-	temp[i] = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
+      struct option_def_s const *d = &o_options[i];
+      temp[i] = bool_to_flag (get_option_value (d, true));
     }
 
   /* Add the shell options that are modified by posix mode to the end of the
      bitmap. They will be handled in set_current_options() */
   get_posix_options (temp+i);
-  temp[i+posixopts] = '\0';
+  temp[i+num_posixopts] = '\0';
   return (temp);
 }
 
 void
 set_current_options (const char *bitmap)
 {
-  int i, v, cv, *on_or_off;
-
   if (bitmap == 0)
     return;
 
-  for (i = 0; o_options[i].name; i++)
+  struct option_def_s const *d;
+
+  for (d = o_options; d->name; d++)
     {
-      v = bitmap[i] ? FLAG_ON : FLAG_OFF;
-      if (o_options[i].letter)
-	{
-	  /* We should not get FLAG_UNKNOWN here */
-	  on_or_off = find_flag (o_options[i].letter);
-	  cv = *on_or_off ? FLAG_ON : FLAG_OFF;
-	  if (v != cv)
-	    change_flag (o_options[i].letter, v);
-	}
-      else
-	{
-	  cv = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-	  cv = cv ? FLAG_ON : FLAG_OFF;
-	  if (v != cv)
-	    SET_BINARY_O_OPTION_VALUE (i, v, o_options[i].name);
-	}
+      option_value_t new_value = bitmap[d-o_options];
+      option_value_t curr_value = get_option_value (d, true);
+      if (new_value != curr_value)
+	set_option_value (d, true, new_value);	/* ignore error status */
     }
 
   /* Now reset the variables changed by posix mode */
-  set_posix_options (bitmap+i);
+  set_posix_options (bitmap+(d-o_options));
 }
 
-static int
-set_ignoreeof (int on_or_off, char *option_name)
+static optset_status_t
+set_ignoreeof (struct option_def_s const *option_def, _Bool set_vs_shopt, option_value_t mode)
 {
-  ignoreeof = on_or_off == FLAG_ON;
+  ignoreeof = mode;
   unbind_variable_noref ("ignoreeof");
   if (ignoreeof)
     bind_variable ("IGNOREEOF", "10", 0);
@@ -396,15 +450,14 @@ set_ignoreeof (int on_or_off, char *option_name)
   return 0;
 }
 
-static int
-set_posix_mode (int on_or_off, char *option_name)
+static optset_status_t
+set_posix_mode (struct option_def_s const *option_def, _Bool set_vs_shopt, option_value_t mode)
 {
   /* short-circuit on no-op */
-  if ((on_or_off == FLAG_ON && posixly_correct) ||
-      (on_or_off == FLAG_OFF && posixly_correct == 0))
+  if (!mode == !posixly_correct)
     return 0;
 
-  posixly_correct = on_or_off == FLAG_ON;
+  posixly_correct = mode;
   if (posixly_correct == 0)
     unbind_variable_noref ("POSIXLY_CORRECT");
   else
@@ -414,13 +467,13 @@ set_posix_mode (int on_or_off, char *option_name)
 }
 
 #if defined (READLINE)
-/* Magic.  This code `knows' how readline handles rl_editing_mode. */
-static int
-set_edit_mode (int on_or_off, char *option_name)
+/* Magic.  This code "knows" how readline handles rl_editing_mode. */
+static optset_status_t
+set_edit_mode (struct option_def_s const *option_def, _Bool set_vs_shopt, option_value_t mode)
 {
-  int isemacs;
+  char *option_name = option_def->name;
 
-  if (on_or_off == FLAG_ON)
+  if (mode)
     {
       rl_variable_bind ("editing-mode", option_name);
 
@@ -430,8 +483,7 @@ set_edit_mode (int on_or_off, char *option_name)
     }
   else
     {
-      isemacs = rl_editing_mode == 1;
-      if ((isemacs && *option_name == 'e') || (!isemacs && *option_name == 'v'))
+      if ((rl_editing_mode == 1) == option_def->reference_value)
 	{
 	  if (interactive && command_execution_string == 0)
 	    with_input_from_stream (stdin, "stdin");
@@ -442,54 +494,50 @@ set_edit_mode (int on_or_off, char *option_name)
 }
 
 static int
-get_edit_mode (char *name)
+get_edit_mode (struct option_def_s const *option_def, _Bool set_vs_shopt)
 {
-  return (*name == 'e' ? no_line_editing == 0 && rl_editing_mode == 1
-		       : no_line_editing == 0 && rl_editing_mode == 0);
+  return no_line_editing == 0 && rl_editing_mode == option_def->reference_value;
 }
 #endif /* READLINE */
 
 #if defined (HISTORY)
-static int
-bash_set_history (int on_or_off, char *option_name)
+static optset_status_t
+bash_set_history (struct option_def_s const *option_def, _Bool set_vs_shopt, option_value_t mode)
 {
-  if (on_or_off == FLAG_ON)
+  enable_history_list = mode;
+  if (mode)
     {
-      enable_history_list = 1;
       bash_history_enable ();
       if (history_lines_this_session == 0)
 	load_history ();
     }
   else
     {
-      enable_history_list = 0;
       bash_history_disable ();
     }
-  return (1 - enable_history_list);
+  return 1 - enable_history_list;
 }
 #endif
 
-int
-set_minus_o_option (int on_or_off, char *option_name)
+static int
+set_o_option (char const *option_name, _Bool set_vs_shopt, option_value_t mode)
 {
-  register int i;
-
-  i = find_minus_o_option (option_name);
-  if (i < 0)
+  struct option_def_s const *d = find_option (option_name);
+  if (!d)
     {
       sh_invalidoptname (option_name);
       return (EX_USAGE);
     }
 
-  if (o_options[i].letter == 0)
+  if (d->letter == 0)
     {
-      previous_option_value = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-      SET_BINARY_O_OPTION_VALUE (i, on_or_off, option_name);
-      return (EXECUTION_SUCCESS);
+      previous_option_value = get_option_value (d, true);
+      int status = set_option_value (d, true, mode);
+      return status;
     }
   else
     {
-      if ((previous_option_value = change_flag (o_options[i].letter, on_or_off)) == FLAG_ERROR)
+      if ((previous_option_value = change_flag (d->letter, bool_to_flag(mode))) == FLAG_ERROR)
 	{
 	  sh_invalidoptname (option_name);
 	  return (EXECUTION_FAILURE);
@@ -497,6 +545,15 @@ set_minus_o_option (int on_or_off, char *option_name)
       else
 	return (EXECUTION_SUCCESS);
     }
+}
+
+/*
+ * set_minus_o_option() is called from parse_shell_options() in shell.c when
+ * ‘-o’ is among the command line options for Bash itself
+ */
+int set_minus_o_option (char on_or_off, char const *option_name)
+{
+  return set_o_option(option_name, true, !flag_to_bool(on_or_off));
 }
 
 static void
@@ -512,7 +569,7 @@ print_all_shell_variables (void)
     }
 
   /* POSIX.2 does not allow function names and definitions to be output when
-     `set' is invoked without options (PASC Interp #202). */
+     ‘set’ is invoked without options (PASC Interp #202). */
   if (posixly_correct == 0)
     {
       vars = all_shell_functions ();
@@ -527,52 +584,42 @@ print_all_shell_variables (void)
 void
 set_shellopts (void)
 {
-  char *value;
-  char tflag[N_O_OPTIONS];
-  int i, *ip, exported;
-  size_t vsize, vptr;
-  SHELL_VAR *v;
+  char tflag[N_O_OPTIONS] = {0};
+  struct option_def_s const *d;
+  size_t v_offset;
 
-  for (vsize = i = 0; o_options[i].name; i++)
+  for (d = o_options, v_offset = 0; d->name; d++)
     {
-      tflag[i] = 0;
-      if (o_options[i].letter)
+      if (d->hide_set_o)
+	continue;
+      if (get_option_value (d, true))
 	{
-	  ip = find_flag (o_options[i].letter);
-	  if (ip && *ip)
-	    {
-	      vsize += strlen (o_options[i].name) + 1;
-	      tflag[i] = 1;
-	    }
-	}
-      else if (GET_BINARY_O_OPTION_VALUE (i, o_options[i].name))
-	{
-	  vsize += strlen (o_options[i].name) + 1;
-	  tflag[i] = 1;
+	  v_offset += strlen (d->name) + 1;
+	  tflag[d-o_options] = 1;
 	}
     }
 
-  value = (char *)xmalloc (vsize + 1);
+  char *value = (char *)xmalloc (v_offset + 1);
 
-  for (i = vptr = 0; o_options[i].name; i++)
+  for (d = o_options, v_offset = 0; d->name; d++)
     {
-      if (tflag[i])
+      if (tflag[d-o_options])
 	{
-	  strcpy (value + vptr, o_options[i].name);
-	  vptr += strlen (o_options[i].name);
-	  value[vptr++] = ':';
+	  strcpy (value + v_offset, d->name);
+	  v_offset += strlen (d->name);
+	  value[v_offset++] = ':';
 	}
     }
 
-  if (vptr)
-    vptr--;			/* cut off trailing colon */
-  value[vptr] = '\0';
+  if (v_offset)
+    v_offset--;			/* cut off trailing colon */
+  value[v_offset] = '\0';
 
-  v = find_variable ("SHELLOPTS");
+  SHELL_VAR *v = find_variable ("SHELLOPTS");
 
   /* Note whether or not the variable was exported so we can adjust after the
      assignment. */
-  exported = v ? exported_p (v) : 0;
+  _Bool exported = v ? exported_p (v) : 0;
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly */
   v = bind_variable ("SHELLOPTS", value, ASS_FORCE);
@@ -596,7 +643,7 @@ parse_shellopts (char *value)
   vptr = 0;
   while (vname = extract_colon_unit (value, &vptr))
     {
-      set_minus_o_option (FLAG_ON, vname);
+      set_o_option (vname, true, true);
       free (vname);
     }
 }
@@ -628,7 +675,7 @@ initialize_shell_options (int no_shellopts)
 
 /* Reset the values of the -o options that are not also shell flags.  This is
    called from execute_cmd.c:initialize_subshell() when setting up a subshell
-   to run an executable shell script without a leading `#!'. */
+   to run an executable shell script without a leading ‘#!’. */
 void
 reset_shell_options (void)
 {
@@ -694,18 +741,18 @@ set_builtin (WORD_LIST *list)
     {
       arg = list->word->word;
 
-      /* If the argument is `--' or `-' then signal the end of the list
+      /* If the argument is ‘--’ or ‘-’ then signal the end of the list
 	 and remember the remaining arguments. */
       if (arg[0] == '-' && (!arg[1] || (arg[1] == '-' && !arg[2])))
 	{
 	  list = list->next;
 
-	  /* `set --' unsets the positional parameters. */
+	  /* ‘set --’ unsets the positional parameters. */
 	  if (arg[1] == '-')
 	    force_assignment = 1;
 
 	  /* Until told differently, the old shell behaviour of
-	     `set - [arg ...]' being equivalent to `set +xv [arg ...]'
+	     ‘set - [arg ...]’ being equivalent to ‘set +xv [arg ...]’
 	     stands.  Posix.2 says the behaviour is marked as obsolescent. */
 	  else
 	    {
@@ -751,7 +798,7 @@ set_builtin (WORD_LIST *list)
 		  list = list->next; /* Skip over option name. */
 
 		  opts_changed = 1;
-		  if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
+		  if ((r = set_o_option (option_name, true, on_or_off == FLAG_ON)) != EXECUTION_SUCCESS)
 		    {
 		      set_shellopts ();
 		      return (r);
@@ -802,7 +849,7 @@ Options:
 Without options, unset first tries to unset a variable, and if that fails,
 tries to unset a function.
 
-Some variables cannot be unset; also see `readonly'.
+Some variables cannot be unset; also see ‘readonly’.
 
 Exit Status:
 Returns success unless an invalid option is given or a NAME is read-only.
@@ -941,7 +988,7 @@ unset_builtin (WORD_LIST *list)
 	{
 #if defined (ARRAY_VARS)
 	  /* We modified NAME in the call to tokenize_array_reference, so we
-	     need to restore it here. We turned the original `[' and `]' into
+	     need to restore it here. We turned the original ‘[’ and ‘]’ into
 	     NULL, to isolate the array name and subscript. This only happens
 	     if tokenize_array_reference succeeds with a non-NULL subscript
 	     pointer, and UNSET_ARRAY is set to 1 only in this case. */
@@ -1020,10 +1067,10 @@ unset_builtin (WORD_LIST *list)
       else
 	tem = unset_function ? unbind_func (name) : (nameref ? unbind_nameref (name) : unbind_variable (name));
 
-      /* This is what Posix.2 says:  ``If neither -f nor -v
+      /* This is what Posix.2 says:  “If neither -f nor -v
 	 is specified, the name refers to a variable; if a variable by
 	 that name does not exist, it is unspecified whether  a function
-	 by that name, if any, shall be unset.'' The unspecified part is a
+	 by that name, if any, shall be unset.” The unspecified part is a
 	 recent addition, so we continue to try to unset a shell function if
 	 we don't find a variable named NAME. */
       if (tem == -1 && nameref == 0 && unset_function == 0 && unset_variable == 0)
@@ -1031,8 +1078,8 @@ unset_builtin (WORD_LIST *list)
 
       name = list->word->word;		/* reset above for namerefs */
 
-      /* SUSv3, POSIX.1-2001 say:  ``Unsetting a variable or function that
-	 was not previously set shall not be considered an error.'' */
+      /* SUSv3, POSIX.1-2001 say:  “Unsetting a variable or function that
+	 was not previously set shall not be considered an error.” */
 
       if (unset_function == 0)
 	stupidly_hack_special_variables (name);
@@ -1239,7 +1286,7 @@ static struct {
 #endif
   { "localvar_inherit", &localvar_inherit, (shopt_set_func_t *)NULL },
   { "localvar_unset", &localvar_unset, (shopt_set_func_t *)NULL },
-  { "login_shell", &shopt_login_shell, set_login_shell },
+  { "login_shell", &shopt_login_shell, forbid_setting },
   { "mailwarn", &mail_warning, (shopt_set_func_t *)NULL },
 #if defined (READLINE)
   { "no_empty_cmd_completion", &no_empty_command_completion, (shopt_set_func_t *)NULL },
@@ -1591,7 +1638,7 @@ set_shopt_o_options (int mode, WORD_LIST *list, int quiet)
 
   for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
     {
-      if (set_minus_o_option (mode, l->word->word) == EXECUTION_FAILURE)
+      if (set_o_option (l->word->word, false, mode) == EXECUTION_FAILURE)
 	rval = EXECUTION_FAILURE;
     }
   set_shellopts ();
@@ -1749,11 +1796,19 @@ set_restricted_shell (char *option_name, int mode)
 }
 #endif /* RESTRICTED_SHELL */
 
-/* Not static so shell.c can call it to initialize shopt_login_shell */
-int
-set_login_shell (char *option_name, int mode)
+static optset_status_t
+forbid_setting (char *option_name, int mode)
 {
-  shopt_login_shell = login_shell != 0;
+  return EX_USAGE;
+}
+
+/* set_login_shell() is only called from main() in shell.c, with new value for
+ * shopt_login_shell; this is a temporary work-around until we can entirely get
+ * rid of shopt_login_shell. */
+int
+set_login_shell (int mode)
+{
+  shopt_login_shell = mode;
   return (0);
 }
 
