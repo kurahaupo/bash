@@ -288,7 +288,7 @@ print_minus_o_option (char *name, int value, int pflag)
   if (pflag == 0)
     printf (MINUS_O_FORMAT, name, value ? on : off);
   else
-    printf ("set %co %s\n", value ? '-' : '+', name);
+    printf ("set %co %s\n", bool_to_flag(value), name);
 }
 
 void
@@ -714,15 +714,15 @@ set_builtin (WORD_LIST *list)
 	     stands.  Posix.2 says the behaviour is marked as obsolescent. */
 	  else
 	    {
-	      change_flag ('x', '+');
-	      change_flag ('v', '+');
+	      change_flag ('x', FLAG_OFF);
+	      change_flag ('v', FLAG_OFF);
 	      opts_changed = 1;
 	    }
 
 	  break;
 	}
 
-      if ((on_or_off = *arg) && (on_or_off == '-' || on_or_off == '+'))
+      if ((on_or_off = *arg) && valid_flag(on_or_off))
 	{
 	  while (flag_name = *++arg)
 	    {
@@ -740,7 +740,7 @@ set_builtin (WORD_LIST *list)
 
 		  if (opt == 0)
 		    {
-		      list_minus_o_opts (-1, (on_or_off == '+'));
+		      list_minus_o_opts (-1, !flag_to_bool(on_or_off));
 		      rv = sh_chkwrite (rv);
 		      continue;
 		    }
@@ -748,9 +748,9 @@ set_builtin (WORD_LIST *list)
 		  option_name = opt->word->word;
 
 		  if (option_name == 0 || *option_name == '\0' ||
-		      *option_name == '-' || *option_name == '+')
+		      valid_flag(*option_name))
 		    {
-		      list_minus_o_opts (-1, (on_or_off == '+'));
+		      list_minus_o_opts (-1, !flag_to_bool(on_or_off));
 		      continue;
 		    }
 		  list = list->next; /* Skip over option name. */
@@ -1575,7 +1575,7 @@ list_shopt_o_options (WORD_LIST *list, int flags)
       if ((flags & QFLAG) == 0)
 	{
 	  if (flags & PFLAG)
-	    printf ("set %co %s\n", val ? '-' : '+', l->word->word);
+	    printf ("set %co %s\n", bool_to_flag(val), l->word->word);
 	  else
 	    printf (OPTFMT, l->word->word, val ? on : off);
 	}
