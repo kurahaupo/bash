@@ -24,6 +24,10 @@
 #  include <unistd.h>
 #endif
 
+#ifndef NDEBUG
+#  include <stdio.h>
+#endif
+
 #include "shell.h"
 #include "execute_cmd.h"
 #include "flags.h"
@@ -367,6 +371,23 @@ reset_shell_flags (void)
   restricted = 0;
 #endif
 }
+
+#ifndef NDEBUG
+void
+FailedValidation (char const *file, unsigned int line,
+		  int got_value, char const *expected_description,
+		  char const *expr_str)
+{
+  fprintf (stderr,
+	   "\n\n"
+	   "FATAL ERROR at line %u in %s\n"
+	   "Attempt to pass value %d where %s was expected\n"
+	   "using expression \"%s\"\n"
+	   "\n", line, file, got_value, expected_description, expr_str);
+  fflush (stderr);
+  abort ();
+}
+#endif
 
 void
 initialize_flags (void)
