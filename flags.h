@@ -81,6 +81,24 @@ extern void set_current_flags (const char *);
 
 extern void initialize_flags (void);
 
+static inline char
+bool_to_flag(_Bool b)
+{
+  return b ? FLAG_ON : FLAG_OFF;
+}
+
+static inline _Bool
+flag_to_bool(char f)
+{
+  return f == FLAG_ON;
+}
+
+static inline _Bool
+valid_flag(char f)
+{
+  return f == FLAG_ON || f == FLAG_OFF;
+}
+
 /* A macro for efficiency. */
 #define change_flag_char(flag, on_or_off)  change_flag (flag, on_or_off)
 
