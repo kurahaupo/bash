@@ -40,6 +40,102 @@ struct flags_alist {
 extern const struct flags_alist shell_flags[];
 extern char optflags[];
 
+static inline char
+bool_to_flag (_Bool b)
+{
+  return b ? FLAG_ON : FLAG_OFF;
+}
+
+static inline _Bool
+flag_to_bool (char f)
+{
+  return f == FLAG_ON;
+}
+
+static inline _Bool
+valid_flag (char f)
+{
+  return f == FLAG_ON || f == FLAG_OFF;
+}
+
+static inline _Bool
+valid_flag_or_error (char f)
+{
+  return f == FLAG_ON || f == FLAG_OFF || f == FLAG_ERROR;
+}
+
+/*
+ * Validate that bools and flags are present when expected
+ *
+ * Usage:
+ *
+ *      #define your_func(     boolarg,     flagarg,  otherarg) \
+ *              your_func_ (VB(boolarg), VF(flagarg), otherarg)
+ *      extern void your_func_ (_Bool b, char f, int o);
+ *
+ * If you don't need to forward-declare your function, you can avoid having
+ * separate name for for your_func and your_func_, by placing the #define
+ * after the end of the function definition:
+ *
+ *      static void
+ *      your_func (_Bool b, char f, int o)
+ *      {
+ *        [... function body here ...]
+ *      }
+ *      #define your_func(    flagarg,     boolarg,  otherarg) \
+ *              your_func (VF(flagarg), VB(boolarg), otherarg)
+ *
+ * The drawback of using a single name is that you won't be alerted if the
+ * #define is not in scope, so it's really only suitable for static functions.
+ *
+ * If you intend to accept FLAG_ERROR, use VFE rather than VF, and declare the
+ * parameter type as `int` rather than `char`.
+ */
+#ifdef NDEBUG
+
+# define VB(X) (X)
+# define VF(X) (X)
+# define VFE(X) (X)
+
+#else
+
+extern void FailedValidation (char const *file, unsigned int line,
+			      int got_value, char const *expected_description,
+			      char const *expr_str);
+
+static inline int
+ValidateBool (char const *file, unsigned int line, char const *expr_str, int X)
+{
+  if (X == 0 || X == 1)
+    return X;
+  FailedValidation (file, line, X, "a bool (0 or 1)", expr_str);
+}
+# define VB(X) ValidateBool (__FILE__, __LINE__, #X, (X))
+
+static inline int
+ValidateFlag (char const *file, unsigned int line, char const *expr_str, int X)
+{
+  if (valid_flag (X))
+    return X;
+  FailedValidation (file, line, X, "a flag ('+' or '-')", expr_str);
+}
+# define VF(X) ValidateFlag (__FILE__, __LINE__, #X, (X))
+
+static inline int
+ValidateFlagOrError (char const *file, unsigned int line, char const *expr_str, int X)
+{
+  if (valid_flag_or_error (X))
+    return X;
+  FailedValidation (file, line, X, "a flag ('+' or '-') or error (-1)", expr_str);
+}
+# define VFE(X) ValidateFlagOrError (__FILE__, __LINE__, #X, (X))
+
+#define bool_to_flag(b) bool_to_flag (VB (b))
+#define flag_to_bool(f) flag_to_bool (VF (f))
+
+#endif
+
+
 extern int
   mark_modified_vars, errexit_flag, exit_immediately_on_error,
   disallow_filename_globbing,
