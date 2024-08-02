@@ -473,7 +473,7 @@ main (int argc, char **argv, char **env)
 
   /* Find full word arguments first. */
   arg_index = parse_long_options (argv, arg_index, argc);
-  
+
   if (want_initial_help)
     {
       show_shell_usage (stdout, 1);
@@ -1671,7 +1671,7 @@ open_shell_script (char *script_name)
 #if defined (EISDIR)
 	      errno = EISDIR;
 	      file_error (filename);
-#else	      
+#else
 	      internal_error (_("%s: Is a directory"), filename);
 #endif
 	    }
@@ -1761,7 +1761,7 @@ unset_bash_input (int check_zero)
       bash_input.type = st_none;		/* XXX */
     }
 }
-      
+
 
 #if !defined (PROGRAM)
 #  define PROGRAM "bash"
