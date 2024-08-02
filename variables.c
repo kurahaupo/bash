@@ -5447,7 +5447,7 @@ pop_scope (void *is_special)
   FREE (vcxt->name);
   if (vcxt->table)
     {
-      if ((intptr_t) is_special)
+      if (is_special)
 	hash_flush (vcxt->table, push_builtin_var);
       else
 	hash_flush (vcxt->table, push_exported_var);

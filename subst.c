@@ -6876,7 +6876,7 @@ uw_restore_pipeline (void *discard)
 static void
 uw_restore_errexit (void *eflag)
 {
-  change_flag ('e', (intptr_t) eflag ? FLAG_ON : FLAG_OFF);
+  change_flag ('e', eflag ? FLAG_ON : FLAG_OFF);
   set_shellopts ();
 }
 
