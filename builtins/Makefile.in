@@ -143,7 +143,7 @@ DEFSRC =  $(srcdir)/alias.def $(srcdir)/bind.def $(srcdir)/break.def \
 	  $(srcdir)/source.def $(srcdir)/suspend.def $(srcdir)/test.def \
 	  $(srcdir)/times.def $(srcdir)/trap.def $(srcdir)/type.def \
 	  $(srcdir)/ulimit.def $(srcdir)/umask.def $(srcdir)/wait.def \
-	  $(srcdir)/reserved.def $(srcdir)/pushd.def $(srcdir)/shopt.def \
+	  $(srcdir)/reserved.def $(srcdir)/pushd.def \
 	  $(srcdir)/printf.def $(srcdir)/complete.def $(srcdir)/mapfile.def
 
 STATIC_SOURCE = common.c evalstring.c evalfile.c getopt.c bashgetopt.c \
@@ -156,7 +156,7 @@ OFILES = builtins.o \
 	jobs.o kill.o let.o mapfile.o \
 	pushd.o read.o return.o set.o setattr.o shift.o source.o \
 	suspend.o test.o times.o trap.o type.o ulimit.o umask.o \
-	wait.o getopts.o shopt.o printf.o getopt.o bashgetopt.o complete.o
+	wait.o getopts.o printf.o getopt.o bashgetopt.o complete.o
 
 CREATED_FILES = builtext.h builtins.c psize.aux pipesize.h tmpbuiltins.c \
 	tmpbuiltins.h
@@ -309,7 +309,6 @@ return.o: return.def
 set.o: set.def
 setattr.o: setattr.def
 shift.o: shift.def
-shopt.o: shopt.def
 source.o: source.def
 suspend.o: suspend.def
 test.o: test.def
@@ -600,13 +599,6 @@ shift.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h $(topdir)
 shift.o: $(topdir)/subst.h $(topdir)/externs.h $(BASHINCDIR)/maxpath.h
 shift.o: $(topdir)/shell.h $(topdir)/syntax.h $(topdir)/unwind_prot.h $(topdir)/variables.h $(topdir)/conftypes.h
 shift.o: ../pathnames.h
-shopt.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h
-shopt.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h 
-shopt.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h
-shopt.o: $(topdir)/subst.h $(topdir)/externs.h $(BASHINCDIR)/maxpath.h
-shopt.o: $(topdir)/shell.h $(topdir)/syntax.h $(topdir)/unwind_prot.h $(topdir)/variables.h $(topdir)/conftypes.h
-shopt.o: $(srcdir)/common.h $(srcdir)/bashgetopt.h ../pathnames.h
-shopt.o: $(topdir)/bashhist.h $(topdir)/bashline.h $(topdir)/sig.h
 source.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h
 source.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h $(topdir)/findcmd.h
 source.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h $(topdir)/sig.h
@@ -716,7 +708,6 @@ return.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 set.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 setattr.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 shift.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
-shopt.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 source.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 suspend.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 type.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
@@ -732,4 +723,3 @@ echo.o: $(topdir)/config-top.h
 evalstring.o: $(topdir)/config-top.h
 exit.o: $(topdir)/config-top.h
 kill.o: $(topdir)/config-top.h
-shopt.o: $(topdir)/config-top.h

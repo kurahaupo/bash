@@ -534,7 +534,7 @@ BUILTIN_DEFS = $(DEFSRC)/alias.def $(DEFSRC)/bind.def $(DEFSRC)/break.def \
 	       $(DEFSRC)/times.def $(DEFSRC)/trap.def $(DEFSRC)/type.def \
 	       $(DEFSRC)/ulimit.def $(DEFSRC)/umask.def $(DEFSRC)/wait.def \
 	       $(DEFSRC)/getopts.def $(DEFSRC)/reserved.def \
-	       $(DEFSRC)/pushd.def $(DEFSRC)/shopt.def $(DEFSRC)/printf.def \
+	       $(DEFSRC)/pushd.def $(DEFSRC)/printf.def \
 	       $(DEFSRC)/mapfile.def
 BUILTIN_C_SRC  = $(DEFSRC)/mkbuiltins.c $(DEFSRC)/common.c \
 		 $(DEFSRC)/evalstring.c $(DEFSRC)/evalfile.c \
@@ -549,7 +549,7 @@ BUILTIN_OBJS = $(DEFDIR)/alias.o $(DEFDIR)/bind.o $(DEFDIR)/break.o \
 	       $(DEFDIR)/fg_bg.o $(DEFDIR)/hash.o $(DEFDIR)/help.o \
 	       $(DEFDIR)/history.o $(DEFDIR)/jobs.o $(DEFDIR)/kill.o \
 	       $(DEFDIR)/let.o $(DEFDIR)/pushd.o $(DEFDIR)/read.o \
-	       $(DEFDIR)/return.o $(DEFDIR)/shopt.o $(DEFDIR)/printf.o \
+	       $(DEFDIR)/return.o $(DEFDIR)/printf.o \
 	       $(DEFDIR)/set.o $(DEFDIR)/setattr.o $(DEFDIR)/shift.o \
 	       $(DEFDIR)/source.o $(DEFDIR)/suspend.o $(DEFDIR)/test.o \
 	       $(DEFDIR)/times.o $(DEFDIR)/trap.o $(DEFDIR)/type.o \
@@ -1072,7 +1072,6 @@ builtins/echo.o: $(srcdir)/config-top.h
 builtins/evalstring.o: $(srcdir)/config-top.h
 builtins/exit.o: $(srcdir)/config-top.h
 builtins/kill.o: $(srcdir)/config-top.h
-builtins/shopt.o: $(srcdir)/config-top.h
 
 # XXX
 ${SH_LIBDIR}/tmpfile.o: $(srcdir)/config-top.h
@@ -1709,11 +1708,6 @@ builtins/shift.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h ${BASHINCDIR
 builtins/shift.o: shell.h syntax.h bashjmp.h ${BASHINCDIR}/posixjmp.h sig.h unwind_prot.h variables.h arrayfunc.h conftypes.h 
 builtins/shift.o: dispose_cmd.h make_cmd.h subst.h externs.h ${BASHINCDIR}/stdc.h
 builtins/shift.o: pathnames.h
-builtins/shopt.o: command.h config.h ${BASHINCDIR}/memalloc.h error.h general.h xmalloc.h
-builtins/shopt.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h
-builtins/shopt.o: shell.h syntax.h bashjmp.h ${BASHINCDIR}/posixjmp.h unwind_prot.h variables.h arrayfunc.h conftypes.h ${BASHINCDIR}/maxpath.h
-builtins/shopt.o: $(DEFSRC)/common.h $(DEFSRC)/bashgetopt.h pathnames.h
-builtins/shopt.o: bashhist.h bashline.h
 builtins/source.o: command.h config.h ${BASHINCDIR}/memalloc.h error.h general.h xmalloc.h ${BASHINCDIR}/maxpath.h
 builtins/source.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h ${BASHINCDIR}/stdc.h
 builtins/source.o: shell.h syntax.h bashjmp.h ${BASHINCDIR}/posixjmp.h sig.h unwind_prot.h variables.h arrayfunc.h conftypes.h
@@ -1799,7 +1793,6 @@ builtins/return.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/set.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/setattr.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/shift.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
-builtins/shopt.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/source.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/suspend.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
 builtins/type.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
@@ -1850,7 +1843,6 @@ builtins/return.o: $(DEFSRC)/return.def
 builtins/set.o: $(DEFSRC)/set.def
 builtins/setattr.o: $(DEFSRC)/setattr.def
 builtins/shift.o: $(DEFSRC)/shift.def
-builtins/shopt.o: $(DEFSRC)/shopt.def
 builtins/source.o: $(DEFSRC)/source.def
 builtins/suspend.o: $(DEFSRC)/suspend.def
 builtins/test.o: $(DEFSRC)/test.def
