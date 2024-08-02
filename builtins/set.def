@@ -160,11 +160,6 @@ $END
 typedef int setopt_set_func_t (int, char const*);
 typedef int setopt_get_func_t (char *);
 
-static int find_minus_o_option (char *);
-
-static void print_minus_o_option (char *, int, int);
-static void print_all_shell_variables (void);
-
 static int set_ignoreeof (int, char *);
 static int set_posix_mode (int, char *);
 
@@ -1134,8 +1129,6 @@ int expand_once_flag;
 extern int syslog_history;
 #endif
 
-static void shopt_error (char *);
-
 static int set_shellopts_after_change (char *, int);
 static int set_compatibility_level (char *, int);
 
@@ -1280,9 +1273,7 @@ static struct {
 
 #define GET_SHOPT_OPTION_VALUE(i)	(*shopt_vars[i].value)
 
-static int find_shopt (char *);
 static int toggle_shopts (int, WORD_LIST *, int);
-static void print_shopt (char *, int, int);
 static int list_shopts (WORD_LIST *, int);
 static int list_some_shopts (int, int);
 static int list_shopt_o_options (WORD_LIST *, int);
