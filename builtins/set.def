@@ -1104,11 +1104,14 @@ extern int extended_glob;
 #endif
 
 #if defined (READLINE)
-extern int hist_verify, history_reediting, perform_hostname_completion;
-extern int no_empty_command_completion;
-extern int force_fignore;
-extern int dircomplete_spelling, dircomplete_expand;
 extern int complete_fullquote;
+extern int dircomplete_expand;
+extern int dircomplete_spelling;
+extern int force_fignore;
+extern int hist_verify;
+extern int history_reediting;
+extern int no_empty_command_completion;
+extern int perform_hostname_completion;
 
 extern int enable_hostname_completion (int);
 #endif
