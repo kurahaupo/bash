@@ -1,5 +1,5 @@
 This file is set.def, from which is created set.c.
-It implements the "set" and "unset" builtins in Bash.
+It implements the ‘set’, ‘shopt’, and ‘unset’ builtins in Bash.
 
 Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
@@ -30,6 +30,8 @@ $PRODUCES set.c
 #endif
 
 #include <stdio.h>
+
+#include "version.h"
 
 #include "../bashansi.h"
 #include "../bashintl.h"
@@ -1045,27 +1047,6 @@ unset_builtin (WORD_LIST *list)
 
   return (any_failed ? (posix_utility_error ? EX_UTILERROR : EXECUTION_FAILURE) : EXECUTION_SUCCESS);
 }
-This file is shopt.def, from which is created shopt.c.
-It implements the Bash `shopt' builtin.
-
-Copyright (C) 1994-2024 Free Software Foundation, Inc.
-
-This file is part of GNU Bash, the Bourne Again SHell.
-
-Bash is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Bash is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Bash.  If not, see <http://www.gnu.org/licenses/>.
-
-$PRODUCES shopt.c
 
 $BUILTIN shopt
 $FUNCTION shopt_builtin
@@ -1087,34 +1068,6 @@ Exit Status:
 Returns success if OPTNAME is enabled; fails if an invalid option is
 given or OPTNAME is disabled.
 $END
-
-#include <config.h>
-
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
-#  endif
-#  include <unistd.h>
-#endif
-
-#include <stdio.h>
-
-#include "version.h"
-
-#include "../bashintl.h"
-
-#include "../shell.h"
-#include "../flags.h"
-#include "common.h"
-#include "bashgetopt.h"
-
-#if defined (READLINE)
-#  include "../bashline.h"
-#endif
-
-#if defined (HISTORY)
-#  include "../bashhist.h"
-#endif
 
 #define UNSETOPT	0
 #define SETOPT		1
@@ -1323,9 +1276,6 @@ static struct {
 #define N_SHOPT_OPTIONS		(sizeof (shopt_vars) / sizeof (shopt_vars[0]))
 
 #define GET_SHOPT_OPTION_VALUE(i)	(*shopt_vars[i].value)
-
-static const char * const on = "on";
-static const char * const off = "off";
 
 static int find_shopt (char *);
 static int toggle_shopts (int, WORD_LIST *, int);
