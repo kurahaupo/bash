@@ -1462,10 +1462,10 @@ static int
 toggle_shopts (int mode, WORD_LIST *list, int quiet)
 {
   WORD_LIST *l;
-  int ind, rval;
+  int ind, rval = EXECUTION_SUCCESS;
   SHELL_VAR *v;
 
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
+  for (l = list; l; l = l->next)
     {
       ind = find_shopt (l->word->word);
       if (ind < 0)
