@@ -500,8 +500,6 @@ main (int argc, char **argv, char **env)
       login_shell = -login_shell;
     }
 
-  set_login_shell (login_shell != 0);
-
 #if defined (TRANSLATABLE_STRINGS)
   if (dump_po_strings)
     dump_translatable_strings = 1;
@@ -1563,7 +1561,7 @@ start_debugger (void)
   error_trace_mode = function_trace_mode = debugging_mode;
 
   set_shellopts ();
-  set_bashopts ();
+  set_bashopts (false);
 
   exit_immediately_on_error += old_errexit;
 #endif

@@ -322,7 +322,7 @@ static SHELL_VAR *bind_tempenv_variable (const char *, const char *);
 static void push_posix_temp_var (PTR_T);
 static void push_temp_var (PTR_T);
 static void propagate_temp_var (PTR_T);
-static void dispose_temporary_env (sh_free_func_t *);     
+static void dispose_temporary_env (sh_free_func_t *);
 
 static inline char *mk_env_string (const char *, const char *, int);
 static char **make_env_array_from_var_list (SHELL_VAR **);
@@ -399,7 +399,7 @@ initialize_shell_variables (char **env, int privmode)
 #if defined (FUNCTION_IMPORT)
       /* If exported function, define it now.  Don't import functions from
 	 the environment in privileged mode. */
-      if (privmode == 0 && read_but_dont_execute == 0 && 
+      if (privmode == 0 && read_but_dont_execute == 0 &&
           STREQN (BASHFUNC_PREFIX, name, BASHFUNC_PREFLEN) &&
           STREQ (BASHFUNC_SUFFIX, name + char_index - BASHFUNC_SUFFLEN) &&
 	  STREQN ("() {", string, 4))
@@ -462,7 +462,7 @@ initialize_shell_variables (char **env, int privmode)
 
 	  tname = name + BASHARRAY_PREFLEN;	/* start of variable name */
 	  tname[namelen] = '\0';		/* now tname == varname */
-	  
+
 	  string_length = 1;
 	  temp_string = extract_array_assignment_list (string, &string_length);
 	  temp_var = assign_array_from_string (tname, temp_string, 0);
@@ -930,7 +930,7 @@ set_pwd (void)
 	{
 	  temp_var = bind_variable ("PWD", current_dir, 0);
 	  set_auto_export (temp_var);
-	}  
+	}
       free (current_dir);
     }
   else if (home_string && interactive_shell && login_shell &&
@@ -1090,7 +1090,7 @@ print_func_list (SHELL_VAR **list)
       printf ("\n");
     }
 }
-      
+
 /* Print the value of a single SHELL_VAR.  No newline is
    output, but the variable is printed in such a way that
    it can be read back in. */
@@ -1359,7 +1359,7 @@ init_seconds_var (void)
 	seconds_value_assigned = 0;
     }
   INIT_DYNAMIC_VAR ("SECONDS", (v ? value_cell (v) : (char *)NULL), get_seconds, assign_seconds);
-  return v;      
+  return v;
 }
 
 /* Functions for BASH_MONOSECONDS */
@@ -1383,7 +1383,7 @@ get_monoseconds (SHELL_VAR *self)
 
   /* Fall back to gettimeofday if clock_gettime not available or fails */
   ret = gettimeofday (&tv, NULL);
-  nval = tv.tv_sec;      
+  nval = tv.tv_sec;
   return (set_int_value (self, nval, integer_p (self) != 0));
 }
 
@@ -1541,7 +1541,7 @@ assign_bash_argv0 (SHELL_VAR *var, char *value, arrayind_t unused, char *key)
   vlen = STRLEN (value);
   static_shell_name = xrealloc (static_shell_name, vlen + 1);
   strcpy (static_shell_name, value);
-  
+
   shell_name = static_shell_name;
   return var;
 }
@@ -1555,7 +1555,7 @@ set_argv0 (void)
   if (v && imported_p (v))
     assign_bash_argv0 (v, value_cell (v), 0, 0);
 }
-  
+
 static SHELL_VAR *
 get_bash_command (SHELL_VAR *var)
 {
@@ -1859,7 +1859,7 @@ initialize_dynamic_variables (void)
   INIT_DYNAMIC_VAR ("RANDOM", (char *)NULL, get_random, assign_random);
   VSETATTR (v, att_integer);
   INIT_DYNAMIC_VAR ("SRANDOM", (char *)NULL, get_urandom, (sh_var_assign_func_t *)NULL);
-  VSETATTR (v, att_integer);  
+  VSETATTR (v, att_integer);
   INIT_DYNAMIC_VAR ("LINENO", (char *)NULL, get_lineno, assign_lineno);
   VSETATTR (v, att_regenerate);
 
@@ -1979,7 +1979,7 @@ find_variable_internal (const char *name, int flags)
      "subshell environment". */
   search_tempenv = force_tempenv || (expanding_redir == 0 && subshell_environment);
 
-  if (search_tempenv && temporary_env)		
+  if (search_tempenv && temporary_env)
     var = hash_lookup (name, temporary_env);
 
   if (var == 0)
@@ -2117,7 +2117,7 @@ find_nameref_at_context (SHELL_VAR *v, VAR_CONTEXT *vc)
         return (&nameref_maxloop_value);
       newname = nameref_cell (nv);
       if (newname == 0 || *newname == '\0')
-        return ((SHELL_VAR *)NULL);      
+        return ((SHELL_VAR *)NULL);
       nv2 = hash_lookup (newname, vc->table);
       if (nv2 == 0)
         break;
@@ -2317,7 +2317,7 @@ find_global_variable (const char *name)
 	  internal_warning (_("%s: maximum nameref depth (%d) exceeded"), name, NAMEREF_MAX);
 	  return ((SHELL_VAR *)NULL);
 	}
-    }      
+    }
 
   if (var == 0)
     return ((SHELL_VAR *)NULL);
@@ -3168,7 +3168,7 @@ assign_value:
 	  INVALIDATE_EXPORTSTR (entry);
 	  optimized_assignment (entry, value, aflags);
 
-	  if (mark_modified_vars)
+	  if (mark_modified_vars && !(aflags & ASS_NOMARK))
 	    VSETATTR (entry, att_exported);
 
 	  if (exported_p (entry))
@@ -3210,7 +3210,7 @@ assign_value:
 	}
     }
 
-  if (mark_modified_vars)
+  if (mark_modified_vars && !(aflags & ASS_NOMARK))
     VSETATTR (entry, att_exported);
 
   if (exported_p (entry))
@@ -3218,7 +3218,7 @@ assign_value:
 
   return (entry);
 }
-	
+
 /* Bind a variable NAME to VALUE.  This conses up the name
    and value strings.  If we have a temporary environment, we bind there
    first, then we bind into shell_variables. */
@@ -3334,7 +3334,7 @@ bind_variable_value (SHELL_VAR *var, char *value, int aflags)
       t = (aflags & ASS_APPEND) ? make_variable_value (var, value, aflags) : value;
       (*(var->assign_func)) (var, t, -1, 0);
       if (t != value && t)
-	free (t);      
+	free (t);
     }
   else
     {
@@ -3365,7 +3365,7 @@ bind_variable_value (SHELL_VAR *var, char *value, int aflags)
 
   INVALIDATE_EXPORTSTR (var);
 
-  if (mark_modified_vars)
+  if (mark_modified_vars && !(aflags & ASS_NOMARK))
     VSETATTR (var, att_exported);
 
   if (exported_p (var))
@@ -3403,7 +3403,7 @@ bind_int_variable (const char *lhs, const char *rhs, int flags)
   else if (valid_identifier (lhs) == 0)
     {
       sh_invalidid (lhs);
-      return ((SHELL_VAR *)NULL);      
+      return ((SHELL_VAR *)NULL);
     }
   else
 #endif
@@ -3437,7 +3437,7 @@ bind_int_variable (const char *lhs, const char *rhs, int flags)
 
   if (v && nameref_p (v))
     internal_warning (_("%s: assigning integer to name reference"), lhs);
-     
+
   return (v);
 }
 
@@ -3479,7 +3479,7 @@ bind_function (const char *name, COMMAND *value)
 
   VSETATTR (entry, att_function);
 
-  if (mark_modified_vars)
+  if (mark_modified_vars)	/* TODO: decide whether to accept `flags` & check for ASS_NOMARK) */
     VSETATTR (entry, att_exported);
 
   VUNSETATTR (entry, att_invisible);		/* Just to be sure */
@@ -3566,7 +3566,7 @@ assign_in_env (const WORD_DESC *word, int flags)
 	  free (name);
 	  return (0);
 	}
-  
+
       var = find_variable (name);
       if (var == 0)
 	{
@@ -3858,7 +3858,7 @@ unbind_global_variable_noref (const char *name)
     return makunbound (name, global_variables);
   return 0;
 }
- 
+
 int
 check_unbind_variable (const char *name)
 {
@@ -3905,7 +3905,7 @@ unbind_func (const char *name)
   free (elt->key);
   free (elt);
 
-  return 0;  
+  return 0;
 }
 
 #if defined (DEBUGGER)
@@ -3927,7 +3927,7 @@ unbind_function_def (const char *name)
   free (elt->key);
   free (elt);
 
-  return 0;  
+  return 0;
 }
 #endif /* DEBUGGER */
 
@@ -3990,7 +3990,7 @@ makunbound (const char *name, VAR_CONTEXT *vc)
 
       /* Reset the attributes.  Preserve the export attribute if the variable
 	 came from a temporary environment.  Make sure it stays local, and
-	 make it invisible. */ 
+	 make it invisible. */
       old_var->attributes = (exported_p (old_var) && tempvar_p (old_var)) ? att_exported : 0;
       VSETATTR (old_var, att_local);
       VSETATTR (old_var, att_invisible);
@@ -4391,7 +4391,7 @@ all_local_variables (int visible_only)
     }
   if (vc->table == 0 || HASH_ENTRIES (vc->table) == 0 || vc_haslocals (vc) == 0)
     return (SHELL_VAR **)NULL;
-    
+
   vlist = vlist_alloc (HASH_ENTRIES (vc->table));
 
   if (visible_only)
@@ -4753,7 +4753,7 @@ mk_env_string (const char *name, const char *value, int attributes)
 	  q += BASHARRAY_SUFFLEN;
         }
     }
-#endif  
+#endif
   else
     {
       p = (char *)xmalloc (2 + name_len + value_len);
@@ -5085,7 +5085,7 @@ maybe_make_export_env (void)
 	}
       else
 	icxt = tcxt;
-      
+
       temp_array = make_var_export_array (icxt);
       if (temp_array)
 	add_temp_array_to_env (temp_array, 0, 0);
@@ -5571,9 +5571,9 @@ push_dollar_vars (void)
   dollar_arg_stack[dollar_arg_stack_index++].rest = rest_of_args;
   rest_of_args = (WORD_LIST *)NULL;
   posparam_count = 0;
-  
+
   dollar_arg_stack[dollar_arg_stack_index].first_ten = (char **)NULL;
-  dollar_arg_stack[dollar_arg_stack_index].rest = (WORD_LIST *)NULL;  
+  dollar_arg_stack[dollar_arg_stack_index].rest = (WORD_LIST *)NULL;
 }
 
 /* Restore the positional parameters from our stack. */
@@ -5605,11 +5605,11 @@ dispose_saved_dollar_vars (void)
   if (dollar_arg_stack == 0 || dollar_arg_stack_index == 0)
     return;
 
-  dispose_words (dollar_arg_stack[--dollar_arg_stack_index].rest);    
-  free_saved_dollar_vars (dollar_arg_stack[dollar_arg_stack_index].first_ten);	
+  dispose_words (dollar_arg_stack[--dollar_arg_stack_index].rest);
+  free_saved_dollar_vars (dollar_arg_stack[dollar_arg_stack_index].first_ten);
   free (dollar_arg_stack[dollar_arg_stack_index].first_ten);
 
-  dollar_arg_stack[dollar_arg_stack_index].first_ten = (char **)NULL;  
+  dollar_arg_stack[dollar_arg_stack_index].first_ten = (char **)NULL;
   dollar_arg_stack[dollar_arg_stack_index].rest = (WORD_LIST *)NULL;
   dollar_arg_stack[dollar_arg_stack_index].count = 0;
 }
@@ -6169,7 +6169,7 @@ sv_tz (const char *name)
 
   if (array_needs_making)
     {
-      maybe_make_export_env ();  
+      maybe_make_export_env ();
       tzset ();
     }
 }
@@ -6325,7 +6325,7 @@ set_pipestatus_array (int *ps, int nproc)
   else
     {
 #ifndef ALT_ARRAY_IMPLEMENTATION
-      /* deleting elements.  it's faster to rebuild the array. */	  
+      /* deleting elements.  it's faster to rebuild the array. */
       array_flush (a);
       for (i = 0; i < nproc; i++)
 	{
@@ -6362,7 +6362,7 @@ save_pipestatus_array (void)
   v = find_variable ("PIPESTATUS");
   if (v == 0 || array_p (v) == 0 || array_cell (v) == 0)
     return ((ARRAY *)NULL);
-    
+
   a = array_copy (array_cell (v));
 
   return a;
@@ -6380,7 +6380,7 @@ restore_pipestatus_array (ARRAY *a)
     return;
 
   a2 = array_cell (v);
-  var_setarray (v, a); 
+  var_setarray (v, a);
 
   array_dispose (a2);
 }
