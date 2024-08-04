@@ -1445,7 +1445,7 @@ find_shopt (char *name)
 }
 
 static void
-shopt_error (char *s)
+shopt_error (char const *s)
 {
   builtin_error (_("%s: invalid shell option name"), s);
 }
