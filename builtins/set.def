@@ -1053,7 +1053,7 @@ arguments, list each supplied OPTNAME, or all shell options if no
 OPTNAMEs are given, with an indication of whether or not each is set.
 
 Options:
-  -o	restrict OPTNAMEs to those defined for use with `set -o'
+  -o	restrict OPTNAMEs to those defined for use with ‘set -o’
   -p	print each shell option with an indication of its status
   -q	suppress output
   -s	enable (set) each OPTNAME
@@ -1342,7 +1342,7 @@ shopt_builtin (WORD_LIST *list)
   return (rval);
 }
 
-/* Reset the options managed by `shopt' to the values they would have at
+/* Reset the options managed by ‘shopt’ to the values they would have at
    shell startup.  Variables from shopt_vars. */
 void
 reset_shopt_options (void)
@@ -1488,7 +1488,7 @@ print_shopt (char *name, int val, int flags)
     printf (OPTFMT, name, val ? on : off);
 }
 
-/* List the values of all or any of the `shopt' options.  Returns 0 if
+/* List the values of all or any of the ‘shopt’ options.  Returns 0 if
    all were listed or all variables queried were on; 1 otherwise. */
 static int
 list_shopts (WORD_LIST *list, int flags)
