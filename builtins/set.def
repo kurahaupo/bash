@@ -315,10 +315,10 @@ static const struct option_def_s o_options[] = {
 
 #define N_O_OPTIONS	(sizeof (o_options) / sizeof (o_options[0]))
 
-static inline int
+static inline option_value_t
 get_option_value(struct option_def_s const *d, access_mode_t set_vs_shopt) {
   if (!d)
-    return -1;
+    return OPTION_INVALID_VALUE;
   if (d->get_func)
     return d->get_func(d, set_vs_shopt);
   if (d->store)
@@ -329,7 +329,7 @@ get_option_value(struct option_def_s const *d, access_mode_t set_vs_shopt) {
 static inline optset_status_t
 set_option_value(struct option_def_s const *d, access_mode_t set_vs_shopt, option_value_t new_value) {
   if (!d)
-    return EX_NOTFOUND;
+    return OptSet_NotFound;
   if (d->set_func)
     return d->set_func(d, set_vs_shopt, new_value);
   if (d->readonly)
@@ -337,8 +337,11 @@ set_option_value(struct option_def_s const *d, access_mode_t set_vs_shopt, optio
   if (d->forbid_change && get_option_value(d, set_vs_shopt) != new_value)
     return OptSet_ReadOnly;
   if (d->store)
-    *d->store = new_value;
-  return EXECUTION_SUCCESS;
+    {
+      *d->store = new_value;
+      return OptSet_OK;
+    }
+  return OptSet_Ignored;
 }
 
 /* This is a clone of find_shopt */
@@ -1112,8 +1115,6 @@ Returns success if OPTNAME is enabled; fails if an invalid option is
 given or OPTNAME is disabled.
 $END
 
-#define find_option find_shopt
-
 #define UNSETOPT	0
 #define SETOPT		1
 
@@ -1233,7 +1234,7 @@ static struct option_def_s shopt_vars[] = {
   { "compat43",			.store = &shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.hide_set_o = 1,	.reference_value = 43 },
   { "compat44",			.store = &shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.hide_set_o = 1,	.reference_value = 44 },
 #if defined (READLINE)
-  { "complete_fullquote",	.store = &complete_fullquote},
+  { "complete_fullquote",	.store = &complete_fullquote,							.hide_set_o = 1 },
   { "direxpand",		.store = &dircomplete_expand,		.set_func = shopt_set_complete_direxpand,	.hide_set_o = 1 },
   { "dirspell",			.store = &dircomplete_spelling,							.hide_set_o = 1 },
 #endif
@@ -1461,6 +1462,8 @@ reset_shopt_options (void)
 #endif
 }
 
+#define find_option find_shopt
+
 /* This is actually find_shopt, due to the #define above */
 static struct option_def_s const *
 find_option (char const *name)
@@ -1484,7 +1487,6 @@ change_shopts (WORD_LIST *list, int mode, int quiet)
 {
   WORD_LIST *l;
   int rval = EXECUTION_SUCCESS;
-  SHELL_VAR *v;
 
   for (l = list; l; l = l->next)
     {
@@ -1493,13 +1495,11 @@ change_shopts (WORD_LIST *list, int mode, int quiet)
 	{
 	  shopt_error (l->word->word);
 	  rval = EXECUTION_FAILURE;
+	  continue;
 	}
-      if (d->set_func)
-	{
-	    d->set_func (d, AccessMode_Shopt, mode);
-	}
-      else if (d->store && !d->readonly)
-	*d->store = mode;
+      int status = set_option_value (d, AccessMode_Shopt, mode);
+      if (status != EXECUTION_SUCCESS)
+	rval = status;
     }
 
   set_bashopts (true);
@@ -1507,12 +1507,13 @@ change_shopts (WORD_LIST *list, int mode, int quiet)
 }
 
 static void
-print_shopt (char *name, int val, int flags)
+print_shopt (struct option_def_s const *d, _Bool reusable)
 {
-  if (flags & PFLAG)
-    printf ("shopt %s %s\n", val ? "-s" : "-u", name);
+  int val = get_option_value(d, false);
+  if (reusable)
+    printf ("shopt %s %s\n", val ? "-s" : "-u", d->name);
   else
-    printf (OPTFMT, name, val ? on : off);
+    printf (OPTFMT, d->name, val ? on : off);
 }
 
 /* List the values of all or any of the ‘shopt’ options.  Returns 0 if
@@ -1526,12 +1527,10 @@ list_shopts (WORD_LIST *list, int flags)
   if (list == 0)
     {
       struct option_def_s const *d;
-      for (d = shopt_vars; d->name; d++)
-	{
-	  val = *d->store;
-	  if ((flags & QFLAG) == 0)
-	    print_shopt (d->name, val, flags);
-	}
+      if ((flags & QFLAG) == 0)
+	for (d = shopt_vars; d->name; d++)
+	  if (!d->hide_shopt)
+	    print_shopt (d, flags & PFLAG);
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
@@ -1548,7 +1547,7 @@ list_shopts (WORD_LIST *list, int flags)
       if (val == 0)
 	rval = 1; /* looks like EXECUTION_FAILURE but means false, not failure */
       if ((flags & QFLAG) == 0)
-	print_shopt (l->word->word, val, flags);
+	print_shopt (d, flags & PFLAG);
     }
 
   return (sh_chkwrite (rval));
@@ -1557,15 +1556,12 @@ list_shopts (WORD_LIST *list, int flags)
 static int
 list_some_shopts (int mode, int flags)
 {
-  int val, i;
   struct option_def_s const *d;
 
-  for (d = shopt_vars; d->name; d++)
-    {
-      val = *d->store;
-      if (((flags & QFLAG) == 0) && mode == val)
-	print_shopt (d->name, val, flags);
-    }
+  if ((flags & QFLAG) == 0)
+    for (d = shopt_vars; d->name; d++)
+      if (get_option_value(d, false) == mode)
+	print_shopt (d, flags & PFLAG);
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
@@ -1714,6 +1710,7 @@ set_compatibility_opts (void)
 static optset_status_t
 shopt_set_complete_direxpand (struct option_def_s const *d, access_mode_t set_vs_shopt, option_value_t mode)
 {
+  *d->store = mode;
   set_directory_hook ();
   return 0;
 }
@@ -1725,6 +1722,7 @@ shopt_set_complete_direxpand (struct option_def_s const *d, access_mode_t set_vs
 static optset_status_t
 set_restricted_shell (struct option_def_s const *d, access_mode_t set_vs_shopt, option_value_t mode)
 {
+  *d->store = mode;
   static int save_restricted = -1;
 
   if (save_restricted == -1)
@@ -1779,8 +1777,7 @@ shopt_listopt (char *name, int reusable)
       shopt_error (name);
       return (EXECUTION_FAILURE);
     }
-
-  print_shopt (name, *d->store, reusable ? PFLAG : 0);
+  print_shopt (d, reusable);
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
