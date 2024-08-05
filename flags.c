@@ -204,7 +204,7 @@ const struct flags_alist shell_flags[] = {
 #endif /* BANG_HISTORY */
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
-  {0, (int *)NULL}
+  {0}
 };
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist))
