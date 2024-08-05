@@ -31,15 +31,6 @@
 #define FLAG_ERROR -1
 #define FLAG_UNKNOWN (int *)0
 
-/* The thing that we build the array of flags out of. */
-struct flags_alist {
-  char name;
-  int *value;
-};
-
-extern const struct flags_alist shell_flags[];
-extern char optflags[];
-
 static inline char
 bool_to_flag (_Bool b)
 {
