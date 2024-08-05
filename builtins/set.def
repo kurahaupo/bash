@@ -52,6 +52,7 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+
 $BUILTIN set
 $FUNCTION set_builtin
 $SHORT_DOC set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
@@ -157,19 +158,25 @@ Exit Status:
 Returns success unless an invalid option is given.
 $END
 
-typedef int setopt_set_func_t (int, char const*);
-typedef int setopt_get_func_t (char *);
+#define opt_set_func_t setopt_set_func_t
+#define opt_get_func_t setopt_get_func_t
+#define opt_def_s option_def_s
+#define opt_def_t option_def_t
+#define opt_defs o_options
 
-static int set_ignoreeof (int, char *);
-static int set_posix_mode (int, char *);
+typedef int opt_set_func_t (int, char const*);
+typedef int opt_get_func_t (char *);
+
+static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_posix_mode;
 
 #if defined (READLINE)
-static int set_edit_mode (int, char *);
-static int get_edit_mode (char *);
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
 #endif
 
 #if defined (HISTORY)
-static int bash_set_history (int, char *);
+static opt_set_func_t bash_set_history;
 #endif
 
 static const char * const on = "on";
@@ -182,57 +189,59 @@ static int previous_option_value;
    dynamically generate values.  If you add a new variable name here
    that doesn't have a corresponding single-character option letter, make
    sure to set the value appropriately in reset_shell_options. */
-const struct {
+typedef struct opt_def_s {
   char *name;
   int letter;
   int *variable;
-  setopt_set_func_t *set_func;
-  setopt_get_func_t *get_func;
-} o_options[] = {
-  { "allexport",  'a', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+} opt_def_t;
+
+static const option_def_t o_options[] = {
+  { "allexport",  'a', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL },
 #if defined (BRACE_EXPANSION)
-  { "braceexpand",'B', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "braceexpand",'B', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #endif
 #if defined (READLINE)
   { "emacs",     '\0', (int *)NULL, set_edit_mode, get_edit_mode },
 #endif
-  { "errexit",	  'e', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "errtrace",	  'E', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "functrace",  'T', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "hashall",    'h', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "errexit",	  'e', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "errtrace",	  'E', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "functrace",  'T', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "hashall",    'h', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #if defined (BANG_HISTORY)
-  { "histexpand", 'H', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "histexpand", 'H', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
-  { "history",   '\0', &enable_history_list, bash_set_history, (setopt_get_func_t *)NULL },
+  { "history",   '\0', &enable_history_list, bash_set_history, (opt_get_func_t *)NULL },
 #endif
-  { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (setopt_get_func_t *)NULL },
-  { "interactive-comments", '\0', &interactive_comments, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
-  { "keyword",    'k', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "ignoreeof", '\0', &ignoreeof, set_ignoreeof, (opt_get_func_t *)NULL },
+  { "interactive-comments", '\0', &interactive_comments, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL },
+  { "keyword",    'k', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #if defined (JOB_CONTROL)
-  { "monitor",	  'm', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "monitor",	  'm', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #endif
-  { "noclobber",  'C', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "noexec",	  'n', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "noglob",	  'f', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "noclobber",  'C', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "noexec",	  'n', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "noglob",	  'f', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #if defined (HISTORY)
-  { "nolog",     '\0', &dont_save_function_defs, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+  { "nolog",     '\0', &dont_save_function_defs, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL },
 #endif
 #if defined (JOB_CONTROL)
-  { "notify",	  'b', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "notify",	  'b', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #endif /* JOB_CONTROL */
-  { "nounset",	  'u', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "onecmd",	  't', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
-  { "physical",   'P', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "pipefail",  '\0', &pipefail_opt, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "posix",     '\0', &posixly_correct, set_posix_mode, (setopt_get_func_t *)NULL },
-  { "privileged", 'p', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  { "verbose",	  'v', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
+  { "nounset",	  'u', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "onecmd",	  't', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL },
+  { "physical",   'P', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "pipefail",  '\0', &pipefail_opt, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "posix",     '\0', &posixly_correct, set_posix_mode, (opt_get_func_t *)NULL },
+  { "privileged", 'p', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  { "verbose",	  'v', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
 #if defined (READLINE)
   { "vi",        '\0', (int *)NULL, set_edit_mode, get_edit_mode },
 #endif
-  { "xtrace",	  'x', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
-  {(char *)NULL, 0 , (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
+  { "xtrace",	  'x', (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL  },
+  {(char *)NULL, 0 , (int *)NULL, (opt_set_func_t *)NULL, (opt_get_func_t *)NULL },
 };
 
 #define N_O_OPTIONS	(sizeof (o_options) / sizeof (o_options[0]))
@@ -384,7 +393,7 @@ set_current_options (const char *bitmap)
 }
 
 static int
-set_ignoreeof (int on_or_off, char *option_name)
+set_ignoreeof (int on_or_off, char const*option_name)
 {
   ignoreeof = on_or_off == FLAG_ON;
   unbind_variable_noref ("ignoreeof");
@@ -397,7 +406,7 @@ set_ignoreeof (int on_or_off, char *option_name)
 }
 
 static int
-set_posix_mode (int on_or_off, char *option_name)
+set_posix_mode (int on_or_off, char const*option_name)
 {
   /* short-circuit on no-op */
   if ((on_or_off == FLAG_ON && posixly_correct) ||
@@ -1043,6 +1052,12 @@ unset_builtin (WORD_LIST *list)
   return (any_failed ? (posix_utility_error ? EX_UTILERROR : EXECUTION_FAILURE) : EXECUTION_SUCCESS);
 }
 
+#undef opt_set_func_t
+#undef opt_get_func_t
+#undef opt_def_s
+#undef opt_def_t
+#undef opt_defs
+
 $BUILTIN shopt
 $FUNCTION shopt_builtin
 $SHORT_DOC shopt [-pqsu] [-o] [optname ...]
@@ -1164,33 +1179,43 @@ static int shopt_compat42;
 static int shopt_compat43;
 static int shopt_compat44;
 
-typedef int shopt_set_func_t (char *, int);
+#define opt_set_func_t shopt_set_func_t
+#define opt_get_func_t shopt_get_func_t
+#define opt_def_s shopt_def_s
+#define opt_def_t shopt_def_t
+#define opt_defs shopt_vars
+
+typedef int opt_set_func_t (char *, int);
+typedef int shopt_get_func_t (char *);
 
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
 
-static struct {
+typedef struct opt_def_s {
   char *name;
   int  *value;
-  shopt_set_func_t *set_func;
-} shopt_vars[] = {
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+} opt_def_t;
+
+static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once", &expand_once_flag, set_array_expand },
   { "assoc_expand_once", &expand_once_flag, set_array_expand },
 #endif
-  { "autocd", &autocd, (shopt_set_func_t *)NULL },
+  { "autocd", &autocd, (opt_set_func_t *)NULL },
 #if defined (ARRAY_VARS)
-  { "bash_source_fullpath", &bash_source_fullpath, (shopt_set_func_t *)NULL },
+  { "bash_source_fullpath", &bash_source_fullpath, (opt_set_func_t *)NULL },
 #endif
-  { "cdable_vars", &cdable_vars, (shopt_set_func_t *)NULL },
-  { "cdspell", &cdspelling, (shopt_set_func_t *)NULL },
-  { "checkhash", &check_hashed_filenames, (shopt_set_func_t *)NULL },
+  { "cdable_vars", &cdable_vars, (opt_set_func_t *)NULL },
+  { "cdspell", &cdspelling, (opt_set_func_t *)NULL },
+  { "checkhash", &check_hashed_filenames, (opt_set_func_t *)NULL },
 #if defined (JOB_CONTROL)
-  { "checkjobs", &check_jobs_at_exit, (shopt_set_func_t *)NULL },
+  { "checkjobs", &check_jobs_at_exit, (opt_set_func_t *)NULL },
 #endif
-  { "checkwinsize", &check_window_size, (shopt_set_func_t *)NULL },
+  { "checkwinsize", &check_window_size, (opt_set_func_t *)NULL },
 #if defined (HISTORY)
-  { "cmdhist", &command_oriented_history, (shopt_set_func_t *)NULL },
+  { "cmdhist", &command_oriented_history, (opt_set_func_t *)NULL },
 #endif
   { "compat31", &shopt_compat31, set_compatibility_level },
   { "compat32", &shopt_compat32, set_compatibility_level },
@@ -1200,12 +1225,12 @@ static struct {
   { "compat43", &shopt_compat43, set_compatibility_level },
   { "compat44", &shopt_compat44, set_compatibility_level },
 #if defined (READLINE)
-  { "complete_fullquote", &complete_fullquote, (shopt_set_func_t *)NULL},
+  { "complete_fullquote", &complete_fullquote, (opt_set_func_t *)NULL},
   { "direxpand", &dircomplete_expand, shopt_set_complete_direxpand },
-  { "dirspell", &dircomplete_spelling, (shopt_set_func_t *)NULL },
+  { "dirspell", &dircomplete_spelling, (opt_set_func_t *)NULL },
 #endif
-  { "dotglob", &glob_dot_filenames, (shopt_set_func_t *)NULL },
-  { "execfail", &no_exit_on_failed_exec, (shopt_set_func_t *)NULL },
+  { "dotglob", &glob_dot_filenames, (opt_set_func_t *)NULL },
+  { "execfail", &no_exit_on_failed_exec, (opt_set_func_t *)NULL },
   { "expand_aliases", &expaliases_flag, shopt_set_expaliases },
 #if defined (DEBUGGER)
   { "extdebug", &debugging_mode, shopt_set_debug_mode },
@@ -1213,60 +1238,60 @@ static struct {
 #if defined (EXTENDED_GLOB)
   { "extglob", &extglob_flag, shopt_set_extglob },
 #endif
-  { "extquote", &extended_quote, (shopt_set_func_t *)NULL },
-  { "failglob", &fail_glob_expansion, (shopt_set_func_t *)NULL },
+  { "extquote", &extended_quote, (opt_set_func_t *)NULL },
+  { "failglob", &fail_glob_expansion, (opt_set_func_t *)NULL },
 #if defined (READLINE)
-  { "force_fignore", &force_fignore, (shopt_set_func_t *)NULL },
+  { "force_fignore", &force_fignore, (opt_set_func_t *)NULL },
 #endif
-  { "globasciiranges", &glob_asciirange, (shopt_set_func_t *)NULL },
-  { "globskipdots", &glob_always_skip_dot_and_dotdot, (shopt_set_func_t *)NULL },
-  { "globstar", &glob_star, (shopt_set_func_t *)NULL },
-  { "gnu_errfmt", &gnu_error_format, (shopt_set_func_t *)NULL },
+  { "globasciiranges", &glob_asciirange, (opt_set_func_t *)NULL },
+  { "globskipdots", &glob_always_skip_dot_and_dotdot, (opt_set_func_t *)NULL },
+  { "globstar", &glob_star, (opt_set_func_t *)NULL },
+  { "gnu_errfmt", &gnu_error_format, (opt_set_func_t *)NULL },
 #if defined (HISTORY)
-  { "histappend", &force_append_history, (shopt_set_func_t *)NULL },
+  { "histappend", &force_append_history, (opt_set_func_t *)NULL },
 #endif
 #if defined (READLINE)
-  { "histreedit", &history_reediting, (shopt_set_func_t *)NULL },
-  { "histverify", &hist_verify, (shopt_set_func_t *)NULL },
+  { "histreedit", &history_reediting, (opt_set_func_t *)NULL },
+  { "histverify", &hist_verify, (opt_set_func_t *)NULL },
   { "hostcomplete", &perform_hostname_completion, shopt_enable_hostname_completion },
 #endif
-  { "huponexit", &hup_on_exit, (shopt_set_func_t *)NULL },
-  { "inherit_errexit", &inherit_errexit, (shopt_set_func_t *)NULL },
+  { "huponexit", &hup_on_exit, (opt_set_func_t *)NULL },
+  { "inherit_errexit", &inherit_errexit, (opt_set_func_t *)NULL },
   { "interactive_comments", &interactive_comments, set_shellopts_after_change },
-  { "lastpipe", &lastpipe_opt, (shopt_set_func_t *)NULL },
+  { "lastpipe", &lastpipe_opt, (opt_set_func_t *)NULL },
 #if defined (HISTORY)
-  { "lithist", &literal_history, (shopt_set_func_t *)NULL },
+  { "lithist", &literal_history, (opt_set_func_t *)NULL },
 #endif
-  { "localvar_inherit", &localvar_inherit, (shopt_set_func_t *)NULL },
-  { "localvar_unset", &localvar_unset, (shopt_set_func_t *)NULL },
+  { "localvar_inherit", &localvar_inherit, (opt_set_func_t *)NULL },
+  { "localvar_unset", &localvar_unset, (opt_set_func_t *)NULL },
   { "login_shell", &shopt_login_shell, set_login_shell },
-  { "mailwarn", &mail_warning, (shopt_set_func_t *)NULL },
+  { "mailwarn", &mail_warning, (opt_set_func_t *)NULL },
 #if defined (READLINE)
-  { "no_empty_cmd_completion", &no_empty_command_completion, (shopt_set_func_t *)NULL },
+  { "no_empty_cmd_completion", &no_empty_command_completion, (opt_set_func_t *)NULL },
 #endif
-  { "nocaseglob", &glob_ignore_case, (shopt_set_func_t *)NULL },
-  { "nocasematch", &match_ignore_case, (shopt_set_func_t *)NULL },
-  { "noexpand_translation", &singlequote_translations, (shopt_set_func_t *)NULL },
-  { "nullglob",	&allow_null_glob_expansion, (shopt_set_func_t *)NULL },
-  { "patsub_replacement", &patsub_replacement, (shopt_set_func_t *)NULL },
+  { "nocaseglob", &glob_ignore_case, (opt_set_func_t *)NULL },
+  { "nocasematch", &match_ignore_case, (opt_set_func_t *)NULL },
+  { "noexpand_translation", &singlequote_translations, (opt_set_func_t *)NULL },
+  { "nullglob",	&allow_null_glob_expansion, (opt_set_func_t *)NULL },
+  { "patsub_replacement", &patsub_replacement, (opt_set_func_t *)NULL },
 #if defined (PROGRAMMABLE_COMPLETION)
-  { "progcomp", &prog_completion_enabled, (shopt_set_func_t *)NULL },
+  { "progcomp", &prog_completion_enabled, (opt_set_func_t *)NULL },
 #  if defined (ALIAS)
-  { "progcomp_alias", &progcomp_alias, (shopt_set_func_t *)NULL },
+  { "progcomp_alias", &progcomp_alias, (opt_set_func_t *)NULL },
 #  endif
 #endif
-  { "promptvars", &promptvars, (shopt_set_func_t *)NULL },
+  { "promptvars", &promptvars, (opt_set_func_t *)NULL },
 #if defined (RESTRICTED_SHELL)
   { "restricted_shell", &restricted_shell, set_restricted_shell },
 #endif
-  { "shift_verbose", &print_shift_error, (shopt_set_func_t *)NULL },
-  { "sourcepath", &source_uses_path, (shopt_set_func_t *)NULL },
+  { "shift_verbose", &print_shift_error, (opt_set_func_t *)NULL },
+  { "sourcepath", &source_uses_path, (opt_set_func_t *)NULL },
 #if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
-  { "syslog_history", &syslog_history, (shopt_set_func_t *)NULL },
+  { "syslog_history", &syslog_history, (opt_set_func_t *)NULL },
 #endif
-  { "varredir_close", &varassign_redir_autoclose, (shopt_set_func_t *)NULL },
-  { "xpg_echo", &xpg_echo, (shopt_set_func_t *)NULL },
-  { (char *)0, (int *)0, (shopt_set_func_t *)NULL }
+  { "varredir_close", &varassign_redir_autoclose, (opt_set_func_t *)NULL },
+  { "xpg_echo", &xpg_echo, (opt_set_func_t *)NULL },
+  { (char *)0, (int *)0, (opt_set_func_t *)NULL }
 };
 
 #define N_SHOPT_OPTIONS		(sizeof (shopt_vars) / sizeof (shopt_vars[0]))
@@ -1918,3 +1943,9 @@ set_array_expand (char *option_name, int mode)
   return 0;
 }
 #endif
+
+#undef opt_set_func_t
+#undef opt_get_func_t
+#undef opt_def_s
+#undef opt_def_t
+#undef opt_defs
