@@ -48,7 +48,6 @@ extern int return_catch_flag;
 extern int return_catch_value;
 extern volatile int last_command_exit_value;
 extern int last_command_exit_signal;
-extern int builtin_ignoring_errexit;
 extern int executing_builtin;
 extern int interrupt_execution;
 extern int retain_fifos;
