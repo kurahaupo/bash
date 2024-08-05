@@ -281,7 +281,7 @@ static const char * const on = "on";
 static const char * const off = "off";
 
 static int find_shopt (char const*);
-static int toggle_shopts (int, WORD_LIST *, int);
+static int change_shopts (int, WORD_LIST *, int);
 static void print_shopt (char const*, int, int);
 static int list_shopts (WORD_LIST *, int);
 static int list_some_shopts (int, int);
@@ -343,7 +343,7 @@ shopt_builtin (WORD_LIST *list)
   else if (flags & OFLAG)	/* shopt -so */
     rval = list_some_o_options ((flags & SFLAG) ? 1 : 0, flags);
   else if (list && (flags & (SFLAG|UFLAG)))	/* shopt -su args */
-    rval = toggle_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, list, flags & QFLAG);
+    rval = change_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, list, flags & QFLAG);
   else if ((flags & (SFLAG|UFLAG)) == 0)	/* shopt [args] */
     rval = list_shopts (list, flags);
   else						/* shopt -su */
@@ -460,7 +460,7 @@ shopt_error (char const*s)
 }
 
 static int
-toggle_shopts (int mode, WORD_LIST *list, int quiet)
+change_shopts (int mode, WORD_LIST *list, int quiet)
 {
   WORD_LIST *l;
   int ind, rval;
@@ -793,7 +793,7 @@ shopt_setopt (char const *name, int mode)
   int r;
 
   wl = add_string_to_list (name, (WORD_LIST *)NULL);
-  r = toggle_shopts (mode, wl, 0);
+  r = change_shopts (mode, wl, 0);
   dispose_words (wl);
   return r;
 }
