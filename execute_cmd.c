@@ -222,10 +222,6 @@ volatile int last_command_exit_value;
    was terminated by a signal, and, if so, which one. */
 int last_command_exit_signal;
 
-/* Are we currently ignoring the -e option for the duration of a builtin's
-   execution? */
-int builtin_ignoring_errexit = 0;
-
 /* The list of redirections to perform which will undo the redirections
    that I made in the shell. */
 REDIRECT *redirection_undo_list = (REDIRECT *)NULL;
