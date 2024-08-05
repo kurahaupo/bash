@@ -192,56 +192,56 @@ static int previous_option_value;
    sure to set the value appropriately in reset_shell_options. */
 typedef struct opt_def_s {
   char *name;
-  int letter;
   int *variable;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
+  int letter;
 } opt_def_t;
 
 static const option_def_t o_options[] = {
-  { "allexport",  'a' },
+  { "allexport", .letter = 'a' },
 #if defined (BRACE_EXPANSION)
-  { "braceexpand",'B'  },
+  { "braceexpand", .letter = 'B' },
 #endif
 #if defined (READLINE)
-  { "emacs",     '\0', set_edit_mode, get_edit_mode },
+  { "emacs", .set_func = set_edit_mode, .get_func = get_edit_mode },
 #endif
-  { "errexit",	  'e'  },
-  { "errtrace",	  'E'  },
-  { "functrace",  'T'  },
-  { "hashall",    'h'  },
+  { "errexit", .letter = 'e' },
+  { "errtrace", .letter = 'E' },
+  { "functrace", .letter = 'T' },
+  { "hashall", .letter = 'h' },
 #if defined (BANG_HISTORY)
-  { "histexpand", 'H'  },
+  { "histexpand", .letter = 'H' },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
-  { "history",   '\0', &enable_history_list, bash_set_history },
+  { "history", &enable_history_list, .set_func = bash_set_history },
 #endif
-  { "ignoreeof", '\0', &ignoreeof, set_ignoreeof },
-  { "interactive-comments", '\0', &interactive_comments },
-  { "keyword",    'k'  },
+  { "ignoreeof", &ignoreeof, .set_func = set_ignoreeof },
+  { "interactive-comments", &interactive_comments },
+  { "keyword", .letter = 'k' },
 #if defined (JOB_CONTROL)
-  { "monitor",	  'm'  },
+  { "monitor", .letter = 'm' },
 #endif
-  { "noclobber",  'C'  },
-  { "noexec",	  'n'  },
-  { "noglob",	  'f'  },
+  { "noclobber", .letter = 'C' },
+  { "noexec", .letter = 'n' },
+  { "noglob", .letter = 'f' },
 #if defined (HISTORY)
-  { "nolog",     '\0', &dont_save_function_defs },
+  { "nolog", &dont_save_function_defs },
 #endif
 #if defined (JOB_CONTROL)
-  { "notify",	  'b'  },
+  { "notify", .letter = 'b' },
 #endif /* JOB_CONTROL */
-  { "nounset",	  'u'  },
-  { "onecmd",	  't' },
-  { "physical",   'P'  },
-  { "pipefail",  '\0', &pipefail_opt  },
-  { "posix",     '\0', &posixly_correct, set_posix_mode },
-  { "privileged", 'p'  },
-  { "verbose",	  'v'  },
+  { "nounset", .letter = 'u' },
+  { "onecmd", .letter = 't' },
+  { "physical", .letter = 'P' },
+  { "pipefail", &pipefail_opt },
+  { "posix", &posixly_correct, .set_func = set_posix_mode },
+  { "privileged", .letter = 'p' },
+  { "verbose", .letter = 'v' },
 #if defined (READLINE)
-  { "vi",        '\0', (int *)NULL, set_edit_mode, get_edit_mode },
+  { "vi", .set_func = set_edit_mode, .get_func = get_edit_mode },
 #endif
-  { "xtrace",	  'x'  },
+  { "xtrace", .letter = 'x' },
   {0}
 };
 
@@ -705,7 +705,7 @@ set_builtin (WORD_LIST *list)
       arg = list->word->word;
 
       /* If the argument is `--' or `-' then signal the end of the list
-	 and remember the remaining arguments. */
+	and remember the remaining arguments. */
       if (arg[0] == '-' && (!arg[1] || (arg[1] == '-' && !arg[2])))
 	{
 	  list = list->next;
@@ -900,12 +900,12 @@ unset_builtin (WORD_LIST *list)
 #endif
 
       /* Get error checking out of the way first.  The low-level functions
-	 just perform the unset, relying on the caller to verify. */
+	just perform the unset, relying on the caller to verify. */
       valid_id = valid_identifier (name);
 
       /* Whether or not we are in posix mode, if neither -f nor -v appears,
-	 skip over trying to unset variables with invalid names and just
-	 treat them as potential shell function names. */
+	skip over trying to unset variables with invalid names and just
+	treat them as potential shell function names. */
       if (global_unset_func == 0 && global_unset_var == 0 && valid_id == 0)
 	{
 #if defined (ARRAY_VARS)
@@ -917,8 +917,8 @@ unset_builtin (WORD_LIST *list)
 	}
 
       /* Bash allows functions with names which are not valid identifiers
-	 to be created when not in posix mode, so check only when in posix
-	 mode when unsetting a function. */
+	to be created when not in posix mode, so check only when in posix
+	mode when unsetting a function. */
       if (unset_function == 0 && valid_id == 0)
 	{
 	  sh_invalidid (name);
@@ -927,7 +927,7 @@ unset_builtin (WORD_LIST *list)
 	}
 
       /* Search for functions here if -f supplied or if NAME cannot be a
-	 variable name. */
+	variable name. */
       var = unset_function ? find_function (name)
 			   : (nameref ? find_variable_last_nameref (name, 0) : find_variable (name));
 
@@ -944,9 +944,9 @@ unset_builtin (WORD_LIST *list)
 	name = name_cell (var);
 
       /* Posix.2 says try variables first, then functions.  If we would
-	 find a function after unsuccessfully searching for a variable,
-	 note that we're acting on a function now as if -f were
-	 supplied.  The readonly check below takes care of it. */
+	find a function after unsuccessfully searching for a variable,
+	note that we're acting on a function now as if -f were
+	supplied.  The readonly check below takes care of it. */
       if (var == 0 && nameref == 0 && unset_variable == 0 && unset_function == 0)
 	{
 #if defined (ARRAY_VARS)
@@ -969,7 +969,7 @@ unset_builtin (WORD_LIST *list)
       if (var && readonly_p (var))
 	{
 	  builtin_error (_("%s: cannot unset: readonly %s"),
-			 var->name, unset_function ? "function" : "variable");
+			var->name, unset_function ? "function" : "variable");
 	  posix_utility_error++;
 	  NEXT_VARIABLE ();
 	}
@@ -994,7 +994,7 @@ unset_builtin (WORD_LIST *list)
       else
 #endif /* ARRAY_VARS */
       /* If we're trying to unset a nameref variable whose value isn't a set
-	 variable, make sure we still try to unset the nameref's value */
+	variable, make sure we still try to unset the nameref's value */
       if (var == 0 && nameref == 0 && unset_function == 0)
 	{
 	  var = find_variable_last_nameref (name, 0);
@@ -1031,18 +1031,18 @@ unset_builtin (WORD_LIST *list)
 	tem = unset_function ? unbind_func (name) : (nameref ? unbind_nameref (name) : unbind_variable (name));
 
       /* This is what Posix.2 says:  ``If neither -f nor -v
-	 is specified, the name refers to a variable; if a variable by
-	 that name does not exist, it is unspecified whether  a function
-	 by that name, if any, shall be unset.'' The unspecified part is a
-	 recent addition, so we continue to try to unset a shell function if
-	 we don't find a variable named NAME. */
+	is specified, the name refers to a variable; if a variable by
+	that name does not exist, it is unspecified whether  a function
+	by that name, if any, shall be unset.'' The unspecified part is a
+	recent addition, so we continue to try to unset a shell function if
+	we don't find a variable named NAME. */
       if (tem == -1 && nameref == 0 && unset_function == 0 && unset_variable == 0)
 	tem = unbind_func (name);
 
       name = list->word->word;		/* reset above for namerefs */
 
       /* SUSv3, POSIX.1-2001 say:  ``Unsetting a variable or function that
-	 was not previously set shall not be considered an error.'' */
+	was not previously set shall not be considered an error.'' */
 
       if (unset_function == 0)
 	stupidly_hack_special_variables (name);
@@ -1203,8 +1203,8 @@ typedef struct opt_def_s {
 
 static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
-  { "array_expand_once", &expand_once_flag, set_array_expand },
-  { "assoc_expand_once", &expand_once_flag, set_array_expand },
+  { "array_expand_once", &expand_once_flag, .set_func = set_array_expand },
+  { "assoc_expand_once", &expand_once_flag, .set_func = set_array_expand },
 #endif
   { "autocd", &autocd },
 #if defined (ARRAY_VARS)
@@ -1220,26 +1220,26 @@ static const opt_def_t opt_defs[] = {
 #if defined (HISTORY)
   { "cmdhist", &command_oriented_history },
 #endif
-  { "compat31", &shopt_compat31, set_compatibility_level },
-  { "compat32", &shopt_compat32, set_compatibility_level },
-  { "compat40", &shopt_compat40, set_compatibility_level },
-  { "compat41", &shopt_compat41, set_compatibility_level },
-  { "compat42", &shopt_compat42, set_compatibility_level },
-  { "compat43", &shopt_compat43, set_compatibility_level },
-  { "compat44", &shopt_compat44, set_compatibility_level },
+  { "compat31", &shopt_compat31, .set_func = set_compatibility_level },
+  { "compat32", &shopt_compat32, .set_func = set_compatibility_level },
+  { "compat40", &shopt_compat40, .set_func = set_compatibility_level },
+  { "compat41", &shopt_compat41, .set_func = set_compatibility_level },
+  { "compat42", &shopt_compat42, .set_func = set_compatibility_level },
+  { "compat43", &shopt_compat43, .set_func = set_compatibility_level },
+  { "compat44", &shopt_compat44, .set_func = set_compatibility_level },
 #if defined (READLINE)
   { "complete_fullquote", &complete_fullquote},
-  { "direxpand", &dircomplete_expand, shopt_set_complete_direxpand },
+  { "direxpand", &dircomplete_expand, .set_func = shopt_set_complete_direxpand },
   { "dirspell", &dircomplete_spelling },
 #endif
   { "dotglob", &glob_dot_filenames },
   { "execfail", &no_exit_on_failed_exec },
-  { "expand_aliases", &expaliases_flag, shopt_set_expaliases },
+  { "expand_aliases", &expaliases_flag, .set_func = shopt_set_expaliases },
 #if defined (DEBUGGER)
-  { "extdebug", &debugging_mode, shopt_set_debug_mode },
+  { "extdebug", &debugging_mode, .set_func = shopt_set_debug_mode },
 #endif
 #if defined (EXTENDED_GLOB)
-  { "extglob", &extglob_flag, shopt_set_extglob },
+  { "extglob", &extglob_flag, .set_func = shopt_set_extglob },
 #endif
   { "extquote", &extended_quote },
   { "failglob", &fail_glob_expansion },
@@ -1256,18 +1256,18 @@ static const opt_def_t opt_defs[] = {
 #if defined (READLINE)
   { "histreedit", &history_reediting },
   { "histverify", &hist_verify },
-  { "hostcomplete", &perform_hostname_completion, shopt_enable_hostname_completion },
+  { "hostcomplete", &perform_hostname_completion, .set_func = shopt_enable_hostname_completion },
 #endif
   { "huponexit", &hup_on_exit },
   { "inherit_errexit", &inherit_errexit },
-  { "interactive_comments", &interactive_comments, set_shellopts_after_change },
+  { "interactive_comments", &interactive_comments, .set_func = set_shellopts_after_change },
   { "lastpipe", &lastpipe_opt },
 #if defined (HISTORY)
   { "lithist", &literal_history },
 #endif
   { "localvar_inherit", &localvar_inherit },
   { "localvar_unset", &localvar_unset },
-  { "login_shell", &shopt_login_shell, set_login_shell },
+  { "login_shell", &shopt_login_shell, .set_func = set_login_shell },
   { "mailwarn", &mail_warning },
 #if defined (READLINE)
   { "no_empty_cmd_completion", &no_empty_command_completion },
@@ -1275,17 +1275,17 @@ static const opt_def_t opt_defs[] = {
   { "nocaseglob", &glob_ignore_case },
   { "nocasematch", &match_ignore_case },
   { "noexpand_translation", &singlequote_translations },
-  { "nullglob",	&allow_null_glob_expansion },
+  { "nullglob", &allow_null_glob_expansion },
   { "patsub_replacement", &patsub_replacement },
 #if defined (PROGRAMMABLE_COMPLETION)
   { "progcomp", &prog_completion_enabled },
-#  if defined (ALIAS)
+# if defined (ALIAS)
   { "progcomp_alias", &progcomp_alias },
-#  endif
+# endif
 #endif
   { "promptvars", &promptvars },
 #if defined (RESTRICTED_SHELL)
-  { "restricted_shell", &restricted_shell, set_restricted_shell },
+  { "restricted_shell", &restricted_shell, .set_func = set_restricted_shell },
 #endif
   { "shift_verbose", &print_shift_error },
   { "sourcepath", &source_uses_path },
