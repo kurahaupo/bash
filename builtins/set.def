@@ -163,6 +163,7 @@ $END
 #define opt_def_s option_def_s
 #define opt_def_t option_def_t
 #define opt_defs o_options
+#define store variable
 
 typedef int opt_set_func_t (int, char const*);
 typedef int opt_get_func_t (char *);
@@ -1057,6 +1058,7 @@ unset_builtin (WORD_LIST *list)
 #undef opt_def_s
 #undef opt_def_t
 #undef opt_defs
+#undef store
 
 $BUILTIN shopt
 $FUNCTION shopt_builtin
@@ -1184,6 +1186,7 @@ static int shopt_compat44;
 #define opt_def_s shopt_def_s
 #define opt_def_t shopt_def_t
 #define opt_defs shopt_vars
+#define store value
 
 typedef int opt_set_func_t (char *, int);
 typedef int shopt_get_func_t (char *);
@@ -1949,3 +1952,4 @@ set_array_expand (char *option_name, int mode)
 #undef opt_def_s
 #undef opt_def_t
 #undef opt_defs
+#undef store
