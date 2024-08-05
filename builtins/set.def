@@ -52,6 +52,7 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+
 $BUILTIN set
 $FUNCTION set_builtin
 $SHORT_DOC set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
@@ -157,19 +158,25 @@ Exit Status:
 Returns success unless an invalid option is given.
 $END
 
-typedef int setopt_set_func_t (int, char *);
-typedef int setopt_get_func_t (char *);
+#define opt_set_func_t setopt_set_func_t
+#define opt_get_func_t setopt_get_func_t
+#define opt_def_s option_def_s
+#define opt_def_t option_def_t
+#define opt_defs o_options
 
-static int set_ignoreeof (int, char *);
-static int set_posix_mode (int, char *);
+typedef int opt_set_func_t (int, char *);
+typedef int opt_get_func_t (char *);
+
+static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_posix_mode;
 
 #if defined (READLINE)
-static int set_edit_mode (int, char *);
-static int get_edit_mode (char *);
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
 #endif
 
 #if defined (HISTORY)
-static int bash_set_history (int, char *);
+static opt_set_func_t bash_set_history;
 #endif
 
 static const char * const on = "on";
@@ -182,13 +189,15 @@ static int previous_option_value;
    dynamically generate values.  If you add a new variable name here
    that doesn't have a corresponding single-character option letter, make
    sure to set the value appropriately in reset_shell_options. */
-const struct {
+typedef struct opt_def_s {
   char *name;
   int letter;
   int *variable;
-  setopt_set_func_t *set_func;
-  setopt_get_func_t *get_func;
-} o_options[] = {
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+} opt_def_t;
+
+static const option_def_t o_options[] = {
   { "allexport",  'a', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL },
 #if defined (BRACE_EXPANSION)
   { "braceexpand",'B', (int *)NULL, (setopt_set_func_t *)NULL, (setopt_get_func_t *)NULL  },
@@ -1043,6 +1052,12 @@ unset_builtin (WORD_LIST *list)
   return (any_failed ? (posix_utility_error ? EX_UTILERROR : EXECUTION_FAILURE) : EXECUTION_SUCCESS);
 }
 
+#undef opt_set_func_t
+#undef opt_get_func_t
+#undef opt_def_s
+#undef opt_def_t
+#undef opt_defs
+
 $BUILTIN shopt
 $FUNCTION shopt_builtin
 $SHORT_DOC shopt [-pqsu] [-o] [optname ...]
@@ -1164,16 +1179,26 @@ static int shopt_compat42;
 static int shopt_compat43;
 static int shopt_compat44;
 
+#define opt_set_func_t shopt_set_func_t
+#define opt_get_func_t shopt_get_func_t
+#define opt_def_s shopt_def_s
+#define opt_def_t shopt_def_t
+#define opt_defs shopt_vars
+
 typedef int shopt_set_func_t (char *, int);
+typedef int shopt_get_func_t (char *);
 
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
 
-static struct {
+typedef struct opt_def_s {
   char *name;
   int  *value;
-  shopt_set_func_t *set_func;
-} shopt_vars[] = {
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+} opt_def_t;
+
+static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once", &expand_once_flag, set_array_expand },
   { "assoc_expand_once", &expand_once_flag, set_array_expand },
@@ -1918,3 +1943,9 @@ set_array_expand (char *option_name, int mode)
   return 0;
 }
 #endif
+
+#undef opt_set_func_t
+#undef opt_get_func_t
+#undef opt_def_s
+#undef opt_def_t
+#undef opt_defs
