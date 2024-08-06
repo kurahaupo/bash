@@ -164,6 +164,9 @@ $END
 #define opt_def_t option_def_t
 #define opt_defs o_options
 #define store variable
+#define find_option(N) (&shopt_vars[find_shopt(N)])
+#define get_opt_value(I,N) GET_BINARY_O_OPTION_VALUE(I,N)
+#define set_opt_value(I,V,N) SET_BINARY_O_OPTION_VALUE(I,N,V)
 
 typedef int opt_set_func_t (int, char *);
 typedef int opt_get_func_t (char *);
@@ -434,13 +437,27 @@ which_set_flags (void)
   return (temp);
 }
 
-#define GET_BINARY_O_OPTION_VALUE(i, name) \
-  ((o_options[i].get_func) ? (*o_options[i].get_func) (name) \
-			   : (*o_options[i].variable))
+static inline int
+GET_BINARY_O_OPTION_VALUE(size_t i, char *name)
+{
+  opt_def_t const *d = &o_options[i];
+  if (d->get_func)
+    return d->get_func(name);
+  else if (d->store)
+    return *o_options[i].variable;
+  return -1;
+}
 
-#define SET_BINARY_O_OPTION_VALUE(i, onoff, name) \
-  ((o_options[i].set_func) ? (*o_options[i].set_func) (onoff, name) \
-			   : (*o_options[i].variable = (onoff == FLAG_ON)))
+static inline void
+SET_BINARY_O_OPTION_VALUE(size_t i, int onoff, char *name)
+{
+  opt_def_t const *d = &o_options[i];
+  _Bool b = onoff == FLAG_ON;
+  if (d->set_func)
+    d->set_func(b, name);
+  else if (d->store)
+    *d->store = b;
+}
 
 static int
 find_minus_o_option (char *name)
@@ -1253,6 +1270,9 @@ unset_builtin (WORD_LIST *list)
 #undef opt_def_t
 #undef opt_defs
 #undef store
+#undef find_option
+#undef get_opt_value
+#undef set_opt_value
 
 $BUILTIN shopt
 $FUNCTION shopt_builtin
@@ -1381,6 +1401,9 @@ static int shopt_compat44;
 #define opt_def_t shopt_def_t
 #define opt_defs shopt_vars
 #define store value
+#define find_option(N) (&shopt_vars[find_shopt(N)])
+#define get_opt_value(I,N) GET_SHOPT_OPTION_VALUE(I)
+#define set_opt_value(I,V,N) SET_SHOPT_OPTION_VALUE(I,V)
 
 typedef int shopt_set_func_t (char *, int);
 typedef int shopt_get_func_t (char *);
@@ -1510,7 +1533,11 @@ static const opt_def_t opt_defs[] = {
 
 #define N_SHOPT_OPTIONS		(sizeof (shopt_vars) / sizeof (shopt_vars[0]))
 
-#define GET_SHOPT_OPTION_VALUE(i)	(*shopt_vars[i].value)
+static inline int
+GET_SHOPT_OPTION_VALUE(int i)
+{
+  return *shopt_vars[i].value;
+}
 
 static int find_shopt (char *);
 static int change_shopts (int, WORD_LIST *, int);
@@ -2164,3 +2191,6 @@ set_array_expand (char *option_name, int mode)
 #undef opt_def_t
 #undef opt_defs
 #undef store
+#undef find_option
+#undef get_opt_value
+#undef set_opt_value
