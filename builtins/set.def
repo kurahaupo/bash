@@ -52,6 +52,11 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+#if defined (JOB_CONTROL)
+/* copied from jobs.h */
+extern int set_job_control (int);
+#endif
+
 typedef int option_value_t;
 
 #define OPTION_INVALID_VALUE ((option_value_t)-1)
@@ -364,21 +369,70 @@ static const opt_def_t *letter_map[1+(unsigned char)-1];
 
 #define N_LETTERS	(sizeof (letter_map) / sizeof (letter_map[0]))
 
-static int *
-find_short (int letter)
-{
-  if (letter < 0 || letter >= N_LETTERS)
-    return NULL;
-  opt_def_t const *d = letter_map[letter];
-  if (d)
-    return d->store;
-  return NULL;
-}
 
-#if defined (JOB_CONTROL)
-extern int set_job_control (int);	/* copied from jobs.h */
+static optset_result_t
+set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t v )
+{
+  /* Special cases for a few flags. */
+  switch (d->letter)
+    {
+#if defined (BANG_HISTORY)
+    case 'H':
+      d->store[0] = v;
+      history_expansion = histexp_flag;
+      if (v)
+	bash_initialize_history ();
+      break;
 #endif
 
+#if defined (JOB_CONTROL)
+    case 'm':
+      d->store[0] = v;
+      set_job_control (v);
+      break;
+#endif /* JOB_CONTROL */
+
+    case 'e':
+      d->store[0] = v;
+      if (builtin_ignoring_errexit == 0)
+	exit_immediately_on_error = errexit_flag;
+      break;
+
+    case 'n':
+      d->store[0] = v;
+      if (interactive_shell)
+	read_but_dont_execute = 0;
+      break;
+
+    case 'p':
+      d->store[0] = v;
+      if (!v)
+	disable_priv_mode ();
+      break;
+
+#if defined (RESTRICTED_SHELL)
+    case 'r':
+
+      /* Don't allow "set +r" in a shell which is `restricted'. */
+      if (restricted && !v)
+	return Result (Forbidden);
+      d->store[0] = v;
+
+      if (v && shell_initialized)
+	maybe_make_restricted (shell_name);
+      break;
+#endif
+
+    case 'v':
+      d->store[0] = v;
+      echo_input_at_read = verbose_flag;
+      break;
+
+    default:
+      d->store[0] = v;
+    }
+  return Result (OK);
+}
 
 /* Change the state of a flag, and return its original value, or return
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
@@ -386,66 +440,24 @@ extern int set_job_control (int);	/* copied from jobs.h */
 int
 change_flag (int letter, int on_or_off)
 {
-  int *value, old_value;
+  int *store, old_value;
 
-#if defined (RESTRICTED_SHELL)
-  /* Don't allow "set +r" in a shell which is `restricted'. */
-  if (restricted && letter == 'r' && on_or_off == FLAG_OFF)
-    return (FLAG_ERROR);
-#endif /* RESTRICTED_SHELL */
+  if (! valid_flag (on_or_off))
+    return FLAG_ERROR;
 
   opt_def_t const *d = letter_map[letter];
-  value = d ? d->store : NULL;
+  if (d == NULL)
+    return FLAG_ERROR;
 
-  if (value == NULL || ! valid_flag (on_or_off))
-    return (FLAG_ERROR);
+  store = d->store;
+  if (store == NULL)
+    return FLAG_ERROR;
 
-  old_value = *value;
-  *value = (on_or_off == FLAG_ON) ? 1 : 0;
+  old_value = *store;
+  optset_result_t r = set_flag_option (d, Whence (short), flag_to_bool (on_or_off));
 
-  /* Special cases for a few flags. */
-  switch (letter)
-    {
-#if defined (BANG_HISTORY)
-    case 'H':
-      history_expansion = histexp_flag;
-      if (on_or_off == FLAG_ON)
-	bash_initialize_history ();
-      break;
-#endif
-
-#if defined (JOB_CONTROL)
-    case 'm':
-      set_job_control (on_or_off == FLAG_ON);
-      break;
-#endif /* JOB_CONTROL */
-
-    case 'e':
-      if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
-      break;
-
-    case 'n':
-      if (interactive_shell)
-	read_but_dont_execute = 0;
-      break;
-
-    case 'p':
-      if (on_or_off == FLAG_OFF)
-	disable_priv_mode ();
-      break;
-
-#if defined (RESTRICTED_SHELL)
-    case 'r':
-      if (on_or_off == FLAG_ON && shell_initialized)
-	maybe_make_restricted (shell_name);
-      break;
-#endif
-
-    case 'v':
-      echo_input_at_read = verbose_flag;
-      break;
-    }
+  if (res_to_ex(r) != EXECUTION_SUCCESS)
+    return FLAG_ERROR;
 
   return (old_value);
 }
@@ -2154,8 +2166,3 @@ set_array_expand (char *option_name, int mode)
 #undef get_opt_value
 #undef set_opt_value
 
-static optset_result_t set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t v )
-{
-  int old_value = change_flag (d->letter, bool_to_flag (v));
-  return Result (OK);
-}
