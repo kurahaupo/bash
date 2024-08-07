@@ -105,7 +105,7 @@ ValidateBool(char const *file, unsigned int line, char const *expr_str, int X)
 static inline int
 ValidateFlag(char const *file, unsigned int line, char const *expr_str, int X)
 {
-  if valid_flag(X)
+  if (valid_flag(X))
     return X;
   FailedValidation(file, line, X, "a flag ('+' or '-')", expr_str);
 }
@@ -114,7 +114,7 @@ ValidateFlag(char const *file, unsigned int line, char const *expr_str, int X)
 static inline int
 ValidateFlagOrError(char const *file, unsigned int line, char const *expr_str, int X)
 {
-  if valid_flag_or_error(X)
+  if (valid_flag_or_error(X))
     return X;
   FailedValidation(file, line, X, "a flag ('+' or '-') or error (-1)", expr_str);
 }
