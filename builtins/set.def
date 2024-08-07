@@ -266,7 +266,7 @@ find_flag (int name)
   opt_def_t const *d = letter_map[name];
   if (d)
     return d->store;
-  return (FLAG_UNKNOWN);
+  return NULL;
 }
 
 #if defined (JOB_CONTROL)
@@ -290,7 +290,7 @@ change_flag (int flag, int on_or_off)
 
   value = find_flag (flag);
 
-  if ((value == (int *)FLAG_UNKNOWN) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
+  if (value == NULL || !valid_flag(on_or_off))
     return (FLAG_ERROR);
 
   old_value = *value;
@@ -436,7 +436,7 @@ minus_o_option_value (char *name)
   if (o_options[i].letter)
     {
       on_or_off = find_flag (o_options[i].letter);
-      return ((on_or_off == FLAG_UNKNOWN) ? -1 : *on_or_off);
+      return ((on_or_off == NULL) ? -1 : *on_or_off);
     }
   else
     return (GET_BINARY_O_OPTION_VALUE (i, name));
@@ -465,7 +465,7 @@ list_minus_o_opts (int mode, int reusable)
 	{
 	  value = 0;
 	  on_or_off = find_flag (o_options[i].letter);
-	  if (on_or_off == FLAG_UNKNOWN)
+	  if (on_or_off == NULL)
 	    on_or_off = &value;
 	  if (mode == -1 || mode == *on_or_off)
 	    print_minus_o_option (o_options[i].name, *on_or_off, reusable);
@@ -531,7 +531,7 @@ set_current_options (const char *bitmap)
       v = bitmap[i] ? FLAG_ON : FLAG_OFF;
       if (o_options[i].letter)
 	{
-	  /* We should not get FLAG_UNKNOWN here */
+	  /* We should not get NULL here */
 	  on_or_off = find_flag (o_options[i].letter);
 	  cv = *on_or_off ? FLAG_ON : FLAG_OFF;
 	  if (v != cv)
