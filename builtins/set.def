@@ -1342,41 +1342,6 @@ int expand_once_flag;
 extern int syslog_history;
 #endif
 
-static int set_shellopts_after_change (char *, int);
-static int set_compatibility_level (char *, int);
-
-#if defined (RESTRICTED_SHELL)
-static int set_restricted_shell (char *, int);
-#endif
-
-#if defined (READLINE)
-static int shopt_enable_hostname_completion (char *, int);
-static int shopt_set_complete_direxpand (char *, int);
-#endif
-
-#if defined (ARRAY_VARS)
-static int set_array_expand (char *, int);
-#endif
-
-#if defined (EXTENDED_GLOB)
-int extglob_flag = EXTGLOB_DEFAULT;
-static int shopt_set_extglob (char *, int);
-#endif
-
-int expaliases_flag = 0;
-static int shopt_set_expaliases (char *, int);
-
-static int shopt_set_debug_mode (char *, int);
-
-static int shopt_login_shell;
-static int shopt_compat31;
-static int shopt_compat32;
-static int shopt_compat40;
-static int shopt_compat41;
-static int shopt_compat42;
-static int shopt_compat43;
-static int shopt_compat44;
-
 #define opt_set_func_t shopt_set_func_t
 #define opt_get_func_t shopt_get_func_t
 #define opt_def_s shopt_def_s
@@ -1388,6 +1353,41 @@ static int shopt_compat44;
 
 typedef int opt_set_func_t (char *, int);
 typedef int shopt_get_func_t (char *);
+
+static opt_set_func_t set_shellopts_after_change;
+static opt_set_func_t set_compatibility_level;
+
+#if defined (RESTRICTED_SHELL)
+static opt_set_func_t set_restricted_shell;
+#endif
+
+#if defined (READLINE)
+static opt_set_func_t shopt_enable_hostname_completion;
+static opt_set_func_t shopt_set_complete_direxpand;
+#endif
+
+#if defined (ARRAY_VARS)
+static opt_set_func_t set_array_expand;
+#endif
+
+#if defined (EXTENDED_GLOB)
+int extglob_flag = EXTGLOB_DEFAULT;
+static opt_set_func_t shopt_set_extglob;
+#endif
+
+int expaliases_flag = 0;
+static opt_set_func_t shopt_set_expaliases;
+
+static opt_set_func_t shopt_set_debug_mode;
+
+static int shopt_login_shell;
+static int shopt_compat31;
+static int shopt_compat32;
+static int shopt_compat40;
+static int shopt_compat41;
+static int shopt_compat42;
+static int shopt_compat43;
+static int shopt_compat44;
 
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
