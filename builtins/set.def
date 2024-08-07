@@ -514,8 +514,8 @@ find_minus_o_option (char *name)
 {
   register int i;
 
-  for (i = 0; o_options[i].name; i++)
-    if (o_options[i].name != no_long_name && STREQ (name, o_options[i].name))
+  for (i = 0; opt_defs[i].name; i++)
+    if (opt_defs[i].name != no_long_name && STREQ (name, opt_defs[i].name))
       return i;
   return -1;
 }
@@ -558,8 +558,8 @@ get_minus_o_opts (void)
   int i;
 
   ret = strvec_create (N_O_OPTIONS + 1);
-  for (i = 0; o_options[i].name; i++)
-    ret[i] = o_options[i].name;
+  for (i = 0; opt_defs[i].name; i++)
+    ret[i] = opt_defs[i].name;
   ret[i] = (char *)NULL;
   return ret;
 }
@@ -692,7 +692,7 @@ set_minus_o_option (int on_or_off, char *option_name)
       return (EX_USAGE);
     }
 
-  struct opt_def_s const *d = &o_options[i];
+  struct opt_def_s const *d = &opt_defs[i];
   optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (on_or_off));
   if (r.result != Result_OK)
     {
@@ -736,26 +736,26 @@ set_shellopts (void)
   size_t vsize, vptr;
   SHELL_VAR *v;
 
-  for (vsize = i = 0; o_options[i].name; i++)
+  for (vsize = i = 0; opt_defs[i].name; i++)
     {
-      struct opt_def_s const *d = &o_options[i];
+      struct opt_def_s const *d = &opt_defs[i];
       int v = get_opt_value (d, Whence (set_o));
       tflag[i] = 0;
       if (v > 0)
 	{
-	  vsize += strlen (o_options[i].name) + 1;
+	  vsize += strlen (opt_defs[i].name) + 1;
 	  tflag[i] = 1;
 	}
     }
 
   value = (char *)xmalloc (vsize + 1);
 
-  for (i = vptr = 0; o_options[i].name; i++)
+  for (i = vptr = 0; opt_defs[i].name; i++)
     {
       if (tflag[i])
 	{
-	  strcpy (value + vptr, o_options[i].name);
-	  vptr += strlen (o_options[i].name);
+	  strcpy (value + vptr, opt_defs[i].name);
+	  vptr += strlen (opt_defs[i].name);
 	  value[vptr++] = ':';
 	}
     }
@@ -1518,7 +1518,7 @@ static const opt_def_t opt_defs[] = {
 static inline int
 GET_SHOPT_OPTION_VALUE (int i)
 {
-  return *shopt_vars[i].store;
+  return *opt_defs[i].store;
 }
 
 static int change_shopts (int, WORD_LIST *, int);
