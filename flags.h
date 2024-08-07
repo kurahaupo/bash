@@ -29,7 +29,6 @@
 #define FLAG_OFF '+'
 
 #define FLAG_ERROR -1
-#define FLAG_UNKNOWN (int *)0
 
 static inline char
 bool_to_flag (_Bool b)
