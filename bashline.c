@@ -80,14 +80,6 @@
 #  include "pcomplete.h"
 #endif
 
-/* These should agree with the defines for emacs_mode and vi_mode in
-   rldefs.h, even though that's not a public readline header file. */
-#ifndef EMACS_EDITING_MODE
-#  define NO_EDITING_MODE	-1
-#  define EMACS_EDITING_MODE	 1
-#  define VI_EDITING_MODE	 0
-#endif
-
 /* Copied from rldefs.h, since that's not a public readline header file. */
 #ifndef FUNCTION_TO_KEYMAP
 
