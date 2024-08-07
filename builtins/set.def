@@ -163,7 +163,6 @@ $END
 #define opt_def_s option_def_s
 #define opt_def_t option_def_t
 #define opt_defs o_options
-#define store variable
 #define find_option(N) (&shopt_vars[find_shopt(N)])
 #define get_opt_value(I,N) GET_BINARY_O_OPTION_VALUE(I,N)
 #define set_opt_value(I,V,N) SET_BINARY_O_OPTION_VALUE(I,N,V)
@@ -195,7 +194,7 @@ static int previous_option_value;
    sure to set the value appropriately in reset_shell_options. */
 typedef struct opt_def_s {
   char *name;
-  int *variable;
+  int *store;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
   int letter;
@@ -397,7 +396,7 @@ GET_BINARY_O_OPTION_VALUE(size_t i, char *name)
   if (d->get_func)
     return d->get_func(name);
   else if (d->store)
-    return *o_options[i].variable;
+    return *o_options[i].store;
   return -1;
 }
 
@@ -1239,7 +1238,6 @@ unset_builtin (WORD_LIST *list)
 #undef opt_def_s
 #undef opt_def_t
 #undef opt_defs
-#undef store
 #undef find_option
 #undef get_opt_value
 #undef set_opt_value
@@ -1370,7 +1368,6 @@ static int shopt_compat44;
 #define opt_def_s shopt_def_s
 #define opt_def_t shopt_def_t
 #define opt_defs shopt_vars
-#define store value
 #define find_option(N) (&shopt_vars[find_shopt(N)])
 #define get_opt_value(I,N) GET_SHOPT_OPTION_VALUE(I)
 #define set_opt_value(I,V,N) SET_SHOPT_OPTION_VALUE(I,V)
@@ -1383,9 +1380,10 @@ typedef int shopt_get_func_t (char *);
 
 typedef struct opt_def_s {
   char *name;
-  int  *value;
+  int *store;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
+  int letter;
 } opt_def_t;
 
 static const opt_def_t opt_defs[] = {
@@ -1506,7 +1504,7 @@ static const opt_def_t opt_defs[] = {
 static inline int
 GET_SHOPT_OPTION_VALUE(int i)
 {
-  return *shopt_vars[i].value;
+  return *shopt_vars[i].store;
 }
 
 static int find_shopt (char *);
@@ -1703,7 +1701,7 @@ change_shopts (int mode, WORD_LIST *list, int quiet)
 	}
       else
 	{
-	  *shopt_vars[ind].value = mode;	/* 1 for set, 0 for unset */
+	  *shopt_vars[ind].store = mode;	/* 1 for set, 0 for unset */
 	  if (shopt_vars[ind].set_func)
 	    (*shopt_vars[ind].set_func) (shopt_vars[ind].name, mode);
 	}
@@ -1736,7 +1734,7 @@ list_shopts (WORD_LIST *list, int flags)
     {
       for (i = 0; shopt_vars[i].name; i++)
 	{
-	  val = *shopt_vars[i].value;
+	  val = *shopt_vars[i].store;
 	  if ((flags & QFLAG) == 0)
 	    print_shopt (shopt_vars[i].name, val, flags);
 	}
@@ -1752,7 +1750,7 @@ list_shopts (WORD_LIST *list, int flags)
 	  rval = EXECUTION_FAILURE;
 	  continue;
 	}
-      val = *shopt_vars[i].value;
+      val = *shopt_vars[i].store;
       if (val == 0)
 	rval = EXECUTION_FAILURE;
       if ((flags & QFLAG) == 0)
@@ -1769,7 +1767,7 @@ list_some_shopts (int mode, int flags)
 
   for (i = 0; shopt_vars[i].name; i++)
     {
-      val = *shopt_vars[i].value;
+      val = *shopt_vars[i].store;
       if (((flags & QFLAG) == 0) && mode == val)
 	print_shopt (shopt_vars[i].name, val, flags);
     }
@@ -1898,7 +1896,7 @@ set_compatibility_level (char *option_name, int mode)
       shopt_compat40 = shopt_compat41 = shopt_compat42 = shopt_compat43 = 0;
       shopt_compat44 = 0;
       ind = find_shopt (option_name);
-      *shopt_vars[ind].value = mode;
+      *shopt_vars[ind].store = mode;
     }
 
   /* Then set shell_compatibility_level based on what remains */
@@ -2040,7 +2038,7 @@ shopt_listopt (char *name, int reusable)
       return (EXECUTION_FAILURE);
     }
 
-  print_shopt (name, *shopt_vars[i].value, reusable ? PFLAG : 0);
+  print_shopt (name, *shopt_vars[i].store, reusable ? PFLAG : 0);
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
@@ -2110,7 +2108,7 @@ parse_bashopts (char *value)
       ind = find_shopt (vname);
       if (ind >= 0)
 	{
-          *shopt_vars[ind].value = 1;
+          *shopt_vars[ind].store = 1;
 	  if (shopt_vars[ind].set_func)
 	    (*shopt_vars[ind].set_func) (shopt_vars[ind].name, 1);
 	}
@@ -2160,7 +2158,6 @@ set_array_expand (char *option_name, int mode)
 #undef opt_def_s
 #undef opt_def_t
 #undef opt_defs
-#undef store
 #undef find_option
 #undef get_opt_value
 #undef set_opt_value
