@@ -29,7 +29,6 @@
 #define FLAG_OFF '+'
 
 #define FLAG_ERROR -1
-#define FLAG_UNKNOWN (int *)0
 
 /* The thing that we build the array of flags out of. */
 struct flags_alist {
