@@ -220,7 +220,7 @@ find_flag (char name)
       if (shell_flags[i].name == name)
 	return (shell_flags[i].value);
     }
-  return (FLAG_UNKNOWN);
+  return (NULL);
 }
 
 /* Change the state of a flag, and return it's original value, or return
@@ -239,7 +239,7 @@ change_flag (char flag, char on_or_off)
 
   value = find_flag (flag);
 
-  if ((value == (int *)FLAG_UNKNOWN) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
+  if ((value == NULL) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
     return (FLAG_ERROR);
 
   old_value = *value;
