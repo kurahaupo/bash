@@ -159,7 +159,8 @@ extern int restricted_shell;
 #endif /* RESTRICTED_SHELL */
 
 extern int *find_flag (int);
-extern int change_flag (int, int);
+extern int change_flag_ (int, int);
+#define change_flag(N, F) change_flag_(N, VF(F))
 extern char *which_set_flags (void);
 extern void reset_shell_flags (void);
 

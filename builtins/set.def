@@ -52,6 +52,29 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+/* When setting an option, whether it's allowed may depend on how it's
+ * attempted to be changed: */
+typedef struct {
+  enum optset_whence_e {
+			/* unlabelled zero default; computation of correct value is still pending */
+    Whence_argv = 1,	/* set on the command line when Bash starts up */
+    Whence_short,		/* using set -X (a short single-letter option) */
+    Whence_set_o,		/* using set -o NAME */
+    Whence_shopt,		/* using shopt -s NAME */
+    Whence_unwind,	/* automatically being restored during unwinding */
+  } whence;
+} optset_whence_t;
+
+typedef enum optset_status_e {
+  OptSet_OK        = EXECUTION_SUCCESS,
+  OptSet_Unchanged = EXECUTION_SUCCESS,	/* New value is same as old value */
+  OptSet_Ignored   = EXECUTION_SUCCESS,	/* Change request ignored, silently */
+  OptSet_NotFound  = EX_BADUSAGE,	/* No setting with the supplied letter or name */
+  OptSet_ReadOnly  = EX_BADUSAGE,	/* Change never possible */
+  OptSet_Forbidden = EX_BADASSIGN,	/* Not changed because new value is permitted */
+  OptSet_BadValue  = EX_BADASSIGN,	/* Not changed because new value not valid */
+} optset_status_t;
+
 
 $BUILTIN set
 $FUNCTION set_builtin
@@ -178,6 +201,10 @@ static opt_set_func_t set_edit_mode;
 static opt_get_func_t get_edit_mode;
 #endif
 
+#if defined (BANG_HISTORY)
+static opt_set_func_t set_histexp;
+#endif
+
 #if defined (HISTORY)
 static opt_set_func_t bash_set_history;
 #endif
@@ -198,6 +225,8 @@ typedef struct opt_def_s {
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
   int letter;
+  enum optset_whence_e whence:3;	/* Whence_set_o or Whence_short for all the following */
+  _Bool use_set_flag:1;			/* call set_flag instead of directly updating .store[0] */
 } opt_def_t;
 
 char no_long_name[2] = "-";
@@ -210,12 +239,12 @@ static const option_def_t o_options[] = {
 #if defined (READLINE)
   { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode },
 #endif
-  { "errexit",			&errexit_flag,		.letter = 'e' },
+  { "errexit",			&errexit_flag,		.letter = 'e',	.use_set_flag = 1 },
   { "errtrace",			&error_trace_mode,	.letter = 'E' },
   { "functrace",		&function_trace_mode,	.letter = 'T' },
   { "hashall",			&hashing_enabled,	.letter = 'h' },
 #if defined (BANG_HISTORY)
-  { "histexpand",		&histexp_flag,		.letter = 'H' },
+  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_histexp },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
   { "history",			&enable_history_list,	.set_func = bash_set_history },
@@ -224,10 +253,10 @@ static const option_def_t o_options[] = {
   { "interactive-comments",	&interactive_comments },
   { "keyword",			&place_keywords_in_env,	.letter = 'k' },
 #if defined (JOB_CONTROL)
-  { "monitor",			&jobs_m_flag,		.letter = 'm' },
+  { "monitor",			&jobs_m_flag,		.letter = 'm',	.use_set_flag = 1 },
 #endif
   { "noclobber",		&noclobber,		.letter = 'C' },
-  { "noexec",			&read_but_dont_execute,	.letter = 'n' },
+  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.use_set_flag = 1 },
   { "noglob",			&disallow_filename_globbing,	.letter = 'f' },
 #if defined (HISTORY)
   { "nolog",			&dont_save_function_defs },
@@ -240,15 +269,15 @@ static const option_def_t o_options[] = {
   { "physical",			&no_symbolic_links,	.letter = 'P' },
   { "pipefail",			&pipefail_opt },
   { "posix",			&posixly_correct,	.set_func = set_posix_mode },
-  { "privileged",		&privileged_mode,	.letter = 'p' },
-  { "verbose",			&verbose_flag,		.letter = 'v' },
+  { "privileged",		&privileged_mode,	.letter = 'p',	.use_set_flag = 1 },
+  { "verbose",			&verbose_flag,		.letter = 'v',	.use_set_flag = 1 },
 #if defined (READLINE)
   { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode },
 #endif
   { "xtrace",			&echo_command_at_execute,	.letter = 'x' },
   { no_long_name,		&forced_interactive,	.letter = 'i' },
 #if defined (RESTRICTED_SHELL)
-  { no_long_name,		&restricted,		.letter = 'r' },
+  { no_long_name,		&restricted,		.letter = 'r',	.use_set_flag = 1 },
 #endif /* RESTRICTED_SHELL */
 #if 0
   { no_long_name,		&lexical_scoping,	.letter = 'l' },
@@ -260,88 +289,97 @@ static const option_def_t o_options[] = {
 
 static const opt_def_t *letter_map[1+(unsigned char)-1];
 
-int *
-find_flag (int name)
+static int
+set_flag (struct option_def_s const *d, _Bool new_value)
+#define set_flag(d,new_value) set_flag(d,VB(new_value))
 {
-  opt_def_t const *d = letter_map[name];
-  if (d)
-    return d->store;
-  return NULL;
-}
-
-#if defined (JOB_CONTROL)
-extern int set_job_control (int);	/* copied from jobs.h */
-#endif
-
-
-/* Change the state of a flag, and return its original value, or return
-   FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
-   FLAG_ON or FLAG_OFF. */
-int
-change_flag (int flag, int on_or_off)
-{
-  int *value, old_value;
-
 #if defined (RESTRICTED_SHELL)
   /* Don't allow "set +r" in a shell which is `restricted'. */
-  if (restricted && flag == 'r' && on_or_off == FLAG_OFF)
-    return (FLAG_ERROR);
 #endif /* RESTRICTED_SHELL */
 
-  value = find_flag (flag);
+  int *store = d->store;
 
-  if (value == NULL || !valid_flag(on_or_off))
-    return (FLAG_ERROR);
+  if (store == NULL);
+    return OptSet_Forbidden;
 
-  old_value = *value;
-  *value = (on_or_off == FLAG_ON) ? 1 : 0;
-
-  /* Special cases for a few flags. */
-  switch (flag)
+  /* Special cases for a few flags; these will be split out into separate setters. */
+  switch (d->letter)
     {
 #if defined (BANG_HISTORY)
     case 'H':
-      history_expansion = histexp_flag;
-      if (on_or_off == FLAG_ON)
-	bash_initialize_history ();
+      set_histexp(bool_to_flag(new_value), d->name);
       break;
 #endif
 
 #if defined (JOB_CONTROL)
     case 'm':
-      set_job_control (on_or_off == FLAG_ON);
+      /* *value = new_value; // jobs_m_flag */
+      jobs_m_flag = new_value;
+
+      extern int set_job_control (int);	/* copied from jobs.h */
+      set_job_control (new_value);
       break;
 #endif /* JOB_CONTROL */
 
     case 'e':
+      /* *value = new_value; // errexit_flag */
+      errexit_flag = new_value;
+
       if (builtin_ignoring_errexit == 0)
 	exit_immediately_on_error = errexit_flag;
       break;
 
     case 'n':
+      *value = new_value; // read_but_dont_execute
+      read_but_dont_execute = new_value;
+
       if (interactive_shell)
 	read_but_dont_execute = 0;
       break;
 
     case 'p':
-      if (on_or_off == FLAG_OFF)
+      *value = new_value;
+
+      if (!new_value)
 	disable_priv_mode ();
       break;
 
 #if defined (RESTRICTED_SHELL)
     case 'r':
-      if (on_or_off == FLAG_ON && shell_initialized)
+      if (restricted && !new_value)
+	return OptSet_Forbidden;
+      *value = new_value;
+
+      if (new_value && shell_initialized)
 	maybe_make_restricted (shell_name);
       break;
 #endif
 
     case 'v':
+      *value = new_value;
+
       echo_input_at_read = verbose_flag;
+      break;
+
+    default:
+      *value = new_value;
       break;
     }
 
-  return (old_value);
+  return OptSet_OK;
 }
+
+#if defined (BANG_HISTORY)
+static int
+set_histexp(int new_value, char *ignored)
+{
+  /* *value = new_value; // histexp_flag */
+  history_expansion = histexp_flag = new_value;
+  if (new_value)
+    bash_initialize_history ();
+  return OptSet_OK;
+}
+#endif
 
 char *
 get_current_flags (void)
@@ -408,6 +446,8 @@ SET_BINARY_O_OPTION_VALUE(size_t i, int onoff, char *name)
   _Bool b = onoff == FLAG_ON;
   if (d->set_func)
     d->set_func(b, name);
+  else if (d->use_set_flag)
+    set_flag(d, b);
   else if (d->store)
     *d->store = b;
 }
@@ -427,7 +467,7 @@ int
 minus_o_option_value (char *name)
 {
   register int	i;
-  int *on_or_off;
+  int *store;
 
   i = find_minus_o_option (name);
   if (i < 0)
@@ -435,8 +475,8 @@ minus_o_option_value (char *name)
 
   if (o_options[i].letter)
     {
-      on_or_off = find_flag (o_options[i].letter);
-      return ((on_or_off == NULL) ? -1 : *on_or_off);
+      store = find_flag (o_options[i].letter);
+      return store ? *store : FLAG_ERROR;
     }
   else
     return (GET_BINARY_O_OPTION_VALUE (i, name));
@@ -454,28 +494,17 @@ print_minus_o_option (char *name, int value, int pflag)
 }
 
 void
-list_minus_o_opts (int mode, int reusable)
+list_minus_o_opts (unsigned int mode_mask, int reusable)
 {
   register int	i;
-  int *on_or_off, value;
+  int value;
 
   for (i = 0; o_options[i].name; i++)
     {
-      if (o_options[i].letter)
-	{
-	  value = 0;
-	  on_or_off = find_flag (o_options[i].letter);
-	  if (on_or_off == NULL)
-	    on_or_off = &value;
-	  if (mode == -1 || mode == *on_or_off)
-	    print_minus_o_option (o_options[i].name, *on_or_off, reusable);
-	}
-      else
-	{
-	  value = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-	  if (mode == -1 || mode == value)
-	    print_minus_o_option (o_options[i].name, value, reusable);
-	}
+      struct option_def_s const *d = &o_options[i];
+      value = GET_BINARY_O_OPTION_VALUE (i, d->name) != 0;
+      if (mode_mask & (1 << value))
+	print_minus_o_option (d->name, value, reusable);
     }
 }
 
@@ -504,12 +533,7 @@ get_current_options (void)
      options modified by posix mode. */
   temp = (char *)xmalloc (1 + N_O_OPTIONS + posixopts);
   for (i = 0; o_options[i].name; i++)
-    {
-      if (o_options[i].letter)
-	temp[i] = *(find_flag (o_options[i].letter));
-      else
-	temp[i] = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-    }
+    temp[i] = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
 
   /* Add the shell options that are modified by posix mode to the end of the
      bitmap. They will be handled in set_current_options() */
@@ -521,29 +545,18 @@ get_current_options (void)
 void
 set_current_options (const char *bitmap)
 {
-  int i, v, cv, *on_or_off;
+  int i, *store;
 
   if (bitmap == 0)
     return;
 
   for (i = 0; o_options[i].name; i++)
     {
-      v = bitmap[i] ? FLAG_ON : FLAG_OFF;
-      if (o_options[i].letter)
-	{
-	  /* We should not get NULL here */
-	  on_or_off = find_flag (o_options[i].letter);
-	  cv = *on_or_off ? FLAG_ON : FLAG_OFF;
-	  if (v != cv)
-	    change_flag (o_options[i].letter, v);
-	}
-      else
-	{
-	  cv = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-	  cv = cv ? FLAG_ON : FLAG_OFF;
-	  if (v != cv)
-	    SET_BINARY_O_OPTION_VALUE (i, v, o_options[i].name);
-	}
+      struct option_def_s const *d = &o_options[i];
+      int new_value = bitmap[i];
+      int old_value = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
+      if (new_value != old_value)
+	SET_BINARY_O_OPTION_VALUE (i, new_value, o_options[i].name);
     }
 
   /* Now reset the variables changed by posix mode */
@@ -1376,6 +1389,7 @@ typedef struct opt_def_s {
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
   int letter;
+  enum optset_whence_e whence:3;	/* Whence_shopt for all the following */
 } opt_def_t;
 
 static const opt_def_t opt_defs[] = {
@@ -1805,7 +1819,7 @@ static int
 list_some_o_options (int mode, int flags)
 {
   if ((flags & QFLAG) == 0)
-    list_minus_o_opts (mode, (flags & PFLAG));
+    list_minus_o_opts (1<<mode, (flags & PFLAG));
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
@@ -2153,3 +2167,27 @@ set_array_expand (char *option_name, int mode)
 #undef find_option
 #undef get_opt_value
 #undef set_opt_value
+
+int *
+find_flag (int name)
+{
+  opt_def_t const *d = map_letter[name];
+  return d ? d->store : NULL;
+}
+
+/* Change the state of a flag, and return its original value, or return
+   FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
+   FLAG_ON or FLAG_OFF. */
+int
+change_flag_ (int letter, int on_or_off)
+{
+  struct option_def_s const *d = map_letter[letter];
+  if (!d || !valid_flag(on_or_off)))
+    return FLAG_ERROR;
+  int new_value = flag_to_bool(on_or_off);
+  int old_value = get_opt_value(d);
+  int res = set_flag(d, new_value);
+  if (res == OptSet_OK)
+    return old_value;
+  return FLAG_ERROR;
+}
