@@ -52,6 +52,121 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+typedef int option_value_t;
+
+#define OPTION_INVALID_VALUE ((option_value_t)-1)
+#define OPTION_VALUE_UNSET   ((option_value_t)-2)
+
+/* Rather than bald enums, use singleton structs to ensure we cannot
+ * accidentally mix these up with ints */
+
+/* Whence: when setting an option, whether it's allowed may depend on how it's
+ * attempted to be changed. */
+typedef struct optset_whence_s {
+  enum optset_whence_e {
+    Whence_0 = 0,	/* unlabelled zero default; computation of correct value is still pending */
+    Whence_argv,	/* set on the command line when Bash starts up */
+    Whence_short,	/* using set -X (a short single-letter option) */
+    Whence_set_o,	/* using set -o NAME */
+    Whence_shopt,	/* using shopt -s NAME */
+    Whence_unwind,	/* automatically being restored during unwinding */
+  } whence;
+} optset_whence_t;
+#define Whence(X) (struct optset_whence_s){ .whence = Whence_##X }
+
+typedef struct optset_result_s {
+  enum optset_result_e {
+    Result_OK,
+    Result_Unchanged,	/* New value is same as old value */
+    Result_Ignored,	/* Change request ignored, silently */
+    Result_NotFound,	/* No setting with the supplied letter or name */
+    Result_ReadOnly,	/* Change never possible */
+    Result_Forbidden,	/* Not changed because new value is permitted */
+    Result_BadValue,	/* Like ReadOnly but doesn't complain if the new value is the same as the old value */
+  } result;
+} optset_result_t;
+#define Result(X) (struct optset_result_s){ .result = Result_##X }
+
+static const int result_to_ex_map[] = {
+  [Result_OK]		= EXECUTION_SUCCESS,
+  [Result_Unchanged]	= EXECUTION_SUCCESS,	/* New value is same as old value */
+  [Result_Ignored]	= EXECUTION_SUCCESS,	/* Change request ignored, silently */
+  [Result_NotFound]	= EX_BADUSAGE,		/* No setting with the supplied letter or name */
+  [Result_ReadOnly]	= EX_BADUSAGE,		/* Change never possible */
+  [Result_Forbidden]	= EX_BADASSIGN,		/* Not changed because new value is permitted */
+  [Result_BadValue]	= EX_BADASSIGN,		/* Not changed because new value not valid */
+};
+#define res_to_ex(res) result_to_ex_map[(res).result]
+
+struct opt_def_s;  /* forward ref */
+
+typedef optset_result_t opt_set_func_t (struct opt_def_s const *option_def,
+                                        optset_whence_t set_vs_shopt,
+                                        option_value_t new_value);
+typedef option_value_t opt_get_func_t (struct opt_def_s const *option_def,
+				       optset_whence_t set_vs_shopt);
+
+typedef struct opt_def_s {
+  char *name;
+  option_value_t *store;
+  opt_set_func_t *set_func;
+  opt_get_func_t *get_func;
+  int   reference_value;
+  char  letter;
+  _Bool hide_set_o:1,
+	hide_shopt:1,
+	skip_bashopts:1,
+	readonly:1,		/* when attempting to set an option: error (Readonly) unconditionally */
+	forbid_change:1,	/*				     error (Forbidden) if attempting to change its value */
+	ignore_change:1,	/*				     succeed (Ignored) without actually changing the value */
+	:0;
+} opt_def_t;
+
+static option_value_t
+get_opt_value (struct opt_def_s const *d, optset_whence_t w)
+{
+  if (!d)
+    return OPTION_INVALID_VALUE;
+  if (d->get_func)
+    return d->get_func(d, w);
+  if (d->store)
+    return d->store[0];
+  return OPTION_INVALID_VALUE;
+}
+
+static optset_result_t set_flag_option (struct opt_def_s const *d,
+					optset_whence_t w,
+					option_value_t v);
+
+static optset_result_t
+set_opt_value (struct opt_def_s const *d,
+	       optset_whence_t w,
+	       option_value_t v)
+{
+  if (!d)
+    return Result (NotFound);
+
+  if (d->set_func)
+    return d->set_func(d, w, v);
+
+  if (d->readonly)
+    return Result (ReadOnly);
+  if (d->forbid_change)
+    {
+      option_value_t ov = get_opt_value (d, w);
+      if (v == ov)
+	return Result (Unchanged);
+      else
+	return Result (Forbidden);
+    }
+  if (d->ignore_change)
+    return Result (Ignored);
+
+  if (d->store)
+    d->store[0] = v;
+  return Result (OK);
+}
+
 
 $BUILTIN set
 $FUNCTION set_builtin
@@ -160,8 +275,8 @@ $END
 
 #define opt_set_func_t setopt_set_func_t
 #define opt_get_func_t setopt_get_func_t
-#define opt_def_s option_def_s
-#define opt_def_t option_def_t
+#define opt_def_s option_def2_s
+#define opt_def_t option_def2_t
 #define opt_defs o_options
 #define find_option(N) (&shopt_vars[find_shopt(N)])
 #define get_opt_value(I,N) GET_BINARY_O_OPTION_VALUE(I,N)
@@ -202,7 +317,7 @@ typedef struct opt_def_s {
 
 char no_long_name[2] = "-";
 
-static const option_def_t o_options[] = {
+static const option_def2_t o_options[] = {
   { "allexport",		&mark_modified_vars,	.letter = 'a' },
 #if defined (BRACE_EXPANSION)
   { "braceexpand",		&brace_expansion,	.letter = 'B' },
