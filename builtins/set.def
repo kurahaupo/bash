@@ -1380,6 +1380,8 @@ static opt_set_func_t shopt_set_expaliases;
 
 static opt_set_func_t shopt_set_debug_mode;
 
+extern opt_set_func_t set_login_shell;
+
 static int shopt_login_shell;
 static int shopt_compat31;
 static int shopt_compat32;
@@ -1392,14 +1394,14 @@ static int shopt_compat44;
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
 
-typedef struct shopt_def_s {
+typedef struct opt_def_s {
   char *name;
   int *store;
   shopt_set_func_t *set_func;
   shopt_get_func_t *get_func;
   int letter;
   _Bool hide_set_o:1;
-} shopt_def_t;
+} opt_def_t;
 
 static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
@@ -2007,6 +2009,15 @@ set_restricted_shell (char *option_name, int mode)
   return (0);
 }
 #endif /* RESTRICTED_SHELL */
+
+/* TODO: convert this to an 'ignored' setting */
+static optset_result_t
+set_login_shell2 (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+{
+  d->store[0] = v;	/* this does nothing, because d->store[0] === shopt_login_shell */
+  shopt_login_shell = login_shell;
+  return Result(OK);
+}
 
 /* Not static so shell.c can call it to initialize shopt_login_shell */
 int
