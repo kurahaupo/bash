@@ -735,39 +735,39 @@ print_all_shell_variables (void)
 void
 set_shellopts (void)
 {
-  char *value;
   char tflag[N_O_OPTIONS];
-  int i, *ip;
-  size_t vsize, vptr;
+  size_t ti;
+  size_t vsize = 0;
   SHELL_VAR *var;
+  struct opt_def_s const *d;
 
-  for (vsize = i = 0; opt_defs[i].name; i++)
+  for (d = opt_defs, ti = 0; d->name; d++)
     {
-      struct opt_def_s const *d = &opt_defs[i];
-      int v = get_opt_value (d, Whence (set_o));
-      tflag[i] = 0;
+      if (d->hide_set_o)
+	continue;
+      option_value_t v = get_opt_value (d, Whence (set_o));
       if (v > 0)
-	{
-	  vsize += strlen (opt_defs[i].name) + 1;
-	  tflag[i] = 1;
-	}
+	vsize += strlen (d->name) + 1;
+      tflag[ti++] = v;
     }
 
-  value = (char *)xmalloc (vsize + 1);
+  char *value = xmalloc (vsize + 1);
+  char *vend = value;
 
-  for (i = vptr = 0; opt_defs[i].name; i++)
+  for (d = opt_defs, ti = 0; d->name; d++)
     {
-      if (tflag[i])
+      if (d->hide_set_o)
+	continue;
+      if (tflag[ti++])
 	{
-	  strcpy (value + vptr, opt_defs[i].name);
-	  vptr += strlen (opt_defs[i].name);
-	  value[vptr++] = ':';
+	  vend = stpcpy (vend, d->name);
+	  *vend++ = ':';
 	}
     }
 
-  if (vptr)
-    vptr--;			/* cut off trailing colon */
-  value[vptr] = '\0';
+  if (vend > value)
+    vend--;			/* cut off trailing colon */
+  *vend = '\0';
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
    * ASS_NOMARK so we don't tickle `set -a`. */
@@ -2034,37 +2034,38 @@ shopt_listopt (char *name, int reusable)
 void
 set_bashopts (void)
 {
-  char *value;
   char tflag[N_SHOPT_OPTIONS];
-  int i;
-  size_t vsize, vptr;
+  size_t ti, vsize;
   SHELL_VAR *var;
+  struct opt_def_s const *d;
 
-  for (vsize = i = 0; opt_defs[i].name; i++)
+  for (d = opt_defs, vsize = ti = 0; d->name; d++)
     {
-      tflag[i] = 0;
-      if (get_opt_value (&opt_defs[i], Whence (shopt)))
+      if (d->hide_shopt)
+	continue;
+      option_value_t v = get_opt_value (d, Whence (shopt));
+      if (v > 0)
+	vsize += strlen (d->name) + 1;
+      tflag[ti++] = v;
+    }
+
+  char *value = xmalloc (vsize + 1);
+  char *vend = value;
+
+  for (d = opt_defs, ti = vsize = 0; d->name; d++)
+    {
+      if (d->hide_shopt)
+	continue;
+      if (tflag[ti++])
 	{
-	  vsize += strlen (opt_defs[i].name) + 1;
-	  tflag[i] = 1;
+	  vend = stpcpy (vend, d->name);
+	  *vend++ = ':';
 	}
     }
 
-  value = (char *)xmalloc (vsize + 1);
-
-  for (i = vptr = 0; opt_defs[i].name; i++)
-    {
-      if (tflag[i])
-	{
-	  strcpy (value + vptr, opt_defs[i].name);
-	  vptr += strlen (opt_defs[i].name);
-	  value[vptr++] = ':';
-	}
-    }
-
-  if (vptr)
-    vptr--;			/* cut off trailing colon */
-  value[vptr] = '\0';
+  if (vend > value)
+    vend--;			/* cut off trailing colon */
+  *vend = '\0';
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
    * ASS_NOMARK so we don't tickle `set -a`. */
