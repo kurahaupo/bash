@@ -568,8 +568,13 @@ get_minus_o_opts (void)
   int i;
 
   ret = strvec_create (N_O_OPTIONS + 1);
-  for (i = 0; opt_defs[i].name; i++)
-    ret[i] = opt_defs[i].name;
+  struct opt_def_s const *d;
+  for (d = opt_defs, i = 0; d->name; d++)
+    {
+      if (d->hide_set_o)
+	continue;
+      ret[i++] = d->name;
+    }
   ret[i] = (char *)NULL;
   return ret;
 }
@@ -801,7 +806,7 @@ static char optflags[N_O_OPTIONS+4] = { '+' };
 void
 initialize_shell_options (int no_shellopts)
 {
-  char *temp;
+  char *shellopts_env;
   SHELL_VAR *var;
 
   init_letter_map ();
@@ -821,13 +826,13 @@ initialize_shell_options (int no_shellopts)
     {
       var = find_variable ("SHELLOPTS");
       /* set up any shell options we may have inherited. */
-      if (var && imported_p (var))
+      if (var && imported_p (var) && (array_p (var) || assoc_p (var)))
 	{
-	  temp = (array_p (var) || assoc_p (var)) ? (char *)NULL : savestring (value_cell (var));
-	  if (temp)
+	  shellopts_env = savestring (value_cell (var));
+	  if (shellopts_env)
 	    {
-	      parse_shellopts (temp);
-	      free (temp);
+	      parse_shellopts (shellopts_env);
+	      free (shellopts_env);
 	    }
 	}
     }
@@ -868,7 +873,7 @@ set_builtin (WORD_LIST *list)
   register char *arg;
   char s[3];
 
-  if (list == 0)
+  if (list == NULL)
     {
       print_all_shell_variables ();
       return (sh_chkwrite (EXECUTION_SUCCESS));
@@ -1726,27 +1731,26 @@ static int
 list_shopts (WORD_LIST *list, int flags)
 {
   WORD_LIST *l;
-  int val, rval;
+  int rval = EXECUTION_SUCCESS;
 
-  if (list == 0)
+  if (list == NULL)
     {
       struct opt_def_s const *d;
 
-      for (d = opt_defs; d->name; d++)
-	{
-	  struct opt_def_s const *d = &opt_defs[i];
-	  if (d->hide_shopt)
-	    continue;
-	  if (d->name == no_long_name)
-	    continue;
-	  val = get_opt_value (d, Whence (shopt));
-	  if ((flags & QFLAG) == 0)
+      if ((flags & QFLAG) == 0)
+	for (d = opt_defs; d->name; d++)
+	  {
+	    if (d->hide_shopt)
+	      continue;
+	    if (d->name == no_long_name)
+	      continue;
+	    option_value_t val = get_opt_value (d, Whence (shopt));
 	    print_shopt (d->name, val, flags);
-	}
+	  }
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
+  for (l = list; l; l = l->next)
     {
       struct opt_def_s const *d = find_option (l->word->word);
       if (!d)
@@ -1755,9 +1759,9 @@ list_shopts (WORD_LIST *list, int flags)
 	  rval = EXECUTION_FAILURE;
 	  continue;
 	}
-      val = get_opt_value (d, Whence (shopt));
+      option_value_t val = get_opt_value (d, Whence (shopt));
       if (val == 0)
-	rval = EXECUTION_FAILURE;
+	rval = 1;	/* looks like EXECUTION_FAILURE but actually means FALSE */
       if ((flags & QFLAG) == 0)
 	print_shopt (l->word->word, val, flags);
     }
