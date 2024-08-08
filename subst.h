@@ -59,6 +59,7 @@
 #define ASS_ONEWORD	0x1000	/* don't check array subscripts, assume higher level has done that */
 #define ASS_NOTEMPENV	0x2000	/* don't assign into temporary environment */
 #define ASS_XTRACE	0x4000	/* print trace after compound assignment expansion */
+#define ASS_NOMARK	0x8000	/* ignore `set -a` */
 
 /* Flags for the string extraction functions. */
 #define SX_NOALLOC	0x0001	/* just skip; don't return substring */
