@@ -274,6 +274,7 @@ Returns success unless an invalid option is given.
 $END
 
 #define opt_defs o_options
+#define find_option find_o_option
 
 static opt_set_func_t set_flag_option;
 static opt_set_func_t set_ignoreeof;
@@ -1255,6 +1256,7 @@ unset_builtin (WORD_LIST *list)
 }
 
 #undef opt_defs
+#undef find_option
 
 $BUILTIN shopt
 $FUNCTION shopt_builtin
@@ -1347,9 +1349,7 @@ extern int syslog_history;
 #define opt_def_s shopt_def_s
 #define opt_def_t shopt_def_t
 #define opt_defs shopt_vars
-#define find_option(N) (&shopt_vars[find_shopt(N)])
-#define get_opt_value(I,N) GET_SHOPT_OPTION_VALUE(I)
-#define set_opt_value(I,V,N) SET_SHOPT_OPTION_VALUE(I,V)
+#define find_option find_shopt_option
 
 typedef int opt_set_func_t (char *, int);
 typedef int shopt_get_func_t (char *);
@@ -1515,6 +1515,16 @@ static const opt_def_t opt_defs[] = {
 };
 
 #define N_SHOPT_OPTIONS		(sizeof (opt_defs) / sizeof (opt_defs[0]))
+
+static struct opt_def_s const *
+find_option (char const *name)
+{
+  struct opt_def_s const *d;
+  for (d = opt_defs; d->name; d++)
+    if (d->name != no_long_name && !strcmp (name, d->name))
+      return d;
+  return NULL;
+}
 
 static inline int
 GET_SHOPT_OPTION_VALUE (int i)
@@ -2164,6 +2174,3 @@ set_array_expand (char *option_name, int mode)
 #undef opt_def_t
 #undef opt_defs
 #undef find_option
-#undef get_opt_value
-#undef set_opt_value
-
