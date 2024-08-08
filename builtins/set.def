@@ -510,17 +510,6 @@ which_set_flags (void)
   return result;
 }
 
-static int
-find_minus_o_option (char *name)
-{
-  register int i;
-
-  for (i = 0; opt_defs[i].name; i++)
-    if (opt_defs[i].name != no_long_name && STREQ (name, opt_defs[i].name))
-      return i;
-  return -1;
-}
-
 /* exported and used by test.c */
 int
 minus_o_option_value (char *name)
@@ -688,16 +677,14 @@ bash_set_history (struct opt_def_s const *d, optset_whence_t w, option_value_t n
 int
 set_minus_o_option (int on_or_off, char *option_name)
 {
-  register int i;
+  struct opt_def_s const *d = find_option (option_name);
 
-  i = find_minus_o_option (option_name);
-  if (i < 0)
+  if (!d)
     {
       sh_invalidoptname (option_name);
       return (EX_USAGE);
     }
 
-  struct opt_def_s const *d = &opt_defs[i];
   optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (on_or_off));
   if (r.result != Result_OK)
     {
@@ -1792,19 +1779,19 @@ static int
 list_shopt_o_options (WORD_LIST *list, int flags)
 {
   WORD_LIST *l;
-  int val, rval;
 
-  if (list == 0)
+  if (list == NULL)
     {
       if ((flags & QFLAG) == 0)
 	list_minus_o_opts (-1, (flags & PFLAG));
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
+  int rval = EXECUTION_SUCCESS;
+  for (l = list; l; l = l->next)
     {
-      val = minus_o_option_value (l->word->word);
-      if (val == -1)
+      option_value_t val = get_opt_value (find_option (l->word->word), Whence (shopt));
+      if (val == FLAG_ERROR)
 	{
 	  sh_invalidoptname (l->word->word);
 	  rval = EXECUTION_FAILURE;
