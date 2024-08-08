@@ -3168,7 +3168,7 @@ assign_value:
 	  INVALIDATE_EXPORTSTR (entry);
 	  optimized_assignment (entry, value, aflags);
 
-	  if (mark_modified_vars)
+	  if (mark_modified_vars && !(aflags & ASS_NOMARK))
 	    VSETATTR (entry, att_exported);
 
 	  if (exported_p (entry))
@@ -3210,7 +3210,7 @@ assign_value:
 	}
     }
 
-  if (mark_modified_vars)
+  if (mark_modified_vars && !(aflags & ASS_NOMARK))
     VSETATTR (entry, att_exported);
 
   if (exported_p (entry))
@@ -3365,7 +3365,7 @@ bind_variable_value (SHELL_VAR *var, char *value, int aflags)
 
   INVALIDATE_EXPORTSTR (var);
 
-  if (mark_modified_vars)
+  if (mark_modified_vars && !(aflags & ASS_NOMARK))
     VSETATTR (var, att_exported);
 
   if (exported_p (var))
@@ -3479,7 +3479,7 @@ bind_function (const char *name, COMMAND *value)
 
   VSETATTR (entry, att_function);
 
-  if (mark_modified_vars)
+  if (mark_modified_vars)	/* TODO: decide whether to check for ASS_NOMARK, and if so, how to accept `flags` */
     VSETATTR (entry, att_exported);
 
   VUNSETATTR (entry, att_invisible);		/* Just to be sure */
