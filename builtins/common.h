@@ -186,7 +186,6 @@ extern int shopt_listopt (char *, int);
 extern int set_login_shell (char *, int);
 
 extern void set_bashopts (void);
-extern void parse_bashopts (char *);
 extern void initialize_bashopts (int);
 
 extern void set_compatibility_opts (void);

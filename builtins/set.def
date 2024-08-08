@@ -2123,39 +2123,36 @@ set_bashopts (void)
 }
 
 void
-parse_bashopts (char *value)
+get_bashopts (void)
 {
-  char *vname;
-  int vptr;
+  SHELL_VAR *var = find_variable ("BASHOPTS");
+  /* set up any shell options we may have inherited. */
 
-  vptr = 0;
+  if (! var
+      || ! imported_p (var)
+      || array_p (var)
+      || assoc_p (var))
+    return;
+
+  char *value = savestring (value_cell (var));
+  if (!value) return;
+
+  char *vname;
+  int vptr = 0;
   while (vname = extract_colon_unit (value, &vptr))
     {
       (void) set_opt_value (find_option (vname), Whence (environ), true);
+      /* Ignore return status; don't care about unknown shopt names */
       free (vname);
     }
+  free (value);
 }
 
 void
 initialize_bashopts (int no_bashopts)
 {
-  char *temp;
-  SHELL_VAR *var;
-
-  if (no_bashopts == 0)
-    {
-      var = find_variable ("BASHOPTS");
-      /* set up any shell options we may have inherited. */
-      if (var && imported_p (var))
-	{
-	  temp = (array_p (var) || assoc_p (var)) ? (char *)NULL : savestring (value_cell (var));
-	  if (temp)
-	    {
-	      parse_bashopts (temp);
-	      free (temp);
-	    }
-	}
-    }
+  if (!no_bashopts)
+    get_bashopts ();
 
   /* Set up the $BASHOPTS variable. */
   set_bashopts ();
