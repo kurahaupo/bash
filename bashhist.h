@@ -57,6 +57,7 @@ extern int dont_save_function_defs;
 
 #  if defined (READLINE)
 extern int hist_verify;
+extern int history_reediting;
 #  endif
 
 #  if defined (BANG_HISTORY)
