@@ -1398,118 +1398,119 @@ typedef struct shopt_def_s {
   shopt_set_func_t *set_func;
   shopt_get_func_t *get_func;
   int letter;
+  _Bool hide_set_o:1;
 } shopt_def_t;
 
 static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once",	&expand_once_flag,
-					.set_func = set_array_expand },
+					.set_func = set_array_expand,	.hide_set_o = 1 },
   { "assoc_expand_once",	&expand_once_flag,
-					.set_func = set_array_expand },
+					.set_func = set_array_expand,	.hide_set_o = 1 },	/* TODO: consider adding .hide_shopt=1 ? */
 #endif
-  { "autocd", &autocd },
+  { "autocd", &autocd,	.hide_set_o = 1 },
 #if defined (ARRAY_VARS)
-  { "bash_source_fullpath",	&bash_source_fullpath },
+  { "bash_source_fullpath",	&bash_source_fullpath,	.hide_set_o = 1 },
 #endif
-  { "cdable_vars",		&cdable_vars },
-  { "cdspell",			&cdspelling },
-  { "checkhash",		&check_hashed_filenames },
+  { "cdable_vars",		&cdable_vars,	.hide_set_o = 1 },
+  { "cdspell",			&cdspelling,	.hide_set_o = 1 },
+  { "checkhash",		&check_hashed_filenames,	.hide_set_o = 1 },
 #if defined (JOB_CONTROL)
-  { "checkjobs",		&check_jobs_at_exit },
+  { "checkjobs",		&check_jobs_at_exit,	.hide_set_o = 1 },
 #endif
-  { "checkwinsize",		&check_window_size },
+  { "checkwinsize",		&check_window_size,	.hide_set_o = 1 },
 #if defined (HISTORY)
-  { "cmdhist",			&command_oriented_history },
+  { "cmdhist",			&command_oriented_history,	.hide_set_o = 1 },
 #endif
   { "compat31",			&shopt_compat31,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat32",			&shopt_compat32,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat40",			&shopt_compat40,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat41",			&shopt_compat41,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat42",			&shopt_compat42,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat43",			&shopt_compat43,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
   { "compat44",			&shopt_compat44,
-					.set_func = set_compatibility_level },
+					.set_func = set_compatibility_level,	.hide_set_o = 1 },
 #if defined (READLINE)
-  { "complete_fullquote",	&complete_fullquote},
+  { "complete_fullquote",	&complete_fullquote,	.hide_set_o = 1},
   { "direxpand",		&dircomplete_expand,
-					.set_func = shopt_set_complete_direxpand },
-  { "dirspell",			&dircomplete_spelling },
+					.set_func = shopt_set_complete_direxpand,	.hide_set_o = 1 },
+  { "dirspell",			&dircomplete_spelling,	.hide_set_o = 1 },
 #endif
-  { "dotglob",			&glob_dot_filenames },
-  { "execfail",			&no_exit_on_failed_exec },
+  { "dotglob",			&glob_dot_filenames,	.hide_set_o = 1 },
+  { "execfail",			&no_exit_on_failed_exec,	.hide_set_o = 1 },
   { "expand_aliases",		&expaliases_flag,
-					.set_func = shopt_set_expaliases },
+					.set_func = shopt_set_expaliases,	.hide_set_o = 1 },
 #if defined (DEBUGGER)
   { "extdebug",			&debugging_mode,
-					.set_func = shopt_set_debug_mode },
+					.set_func = shopt_set_debug_mode,	.hide_set_o = 1 },
 #endif
 #if defined (EXTENDED_GLOB)
   { "extglob",			&extglob_flag,
-					.set_func = shopt_set_extglob },
+					.set_func = shopt_set_extglob,	.hide_set_o = 1 },
 #endif
-  { "extquote",			&extended_quote },
-  { "failglob",			&fail_glob_expansion },
+  { "extquote",			&extended_quote,	.hide_set_o = 1 },
+  { "failglob",			&fail_glob_expansion,	.hide_set_o = 1 },
 #if defined (READLINE)
-  { "force_fignore",		&force_fignore },
+  { "force_fignore",		&force_fignore,	.hide_set_o = 1 },
 #endif
-  { "globasciiranges",		&glob_asciirange },
-  { "globskipdots",		&glob_always_skip_dot_and_dotdot },
-  { "globstar",			&glob_star },
-  { "gnu_errfmt",		&gnu_error_format },
+  { "globasciiranges",		&glob_asciirange,	.hide_set_o = 1 },
+  { "globskipdots",		&glob_always_skip_dot_and_dotdot,	.hide_set_o = 1 },
+  { "globstar",			&glob_star,	.hide_set_o = 1 },
+  { "gnu_errfmt",		&gnu_error_format,	.hide_set_o = 1 },
 #if defined (HISTORY)
-  { "histappend",		&force_append_history },
+  { "histappend",		&force_append_history,	.hide_set_o = 1 },
 #endif
 #if defined (READLINE)
-  { "histreedit",		&history_reediting },
-  { "histverify",		&hist_verify },
+  { "histreedit",		&history_reediting,	.hide_set_o = 1 },
+  { "histverify",		&hist_verify,	.hide_set_o = 1 },
   { "hostcomplete",		&perform_hostname_completion,
-					.set_func = shopt_enable_hostname_completion },
+					.set_func = shopt_enable_hostname_completion,	.hide_set_o = 1 },
 #endif
-  { "huponexit",		&hup_on_exit },
-  { "inherit_errexit",		&inherit_errexit },
+  { "huponexit",		&hup_on_exit,	.hide_set_o = 1 },
+  { "inherit_errexit",		&inherit_errexit,	.hide_set_o = 1 },
   { "interactive_comments",	&interactive_comments,
-					.set_func = set_shellopts_after_change },
-  { "lastpipe",			&lastpipe_opt },
+					.set_func = set_shellopts_after_change,	.hide_set_o = 1 },
+  { "lastpipe",			&lastpipe_opt,	.hide_set_o = 1 },
 #if defined (HISTORY)
-  { "lithist",			&literal_history },
+  { "lithist",			&literal_history,	.hide_set_o = 1 },
 #endif
-  { "localvar_inherit",		&localvar_inherit },
-  { "localvar_unset",		&localvar_unset },
+  { "localvar_inherit",		&localvar_inherit,	.hide_set_o = 1 },
+  { "localvar_unset",		&localvar_unset,	.hide_set_o = 1 },
   { "login_shell",		&shopt_login_shell,
-					.set_func = set_login_shell },
-  { "mailwarn",			&mail_warning },
+					.set_func = set_login_shell,	.hide_set_o = 1 },
+  { "mailwarn",			&mail_warning,	.hide_set_o = 1 },
 #if defined (READLINE)
-  { "no_empty_cmd_completion",	&no_empty_command_completion },
+  { "no_empty_cmd_completion",	&no_empty_command_completion,	.hide_set_o = 1 },
 #endif
-  { "nocaseglob",		&glob_ignore_case },
-  { "nocasematch",		&match_ignore_case },
-  { "noexpand_translation",	&singlequote_translations },
-  { "nullglob",			&allow_null_glob_expansion },
-  { "patsub_replacement",	&patsub_replacement },
+  { "nocaseglob",		&glob_ignore_case,	.hide_set_o = 1 },
+  { "nocasematch",		&match_ignore_case,	.hide_set_o = 1 },
+  { "noexpand_translation",	&singlequote_translations,	.hide_set_o = 1 },
+  { "nullglob",			&allow_null_glob_expansion,	.hide_set_o = 1 },
+  { "patsub_replacement",	&patsub_replacement,	.hide_set_o = 1 },
 #if defined (PROGRAMMABLE_COMPLETION)
-  { "progcomp",			&prog_completion_enabled },
+  { "progcomp",			&prog_completion_enabled,	.hide_set_o = 1 },
 #  if defined (ALIAS)
-  { "progcomp_alias",		&progcomp_alias },
+  { "progcomp_alias",		&progcomp_alias,	.hide_set_o = 1 },
 #  endif
 #endif
-  { "promptvars",		&promptvars },
+  { "promptvars",		&promptvars,	.hide_set_o = 1 },
 #if defined (RESTRICTED_SHELL)
   { "restricted_shell",		&restricted_shell,
-					.set_func = set_restricted_shell },
+					.set_func = set_restricted_shell,	.hide_set_o = 1 },
 #endif
-  { "shift_verbose",		&print_shift_error },
-  { "sourcepath",		&source_uses_path },
+  { "shift_verbose",		&print_shift_error,	.hide_set_o = 1 },
+  { "sourcepath",		&source_uses_path,	.hide_set_o = 1 },
 #if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
-  { "syslog_history",		&syslog_history },
+  { "syslog_history",		&syslog_history,	.hide_set_o = 1 },
 #endif
-  { "varredir_close",		&varassign_redir_autoclose },
-  { "xpg_echo",			&xpg_echo },
+  { "varredir_close",		&varassign_redir_autoclose,	.hide_set_o = 1 },
+  { "xpg_echo",			&xpg_echo,	.hide_set_o = 1 },
   {0}
 };
 
