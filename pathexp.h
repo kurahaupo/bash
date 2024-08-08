@@ -44,6 +44,8 @@ extern char *glob_error_return;
 #define FNMATCH_IGNCASE		(match_ignore_case ? FNM_CASEFOLD : 0)
 #define FNMATCH_NOCASEGLOB	(glob_ignore_case ? FNM_CASEFOLD : 0)
 
+extern int allow_null_glob_expansion;
+extern int fail_glob_expansion;
 extern int glob_dot_filenames;
 extern int extended_glob;
 extern int glob_star;
