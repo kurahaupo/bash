@@ -822,7 +822,7 @@ set_bashopts (void)
 {
   char *value;
   char tflag[N_SHOPT_OPTIONS];
-  int i, exported;
+  int i;
   size_t vsize, vptr;
   SHELL_VAR *v;
 
@@ -854,19 +854,12 @@ set_bashopts (void)
 
   v = find_variable ("BASHOPTS");
 
-  /* Note whether or not the variable was exported so we can adjust after the
-     assignment. */
-  exported = v ? exported_p (v) : 0;
+  /* ASS_FORCE so we don't have to temporarily turn off readonly;
+   * ASS_NOMARKso we don't tickle `set -a`. */
+  v = bind_variable ("BASHOPTS", value, ASS_FORCE | ASS_NOMARK);
 
-  /* ASS_FORCE so we don't have to temporarily turn off readonly */
-  v = bind_variable ("BASHOPTS", value, ASS_FORCE);
-
-  /* Turn the read-only attribute back on, and turn off the export attribute
-     if it was set implicitly by mark_modified_vars and SHELLOPTS was not
-     exported before we bound the new value. */
+  /* Turn the read-only attribute back on. */
   VSETATTR (v, att_readonly);
-  if (mark_modified_vars && exported == 0 && exported_p (v))
-    VUNSETATTR (v, att_exported);
 
   free (value);
 }
