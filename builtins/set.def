@@ -300,55 +300,55 @@ static const char * const off = "off";
 char no_long_name[2] = "-";
 
 static const opt_def_t opt_defs[] = {
-  { "allexport",		&mark_modified_vars,	.letter = 'a' },
+  { "allexport",		&mark_modified_vars,	.letter = 'a',	.hide_shopt = 1 },
 #if defined (BRACE_EXPANSION)
-  { "braceexpand",		&brace_expansion,	.letter = 'B' },
+  { "braceexpand",		&brace_expansion,	.letter = 'B',	.hide_shopt = 1 },
 #endif
 #if defined (READLINE)
-  { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE },
+  { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.hide_shopt = 1 },
 #endif
-  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_flag_option },
-  { "errtrace",			&error_trace_mode,	.letter = 'E' },
-  { "functrace",		&function_trace_mode,	.letter = 'T' },
-  { "hashall",			&hashing_enabled,	.letter = 'h' },
+  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "errtrace",			&error_trace_mode,	.letter = 'E',	.hide_shopt = 1 },
+  { "functrace",		&function_trace_mode,	.letter = 'T',	.hide_shopt = 1 },
+  { "hashall",			&hashing_enabled,	.letter = 'h',	.hide_shopt = 1 },
 #if defined (BANG_HISTORY)
-  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_flag_option },
+  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_flag_option,	.hide_shopt = 1 },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
-  { "history",			&enable_history_list,	.set_func = bash_set_history },
+  { "history",			&enable_history_list,	.set_func = bash_set_history,	.hide_shopt = 1 },
 #endif
-  { "ignoreeof",		&ignoreeof,		.set_func = set_ignoreeof },
-  { "interactive-comments",	&interactive_comments },
-  { "keyword",			&place_keywords_in_env,	.letter = 'k' },
+  { "ignoreeof",		&ignoreeof,		.set_func = set_ignoreeof,	.hide_shopt = 1 },
+  { "interactive-comments",	&interactive_comments,	.hide_shopt = 1 },
+  { "keyword",			&place_keywords_in_env,	.letter = 'k',	.hide_shopt = 1 },
 #if defined (JOB_CONTROL)
-  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_flag_option },
+  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_flag_option,	.hide_shopt = 1 },
 #endif
-  { "noclobber",		&noclobber,		.letter = 'C' },
-  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_flag_option },
-  { "noglob",			&disallow_filename_globbing,	.letter = 'f' },
+  { "noclobber",		&noclobber,		.letter = 'C',	.hide_shopt = 1 },
+  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "noglob",			&disallow_filename_globbing,	.letter = 'f',	.hide_shopt = 1 },
 #if defined (HISTORY)
-  { "nolog",			&dont_save_function_defs },
+  { "nolog",			&dont_save_function_defs,	.hide_shopt = 1 },
 #endif
 #if defined (JOB_CONTROL)
-  { "notify",			&asynchronous_notification,	.letter = 'b' },
+  { "notify",			&asynchronous_notification,	.letter = 'b',	.hide_shopt = 1 },
 #endif /* JOB_CONTROL */
-  { "nounset",			&unbound_vars_is_error,	.letter = 'u' },
-  { "onecmd",			&just_one_command,	.letter = 't' },
-  { "physical",			&no_symbolic_links,	.letter = 'P' },
-  { "pipefail",			&pipefail_opt },
-  { "posix",			&posixly_correct,	.set_func = set_posix_mode },
-  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_flag_option },
-  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_flag_option },
+  { "nounset",			&unbound_vars_is_error,	.letter = 'u',	.hide_shopt = 1 },
+  { "onecmd",			&just_one_command,	.letter = 't',	.hide_shopt = 1 },
+  { "physical",			&no_symbolic_links,	.letter = 'P',	.hide_shopt = 1 },
+  { "pipefail",			&pipefail_opt,	.hide_shopt = 1 },
+  { "posix",			&posixly_correct,	.set_func = set_posix_mode,	.hide_shopt = 1 },
+  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_flag_option,	.hide_shopt = 1 },
 #if defined (READLINE)
-  { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE },
+  { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.hide_shopt = 1 },
 #endif
-  { "xtrace",			&echo_command_at_execute,	.letter = 'x' },
-  { no_long_name,		&forced_interactive,	.letter = 'i' },
+  { "xtrace",			&echo_command_at_execute,	.letter = 'x',	.hide_shopt = 1 },
+  { no_long_name,		&forced_interactive,	.letter = 'i',	.hide_shopt = 1 },
 #if defined (RESTRICTED_SHELL)
-  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_flag_option },
+  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_flag_option,	.hide_shopt = 1 },
 #endif /* RESTRICTED_SHELL */
 #if 0
-  { no_long_name,		&lexical_scoping,	.letter = 'l' },
+  { no_long_name,		&lexical_scoping,	.letter = 'l',	.hide_shopt = 1 },
 #endif
   {0}
 };
