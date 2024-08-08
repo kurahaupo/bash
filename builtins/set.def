@@ -464,28 +464,28 @@ change_flag (int letter, int on_or_off)
 char *
 get_current_flags (void)
 {
-  char *temp;
-  int i, j;
+  char *result = xmalloc (1 + N_O_OPTIONS);
+  char *endp = result;
+  struct opt_def_s const *d;
 
-  temp = (char *)xmalloc (1 + N_O_OPTIONS);
-  for (i = j = 0; opt_defs[i].name; i++)
-    if (opt_defs[i].letter)
-      temp[j++] = get_opt_value (&opt_defs[i], Whence (short));
-  temp[i] = '\0';
-  return (temp);
+  for (d = opt_defs; d->name; d++)
+    if (d->letter)
+      *endp++ = get_opt_value (d, Whence (short));
+  *endp = '\0';
+  return result;
 }
 
 void
 set_current_flags (const char *bitmap)
 {
+  if (bitmap == NULL)
+    return;
   int j;
   struct opt_def_s const *d;
 
-  if (bitmap == 0)
-    return;
   for (d = opt_defs, j = 0; d->name; d++)
     if (d->letter)
-      d->store[0] = bitmap[j++];	/* Bypass set_opt_value(), so that we can unwind changes to protected flags */
+      set_opt_value (d, Whence (short), bitmap[j++]);	/* Bypass set_opt_value(), so that we can unwind changes to protected flags */
 }
 
 /* Return a string which is the names of all the currently
@@ -493,20 +493,20 @@ set_current_flags (const char *bitmap)
 char *
 which_set_flags (void)
 {
-  int j;
   struct opt_def_s const *d;
-
   char *result = xmalloc (1 + N_O_OPTIONS + read_from_stdin + want_pending_command);
-  for (d = opt_defs, j = 0; d->name; d++)
+  char *endp = result;
+
+  for (d = opt_defs; d->name; d++)
     if (d->letter && get_opt_value (d, Whence (short)))
-      result[j++] = d->letter;
+      *endp++ = d->letter;
 
   if (want_pending_command)
-    result[j++] = 'c';
+    *endp++ = 'c';
   if (read_from_stdin)
-    result[j++] = 's';
+    *endp++ = 's';
 
-  result[j] = 0;
+  *endp = 0;
   return result;
 }
 
@@ -800,7 +800,7 @@ initialize_shell_options (int no_shellopts)
 {
   char *temp;
   SHELL_VAR *var;
-  int i, j, min=0, max=0;
+  int i, min=0, max=0;
 
   for (i = 0; opt_defs[i].name; i++)
     {
@@ -814,14 +814,14 @@ initialize_shell_options (int no_shellopts)
       if (!max || c > max) max = c;
     }
 
-  j = 0;
-  optflags[j++] = '+';
+  char *endp = optflags;
+  *endp++ = '+';
   for (i = min; i <= max; i++)
     if (letter_map[i])
-      optflags[j++] = i;
-  optflags[j++] = 'o';
-  optflags[j++] = ';';
-  optflags[j++] = 0;
+      *endp++ = i;
+  *endp++ = 'o';
+  *endp++ = ';';
+  *endp++ = 0;
 
   if (no_shellopts == 0)
     {
@@ -1737,6 +1737,7 @@ list_shopts (WORD_LIST *list, int flags)
   if (list == 0)
     {
       struct opt_def_s const *d;
+
       for (d = opt_defs; d->name; d++)
 	{
 	  struct opt_def_s const *d = &opt_defs[i];
@@ -1778,6 +1779,8 @@ list_some_shopts (int new_value, int flags)
 
   for (d = opt_defs; d->name; d++)
     {
+      if (d->hide_shopt)
+	continue;
       val = get_opt_value (d, Whence (shopt));
       if (((flags & QFLAG) == 0) && new_value == val)
 	print_shopt (d->name, val, flags);
