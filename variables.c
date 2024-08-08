@@ -6444,14 +6444,12 @@ sv_shcompat (const char *name)
   if (v == 0)
     {
       shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
-      set_compatibility_opts ();
       return;
     }
   val = value_cell (v);
   if (val == 0 || *val == '\0')
     {
       shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
-      set_compatibility_opts ();
       return;
     }
   /* Handle decimal-like compatibility version specifications: 4.2 */
@@ -6473,7 +6471,6 @@ sv_shcompat (const char *name)
 compat_error:
       internal_error (_("%s: %s: compatibility value out of range"), name, val);
       shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
-      set_compatibility_opts ();
       return;
     }
 
@@ -6481,7 +6478,6 @@ compat_error:
     goto compat_error;
 
   shell_compatibility_level = compatval;
-  set_compatibility_opts ();
 }
 
 #if defined (JOB_CONTROL)

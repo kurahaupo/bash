@@ -1379,6 +1379,7 @@ extern int syslog_history;
 #define find_option find_option2 /*find_shopt_option*/
 
 static opt_set_func_t set_shellopts_after_change;
+static opt_get_func_t get_compatibility_level;
 static opt_set_func_t set_compatibility_level;
 
 #if defined (RESTRICTED_SHELL)
@@ -1403,13 +1404,6 @@ static opt_set_func_t shopt_set_debug_mode;
 static opt_set_func_t set_login_shell2;
 
 static int shopt_login_shell;
-static int shopt_compat31;
-static int shopt_compat32;
-static int shopt_compat40;
-static int shopt_compat41;
-static int shopt_compat42;
-static int shopt_compat43;
-static int shopt_compat44;
 
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
@@ -1433,20 +1427,18 @@ static const opt_def_t opt_defs[] = {
 #if defined (HISTORY)
   { "cmdhist",			&command_oriented_history,	.hide_set_o = 1 },
 #endif
-  { "compat31",			&shopt_compat31,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat32",			&shopt_compat32,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat40",			&shopt_compat40,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat41",			&shopt_compat41,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat42",			&shopt_compat42,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat43",			&shopt_compat43,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
-  { "compat44",			&shopt_compat44,
-					.set_func = set_compatibility_level,	.hide_set_o = 1 },
+  { "compat31",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 31,	.hide_set_o = 1 },
+  { "compat32",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 32,	.hide_set_o = 1 },
+  { "compat40",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 40,	.hide_set_o = 1 },
+  { "compat41",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 41,	.hide_set_o = 1 },
+  { "compat42",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 42,	.hide_set_o = 1 },
+  { "compat43",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 43,	.hide_set_o = 1 },
+  { "compat44",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 44,	.hide_set_o = 1 },
+  { "compat50",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 50,	.hide_set_o = 1 },
+  { "compat51",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 51,	.hide_set_o = 1 },
+  { "compat52",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 52,	.hide_set_o = 1 },
+  { "compat53",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 53,	.hide_set_o = 1 },
+  { "compat54",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 54,	.hide_set_o = 1 },
 #if defined (READLINE)
   { "complete_fullquote",	&complete_fullquote,	.hide_set_o = 1},
   { "direxpand",		&dircomplete_expand,
@@ -1901,83 +1893,44 @@ shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, 
 }
 #endif
 
+static option_value_t
+get_compatibility_level (struct opt_def_s const *d, optset_whence_t w)
+{
+  return d->store[0] == d->reference_value;
+}
+
 static optset_result_t
 set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-
-  char *rhs;
-
-  /* If we're unsetting one of the compatibility options, make sure the
-     current value is in the range of the compatNN space. */
-
-  /* If we're setting something, redo some of the work we did above in
-     change_shopts ().  Unset everything and reset the appropriate option
-     based on OPTION_NAME. */
   if (new_value)
+    d->store[0] = d->reference_value;
+  else if (d->store[0] == d->reference_value)
     {
-      shopt_compat31 = shopt_compat32 = 0;
-      shopt_compat40 = shopt_compat41 = shopt_compat42 = shopt_compat43 = 0;
-      shopt_compat44 = 0;
-      d->store[0] = new_value;
+      /*
+       * The original code included this comment:
+       *   If we're unsetting one of the compatibility options, make sure the
+       *   current value is in the range of the compatNN space.
+       * (which was inserted on 2022-02-15 by commit 6d69b62)
+       *
+       * However that's not what the code did, so absent any other rationale,
+       * we do this instead:
+       *
+       *   If unsetting the current level, set the current level to the default
+       *   level; if unsetting some other level, do nothing.
+       */
+      #if 0
+      int current_level = d->store[0];
+      if (current_level > DEFAULT_COMPAT_LEVEL || current_level <= 44)
+      #endif
+	d->store[0] = DEFAULT_COMPAT_LEVEL;
     }
 
-  /* Then set shell_compatibility_level based on what remains */
-  if (shopt_compat31)
-    shell_compatibility_level = 31;
-  else if (shopt_compat32)
-    shell_compatibility_level = 32;
-  else if (shopt_compat40)
-    shell_compatibility_level = 40;
-  else if (shopt_compat41)
-    shell_compatibility_level = 41;
-  else if (shopt_compat42)
-    shell_compatibility_level = 42;
-  else if (shopt_compat43)
-    shell_compatibility_level = 43;
-  else if (shopt_compat44)
-    shell_compatibility_level = 44;
-  else if (! new_value && shell_compatibility_level > 44 && shell_compatibility_level < DEFAULT_COMPAT_LEVEL)
-    ;
-  else
-    shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
-
   /* Make sure the current compatibility level is reflected in BASH_COMPAT */
-  rhs = itos (shell_compatibility_level);
+  char *rhs = itos (shell_compatibility_level);
   bind_variable ("BASH_COMPAT", rhs, 0);
   free (rhs);
 
   return Result (OK);
-}
-
-/* Set and unset the various compatibility options from the value of
-   shell_compatibility_level; used by sv_shcompat */
-void
-set_compatibility_opts (void)
-{
-  shopt_compat31 = shopt_compat32 = 0;
-  shopt_compat40 = shopt_compat41 = shopt_compat42 = shopt_compat43 = 0;
-  shopt_compat44 = 0;
-  switch (shell_compatibility_level)
-    {
-      case DEFAULT_COMPAT_LEVEL:
-      case 51:			/* completeness */
-      case 50:
-	break;
-      case 44:
-	shopt_compat44 = 1; break;
-      case 43:
-	shopt_compat43 = 1; break;
-      case 42:
-	shopt_compat42 = 1; break;
-      case 41:
-	shopt_compat41 = 1; break;
-      case 40:
-	shopt_compat40 = 1; break;
-      case 32:
-	shopt_compat32 = 1; break;
-      case 31:
-	shopt_compat31 = 1; break;
-    }
 }
 
 #if defined (READLINE)
