@@ -1288,6 +1288,22 @@ $END
 
 #define OPTFMT		"%-15s\t%s\n"
 
+#if defined (READLINE)
+//extern int complete_fullquote;	// in bashline.h
+//extern int dircomplete_expand;	// in bashline.h
+//extern int dircomplete_spelling;	// in bashline.h
+//extern int force_fignore;	// in bashline.h
+//extern int no_empty_command_completion;	// in bashline.h
+//extern int perform_hostname_completion;	// in bashline.h
+
+//extern int enable_hostname_completion (int);	// in bashline.h
+
+# if defined (HISTORY)
+//extern int hist_verify;	// in bashhist.h conditional on READLINE
+//extern int history_reediting;	// in bashhist.h conditional on READLINE
+# endif
+#endif
+
 extern int cdable_vars;	// from cd.def
 extern int cdspelling;	// from cd.def
 
@@ -1321,11 +1337,19 @@ extern int glob_dot_filenames;	// from pathexp.h
 extern int match_ignore_case;	// from pathexp.h
 extern int glob_star;	// from pathexp.h
 
+#if defined (EXTENDED_GLOB)
+extern int extended_glob;	// from pathexp.h
+#endif
+
 extern int varassign_redir_autoclose;	// from redir.c
 
 //extern int autocd;	// in shell.h
 //extern int check_jobs_at_exit;	// in shell.h
 //extern int hup_on_exit;	// in shell.h
+
+#if defined (DEBUGGER)
+extern int debugging_mode;	// in shell.h
+#endif
 
 extern int glob_asciirange;	// from smatch.c
 
@@ -1338,33 +1362,9 @@ extern int localvar_unset;	// from variables.c
 extern int bash_source_fullpath;	// from variables.c
 extern int localvar_inherit;	// from variables.h
 
-#if defined (EXTENDED_GLOB)
-extern int extended_glob;	// from pathexp.h
-#endif
-
-#if defined (READLINE)
-//extern int complete_fullquote;	// in bashline.h
-//extern int dircomplete_expand;	// in bashline.h
-//extern int dircomplete_spelling;	// in bashline.h
-//extern int force_fignore;	// in bashline.h
-//extern int no_empty_command_completion;	// in bashline.h
-//extern int perform_hostname_completion;	// in bashline.h
-
-//extern int enable_hostname_completion (int);	// in bashline.h
-
-# if defined (HISTORY)
-//extern int hist_verify;	// in bashhist.h conditional on READLINE
-//extern int history_reediting;	// in bashhist.h conditional on READLINE
-# endif
-#endif
-
 #if defined (PROGRAMMABLE_COMPLETION)
-extern int prog_completion_enabled;
-extern int progcomp_alias;
-#endif
-
-#if defined (DEBUGGER)
-extern int debugging_mode;
+extern int prog_completion_enabled;	// from pcomplete.h
+extern int progcomp_alias;	// from pcomplete.h
 #endif
 
 #if defined (ARRAY_VARS)
