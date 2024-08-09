@@ -143,21 +143,21 @@ get_opt_value (struct opt_def_s const *d, optset_whence_t w)
 static optset_result_t
 set_opt_value (struct opt_def_s const *d,
 	       optset_whence_t w,
-	       option_value_t v)
+	       option_value_t new_value)
 {
   if (!d)
     return Result (NotFound);
 
   if (d->set_func)
-    return d->set_func(d, w, v);
+    return d->set_func(d, w, new_value);
 
   if (d->readonly)
     return Result (ReadOnly);
   if (d->forbid_change && w.whence != Whence_argv	/* set up from command line, but don't change thereafter */
 		       && w.whence != Whence_environ)	/* read from initial environment, but don't change thereafter */
     {
-      option_value_t ov = get_opt_value (d, w);
-      if (v == ov)
+      option_value_t old_value = get_opt_value (d, w);
+      if (new_value == old_value)
 	return Result (Unchanged);
       else
 	return Result (Forbidden);
@@ -166,7 +166,7 @@ set_opt_value (struct opt_def_s const *d,
     return Result (Ignored);
 
   if (d->store)
-    d->store[0] = v;
+    d->store[0] = new_value;
   return Result (OK);
 }
 
@@ -374,42 +374,42 @@ static const opt_def_t *letter_map[1+(unsigned char)-1];
 
 
 static optset_result_t
-set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t v )
+set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
   /* Special cases for a few flags. */
   switch (d->letter)
     {
 #if defined (BANG_HISTORY)
     case 'H':
-      d->store[0] = v;
+      d->store[0] = new_value;
       history_expansion = histexp_flag;
-      if (v)
+      if (new_value)
 	bash_initialize_history ();
       break;
 #endif
 
 #if defined (JOB_CONTROL)
     case 'm':
-      d->store[0] = v;
-      set_job_control (v);
+      d->store[0] = new_value;
+      set_job_control (new_value);
       break;
 #endif /* JOB_CONTROL */
 
     case 'e':
-      d->store[0] = v;
+      d->store[0] = new_value;
       if (builtin_ignoring_errexit == 0)
 	exit_immediately_on_error = errexit_flag;
       break;
 
     case 'n':
-      d->store[0] = v;
+      d->store[0] = new_value;
       if (interactive_shell)
 	read_but_dont_execute = 0;
       break;
 
     case 'p':
-      d->store[0] = v;
-      if (!v)
+      d->store[0] = new_value;
+      if (!new_value)
 	disable_priv_mode ();
       break;
 
@@ -417,22 +417,22 @@ set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t v
     case 'r':
 
       /* Don't allow "set +r" in a shell which is `restricted'. */
-      if (restricted && !v)
+      if (restricted && !new_value)
 	return Result (Forbidden);
-      d->store[0] = v;
+      d->store[0] = new_value;
 
-      if (v && shell_initialized)
+      if (new_value && shell_initialized)
 	maybe_make_restricted (shell_name);
       break;
 #endif
 
     case 'v':
-      d->store[0] = v;
+      d->store[0] = new_value;
       echo_input_at_read = verbose_flag;
       break;
 
     default:
-      d->store[0] = v;
+      d->store[0] = new_value;
     }
   return Result (OK);
 }
@@ -540,7 +540,7 @@ print_minus_o_option (char *name, int value, int pflag)
 }
 
 void
-list_minus_o_opts (int mode, int reusable)
+list_minus_o_opts (int mask_value, int reusable)
 {
   struct opt_def_s const *d;
 
@@ -551,7 +551,7 @@ list_minus_o_opts (int mode, int reusable)
       if (d->hide_set_o)
 	continue;
       option_value_t value = get_opt_value (d, Whence (set_o));
-      if (mode == -1 || mode == value)
+      if (mask_value == -1 || mask_value == value)
 	print_minus_o_option (d->name, value, reusable);
     }
 }
@@ -643,10 +643,10 @@ set_posix_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t on_
 #if defined (READLINE)
 /* Magic.  This code `knows' how readline handles rl_editing_mode. */
 static optset_result_t
-set_edit_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+set_edit_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
   _Bool really_interactive = interactive && command_execution_string == NULL;
-  if (v)
+  if (new_value)
     {
       rl_variable_bind ("editing-mode", d->name);
       if (really_interactive)
@@ -657,7 +657,7 @@ set_edit_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
       if (really_interactive)
 	with_input_from_stream (stdin, "stdin");
     }
-  no_line_editing = !v;
+  no_line_editing = !new_value;
   return Result (OK);
 }
 
@@ -670,10 +670,10 @@ get_edit_mode (struct opt_def_s const *d, optset_whence_t w)
 
 #if defined (HISTORY)
 static optset_result_t
-bash_set_history (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+bash_set_history (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  enable_history_list = v;
-  if (v)
+  enable_history_list = new_value;
+  if (new_value)
     {
       bash_history_enable ();
       if (history_lines_this_session == 0)
@@ -739,7 +739,7 @@ set_shellopts (void)
   char tflag[N_O_OPTIONS];
   int i, *ip;
   size_t vsize, vptr;
-  SHELL_VAR *v;
+  SHELL_VAR *var;
 
   for (vsize = i = 0; opt_defs[i].name; i++)
     {
@@ -771,10 +771,10 @@ set_shellopts (void)
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
    * ASS_NOMARK so we don't tickle `set -a`. */
-  v = bind_variable ("SHELLOPTS", value, ASS_FORCE | ASS_NOMARK);
+  var = bind_variable ("SHELLOPTS", value, ASS_FORCE | ASS_NOMARK);
 
   /* Turn the read-only attribute back on. */
-  VSETATTR (v, att_readonly);
+  VSETATTR (var, att_readonly);
 
   free (value);
 }
@@ -1683,14 +1683,14 @@ shopt_error (char const *s)
 }
 
 static int
-change_shopts (int mode, WORD_LIST *list, int quiet)
+change_shopts (option_value_t new_value, WORD_LIST *list, int quiet)
 {
   WORD_LIST *l;
   int rval = EXECUTION_SUCCESS;
 
   for (l = list; l; l = l->next)
     {
-      optset_result_t r = set_opt_value (find_option (l->word->word), Whence (shopt), mode);
+      optset_result_t r = set_opt_value (find_option (l->word->word), Whence (shopt), new_value);
       if (res_to_ex (r) != EXECUTION_SUCCESS)
 	{
 	  shopt_error (l->word->word);
@@ -1699,7 +1699,7 @@ change_shopts (int mode, WORD_LIST *list, int quiet)
     }
 
   /* Don't set $BASHOPTS here if it hasn't already been initialized */
-  if (find_variable ("BASHOPTS"))
+  if (find_variable ("BASHOPTS") != NULL)
     set_bashopts ();
   return (rval);
 }
@@ -1758,7 +1758,7 @@ list_shopts (WORD_LIST *list, int flags)
 }
 
 static int
-list_some_shopts (int mode, int flags)
+list_some_shopts (int new_value, int flags)
 {
   int val, i;
   struct opt_def_s const *d;
@@ -1766,7 +1766,7 @@ list_some_shopts (int mode, int flags)
   for (d = opt_defs; d->name; d++)
     {
       val = get_opt_value (d, Whence (shopt));
-      if (((flags & QFLAG) == 0) && mode == val)
+      if (((flags & QFLAG) == 0) && new_value == val)
 	print_shopt (d->name, val, flags);
     }
   return (sh_chkwrite (EXECUTION_SUCCESS));
@@ -1808,22 +1808,22 @@ list_shopt_o_options (WORD_LIST *list, int flags)
 }
 
 static int
-list_some_o_options (int mode, int flags)
+list_some_o_options (int new_value, int flags)
 {
   if ((flags & QFLAG) == 0)
-    list_minus_o_opts (mode, (flags & PFLAG));
+    list_minus_o_opts (new_value, (flags & PFLAG));
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
 static int
-set_shopt_o_options (int mode, WORD_LIST *list, int quiet)
+set_shopt_o_options (int new_value, WORD_LIST *list, int quiet)
 {
   WORD_LIST *l;
   int rval;
 
   for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
     {
-      if (set_minus_o_option (mode, l->word->word) == EXECUTION_FAILURE)
+      if (set_minus_o_option (new_value, l->word->word) == EXECUTION_FAILURE)
 	rval = EXECUTION_FAILURE;
     }
   set_shellopts ();
@@ -1833,17 +1833,17 @@ set_shopt_o_options (int mode, WORD_LIST *list, int quiet)
 /* If we set or unset interactive_comments with shopt, make sure the
    change is reflected in $SHELLOPTS. */
 static optset_result_t
-set_shellopts_after_change (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+set_shellopts_after_change (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = v;
+  d->store[0] = new_value;
   set_shellopts ();
   return Result (OK);
 }
 
 static optset_result_t
-shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = v;
+  d->store[0] = new_value;
 #if defined (DEBUGGER)
   error_trace_mode = function_trace_mode = debugging_mode;
   set_shellopts ();
@@ -1854,18 +1854,18 @@ shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value
 }
 
 static optset_result_t
-shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = v;
+  d->store[0] = new_value;
   expand_aliases = expaliases_flag;
   return Result (OK);
 }
 
 #if defined (EXTENDED_GLOB)
 static optset_result_t
-shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = v;
+  d->store[0] = new_value;
   extended_glob = extglob_flag;
   return Result (OK);
 }
@@ -1873,15 +1873,15 @@ shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t 
 
 #if defined (READLINE)
 static optset_result_t
-shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
+shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  int previous_value = enable_hostname_completion (mode);
+  int previous_value = enable_hostname_completion (new_value);
   return Result (OK);
 }
 #endif
 
 static optset_result_t
-set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
+set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
 
   char *rhs;
@@ -1892,12 +1892,12 @@ set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_va
   /* If we're setting something, redo some of the work we did above in
      change_shopts ().  Unset everything and reset the appropriate option
      based on OPTION_NAME. */
-  if (mode)
+  if (new_value)
     {
       shopt_compat31 = shopt_compat32 = 0;
       shopt_compat40 = shopt_compat41 = shopt_compat42 = shopt_compat43 = 0;
       shopt_compat44 = 0;
-      d->store[0] = mode;
+      d->store[0] = new_value;
     }
 
   /* Then set shell_compatibility_level based on what remains */
@@ -1915,7 +1915,7 @@ set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_va
     shell_compatibility_level = 43;
   else if (shopt_compat44)
     shell_compatibility_level = 44;
-  else if (!mode && shell_compatibility_level > 44 && shell_compatibility_level < DEFAULT_COMPAT_LEVEL)
+  else if (! new_value && shell_compatibility_level > 44 && shell_compatibility_level < DEFAULT_COMPAT_LEVEL)
     ;
   else
     shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
@@ -1961,9 +1961,9 @@ set_compatibility_opts (void)
 
 #if defined (READLINE)
 static optset_result_t
-shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
+shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = mode;
+  d->store[0] = new_value;
   set_directory_hook ();
   return Result (OK);
 }
@@ -1973,9 +1973,9 @@ shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, opti
 /* Don't allow the value of restricted_shell to be modified. */
 
 static optset_result_t
-set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
+set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = mode;
+  d->store[0] = new_value;
   static int save_restricted = -1;
 
   if (save_restricted == -1)
@@ -1988,16 +1988,16 @@ set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value
 
 /* TODO: convert this to an 'ignored' setting */
 static optset_result_t
-set_login_shell2 (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
+set_login_shell2 (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = v;	/* this does nothing, because d->store[0] === shopt_login_shell */
+  d->store[0] = new_value;	/* this does nothing, because d->store[0] === shopt_login_shell */
   shopt_login_shell = login_shell;
   return Result (OK);
 }
 
 /* Not static so shell.c can call it to initialize shopt_login_shell */
 int
-set_login_shell (char *option_name, int mode)
+set_login_shell (char *option_name, option_value_t new_value)
 {
   shopt_login_shell = login_shell != 0;
   return (0);
@@ -2024,7 +2024,7 @@ get_shopt_options (void)
  * REUSABLE is 1 if we want to print output in a form that may be reused.
  */
 int
-shopt_setopt (char *name, int mode)
+shopt_setopt (char *name, option_value_t new_value)
 {
   struct opt_def_s const *d = find_option (name);
   if (!d)
@@ -2033,7 +2033,7 @@ shopt_setopt (char *name, int mode)
       return (EXECUTION_FAILURE);
     }
 
-  optset_result_t r = set_opt_value (d, Whence (shopt), mode);
+  optset_result_t r = set_opt_value (d, Whence (shopt), new_value);
 
   set_bashopts ();
 
@@ -2064,7 +2064,7 @@ set_bashopts (void)
   char tflag[N_SHOPT_OPTIONS];
   int i;
   size_t vsize, vptr;
-  SHELL_VAR *v;
+  SHELL_VAR *var;
 
   for (vsize = i = 0; opt_defs[i].name; i++)
     {
@@ -2094,11 +2094,11 @@ set_bashopts (void)
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
    * ASS_NOMARK so we don't tickle `set -a`. */
-  v = bind_variable ("BASHOPTS", value, ASS_FORCE | ASS_NOMARK);
+  var = bind_variable ("BASHOPTS", value, ASS_FORCE | ASS_NOMARK);
   free (value);
 
   /* Turn the read-only attribute back on. */
-  VSETATTR (v, att_readonly);
+  VSETATTR (var, att_readonly);
 }
 
 void
@@ -2112,7 +2112,7 @@ parse_bashopts (char *value)
     {
       struct opt_def_s const *d = find_option (vname);
       if (d)
-	set_opt_value(d, Whence (environ), true);
+	set_opt_value (d, Whence (environ), true);
       free (vname);
     }
 }
@@ -2144,9 +2144,9 @@ initialize_bashopts (int no_bashopts)
 
 #if defined (ARRAY_VARS)
 static optset_result_t
-set_array_expand (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
+set_array_expand (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
 {
-  d->store[0] = mode;
+  d->store[0] = new_value;
 #if 0 /* leave this disabled */
   if (shell_compatibility_level <= 51)
 #endif
