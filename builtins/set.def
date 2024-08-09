@@ -1724,6 +1724,7 @@ list_shopts (WORD_LIST *list, int flags)
       struct opt_def_s const *d;
       for (d = opt_defs; d->name; d++)
 	{
+	  struct opt_def_s const *d = &opt_defs[i];
 	  if (d->hide_shopt)
 	    continue;
 	  if (d->name == no_long_name)
@@ -2022,6 +2023,13 @@ get_shopt_options (void)
 int
 shopt_setopt (char *name, int mode)
 {
+  struct opt_def_s const *d = find_option (name);
+  if (!d)
+    {
+      shopt_error (name);
+      return (EXECUTION_FAILURE);
+    }
+
   optset_result_t r = set_opt_value (d, Whence (shopt), mode);
 
   set_bashopts ();
