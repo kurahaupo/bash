@@ -2020,8 +2020,7 @@ get_shopt_options (void)
 
 /*
  * External interface for other parts of the shell.  NAME is a string option;
- * MODE is 0 if we want to unset an option; 1 if we want to set an option.
- * REUSABLE is 1 if we want to print output in a form that may be reused.
+ * NEW_VALUE is false if we want to unset an option; true if we want to set an option.
  */
 int
 shopt_setopt (char *name, option_value_t new_value)
@@ -2030,7 +2029,7 @@ shopt_setopt (char *name, option_value_t new_value)
   if (!d)
     {
       shopt_error (name);
-      return (EXECUTION_FAILURE);
+      return (EX_USAGE);
     }
 
   optset_result_t r = set_opt_value (d, Whence (shopt), new_value);
@@ -2053,7 +2052,8 @@ shopt_listopt (char *name, int reusable)
       return (EXECUTION_FAILURE);
     }
 
-  print_shopt (name, d->store[0], reusable ? PFLAG : 0);
+  option_value_t v = get_opt_value (d, Whence (shopt));
+  print_shopt (name, v, reusable ? PFLAG : 0);
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
@@ -2110,9 +2110,7 @@ parse_bashopts (char *value)
   vptr = 0;
   while (vname = extract_colon_unit (value, &vptr))
     {
-      struct opt_def_s const *d = find_option (vname);
-      if (d)
-	set_opt_value (d, Whence (environ), true);
+      (void) set_opt_value (find_option (vname), Whence (environ), true);
       free (vname);
     }
 }
