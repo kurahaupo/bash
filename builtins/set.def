@@ -1340,8 +1340,7 @@ extern int debugging_mode;
 #endif
 
 #if defined (ARRAY_VARS)
-extern int array_expand_once;
-int expand_once_flag;
+extern int array_expand_once;	// from arrayfunc.h
 #endif
 
 #if defined (SYSLOG_HISTORY)
@@ -1361,10 +1360,6 @@ static opt_set_func_t set_restricted_shell;
 #if defined (READLINE)
 static opt_set_func_t shopt_enable_hostname_completion;
 static opt_set_func_t shopt_set_complete_direxpand;
-#endif
-
-#if defined (ARRAY_VARS)
-static opt_set_func_t set_array_expand;
 #endif
 
 #if defined (EXTENDED_GLOB)
@@ -1393,10 +1388,8 @@ static int shopt_compat44;
 
 static const opt_def_t opt_defs[] = {
 #if defined (ARRAY_VARS)
-  { "array_expand_once",	&expand_once_flag,
-					.set_func = set_array_expand,	.hide_set_o = 1 },
-  { "assoc_expand_once",	&expand_once_flag,
-					.set_func = set_array_expand,	.hide_set_o = 1 },	/* TODO: consider adding .hide_shopt=1 ? */
+  { "array_expand_once",	&array_expand_once,	.hide_set_o = 1 },
+  { "assoc_expand_once",	&array_expand_once,	.hide_set_o = 1 },	/* TODO: consider adding .hide_shopt=1 ? */
 #endif
   { "autocd", &autocd,	.hide_set_o = 1 },
 #if defined (ARRAY_VARS)
@@ -1625,7 +1618,7 @@ reset_shopt_options (void)
   glob_always_skip_dot_and_dotdot = 1;		/* new default as of bash-5.2 */
 
 #if defined (ARRAY_VARS)
-  expand_once_flag = array_expand_once = 0;
+  array_expand_once = 0;
 #endif
 
 #if defined (HISTORY)
@@ -2139,19 +2132,6 @@ initialize_bashopts (int no_bashopts)
   /* Set up the $BASHOPTS variable. */
   set_bashopts ();
 }
-
-#if defined (ARRAY_VARS)
-static optset_result_t
-set_array_expand (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
-{
-  d->store[0] = new_value;
-#if 0 /* leave this disabled */
-  if (shell_compatibility_level <= 51)
-#endif
-    array_expand_once = expand_once_flag;
-  return Result (OK);
-}
-#endif
 
 #undef opt_defs
 #undef find_option
