@@ -159,6 +159,8 @@ set_opt_value (struct opt_def_s const *d,
       option_value_t old_value = get_opt_value (d, w);
       if (new_value == old_value)
 	return Result (Unchanged);
+      else if (d->ignore_change)
+	return Result (Ignored);
       else
 	return Result (Forbidden);
     }
@@ -278,18 +280,34 @@ $END
 #define opt_defs o_options
 #define find_option find_o_option
 
-static opt_set_func_t set_flag_option;
+static opt_set_func_t set_errexit_flag;
 static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_noexec_flag;
 static opt_set_func_t set_posix_mode;
+static opt_set_func_t set_privileged_flag;
+
+#if defined (BANG_HISTORY)
+static opt_set_func_t set_histexp_flag;
+#endif
+
+#if defined (JOB_CONTROL)
+static opt_set_func_t set_monitor_flag;
+#endif
 
 #if defined (READLINE)
 static opt_set_func_t set_edit_mode;
 static opt_get_func_t get_edit_mode;
 #endif
 
+#if defined (RESTRICTED_SHELL)
+static opt_set_func_t set_restricted_flag;
+#endif
+
 #if defined (HISTORY)
 static opt_set_func_t bash_set_history;
 #endif
+
+static opt_set_func_t set_verbose_flag;
 
 static const char * const on = "on";
 static const char * const off = "off";
@@ -310,12 +328,12 @@ static const opt_def_t opt_defs[] = {
 #if defined (READLINE)
   { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.hide_shopt = 1 },
 #endif
-  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_errexit_flag,	.hide_shopt = 1 },
   { "errtrace",			&error_trace_mode,	.letter = 'E',	.hide_shopt = 1 },
   { "functrace",		&function_trace_mode,	.letter = 'T',	.hide_shopt = 1 },
   { "hashall",			&hashing_enabled,	.letter = 'h',	.hide_shopt = 1 },
 #if defined (BANG_HISTORY)
-  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_histexp_flag,	.hide_shopt = 1 },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
   { "history",			&enable_history_list,	.set_func = bash_set_history,	.hide_shopt = 1 },
@@ -324,10 +342,10 @@ static const opt_def_t opt_defs[] = {
   { "interactive-comments",	&interactive_comments,	.hide_shopt = 1 },
   { "keyword",			&place_keywords_in_env,	.letter = 'k',	.hide_shopt = 1 },
 #if defined (JOB_CONTROL)
-  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_monitor_flag,	.hide_shopt = 1 },
 #endif
   { "noclobber",		&noclobber,		.letter = 'C',	.hide_shopt = 1 },
-  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_noexec_flag,	.hide_shopt = 1 },
   { "noglob",			&disallow_filename_globbing,	.letter = 'f',	.hide_shopt = 1 },
 #if defined (HISTORY)
   { "nolog",			&dont_save_function_defs,	.hide_shopt = 1 },
@@ -340,15 +358,15 @@ static const opt_def_t opt_defs[] = {
   { "physical",			&no_symbolic_links,	.letter = 'P',	.hide_shopt = 1 },
   { "pipefail",			&pipefail_opt,	.hide_shopt = 1 },
   { "posix",			&posixly_correct,	.set_func = set_posix_mode,	.hide_shopt = 1 },
-  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_flag_option,	.hide_shopt = 1 },
-  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_privileged_flag,	.hide_shopt = 1 },
+  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_verbose_flag,	.hide_shopt = 1 },
 #if defined (READLINE)
   { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.hide_shopt = 1 },
 #endif
   { "xtrace",			&echo_command_at_execute,	.letter = 'x',	.hide_shopt = 1 },
   { no_long_name,		&forced_interactive,	.letter = 'i',	.hide_shopt = 1 },
 #if defined (RESTRICTED_SHELL)
-  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_flag_option,	.hide_shopt = 1 },
+  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_restricted_flag,	.hide_shopt = 1 },
 #endif /* RESTRICTED_SHELL */
 #if 0
   { no_long_name,		&lexical_scoping,	.letter = 'l',	.hide_shopt = 1 },
@@ -387,69 +405,78 @@ init_letter_map (void)
 }
 
 
-static optset_result_t
-set_flag_option ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
-{
-  /* Special cases for a few flags. */
-  switch (d->letter)
-    {
 #if defined (BANG_HISTORY)
-    case 'H':
-      d->store[0] = new_value;
-      history_expansion = histexp_flag;
-      if (new_value)
-	bash_initialize_history ();
-      break;
+static optset_result_t
+set_histexp_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  history_expansion = histexp_flag;
+  if (new_value)
+    bash_initialize_history ();
+  return Result (OK);
+}
 #endif
 
 #if defined (JOB_CONTROL)
-    case 'm':
-      d->store[0] = new_value;
-      set_job_control (new_value);
-      break;
-#endif /* JOB_CONTROL */
-
-    case 'e':
-      d->store[0] = new_value;
-      if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
-      break;
-
-    case 'n':
-      d->store[0] = new_value;
-      if (interactive_shell)
-	read_but_dont_execute = 0;
-      break;
-
-    case 'p':
-      d->store[0] = new_value;
-      if (!new_value)
-	disable_priv_mode ();
-      break;
-
-#if defined (RESTRICTED_SHELL)
-    case 'r':
-
-      /* Don't allow "set +r" in a shell which is `restricted'. */
-      if (restricted && !new_value)
-	return Result (Forbidden);
-      d->store[0] = new_value;
-
-      if (new_value && shell_initialized)
-	maybe_make_restricted (shell_name);
-      break;
-#endif
-
-    case 'v':
-      d->store[0] = new_value;
-      echo_input_at_read = verbose_flag;
-      break;
-
-    default:
-      d->store[0] = new_value;
-    }
+static optset_result_t
+set_monitor_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  set_job_control (new_value);
   return Result (OK);
 }
+#endif /* JOB_CONTROL */
+
+static optset_result_t
+set_errexit_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  if (builtin_ignoring_errexit == 0)
+    exit_immediately_on_error = errexit_flag;
+  return Result (OK);
+}
+
+static optset_result_t
+set_noexec_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  if (interactive_shell)
+    read_but_dont_execute = 0;
+  return Result (OK);
+}
+
+static optset_result_t
+set_privileged_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  if (!new_value)
+    disable_priv_mode ();
+  return Result (OK);
+}
+
+#if defined (RESTRICTED_SHELL)
+static optset_result_t
+set_restricted_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  /* Don't allow "set +r" in a shell which is `restricted'. */
+  if (restricted && !new_value)
+    return Result (Forbidden);
+  d->store[0] = new_value;
+
+  if (new_value && shell_initialized)
+    maybe_make_restricted (shell_name);
+  return Result (OK);
+}
+#endif
+
+static optset_result_t
+set_verbose_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+{
+  d->store[0] = new_value;
+  echo_input_at_read = verbose_flag;
+  return Result (OK);
+}
+
 
 /* Change the state of a flag, and return its original value, or return
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
@@ -469,7 +496,7 @@ change_flag (int letter, int on_or_off)
     return FLAG_ERROR;
 
   old_value = get_opt_value (d, Whence (short));
-  optset_result_t r = set_flag_option (d, Whence (short), flag_to_bool (on_or_off));
+  optset_result_t r = set_opt_value (d, Whence (short), flag_to_bool (on_or_off));
 
   if (res_to_ex (r) != EXECUTION_SUCCESS)
     return FLAG_ERROR;
