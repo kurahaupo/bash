@@ -254,7 +254,7 @@ alrm_catcher(int i)
   char *msg;
 
   msg = _("\007timed out waiting for input: auto-logout\n");
-  write (1, msg, strlen (msg));
+  ssize_t ignored = write (1, msg, strlen (msg));
 
   bash_logout ();	/* run ~/.bash_logout if this is a login shell */
   jump_to_top_level (EXITPROG);
