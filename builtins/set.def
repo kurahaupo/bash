@@ -2052,7 +2052,7 @@ shopt_listopt (char *name, int reusable)
       return (EXECUTION_FAILURE);
     }
 
-  print_shopt (name, *d->store, reusable ? PFLAG : 0);
+  print_shopt (name, d->store[0], reusable ? PFLAG : 0);
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
