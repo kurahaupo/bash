@@ -1833,17 +1833,17 @@ set_shopt_o_options (int mode, WORD_LIST *list, int quiet)
 /* If we set or unset interactive_comments with shopt, make sure the
    change is reflected in $SHELLOPTS. */
 static optset_result_t
-set_shellopts_after_change (struct opt_def_s const *d, optset_whence_t w, int mode)
+set_shellopts_after_change (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
 {
-  d->store[0] = mode;
+  d->store[0] = v;
   set_shellopts ();
   return Result (OK);
 }
 
 static optset_result_t
-shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, int mode)
+shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
 {
-  d->store[0] = mode;
+  d->store[0] = v;
 #if defined (DEBUGGER)
   error_trace_mode = function_trace_mode = debugging_mode;
   set_shellopts ();
@@ -1854,18 +1854,18 @@ shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, int mode)
 }
 
 static optset_result_t
-shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, int mode)
+shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
 {
-  d->store[0] = mode;
+  d->store[0] = v;
   expand_aliases = expaliases_flag;
   return Result (OK);
 }
 
 #if defined (EXTENDED_GLOB)
 static optset_result_t
-shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, int mode)
+shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t v)
 {
-  d->store[0] = mode;
+  d->store[0] = v;
   extended_glob = extglob_flag;
   return Result (OK);
 }
@@ -1873,7 +1873,7 @@ shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, int mode)
 
 #if defined (READLINE)
 static optset_result_t
-shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, int mode)
+shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
 {
   int previous_value = enable_hostname_completion (mode);
   return Result (OK);
@@ -1881,8 +1881,9 @@ shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, 
 #endif
 
 static optset_result_t
-set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, int mode)
+set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
 {
+
   char *rhs;
 
   /* If we're unsetting one of the compatibility options, make sure the
@@ -1960,7 +1961,7 @@ set_compatibility_opts (void)
 
 #if defined (READLINE)
 static optset_result_t
-shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, int mode)
+shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
 {
   d->store[0] = mode;
   set_directory_hook ();
@@ -1972,7 +1973,7 @@ shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, int 
 /* Don't allow the value of restricted_shell to be modified. */
 
 static optset_result_t
-set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, int mode)
+set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
 {
   d->store[0] = mode;
   static int save_restricted = -1;
@@ -2143,7 +2144,7 @@ initialize_bashopts (int no_bashopts)
 
 #if defined (ARRAY_VARS)
 static optset_result_t
-set_array_expand (struct opt_def_s const *d, optset_whence_t w, int mode)
+set_array_expand (struct opt_def_s const *d, optset_whence_t w, option_value_t mode)
 {
   d->store[0] = mode;
 #if 0 /* leave this disabled */
