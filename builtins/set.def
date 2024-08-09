@@ -119,7 +119,6 @@ typedef struct opt_def_s {
         ignore_change:1,	/* ignore attempts to set the value, returning "Ignored" status */
         forbid_change:1,	/* error if attempting to change the value */
         readonly:1,		/* error if attempt to set the value, regardless of whether it would change */
-	use_set_flag:1,		/* interrim helper to call special handler equivalent to change_flag */
 	:0;
 } opt_def_t;
 
@@ -143,9 +142,6 @@ static optset_result_t set_opt_value ( struct opt_def_s const *d, optset_whence_
 
   if (d->set_func)
     return d->set_func(d, w, v);
-
-  if (d->use_set_flag)
-    return set_flag_option(d, w, v);
 
   if (d->forbid_change && w.whence != Whence_argv)	/* set up from command line, but don't change thereafter */
     {
@@ -320,12 +316,12 @@ static const opt_def_t opt_defs[] = {
 #if defined (READLINE)
   { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode, .reference_value = EMACS_EDITING_MODE },
 #endif
-  { "errexit",			&errexit_flag,		.letter = 'e',	.use_set_flag = 1 },
+  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_flag_option },
   { "errtrace",			&error_trace_mode,	.letter = 'E' },
   { "functrace",		&function_trace_mode,	.letter = 'T' },
   { "hashall",			&hashing_enabled,	.letter = 'h' },
 #if defined (BANG_HISTORY)
-  { "histexpand",		&histexp_flag,		.letter = 'H',	.use_set_flag = 1 },
+  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_flag_option },
 #endif /* BANG_HISTORY */
 #if defined (HISTORY)
   { "history",			&enable_history_list,	.set_func = bash_set_history },
@@ -334,10 +330,10 @@ static const opt_def_t opt_defs[] = {
   { "interactive-comments",	&interactive_comments },
   { "keyword",			&place_keywords_in_env,	.letter = 'k' },
 #if defined (JOB_CONTROL)
-  { "monitor",			&jobs_m_flag,		.letter = 'm',	.use_set_flag = 1 },
+  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_flag_option },
 #endif
   { "noclobber",		&noclobber,		.letter = 'C' },
-  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.use_set_flag = 1 },
+  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_flag_option },
   { "noglob",			&disallow_filename_globbing,	.letter = 'f' },
 #if defined (HISTORY)
   { "nolog",			&dont_save_function_defs },
@@ -350,15 +346,15 @@ static const opt_def_t opt_defs[] = {
   { "physical",			&no_symbolic_links,	.letter = 'P' },
   { "pipefail",			&pipefail_opt },
   { "posix",			&posixly_correct,	.set_func = set_posix_mode },
-  { "privileged",		&privileged_mode,	.letter = 'p',	.use_set_flag = 1 },
-  { "verbose",			&verbose_flag,		.letter = 'v',	.use_set_flag = 1 },
+  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_flag_option },
+  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_flag_option },
 #if defined (READLINE)
   { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode, .reference_value = VI_EDITING_MODE },
 #endif
   { "xtrace",			&echo_command_at_execute,	.letter = 'x' },
   { no_long_name,		&forced_interactive,	.letter = 'i' },
 #if defined (RESTRICTED_SHELL)
-  { no_long_name,		&restricted,		.letter = 'r',	.use_set_flag = 1 },
+  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_flag_option },
 #endif /* RESTRICTED_SHELL */
 #if 0
   { no_long_name,		&lexical_scoping,	.letter = 'l' },
