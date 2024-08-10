@@ -70,7 +70,8 @@ typedef int option_value_t;
 typedef struct optset_whence_s {
   enum optset_whence_e {
     Whence_0 = 0,	/* unlabelled zero default; computation of correct value is still pending */
-    Whence_argv,	/* set on the command line when Bash starts up */
+    Whence_argv,	/* parsed from argv when Bash starts up */
+    Whence_environ,	/* read from the environment when Bash starts up */
     Whence_short,	/* using set -X (a short single-letter option) */
     Whence_set_o,	/* using set -o NAME */
     Whence_shopt,	/* using shopt -s NAME */
@@ -152,7 +153,8 @@ set_opt_value (struct opt_def_s const *d,
 
   if (d->readonly)
     return Result (ReadOnly);
-  if (d->forbid_change && w.whence != Whence_argv)	/* set up from command line, but don't change thereafter */
+  if (d->forbid_change && w.whence != Whence_argv	/* set up from command line, but don't change thereafter */
+		       && w.whence != Whence_environ)	/* read from initial environment, but don't change thereafter */
     {
       option_value_t ov = get_opt_value (d, w);
       if (v == ov)
