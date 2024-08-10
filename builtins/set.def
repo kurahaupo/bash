@@ -456,7 +456,7 @@ change_flag (int letter, int on_or_off)
   old_value = *store;
   optset_result_t r = set_flag_option (d, Whence (short), flag_to_bool (on_or_off));
 
-  if (res_to_ex(r) != EXECUTION_SUCCESS)
+  if (res_to_ex (r) != EXECUTION_SUCCESS)
     return FLAG_ERROR;
 
   return (old_value);
