@@ -183,8 +183,6 @@ extern char **get_shopt_options (void);
 extern int shopt_setopt (char *, int);
 extern int shopt_listopt (char *, int);
 
-extern int set_login_shell (char *, int);
-
 extern void set_bashopts (void);
 extern void initialize_bashopts (int);
 

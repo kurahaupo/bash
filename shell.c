@@ -500,8 +500,6 @@ main (int argc, char **argv, char **env)
       login_shell = -login_shell;
     }
 
-  set_login_shell ("login_shell", login_shell != 0);
-
 #if defined (TRANSLATABLE_STRINGS)
   if (dump_po_strings)
     dump_translatable_strings = 1;

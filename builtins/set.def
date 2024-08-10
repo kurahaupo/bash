@@ -1400,8 +1400,6 @@ static opt_set_func_t shopt_set_expaliases;
 
 static opt_set_func_t shopt_set_debug_mode;
 
-static opt_set_func_t set_login_shell2;
-
 static int shopt_login_shell;
 
 /* If you add a new variable name here, make sure to set the default value
@@ -1484,8 +1482,8 @@ static const opt_def_t opt_defs[] = {
 #endif
   { "localvar_inherit",		&localvar_inherit,	.hide_set_o = 1 },
   { "localvar_unset",		&localvar_unset,	.hide_set_o = 1 },
-  { "login_shell",		&shopt_login_shell,
-					.set_func = set_login_shell2,	.hide_set_o = 1 },
+  { "login_shell",		&login_shell,
+					.ignore_change = 1,	.hide_set_o = 1 },
   { "mailwarn",			&mail_warning,	.hide_set_o = 1 },
 #if defined (READLINE)
   { "no_empty_cmd_completion",	&no_empty_command_completion,	.hide_set_o = 1 },
@@ -1684,8 +1682,6 @@ reset_shopt_options (void)
 #if defined (DEBUGGER)
   debugging_mode = 0;
 #endif
-
-  shopt_login_shell = login_shell;
 }
 
 static void
@@ -1960,23 +1956,6 @@ set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value
   return Result (OK);
 }
 #endif /* RESTRICTED_SHELL */
-
-/* TODO: convert this to an 'ignored' setting */
-static optset_result_t
-set_login_shell2 (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
-{
-  d->store[0] = new_value;	/* this does nothing, because d->store[0] === shopt_login_shell */
-  shopt_login_shell = login_shell;
-  return Result (OK);
-}
-
-/* Not static so shell.c can call it to initialize shopt_login_shell */
-int
-set_login_shell (char *option_name, option_value_t new_value)
-{
-  shopt_login_shell = login_shell != 0;
-  return (0);
-}
 
 char **
 get_shopt_options (void)
