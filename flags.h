@@ -164,8 +164,10 @@ extern int change_flag (int, int);
 extern char *which_set_flags (void);
 extern void reset_shell_flags (void);
 
+#if 0
 extern char *get_current_flags (void);
 extern void set_current_flags (const char *);
+#endif
 
 extern void initialize_flags (void);
 

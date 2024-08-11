@@ -180,6 +180,114 @@ set_opt_value (struct opt_def_s const *d,
   return Result (OK);
 }
 
+static const char on[] = "on";
+static const char off[] = "off";
+static const char no_long_name[] = "-";
+
+static _Bool
+hide_when_shopt (opt_def_t const *d)
+{
+  return d->hide_shopt;
+}
+
+static _Bool
+hide_when_short (opt_def_t const *d)
+{
+  return d->letter == 0;
+}
+
+static _Bool
+hide_when_set_o (opt_def_t const *d)
+{
+  return d->hide_set_o;
+}
+
+static _Bool (*hide_when_map[])(opt_def_t const *d) = {
+  [Whence_short] = hide_when_short,
+  [Whence_set_o] = hide_when_set_o,
+  [Whence_shopt] = hide_when_shopt,
+};
+
+static void
+show_option_default (opt_def_t const *d, optset_whence_t whence_selection)
+{
+  printf ("%-15s\t%s\n", d->name, get_opt_value (d, whence_selection) ? on : off);
+}
+
+static void
+show_option_shopt (opt_def_t const *d, optset_whence_t whence_selection)
+{
+  printf ("shopt -%c %s\n", get_opt_value (d, whence_selection) ? 's' : 'u', d->name);
+}
+
+static void
+show_option_short (opt_def_t const *d, optset_whence_t whence_selection)
+{
+  printf ("set %c%c\n", bool_to_flag (get_opt_value (d, whence_selection)), d->letter);
+}
+
+static void
+show_option_set_o (opt_def_t const *d, optset_whence_t whence_selection)
+{
+  printf ("set %co %s\n", bool_to_flag (get_opt_value (d, whence_selection)), d->name);
+}
+
+static void (*show_map[])(opt_def_t const *d, optset_whence_t whence_selection) = {
+  [Whence_any]   = show_option_default,
+  [Whence_short] = show_option_short,
+  [Whence_set_o] = show_option_set_o,
+  [Whence_shopt] = show_option_shopt,
+};
+
+static void
+show_one_option (opt_def_t const *d,
+		 optset_whence_t whence,
+		 optset_whence_t display_style)
+{
+  show_map[WhenceC (display_style)](d, whence);
+}
+
+static void
+show_one_option_unless_value (opt_def_t const *d,
+			      optset_whence_t whence,
+			      unsigned hide_value_mask,
+			      optset_whence_t display_style)
+{
+  if (hide_value_mask & (1 << get_opt_value (d, whence)))
+    show_map[WhenceC (display_style)](d, whence);
+}
+
+static void
+list_all_options (opt_def_t const *start_of_table,
+		  optset_whence_t whence_selection,
+		  unsigned hide_value_mask,
+		  optset_whence_t display_style)
+{
+  struct opt_def_s const *d = start_of_table;
+
+  _Bool (*hide_when)(opt_def_t const *d) =  hide_when_map[WhenceC (whence_selection)];
+  void (*show_how)(opt_def_t const *d, optset_whence_t whence_selection) = show_map[WhenceC (display_style)];
+
+  for (d = start_of_table; d->name; d++)
+    {
+      /* Hide options that aren't in the preferred group; use Whence (any) when you want ALL of them */
+      if (hide_when && hide_when (d))
+	continue;
+
+      /* Hide options that don't have an appropriate kind of name (short or long) */
+      if (WhenceC (display_style) == Whence_short
+	    ? d->letter == 0
+	    : d->name == no_long_name)
+	continue;
+
+      if (hide_value_mask
+       && hide_value_mask & (1 << get_opt_value (d, whence_selection)))
+	continue;
+
+      show_how (d, whence_selection);
+    }
+}
+
 $BUILTIN set
 $FUNCTION set_builtin
 $SHORT_DOC set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
@@ -287,6 +395,7 @@ $END
 
 #define opt_defs o_options
 #define find_option find_o_option
+#define list_all_options(WS, VM, WD) list_all_options (opt_defs, WS, VM, WD)
 
 static opt_set_func_t set_errexit_flag;
 static opt_set_func_t set_ignoreeof;
@@ -317,16 +426,11 @@ static opt_set_func_t bash_set_history;
 
 static opt_set_func_t set_verbose_flag;
 
-static const char * const on = "on";
-static const char * const off = "off";
-
 /* A struct used to match long options for set -o to the corresponding
    option letter or internal variable.  The functions can be called to
    dynamically generate values.  If you add a new variable name here
    that doesn't have a corresponding single-character option letter, make
    sure to set the value appropriately in reset_shell_options. */
-
-char no_long_name[2] = "-";
 
 static const opt_def_t opt_defs[] = {
   { "allexport",		&mark_modified_vars,	.letter = 'a',	.hide_shopt = 1 },
@@ -499,7 +603,7 @@ change_flag (int letter, int on_or_off)
 
   init_letter_map ();	/* make sure the map is ready */
 
-  opt_def_t const *d = letter_map[letter];
+  struct opt_def_s const *d = letter_map[letter];
   if (d == NULL)
     return FLAG_ERROR;
 
@@ -510,33 +614,6 @@ change_flag (int letter, int on_or_off)
     return FLAG_ERROR;
 
   return (old_value);
-}
-
-char *
-get_current_flags (void)
-{
-  char *result = xmalloc (1 + N_O_OPTIONS);
-  char *endp = result;
-  struct opt_def_s const *d;
-
-  for (d = opt_defs; d->name; d++)
-    if (d->letter)
-      *endp++ = get_opt_value (d, Whence (short));
-  *endp = '\0';
-  return result;
-}
-
-void
-set_current_flags (const char *bitmap)
-{
-  if (bitmap == NULL)
-    return;
-  int j;
-  struct opt_def_s const *d;
-
-  for (d = opt_defs, j = 0; d->name; d++)
-    if (d->letter)
-      set_opt_value (d, Whence (short), bitmap[j++]);	/* Bypass set_opt_value(), so that we can unwind changes to protected flags */
 }
 
 /* Return a string which is the names of all the currently
@@ -582,19 +659,12 @@ print_minus_o_option (char const *name, int value, int pflag)
 void
 list_minus_o_opts (int mask_value, int reusable)
 {
-  struct opt_def_s const *d;
-
-  for (d = opt_defs; d->name; d++)
-    {
-      if (d->name == no_long_name)
-	continue;
-      if (d->hide_set_o)
-	continue;
-      option_value_t value = get_opt_value (d, Whence (set_o));
-      if (mask_value == -1 || mask_value == value)
-	print_minus_o_option (d->name, value, reusable);
-    }
+  list_all_options (Whence (shopt),
+		    mask_value < 0 ? 0 : 1 << !mask_value,
+		    reusable ? Whence (shopt) : Whence (any));
 }
+
+/* get_minus_o_opts is used by pcomplete.c */
 
 char const *const*
 get_minus_o_opts (void)
@@ -608,11 +678,13 @@ get_minus_o_opts (void)
     {
       if (d->hide_set_o)
 	continue;
-      ret[i++] = d->name;
+      ret[i++] = (char*) d->name;	/* TODO: allow const to propagate better */
     }
   ret[i] = (char *)NULL;
   return ret;
 }
+
+/* Used by declare.def */
 
 char *
 get_current_options (void)
@@ -822,7 +894,7 @@ set_shellopts (void)
   free (value);
 }
 
-void
+static void
 parse_shellopts (char *value)
 {
   char const *vname;
@@ -1747,15 +1819,6 @@ change_shopts (option_value_t new_value, WORD_LIST *list, int quiet)
   return (rval);
 }
 
-static void
-print_shopt (char const *name, int val, int flags)
-{
-  if (flags & PFLAG)
-    printf ("shopt %s %s\n", val ? "-s" : "-u", name);
-  else
-    printf (OPTFMT, name, val ? on : off);
-}
-
 /* List the values of all or any of the ‘shopt’ options.  Returns 0 if
    all were listed or all variables queried were on; 1 otherwise. */
 static int
@@ -1769,15 +1832,7 @@ list_shopts (WORD_LIST *list, int flags)
       struct opt_def_s const *d;
 
       if ((flags & QFLAG) == 0)
-	for (d = opt_defs; d->name; d++)
-	  {
-	    if (d->hide_shopt)
-	      continue;
-	    if (d->name == no_long_name)
-	      continue;
-	    option_value_t val = get_opt_value (d, Whence (shopt));
-	    print_shopt (d->name, val, flags);
-	  }
+	list_all_options (Whence (shopt), 0, Whence (shopt));
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
@@ -1794,26 +1849,24 @@ list_shopts (WORD_LIST *list, int flags)
       if (val == 0)
 	rval = 1;	/* looks like EXECUTION_FAILURE but actually means FALSE */
       if ((flags & QFLAG) == 0)
-	print_shopt (l->word->word, val, flags);
+	show_one_option (d, Whence (shopt), flags & PFLAG ? Whence (shopt) : Whence (any));
     }
 
   return (sh_chkwrite (rval));
 }
 
 static int
-list_some_shopts (int new_value, int flags)
+list_some_shopts (int only_value, int flags)
 {
-  int val, i;
-  struct opt_def_s const *d;
-
-  for (d = opt_defs; d->name; d++)
-    {
-      if (d->hide_shopt)
-	continue;
-      val = get_opt_value (d, Whence (shopt));
-      if (((flags & QFLAG) == 0) && new_value == val)
-	print_shopt (d->name, val, flags);
-    }
+  if ((flags & QFLAG) == 0)
+    if (only_value < 0)
+      list_all_options (Whence (shopt),
+		       0,
+		       flags & PFLAG ? Whence (shopt) : Whence (any));
+    else
+      list_all_options (Whence (shopt),
+		       1 << !only_value,
+		       flags & PFLAG ? Whence (shopt) : Whence (any));
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 
@@ -1992,6 +2045,7 @@ set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value
 }
 #endif /* RESTRICTED_SHELL */
 
+/* get_shopt_options Called from pcomplete.c */
 char **
 get_shopt_options (void)
 {
@@ -2032,17 +2086,18 @@ int
 shopt_listopt (char const *name, int reusable)
 {
   if (name == 0)
-    return (list_shopts ((WORD_LIST *)NULL, reusable ? PFLAG : 0));
-
-  struct opt_def_s const *d = find_option (name);
-  if (!d)
+    (list_shopts ((WORD_LIST *)NULL, reusable ? PFLAG : 0));
+  else
     {
-      shopt_error (name);
-      return (EXECUTION_FAILURE);
-    }
+      struct opt_def_s const *d = find_option (name);
+      if (!d)
+	{
+	  shopt_error (name);
+	  return (EXECUTION_FAILURE);
+	}
 
-  option_value_t v = get_opt_value (d, Whence (shopt));
-  print_shopt (name, v, reusable ? PFLAG : 0);
+      show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
+    }
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
 

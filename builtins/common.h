@@ -168,7 +168,9 @@ extern char const *const*get_minus_o_opts (void);
 extern int set_minus_o_option (int, char *);
 
 extern void set_shellopts (void);
+#if 0
 extern void parse_shellopts (char *);
+#endif
 extern void initialize_shell_options (int);
 
 extern void reset_shell_options (void);
