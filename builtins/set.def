@@ -113,7 +113,7 @@ typedef option_value_t opt_get_func_t (struct opt_def_s const *option_def,
 				       optset_whence_t set_vs_shopt);
 
 typedef struct opt_def_s {
-  char *name;
+  char const *name;
   option_value_t *store;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
@@ -555,7 +555,7 @@ which_set_flags (void)
 
 /* exported and used by test.c */
 int
-minus_o_option_value (char *name)
+minus_o_option_value (char const *name)
 {
   return get_opt_value (find_option (name), Whence (set_o));
 }
@@ -563,7 +563,7 @@ minus_o_option_value (char *name)
 #define MINUS_O_FORMAT "%-15s\t%s\n"
 
 static void
-print_minus_o_option (char *name, int value, int pflag)
+print_minus_o_option (char const *name, int value, int pflag)
 {
   if (pflag == 0)
     printf (MINUS_O_FORMAT, name, value ? on : off);
@@ -1740,7 +1740,7 @@ change_shopts (option_value_t new_value, WORD_LIST *list, int quiet)
 }
 
 static void
-print_shopt (char *name, int val, int flags)
+print_shopt (char const *name, int val, int flags)
 {
   if (flags & PFLAG)
     printf ("shopt %s %s\n", val ? "-s" : "-u", name);
@@ -2004,7 +2004,7 @@ get_shopt_options (void)
  * NEW_VALUE is false if we want to unset an option; true if we want to set an option.
  */
 int
-shopt_setopt (char *name, option_value_t new_value)
+shopt_setopt (char const *name, option_value_t new_value)
 {
   struct opt_def_s const *d = find_option (name);
   if (!d)
@@ -2021,7 +2021,7 @@ shopt_setopt (char *name, option_value_t new_value)
 }
 
 int
-shopt_listopt (char *name, int reusable)
+shopt_listopt (char const *name, int reusable)
 {
   if (name == 0)
     return (list_shopts ((WORD_LIST *)NULL, reusable ? PFLAG : 0));
