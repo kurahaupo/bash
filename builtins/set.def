@@ -80,9 +80,9 @@ typedef struct optset_whence_s {
 } optset_whence_t;
 #define Whence(X)	(struct optset_whence_s){ .whence = Whence_##X }
 #define WhenceC(E)	(E).whence
-#define WhenceCM(E)	(1U << WhenceC(E))
+#define WhenceCM(E)	(1U << WhenceC (E))
 #define WhenceV(X)	Whence_##X
-#define WhenceVM(X)	(1U << WhenceV(X))
+#define WhenceVM(X)	(1U << WhenceV (X))
 
 typedef struct optset_result_s {
   enum optset_result_e {
@@ -95,7 +95,11 @@ typedef struct optset_result_s {
     Result_BadValue,	/* Like ReadOnly but doesn't complain if the new value is the same as the old value */
   } result;
 } optset_result_t;
-#define Result(X) (struct optset_result_s){ .result = Result_##X }
+#define Result(X)	(struct optset_result_s){ .result = Result_##X }
+#define ResultC(R)	(R).result
+#define ResultCM(R)	(1 << ResultC (R))
+#define ResultV(X)	Result_##X
+#define ResultVM(X)	(1 << ResultV (X))
 
 static const int result_to_ex_map[] = {
   [Result_OK]		= EXECUTION_SUCCESS,
@@ -106,7 +110,7 @@ static const int result_to_ex_map[] = {
   [Result_Forbidden]	= EX_BADASSIGN,		/* Not changed because new value is permitted */
   [Result_BadValue]	= EX_BADASSIGN,		/* Not changed because new value not valid */
 };
-#define res_to_ex(res) result_to_ex_map[(res).result]
+#define res_to_ex(res) result_to_ex_map[ResultC (res)]
 
 struct opt_def_s;  /* forward ref */
 
@@ -738,7 +742,7 @@ set_minus_o_option (int on_or_off, char *option_name)
     }
 
   optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (on_or_off));
-  if (r.result != Result_OK)
+  if (ResultC (r) != Result_OK)
     {
       sh_invalidoptname (option_name);
       return (EXECUTION_FAILURE);
