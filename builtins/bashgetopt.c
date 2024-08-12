@@ -48,7 +48,7 @@ WORD_LIST	*lcurrent = (WORD_LIST *)NULL;
 WORD_LIST	*loptend;	/* Points to the first non-option argument in the list */
 
 int
-internal_getopt(WORD_LIST *list, char *opts)
+internal_getopt(WORD_LIST *list, char const *opts)
 {
 	register int c;
 	register char *cp;

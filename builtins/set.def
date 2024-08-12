@@ -509,22 +509,36 @@ find_option (char const *name)
   return NULL;
 }
 
-static const opt_def_t *letter_map[1+(unsigned char)-1];
+#define MAX_SHORT_NAMES	(1+CHAR_MAX)
+static const opt_def_t *letter_map[MAX_SHORT_NAMES];
 
-#define N_LETTERS	(sizeof (letter_map) / sizeof (letter_map[0]))
+static size_t N_short_names = 0;
+static char const *short_opt_names;
+static char const *set_builtin_optflags;
 
 static void
 init_letter_map (void)
 {
-  if (letter_map[0]++)
+  if (N_short_names)
     return;
   struct opt_def_s const *d;
   for (d = opt_defs ; d->name; d++)
     {
-      unsigned char c = d->letter;
-      if (c)
+      char c = d->letter;
+      if (c > 0 && c < MAX_SHORT_NAMES)
 	letter_map[c] = d;
+	++N_short_names;
     }
+
+  char *ep = xmalloc (N_short_names+1);
+  short_opt_names = ep;
+  for (size_t c = 1; c < MAX_SHORT_NAMES; ++c)
+    if (letter_map[c])
+      *ep++ = c;
+  *ep = 0;
+
+  set_builtin_optflags = ep = xmalloc (N_short_names+4);
+  sprintf (ep, "+%so;", short_opt_names);
 }
 
 
@@ -632,13 +646,15 @@ change_flag (char letter, char on_or_off)
 char *
 which_set_flags (void)
 {
-  struct opt_def_s const *d;
-  char *result = xmalloc (1 + N_O_OPTIONS + read_from_stdin + want_pending_command);
-  char *endp = result;
+  char *endp;
+  char *result = endp = xmalloc (1 + N_short_names + read_from_stdin + want_pending_command);
 
-  for (d = opt_defs; d->name; d++)
-    if (d->letter && get_opt_value (d, Whence (short)))
-      *endp++ = d->letter;
+  for (char const *cp = short_opt_names; *cp; ++cp)
+    {
+      struct opt_def_s const *d = letter_map[*cp];
+      if (get_opt_value (d, Whence (short)) > 0)
+	*endp++ = *cp;
+    }
 
   if (want_pending_command)
     *endp++ = 'c';
@@ -896,51 +912,28 @@ set_shellopts (void)
   free (value);
 }
 
-static void
-parse_shellopts (char *value)
-{
-  char const *vname;
-  int vptr;
-
-  vptr = 0;
-  while (vname = extract_colon_unit (value, &vptr))
-    {
-      set_minus_o_option (FLAG_ON, vname);
-      free (vname);
-    }
-}
-
-static char optflags[N_O_OPTIONS+4] = { '+' };
-
 void
 initialize_shell_options (int no_shellopts)
 {
-  char *shellopts_env;
-  SHELL_VAR *var;
-
   init_letter_map ();
-
-  char *endp = optflags;
-  *endp++ = '+';
-
-  int i;
-  for (i = 1; i <= 255; i++)
-    if (letter_map[i])
-      *endp++ = i;
-  *endp++ = 'o';
-  *endp++ = ';';
-  *endp++ = 0;
 
   if (no_shellopts == 0)
     {
-      var = find_variable ("SHELLOPTS");
+      SHELL_VAR *var = find_variable ("SHELLOPTS");
       /* set up any shell options we may have inherited. */
       if (var && imported_p (var) && (array_p (var) || assoc_p (var)))
 	{
-	  shellopts_env = savestring (value_cell (var));
+	  char *shellopts_env = savestring (value_cell (var));
 	  if (shellopts_env)
 	    {
-	      parse_shellopts (shellopts_env);
+	      char *vname;
+	      int vptr = 0;
+
+	      while (vname = extract_colon_unit (shellopts_env, &vptr))
+		{
+		  set_minus_o_option (FLAG_ON, vname);
+		  free (vname);
+		}
 	      free (shellopts_env);
 	    }
 	}
@@ -991,7 +984,7 @@ set_builtin (WORD_LIST *list)
   /* Check validity of flag arguments. */
   rv = EXECUTION_SUCCESS;
   reset_internal_getopt ();
-  while ((flag_name = internal_getopt (list, optflags)) != -1)
+  while ((flag_name = internal_getopt (list, set_builtin_optflags)) != -1)
     {
       switch (flag_name)
 	{
@@ -2154,6 +2147,8 @@ get_bashopts (void)
 void
 initialize_bashopts (int no_bashopts)
 {
+  init_letter_map ();
+
   if (!no_bashopts)
     get_bashopts ();
 
