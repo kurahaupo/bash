@@ -129,7 +129,8 @@ typedef struct opt_def_s {
   char  letter;
   _Bool hide_set_o:1,
 	hide_shopt:1,
-	skip_bashopts:1,
+	adjust_bashopts:1,
+	adjust_shellopts:1,
 	readonly:1,		/* when attempting to set an option: error (Readonly) unconditionally */
 	forbid_change:1,	/*				     error (Forbidden) if attempting to change its value */
 	ignore_change:1,	/*				     succeed (Ignored) without actually changing the value */
@@ -157,7 +158,15 @@ set_opt_value (struct opt_def_s const *d,
     return Result (NotFound);
 
   if (d->set_func)
-    return d->set_func(d, w, new_value);
+    {
+      optset_result_t r = d->set_func(d, w, new_value);
+      if (ResultC (r) == Result_OK)
+	{
+	  if (d->adjust_shellopts) set_shellopts ();
+	  if (d->adjust_bashopts) set_bashopts ();
+	}
+      return r;
+    }
 
   if (d->readonly)
     return Result (ReadOnly);
@@ -177,6 +186,8 @@ set_opt_value (struct opt_def_s const *d,
 
   if (d->store)
     d->store[0] = new_value;
+  if (d->adjust_shellopts) set_shellopts ();
+  if (d->adjust_bashopts) set_bashopts ();
   return Result (OK);
 }
 
@@ -258,10 +269,10 @@ show_one_option_unless_value (opt_def_t const *d,
 }
 
 static void
-list_all_options (opt_def_t const *start_of_table,
-		  optset_whence_t whence_selection,
-		  unsigned hide_value_mask,
-		  optset_whence_t display_style)
+list_all_options2 (opt_def_t const *start_of_table,
+		   optset_whence_t whence_selection,
+		   unsigned hide_value_mask,
+		   optset_whence_t display_style)
 {
   struct opt_def_s const *d = start_of_table;
 
@@ -395,7 +406,7 @@ $END
 
 #define opt_defs o_options
 #define find_option find_o_option
-#define list_all_options(WS, VM, WD) list_all_options (opt_defs, WS, VM, WD)
+#define list_all_options(WS, VM, WD) list_all_options2 (opt_defs, WS, VM, WD)
 
 static opt_set_func_t set_errexit_flag;
 static opt_set_func_t set_ignoreeof;
@@ -521,8 +532,7 @@ init_letter_map (void)
 static optset_result_t
 set_histexp_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
-  history_expansion = histexp_flag;
+  history_expansion = histexp_flag = new_value;
   if (new_value)
     bash_initialize_history ();
   return Result (OK);
@@ -533,7 +543,6 @@ set_histexp_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 static optset_result_t
 set_monitor_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
   set_job_control (new_value);
   return Result (OK);
 }
@@ -542,7 +551,7 @@ set_monitor_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 static optset_result_t
 set_errexit_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
+  errexit_flag = new_value;
   if (builtin_ignoring_errexit == 0)
     exit_immediately_on_error = errexit_flag;
   return Result (OK);
@@ -551,17 +560,20 @@ set_errexit_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 static optset_result_t
 set_noexec_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
   if (interactive_shell)
-    read_but_dont_execute = 0;
+    {
+      read_but_dont_execute = 0;
+      return Result (Ignored);
+    }
+  read_but_dont_execute = new_value;
   return Result (OK);
 }
 
 static optset_result_t
 set_privileged_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
-  if (!new_value)
+  privileged_mode = new_value;
+  if (!privileged_mode)
     disable_priv_mode ();
   return Result (OK);
 }
@@ -573,8 +585,8 @@ set_restricted_flag ( struct opt_def_s const *d, optset_whence_t w, option_value
   /* Don't allow "set +r" in a shell which is `restricted'. */
   if (restricted && !new_value)
     return Result (Forbidden);
-  d->store[0] = new_value;
 
+  restricted = new_value;
   if (new_value && shell_initialized)
     maybe_make_restricted (shell_name);
   return Result (OK);
@@ -584,8 +596,7 @@ set_restricted_flag ( struct opt_def_s const *d, optset_whence_t w, option_value
 static optset_result_t
 set_verbose_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
 {
-  d->store[0] = new_value;
-  echo_input_at_read = verbose_flag;
+  echo_input_at_read = verbose_flag = new_value;
   return Result (OK);
 }
 
@@ -594,7 +605,7 @@ set_verbose_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
    FLAG_ON or FLAG_OFF. */
 int
-change_flag (int letter, int on_or_off)
+change_flag (char letter, char on_or_off)
 {
   int old_value;
 
@@ -638,30 +649,21 @@ which_set_flags (void)
   return result;
 }
 
-/* exported and used by test.c */
+/* exported to and used by test.c */
 int
 minus_o_option_value (char const *name)
 {
   return get_opt_value (find_option (name), Whence (set_o));
 }
 
-#define MINUS_O_FORMAT "%-15s\t%s\n"
-
-static void
-print_minus_o_option (char const *name, int value, int pflag)
-{
-  if (pflag == 0)
-    printf (MINUS_O_FORMAT, name, value ? on : off);
-  else
-    printf ("set %co %s\n", bool_to_flag (value), name);
-}
-
+/* exported to and used by shell.c */
 void
-list_minus_o_opts (int mask_value, int reusable)
+list_minus_o_opts (_Bool reusable)
 {
-  list_all_options (Whence (shopt),
-		    mask_value < 0 ? 0 : 1 << !mask_value,
-		    reusable ? Whence (shopt) : Whence (any));
+  list_all_options2 (o_options,
+		     Whence (set_o),
+		     0,
+		     reusable ? Whence (set_o) : Whence (any));
 }
 
 /* get_minus_o_opts is used by pcomplete.c */
@@ -701,7 +703,7 @@ get_current_options (void)
     *endp++ = bool_to_flag (get_opt_value (d, Whence (set_o)));
 
   /* Add the shell options that are modified by posix mode to the end of the
-     bitmap. They will be handled in set_current_options() */
+     bitmap. They will be handled in set_current_options () */
   get_posix_options (endp);
   endp[num_posixopts] = '\0';
   return ret;
@@ -949,8 +951,8 @@ initialize_shell_options (int no_shellopts)
 }
 
 /* Reset the values of the -o options that are not also shell flags.  This is
-   called from execute_cmd.c:initialize_subshell() when setting up a subshell
-   to run an executable shell script without a leading `#!'. */
+   called from initialize_subshell () in execute_cmd.c when setting up a
+   subshell to run an executable shell script without a leading `#!'. */
 void
 reset_shell_options (void)
 {
@@ -976,8 +978,8 @@ reset_shell_options (void)
 int
 set_builtin (WORD_LIST *list)
 {
-  int on_or_off, flag_name, force_assignment, opts_changed, rv, r;
-  register char *arg;
+  int flag_name, force_assignment = 0, opts_changed = 0, rv, r;
+  char *arg, on_or_off;
   char s[3];
 
   if (list == NULL)
@@ -1012,7 +1014,7 @@ set_builtin (WORD_LIST *list)
   /* Do the set command.  While the list consists of words starting with
      '-' or '+' treat them as flags, otherwise, start assigning them to
      $1 ... $n. */
-  for (force_assignment = opts_changed = 0; list; )
+  for (; list; list = list->next)
     {
       arg = list->word->word;
 
@@ -1039,64 +1041,68 @@ set_builtin (WORD_LIST *list)
 	  break;
 	}
 
-      if ((on_or_off = *arg) && valid_flag (on_or_off))
+      on_or_off = *arg;
+
+      if (!valid_flag (on_or_off))
+	break;
+
+      while (flag_name = *++arg)
 	{
-	  while (flag_name = *++arg)
+	  if (flag_name == '?')
 	    {
-	      if (flag_name == '?')
-		{
-		  builtin_usage ();
-		  return (EXECUTION_SUCCESS);
-		}
-	      else if (flag_name == 'o') /* -+o option-name */
-		{
-		  char *option_name;
-		  WORD_LIST *opt;
-
-		  opt = list->next;
-
-		  if (opt == 0)
-		    {
-		      list_minus_o_opts (-1, ! flag_to_bool (on_or_off));
-		      rv = sh_chkwrite (rv);
-		      continue;
-		    }
-
-		  option_name = opt->word->word;
-
-		  if (option_name == 0 || *option_name == '\0' ||
-		      valid_flag (*option_name))
-		    {
-		      list_minus_o_opts (-1, ! flag_to_bool (on_or_off));
-		      continue;
-		    }
-		  list = list->next; /* Skip over option name. */
-
-		  opts_changed = 1;
-		  if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
-		    {
-		      set_shellopts ();
-		      return (r);
-		    }
-		}
-	      else if (change_flag (flag_name, on_or_off) == FLAG_ERROR)
-		{
-		  s[0] = on_or_off;
-		  s[1] = flag_name;
-		  s[2] = '\0';
-		  sh_invalidopt (s);
-		  builtin_usage ();
-		  set_shellopts ();
-		  return (EXECUTION_FAILURE);
-		}
-	      opts_changed = 1;
+	      builtin_usage ();
+	      return (EXECUTION_SUCCESS);
 	    }
+	  else if (flag_name == 'o') /* -+o option-name */
+	    {
+	      char *option_name;
+	      WORD_LIST *opt;
+	      _Bool reusable = !flag_to_bool (on_or_off);
+
+	      opt = list->next;
+
+	      if (opt == 0)
+		{
+		  list_all_options2 (o_options,
+				     Whence (set_o),
+				     0,
+				     reusable ? Whence (set_o) : Whence (any));
+		  rv = sh_chkwrite (rv);
+		  continue;
+		}
+
+	      option_name = opt->word->word;
+
+	      if (option_name == NULL || *option_name == '\0' ||
+		  valid_flag (*option_name))
+		{
+		  list_all_options2 (o_options,
+				     Whence (set_o),
+				     0,
+				     reusable ? Whence (set_o) : Whence (any));
+		  continue;
+		}
+	      list = list->next; /* Skip over option name. */
+
+	      opts_changed = 1;
+	      if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
+		{
+		  set_shellopts ();
+		  return (r);
+		}
+	    }
+	  else if (change_flag (flag_name, on_or_off) == FLAG_ERROR)
+	    {
+	      s[0] = on_or_off;
+	      s[1] = flag_name;
+	      s[2] = '\0';
+	      sh_invalidopt (s);
+	      builtin_usage ();
+	      set_shellopts ();
+	      return (EXECUTION_FAILURE);
+	    }
+	  opts_changed = 1;
 	}
-      else
-	{
-	  break;
-	}
-      list = list->next;
     }
 
   /* Assigning $1 ... $n */
@@ -1252,7 +1258,7 @@ unset_builtin (WORD_LIST *list)
 	}
 
       /* if we have a nameref we want to use it */
-      if (var && unset_function == 0 && nameref == 0 && STREQ (name, name_cell(var)) == 0)
+      if (var && unset_function == 0 && nameref == 0 && STREQ (name, name_cell (var)) == 0)
 	name = name_cell (var);
 
       /* Posix.2 says try variables first, then functions.  If we would
@@ -1269,7 +1275,7 @@ unset_builtin (WORD_LIST *list)
 	     pointer, and UNSET_ARRAY is set to 1 only in this case. */
 	  if (unset_array)
 	    {
-	      RESTORE_NAME();
+	      RESTORE_NAME ();
 	      unset_array = 0;
 	    }
 #endif
@@ -1484,7 +1490,6 @@ extern int syslog_history;
 #define opt_defs opt_defs2 /*shopt_vars*/
 #define find_option find_option2 /*find_shopt_option*/
 
-static opt_set_func_t set_shellopts_after_change;
 static opt_get_func_t get_compatibility_level;
 static opt_set_func_t set_compatibility_level;
 
@@ -1582,7 +1587,7 @@ static const opt_def_t opt_defs[] = {
   { "huponexit",		&hup_on_exit,	.hide_set_o = 1 },
   { "inherit_errexit",		&inherit_errexit,	.hide_set_o = 1 },
   { "interactive_comments",	&interactive_comments,
-					.set_func = set_shellopts_after_change,	.hide_set_o = 1 },
+					.adjust_shellopts = 1,	.hide_set_o = 1 },
   { "lastpipe",			&lastpipe_opt,	.hide_set_o = 1 },
 #if defined (HISTORY)
   { "lithist",			&literal_history,	.hide_set_o = 1 },
@@ -1633,44 +1638,41 @@ find_option (char const *name)
   return NULL;
 }
 
-static int change_shopts (int, WORD_LIST *, int);
-static int list_shopts (WORD_LIST *, int);
-static int list_some_shopts (int, int);
-static int list_shopt_o_options (WORD_LIST *, int);
-static int list_some_o_options (int, int);
-static int set_shopt_o_options (int, WORD_LIST *, int);
-
-#define SFLAG	0x01
-#define UFLAG	0x02
-#define QFLAG	0x04
-#define OFLAG	0x08
-#define PFLAG	0x10
+static void
+shopt_error (char const *s)
+{
+  builtin_error (_("%s: invalid shell option name"), s);
+}
 
 int
 shopt_builtin (WORD_LIST *list)
 {
-  int opt, flags, rval;
+  int opt;
+  _Bool do_set = false;
+  _Bool do_unset = false;
+  _Bool quiet = false;
+  _Bool reusable = false;
+  _Bool fake_set_o = false;
 
-  flags = 0;
   reset_internal_getopt ();
   while ((opt = internal_getopt (list, "psuoq")) != -1)
     {
       switch (opt)
 	{
 	case 's':
-	  flags |= SFLAG;
+	  do_set = true;
 	  break;
 	case 'u':
-	  flags |= UFLAG;
+	  do_unset = true;
 	  break;
 	case 'q':
-	  flags |= QFLAG;
+	  quiet = true;
 	  break;
 	case 'o':
-	  flags |= OFLAG;
+	  fake_set_o = true;
 	  break;
 	case 'p':
-	  flags |= PFLAG;
+	  reusable = true;
 	  break;
 	CASE_HELPOPT;
 	default:
@@ -1680,26 +1682,147 @@ shopt_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  if ((flags & (SFLAG|UFLAG)) == (SFLAG|UFLAG))
+  _Bool do_update = true;
+  _Bool use_value = !do_unset;
+
+  if (do_set)
+    if (do_unset)
+      {
+	builtin_error (_("cannot set and unset shell options simultaneously"));
+	return (EXECUTION_FAILURE);
+      }
+    else
+      use_value = true;
+  else
+    if (do_unset)
+      use_value = false;
+    else
+      do_update = false;
+
+
+  if (fake_set_o)
     {
-      builtin_error (_("cannot set and unset shell options simultaneously"));
-      return (EXECUTION_FAILURE);
+      /* shopt -o ... */
+      if (!do_update)
+	{
+	  /* ... and neither -s nor -u */
+	  WORD_LIST *l;
+
+	  if (list == NULL)
+	    {
+	      if (!quiet)
+		list_all_options2 (o_options,
+				   Whence (set_o),
+				   0,
+				   reusable ? Whence (set_o) : Whence (any));
+	      return (sh_chkwrite (EXECUTION_SUCCESS));
+	    }
+
+	  int rval = EXECUTION_SUCCESS;
+	  for (; list; list = list->next)
+	    {
+	      option_value_t val = get_opt_value (find_option (list->word->word), Whence (shopt));
+	      if (val == FLAG_ERROR)
+		{
+		  sh_invalidoptname (list->word->word);
+		  rval = EXECUTION_FAILURE;
+		  continue;
+		}
+	      if (val == 0)
+		rval = EXECUTION_FAILURE;
+	      if (!quiet)
+		{
+		  if (reusable)
+		    printf ("set %co %s\n", bool_to_flag (val), list->word->word);
+		  else
+		    printf (OPTFMT, list->word->word, val ? on : off);
+		}
+	    }
+	  return (sh_chkwrite (rval));
+	}
+
+      if (list)
+	/* shopt -o[su] ARGS... */
+	{
+	  int rval = EXECUTION_SUCCESS;
+
+	  for (; list; list = list->next)
+	    if (set_minus_o_option (use_value, list->word->word) == EXECUTION_FAILURE)
+	      rval = EXECUTION_FAILURE;
+	  set_shellopts ();
+	  return rval;
+	}
+
+      /* shopt -o[su] */
+
+      if (!quiet)
+	list_all_options2 (o_options,
+			   Whence (set_o),
+			   use_value < 0 ? 0 : 1 << !use_value,
+			   reusable ? Whence (set_o) : Whence (any));
+      return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
-  rval = EXECUTION_SUCCESS;
-  if ((flags & OFLAG) && ((flags & (SFLAG|UFLAG)) == 0))	/* shopt -o */
-    rval = list_shopt_o_options (list, flags);
-  else if (list && (flags & OFLAG))		/* shopt -so args */
-    rval = set_shopt_o_options ((flags & SFLAG) ? FLAG_ON : FLAG_OFF, list, flags & QFLAG);
-  else if (flags & OFLAG)	/* shopt -so */
-    rval = list_some_o_options ((flags & SFLAG) ? 1 : 0, flags);
-  else if (list && (flags & (SFLAG|UFLAG)))	/* shopt -su args */
-    rval = change_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, list, flags & QFLAG);
-  else if ((flags & (SFLAG|UFLAG)) == 0)	/* shopt [args] */
-    rval = list_shopts (list, flags);
-  else						/* shopt -su */
-    rval = list_some_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, flags);
-  return (rval);
+  if (!do_update)
+    {
+      /* shopt [args] */
+      int rval = EXECUTION_SUCCESS;
+
+      if (list == NULL)
+	{
+	  if (!quiet)
+	    list_all_options (Whence (shopt), 0, Whence (shopt));
+	  return (sh_chkwrite (EXECUTION_SUCCESS));
+	}
+
+      for (; list; list = list->next)
+	{
+	  struct opt_def_s const *d = find_option (list->word->word);
+	  if (!d)
+	    {
+	      shopt_error (list->word->word);
+	      rval = EXECUTION_FAILURE;
+	      continue;
+	    }
+	  option_value_t val = get_opt_value (d, Whence (shopt));
+	  if (val == 0)
+	    rval = 1;	/* looks like EXECUTION_FAILURE but actually means FALSE */
+	  if (!quiet)
+	    show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
+	}
+
+      return (sh_chkwrite (rval));
+    }
+  else if (list)
+    {
+      /* shopt -[su] args */
+      int rval = EXECUTION_SUCCESS;
+
+      for (; list; list = list->next)
+	{
+	  optset_result_t r = set_opt_value (find_option (list->word->word), Whence (shopt), use_value);
+	  if (res_to_ex (r) != EXECUTION_SUCCESS)
+	    {
+	      shopt_error (list->word->word);
+	      rval = EXECUTION_FAILURE;
+	    }
+	}
+
+      /* Don't set $BASHOPTS here if it hasn't already been initialized */
+      if (find_variable ("BASHOPTS") != NULL)
+	set_bashopts ();
+      return (rval);
+    }
+  else
+    {
+      /* shopt -[su] (no args) */
+      if (!quiet)
+	list_all_options2 (opt_defs2,
+			   Whence (shopt),
+			   1 << !use_value,
+			   reusable ? Whence (shopt) : Whence (any));
+      return (sh_chkwrite (EXECUTION_SUCCESS));
+    }
 }
 
 /* Reset the options managed by ‘shopt’ to the values they would have at
@@ -1789,153 +1912,6 @@ reset_shopt_options (void)
 #if defined (DEBUGGER)
   debugging_mode = 0;
 #endif
-}
-
-static void
-shopt_error (char const *s)
-{
-  builtin_error (_("%s: invalid shell option name"), s);
-}
-
-static int
-change_shopts (option_value_t new_value, WORD_LIST *list, int quiet)
-{
-  WORD_LIST *l;
-  int rval = EXECUTION_SUCCESS;
-
-  for (l = list; l; l = l->next)
-    {
-      optset_result_t r = set_opt_value (find_option (l->word->word), Whence (shopt), new_value);
-      if (res_to_ex (r) != EXECUTION_SUCCESS)
-	{
-	  shopt_error (l->word->word);
-	  rval = EXECUTION_FAILURE;
-	}
-    }
-
-  /* Don't set $BASHOPTS here if it hasn't already been initialized */
-  if (find_variable ("BASHOPTS") != NULL)
-    set_bashopts ();
-  return (rval);
-}
-
-/* List the values of all or any of the ‘shopt’ options.  Returns 0 if
-   all were listed or all variables queried were on; 1 otherwise. */
-static int
-list_shopts (WORD_LIST *list, int flags)
-{
-  WORD_LIST *l;
-  int rval = EXECUTION_SUCCESS;
-
-  if (list == NULL)
-    {
-      struct opt_def_s const *d;
-
-      if ((flags & QFLAG) == 0)
-	list_all_options (Whence (shopt), 0, Whence (shopt));
-      return (sh_chkwrite (EXECUTION_SUCCESS));
-    }
-
-  for (l = list; l; l = l->next)
-    {
-      struct opt_def_s const *d = find_option (l->word->word);
-      if (!d)
-	{
-	  shopt_error (l->word->word);
-	  rval = EXECUTION_FAILURE;
-	  continue;
-	}
-      option_value_t val = get_opt_value (d, Whence (shopt));
-      if (val == 0)
-	rval = 1;	/* looks like EXECUTION_FAILURE but actually means FALSE */
-      if ((flags & QFLAG) == 0)
-	show_one_option (d, Whence (shopt), flags & PFLAG ? Whence (shopt) : Whence (any));
-    }
-
-  return (sh_chkwrite (rval));
-}
-
-static int
-list_some_shopts (int only_value, int flags)
-{
-  if ((flags & QFLAG) == 0)
-    if (only_value < 0)
-      list_all_options (Whence (shopt),
-		       0,
-		       flags & PFLAG ? Whence (shopt) : Whence (any));
-    else
-      list_all_options (Whence (shopt),
-		       1 << !only_value,
-		       flags & PFLAG ? Whence (shopt) : Whence (any));
-  return (sh_chkwrite (EXECUTION_SUCCESS));
-}
-
-static int
-list_shopt_o_options (WORD_LIST *list, int flags)
-{
-  WORD_LIST *l;
-
-  if (list == NULL)
-    {
-      if ((flags & QFLAG) == 0)
-	list_minus_o_opts (-1, (flags & PFLAG));
-      return (sh_chkwrite (EXECUTION_SUCCESS));
-    }
-
-  int rval = EXECUTION_SUCCESS;
-  for (l = list; l; l = l->next)
-    {
-      option_value_t val = get_opt_value (find_option (l->word->word), Whence (shopt));
-      if (val == FLAG_ERROR)
-	{
-	  sh_invalidoptname (l->word->word);
-	  rval = EXECUTION_FAILURE;
-	  continue;
-	}
-      if (val == 0)
-	rval = EXECUTION_FAILURE;
-      if ((flags & QFLAG) == 0)
-	{
-	  if (flags & PFLAG)
-	    printf ("set %co %s\n", bool_to_flag (val), l->word->word);
-	  else
-	    printf (OPTFMT, l->word->word, val ? on : off);
-	}
-    }
-  return (sh_chkwrite (rval));
-}
-
-static int
-list_some_o_options (int new_value, int flags)
-{
-  if ((flags & QFLAG) == 0)
-    list_minus_o_opts (new_value, (flags & PFLAG));
-  return (sh_chkwrite (EXECUTION_SUCCESS));
-}
-
-static int
-set_shopt_o_options (int new_value, WORD_LIST *list, int quiet)
-{
-  WORD_LIST *l;
-  int rval;
-
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
-    {
-      if (set_minus_o_option (new_value, l->word->word) == EXECUTION_FAILURE)
-	rval = EXECUTION_FAILURE;
-    }
-  set_shellopts ();
-  return rval;
-}
-
-/* If we set or unset interactive_comments with shopt, make sure the
-   change is reflected in $SHELLOPTS. */
-static optset_result_t
-set_shellopts_after_change (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
-{
-  d->store[0] = new_value;
-  set_shellopts ();
-  return Result (OK);
 }
 
 static optset_result_t
@@ -2045,7 +2021,7 @@ set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value
 }
 #endif /* RESTRICTED_SHELL */
 
-/* get_shopt_options Called from pcomplete.c */
+/* get_shopt_options called from pcomplete.c */
 char **
 get_shopt_options (void)
 {
@@ -2085,8 +2061,11 @@ shopt_setopt (char const *name, option_value_t new_value)
 int
 shopt_listopt (char const *name, int reusable)
 {
-  if (name == 0)
-    (list_shopts ((WORD_LIST *)NULL, reusable ? PFLAG : 0));
+  if (name == NULL)
+    list_all_options2 (opt_defs2,
+		       Whence (any),
+		       0,
+		       reusable ? Whence (shopt) : Whence (any));
   else
     {
       struct opt_def_s const *d = find_option (name);
@@ -2146,7 +2125,7 @@ set_bashopts (void)
   VSETATTR (var, att_readonly);
 }
 
-void
+static void
 get_bashopts (void)
 {
   SHELL_VAR *var = find_variable ("BASHOPTS");
