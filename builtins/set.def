@@ -1014,7 +1014,6 @@ set_builtin (WORD_LIST *list)
 {
   int flag_name, force_assignment = 0, opts_changed = 0, rv, r;
   char *arg, on_or_off;
-  char s[3];
 
   if (list == NULL)
     {
@@ -1030,10 +1029,7 @@ set_builtin (WORD_LIST *list)
       switch (flag_name)
 	{
 	  case 'i':	/* don't allow set -i */
-	    s[0] = list_opttype;
-	    s[1] = 'i';
-	    s[2] = '\0';
-	    sh_invalidopt (s);
+	    sh_invalidopt ((char[]){ list_opttype, 'i', 0 });
 	    builtin_usage ();
 	    return (EX_USAGE);
 	  CASE_HELPOPT;
@@ -1141,10 +1137,7 @@ set_builtin (WORD_LIST *list)
 	    }
 	  else if (change_flag (flag_name, on_or_off) == FLAG_ERROR)
 	    {
-	      s[0] = on_or_off;
-	      s[1] = flag_name;
-	      s[2] = '\0';
-	      sh_invalidopt (s);
+	      sh_invalidopt ((char[]){ on_or_off, flag_name, 0 });
 	      builtin_usage ();
 	      set_shellopts ();
 	      return (EXECUTION_FAILURE);
@@ -1718,8 +1711,8 @@ shopt_builtin (WORD_LIST *list)
   list = loptend;
 
   /* These 2 will go away when the tables are folded together */
-  opt_def_t const *start = fake_set_o ? opt_defs1
-				      : opt_defs2;
+  opt_def_t const *start = fake_set_o && ! non_set_o ? opt_defs1
+						     : opt_defs2;
   opt_def_t const *(*finder)(char const *name)
 			 = fake_set_o ? find_option1
 				      : find_option2;
@@ -1796,7 +1789,7 @@ shopt_builtin (WORD_LIST *list)
        *    LIST OPTIONS    *
        *		    *
        **********************/
-      /* shopt [flags] (without any OPTS) */
+      /* shopt [flags] (without any ARGs) */
 
       /* When not given any args, always print a list, subject to some
        * constraints:
@@ -1854,7 +1847,7 @@ shopt_builtin (WORD_LIST *list)
        *			    *
        ******************************/
 
-    /* shopt [-o] ARG... */
+      /* shopt [-o] ARG... */
 
       int rval = EXECUTION_SUCCESS;
 
