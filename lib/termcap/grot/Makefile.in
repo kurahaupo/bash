@@ -45,7 +45,7 @@ includedir = $(prefix)/include
 # Directory in which to optionally also install termcap.h,
 # so compilers besides gcc can find it by default.
 # If it is empty or not defined, termcap.h will only be installed in
-# includedir. 
+# includedir.
 oldincludedir = /usr/include
 
 # Directory in which to install the documentation info files.
