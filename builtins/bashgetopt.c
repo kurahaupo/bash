@@ -35,7 +35,7 @@
 
 #define ISOPT(s)	(((*(s) == '-') || (plus && *(s) == '+')) && (s)[1])
 #define NOTOPT(s)	(((*(s) != '-') && (!plus || *(s) != '+')) || (s)[1] == '\0')
-			
+
 static int	sp;
 
 char    *list_optarg;
@@ -96,7 +96,7 @@ internal_getopt(WORD_LIST *list, char *opts)
 
 	if (c == ':' || (cp = strchr(opts, c)) == NULL) {
 		errstr[1] = c;
-		sh_invalidopt (errstr);		
+		sh_invalidopt (errstr);
 		if (lcurrent->word->word[++sp] == '\0') {
 			lcurrent = lcurrent->next;
 			sp = 1;
