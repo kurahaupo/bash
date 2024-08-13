@@ -162,33 +162,22 @@ extern int read_builtin_timeout (int);
 extern void check_read_timeout (void);
 
 /* Functions from set.def */
-extern int minus_o_option_value (const char *);
-extern void list_minus_o_opts (_Bool reusable);
-extern char const *const*get_minus_o_opts (void);
-extern int set_minus_o_option (char, char *);
 
-extern void set_shellopts (void);
-#if 0
-extern void parse_shellopts (char *);
-#endif
-extern void initialize_shell_options (int);
-
-extern void reset_shell_options (void);
-
+extern char const*const*get_minus_o_opts (void);
 extern char *get_current_options (void);
-extern void set_current_options (const char *);
-
-/* Functions from shopt.def */
-extern void reset_shopt_options (void);
 extern char **get_shopt_options (void);
-
-extern int shopt_setopt (const char *, int);
-extern int shopt_listopt (const char *, int);
-
-extern void set_bashopts (void);
 extern void initialize_bashopts (int);
-
+extern void initialize_shell_options (int);
+extern void list_minus_o_opts (_Bool reusable);
+extern int minus_o_option_value (const char *);
+extern void reset_shell_options (void);
+extern void set_bashopts (void);
 extern void set_compatibility_opts (void);
+extern void set_current_options (const char *);
+extern int set_minus_o_option (char, char *);
+extern void set_shellopts (void);
+extern int shopt_listopt (const char *, int);
+extern int shopt_setopt (const char *, int);
 
 /* Functions from type.def */
 extern int describe_command (char *, int);

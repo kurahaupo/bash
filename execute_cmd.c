@@ -6027,7 +6027,6 @@ initialize_subshell (void)
   /* Reset the values of the shell flags and options. */
   reset_shell_flags ();
   reset_shell_options ();
-  reset_shopt_options ();
 
   /* Zero out builtin_env, since this could be a shell script run from a
      sourced file with a temporary environment supplied to the `source/.'

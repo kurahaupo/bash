@@ -283,27 +283,28 @@ static void (*show_map[])(opt_def_t const *d, optset_whence_t whence_selection) 
 
 int expaliases_flag = 0;
 
-#if 1
 extern int allow_null_glob_expansion;	// from pathexp.h /* nullglob */
+
 #if defined (ARRAY_VARS)
 extern int array_expand_once;	// from arrayfunc.h
 #endif
+
 //extern int autocd;	// in shell.h
 extern int bash_source_fullpath;	// from variables.c
 extern int cdable_vars;	// from cd.def
 extern int cdspelling;	// from cd.def
 extern int check_hashed_filenames;	// from findcmd.h
-//extern int check_jobs_at_exit;	// in shell.h
 extern int check_window_size;	// from jobs.c & nojobs.c
+
 #if defined (DEBUGGER)
 extern int debugging_mode;	// in shell.h
 #endif
 
 #if defined (READLINE)
 #  if DIRCOMPLETE_EXPAND_DEFAULT
-#define DIRCOMPLETE_EXPAND_INIT one
+#    define DIRCOMPLETE_EXPAND_INIT one
 #  else
-#define DIRCOMPLETE_EXPAND_INIT zero
+#    define DIRCOMPLETE_EXPAND_INIT zero
 #  endif
 #endif
 
@@ -321,21 +322,21 @@ extern int glob_dot_filenames;	// from pathexp.h
 extern int glob_ignore_case;	// from glob.h
 extern int glob_star;	// from pathexp.h
 extern int gnu_error_format;	// from error.c
-//extern int hup_on_exit;	// in shell.h
 extern int inherit_errexit;	// from subst.c
 extern int lastpipe_opt;	// from execute_cmd.c
 extern int localvar_inherit;	// from variables.h
 extern int localvar_unset;	// from variables.c
-//extern int login_shell; /* login_shell */
 extern int mail_warning;	// from mailcheck.c
 extern int match_ignore_case;	// from pathexp.h
 extern int no_exit_on_failed_exec;	// from exec.def  /* execfail */
 extern int patsub_replacement;	// from subst.c
+
 #if defined (STRICT_POSIX)
-#define POSIXLY_CORRECT_INIT  0
+#  define POSIXLY_CORRECT_INIT  0
 #else
-#define POSIXLY_CORRECT_INIT -1
+#  define POSIXLY_CORRECT_INIT -1
 #endif
+
 extern int print_shift_error;	// from general.c
 
 #if defined (PROGRAMMABLE_COMPLETION)
@@ -350,9 +351,9 @@ extern int source_uses_path;	// from source.def
 #if defined (SYSLOG_HISTORY)
 extern int syslog_history;
 #  if defined (SYSLOG_SHOPT)
-#   define SYSLOG_HISTORY_INIT SYSLOG_SHOPT
+#    define SYSLOG_HISTORY_INIT SYSLOG_SHOPT
 #  else
-#   define SYSLOG_HISTORY_INIT 1
+#    define SYSLOG_HISTORY_INIT 1
 #  endif /* SYSLOG_SHOPT */
 #endif
 
@@ -360,11 +361,10 @@ extern int varassign_redir_autoclose;	// from redir.c
 extern int xpg_echo;	// from echo.def
 
 #if defined (DEFAULT_ECHO_TO_XPG) || defined (STRICT_POSIX)
-#define XPG_ECHO_INIT one
+#  define XPG_ECHO_INIT one
 #else
-#define XPG_ECHO_INIT zero
+#  define XPG_ECHO_INIT zero
 #endif /* DEFAULT_ECHO_TO_XPG */
-#endif // 1
 
 #if defined (READLINE)
 
@@ -453,7 +453,7 @@ static opt_set_func_t set_verbose_flag;
 /* If you add a new variable name here, make sure to include an appropriate
  * initializer here (if using the referenced variable), or set the default
  * value appropriately in reset_shell_options (if using a different variable).
- * */
+ */
 
 /******************************************************************************/
 
@@ -649,7 +649,7 @@ list_all_options (optset_whence_t whence_selection,
 		  optset_whence_t display_style)
 {
   _Bool (*hide_when)(opt_def_t const *d) =  hide_when_map[WhenceC (whence_selection)];
-  void (*show_how)(opt_def_t const *d, optset_whence_t whence_selection) = show_map[WhenceC (display_style)];
+  void (*show_how)(opt_def_t const *, optset_whence_t) = show_map[WhenceC (display_style)];
 
   for (opt_def_t const *d = opt_defs; d->name; d++)
     {
@@ -1809,13 +1809,6 @@ shopt_builtin (WORD_LIST *list)
 	builtin_usage ();
       return (sh_chkwrite (rval));
     }
-}
-
-/* Reset the options managed by ‘shopt’ to the values they would have at
-   shell startup.  Variables from shopt_vars. */
-void
-reset_shopt_options (void)
-{
 }
 
 static optset_result_t

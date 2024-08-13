@@ -2016,7 +2016,6 @@ shell_reinitialize (void)
 #if 0
   reset_shell_flags ();
   reset_shell_options ();
-  reset_shopt_options ();
 #endif
 
   /* XXX - should we set jobs_m_flag to 0 here? */
