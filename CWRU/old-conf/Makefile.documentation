@@ -52,7 +52,7 @@ RLUSER      = ./../lib/readline/doc/rluser.texinfo
 all: ps info dvi text
 
 ps: bash.ps builtins.ps readline.ps article.ps
-dvi: features.dvi features.ps 
+dvi: features.dvi features.ps
 info: features.info
 text: bash.0 builtins.0 readline.0
 

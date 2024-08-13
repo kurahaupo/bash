@@ -315,7 +315,7 @@ OBJS = print.o truefalse.o accept.o sleep.o finfo.o getconf.o logname.o \
        basename.o dirname.o tty.o pathchk.o tee.o head.o rmdir.o necho.o \
        hello.o cat.o csv.o dsv.o kv.o cut.o printenv.o id.o whoami.o uname.o \
        sync.o push.o mkdir.o mktemp.o realpath.o strftime.o setpgid.o stat.o \
-       fdflags.o seq.o asort.o strptime.o        
+       fdflags.o seq.o asort.o strptime.o
 
 ${OBJS}:	${BUILD_DIR}/config.h
 
