@@ -47,7 +47,7 @@ INSTALL_DATA = @INSTALL_DATA@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 mkinstalldirs = $(SHELL) $(MKINSTALLDIRS)
 
-l = 
+l =
 
 AR = @AR@
 CC = @CC@
@@ -95,7 +95,7 @@ SOURCES = bindtextdom.c dcgettext.c dgettext.c gettext.c \
         localcharset.c threadlib.c lock.c relocatable.c langprefs.c \
         localename.c localename-table.c log.c printf.c setlocale.c \
         setlocale-lock.c setlocale_null.c version.c xsize.c osdep.c \
-        intl-compat.c 
+        intl-compat.c
 
 EXTRASOURCES = tsearch.c printf-args.c printf-parse.c vasnprintf.c \
 	intl-exports.c os2compat.c
@@ -107,12 +107,12 @@ OBJECTS = bindtextdom.o dcgettext.o dgettext.o gettext.o \
         localcharset.o threadlib.o lock.o relocatable.o langprefs.o \
         localename.o localename-table.o log.o printf.o setlocale.o \
         setlocale-lock.o setlocale_null.o version.o xsize.o osdep.o \
-        intl-compat.o 
+        intl-compat.o
 
 CREATED_HEADERS = libintl.h libgnuintl.h localename-table.h
 CREATED_SOURCES = plural.c plural.h
 
-OTHERS = Makefile.in locale.alias ref-add.sin ref-del.sin 
+OTHERS = Makefile.in locale.alias ref-add.sin ref-del.sin
 CREATED_OTHERS = Makefile ref-add.sed ref-del.sed
 
 TARGETS = libintl.a libgnuintl.a
@@ -220,7 +220,7 @@ localealias.o localcharset.o relocatable.o: $(srcdir)/relocatable.h
 localcharset.o: $(srcdir)/localcharset.c
 
 mostlyclean:
-	rm -f ${TARGETS} 
+	rm -f ${TARGETS}
 	rm -f ${OBJECTS}  ${CREATED_HEADERS}
 
 clean: mostlyclean

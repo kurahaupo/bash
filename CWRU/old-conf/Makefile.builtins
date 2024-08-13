@@ -46,7 +46,7 @@ DEFS =  $(srcdir)/alias.def $(srcdir)/bind.def $(srcdir)/break.def \
 	$(srcdir)/ulimit.def $(srcdir)/umask.def $(srcdir)/wait.def \
 	$(srcdir)/reserved.def $(srcdir)/pushd.def $(srcdir)/shopt.def
 
-STATIC_SOURCE = common.c getopt.c bashgetopt.c getopt.h 
+STATIC_SOURCE = common.c getopt.c bashgetopt.c getopt.h
 
 OFILES = builtins.o \
 	alias.o bind.o break.o builtin.o cd.o colon.o command.o \
@@ -54,7 +54,7 @@ OFILES = builtins.o \
 	fc.o fg_bg.o hash.o help.o history.o jobs.o kill.o let.o \
 	pushd.o read.o return.o set.o setattr.o shift.o source.o \
 	suspend.o test.o times.o trap.o type.o ulimit.o umask.o \
-	wait.o getopts.o shopt.o getopt.o bashgetopt.o 
+	wait.o getopts.o shopt.o getopt.o bashgetopt.o
 
 THINGS_TO_TAR = $(DEFS) $(STATIC_SOURCE) Makefile ChangeLog
 
@@ -149,14 +149,14 @@ break.o: ../shell.h ../unwind_prot.h ../variables.h ../maxpath.h
 builtin.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 builtin.o: ../quit.h common.h ../maxpath.h
 builtin.o: ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
-builtin.o: ../shell.h ../unwind_prot.h ../variables.h 
+builtin.o: ../shell.h ../unwind_prot.h ../variables.h
 cd.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 cd.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 cd.o: ../shell.h ../unwind_prot.h ../variables.h common.h ../maxpath.h
 command.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 command.o: ../quit.h bashgetopt.h ../maxpath.h
 command.o: ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
-command.o: ../shell.h ../unwind_prot.h ../variables.h 
+command.o: ../shell.h ../unwind_prot.h ../variables.h
 declare.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 declare.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 declare.o: ../shell.h ../unwind_prot.h ../variables.h ../maxpath.h
@@ -202,7 +202,7 @@ inlib.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 jobs.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 jobs.o: ../quit.h bashgetopt.h ../maxpath.h
 jobs.o: ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
-jobs.o: ../shell.h ../unwind_prot.h ../variables.h 
+jobs.o: ../shell.h ../unwind_prot.h ../variables.h
 kill.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 kill.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 kill.o: ../shell.h ../trap.h ../unwind_prot.h ../variables.h ../maxpath.h
@@ -224,7 +224,7 @@ set.o: ../shell.h ../unwind_prot.h ../variables.h ../maxpath.h
 setattr.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 setattr.o: ../quit.h common.h bashgetopt.h ../maxpath.h
 setattr.o: ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
-setattr.o: ../shell.h ../unwind_prot.h ../variables.h 
+setattr.o: ../shell.h ../unwind_prot.h ../variables.h
 shift.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 shift.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 shift.o: ../shell.h ../unwind_prot.h ../variables.h ../maxpath.h
@@ -247,7 +247,7 @@ trap.o: ../shell.h ../unwind_prot.h ../variables.h ../execute_cmd.h
 type.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 type.o: ../quit.h common.h ../maxpath.h
 type.o: ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
-type.o: ../shell.h ../unwind_prot.h ../variables.h 
+type.o: ../shell.h ../unwind_prot.h ../variables.h
 ulimit.o: ../command.h ../config.h ../memalloc.h ../error.h ../general.h
 ulimit.o: ../quit.h ../dispose_cmd.h ../make_cmd.h ../subst.h ../externs.h
 ulimit.o: ../shell.h ../unwind_prot.h ../variables.h ../maxpath.h
