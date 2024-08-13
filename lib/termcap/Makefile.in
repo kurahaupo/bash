@@ -71,7 +71,7 @@ libtermcap.a:	$(OBJECTS)
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
 	-test -n "$(RANLIB)" && $(RANLIB) $@
 
-install:	
+install:
 
 clean:
 	$(RM) *.o *.a *.log *.cp *.tp *.vr *.fn *.aux *.pg *.toc
