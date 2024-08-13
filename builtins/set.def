@@ -251,7 +251,7 @@ static _Bool (*hide_when_map[])(opt_def_t const *d) = {
 static void
 show_option_default (opt_def_t const *d, optset_whence_t whence_selection)
 {
-  printf ("%-15s\t%s\n", d->name, get_opt_value (d, whence_selection) ? on : off);
+  printf ("%-23s\t%s\n", d->name, get_opt_value (d, whence_selection) ? on : off);
 }
 
 static void
