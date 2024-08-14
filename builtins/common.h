@@ -164,7 +164,7 @@ extern void check_read_timeout (void);
 /* Functions from set.def */
 extern int minus_o_option_value (const char *);
 extern void list_minus_o_opts (int, int);
-extern char **get_minus_o_opts (void);
+extern char const *const*get_minus_o_opts (void);
 extern int set_minus_o_option (int, char *);
 
 extern void set_shellopts (void);

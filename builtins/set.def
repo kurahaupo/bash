@@ -588,13 +588,13 @@ list_minus_o_opts (int mask_value, int reusable)
     }
 }
 
-char **
+char const *const*
 get_minus_o_opts (void)
 {
-  char **ret;
+  char const **ret;
   int i;
 
-  ret = strvec_create (N_O_OPTIONS + 1);
+  ret = (char const **)strvec_create (N_O_OPTIONS + 1);
   struct opt_def_s const *d;
   for (d = opt_defs, i = 0; d->name; d++)
     {
