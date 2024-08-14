@@ -67,40 +67,63 @@ typedef int option_value_t;
 
 /* Whence: when setting an option, whether it's allowed may depend on how it's
  * attempted to be changed. */
+enum optset_whence_e {
+  Whence_any = 0,	/* unlabelled zero default; computation of correct value is still pending */
+  Whence_short,		/* using set -X (a short single-letter option) */
+  Whence_set_o,		/* using set -o NAME */
+  Whence_shopt,		/* using shopt -s NAME */
+  Whence_argv,		/* parsed from argv when Bash starts up */
+  Whence_environ,	/* read from the environment when Bash starts up */
+  Whence_unwind,	/* automatically being restored during unwinding */
+};
+
+#ifdef FAST_ENUM
+typedef enum optset_whence_e optset_whence_t;
+#define Whence(X)	WhenceV (X)
+#define WhenceC(E)	(E)
+#else
+
+/* Use a small struct to prevent it being conflated with an "int".
+ * (Modern compilers generate identical code either way, but older compilers
+ * may generate markedly worse code for structs.) */
 typedef struct optset_whence_s {
-  enum optset_whence_e {
-    Whence_any = 0,	/* unlabelled zero default; computation of correct value is still pending */
-    Whence_short,	/* using set -X (a short single-letter option) */
-    Whence_set_o,	/* using set -o NAME */
-    Whence_shopt,	/* using shopt -s NAME */
-    Whence_argv,	/* parsed from argv when Bash starts up */
-    Whence_environ,	/* read from the environment when Bash starts up */
-    Whence_unwind,	/* automatically being restored during unwinding */
-  } whence;
+  enum optset_whence_e whence;
 } optset_whence_t;
-#define Whence(X)	(struct optset_whence_s){ .whence = Whence_##X }
+#define Whence(X)	(struct optset_whence_s){ .whence = WhenceV (X) }
 #define WhenceC(E)	(E).whence
+#endif
 #define WhenceCM(E)	(1U << WhenceC (E))
 #define WhenceV(X)	Whence_##X
 #define WhenceVM(X)	(1U << WhenceV (X))
 
+enum optset_result_e {
+  Result_OK,
+  Result_Unchanged,	/* New value is same as old value */
+  Result_Ignored,	/* Change request ignored, silently */
+  Result_NotFound,	/* No setting with the supplied letter or name */
+  Result_ReadOnly,	/* Change never possible */
+  Result_Forbidden,	/* Not changed because new value is permitted */
+  Result_BadValue,	/* Like ReadOnly but doesn't complain if the new value is the same as the old value */
+};
+
+#ifdef FAST_ENUM
+typedef enum optset_result_e optset_result_t;
+#define Result(X)	ResultV (X)
+#define ResultC(R)	(R)
+#else
+/* Use a small struct to prevent it being conflated with an "int".
+ * (Modern compilers generate identical code either way, but older compilers
+ * may generate markedly worse code for structs.) */
 typedef struct optset_result_s {
-  enum optset_result_e {
-    Result_OK,
-    Result_Unchanged,	/* New value is same as old value */
-    Result_Ignored,	/* Change request ignored, silently */
-    Result_NotFound,	/* No setting with the supplied letter or name */
-    Result_ReadOnly,	/* Change never possible */
-    Result_Forbidden,	/* Not changed because new value is permitted */
-    Result_BadValue,	/* Like ReadOnly but doesn't complain if the new value is the same as the old value */
-  } result;
+  enum optset_result_e result;
 } optset_result_t;
-#define Result(X)	(struct optset_result_s){ .result = Result_##X }
+#define Result(X)	(struct optset_result_s){ .result = ResultV (X) }
 #define ResultC(R)	(R).result
-#define ResultCM(R)	(1 << ResultC (R))
+#endif
+#define ResultCM(R)	(1U << ResultC (R))
 #define ResultV(X)	Result_##X
-#define ResultVM(X)	(1 << ResultV (X))
-#define ResultGood(R)	((R).result <= Result_Ignored)
+#define ResultVM(X)	(1U << ResultV (X))
+#define ResultGood(R)	(ResultC (R) <= Result_Ignored)
 
 static const int result_to_ex_map[] = {
   [Result_OK]		= EXECUTION_SUCCESS,
@@ -917,37 +940,42 @@ set_shellopts (void)
   free (value);
 }
 
+static void
+get_shellopts (void)
+{
+  /* set up any shell options we may have inherited. */
+  SHELL_VAR *var = find_variable ("SHELLOPTS");
+  if (var == NULL) return;
+  if (! imported_p (var)) return;
+  if (! array_p (var) && ! assoc_p (var)) return;
+
+  char *shellopts_env = savestring (value_cell (var));
+  if (shellopts_env == NULL) return;
+
+  char *vname;
+  int vptr = 0;
+
+  for (; vname = extract_colon_unit (shellopts_env, &vptr); free (vname))
+    {
+      struct opt_def_s const *d = find_option (vname);
+      if (!d) continue;
+
+      optset_result_t r = set_opt_value (d, Whence (environ), true);
+      if (! ResultGood (r))
+	sh_invalidoptname (vname);
+    }
+  free (shellopts_env);
+}
+
 void
 initialize_shell_options (int no_shellopts)
 {
   init_letter_map ();
 
-  if (no_shellopts == 0)
-    {
-      SHELL_VAR *var = find_variable ("SHELLOPTS");
-      /* set up any shell options we may have inherited. */
-      if (var && imported_p (var) && (array_p (var) || assoc_p (var)))
-	{
-	  char *shellopts_env = savestring (value_cell (var));
-	  if (shellopts_env)
-	    {
-	      char *vname;
-	      int vptr = 0;
-
-	      for (; vname = extract_colon_unit (shellopts_env, &vptr); free (vname))
-		{
-		  struct opt_def_s const *d = find_option (vname);
-		  if (d)
-		    {
-		      optset_result_t r = set_opt_value (d, Whence (environ), true);
-		      if (! ResultGood (r))
-			sh_invalidoptname (vname);
-		    }
-		}
-	      free (shellopts_env);
-	    }
-	}
-    }
+  if (! no_shellopts)
+    get_shellopts ();
+  if (! no_shellopts)
+    get_shellopts ();
 
   /* Set up the $SHELLOPTS variable. */
   set_shellopts ();
