@@ -1012,8 +1012,8 @@ reset_shell_options (void)
 int
 set_builtin (WORD_LIST *list)
 {
-  int flag_name, force_assignment = 0, opts_changed = 0, rv, r;
-  char *arg, on_or_off;
+  _Bool force_assignment = false, opts_changed = false;
+  int flag_name, rv;
 
   if (list == NULL)
     {
@@ -1029,7 +1029,7 @@ set_builtin (WORD_LIST *list)
       switch (flag_name)
 	{
 	  case 'i':	/* don't allow set -i */
-	    sh_invalidopt ((char[]){ list_opttype, 'i', 0 });
+	    sh_invalidopt ((char[]){ list_opttype, flag_name, 0 });
 	    builtin_usage ();
 	    return (EX_USAGE);
 	  CASE_HELPOPT;
@@ -1046,7 +1046,7 @@ set_builtin (WORD_LIST *list)
      $1 ... $n. */
   for (; list; list = list->next)
     {
-      arg = list->word->word;
+      char *arg = list->word->word;
 
       /* If the argument is `--' or `-' then signal the end of the list
 	and remember the remaining arguments. */
@@ -1056,22 +1056,22 @@ set_builtin (WORD_LIST *list)
 
 	  /* `set --' unsets the positional parameters. */
 	  if (arg[1] == '-')
-	    force_assignment = 1;
+	    force_assignment = true;
 
 	  /* Until told differently, the old shell behaviour of
 	     `set - [arg ...]' being equivalent to `set +xv [arg ...]'
 	     stands.  Posix.2 says the behaviour is marked as obsolescent. */
 	  else
 	    {
-	      change_flag ('x', FLAG_OFF);
-	      change_flag ('v', FLAG_OFF);
-	      opts_changed = 1;
+	      echo_command_at_execute = false;	/* change_flag ('x', FLAG_OFF); */
+	      verbose_flag = false;		/* change_flag ('v', FLAG_OFF); */
+	      opts_changed = true;
 	    }
 
 	  break;
 	}
 
-      on_or_off = *arg;
+      char on_or_off = *arg;
 
       if (!valid_flag (on_or_off))
 	break;
@@ -1084,9 +1084,9 @@ set_builtin (WORD_LIST *list)
 	      return (EXECUTION_SUCCESS);
 	    }
 
+	  char *option_name = NULL;
 	  if (flag_name == 'o') /* -+o option-name */
 	    {
-	      char *option_name = NULL;
 	      _Bool reusable = !flag_to_bool (on_or_off);
 
 	      if (arg[1])
@@ -1114,35 +1114,37 @@ set_builtin (WORD_LIST *list)
 				     reusable ? Whence (set_o) : Whence (any));
 		  continue;
 		}
-
-	      opts_changed = 1;
-
-	      opt_def_t const *d = find_option1 (option_name);
-
-	      if (!d)
-		{
-		  sh_invalidoptname (option_name);
-		  set_shellopts ();
-		  return EX_USAGE;
-		}
-
-	      optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (on_or_off));
-	      if (BadResult (r))
-		{
-		  sh_invalidoptname (option_name);
-		  set_shellopts ();
-		  return EXECUTION_FAILURE;
-		}
-
 	    }
-	  else if (change_flag (flag_name, on_or_off) == FLAG_ERROR)
+
+	  char short_option_name[] = { on_or_off, flag_name, 0 };
+	  opt_def_t const *d;
+	  if (option_name)
+	    d = find_option1 (option_name);
+	  else
 	    {
-	      sh_invalidopt ((char[]){ on_or_off, flag_name, 0 });
-	      builtin_usage ();
-	      set_shellopts ();
-	      return (EXECUTION_FAILURE);
+	      option_name = short_option_name;
+	      init_letter_map ();	/* make sure the map is ready */
+	      d = letter_map[flag_name];
 	    }
-	  opts_changed = 1;
+
+	  if (d)
+	    {
+
+	      optset_whence_t selection = option_name ? Whence (set_o) : Whence (short);
+	      _Bool new_value = flag_to_bool (on_or_off);
+	      optset_result_t r = set_opt_value (d, selection, new_value);
+	      if (GoodResult (r)) /* any valid result */
+		{
+		  if (ResultC (r) == Result_OK)	/* not Result_unchanged nor Result_ignored */
+		    opts_changed = true;
+		  continue;
+		}
+	    }
+
+	  sh_invalidoptname (option_name);
+	  if (opts_changed)
+	    set_shellopts ();
+	  return EX_USAGE;
 	}
     }
 
