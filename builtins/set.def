@@ -431,7 +431,7 @@ Exit Status:
 Returns success unless an invalid option is given.
 $END
 
-#define opt_defs o_options
+#define opt_defs opt_defs1
 #define find_option find_o_option
 #define list_all_options(WS, VM, WD) list_all_options2 (opt_defs, WS, VM, WD)
 
@@ -704,7 +704,7 @@ minus_o_option_value (char const *name)
 void
 list_minus_o_opts (_Bool reusable)
 {
-  list_all_options2 (o_options,
+  list_all_options2 (opt_defs1,
 		     Whence (set_o),
 		     0,
 		     reusable ? Whence (set_o) : Whence (any));
@@ -1109,7 +1109,7 @@ set_builtin (WORD_LIST *list)
 
 	      if (option_name == NULL || *option_name == '\0')
 		{
-		  list_all_options2 (o_options,
+		  list_all_options2 (opt_defs1,
 				     Whence (set_o),
 				     0,
 				     reusable ? Whence (set_o) : Whence (any));
@@ -1745,152 +1745,149 @@ shopt_builtin (WORD_LIST *list)
       do_update = false;
 
 
-  if (fake_set_o)
-
-    /* shopt -o ... */
-    if (!do_update)
-      /* ... and neither -s nor -u */
-      if (list == NULL)
+  if (list == NULL)
+    {
+      if (!quiet)
 	{
-	  if (!quiet)
-	    list_all_options2 (o_options,
-			       Whence (set_o),
-			       0,
-			       reusable ? Whence (set_o) : Whence (any));
-	  return (sh_chkwrite (EXECUTION_SUCCESS));
-	}
-      else
-	{
-	  int rval = EXECUTION_SUCCESS;
-	  for (; list; list = list->next)
+	  unsigned int value_mask = do_update ? 1 << !use_value : 0;
+	  optset_whence_t selection = fake_set_o ? Whence (set_o) : Whence (shopt);
+	  opt_def_t *oo = fake_set_o ? opt_defs1 : opt_defs2;
+	  optset_whence_t display = reusable ? fake_set_o ? Whence (set_o) : Whence (shopt) : Whence (any);
+	  #if 0
+	  if (fake_set_o)
 	    {
-	      opt_def_t const *d = find_option (list->word->word);
-	      if (!d)
-		{
-		  sh_invalidoptname (list->word->word);
-		  rval = EXECUTION_FAILURE;
-		  continue;
-		}
-	      if (rval == EXECUTION_SUCCESS)
-		{
-		  option_value_t val = get_opt_value (d, Whence (shopt));
-		  if (val == 0)
-		    rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
-		}
-	      if (!quiet)
-		show_one_option (d,
-				 Whence (shopt),
-				 reusable ? Whence (shopt)
-					  : Whence (any));
-	    }
-	  return (sh_chkwrite (rval));
-	}
-    else
-      if (list)
-	/* shopt -o[su] ARGS... */
-	{
-	  int rval = EXECUTION_SUCCESS;
-	  for (; list; list = list->next)
-	    {
-	      char const * option_name = list->word->word;
-	      struct opt_def_s const *d = find_option (option_name);
-	      if (!d)
-		{
-		  sh_invalidoptname (option_name);
-		  rval = EX_USAGE;
-		  continue;
-		}
-	      optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (use_value));
-	      if (! ResultGood (r))
-		{
-		  sh_invalidoptname (option_name);
-		  rval = EXECUTION_FAILURE;
-		  continue;
-		}
-	    }
-	  set_shellopts ();
-	  return rval;
-	}
-      else
-	{
-	  /* shopt -o[su] */
-	  if (!quiet)
-	    list_all_options2 (o_options,
-			       Whence (set_o),
-			       use_value < 0 ? 0 : 1 << !use_value,
-			       reusable ? Whence (set_o) : Whence (any));
-	  return (sh_chkwrite (EXECUTION_SUCCESS));
-	}
+	      /* shopt -o ... */
+	      if (!do_update)
 
+		/* ... and neither -s nor -u */
+		list_all_options2 (oo, selection, value_mask, display);
+
+	      else
+		/* shopt -o[su] */
+		list_all_options2 (oo, selection, value_mask, display);
+	    }
+	  else
+	    /* shopt without -o ... */
+	    if (!do_update)
+	      /* shopt with no args or options */
+	      list_all_options2 (oo, selection, value_mask, display);
+	    else
+	      /* shopt -[su] (no args) */
+	      list_all_options2 (oo, selection, value_mask, display);
+	  #endif
+	  list_all_options2 (oo, selection, value_mask, display);
+	}
+      return (sh_chkwrite (EXECUTION_SUCCESS));
+    }
   else
-
-    /* shopt without -o ... */
-    if (!do_update)
-      if (list == NULL)
+    {
+      if (fake_set_o)
 	{
-	  /* shopt with no args or options */
-	  if (!quiet)
-	    list_all_options (Whence (shopt), 0, Whence (any));
-	  return (sh_chkwrite (EXECUTION_SUCCESS));
-	}
-
-      else
-      {
-	/* shopt [args] */
-	int rval = EXECUTION_SUCCESS;
-
-	for (; list; list = list->next)
-	  {
-	    struct opt_def_s const *d = find_option (list->word->word);
-	    if (!d)
-	      {
-		shopt_error (list->word->word);
-		rval = EXECUTION_FAILURE;
-		continue;
-	      }
-	    if (rval == EXECUTION_SUCCESS)
-	      {
-		option_value_t val = get_opt_value (d, Whence (shopt));
-		if (val == 0)
-		  rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
-	      }
-	    if (!quiet)
-	      show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
-	  }
-
-	return (sh_chkwrite (rval));
-      }
-    else
-      if (list)
-	{
-	  /* shopt -[su] args */
-	  int rval = EXECUTION_SUCCESS;
-
-	  for (; list; list = list->next)
+	  /* shopt -o ... */
+	  if (!do_update)
+	    /* ... and neither -s nor -u */
 	    {
-	      optset_result_t r = set_opt_value (find_option (list->word->word), Whence (shopt), use_value);
-	      if (res_to_ex (r) != EXECUTION_SUCCESS)
+	      int rval = EXECUTION_SUCCESS;
+	      for (; list; list = list->next)
 		{
-		  shopt_error (list->word->word);
-		  rval = EXECUTION_FAILURE;
+		  opt_def_t const *d = find_option (list->word->word);
+		  if (!d)
+		    {
+		      sh_invalidoptname (list->word->word);
+		      rval = EXECUTION_FAILURE;
+		      continue;
+		    }
+		  if (rval == EXECUTION_SUCCESS)
+		    {
+		      option_value_t val = get_opt_value (d, Whence (shopt));
+		      if (val == 0)
+			rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
+		    }
+		  if (!quiet)
+		    show_one_option (d,
+				     Whence (shopt),
+				     reusable ? Whence (shopt)
+					      : Whence (any));
 		}
+	      return (sh_chkwrite (rval));
 	    }
-
-	  /* Don't set $BASHOPTS here if it hasn't already been initialized */
-	  if (find_variable ("BASHOPTS") != NULL)
-	    set_bashopts ();
-	  return (rval);
+	  else
+	    {
+	      /* shopt -o[su] ARGS... */
+	      int rval = EXECUTION_SUCCESS;
+	      for (; list; list = list->next)
+		{
+		  char const * option_name = list->word->word;
+		  struct opt_def_s const *d = find_option (option_name);
+		  if (!d)
+		    {
+		      sh_invalidoptname (option_name);
+		      rval = EX_USAGE;
+		      continue;
+		    }
+		  optset_result_t r = set_opt_value (d, Whence (set_o), flag_to_bool (use_value));
+		  if (! ResultGood (r))
+		    {
+		      sh_invalidoptname (option_name);
+		      rval = EXECUTION_FAILURE;
+		      continue;
+		    }
+		}
+	      set_shellopts ();
+	      return rval;
+	    }
 	}
       else
 	{
-	  /* shopt -[su] (no args) */
-	  if (!quiet)
-	    list_all_options2 (opt_defs2,
-			       Whence (shopt),
-			       1 << !use_value,
-			       reusable ? Whence (shopt) : Whence (any));
-	  return (sh_chkwrite (EXECUTION_SUCCESS));
+	  /* shopt without -o ... */
+	  if (!do_update)
+	    {
+	      /* shopt ARGS */
+	      int rval = EXECUTION_SUCCESS;
+
+	      for (; list; list = list->next)
+		{
+		  struct opt_def_s const *d = find_option (list->word->word);
+		  if (!d)
+		    {
+		      shopt_error (list->word->word);
+		      rval = EXECUTION_FAILURE;
+		      continue;
+		    }
+		  if (rval == EXECUTION_SUCCESS)
+		    {
+		      option_value_t val = get_opt_value (d, Whence (shopt));
+		      if (val == 0)
+			rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
+		    }
+		  if (!quiet)
+		    show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
+		}
+
+	      return (sh_chkwrite (rval));
+	    }
+	  else
+	    {
+	      /* shopt -[su] ARGS */
+	      int rval = EXECUTION_SUCCESS;
+
+	      for (; list; list = list->next)
+		{
+		  optset_result_t r = set_opt_value (find_option (list->word->word), Whence (shopt), use_value);
+		  if (res_to_ex (r) != EXECUTION_SUCCESS)
+		    {
+		      shopt_error (list->word->word);
+		      rval = EXECUTION_FAILURE;
+		    }
+		}
+
+	      /* Don't set $BASHOPTS here if it hasn't already been initialized */
+	      if (find_variable ("BASHOPTS") != NULL)
+		set_bashopts ();
+	      return (rval);
+	    }
 	}
+    }
 }
 
 /* Reset the options managed by ‘shopt’ to the values they would have at
