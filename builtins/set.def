@@ -435,7 +435,7 @@ Returns success unless an invalid option is given.
 $END
 
 #define opt_defs opt_defs1
-#define find_option find_o_option
+#define find_option find_option1
 #define list_all_options(WS, VM, WD) list_all_options2 (opt_defs, WS, VM, WD)
 
 static opt_set_func_t set_errexit_flag;
@@ -1121,7 +1121,7 @@ set_builtin (WORD_LIST *list)
 
 	      opts_changed = 1;
 
-	      opt_def_t const *d = find_o_option (option_name);
+	      opt_def_t const *d = find_option1 (option_name);
 
 	      if (!d)
 		{
@@ -1432,7 +1432,8 @@ arguments, list each supplied OPTNAME, or all shell options if no
 OPTNAMEs are given, with an indication of whether or not each is set.
 
 Options:
-  -o	restrict OPTNAMEs to those defined for use with ‘set -o’
+  -o	restrict options to those defined for use with ‘set -o’
+  -O	exclude options defined for use with ‘set -o’
   -p	print each shell option with an indication of its status
   -q	suppress output
   -s	enable (set) each OPTNAME
@@ -1702,24 +1703,12 @@ shopt_builtin (WORD_LIST *list)
     {
       switch (opt)
 	{
-	case 's':
-	  do_set = true;
-	  break;
-	case 'u':
-	  do_unset = true;
-	  break;
-	case 'q':
-	  quiet = true;
-	  break;
-	case 'O':
-	  non_set_o = true;
-	  break;
-	case 'o':
-	  fake_set_o = true;
-	  break;
-	case 'p':
-	  reusable = true;
-	  break;
+	case 'O': non_set_o  = true; break;
+	case 'o': fake_set_o = true; break;
+	case 'p': reusable   = true; break;
+	case 'q': quiet      = true; break;
+	case 's': do_set     = true; break;
+	case 'u': do_unset   = true; break;
 	CASE_HELPOPT;
 	default:
 	  builtin_usage ();
@@ -1731,14 +1720,14 @@ shopt_builtin (WORD_LIST *list)
   /* These 2 will go away when the tables are folded together */
   opt_def_t const *start = fake_set_o ? opt_defs1
 				      : opt_defs2;
-  opt_def_t const * (*finder) (char const *name)
-		    = fake_set_o ? find_o_option
-				 : find_option2;
+  opt_def_t const *(*finder)(char const *name)
+			 = fake_set_o ? find_option1
+				      : find_option2;
 
   /* This has no effect now, but will select from the table */
   optset_whence_t selection = non_set_o == fake_set_o ? Whence (any)
-			    : fake_set_o ? Whence (set_o)
-			                 : Whence (shopt);
+					 : fake_set_o ? Whence (set_o)
+						      : Whence (shopt);
 
   /* This will limit displays to only options that a designated state */
   unsigned int value_mask = do_set   ? ~(1 << true)
@@ -1807,6 +1796,7 @@ shopt_builtin (WORD_LIST *list)
        *    LIST OPTIONS    *
        *		    *
        **********************/
+      /* shopt [flags] (without any OPTS) */
 
       /* When not given any args, always print a list, subject to some
        * constraints:
@@ -1814,33 +1804,43 @@ shopt_builtin (WORD_LIST *list)
        *  -p/-po causes the output to be in re-usable format
        */
       /*
-       *
+       * Select options by:
        *  if (non_set_o)
        *    if (fake_set_o)
+       *      (combining -o and -O does not restrict selection)
        *      if (do_set || do_unset)
-       *        // shopt -Oos		: show all options that are set, , using set -o format
-       *        // shopt -Oou		: show all options that are unset, using set -o format
+       *        // shopt -Oos		: show all set options (with -p use set-o format)
+       *        // shopt -Oou		: show all unset options (with -p use set-o format)
        *      else
-       *        // shopt -Oo		: show all options, using set -o format
+       *        // shopt -Oo		: show all options (with -p use set-o format)
        *    else
        *      if (do_set || do_unset)
-       *	// shopt -Os		: show all options (except set -o options) that are set
-       *	// shopt -Ou		: show all options (except set -o options) that are unset
+       *        // shopt -Os		: show all set non-set-o options (with -p use shopt format)
+       *        // shopt -Ou		: show all unset non-set-o options (with -p use shopt format)
        *      else
-       *	// shopt -O		: show all options (except set -o options)
+       *        // shopt -O		: show all non-set-o options (with -p use shopt format)
        *  else
        *    if (fake_set_o)
        *      if (do_set || do_unset)
-       *        // shopt -os		: show only set -o options that are set, using set -o format
-       *        // shopt -ou		: show only set -o options that are unset, using set -o format
+       *        // shopt -os		: show all set set -o options (with -p use set -o format)
+       *        // shopt -ou		: show all unset set -o options (with -p use set -o format)
        *      else
-       *        // shopt -o		: show all set -o options, using set -o format
+       *        // shopt -o		: show all set -o options (with -p use set -o format)
        *    else
        *      if (do_set || do_unset)
-       *        // shopt -s		: show all options that are set, using standard format
-       *        // shopt -u		: show all options that are unset, using standard format
+       *        // shopt -s		: show all set options (with -p use shopt format)
+       *        // shopt -u		: show all unset options (with -p use shopt format)
        *      else
-       *        // shopt		: show all options, using standard format
+       *        // shopt		: show all options (with -p use shopt format)
+       *
+       * Choose output format; only [-o] and [-p] count:
+       *  if (reusable)
+       *    if (fake_set_o)
+       *      // shopt -po		: show using set-o format
+       *    else
+       *      // shopt -p		: show using shopt format
+       *  else
+       *    // shopt			: show using standard format
        */
       if (!quiet)
 	list_all_options2 (start, selection, value_mask, display);
