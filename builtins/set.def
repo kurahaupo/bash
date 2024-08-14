@@ -315,7 +315,7 @@ list_minus_o_opts (int mode, int reusable)
     }
 }
 
-char **
+char const*const*
 get_minus_o_opts (void)
 {
   char **ret;
