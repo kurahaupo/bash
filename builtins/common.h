@@ -162,9 +162,9 @@ extern int read_builtin_timeout (int);
 extern void check_read_timeout (void);
 
 /* Functions from set.def */
-extern int minus_o_option_value (char *);
+extern int minus_o_option_value (const char *);
 extern void list_minus_o_opts (int, int);
-extern char **get_minus_o_opts (void);
+extern char const*const*get_minus_o_opts (void);
 extern int set_minus_o_option (int, char *);
 
 extern void set_shellopts (void);
@@ -180,13 +180,13 @@ extern void set_current_options (const char *);
 extern void reset_shopt_options (void);
 extern char **get_shopt_options (void);
 
-extern int shopt_setopt (char *, int);
-extern int shopt_listopt (char *, int);
+extern int shopt_setopt (char const*, int);
+extern int shopt_listopt (char const*, int);
 
-extern int set_login_shell (char *, int);
+extern int set_login_shell (char const*, int);
 
 extern void set_bashopts (void);
-extern void parse_bashopts (char *);
+extern void parse_bashopts (char const*);
 extern void initialize_bashopts (int);
 
 extern void set_compatibility_opts (void);

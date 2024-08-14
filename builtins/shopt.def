@@ -787,7 +787,7 @@ get_shopt_options (void)
  * REUSABLE is 1 if we want to print output in a form that may be reused.
  */
 int
-shopt_setopt (char *name, int mode)
+shopt_setopt (char const *name, int mode)
 {
   WORD_LIST *wl;
   int r;
@@ -799,7 +799,7 @@ shopt_setopt (char *name, int mode)
 }
 
 int
-shopt_listopt (char *name, int reusable)
+shopt_listopt (char const *name, int reusable)
 {
   int i;
 
