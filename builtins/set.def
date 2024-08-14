@@ -165,7 +165,7 @@ typedef struct opt_def_s {
 } opt_def_t;
 
 static option_value_t
-get_opt_value (struct opt_def_s const *d, optset_whence_t w)
+get_opt_value (opt_def_t const *d, optset_whence_t w)
 {
   if (!d)
     return OPTION_INVALID_VALUE;
@@ -177,7 +177,7 @@ get_opt_value (struct opt_def_s const *d, optset_whence_t w)
 }
 
 static optset_result_t
-set_opt_value (struct opt_def_s const *d,
+set_opt_value (opt_def_t const *d,
 	       optset_whence_t w,
 	       option_value_t new_value)
 {
@@ -302,7 +302,7 @@ list_all_options2 (opt_def_t const *start_of_table,
 		   unsigned hide_value_mask,
 		   optset_whence_t display_style)
 {
-  struct opt_def_s const *d = start_of_table;
+  opt_def_t const *d = start_of_table;
 
   _Bool (*hide_when)(opt_def_t const *d) =  hide_when_map[WhenceC (whence_selection)];
   void (*show_how)(opt_def_t const *d, optset_whence_t whence_selection) = show_map[WhenceC (display_style)];
@@ -529,10 +529,10 @@ static const opt_def_t opt_defs[] = {
 
 #define N_O_OPTIONS	(sizeof (opt_defs) / sizeof (opt_defs[0]))
 
-static struct opt_def_s const *
+static opt_def_t const *
 find_option (char const *name)
 {
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   for (d = opt_defs; d->name; d++)
     if (d->name != no_long_name && !strcmp (name, d->name))
       return d;
@@ -552,7 +552,7 @@ init_letter_map (void)
   /* Set up only once; this will have to change if we allow loadables to register new options */
   if (short_opt_names && set_builtin_optflags)
     return;
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   for (d = opt_defs ; d->name; d++)
     {
       char c = d->letter;
@@ -575,7 +575,7 @@ init_letter_map (void)
 
 #if defined (BANG_HISTORY)
 static optset_result_t
-set_histexp_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_histexp_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   history_expansion = histexp_flag = new_value;
   if (new_value)
@@ -586,7 +586,7 @@ set_histexp_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 
 #if defined (JOB_CONTROL)
 static optset_result_t
-set_monitor_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_monitor_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   set_job_control (new_value);
   return Result (OK);
@@ -594,7 +594,7 @@ set_monitor_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 #endif /* JOB_CONTROL */
 
 static optset_result_t
-set_errexit_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_errexit_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   errexit_flag = new_value;
   if (builtin_ignoring_errexit == 0)
@@ -603,7 +603,7 @@ set_errexit_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t 
 }
 
 static optset_result_t
-set_noexec_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_noexec_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   if (interactive_shell)
     {
@@ -615,7 +615,7 @@ set_noexec_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t n
 }
 
 static optset_result_t
-set_privileged_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_privileged_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   privileged_mode = new_value;
   if (!privileged_mode)
@@ -625,7 +625,7 @@ set_privileged_flag ( struct opt_def_s const *d, optset_whence_t w, option_value
 
 #if defined (RESTRICTED_SHELL)
 static optset_result_t
-set_restricted_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_restricted_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   /* Don't allow "set +r" in a shell which is `restricted'. */
   if (restricted && !new_value)
@@ -639,7 +639,7 @@ set_restricted_flag ( struct opt_def_s const *d, optset_whence_t w, option_value
 #endif
 
 static optset_result_t
-set_verbose_flag ( struct opt_def_s const *d, optset_whence_t w, option_value_t new_value )
+set_verbose_flag ( opt_def_t const *d, optset_whence_t w, option_value_t new_value )
 {
   echo_input_at_read = verbose_flag = new_value;
   return Result (OK);
@@ -659,7 +659,7 @@ change_flag (char letter, char on_or_off)
 
   init_letter_map ();	/* make sure the map is ready */
 
-  struct opt_def_s const *d = letter_map[letter];
+  opt_def_t const *d = letter_map[letter];
   if (d == NULL)
     return FLAG_ERROR;
 
@@ -682,7 +682,7 @@ which_set_flags (void)
 
   for (char const *cp = short_opt_names; *cp; ++cp)
     {
-      struct opt_def_s const *d = letter_map[*cp];
+      opt_def_t const *d = letter_map[*cp];
       if (get_opt_value (d, Whence (short)) > 0)
 	*endp++ = *cp;
     }
@@ -722,7 +722,7 @@ get_minus_o_opts (void)
   int i;
 
   ret = (char const **)strvec_create (N_O_OPTIONS + 1);
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   for (d = opt_defs, i = 0; d->name; d++)
     {
       if (d->hide_set_o)
@@ -739,7 +739,7 @@ char *
 get_current_options (void)
 {
   char *ret, *endp;
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   size_t num_posixopts;
 
   num_posixopts = num_posix_options ();	/* shopts modified by posix mode */
@@ -762,7 +762,7 @@ set_current_options (const char *bitmap)
   if (bitmap == 0)
     return;
 
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   char const *ptr = bitmap;
 
   for (d = opt_defs; d->name; d++)
@@ -778,7 +778,7 @@ set_current_options (const char *bitmap)
 }
 
 static optset_result_t
-set_ignoreeof (struct opt_def_s const *d, optset_whence_t w, option_value_t on_or_off)
+set_ignoreeof (opt_def_t const *d, optset_whence_t w, option_value_t on_or_off)
 {
   ignoreeof = on_or_off;
   unbind_variable_noref ("ignoreeof");
@@ -791,7 +791,7 @@ set_ignoreeof (struct opt_def_s const *d, optset_whence_t w, option_value_t on_o
 }
 
 static optset_result_t
-set_posix_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t on_or_off)
+set_posix_mode (opt_def_t const *d, optset_whence_t w, option_value_t on_or_off)
 {
   /* short-circuit on no-op */
   if (on_or_off == posixly_correct)
@@ -809,7 +809,7 @@ set_posix_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t on_
 #if defined (READLINE)
 /* Magic.  This code `knows' how readline handles rl_editing_mode. */
 static optset_result_t
-set_edit_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+set_edit_mode (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   _Bool really_interactive = interactive && command_execution_string == NULL;
   if (new_value)
@@ -828,7 +828,7 @@ set_edit_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t new_
 }
 
 static option_value_t
-get_edit_mode (struct opt_def_s const *d, optset_whence_t w)
+get_edit_mode (opt_def_t const *d, optset_whence_t w)
 {
   return no_line_editing == 0 && rl_editing_mode == d->reference_value;
 }
@@ -836,7 +836,7 @@ get_edit_mode (struct opt_def_s const *d, optset_whence_t w)
 
 #if defined (HISTORY)
 static optset_result_t
-bash_set_history (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+bash_set_history (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   enable_history_list = new_value;
   if (new_value)
@@ -854,7 +854,7 @@ bash_set_history (struct opt_def_s const *d, optset_whence_t w, option_value_t n
 int
 set_minus_o_option (char on_or_off, char *option_name)
 {
-  struct opt_def_s const *d = find_option (option_name);
+  opt_def_t const *d = find_option (option_name);
 
   if (!d)
     {
@@ -903,7 +903,7 @@ set_shellopts (void)
   size_t ti;
   size_t vsize = 0;
   SHELL_VAR *var;
-  struct opt_def_s const *d;
+  opt_def_t const *d;
 
   for (d = opt_defs, ti = 0; d->name; d++)
     {
@@ -960,7 +960,7 @@ get_shellopts (void)
 
   for (; vname = extract_colon_unit (shellopts_env, &vptr); free (vname))
     {
-      struct opt_def_s const *d = find_option (vname);
+      opt_def_t const *d = find_option (vname);
       if (!d) continue;
 
       optset_result_t r = set_opt_value (d, Whence (environ), true);
@@ -1121,7 +1121,7 @@ set_builtin (WORD_LIST *list)
 
 	      opts_changed = 1;
 
-	      struct opt_def_s const *d = find_o_option (option_name);
+	      opt_def_t const *d = find_o_option (option_name);
 
 	      if (!d)
 		{
@@ -1676,10 +1676,10 @@ static const opt_def_t opt_defs[] = {
 
 #define N_SHOPT_OPTIONS		(sizeof (opt_defs) / sizeof (opt_defs[0]))
 
-static struct opt_def_s const *
+static opt_def_t const *
 find_option (char const *name)
 {
-  struct opt_def_s const *d;
+  opt_def_t const *d;
   for (d = opt_defs; d->name; d++)
     if (d->name != no_long_name && !strcmp (name, d->name))
       return d;
@@ -1727,7 +1727,7 @@ shopt_builtin (WORD_LIST *list)
   /* These 2 will go away when the tables are folded together */
   opt_def_t const *start = fake_set_o ? opt_defs1
 				      : opt_defs2;
-  struct opt_def_s const * (*finder) (char const *name)
+  opt_def_t const * (*finder) (char const *name)
 		    = fake_set_o ? find_o_option
 				 : find_option2;
 
@@ -1768,7 +1768,7 @@ shopt_builtin (WORD_LIST *list)
       for (; list; list = list->next)
 	{
 	  char const * option_name = list->word->word;
-	  struct opt_def_s const *d = finder (option_name);
+	  opt_def_t const *d = finder (option_name);
 	  if (!d)
 	    {
 	      sh_invalidoptname (option_name);
@@ -1827,15 +1827,6 @@ shopt_builtin (WORD_LIST *list)
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
-
-  if (do_set)
-    if (do_unset)
-      {
-	builtin_error (_("cannot set and unset shell options simultaneously"));
-	return (EXECUTION_FAILURE);
-      }
-
-
     {
       /******************************
        *			    *
@@ -1843,62 +1834,33 @@ shopt_builtin (WORD_LIST *list)
        *			    *
        ******************************/
 
-      if (fake_set_o)
-	{
-	  /* shopt -o ARG...	*/
-	    {
-	      /* shopt -o ARGS */
-	      int rval = EXECUTION_SUCCESS;
-	      for (; list; list = list->next)
-		{
-		  opt_def_t const *d = find_option (list->word->word);
-		  if (!d)
-		    {
-		      sh_invalidoptname (list->word->word);
-		      rval = EXECUTION_FAILURE;
-		      continue;
-		    }
-		  if (rval == EXECUTION_SUCCESS)
-		    {
-		      option_value_t val = get_opt_value (d, Whence (shopt));
-		      if (val == 0)
-			rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
-		    }
-		  if (!quiet)
-		    show_one_option (d,
-				     Whence (shopt),
-				     reusable ? Whence (shopt)
-					      : Whence (any));
-		}
-	      return (sh_chkwrite (rval));
-	    }
-	}
-      else
-	{
-	  /* shopt ARG... */
-	  int rval = EXECUTION_SUCCESS;
+    /* shopt [-o] ARG... */
 
-	  for (; list; list = list->next)
-	    {
-	      struct opt_def_s const *d = find_option (list->word->word);
-	      if (!d)
-		{
-		  sh_invalidoptname (list->word->word);
-		  rval = EXECUTION_FAILURE;
-		  continue;
-		}
-	      if (rval == EXECUTION_SUCCESS)
-		{
-		  option_value_t val = get_opt_value (d, Whence (shopt));
-		  if (val == 0)
-		    rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
-		}
-	      if (!quiet)
-		show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
-	    }
+      int rval = EXECUTION_SUCCESS;
 
-	  return (sh_chkwrite (rval));
+      for (; list; list = list->next)
+	{
+	  char const * option_name = list->word->word;
+	  opt_def_t const *d = finder (option_name);
+	  if (!d)
+	    {
+	      sh_invalidoptname (option_name);
+	      rval = EX_USAGE;
+	      continue;
+	    }
+	  if (rval == EXECUTION_SUCCESS)
+	    {
+	      option_value_t val = get_opt_value (d, Whence (shopt));
+	      if (val == 0)
+		rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
+	    }
+	  if (!quiet)
+	    show_one_option (d, Whence (shopt), display);
 	}
+
+      if (rval == EX_USAGE)
+	builtin_usage ();
+      return (sh_chkwrite (rval));
     }
 }
 
@@ -1992,7 +1954,7 @@ reset_shopt_options (void)
 }
 
 static optset_result_t
-shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+shopt_set_debug_mode (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   d->store[0] = new_value;
 #if defined (DEBUGGER)
@@ -2005,7 +1967,7 @@ shopt_set_debug_mode (struct opt_def_s const *d, optset_whence_t w, option_value
 }
 
 static optset_result_t
-shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+shopt_set_expaliases (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   d->store[0] = new_value;
   expand_aliases = expaliases_flag;
@@ -2014,7 +1976,7 @@ shopt_set_expaliases (struct opt_def_s const *d, optset_whence_t w, option_value
 
 #if defined (EXTENDED_GLOB)
 static optset_result_t
-shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+shopt_set_extglob (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   d->store[0] = new_value;
   extended_glob = extglob_flag;
@@ -2024,7 +1986,7 @@ shopt_set_extglob (struct opt_def_s const *d, optset_whence_t w, option_value_t 
 
 #if defined (READLINE)
 static optset_result_t
-shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+shopt_enable_hostname_completion (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   int previous_value = enable_hostname_completion (new_value);
   return Result (OK);
@@ -2032,13 +1994,13 @@ shopt_enable_hostname_completion (struct opt_def_s const *d, optset_whence_t w, 
 #endif
 
 static option_value_t
-get_compatibility_level (struct opt_def_s const *d, optset_whence_t w)
+get_compatibility_level (opt_def_t const *d, optset_whence_t w)
 {
   return d->store[0] == d->reference_value;
 }
 
 static optset_result_t
-set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+set_compatibility_level (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   if (new_value)
     d->store[0] = d->reference_value;
@@ -2073,7 +2035,7 @@ set_compatibility_level (struct opt_def_s const *d, optset_whence_t w, option_va
 
 #if defined (READLINE)
 static optset_result_t
-shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+shopt_set_complete_direxpand (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   d->store[0] = new_value;
   set_directory_hook ();
@@ -2085,7 +2047,7 @@ shopt_set_complete_direxpand (struct opt_def_s const *d, optset_whence_t w, opti
 /* Don't allow the value of restricted_shell to be modified. */
 
 static optset_result_t
-set_restricted_shell (struct opt_def_s const *d, optset_whence_t w, option_value_t new_value)
+set_restricted_shell (opt_def_t const *d, optset_whence_t w, option_value_t new_value)
 {
   d->store[0] = new_value;
   static int save_restricted = -1;
@@ -2121,7 +2083,7 @@ get_shopt_options (void)
 int
 shopt_setopt (char const *name, option_value_t new_value)
 {
-  struct opt_def_s const *d = find_option (name);
+  opt_def_t const *d = find_option (name);
   if (!d)
     {
       sh_invalidoptname (name);
@@ -2145,7 +2107,7 @@ shopt_listopt (char const *name, int reusable)
 		       reusable ? Whence (shopt) : Whence (any));
   else
     {
-      struct opt_def_s const *d = find_option (name);
+      opt_def_t const *d = find_option (name);
       if (!d)
 	{
 	  sh_invalidoptname (name);
@@ -2163,7 +2125,7 @@ set_bashopts (void)
   char tflag[N_SHOPT_OPTIONS];
   size_t ti, vsize;
   SHELL_VAR *var;
-  struct opt_def_s const *d;
+  opt_def_t const *d;
 
   for (d = opt_defs, vsize = ti = 0; d->name; d++)
     {
