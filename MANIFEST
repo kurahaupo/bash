@@ -106,6 +106,8 @@ xmalloc.c	f
 pcomplete.c	f
 pcomplib.c	f
 mksyntax.c	f
+options.c	f
+options.h	f
 alias.h		f
 builtins.h	f
 bashhist.h	f
