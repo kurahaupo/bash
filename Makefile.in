@@ -2298,6 +2298,7 @@ flags.o: $(topdir)/include/posixjmp.h
 flags.o: $(topdir)/include/stdc.h
 flags.o: $(topdir)/include/unlocked-io.h
 flags.o: $(topdir)/make_cmd.h
+flags.o: $(topdir)/options.h
 flags.o: $(topdir)/pathnames.h
 flags.o: $(topdir)/quit.h
 flags.o: $(topdir)/shell.h
