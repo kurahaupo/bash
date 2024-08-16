@@ -3285,6 +3285,7 @@ subst.o: $(topdir)/input.h
 subst.o: $(topdir)/jobs.h
 subst.o: $(topdir)/mailcheck.h
 subst.o: $(topdir)/make_cmd.h
+subst.o: $(topdir)/options.h
 subst.o: $(topdir)/parser.h
 subst.o: $(topdir)/pathexp.h
 subst.o: $(topdir)/quit.h

@@ -381,4 +381,6 @@ extern int executing_funsub;
 
 extern void invalidate_cached_quoted_dollar_at (void);
 
+extern void register_subst_opts (void);
+
 #endif /* !_SUBST_H_ */
