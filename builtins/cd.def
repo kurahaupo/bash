@@ -183,7 +183,7 @@ static char *
 resetpwd (char *caller)
 {
   char *tdir;
-      
+
   FREE (the_current_working_directory);
   the_current_working_directory = (char *)NULL;
   tdir = get_working_directory (caller);
@@ -226,7 +226,7 @@ cdxattr (char *dir, char **ndirp)
 
   if (xattrfd >= 0)
     close (xattrfd);
-  xattrfd = fd;  
+  xattrfd = fd;
 
   return r;
 #else
