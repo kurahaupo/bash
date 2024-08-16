@@ -344,7 +344,7 @@ extern char *polite_directory_format (char *);
 extern char *trim_pathname (char *, int);
 extern char *printable_filename (char *, int);
 
-extern char *extract_colon_unit (char *, int *);
+extern char const *extract_colon_unit (char const*, int *);
 
 extern void tilde_initialize (void);
 extern char *bash_tilde_find_word (const char *, int, size_t *);
