@@ -59,9 +59,10 @@ static int spdist (char *, char *);
  *	Stores corrected name in `newname'.
  */
 int
-spname(char *oldname, char *newname)
+spname(char const*oldname, char *newname)
 {
-  char *op, *np, *p;
+  char const*op;
+  char *np, *p;
   char guess[PATH_MAX + 1], best[PATH_MAX + 1];
 
   op = oldname;
@@ -182,7 +183,7 @@ spdist(char *cur, char *new)
 }
 
 char *
-dirspell (char *dirname)
+dirspell (char const *dirname)
 {
   size_t n;
   char *guess;

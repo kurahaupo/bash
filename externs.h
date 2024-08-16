@@ -369,7 +369,7 @@ extern int sh_contains_quotes (const char *);
 
 /* declarations for functions defined in lib/sh/spell.c */
 extern int spname (char *, char *);
-extern char *dirspell (char *);
+extern char *dirspell (char const *);
 
 /* declarations for functions defined in lib/sh/strcasecmp.c */
 #if !defined (HAVE_STRCASECMP)
