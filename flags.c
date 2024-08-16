@@ -50,16 +50,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means disable filename globbing. */
-int disallow_filename_globbing = 0;
-static opt_def_t OPTDEF_disallow_filename_globbing = {
-  .store = &disallow_filename_globbing,
-  .letter = 'f',
-  .name = "noglob",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 /* Non-zero means that all keyword arguments are placed into the environment
    for a command, not just those that appear on the line before the command
    name. */
@@ -455,5 +445,4 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
-  register_option (&OPTDEF_disallow_filename_globbing);
 }
