@@ -6350,3 +6350,8 @@ do_piping (int pipe_in, int pipe_out)
 #endif /* __CYGWIN__ */
     }
 }
+
+void
+register_execute_cmd_opts (void)
+{
+}
