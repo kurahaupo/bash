@@ -162,10 +162,10 @@ extern int read_builtin_timeout (int);
 extern void check_read_timeout (void);
 
 /* Functions from set.def */
-extern int minus_o_option_value (const char *);
+extern int minus_o_option_value (char const*);
 extern void list_minus_o_opts (int, int);
 extern char const*const*get_minus_o_opts (void);
-extern int set_minus_o_option (char, char *);
+extern int set_minus_o_option (char, char const*);
 
 extern void set_shellopts (void);
 extern void parse_shellopts (char *);
