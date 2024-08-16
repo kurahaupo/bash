@@ -71,6 +71,8 @@
 #include "execute_cmd.h"
 #include "flags.h"
 
+#include "options.h"
+
 #include "typemax.h"
 
 #include "builtins/builtext.h"
@@ -354,6 +356,17 @@ static struct pipeline_saver *saved_pipeline;
 static int jobs_list_frozen;
 
 static char retcode_name_buffer[64];
+
+/* Non-zero causes asynchronous job notification.  Otherwise, job state
+   notification only takes place just before a primary prompt is printed. */
+int asynchronous_notification = 0;
+static opt_def_t OPTDEF_asynchronous_notification = {
+  .store = &asynchronous_notification,
+  .letter = 'b',
+  .name = "notify",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 #if !defined (_POSIX_VERSION)
 
@@ -5449,4 +5462,5 @@ restore_pgrp_pipe (int *p)
 void
 register_jobs_opts (void)
 {
+  register_option(&OPTDEF_asynchronous_notification);
 }
