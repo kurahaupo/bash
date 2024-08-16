@@ -80,6 +80,8 @@ extern int errno;
 #include "pathexp.h"
 #include "hashcmd.h"
 
+#include "options.h"
+
 #if defined (COND_COMMAND)
 #  include "test.h"
 #endif
@@ -333,6 +335,28 @@ int sourcenest_max = SOURCENEST_MAX;
 volatile int from_return_trap = 0;
 
 int lastpipe_opt = 0;
+
+/* Non-zero means exit immediately if a command exits with a non-zero
+   exit status.  The first is what controls set -e; the second is what
+   bash uses internally. */
+int errexit_flag = 0;
+int exit_immediately_on_error = 0;
+static opt_set_func_t optset_errexit_flag;
+static op_result_t
+optset_errexit_flag(opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  errexit_flag = new_value;
+  if (builtin_ignoring_errexit == 0)
+    exit_immediately_on_error = errexit_flag;
+}
+static opt_def_t OPTDEF_errexit_flag = {
+  .store = &errexit_flag,
+  .set_func = optset_errexit_flag,
+  .letter = 'e',
+  .name = "errexit",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 struct fd_bitmap *current_fds_to_close = (struct fd_bitmap *)NULL;
 
@@ -6358,4 +6382,5 @@ do_piping (int pipe_in, int pipe_out)
 void
 register_execute_cmd_opts (void)
 {
+  register_option (&OPTDEF_errexit_flag);
 }

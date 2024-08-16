@@ -50,13 +50,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-
-/* Non-zero means exit immediately if a command exits with a non-zero
-   exit status.  The first is what controls set -e; the second is what
-   bash uses internally. */
-int errexit_flag = 0;
-int exit_immediately_on_error = 0;
-
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
 
@@ -165,7 +158,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'e', &errexit_flag },
   { 'f', &disallow_filename_globbing },
   { 'h', &hashing_enabled },
   { 'i', &forced_interactive },
@@ -284,13 +276,6 @@ change_flag (char flag, char on_or_off)
       set_job_control (flag_to_bool (on_or_off));
       break;
 #endif /* JOB_CONTROL */
-
-    case 'e':
-      /* *value = ... */
-      errexit_flag = flag_to_bool (on_or_off);
-      if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
-      break;
 
     case 'n':
       /* *value = ... */
