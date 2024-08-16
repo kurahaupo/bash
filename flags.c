@@ -449,5 +449,4 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
-  register_option (&OPTDEF_errexit_flag);
 }
