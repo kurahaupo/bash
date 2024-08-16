@@ -278,7 +278,7 @@ parse_prologue (char *string, int flags, char *tag)
     add_unwind_protect (uw_parser_restore_alias, (char *)NULL);
 
   if (orig_string && ((flags & SEVAL_NOFREE) == 0))
-    add_unwind_protect (xfree, orig_string);
+    add_unwind_protect (xxfree, orig_string);
   end_unwind_frame ();
 
   if (flags & (SEVAL_NONINT|SEVAL_INTERACT))
