@@ -158,7 +158,7 @@ $END
 typedef int setopt_set_func_t (int, char const*);
 typedef int setopt_get_func_t (char *);
 
-static int find_minus_o_option (char *);
+static int find_minus_o_option (char const *);
 
 static void print_minus_o_option (char *, int, int);
 static void print_all_shell_variables (void);
@@ -249,7 +249,7 @@ const struct {
 			   : (*o_options[i].variable = (onoff == FLAG_ON)))
 
 static int
-find_minus_o_option (char *name)
+find_minus_o_option (char const *name)
 {
   register int i;
 
@@ -260,7 +260,7 @@ find_minus_o_option (char *name)
 }
 
 int
-minus_o_option_value (char *name)
+minus_o_option_value (char const *name)
 {
   register int	i;
   int *on_or_off;
