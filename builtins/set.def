@@ -156,23 +156,23 @@ Returns success unless an invalid option is given.
 $END
 
 typedef int setopt_set_func_t (int, char const*);
-typedef int setopt_get_func_t (char *);
+typedef int setopt_get_func_t (char const*);
 
 static int find_minus_o_option (char const *);
 
 static void print_minus_o_option (char *, int, int);
 static void print_all_shell_variables (void);
 
-static int set_ignoreeof (int, char *);
-static int set_posix_mode (int, char *);
+static int set_ignoreeof (int, char const*);
+static int set_posix_mode (int, char const*);
 
 #if defined (READLINE)
-static int set_edit_mode (int, char *);
-static int get_edit_mode (char *);
+static int set_edit_mode (int, char const*);
+static int get_edit_mode (char const*);
 #endif
 
 #if defined (HISTORY)
-static int bash_set_history (int, char *);
+static int bash_set_history (int, char const*);
 #endif
 
 static const char * const on = "on";
@@ -318,10 +318,10 @@ list_minus_o_opts (int mode, int reusable)
 char const*const*
 get_minus_o_opts (void)
 {
-  char **ret;
+  char const**ret;
   int i;
 
-  ret = strvec_create (N_O_OPTIONS + 1);
+  ret = (char const**)strvec_create (N_O_OPTIONS + 1);
   for (i = 0; o_options[i].name; i++)
     ret[i] = o_options[i].name;
   ret[i] = (char *)NULL;
@@ -387,7 +387,7 @@ set_current_options (const char *bitmap)
 }
 
 static int
-set_ignoreeof (int on_or_off, char *option_name)
+set_ignoreeof (int on_or_off, char const*option_name)
 {
   ignoreeof = on_or_off == FLAG_ON;
   unbind_variable_noref ("ignoreeof");
@@ -400,7 +400,7 @@ set_ignoreeof (int on_or_off, char *option_name)
 }
 
 static int
-set_posix_mode (int on_or_off, char *option_name)
+set_posix_mode (int on_or_off, char const*option_name)
 {
   /* short-circuit on no-op */
   if ((on_or_off == FLAG_ON && posixly_correct) ||
@@ -419,7 +419,7 @@ set_posix_mode (int on_or_off, char *option_name)
 #if defined (READLINE)
 /* Magic.  This code `knows' how readline handles rl_editing_mode. */
 static int
-set_edit_mode (int on_or_off, char *option_name)
+set_edit_mode (int on_or_off, char const*option_name)
 {
   int isemacs;
 
@@ -445,7 +445,7 @@ set_edit_mode (int on_or_off, char *option_name)
 }
 
 static int
-get_edit_mode (char *name)
+get_edit_mode (char const*name)
 {
   return (*name == 'e' ? no_line_editing == 0 && rl_editing_mode == 1
 		       : no_line_editing == 0 && rl_editing_mode == 0);
@@ -454,7 +454,7 @@ get_edit_mode (char *name)
 
 #if defined (HISTORY)
 static int
-bash_set_history (int on_or_off, char *option_name)
+bash_set_history (int on_or_off, char const*option_name)
 {
   if (on_or_off == FLAG_ON)
     {
@@ -473,7 +473,7 @@ bash_set_history (int on_or_off, char *option_name)
 #endif
 
 int
-set_minus_o_option (char on_or_off, char *option_name)
+set_minus_o_option (char on_or_off, char const*option_name)
 {
   register int i;
 
