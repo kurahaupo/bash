@@ -18,6 +18,12 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/******************************************************************************/
+
+extern void initialize_option_framework (void);
+
+/******************************************************************************/
+
 #if !defined (_JOBS_H_)
 #  define _JOBS_H_
 

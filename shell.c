@@ -401,6 +401,8 @@ main (int argc, char **argv, char **env)
   if (code)
     exit (2);
 
+  initialize_option_framework ();
+
   xtrace_init ();
 
 #if defined (USING_BASH_MALLOC) && defined (DEBUG) && !defined (DISABLE_MALLOC_WRAPPERS)
@@ -1973,10 +1975,8 @@ shell_initialize (void)
      setuid. */
 #if defined (RESTRICTED_SHELL)
   initialize_shell_options (privileged_mode||restricted||should_be_restricted||running_setuid);
-  initialize_bashopts (privileged_mode||restricted||should_be_restricted||running_setuid);
 #else
   initialize_shell_options (privileged_mode||running_setuid);
-  initialize_bashopts (privileged_mode||running_setuid);
 #endif
 }
 

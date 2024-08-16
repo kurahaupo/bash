@@ -1739,3 +1739,10 @@ shopt_listopt (char const *name, int reusable)
     }
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
+
+void
+initialize_option_framework (void)
+{
+  for (opt_def_t const *d = opt_defs; d->name; d++)
+    register_option(d);
+}
