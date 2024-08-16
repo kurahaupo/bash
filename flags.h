@@ -137,7 +137,6 @@ ValidateFlagOrError (char const *file, unsigned int line, char const *expr_str, 
 
 
 extern int
-  errexit_flag, exit_immediately_on_error,
   disallow_filename_globbing,
   place_keywords_in_env, read_but_dont_execute,
   just_one_command, unbound_vars_is_error, echo_input_at_read, verbose_flag,
