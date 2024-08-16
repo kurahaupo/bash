@@ -50,9 +50,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means disable filename globbing. */
-int disallow_filename_globbing = 0;
-
 /* Non-zero means that all keyword arguments are placed into the environment
    for a command, not just those that appear on the line before the command
    name. */
@@ -158,7 +155,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'f', &disallow_filename_globbing },
   { 'h', &hashing_enabled },
   { 'i', &forced_interactive },
   { 'k', &place_keywords_in_env },
