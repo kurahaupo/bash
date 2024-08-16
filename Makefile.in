@@ -2517,6 +2517,7 @@ jobs.o: $(topdir)/lib/readline/rlstdc.h
 jobs.o: $(topdir)/lib/readline/rltypedefs.h
 jobs.o: $(topdir)/lib/tilde/tilde.h
 jobs.o: $(topdir)/make_cmd.h
+jobs.o: $(topdir)/options.h
 jobs.o: $(topdir)/parser.h
 jobs.o: $(topdir)/pathnames.h
 jobs.o: $(topdir)/quit.h
