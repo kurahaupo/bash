@@ -2464,6 +2464,7 @@ jobs.o: $(topdir)/hashlib.h
 jobs.o: $(topdir)/input.h
 jobs.o: $(topdir)/jobs.h
 jobs.o: $(topdir)/make_cmd.h
+jobs.o: $(topdir)/options.h
 jobs.o: $(topdir)/parser.h
 jobs.o: $(topdir)/quit.h
 jobs.o: $(topdir)/shell.h
