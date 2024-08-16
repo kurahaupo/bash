@@ -70,6 +70,23 @@ int asynchronous_notification = 0;
    bash uses internally. */
 int errexit_flag = 0;
 int exit_immediately_on_error = 0;
+static opt_set_func_t optset_errexit_flag;
+static op_result_t
+optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  errexit_flag = new_value;
+  if (builtin_ignoring_errexit == 0)
+    exit_immediately_on_error = errexit_flag;
+}
+static opt_def_t OPTDEF_errexit_flag = {
+  .store = &errexit_flag,
+  .set_func = optset_errexit_flag,
+  .letter = 'e',
+  .name = "errexit",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
@@ -182,7 +199,6 @@ const struct flags_alist shell_flags[] = {
 #if defined (JOB_CONTROL)
   { 'b', &asynchronous_notification },
 #endif /* JOB_CONTROL */
-  { 'e', &errexit_flag },
   { 'f', &disallow_filename_globbing },
   { 'h', &hashing_enabled },
   { 'i', &forced_interactive },
@@ -301,13 +317,6 @@ change_flag (char flag, char on_or_off)
       set_job_control (flag_to_bool (on_or_off));
       break;
 #endif /* JOB_CONTROL */
-
-    case 'e':
-      /* *value = ... */
-      errexit_flag = flag_to_bool (on_or_off);
-      if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
-      break;
 
     case 'n':
       /* *value = ... */
@@ -481,5 +490,6 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
+  register_option (&OPTDEF_errexit_flag);
   register_option (&OPTDEF_mark_modified_vars);
 }
