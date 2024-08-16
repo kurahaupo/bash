@@ -70,6 +70,8 @@ extern int get_tty_state (void);
 #include "execute_cmd.h"
 #include "findcmd.h"
 
+#include "options.h"
+
 #if defined (USING_BASH_MALLOC) && defined (DEBUG) && !defined (DISABLE_MALLOC_WRAPPERS)
 #  include <malloc/shmalloc.h>
 #elif defined (MALLOC_DEBUG) && defined (USING_BASH_MALLOC)
@@ -400,6 +402,8 @@ main (int argc, char **argv, char **env)
   code = setjmp_nosigs (top_level);
   if (code)
     exit (2);
+
+  initialize_option_framework ();
 
   xtrace_init ();
 

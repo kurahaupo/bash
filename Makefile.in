@@ -3121,6 +3121,7 @@ shell.o: $(topdir)/jobs.h
 shell.o: $(topdir)/mailcheck.h
 shell.o: $(topdir)/make_cmd.h
 #shell.o: $(topdir)/obashline.h
+shell.o: $(topdir)/options.h
 shell.o: $(topdir)/parser.h
 shell.o: $(topdir)/quit.h
 shell.o: $(topdir)/shell.h
