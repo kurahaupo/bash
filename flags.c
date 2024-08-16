@@ -40,6 +40,7 @@
 #endif
 
 #if defined (JOB_CONTROL)
+#include "jobs.h"
 extern int set_job_control (int);
 #endif
 
@@ -61,9 +62,20 @@ static opt_def_t OPTDEF_mark_modified_vars = {
 };
 
 
+#if defined (JOB_CONTROL)
 /* Non-zero causes asynchronous job notification.  Otherwise, job state
    notification only takes place just before a primary prompt is printed. */
 int asynchronous_notification = 0;
+/* See asynchronous_notification in jobs.c */
+static opt_def_t OPTDEF_asynchronous_notification = {
+  .store = &asynchronous_notification,
+  .letter = 'b',
+  .name = "notify",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif /* JOB_CONTROL */
+
 
 /* Non-zero means exit immediately if a command exits with a non-zero
    exit status.  The first is what controls set -e; the second is what
@@ -196,9 +208,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-#if defined (JOB_CONTROL)
-  { 'b', &asynchronous_notification },
-#endif /* JOB_CONTROL */
   { 'f', &disallow_filename_globbing },
   { 'h', &hashing_enabled },
   { 'i', &forced_interactive },
@@ -490,6 +499,9 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
+#if defined (JOB_CONTROL)
+  register_option (&OPTDEF_asynchronous_notification);
+#endif /* JOB_CONTROL */
   register_option (&OPTDEF_errexit_flag);
   register_option (&OPTDEF_mark_modified_vars);
 }
