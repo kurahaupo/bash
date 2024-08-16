@@ -24,6 +24,8 @@
 
 #include "stdc.h"
 
+extern void register_flags (void);
+
 /* Welcome to the world of Un*x, where everything is slightly backwards. */
 #define FLAG_ON '-'
 #define FLAG_OFF '+'
