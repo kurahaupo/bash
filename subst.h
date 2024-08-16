@@ -363,6 +363,7 @@ extern unsigned char ifs_firstc;
 #endif
 
 extern int assigning_in_environment;
+extern int disallow_filename_globbing;
 extern int expanding_redir;
 extern int inherit_errexit;
 
