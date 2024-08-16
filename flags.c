@@ -50,17 +50,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means automatically mark variables which are modified or created
-   as auto export variables. */
-int mark_modified_vars = 0;
-static opt_def_t OPTDEF_mark_modified_vars = {
-  .store = &mark_modified_vars,
-  .letter = 'a',
-  .name = "allexport",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 
 #if defined (JOB_CONTROL)
 /* Non-zero causes asynchronous job notification.  Otherwise, job state
@@ -503,5 +492,4 @@ register_flags_opts (void)
   register_option (&OPTDEF_asynchronous_notification);
 #endif /* JOB_CONTROL */
   register_option (&OPTDEF_errexit_flag);
-  register_option (&OPTDEF_mark_modified_vars);
 }
