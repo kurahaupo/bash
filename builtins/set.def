@@ -473,7 +473,7 @@ bash_set_history (int on_or_off, char *option_name)
 #endif
 
 int
-set_minus_o_option (int on_or_off, char *option_name)
+set_minus_o_option (char on_or_off, char *option_name)
 {
   register int i;
 
