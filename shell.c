@@ -1952,18 +1952,15 @@ shell_initialize (void)
   /* Initialize our interface to the tilde expander. */
   tilde_initialize ();
 
+  _Bool dont_import_settings = privileged_mode || running_setuid;
 #if defined (RESTRICTED_SHELL)
-  should_be_restricted = shell_is_restricted (shell_name);
+  dont_import_settings = dont_import_settings || restricted || shell_is_restricted (shell_name);
 #endif
 
   /* Initialize internal and environment variables.  Don't import shell
      functions from the environment if we are running in privileged or
      restricted mode or if the shell is running setuid. */
-#if defined (RESTRICTED_SHELL)
-  initialize_shell_variables (shell_environment, privileged_mode||restricted||should_be_restricted||running_setuid);
-#else
-  initialize_shell_variables (shell_environment, privileged_mode||running_setuid);
-#endif
+  initialize_shell_variables (shell_environment, dont_import_settings);
 
   /* Initialize the data structures for storing and running jobs. */
   initialize_job_control (jobs_m_flag);
@@ -1977,13 +1974,8 @@ shell_initialize (void)
      from the environment variables $SHELLOPTS or $BASHOPTS if we are
      running in privileged or restricted mode or if the shell is running
      setuid. */
-#if defined (RESTRICTED_SHELL)
-  initialize_shell_options (privileged_mode||restricted||should_be_restricted||running_setuid);
-  initialize_bashopts (privileged_mode||restricted||should_be_restricted||running_setuid);
-#else
-  initialize_shell_options (privileged_mode||running_setuid);
-  initialize_bashopts (privileged_mode||running_setuid);
-#endif
+  initialize_shell_options (dont_import_settings);
+  initialize_bashopts (dont_import_settings);
 }
 
 /* Function called by main () when it appears that the shell has already
