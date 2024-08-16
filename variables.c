@@ -340,6 +340,20 @@ static void push_exported_var (PTR_T);
 
 static void delete_local_contexts (VAR_CONTEXT *);
 
+/* Non-zero means automatically mark variables which are modified or created
+   as auto export variables. */
+static int mark_modified_vars = 0;
+static opt_def_t const OPTDEF_mark_modified_vars = {
+  .store = &mark_modified_vars,
+  .OPTRESET_false,
+  .letter = 'a',
+  .name = "allexport",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Whenever variables are modified or created, mark them for export."),
+};
+
 /* This needs to be looked at again. */
 static inline void push_posix_tempvar_internal (SHELL_VAR *, int);
 
@@ -6500,4 +6514,5 @@ sv_childmax (const char *name)
 void
 register_variables_opts (void)
 {
+  register_option (&OPTDEF_mark_modified_vars);		/* ±a, ±o allexport */
 }
