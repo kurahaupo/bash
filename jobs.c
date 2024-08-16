@@ -5421,3 +5421,8 @@ restore_pgrp_pipe (int *p)
 }
 
 #endif /* PGRP_PIPE */
+
+void
+register_jobs_opts (void)
+{
+}
