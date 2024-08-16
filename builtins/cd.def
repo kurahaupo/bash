@@ -59,7 +59,7 @@ extern const char * const bash_getcwd_errstr;
 static int bindpwd (int);
 static int setpwd (char *);
 static char *resetpwd (char *);
-static int change_to_directory (char *, int, int);
+static int change_to_directory (char const*, int, int);
 
 static int cdxattr (char *, char **);
 static void resetxattr (void);
@@ -261,7 +261,10 @@ resetxattr (void)
 int
 cd_builtin (WORD_LIST *list)
 {
-  char *dirname, *cdpath, *path, *temp;
+  char const*cdpath;
+  char const*dirname;
+  char const*path;
+  char const*temp;
   int path_index, no_symlinks, opt, lflag, e;
 
 #if defined (RESTRICTED_SHELL)
@@ -518,7 +521,7 @@ pwd_builtin (WORD_LIST *list)
    to the working directory.  Return 1 on success, 0 on failure. */
 
 static int
-change_to_directory (char *newdir, int nolinks, int xattr)
+change_to_directory (char const*newdir, int nolinks, int xattr)
 {
   char *t, *tdir, *ndir;
   int err, canon_failed, r, ndlen;
