@@ -32,6 +32,9 @@
 
 extern void register_variables_opts (void);
 
+extern int
+  mark_modified_vars;
+
 /* A variable context. */
 typedef struct var_context {
   char *name;		/* empty or NULL means global context */
