@@ -212,7 +212,7 @@ const struct flags_alist shell_flags[] = {
 char optflags[NUM_SHELL_FLAGS+4] = { '+' };
 
 int *
-find_flag (int name)
+find_flag (char name)
 {
   int i;
   for (i = 0; shell_flags[i].name; i++)
@@ -227,7 +227,7 @@ find_flag (int name)
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
    FLAG_ON or FLAG_OFF. */
 int
-change_flag (int flag, int on_or_off)
+change_flag (char flag, char on_or_off)
 {
   int *value, old_value;
 
