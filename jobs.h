@@ -350,4 +350,6 @@ extern void debug_print_pgrps (void);
 
 extern int job_control;		/* set to 0 in nojobs.c */
 
+extern void register_jobs_opts (void);
+
 #endif /* _JOBS_H_ */
