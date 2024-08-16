@@ -131,7 +131,7 @@ int expand_once_flag;
 extern int syslog_history;
 #endif
 
-static void shopt_error (char *);
+static void shopt_error (char const*);
 
 static int set_shellopts_after_change (char *, int);
 static int set_compatibility_level (char *, int);
@@ -280,9 +280,9 @@ static struct {
 static const char * const on = "on";
 static const char * const off = "off";
 
-static int find_shopt (char *);
+static int find_shopt (char const*);
 static int toggle_shopts (int, WORD_LIST *, int);
-static void print_shopt (char *, int, int);
+static void print_shopt (char const*, int, int);
 static int list_shopts (WORD_LIST *, int);
 static int list_some_shopts (int, int);
 static int list_shopt_o_options (WORD_LIST *, int);
@@ -443,7 +443,7 @@ reset_shopt_options (void)
 }
 
 static int
-find_shopt (char *name)
+find_shopt (char const*name)
 {
   int i;
 
@@ -454,7 +454,7 @@ find_shopt (char *name)
 }
 
 static void
-shopt_error (char *s)
+shopt_error (char const*s)
 {
   builtin_error (_("%s: invalid shell option name"), s);
 }
@@ -489,7 +489,7 @@ toggle_shopts (int mode, WORD_LIST *list, int quiet)
 }
 
 static void
-print_shopt (char *name, int val, int flags)
+print_shopt (char const*name, int val, int flags)
 {
   if (flags & PFLAG)
     printf ("shopt %s %s\n", val ? "-s" : "-u", name);
@@ -864,8 +864,8 @@ set_bashopts (void)
   free (value);
 }
 
-void
-parse_bashopts (char *value)
+static void
+parse_bashopts (char const*value)
 {
   char *vname;
   int vptr, ind;
