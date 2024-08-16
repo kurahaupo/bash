@@ -71,11 +71,18 @@ extern int sourcenest, sourcenest_max;
 extern int stdin_redir;
 extern int line_number_for_err_trap;
 
+extern int errexit_flag;
+extern int exit_immediately_on_error;
+
 extern char *the_printed_command_except_trap;
 extern COMMAND *currently_executing_command;
 
 extern char *this_command_name;
 extern SHELL_VAR *this_shell_function;
+
+#if 0
+extern int lexical_scoping;
+#endif
 
 /* Functions declared in execute_cmd.c, used by many other files */
 

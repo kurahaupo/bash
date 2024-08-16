@@ -50,28 +50,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means exit immediately if a command exits with a non-zero
-   exit status.  The first is what controls set -e; the second is what
-   bash uses internally. */
-int errexit_flag = 0;
-int exit_immediately_on_error = 0;
-static opt_set_func_t optset_errexit_flag;
-static op_result_t
-optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
-{
-  errexit_flag = new_value;
-  if (builtin_ignoring_errexit == 0)
-    exit_immediately_on_error = errexit_flag;
-}
-static opt_def_t const OPTDEF_errexit_flag = {
-  .store = &errexit_flag,
-  .set_func = optset_errexit_flag,
-  .letter = 'e',
-  .name = "errexit",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
 static opt_def_t const OPTDEF_disallow_filename_globbing = {
@@ -527,7 +505,6 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
-  register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit      */
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_hashing_enabled);		/* ±h, ±o hashall      */
