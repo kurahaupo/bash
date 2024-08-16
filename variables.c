@@ -6089,7 +6089,7 @@ void
 sv_history_control (const char *name)
 {
   char *temp;
-  char *val;
+  char const *val;
   int tptr;
 
   history_control = 0;
