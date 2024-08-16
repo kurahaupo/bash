@@ -894,8 +894,8 @@ base_pathname (char *string)
    with a '/' are returned as themselves.  Other filenames have
    the current working directory prepended.  A new string is
    returned in either case. */
-char *
-full_pathname (char *file)
+char const *
+full_pathname (char const *file)
 {
   char *ret;
 
@@ -1021,8 +1021,8 @@ printable_filename (char *fn, int flags)
 /* Given a string containing units of information separated by colons,
    return the next one pointed to by (P_INDEX), or NULL if there are no more.
    Advance (P_INDEX) to the character after the colon. */
-char *
-extract_colon_unit (char *string, int *p_index)
+char const*
+extract_colon_unit (char const *string, int *p_index)
 {
   int i, start, len;
   char *value;
