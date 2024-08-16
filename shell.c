@@ -412,6 +412,7 @@ main (int argc, char **argv, char **env)
     exit (2);
 
   initialize_option_framework ();
+  register_execute_cmd_opts ();
   register_flags_opts ();
   register_jobs_opts ();
   register_shell_opts ();

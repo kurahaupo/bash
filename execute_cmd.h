@@ -144,4 +144,6 @@ extern void uw_close (void *);
 
 extern void init_notfound_str (void);
 
+extern void register_execute_cmd_opts (void);
+
 #endif /* _EXECUTE_CMD_H_ */
