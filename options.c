@@ -251,6 +251,11 @@ get_short_opt_names (void)
 
 /**************************************/
 
+void
+initialize_option_framework ()
+{
+}
+
 op_result_t
 register_option (opt_def_t const *def)
 {
