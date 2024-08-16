@@ -31,6 +31,7 @@
 #include "shell.h"
 #include "execute_cmd.h"
 #include "flags.h"
+#include "options.h"
 
 #if defined (BANG_HISTORY)
 #  include "bashhist.h"
@@ -230,6 +231,18 @@ int
 change_flag (char flag, char on_or_off)
 {
   int *value, old_value;
+
+  opt_def_t const *d = find_short_option (flag);
+  if (d)
+    {
+      old_value = get_opt_value (d, Accessor (short));
+      op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
+      if (GoodResult (r))
+	return old_value;
+      else
+	return FLAG_ERROR;
+    }
+
 
 #if defined (RESTRICTED_SHELL)
   /* Don't allow "set +r" in a shell which is `restricted'. */
