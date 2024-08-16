@@ -413,6 +413,7 @@ main (int argc, char **argv, char **env)
 
   initialize_option_framework ();
   register_flags_opts ();
+  register_jobs_opts ();
   register_shell_opts ();
   register_subst_opts ();
   register_variables_opts ();
