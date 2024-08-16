@@ -135,7 +135,7 @@ bind_builtin (WORD_LIST *list)
 
   rl_outstream = stdout;
 
-  reset_internal_getopt ();  
+  reset_internal_getopt ();
   while ((opt = internal_getopt (list, "lvpVPsSXf:q:u:m:r:x:")) != -1)
     {
       switch (opt)
