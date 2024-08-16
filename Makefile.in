@@ -3400,6 +3400,7 @@ variables.o: $(topdir)/lib/readline/rltypedefs.h
 variables.o: $(topdir)/lib/tilde/tilde.h
 variables.o: $(topdir)/mailcheck.h
 variables.o: $(topdir)/make_cmd.h
+variables.o: $(topdir)/options.h
 variables.o: $(topdir)/parser.h
 variables.o: $(topdir)/pathexp.h
 variables.o: $(topdir)/pathnames.h
