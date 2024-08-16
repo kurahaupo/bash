@@ -30,6 +30,8 @@
 
 #include "conftypes.h"
 
+extern void register_variables_opts (void);
+
 /* A variable context. */
 typedef struct var_context {
   char *name;		/* empty or NULL means global context */
