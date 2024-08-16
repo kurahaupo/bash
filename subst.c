@@ -13235,3 +13235,8 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
 
   return (new_list);
 }
+
+void
+register_subst_opts (void)
+{
+}
