@@ -87,7 +87,7 @@ const char * const bash_getcwd_errstr = N_("getcwd: cannot access parent directo
 
 static struct {
   int *posix_mode_var;
-} posix_vars[] = 
+} posix_vars[] =
 {
   &interactive_comments,
   &source_uses_path,
@@ -277,7 +277,7 @@ valid_number (const char *string, intmax_t *result)
 	 on those systems. */
       return 1;
     }
-    
+
   return (0);
 }
 
@@ -313,7 +313,7 @@ valid_nameref_value (const char *name, int flags)
     return 0;
 
   /* valid identifier */
-#if defined (ARRAY_VARS)  
+#if defined (ARRAY_VARS)
   if (valid_identifier (name) || (flags != 2 && valid_array_reference (name, 0)))
 #else
   if (valid_identifier (name))
@@ -534,7 +534,7 @@ line_isblank (const char *line)
   for (i = 0; line[i]; i++)
     if (isblank ((unsigned char)line[i]) == 0)
       break;
-  return (line[i] == '\0');  
+  return (line[i] == '\0');
 }
 
 /* **************************************************************** */
@@ -696,7 +696,7 @@ move_to_high_fd (int fd, int check_new, int maxfd)
      original file descriptor. */
   return (fd);
 }
- 
+
 /* Return non-zero if the characters from SAMPLE are not all valid
    characters to be found in the first line of a shell script.  We
    check up to the first newline, or SAMPLE_LEN, whichever comes first.
@@ -745,7 +745,7 @@ sh_openpipe (int *pv)
   pv[0] = move_to_high_fd (pv[0], 1, 64);
   pv[1] = move_to_high_fd (pv[1], 1, 64);
 
-  return 0;  
+  return 0;
 }
 
 int
@@ -1186,7 +1186,7 @@ bash_tilde_find_word (const char *s, int flags, size_t *lenp)
 	 POSIX says that `the first unquoted slash' (or `:') terminates the
 	 tilde-prefix, in practice, any quoted portion of the tilde prefix
 	 will cause it to not be expanded. */
-      if (*r == '\\' || *r == '\'' || *r == '"')  
+      if (*r == '\\' || *r == '\'' || *r == '"')
 	{
 	  ret = savestring (s);
 	  if (lenp)
@@ -1204,7 +1204,7 @@ bash_tilde_find_word (const char *s, int flags, size_t *lenp)
     *lenp = l;
   return ret;
 }
-    
+
 /* Tilde-expand S by running it through the tilde expansion library.
    ASSIGN_P is 1 if this is a variable assignment, so the alternate
    tilde prefixes should be enabled (`=~' and `:~', see above).  If
@@ -1371,7 +1371,7 @@ get_group_array (int *ngp)
     }
 
   if (ngroups == 0)
-    initialize_group_array ();    
+    initialize_group_array ();
 
   if (ngroups <= 0)
     {
