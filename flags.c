@@ -51,21 +51,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-#if defined (JOB_CONTROL)
-/* Non-zero causes asynchronous job notification.  Otherwise, job state
-   notification only takes place just before a primary prompt is printed. */
-int asynchronous_notification = 0;
-static opt_def_t const OPTDEF_asynchronous_notification = {
-  .store = &asynchronous_notification,
-  .OPTRESET_false,
-  .letter = 'b',
-  .name = "notify",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = N_("Notify of job termination immediately (don't wait for prompt)."),
-};
-#endif
-
 /* Non-zero means exit immediately if a command exits with a non-zero
    exit status.  The first is what controls set -e; the second is what
    bash uses internally. */
@@ -615,9 +600,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
 
-#if defined (JOB_CONTROL)
-  register_option (&OPTDEF_asynchronous_notification);	/* ±b, ±o notify */
-#endif
 #if defined (BRACE_EXPANSION)
   register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
 #endif
