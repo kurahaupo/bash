@@ -65,6 +65,8 @@
 #endif
 #include "typemax.h"
 
+#include "options.h"
+
 #include "builtins/getopt.h"
 #include "builtins/common.h"
 
@@ -382,6 +384,18 @@ static inline void posix_variable_assignment_error (int);
 static inline void bash_variable_assignment_error (int);
 
 static int do_assignment_statements (WORD_LIST *, char *, int);
+
+/* Non-zero means disable filename globbing. */
+int disallow_filename_globbing = 0;
+static opt_def_t const OPTDEF_disallow_filename_globbing = {
+  .store = &disallow_filename_globbing,
+  .letter = 'f',
+  .name = "noglob",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = "Disable file name generation (globbing).",
+};
+
 
 /* **************************************************************** */
 /*								    */
@@ -13239,4 +13253,5 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
 void
 register_subst_opts (void)
 {
+  register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
 }
