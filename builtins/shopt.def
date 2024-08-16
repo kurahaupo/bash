@@ -867,7 +867,7 @@ set_bashopts (void)
 static void
 parse_bashopts (char const*value)
 {
-  char *vname;
+  char const*vname;
   int vptr, ind;
 
   vptr = 0;
