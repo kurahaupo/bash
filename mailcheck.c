@@ -72,7 +72,7 @@ int mail_warning;
 static int find_mail_file (const char *);
 static void init_mail_file (int);
 static void update_mail_file (int);
-static int add_mail_file (char *, const char *);
+static int add_mail_file (char const*, const char *);
 
 static FILEINFO *alloc_mail_file (char *, const char *);
 static void dispose_mail_file (FILEINFO *);
@@ -81,7 +81,7 @@ static int file_mod_date_changed (int);
 static int file_access_date_changed (int);
 static int file_has_grown (int);
 
-static char *parse_mailpath_spec (char *);
+static char const*parse_mailpath_spec (char const*);
 
 /* Returns non-zero if it is time to check mail. */
 int
@@ -174,7 +174,7 @@ update_mail_file (int i)
 /* Add this file to the list of remembered files and return its index
    in the list of mail files. */
 static int
-add_mail_file (char *file, const char *msg)
+add_mail_file (char const*file, const char *msg)
 {
   struct stat finfo;
   char *filename;
@@ -317,10 +317,10 @@ file_has_grown (int i)
 /* Take an element from $MAILPATH and return the portion from
    the first unquoted `?' or `%' to the end of the string.  This is the
    message to be printed when the file contents change. */
-static char *
-parse_mailpath_spec (char *str)
+static char const*
+parse_mailpath_spec (char const*str)
 {
-  char *s;
+  char const*s;
   int pass_next;
 
   for (s = str, pass_next = 0; s && *s; s++)
@@ -366,7 +366,8 @@ void
 remember_mail_dates (void)
 {
   char *mailpaths;
-  char *mailfile, *mp;
+  char *mailfile;
+  char *mp;
   int i = 0;
 
   mailpaths = get_string_value ("MAILPATH");
@@ -389,9 +390,9 @@ remember_mail_dates (void)
       return;
     }
 
-  while (mailfile = extract_colon_unit (mailpaths, &i))
+  while (mailfile = (char*)extract_colon_unit (mailpaths, &i))
     {
-      mp = parse_mailpath_spec (mailfile);
+      mp = (char*)parse_mailpath_spec (mailfile);
       if (mp && *mp)
 	*mp++ = '\0';
       add_mail_file (mailfile, mp);
