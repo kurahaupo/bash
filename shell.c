@@ -71,6 +71,7 @@ extern int get_tty_state (void);
 #include "findcmd.h"
 
 #include "options.h"
+#include "variables.h"
 
 #if defined (USING_BASH_MALLOC) && defined (DEBUG) && !defined (DISABLE_MALLOC_WRAPPERS)
 #  include <malloc/shmalloc.h>
@@ -412,6 +413,7 @@ main (int argc, char **argv, char **env)
   initialize_option_framework ();
   register_flags_opts ();
   register_shell_opts ();
+  register_variables_opts ();
 
   xtrace_init ();
 
