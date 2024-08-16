@@ -160,7 +160,7 @@ STREQ(const char *a, const char *b)
 static inline int
 STREQN(const char *a, const char *b, size_t n)
 {
-  return ((n == 0) || 
+  return ((n == 0) ||
 	  (n == 1 && a[0] == b[0]) ||
 	  ((a)[0] == (b)[0] && strncmp(a, b, n) == 0));
 }
