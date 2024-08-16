@@ -243,7 +243,7 @@ change_flag (char flag, char on_or_off)
     return (FLAG_ERROR);
 
   old_value = *value;
-  *value = (on_or_off == FLAG_ON) ? 1 : 0;
+  *value = flag_to_bool (on_or_off);
 
   /* Special cases for a few flags. */
   switch (flag)
@@ -251,14 +251,14 @@ change_flag (char flag, char on_or_off)
 #if defined (BANG_HISTORY)
     case 'H':
       history_expansion = histexp_flag;
-      if (on_or_off == FLAG_ON)
+      if (flag_to_bool (on_or_off))
 	bash_initialize_history ();
       break;
 #endif
 
 #if defined (JOB_CONTROL)
     case 'm':
-      set_job_control (on_or_off == FLAG_ON);
+      set_job_control (flag_to_bool (on_or_off));
       break;
 #endif /* JOB_CONTROL */
 
@@ -273,7 +273,7 @@ change_flag (char flag, char on_or_off)
       break;
 
     case 'p':
-      if (on_or_off == FLAG_OFF)
+      if (! flag_to_bool (on_or_off))
 	disable_priv_mode ();
       break;
 
