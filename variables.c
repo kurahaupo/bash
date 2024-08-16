@@ -50,6 +50,7 @@
 #include "shell.h"
 #include "parser.h"
 #include "flags.h"
+#include "options.h"
 #include "execute_cmd.h"
 #include "findcmd.h"
 #include "mailcheck.h"
@@ -6494,3 +6495,7 @@ sv_childmax (const char *name)
   set_maxchild (s);
 }
 #endif
+void
+register_variables_opts (void)
+{
+}
