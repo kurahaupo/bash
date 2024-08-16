@@ -119,7 +119,8 @@ int
 source_builtin (WORD_LIST *list)
 {
   int result, search_cwd, opt;
-  char *filename, *debug_trap, *x, *pathstring;
+  char *filename, *debug_trap, *pathstring;
+  char const*x;
 
   pathstring = 0;
   reset_internal_getopt ();
