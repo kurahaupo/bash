@@ -669,7 +669,11 @@ main (int argc, char **argv, char **env)
     }
   else
     {
+      #if 0
       change_flag ('i', FLAG_ON);
+      #else
+      forced_interactive = true;
+      #endif
       interactive = 1;
       if (forced_interactive == 0)
 	read_but_dont_execute = 0;
