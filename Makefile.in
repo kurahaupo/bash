@@ -2343,6 +2343,7 @@ flags.o: $(topdir)/flags.h
 flags.o: $(topdir)/general.h
 flags.o: $(topdir)/hashlib.h
 flags.o: $(topdir)/make_cmd.h
+flags.o: $(topdir)/options.h
 flags.o: $(topdir)/quit.h
 flags.o: $(topdir)/shell.h
 flags.o: $(topdir)/sig.h
