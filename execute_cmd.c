@@ -5731,7 +5731,8 @@ execute_disk_command (WORD_LIST *words, REDIRECT *redirects, char *command_line,
 		      int pipe_in, int pipe_out, int async,
 		      struct fd_bitmap *fds_to_close, int cmdflags)
 {
-  char *pathname, *command, **args, *p;
+  char *command, **args, *p;
+  char const*pathname;
   int nofork, stdpath, result, fork_flags;
   pid_t pid;
   SHELL_VAR *hookf;
