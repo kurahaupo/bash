@@ -166,7 +166,7 @@ extern void check_read_timeout (void);
 extern int minus_o_option_value (char *);
 extern void list_minus_o_opts (int, int);
 extern char **get_minus_o_opts (void);
-extern int set_minus_o_option (int, char *);
+extern int set_minus_o_option (char, char *);
 
 extern void set_shellopts (void);
 extern void parse_shellopts (char *);
