@@ -167,7 +167,7 @@ STREQN(const char *a, const char *b, size_t n)
 
 /* More convenience definitions that possibly save system or libc calls. */
 #define STRLEN(s) (((s) && (s)[0]) ? ((s)[1] ? ((s)[2] ? strlen(s) : 2) : 1) : 0)
-inline void FREE(void const *s) { if (s) free ((char *)s); }
+static inline void FREE(void const *s) { if (s) free ((char *)s); }
 #define MEMBER(c, s) (((c) && c == (s)[0] && !(s)[1]) || (member(c, s)))
 
 /* A fairly hairy macro to check whether an allocated string has more room,

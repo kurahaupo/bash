@@ -839,7 +839,7 @@ get_bash_name (void)
 	}
       else
 	{
-	  name = full_pathname (tname);
+	  name = (char *)full_pathname (tname);
 	  free (tname);
 	}
     }
