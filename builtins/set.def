@@ -50,6 +50,8 @@ $PRODUCES set.c
 #  include "../bashhist.h"
 #endif
 
+#include "../options.h"
+
 $BUILTIN set
 $FUNCTION set_builtin
 $SHORT_DOC set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
@@ -262,6 +264,11 @@ find_minus_o_option (char const *name)
 int
 minus_o_option_value (char const *name)
 {
+
+  opt_def_t const *d = find_option (name);
+  if (d)
+    return get_opt_value (d, Accessor (set_o));
+
   register int	i;
   int *on_or_off;
 
@@ -269,8 +276,13 @@ minus_o_option_value (char const *name)
   if (i < 0)
     return (-1);
 
-  if (o_options[i].letter)
+  char letter = o_options[i].letter;
+  if (letter)
     {
+      opt_def_t const *d = find_short_option (letter);
+      if (d)
+	return get_opt_value (d, Accessor (short));
+
       on_or_off = find_flag (o_options[i].letter);
       return ((on_or_off == NULL) ? -1 : *on_or_off);
     }
@@ -297,14 +309,23 @@ list_minus_o_opts (int mode, int reusable)
 
   for (i = 0; o_options[i].name; i++)
     {
-      if (o_options[i].letter)
+      char letter = o_options[i].letter;
+      if (letter)
 	{
-	  value = 0;
-	  on_or_off = find_flag (o_options[i].letter);
-	  if (on_or_off == NULL)
-	    on_or_off = &value;
-	  if (mode == -1 || mode == *on_or_off)
-	    print_minus_o_option (o_options[i].name, *on_or_off, reusable);
+	  value = FLAG_ERROR;
+	  opt_def_t const *d = find_short_option (letter);
+	  if (d)
+	    value = get_opt_value (d, Accessor (short));
+	  else
+	    {
+	      value = find_flag (o_options[i].letter);
+	      if (on_or_off != NULL)
+		*on_or_off = &value;
+	    }
+	  if (value == FLAG_ERROR)
+	    continue;
+	  if (mode == -1 || mode == value)
+	    print_minus_o_option (o_options[i].name, value, reusable);
 	}
       else
 	{
@@ -341,14 +362,21 @@ get_current_options (void)
   temp = (char *)xmalloc (1 + N_O_OPTIONS + posixopts);
   for (i = 0; o_options[i].name; i++)
     {
-      if (o_options[i].letter)
-	temp[i] = *(find_flag (o_options[i].letter));
+      char letter = o_options[i].letter;
+      if (letter)
+	{
+	  struct opt_def_s const *d = find_short_option (letter);
+	  if (d)
+	    temp[i] = get_opt_value (d, Accessor (short));
+	  else
+	    temp[i] = find_flag (letter)[0];
+	}
       else
 	temp[i] = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
     }
 
   /* Add the shell options that are modified by posix mode to the end of the
-     bitmap. They will be handled in set_current_options() */
+     bitmap. They will be handled in set_current_options () */
   get_posix_options (temp+i);
   temp[i+posixopts] = '\0';
   return (temp);
@@ -364,19 +392,32 @@ set_current_options (const char *bitmap)
 
   for (i = 0; o_options[i].name; i++)
     {
-      v = bitmap[i] ? FLAG_ON : FLAG_OFF;
-      if (o_options[i].letter)
+      v = bitmap[i];
+      char letter = o_options[i].letter;
+      if (letter)
 	{
-	  /* We should not get NULL here */
-	  on_or_off = find_flag (o_options[i].letter);
-	  cv = *on_or_off ? FLAG_ON : FLAG_OFF;
-	  if (v != cv)
-	    change_flag (o_options[i].letter, v);
+	  struct opt_def_s const *d = find_short_option (letter);
+	  if (d)
+	    {
+	      cv = get_opt_value (d, Accessor (short));
+	      if (v == cv)
+		continue;
+	      op_result_t r = set_opt_value (d, Accessor (short), v);
+	      if (GoodResult (r))
+		continue;
+	    }
+	  else
+	    {
+	      /* We should not get NULL here */
+	      cv = find_flag (letter)[0];
+	      if (v == cv)
+		continue;
+	    }
+	  change_flag (letter, v);
 	}
       else
 	{
 	  cv = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
-	  cv = cv ? FLAG_ON : FLAG_OFF;
 	  if (v != cv)
 	    SET_BINARY_O_OPTION_VALUE (i, v, o_options[i].name);
 	}
@@ -532,27 +573,35 @@ set_shellopts (void)
 {
   char *value;
   char tflag[N_O_OPTIONS];
-  int i, *ip;
+  int i, *ip, val;
   size_t vsize, vptr;
   SHELL_VAR *v;
 
   for (vsize = i = 0; o_options[i].name; i++)
     {
-      tflag[i] = 0;
-      if (o_options[i].letter)
+      char letter = o_options[i].letter;
+      char const*name = o_options[i].name;
+      if (letter)
 	{
-	  ip = find_flag (o_options[i].letter);
-	  if (ip && *ip)
+	  struct opt_def_s const *d = find_short_option (letter);
+	  if (d)
 	    {
-	      vsize += strlen (o_options[i].name) + 1;
-	      tflag[i] = 1;
+	      val = get_opt_value (d, Accessor (short));
+	    }
+	  else
+	    {
+	      ip = find_flag (letter);
+	      if (ip)
+		val = *ip;
+	      else
+		val = 0;
 	    }
 	}
-      else if (GET_BINARY_O_OPTION_VALUE (i, o_options[i].name))
-	{
-	  vsize += strlen (o_options[i].name) + 1;
-	  tflag[i] = 1;
-	}
+      else
+	val = GET_BINARY_O_OPTION_VALUE (i, name);
+      tflag[i] = val;
+      if (val)
+	vsize += strlen (o_options[i].name) + 1;
     }
 
   value = (char *)xmalloc (vsize + 1);
@@ -621,7 +670,7 @@ initialize_shell_options (int no_shellopts)
 }
 
 /* Reset the values of the -o options that are not also shell flags.  This is
-   called from execute_cmd.c:initialize_subshell() when setting up a subshell
+   called from execute_cmd.c:initialize_subshell () when setting up a subshell
    to run an executable shell script without a leading `#!'. */
 void
 reset_shell_options (void)
@@ -924,7 +973,7 @@ unset_builtin (WORD_LIST *list)
 	}
 
       /* if we have a nameref we want to use it */
-      if (var && unset_function == 0 && nameref == 0 && STREQ (name, name_cell(var)) == 0)
+      if (var && unset_function == 0 && nameref == 0 && STREQ (name, name_cell (var)) == 0)
 	name = name_cell (var);
 
       /* Posix.2 says try variables first, then functions.  If we would
@@ -941,7 +990,7 @@ unset_builtin (WORD_LIST *list)
 	     pointer, and UNSET_ARRAY is set to 1 only in this case. */
 	  if (unset_array)
 	    {
-	      RESTORE_NAME();
+	      RESTORE_NAME ();
 	      unset_array = 0;
 	    }
 #endif
