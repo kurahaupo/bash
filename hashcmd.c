@@ -191,3 +191,7 @@ phash_search (const char *filename)
 
   return (savestring (path));
 }
+
+void register_hashcmd_opts (void)
+{
+}
