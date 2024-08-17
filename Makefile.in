@@ -2386,6 +2386,7 @@ hashcmd.o: $(topdir)/include/posixstat.h
 hashcmd.o: $(topdir)/include/stdc.h
 hashcmd.o: $(topdir)/include/unlocked-io.h
 hashcmd.o: $(topdir)/make_cmd.h
+hashcmd.o: $(topdir)/options.h
 hashcmd.o: $(topdir)/pathnames.h
 hashcmd.o: $(topdir)/quit.h
 hashcmd.o: $(topdir)/shell.h
@@ -3032,6 +3033,7 @@ shell.o: $(topdir)/externs.h
 shell.o: $(topdir)/findcmd.h
 shell.o: $(topdir)/flags.h
 shell.o: $(topdir)/general.h
+shell.o: $(topdir)/hashcmd.h
 shell.o: $(topdir)/hashlib.h
 shell.o: $(topdir)/include/ansi_stdlib.h
 shell.o: $(topdir)/include/chartypes.h
