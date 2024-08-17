@@ -2095,6 +2095,7 @@ set.o: $(topdir)/general.h
 set.o: $(topdir)/hashlib.h
 set.o: $(topdir)/input.h
 set.o: $(topdir)/make_cmd.h
+set.o: $(topdir)/options.h
 set.o: $(topdir)/parser.h
 set.o: $(topdir)/quit.h
 set.o: $(topdir)/shell.h
