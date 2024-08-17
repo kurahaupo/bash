@@ -34,6 +34,7 @@
 #include "builtins/common.h"
 #include "execute_cmd.h"
 #include "flags.h"
+#include "hashcmd.h"
 #include "options.h"
 
 #if defined (BANG_HISTORY)
@@ -269,19 +270,6 @@ static opt_def_t const OPTDEF_lexical_scoping = {
     "Some day we hope to have actual lexical scoping in the shell.)"),
 };
 #endif
-
-/* Non-zero means look up and remember command names in a hash table, */
-int hashing_enabled = 1;
-static opt_def_t const OPTDEF_hashing_enabled = {
-  .store = &hashing_enabled,
-  .OPTRESET_true,
-  .letter = 'h',
-  .name = "hashall",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = N_(
-    "Remember the location of commands as they are looked up."),
-};
 
 #if defined (BANG_HISTORY)
 /* Non-zero means that we are doing history expansion.  The default.
@@ -531,7 +519,6 @@ register_flags_opts (void)
 {
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_hashing_enabled);		/* ±h, ±o hashall      */
   register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive  */
   register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword      */
   register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor      */
