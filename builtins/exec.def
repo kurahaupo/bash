@@ -204,7 +204,7 @@ exec_builtin (WORD_LIST *list)
       env[0] = (char *)0;
     }
   else
-    {	
+    {
       maybe_make_export_env ();
       env = export_env;
     }
