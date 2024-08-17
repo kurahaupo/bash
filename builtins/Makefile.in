@@ -1954,6 +1954,7 @@ set.o: $(topdir)/lib/readline/rlstdc.h
 set.o: $(topdir)/lib/readline/rltypedefs.h
 set.o: $(topdir)/lib/tilde/tilde.h
 set.o: $(topdir)/make_cmd.h
+set.o: $(topdir)/options.h
 set.o: $(topdir)/parser.h
 set.o: $(topdir)/pathnames.h
 set.o: $(topdir)/quit.h
