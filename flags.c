@@ -33,6 +33,7 @@
 #include "builtins/common.h"
 #include "execute_cmd.h"
 #include "flags.h"
+#include "hashcmd.h"
 #include "options.h"
 
 #if defined (BANG_HISTORY)
@@ -103,9 +104,6 @@ int no_symbolic_links = 0;
 int lexical_scoping = 0;
 #endif
 
-/* Non-zero means look up and remember command names in a hash table, */
-int hashing_enabled = 1;
-
 #if defined (BANG_HISTORY)
 /* Non-zero means that we are doing history expansion.  The default.
    This means !22 gets the 22nd line of history. */
@@ -155,7 +153,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'h', &hashing_enabled },
   { 'i', &forced_interactive },
   { 'k', &place_keywords_in_env },
 #if defined (JOB_CONTROL)
