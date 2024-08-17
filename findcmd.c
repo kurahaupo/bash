@@ -55,10 +55,10 @@ extern int errno;
 static char *_find_user_command_internal (const char *, int);
 static char *find_user_command_internal (const char *, int);
 static char *find_user_command_in_path (const char *, char *, int, int *);
-static char *find_in_path_element (const char *, char *, int, size_t, struct stat *, int *);
+static char *find_in_path_element (const char *, const char *, int, size_t, struct stat *, int *);
 static char *find_absolute_program (const char *, int);
 
-static char *get_next_path_element (char *, int *);
+static char const*get_next_path_element (char *, int *);
 
 /* The file name which we would try to execute, except that it isn't
    possible to execute it.  This is the first file that matches the
@@ -318,10 +318,10 @@ find_user_command_internal (const char *name, int flags)
    paths.  PATH_INDEX_POINTER is the address of an index into PATH_LIST;
    the index is modified by this function.
    Return the next element of PATH_LIST or NULL if there are no more. */
-static char *
+static char const*
 get_next_path_element (char *path_list, int *path_index_pointer)
 {
-  char *path;
+  char const*path;
 
   path = extract_colon_unit (path_list, path_index_pointer);
 
@@ -439,7 +439,9 @@ user_command_matches (const char *name, int flags, int state)
   register int i;
   int  path_index;
   size_t name_len;
-  char *path_list, *path_element, *match;
+  char *path_list;
+  char const *path_element;
+  char *match;
   struct stat dotinfo;
   static char **match_list = NULL;
   static size_t match_list_size = 0;
@@ -536,10 +538,11 @@ find_absolute_program (const char *name, int flags)
 }
 
 static char *
-find_in_path_element (const char *name, char *path, int flags, size_t name_len, struct stat *dotinfop, int *rflagsp)
+find_in_path_element (const char *name, char const*path, int flags, size_t name_len, struct stat *dotinfop, int *rflagsp)
 {
   int status;
-  char *full_path, *xpath;
+  char *full_path;
+  char const*xpath;
 
   xpath = (posixly_correct == 0 && *path == '~') ? bash_tilde_expand (path, 0) : path;
 
@@ -622,7 +625,8 @@ find_in_path_element (const char *name, char *path, int flags, size_t name_len, 
 static char *
 find_user_command_in_path (const char *name, char *path_list, int flags, int *rflagsp)
 {
-  char *full_path, *path;
+  char *full_path;
+  char const*path;
   int path_index, rflags;
   size_t name_len;
   struct stat dotinfo;
