@@ -41,3 +41,5 @@ extern void phash_flush (void);
 extern void phash_insert (char *, char *, int, int);
 extern int phash_remove (const char *);
 extern char *phash_search (const char *);
+
+extern void register_hashcmd_opts (void);

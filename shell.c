@@ -70,6 +70,7 @@ extern int get_tty_state (void);
 #include "execute_cmd.h"
 #include "findcmd.h"
 
+#include "hashcmd.h"
 #include "options.h"
 #include "subst.h"
 #include "variables.h"
@@ -414,6 +415,7 @@ main (int argc, char **argv, char **env)
   initialize_option_framework ();
   register_execute_cmd_opts ();
   register_flags_opts ();
+  register_hashcmd_opts ();
   register_jobs_opts ();
   register_shell_opts ();
   register_subst_opts ();
