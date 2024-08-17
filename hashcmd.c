@@ -29,11 +29,26 @@
 #endif
 
 #include "bashansi.h"
+#include "bashintl.h"
 
 #include "shell.h"
 #include "flags.h"
 #include "findcmd.h"
 #include "hashcmd.h"
+#include "options.h"
+
+/* Non-zero means look up and remember command names in a hash table, */
+int hashing_enabled = 1;
+static opt_def_t const OPTDEF_hashing_enabled = {
+  .store = &hashing_enabled,
+  .OPTRESET_true,
+  .letter = 'h',
+  .name = "hashall",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Remember the location of commands as they are looked up."),
+};
 
 HASH_TABLE *hashed_filenames = (HASH_TABLE *)NULL;
 
@@ -194,4 +209,5 @@ phash_search (const char *filename)
 
 void register_hashcmd_opts (void)
 {
+  register_option (&OPTDEF_hashing_enabled);		/* ±h, ±o hashall */
 }

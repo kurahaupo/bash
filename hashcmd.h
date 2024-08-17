@@ -23,6 +23,8 @@
 
 #define FILENAME_HASH_BUCKETS 256	/* must be power of two */
 
+extern int hashing_enabled;
+
 extern HASH_TABLE *hashed_filenames;
 
 typedef struct _pathdata {

@@ -2293,6 +2293,7 @@ flags.o: $(topdir)/execute_cmd.h
 flags.o: $(topdir)/externs.h
 flags.o: $(topdir)/flags.h
 flags.o: $(topdir)/general.h
+flags.o: $(topdir)/hashcmd.h
 flags.o: $(topdir)/hashlib.h
 flags.o: $(topdir)/include/chartypes.h
 flags.o: $(topdir)/include/maxpath.h
@@ -2365,6 +2366,7 @@ hashcmd.o: $(topdir)/array.h
 hashcmd.o: $(topdir)/arrayfunc.h
 hashcmd.o: $(topdir)/assoc.h
 hashcmd.o: $(topdir)/bashansi.h
+hashcmd.o: $(topdir)/bashintl.h
 hashcmd.o: $(topdir)/bashjmp.h
 hashcmd.o: $(topdir)/bashtypes.h
 hashcmd.o: $(topdir)/command.h
