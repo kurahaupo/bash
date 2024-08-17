@@ -168,7 +168,7 @@ exec_builtin (WORD_LIST *list)
       goto failed_exec;
     }
 
-  com2 = full_pathname (command);
+  com2 = (char *)full_pathname (command);
   if (com2)
     {
       if (command != args[0])
