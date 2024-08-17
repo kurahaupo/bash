@@ -2332,6 +2332,7 @@ hashcmd.o: $(topdir)/general.h
 hashcmd.o: $(topdir)/hashcmd.h
 hashcmd.o: $(topdir)/hashlib.h
 hashcmd.o: $(topdir)/make_cmd.h
+hashcmd.o: $(topdir)/options.h
 hashcmd.o: $(topdir)/quit.h
 hashcmd.o: $(topdir)/shell.h
 hashcmd.o: $(topdir)/sig.h
@@ -3023,6 +3024,7 @@ shell.o: $(topdir)/externs.h
 shell.o: $(topdir)/findcmd.h
 shell.o: $(topdir)/flags.h
 shell.o: $(topdir)/general.h
+shell.o: $(topdir)/hashcmd.h
 shell.o: $(topdir)/hashlib.h
 shell.o: $(topdir)/input.h
 shell.o: $(topdir)/jobs.h
