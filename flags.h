@@ -134,7 +134,7 @@ extern int
   place_keywords_in_env, read_but_dont_execute,
   just_one_command, unbound_vars_is_error, echo_input_at_read, verbose_flag,
   echo_command_at_execute, noclobber,
-  hashing_enabled, forced_interactive, privileged_mode, jobs_m_flag,
+  forced_interactive, privileged_mode, jobs_m_flag,
   interactive_comments, no_symbolic_links,
   function_trace_mode, error_trace_mode, pipefail_opt;
 
