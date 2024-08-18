@@ -117,9 +117,27 @@ extern int gnu_error_format;
    call shell_reinitialize () if you need to start afresh. */
 int shell_initialized = 0;
 
+/* Non-zero means this shell is interactive, even if running under a
+   pipe. */
+int forced_interactive = 0;
+static opt_def_t const OPTDEF_forced_interactive = {
+  .store = &forced_interactive,
+  .OPTRESET_REINIT_false,
+  .letter = 'i',
+  .name = "interactive",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .forbid_change = true,
+  .help = N_(
+    "(This option is read-only)\n"
+    "Bash automatically enters interactive mode if it is started without\n"
+    "a script to read or can only be enabled or disabled at start-up.\n"),
+};
+
 static void
 register_shell_opts (void)
 {
+  register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive */
 }
 
 int bash_argv_initialized = 0;

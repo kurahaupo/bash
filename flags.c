@@ -215,23 +215,6 @@ static opt_def_t const OPTDEF_jobs_m_flag = {
 };
 #endif
 
-/* Non-zero means this shell is interactive, even if running under a
-   pipe. */
-int forced_interactive = 0;
-static opt_def_t const OPTDEF_forced_interactive = {
-  .store = &forced_interactive,
-  .OPTRESET_REINIT_false,
-  .letter = 'i',
-  .name = "interactive",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .forbid_change = true,
-  .help = N_(
-    "(This option is read-only)\n"
-    "Bash automatically enters interactive mode if it is started without\n"
-    "a script to read or can only be enabled or disabled at start-up.\n"),
-};
-
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
    the string of symbolic links that make up the current directory, instead
@@ -519,7 +502,6 @@ register_flags_opts (void)
 {
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive  */
   register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword      */
   register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor      */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
