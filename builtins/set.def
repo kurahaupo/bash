@@ -317,11 +317,7 @@ list_minus_o_opts (int mode, int reusable)
 	  if (d)
 	    value = get_opt_value (d, Accessor (short));
 	  else
-	    {
-	      value = find_flag (o_options[i].letter);
-	      if (on_or_off != NULL)
-		*on_or_off = &value;
-	    }
+	    value = find_flag (o_options[i].letter)[0];
 	  if (value == FLAG_ERROR)
 	    continue;
 	  if (mode == -1 || mode == value)
