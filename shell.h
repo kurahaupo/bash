@@ -97,6 +97,7 @@ extern char *command_execution_string;
 
 extern int debugging_mode;
 extern int executing;
+extern int forced_interactive;
 extern int login_shell;
 extern int su_shell;
 extern int parsing_command;
