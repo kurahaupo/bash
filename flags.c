@@ -82,10 +82,6 @@ int echo_command_at_execute = 0;
 /* Non-zero means turn on the job control features. */
 int jobs_m_flag = 0;
 
-/* Non-zero means this shell is interactive, even if running under a
-   pipe. */
-int forced_interactive = 0;
-
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
    the string of symbolic links that make up the current directory, instead
@@ -153,7 +149,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'i', &forced_interactive },
   { 'k', &place_keywords_in_env },
 #if defined (JOB_CONTROL)
   { 'm', &jobs_m_flag },
