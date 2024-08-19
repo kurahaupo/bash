@@ -66,11 +66,6 @@ int no_symbolic_links = 0;
 /*								    */
 /* **************************************************************** */
 
-#if 0
-/* Non-zero means do lexical scoping in the body of a FOR command. */
-int lexical_scoping = 0;
-#endif
-
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
@@ -100,9 +95,6 @@ const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
 
   /* New flags that control non-standard things. */
-#if 0
-  { 'l', &lexical_scoping },
-#endif
 #if defined (BRACE_EXPANSION)
   { 'B', &brace_expansion },
 #endif
@@ -116,9 +108,6 @@ const struct flags_alist shell_flags[] = {
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
 static const char opt_letters[] = "CEPT"
-#if 0
-                           "l"
-#endif
 #if defined (BRACE_EXPANSION)
                            "B"
 #endif
