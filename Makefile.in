@@ -9657,4 +9657,3 @@ support/xcase.o: config.h
 support/zecho.o: $(srcdir)/support/zecho.c
 
 tests/cracauer-testsuite/catcher.o: $(srcdir)/tests/cracauer-testsuite/catcher.c
-

@@ -46,7 +46,8 @@ $PRODUCES cd.c
 
 #include "../shell.h"
 #include "../flags.h"
-#include "maxpath.h"
+
+#include <maxpath.h>	/* in ../include/ */
 #include "common.h"
 #include "bashgetopt.h"
 
@@ -72,6 +73,11 @@ int cdable_vars;
 static int eflag;	/* file scope so bindpwd() can see it */
 static int xattrflag;	/* O_XATTR support for openat */
 static int xattrfd = -1;
+
+void
+register_cd_opts (void)
+{
+}
 
 $BUILTIN cd
 $FUNCTION cd_builtin

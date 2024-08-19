@@ -699,6 +699,7 @@ cd.o: $(topdir)/include/stdc.h
 cd.o: $(topdir)/include/unlocked-io.h
 cd.o: $(topdir)/lib/tilde/tilde.h
 cd.o: $(topdir)/make_cmd.h
+cd.o: $(topdir)/options.h
 cd.o: $(topdir)/pathnames.h
 cd.o: $(topdir)/quit.h
 cd.o: $(topdir)/shell.h
