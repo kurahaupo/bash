@@ -1732,6 +1732,7 @@ bashhist.o: $(topdir)/general.h
 bashhist.o: $(topdir)/hashlib.h
 bashhist.o: $(topdir)/input.h
 bashhist.o: $(topdir)/make_cmd.h
+bashhist.o: $(topdir)/options.h
 bashhist.o: $(topdir)/parser.h
 bashhist.o: $(topdir)/pathexp.h
 bashhist.o: $(topdir)/quit.h

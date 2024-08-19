@@ -413,6 +413,7 @@ main (int argc, char **argv, char **env)
     exit (2);
 
   initialize_option_framework ();
+  register_bashhist_opts ();
   register_execute_cmd_opts ();
   register_flags_opts ();
   register_hashcmd_opts ();
