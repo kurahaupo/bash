@@ -139,7 +139,7 @@ ValidateFlagOrError (char const *file, unsigned int line, char const *expr_str, 
 extern int
   unbound_vars_is_error, echo_input_at_read,
   interactive_comments,
-  function_trace_mode, pipefail_opt;
+  pipefail_opt;
 
 /* -c, -s invocation options -- not really flags, but they show up in $- */
 extern int want_pending_command, read_from_stdin;
