@@ -89,15 +89,6 @@ int lexical_scoping = 0;
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
-#if defined (RESTRICTED_SHELL)
-/* Non-zero means that this shell is `restricted'.  A restricted shell
-   disallows: changing directories, command or path names containing `/',
-   unsetting or resetting the values of $PATH and $SHELL, and any type of
-   output redirection. */
-int restricted = 0;		/* currently restricted */
-int restricted_shell = 0;	/* shell was started in restricted mode. */
-#endif /* RESTRICTED_SHELL */
-
 #if defined (BRACE_EXPANSION)
 /* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
 int brace_expansion = 1;
@@ -122,9 +113,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-#if defined (RESTRICTED_SHELL)
-  { 'r', &restricted },
-#endif /* RESTRICTED_SHELL */
   { 't', &just_one_command },
   { 'u', &unbound_vars_is_error },
   { 'v', &verbose_flag },
@@ -147,9 +135,6 @@ const struct flags_alist shell_flags[] = {
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
 static const char opt_letters[] = "tuvxCEPT"
-#if defined (RESTRICTED_SHELL)
-                           "r"
-#endif
 #if 0
                            "l"
 #endif
@@ -205,18 +190,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-#if defined (RESTRICTED_SHELL)
-    case 'r':
-      /* Don't allow "set +r" in a shell which is `restricted'. */
-      if (restricted && on_or_off == FLAG_OFF)
-	return (FLAG_ERROR);
-      /* *value = ... */
-      restricted = flag_to_bool (on_or_off);
-      if (on_or_off == FLAG_ON && shell_initialized)
-	maybe_make_restricted (shell_name);
-      break;
-#endif
-
     case 'v':
       /* *value = ... */
       verbose_flag = flag_to_bool (on_or_off);

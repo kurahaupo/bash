@@ -177,12 +177,42 @@ static opt_def_t OPTDEF_privileged_mode = {
   .hide_shopt = true,
 };
 
+#if defined (RESTRICTED_SHELL)
+/* Non-zero means that this shell is `restricted'.  A restricted shell
+   disallows: changing directories, command or path names containing `/',
+   unsetting or resetting the values of $PATH and $SHELL, and any type of
+   output redirection. */
+int restricted = 0;		/* currently restricted */
+int restricted_shell = 0;	/* shell was started in restricted mode. */
+static op_result_t
+set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_value )
+{
+  /* Don't allow `set +r` or `set +o restrict` in a shell which is
+   * `restricted', but do allow `local -` to unwind `set -r`. */
+  if (restricted && !new_value && AccessorIsNot (why, unwind))
+    return Result (Forbidden);
+  restricted = new_value;
+  if (new_value && shell_initialized)
+    maybe_make_restricted (shell_name);
+  return Result (OK);
+}
+static opt_def_t OPTDEF_restricted = {
+  .store = &restricted,
+  .set_func = set_restricted,
+  .letter = 'r',
+  .name = "restricted",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif /* RESTRICTED_SHELL */
+
 static void
 register_shell_opts (void)
 {
   register_option(&OPTDEF_forced_interactive);
   register_option(&OPTDEF_privileged_mode);
   register_option(&OPTDEF_read_but_dont_execute);
+  register_option(&OPTDEF_restricted);
 }
 
 int bash_argv_initialized = 0;
