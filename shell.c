@@ -112,6 +112,12 @@ extern int gnu_error_format;
 /* Non-zero means that this shell has already been run; i.e. you should
    call shell_reinitialize () if you need to start afresh. */
 int shell_initialized = 0;
+
+static void
+register_shell_opts (void)
+{
+}
+
 int bash_argv_initialized = 0;
 
 COMMAND *global_command = (COMMAND *)NULL;
@@ -405,6 +411,7 @@ main (int argc, char **argv, char **env)
 
   initialize_option_framework ();
   register_flags_opts ();
+  register_shell_opts ();
 
   xtrace_init ();
 
