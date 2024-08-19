@@ -108,6 +108,11 @@ int history_expansion_inhibited;
 int double_quotes_inhibit_history_expansion = 0;
 #endif
 
+void
+register_bashhist_opts (void)
+{
+}
+
 /* With the old default, every line was saved in the history individually.
    I.e., if the user enters:
 	bash$ for i in a b c
