@@ -5203,6 +5203,7 @@ builtins/shopt.o: $(topdir)/config-top.h
 builtins/shopt.o: $(topdir)/conftypes.h
 builtins/shopt.o: $(topdir)/dispose_cmd.h
 builtins/shopt.o: $(topdir)/error.h
+builtins/shopt.o: $(topdir)/execute_cmd.h
 builtins/shopt.o: $(topdir)/externs.h
 builtins/shopt.o: $(topdir)/flags.h
 builtins/shopt.o: $(topdir)/general.h

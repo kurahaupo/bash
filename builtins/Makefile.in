@@ -2063,6 +2063,7 @@ shopt.o: $(topdir)/config-top.h
 shopt.o: $(topdir)/conftypes.h
 shopt.o: $(topdir)/dispose_cmd.h
 shopt.o: $(topdir)/error.h
+shopt.o: $(topdir)/execute_cmd.h
 shopt.o: $(topdir)/externs.h
 shopt.o: $(topdir)/flags.h
 shopt.o: $(topdir)/general.h

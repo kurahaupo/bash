@@ -211,6 +211,20 @@ static opt_def_t const OPTDEF_echo_command_at_execute = {
     "Print commands and their arguments as they are executed."),
 };
 
+/* Non-zero means that shell functions inherit the ERR trap.
+ * TODO: consider moving this into trap.c */
+int error_trace_mode = 0;
+static opt_def_t const OPTDEF_error_trace_mode = {
+  .store = &error_trace_mode,
+  .OPTRESET_false,
+  .letter = 'E',
+  .name = "errtrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Shell functions inherit the ERR trap."),
+};
+
 #if 0
 /* Non-zero means do lexical scoping in the body of a FOR command. */
 int lexical_scoping = 0;
@@ -6444,6 +6458,7 @@ register_execute_cmd_opts (void)
 {
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
   register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
+  register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace */
   #if 0
   register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical */
   #endif
