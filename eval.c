@@ -433,5 +433,5 @@ read_command (void)
 void
 register_eval_opts (void)
 {
-  register_option(&OPTDEF_just_one_command);
+  register_option (&OPTDEF_just_one_command);          /* ±t, ±o onecmd */
 }
