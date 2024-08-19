@@ -3855,6 +3855,8 @@ builtins/cd.o: $(topdir)/flags.h
 builtins/cd.o: $(topdir)/general.h
 builtins/cd.o: $(topdir)/hashlib.h
 builtins/cd.o: $(topdir)/make_cmd.h
+builtins/cd.o: $(topdir)/options.h
+builtins/cd.o: $(topdir)/pathnames.h
 builtins/cd.o: $(topdir)/quit.h
 builtins/cd.o: $(topdir)/shell.h
 builtins/cd.o: $(topdir)/sig.h
