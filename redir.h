@@ -36,6 +36,8 @@
 #define RX_SAVEFD	0x0400	/* fd used to save another even if < SHELL_FD_BASE */
 #define RX_EXPANDED	0x0800	/* this redirection has already been expanded */
 
+extern int noclobber;
+
 extern void register_redir_opts (void);
 
 extern void redirection_error (REDIRECT *, int, char *);
