@@ -98,12 +98,6 @@ int restricted = 0;		/* currently restricted */
 int restricted_shell = 0;	/* shell was started in restricted mode. */
 #endif /* RESTRICTED_SHELL */
 
-/* Non-zero means that this shell is running in `privileged' mode.  This
-   is required if the shell is to run setuid.  If the `-p' option is
-   not supplied at startup, and the real and effective uids or gids
-   differ, disable_priv_mode is called to relinquish setuid status. */
-int privileged_mode = 0;
-
 #if defined (BRACE_EXPANSION)
 /* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
 int brace_expansion = 1;
@@ -128,7 +122,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'p', &privileged_mode },
 #if defined (RESTRICTED_SHELL)
   { 'r', &restricted },
 #endif /* RESTRICTED_SHELL */
@@ -153,7 +146,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "ptuvxCEPT"
+static const char opt_letters[] = "tuvxCEPT"
 #if defined (RESTRICTED_SHELL)
                            "r"
 #endif
@@ -212,13 +205,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-    case 'p':
-      /* *value = ... */
-      privileged_mode = flag_to_bool (on_or_off);
-      if (! flag_to_bool (on_or_off))
-	disable_priv_mode ();
-      break;
-
 #if defined (RESTRICTED_SHELL)
     case 'r':
       /* Don't allow "set +r" in a shell which is `restricted'. */
