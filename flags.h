@@ -38,8 +38,7 @@ struct flags_alist {
   int *value;
 };
 
-extern const struct flags_alist shell_flags[];
-extern char optflags[];
+extern char const *get_opt_letters (void);
 
 static inline char
 bool_to_flag (_Bool b)
@@ -176,6 +175,7 @@ extern void reset_shell_flags (void);
 extern char *get_current_flags (void);
 extern void set_current_flags (const char *);
 
+extern char const *get_short_flag_names (void);
 extern void initialize_flags (void);
 
 /* A macro for efficiency. */

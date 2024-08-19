@@ -208,9 +208,31 @@ const struct flags_alist shell_flags[] = {
   {0}
 };
 
-#define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist))
+#define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-char optflags[NUM_SHELL_FLAGS+4] = { '+' };
+static const char opt_letters[] = "knptuvxCEPT"
+#if defined (JOB_CONTROL)
+                           "m"
+#endif
+#if defined (RESTRICTED_SHELL)
+                           "r"
+#endif
+#if 0
+                           "l"
+#endif
+#if defined (BRACE_EXPANSION)
+                           "B"
+#endif
+#if defined (BANG_HISTORY)
+                           "H"
+#endif
+			   ;
+
+char const *
+get_short_flag_names (void)
+{
+  return opt_letters;
+}
 
 int *
 find_flag (char name)
@@ -306,49 +328,76 @@ change_flag (char flag, char on_or_off)
 }
 
 /* Return a string which is the names of all the currently
-   set shell flags. */
+   set shell flags; this value is used for `$-`. */
 char *
 which_set_flags (void)
 {
-  char *temp;
-  int i, string_index;
+  char const * option_letters = get_short_opt_names ();
+  size_t limit = strlen (option_letters)
+	       + strlen (opt_letters);
 
-  temp = (char *)xmalloc (1 + NUM_SHELL_FLAGS + read_from_stdin + want_pending_command);
-  for (i = string_index = 0; shell_flags[i].name; i++)
-    if (*(shell_flags[i].value))
-      temp[string_index++] = shell_flags[i].name;
+  char *result = xmalloc (1 + limit + read_from_stdin + want_pending_command);
+  size_t j = 0;
+
+  for (size_t i = 0; option_letters[i]; i++)
+    {
+      char letter = option_letters[i];
+      if (get_opt_value (find_short_option (letter),
+			 Accessor (short)))
+	result[j++] = letter;
+    }
+  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
+    {
+      char letter = sf->name;
+      if (! find_short_option (letter))
+	if (sf->value[0])
+	  result[j++] = letter;
+    }
 
   if (want_pending_command)
-    temp[string_index++] = 'c';
+    result[j++] = 'c';
   if (read_from_stdin)
-    temp[string_index++] = 's';
+    result[j++] = 's';
 
-  temp[string_index] = '\0';
-  return (temp);
+  result[j] = '\0';
+  return result;
 }
 
 char *
 get_current_flags (void)
 {
-  char *temp;
-  int i;
+  char const * option_letters = get_short_opt_names ();
+  size_t limit = strlen (option_letters)
+	       + strlen (opt_letters);
 
-  temp = (char *)xmalloc (1 + NUM_SHELL_FLAGS);
-  for (i = 0; shell_flags[i].name; i++)
-    temp[i] = *(shell_flags[i].value);
-  temp[i] = '\0';
-  return (temp);
+  char *bitmap = xmalloc (1 + limit);
+  size_t j = 0;
+
+  for (size_t i = 0; option_letters[i]; i++)
+    bitmap[j++] = get_opt_value (find_short_option (option_letters[i]),
+				 Accessor (unwind));
+  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
+    if (! find_short_option (sf->name))
+      bitmap[j++] = sf->value[0];
+  bitmap[j] = '\0';	// XXX probably unnecessary
+  return bitmap;
 }
 
 void
 set_current_flags (const char *bitmap)
 {
-  int i;
-
   if (bitmap == 0)
     return;
-  for (i = 0; shell_flags[i].name; i++)
-    *(shell_flags[i].value) = bitmap[i];
+
+  char const * option_letters = get_short_opt_names ();
+  int j = 0;
+
+  for (size_t i = 0; option_letters[i]; i++)
+    set_opt_value (find_short_option (option_letters[i]),
+		   Accessor (unwind), bitmap[j++]);
+  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
+    if (! find_short_option (sf->name))
+      sf->value[0] = bitmap[j++];
 }
 
 void
@@ -405,11 +454,4 @@ FailedValidation (char const *file, unsigned int line,
 void
 initialize_flags (void)
 {
-  register int i;
-
-  for (i = 0; shell_flags[i].name; i++)
-    optflags[i+1] = shell_flags[i].name;
-  optflags[++i] = 'o';
-  optflags[++i] = ';';
-  optflags[i+1] = '\0';
 }
