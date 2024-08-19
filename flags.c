@@ -265,13 +265,6 @@ change_flag (char flag, char on_or_off)
 	return FLAG_ERROR;
     }
 
-
-#if defined (RESTRICTED_SHELL)
-  /* Don't allow "set +r" in a shell which is `restricted'. */
-  if (restricted && flag == 'r' && on_or_off == FLAG_OFF)
-    return (FLAG_ERROR);
-#endif /* RESTRICTED_SHELL */
-
   value = find_flag (flag);
 
   if ((value == NULL) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
@@ -323,6 +316,9 @@ change_flag (char flag, char on_or_off)
 
 #if defined (RESTRICTED_SHELL)
     case 'r':
+      /* Don't allow "set +r" in a shell which is `restricted'. */
+      if (restricted && on_or_off == FLAG_OFF)
+	return (FLAG_ERROR);
       /* *value = ... */
       restricted = flag_to_bool (on_or_off);
       if (on_or_off == FLAG_ON && shell_initialized)
