@@ -88,4 +88,6 @@ extern void setup_history_ignore (const char *);
 
 extern char *last_history_line (void);
 
+extern void register_bashhist_opts (void);
+
 #endif /* _BASHHIST_H_ */
