@@ -417,3 +417,8 @@ read_command (void)
 
   return (result);
 }
+
+void
+register_eval_opts (void)
+{
+}
