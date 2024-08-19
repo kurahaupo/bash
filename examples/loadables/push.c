@@ -30,6 +30,7 @@
 #include "jobs.h"
 #include "bashgetopt.h"
 #include "common.h"
+#include "execute_cmd.h"
 
 #ifndef errno
 extern int errno;
