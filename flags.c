@@ -50,11 +50,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means read commands, but don't execute them.  This is useful
-   for debugging shell scripts that should do something hairy and possibly
-   destructive. */
-int read_but_dont_execute = 0;
-
 /* Non-zero means end of file is after one command. */
 int just_one_command = 0;
 
@@ -133,7 +128,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'n', &read_but_dont_execute },
   { 'p', &privileged_mode },
 #if defined (RESTRICTED_SHELL)
   { 'r', &restricted },
@@ -159,7 +153,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "nptuvxCEPT"
+static const char opt_letters[] = "ptuvxCEPT"
 #if defined (RESTRICTED_SHELL)
                            "r"
 #endif
@@ -218,13 +212,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-    case 'n':
-      /* *value = ... */
-      read_but_dont_execute = flag_to_bool (on_or_off);
-      if (interactive_shell)
-	read_but_dont_execute = 0;
-      break;
-
     case 'p':
       /* *value = ... */
       privileged_mode = flag_to_bool (on_or_off);
