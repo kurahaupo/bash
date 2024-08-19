@@ -87,19 +87,6 @@ static opt_def_t const OPTDEF_function_trace_mode = {
     "Shell functions inherit the DEBUG and RETURN traps."),
 };
 
-/* Non-zero means that shell functions inherit the ERR trap. */
-int error_trace_mode = 0;
-static opt_def_t const OPTDEF_error_trace_mode = {
-  .store = &error_trace_mode,
-  .OPTRESET_false,
-  .letter = 'E',
-  .name = "errtrace",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = N_(
-    "Shell functions inherit the ERR trap."),
-};
-
 /* Non-zero means that the rightmost non-zero exit status in a pipeline
    is the exit status of the entire pipeline.  If each processes exits
    with a 0 status, the status of the pipeline is 0. */
@@ -212,7 +199,6 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
-  register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
 
