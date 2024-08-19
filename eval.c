@@ -44,6 +44,8 @@
 #include "input.h"
 #include "execute_cmd.h"
 
+#include "options.h"
+
 #if defined (HISTORY)
 #  include "bashhist.h"
 #endif
@@ -51,6 +53,17 @@
 #if defined (JOB_CONTROL)
 #  include "jobs.h"
 #endif
+
+/* Non-zero means end of file is after one command. */
+int just_one_command = 0;
+static opt_def_t const OPTDEF_just_one_command = {
+  .store = &just_one_command,
+  .letter = 't',
+  .name = "onecmd",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = "Exit after reading and executing one command.",
+};
 
 static void send_pwd_to_eterm (void);
 static sighandler alrm_catcher (int);
@@ -421,4 +434,5 @@ read_command (void)
 void
 register_eval_opts (void)
 {
+  register_option(&OPTDEF_just_one_command);
 }
