@@ -211,6 +211,21 @@ static opt_def_t const OPTDEF_echo_command_at_execute = {
     "Print commands and their arguments as they are executed."),
 };
 
+#if 0
+/* Non-zero means do lexical scoping in the body of a FOR command. */
+int lexical_scoping = 0;
+static opt_def_t const OPTDEF_lexical_scoping = {
+  .store = &lexical_scoping,
+  .letter = 'l',
+  .name = "lexical",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "(This option is an illusion; it does not actually exist yet.\n"
+    "Some day we hope to have actual lexical scoping in the shell.)"),
+};
+#endif
+
 /* Set to 1 if fd 0 was the subject of redirection to a subshell.  Global
    so that reader_loop can set it to zero before executing a command. */
 int stdin_redir;
@@ -6429,4 +6444,7 @@ register_execute_cmd_opts (void)
 {
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
   register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
+  #if 0
+  register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical */
+  #endif
 }
