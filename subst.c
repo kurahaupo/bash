@@ -407,6 +407,17 @@ static opt_def_t OPTDEF_place_keywords_in_env = {
   .hide_shopt = true,
 };
 
+/* Non-zero means trying to get the value of $i where $i is undefined
+   causes an error, instead of a null substitution. */
+int unbound_vars_is_error = 0;
+static opt_def_t OPTDEF_unbound_vars_is_error = {
+  .store = &unbound_vars_is_error,
+  .letter = 'u',
+  .name = "nounset",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 
 /* **************************************************************** */
 /*								    */
@@ -13266,4 +13277,5 @@ register_subst_opts (void)
 {
   register_option (&OPTDEF_disallow_filename_globbing);
   register_option (&OPTDEF_place_keywords_in_env);
+  register_option (&OPTDEF_unbound_vars_is_error);
 }

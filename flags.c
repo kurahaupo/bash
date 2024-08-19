@@ -53,10 +53,6 @@
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
 
-/* Non-zero means trying to get the value of $i where $i is undefined
-   causes an error, instead of a null substitution. */
-int unbound_vars_is_error = 0;
-
 /* Non-zero means type out input lines after you read them. */
 int echo_input_at_read = 0;
 int verbose_flag = 0;
@@ -110,7 +106,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'u', &unbound_vars_is_error },
   { 'v', &verbose_flag },
   { 'x', &echo_command_at_execute },
 
@@ -130,7 +125,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "uvxCEPT"
+static const char opt_letters[] = "vxCEPT"
 #if 0
                            "l"
 #endif
