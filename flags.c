@@ -50,9 +50,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means end of file is after one command. */
-int just_one_command = 0;
-
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
 
@@ -113,7 +110,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 't', &just_one_command },
   { 'u', &unbound_vars_is_error },
   { 'v', &verbose_flag },
   { 'x', &echo_command_at_execute },
@@ -134,7 +130,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "tuvxCEPT"
+static const char opt_letters[] = "uvxCEPT"
 #if 0
                            "l"
 #endif
