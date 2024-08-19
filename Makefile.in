@@ -3064,6 +3064,7 @@ shell.o: $(topdir)/options.h
 shell.o: $(topdir)/parser.h
 shell.o: $(topdir)/pathnames.h
 shell.o: $(topdir)/quit.h
+shell.o: $(topdir)/redir.h
 shell.o: $(topdir)/shell.h
 shell.o: $(topdir)/sig.h
 shell.o: $(topdir)/siglist.h
