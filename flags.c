@@ -219,30 +219,6 @@ static opt_def_t const OPTDEF_lexical_scoping = {
 };
 #endif
 
-#if defined (BANG_HISTORY)
-/* Non-zero means that we are doing history expansion.  The default.
-   This means !22 gets the 22nd line of history. */
-int history_expansion = HISTEXPAND_DEFAULT;
-int histexp_flag = 0;
-static opt_set_func_t set_histexp_flag;
-static op_result_t
-set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
-{
-  history_expansion = histexp_flag = new_value;
-  if (new_value)
-    bash_initialize_history ();
-  return Result (OK);
-}
-static opt_def_t const OPTDEF_histexp_flag = {
-  .store = &histexp_flag,
-  .set_func = set_histexp_flag,
-  .letter = 'H',
-  .name = "histexpand",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-#endif
-
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
@@ -491,9 +467,6 @@ register_flags_opts (void)
 
 #if defined (BRACE_EXPANSION)
   register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
-#endif
-#if defined (BANG_HISTORY)
-  register_option (&OPTDEF_histexp_flag);		/* ±H, ±o histexpand   */
 #endif
 #if 0
   register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical      */
