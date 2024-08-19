@@ -69,11 +69,6 @@ int no_symbolic_links = 0;
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
-#if defined (BRACE_EXPANSION)
-/* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
-int brace_expansion = 1;
-#endif
-
 /* Non-zero means that shell functions inherit the DEBUG trap. */
 int function_trace_mode = 0;
 
@@ -95,9 +90,6 @@ const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
 
   /* New flags that control non-standard things. */
-#if defined (BRACE_EXPANSION)
-  { 'B', &brace_expansion },
-#endif
   { 'C', &noclobber },
   { 'E', &error_trace_mode },
   { 'P', &no_symbolic_links },
@@ -108,9 +100,6 @@ const struct flags_alist shell_flags[] = {
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
 static const char opt_letters[] = "CEPT"
-#if defined (BRACE_EXPANSION)
-                           "B"
-#endif
 			   ;
 
 char const *
