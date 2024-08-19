@@ -145,10 +145,6 @@ extern int
 /* -c, -s invocation options -- not really flags, but they show up in $- */
 extern int want_pending_command, read_from_stdin;
 
-#if defined (BRACE_EXPANSION)
-extern int brace_expansion;
-#endif
-
 extern int *find_flag (char);
 extern int change_flag (char, char);
 extern char *which_set_flags (void);
