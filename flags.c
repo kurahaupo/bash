@@ -61,17 +61,6 @@
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
-/* Non-zero means that shell functions inherit the DEBUG trap. */
-int function_trace_mode = 0;
-static opt_def_t const OPTDEF_function_trace_mode = {
-  .store = &function_trace_mode,
-  .letter = 'T',
-  .name = "functrace",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "If set, the DEBUG and RETURN traps are inherited by shell functions.",
-};
-
 /* Non-zero means that the rightmost non-zero exit status in a pipeline
    is the exit status of the entire pipeline.  If each processes exits
    with a 0 status, the status of the pipeline is 0. */
@@ -218,6 +207,5 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
-  register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
 
 }

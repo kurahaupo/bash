@@ -219,6 +219,16 @@ static opt_def_t const OPTDEF_error_trace_mode = {
   .help = "If set, the ERR trap is inherited by shell functions.",
 };
 
+/* Non-zero means that shell functions inherit the DEBUG trap. */
+int function_trace_mode = 0;
+static opt_def_t const OPTDEF_function_trace_mode = {
+  .store = &function_trace_mode,
+  .letter = 'T',
+  .name = "functrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = "If set, the DEBUG and RETURN traps are inherited by shell functions.",
+};
 #if 0
 /* Non-zero means do lexical scoping in the body of a FOR command. */
 int lexical_scoping = 0;
@@ -6440,6 +6450,7 @@ register_execute_cmd_opts (void)
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
   register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace */
+  register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace */
   #if 0
   register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical */
   #endif
