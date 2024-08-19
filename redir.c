@@ -1484,3 +1484,9 @@ redir_varvalue (REDIRECT *redir)
   i = vmax;	/* integer truncation */
   return i;
 }
+
+
+void
+register_redir_opts (void)
+{
+}

@@ -72,6 +72,7 @@ extern int get_tty_state (void);
 
 #include "hashcmd.h"
 #include "options.h"
+#include "redir.h"
 #include "subst.h"
 #include "variables.h"
 
@@ -419,6 +420,7 @@ main (int argc, char **argv, char **env)
   register_flags_opts ();
   register_hashcmd_opts ();
   register_jobs_opts ();
+  register_redir_opts ();
   register_shell_opts ();
   register_subst_opts ();
   register_variables_opts ();
