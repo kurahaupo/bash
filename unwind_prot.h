@@ -26,7 +26,12 @@
    pointer argument. This type works fine for arbitrary pointers; if a
    cleanup function needs to take an int argument, it's passed through
    a cast to intptr_t, an integer type that's safe to convert to and
-   from a pointer. */
+   from a pointer.
+
+   TODO The statement above about converting intptr_t to void* and back is
+   wrong; that conversion sequence is NOT guaranteed to return the original
+   value, though it is very likely in most current implementations.
+*/
 typedef void sh_uwfunc_t (void *);
 
 extern void uwp_init (void);
