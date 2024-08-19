@@ -398,6 +398,22 @@ static opt_def_t const OPTDEF_disallow_filename_globbing = {
     "Disable file name generation (globbing)."),
 };
 
+/* Non-zero means that all keyword arguments are placed into the environment
+   for a command, not just those that appear on the line before the command
+   name. */
+static int place_keywords_in_env = 0;
+static opt_def_t const OPTDEF_place_keywords_in_env = {
+  .store = &place_keywords_in_env,
+  .OPTRESET_false,
+  .letter = 'k',
+  .name = "keyword",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "All assignment arguments are placed in the environment for a\n"
+    "command, not just those that precede the command name."),
+};
+
 /* **************************************************************** */
 /*								    */
 /*			Utility Functions			    */
@@ -13248,4 +13264,5 @@ void
 register_subst_opts (void)
 {
   register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
+  register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword */
 }
