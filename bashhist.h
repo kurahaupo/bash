@@ -61,6 +61,8 @@ extern int history_reediting;
 #  endif
 
 #  if defined (BANG_HISTORY)
+extern int histexp_flag;
+extern int history_expansion;
 extern int history_expansion_inhibited;
 #  endif /* BANG_HISTORY */
 

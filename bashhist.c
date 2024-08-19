@@ -106,11 +106,40 @@ int history_lines_in_file;
 /* Non-zero means do no history expansion on this line, regardless
    of what history_expansion says. */
 int history_expansion_inhibited;
+
+/* Non-zero means that we are doing history expansion.  The default.
+   This means !22 gets the 22nd line of history. */
+int history_expansion = HISTEXPAND_DEFAULT;
+int histexp_flag = 0;
+static opt_set_func_t set_histexp_flag;
+static op_result_t
+set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
+{
+  history_expansion = histexp_flag = new_value;
+  if (new_value)
+    bash_initialize_history ();
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_histexp_flag = {
+  .store = &histexp_flag,
+  .OPTRESET_false,
+  .set_func = set_histexp_flag,
+  .letter = 'H',
+  .name = "histexpand",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Enable ! style history substitution.  This flag is on\n"
+    "by default when the shell is interactive."),
+};
 #endif
 
 void
 register_bashhist_opts (void)
 {
+  #if defined (BANG_HISTORY)
+  register_option (&OPTDEF_histexp_flag);		/* ±H, ±o histexpand */
+  #endif
 }
 
 /* With the old default, every line was saved in the history individually.

@@ -149,11 +149,6 @@ extern int lexical_scoping;
 extern int brace_expansion;
 #endif
 
-#if defined (BANG_HISTORY)
-extern int history_expansion;
-extern int histexp_flag;
-#endif /* BANG_HISTORY */
-
 #if defined (RESTRICTED_SHELL)
 extern int restricted;
 extern int restricted_shell;
