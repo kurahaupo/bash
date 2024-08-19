@@ -56,6 +56,8 @@ extern int errno;
 
 #include "input.h"
 
+#include "options.h"
+
 #include "builtins/pipesize.h"
 
 /* FreeBSD 13 can reliably handle atomic writes at this capacity without
@@ -87,6 +89,16 @@ extern int errno;
 
 int expanding_redir;
 int varassign_redir_autoclose = 0;
+
+/* Non-zero means don't overwrite existing files while doing redirections. */
+int noclobber = 0;
+static opt_def_t OPTDEF_noclobber = {
+  .store = &noclobber,
+  .letter = 'C',
+  .name = "noclobber",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 extern REDIRECT *redirection_undo_list;
 extern REDIRECT *exec_redirection_undo_list;
@@ -1489,4 +1501,5 @@ redir_varvalue (REDIRECT *redir)
 void
 register_redir_opts (void)
 {
+  register_option (&OPTDEF_noclobber);
 }
