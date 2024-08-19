@@ -42,7 +42,6 @@
 
 #if defined (JOB_CONTROL)
 #include "jobs.h"
-extern int set_job_control (int);
 #endif
 
 /* **************************************************************** */
@@ -73,9 +72,6 @@ int verbose_flag = 0;
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
-
-/* Non-zero means turn on the job control features. */
-int jobs_m_flag = 0;
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -137,9 +133,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-#if defined (JOB_CONTROL)
-  { 'm', &jobs_m_flag },
-#endif /* JOB_CONTROL */
   { 'n', &read_but_dont_execute },
   { 'p', &privileged_mode },
 #if defined (RESTRICTED_SHELL)
@@ -167,9 +160,6 @@ const struct flags_alist shell_flags[] = {
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
 static const char opt_letters[] = "nptuvxCEPT"
-#if defined (JOB_CONTROL)
-                           "m"
-#endif
 #if defined (RESTRICTED_SHELL)
                            "r"
 #endif
@@ -228,14 +218,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-#if defined (JOB_CONTROL)
-    case 'm':
-      /* *value = ... */
-      jobs_m_flag = flag_to_bool (on_or_off);
-      set_job_control (flag_to_bool (on_or_off));
-      break;
-#endif /* JOB_CONTROL */
-
     case 'n':
       /* *value = ... */
       read_but_dont_execute = flag_to_bool (on_or_off);

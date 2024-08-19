@@ -368,6 +368,24 @@ static opt_def_t OPTDEF_asynchronous_notification = {
   .hide_shopt = true,
 };
 
+/* Non-zero means turn on the job control features. */
+int jobs_m_flag = 0;
+static op_result_t
+set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  jobs_m_flag = new_value;
+  set_job_control (new_value);
+  return Result (OK);
+}
+static opt_def_t OPTDEF_jobs_m_flag = {
+  .store = &jobs_m_flag,
+  .set_func = set_jobs_m_flag,
+  .letter = 'm',
+  .name = "monitor",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 #if !defined (_POSIX_VERSION)
 
 /* These are definitions to map POSIX 1003.1 functions onto existing BSD
@@ -5463,4 +5481,5 @@ void
 register_jobs_opts (void)
 {
   register_option(&OPTDEF_asynchronous_notification);
+  register_option(&OPTDEF_jobs_m_flag);
 }
