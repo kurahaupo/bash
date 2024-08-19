@@ -131,7 +131,6 @@ ValidateFlagOrError (char const *file, unsigned int line, char const *expr_str, 
 
 
 extern int
-  noclobber,
   interactive_comments, no_symbolic_links,
   function_trace_mode, error_trace_mode, pipefail_opt;
 

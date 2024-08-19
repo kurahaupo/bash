@@ -35,6 +35,7 @@
 #include "flags.h"
 #include "hashcmd.h"
 #include "options.h"
+#include "redir.h"
 
 #if defined (BANG_HISTORY)
 #  include "bashhist.h"
@@ -49,16 +50,6 @@
 /*			The Standard sh Flags.			    */
 /*								    */
 /* **************************************************************** */
-
-/* Non-zero means don't overwrite existing files while doing redirections. */
-int noclobber = 0;
-static opt_def_t const OPTDEF_noclobber = {
-  .store = &noclobber,
-  .letter = 'C',
-  .name = "noclobber",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -251,7 +242,6 @@ register_flags_opts (void)
 {
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
 
 #if 0
