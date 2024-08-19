@@ -747,6 +747,7 @@ cd.o: $(topdir)/flags.h
 cd.o: $(topdir)/general.h
 cd.o: $(topdir)/hashlib.h
 cd.o: $(topdir)/make_cmd.h
+cd.o: $(topdir)/options.h
 cd.o: $(topdir)/quit.h
 cd.o: $(topdir)/shell.h
 cd.o: $(topdir)/sig.h
