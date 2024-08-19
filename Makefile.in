@@ -3004,6 +3004,7 @@ redir.o: $(topdir)/include/stdc.h
 redir.o: $(topdir)/include/unlocked-io.h
 redir.o: $(topdir)/input.h
 redir.o: $(topdir)/make_cmd.h
+redir.o: $(topdir)/options.h
 redir.o: $(topdir)/pathnames.h
 redir.o: $(topdir)/quit.h
 redir.o: $(topdir)/redir.h
