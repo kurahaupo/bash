@@ -45,6 +45,7 @@ struct execstate
 extern void register_eval_opts (void);
 
 /* Variables declared in eval.c */
+extern int just_one_command;
 
 /* Functions declared in eval.c */
 extern int parse_command (void);
