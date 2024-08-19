@@ -65,6 +65,11 @@ extern int history_expansion_inhibited;
 extern int double_quotes_inhibit_history_expansion;
 #  endif /* BANG_HISTORY */
 
+#if defined (BANG_HISTORY)
+extern int history_expansion;
+extern int histexp_flag;
+#endif /* BANG_HISTORY */
+
 extern void bash_initialize_history (void);
 extern void bash_history_reinit (int);
 extern void bash_history_disable (void);

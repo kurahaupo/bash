@@ -100,13 +100,6 @@ int no_symbolic_links = 0;
 int lexical_scoping = 0;
 #endif
 
-#if defined (BANG_HISTORY)
-/* Non-zero means that we are doing history expansion.  The default.
-   This means !22 gets the 22nd line of history. */
-int history_expansion = HISTEXPAND_DEFAULT;
-int histexp_flag = 0;
-#endif /* BANG_HISTORY */
-
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
@@ -172,9 +165,6 @@ const struct flags_alist shell_flags[] = {
 #endif
   { 'C', &noclobber },
   { 'E', &error_trace_mode },
-#if defined (BANG_HISTORY)
-  { 'H', &histexp_flag },
-#endif /* BANG_HISTORY */
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
   {0}
@@ -194,9 +184,6 @@ static const char opt_letters[] = "knptuvxCEPT"
 #endif
 #if defined (BRACE_EXPANSION)
                            "B"
-#endif
-#if defined (BANG_HISTORY)
-                           "H"
 #endif
 			   ;
 
@@ -247,16 +234,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-#if defined (BANG_HISTORY)
-    case 'H':
-      /* *value = ... */
-      histexp_flag = flag_to_bool (on_or_off);
-      history_expansion = histexp_flag;
-      if (flag_to_bool (on_or_off))
-	bash_initialize_history ();
-      break;
-#endif
-
 #if defined (JOB_CONTROL)
     case 'm':
       /* *value = ... */
