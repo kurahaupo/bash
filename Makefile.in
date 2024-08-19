@@ -1813,6 +1813,7 @@ bashhist.o: $(topdir)/lib/readline/history.h
 bashhist.o: $(topdir)/lib/readline/rlstdc.h
 bashhist.o: $(topdir)/lib/readline/rltypedefs.h
 bashhist.o: $(topdir)/make_cmd.h
+bashhist.o: $(topdir)/options.h
 bashhist.o: $(topdir)/parser.h
 bashhist.o: $(topdir)/pathexp.h
 bashhist.o: $(topdir)/pathnames.h

@@ -51,6 +51,8 @@
 #include "bashhist.h"	/* matching prototypes and declarations */
 #include "builtins/common.h"
 
+#include "options.h"
+
 #include <readline/history.h>
 #include <glob/glob.h>
 #include <glob/strmatch.h>
@@ -107,6 +109,11 @@ int history_expansion_inhibited;
 /* If non-zero, double quotes can quote the history expansion character. */
 int double_quotes_inhibit_history_expansion = 0;
 #endif
+
+void
+register_bashhist_opts (void)
+{
+}
 
 /* With the old default, every line was saved in the history individually.
    I.e., if the user enters:
