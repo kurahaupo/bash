@@ -395,6 +395,18 @@ static opt_def_t const OPTDEF_disallow_filename_globbing = {
   .hide_shopt = true,
 };
 
+/* Non-zero means that all keyword arguments are placed into the environment
+   for a command, not just those that appear on the line before the command
+   name. */
+int place_keywords_in_env = 0;
+static opt_def_t const OPTDEF_place_keywords_in_env = {
+  .store = &place_keywords_in_env,
+  .letter = 'k',
+  .name = "keyword",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 
 /* **************************************************************** */
 /*								    */
@@ -13253,4 +13265,5 @@ void
 register_subst_opts (void)
 {
   register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
+  register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword */
 }

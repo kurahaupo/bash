@@ -51,18 +51,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means that all keyword arguments are placed into the environment
-   for a command, not just those that appear on the line before the command
-   name. */
-int place_keywords_in_env = 0;
-static opt_def_t const OPTDEF_place_keywords_in_env = {
-  .store = &place_keywords_in_env,
-  .letter = 'k',
-  .name = "keyword",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 /* Non-zero means read commands, but don't execute them.  This is useful
    for debugging shell scripts that should do something hairy and possibly
    destructive. */
@@ -453,7 +441,6 @@ register_flags_opts (void)
 {
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword      */
   register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor      */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec       */
