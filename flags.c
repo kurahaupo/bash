@@ -84,20 +84,6 @@ static opt_def_t const OPTDEF_no_symbolic_links = {
 /*								    */
 /* **************************************************************** */
 
-#if 0
-/* Non-zero means do lexical scoping in the body of a FOR command. */
-int lexical_scoping = 0;
-static opt_def_t const OPTDEF_lexical_scoping = {
-  .store = &lexical_scoping,
-  .letter = 'l',
-  .name = "lexical",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "(This option is an illusion; it does not actually exist yet.\n"
-	  "Some day we hope to have actual lexical scoping in the shell.)",
-};
-#endif
-
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
@@ -289,8 +275,5 @@ register_flags_opts (void)
 
 #if defined (BRACE_EXPANSION)
   register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
-#endif
-#if 0
-  register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical      */
 #endif
 }
