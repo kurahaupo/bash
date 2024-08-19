@@ -81,6 +81,9 @@ $END
 #include "../shell.h"
 #include "../flags.h"
 #include "../options.h"
+
+#include "../execute_cmd.h"
+
 #include "common.h"
 #include "bashgetopt.h"
 
