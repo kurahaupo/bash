@@ -81,6 +81,10 @@ extern COMMAND *currently_executing_command;
 extern char *this_command_name;
 extern SHELL_VAR *this_shell_function;
 
+#if 0
+extern int lexical_scoping;
+#endif
+
 /* Functions declared in execute_cmd.c, used by many other files */
 
 extern struct fd_bitmap *new_fd_bitmap (int);
