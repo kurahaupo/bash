@@ -2275,7 +2275,7 @@ globword:
 
   if (istate == 0)
     {
-      char *current_path;
+      char const *current_path;
 
       rl_completion_found_quote = orig_found_quote;
 
