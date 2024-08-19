@@ -51,6 +51,8 @@
 #include "bashhist.h"	/* matching prototypes and declarations */
 #include "builtins/common.h"
 
+#include "options.h"
+
 #include <readline/history.h>
 #include <glob/glob.h>
 #include <glob/strmatch.h>
@@ -106,11 +108,38 @@ int history_lines_in_file;
 int history_expansion_inhibited;
 /* If non-zero, double quotes can quote the history expansion character. */
 int double_quotes_inhibit_history_expansion = 0;
+
+/* Non-zero means that we are doing history expansion.  The default.
+   This means !22 gets the 22nd line of history. */
+int history_expansion = HISTEXPAND_DEFAULT;
+int histexp_flag = 0;
+static opt_set_func_t set_histexp_flag;
+static op_result_t
+set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
+{
+  history_expansion = histexp_flag = new_value;
+  if (new_value)
+    bash_initialize_history ();
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_histexp_flag = {
+  .store = &histexp_flag,
+  .set_func = set_histexp_flag,
+  .letter = 'H',
+  .name = "histexpand",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = "Enable ! style history substitution.  This flag is on\n"
+	  "by default when the shell is interactive.",
+};
 #endif
 
 void
 register_bashhist_opts (void)
 {
+  #if defined (BANG_HISTORY)
+  register_option (&OPTDEF_histexp_flag);		/* ±H, ±o histexpand */
+  #endif
 }
 
 /* With the old default, every line was saved in the history individually.
