@@ -291,6 +291,7 @@ extern int wait_intr_flag;
 
 /* Each register_XX_opts is defined within XX.def */
 extern void register_cd_opts (void);
+extern int no_symbolic_links; /* in cd.def */
 extern void register_set_opts (void);
 extern void register_shopt_opts (void);
 
