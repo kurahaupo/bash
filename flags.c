@@ -51,13 +51,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* By default, follow the symbolic links as if they were real directories
-   while hacking the `cd' command.  This means that `cd ..' moves up in
-   the string of symbolic links that make up the current directory, instead
-   of the absolute directory.  The shell variable `nolinks' also controls
-   this flag. */
-int no_symbolic_links = 0;
-
 /* **************************************************************** */
 /*								    */
 /*		     Non-Standard Flags Follow Here.		    */
@@ -85,14 +78,13 @@ const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
 
   /* New flags that control non-standard things. */
-  { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
   {0}
 };
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "PT"
+static const char opt_letters[] = "T"
 			   ;
 
 char const *
