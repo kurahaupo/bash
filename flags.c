@@ -35,6 +35,7 @@
 #include "flags.h"
 #include "hashcmd.h"
 #include "options.h"
+#include "redir.h"
 
 #if defined (BANG_HISTORY)
 #  include "bashhist.h"
@@ -49,9 +50,6 @@
 /*			The Standard sh Flags.			    */
 /*								    */
 /* **************************************************************** */
-
-/* Non-zero means don't overwrite existing files while doing redirections. */
-int noclobber = 0;
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -90,7 +88,6 @@ const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
 
   /* New flags that control non-standard things. */
-  { 'C', &noclobber },
   { 'E', &error_trace_mode },
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
@@ -99,7 +96,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "CEPT"
+static const char opt_letters[] = "EPT"
 			   ;
 
 char const *
