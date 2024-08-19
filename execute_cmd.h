@@ -42,6 +42,7 @@ struct execstate
     pid_t pid;
     int subshell_env;
   };
+extern void register_eval_opts (void);
 
 /* Variables declared in eval.c */
 
