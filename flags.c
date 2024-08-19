@@ -80,18 +80,6 @@ static opt_def_t const OPTDEF_no_symbolic_links = {
 /*								    */
 /* **************************************************************** */
 
-#if 0
-/* Non-zero means do lexical scoping in the body of a FOR command. */
-int lexical_scoping = 0;
-static opt_def_t const OPTDEF_lexical_scoping = {
-  .store = &lexical_scoping,
-  .letter = 'l',
-  .name = "lexical",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-#endif
-
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
