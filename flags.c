@@ -70,9 +70,6 @@ int interactive_comments = 1;
 /* Non-zero means that shell functions inherit the DEBUG trap. */
 int function_trace_mode = 0;
 
-/* Non-zero means that shell functions inherit the ERR trap. */
-int error_trace_mode = 0;
-
 /* Non-zero means that the rightmost non-zero exit status in a pipeline
    is the exit status of the entire pipeline.  If each processes exits
    with a 0 status, the status of the pipeline is 0. */
@@ -88,7 +85,6 @@ const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
 
   /* New flags that control non-standard things. */
-  { 'E', &error_trace_mode },
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
   {0}
@@ -96,7 +92,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "EPT"
+static const char opt_letters[] = "PT"
 			   ;
 
 char const *
