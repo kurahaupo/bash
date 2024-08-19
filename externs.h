@@ -83,7 +83,6 @@ extern void exit_shell (int) __attribute__((__noreturn__));
 extern void sh_exit (int) __attribute__((__noreturn__));
 extern void subshell_exit (int) __attribute__((__noreturn__));
 extern void set_exit_status (int);
-extern void disable_priv_mode (void);
 extern void unbind_args (void);
 
 #if defined (RESTRICTED_SHELL)
