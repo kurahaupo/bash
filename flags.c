@@ -51,11 +51,6 @@ extern int set_job_control (int);
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means that all keyword arguments are placed into the environment
-   for a command, not just those that appear on the line before the command
-   name. */
-int place_keywords_in_env = 0;
-
 /* Non-zero means read commands, but don't execute them.  This is useful
    for debugging shell scripts that should do something hairy and possibly
    destructive. */
@@ -142,7 +137,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'k', &place_keywords_in_env },
 #if defined (JOB_CONTROL)
   { 'm', &jobs_m_flag },
 #endif /* JOB_CONTROL */
@@ -172,7 +166,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "knptuvxCEPT"
+static const char opt_letters[] = "nptuvxCEPT"
 #if defined (JOB_CONTROL)
                            "m"
 #endif
