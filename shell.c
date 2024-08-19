@@ -415,6 +415,7 @@ main (int argc, char **argv, char **env)
 
   initialize_option_framework ();
   register_bashhist_opts ();
+  register_cd_opts ();
   register_eval_opts ();
   register_execute_cmd_opts ();
   register_flags_opts ();
