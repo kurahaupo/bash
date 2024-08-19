@@ -43,6 +43,14 @@ struct execstate
     int subshell_env;
   };
 
+/* Variables declared in eval.c */
+
+/* Functions declared in eval.c */
+extern int parse_command (void);
+extern int pretty_print_loop (void);
+extern int read_command (void);
+extern int reader_loop (void);
+
 /* Variables declared in execute_cmd.c, used by many other files */
 extern int return_catch_flag;
 extern int return_catch_value;
