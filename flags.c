@@ -29,6 +29,8 @@
 #endif
 
 #include "shell.h"
+
+#include "builtins/common.h"
 #include "execute_cmd.h"
 #include "flags.h"
 #include "options.h"
