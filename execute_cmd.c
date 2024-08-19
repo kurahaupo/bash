@@ -217,6 +217,16 @@ static opt_def_t OPTDEF_error_trace_mode = {
   .hide_shopt = true,
 };
 
+/* Non-zero means that shell functions inherit the DEBUG trap. */
+int function_trace_mode = 0;
+static opt_def_t OPTDEF_function_trace_mode = {
+  .store = &function_trace_mode,
+  .letter = 'T',
+  .name = "functrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 #if 0
 /* Non-zero means do lexical scoping in the body of a FOR command. */
 int lexical_scoping = 0;
@@ -6418,6 +6428,7 @@ register_execute_cmd_opts (void)
   register_option (&OPTDEF_echo_command_at_execute);
   register_option (&OPTDEF_errexit_flag);
   register_option (&OPTDEF_error_trace_mode);
+  register_option (&OPTDEF_function_trace_mode);
   #if 0
   register_option (&OPTDEF_lexical_scoping);
   #endif
