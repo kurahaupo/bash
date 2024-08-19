@@ -87,19 +87,6 @@ static opt_def_t const OPTDEF_no_symbolic_links = {
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
-#if defined (BRACE_EXPANSION)
-/* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
-int brace_expansion = 1;
-static opt_def_t const OPTDEF_brace_expansion = {
-  .store = &brace_expansion,
-  .letter = 'B',
-  .name = "braceexpand",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "the shell will perform brace expansion",
-};
-#endif
-
 /* Non-zero means that shell functions inherit the DEBUG trap. */
 int function_trace_mode = 0;
 static opt_def_t const OPTDEF_function_trace_mode = {
@@ -273,7 +260,4 @@ register_flags_opts (void)
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
 
-#if defined (BRACE_EXPANSION)
-  register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
-#endif
 }

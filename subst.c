@@ -385,6 +385,19 @@ static inline void bash_variable_assignment_error (int);
 
 static int do_assignment_statements (WORD_LIST *, char *, int);
 
+#if defined (BRACE_EXPANSION)
+/* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
+int brace_expansion = 1;
+static opt_def_t const OPTDEF_brace_expansion = {
+  .store = &brace_expansion,
+  .letter = 'B',
+  .name = "braceexpand",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = "the shell will perform brace expansion",
+};
+#endif
+
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
 static opt_def_t const OPTDEF_disallow_filename_globbing = {
@@ -13278,6 +13291,9 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
 void
 register_subst_opts (void)
 {
+  #if defined BRACE_EXPANSION
+  register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand */
+  #endif
   register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
   register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword */
   register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset */
