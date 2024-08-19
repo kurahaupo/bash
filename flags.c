@@ -53,10 +53,6 @@
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
 
-/* Non-zero means type out the command definition after reading, but
-   before executing. */
-int echo_command_at_execute = 0;
-
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
    the string of symbolic links that make up the current directory, instead
@@ -102,7 +98,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'x', &echo_command_at_execute },
 
   /* New flags that control non-standard things. */
 #if 0
@@ -120,7 +115,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "xCEPT"
+static const char opt_letters[] = "CEPT"
 #if 0
                            "l"
 #endif
