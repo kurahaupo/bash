@@ -687,6 +687,28 @@ reset_shell_options (void)
 #endif
 }
 
+static char *optflags = NULL;
+
+static void
+invalidate_optflags (void)
+{
+  if (!optflags)
+    return;
+  xfree (optflags);
+  optflags = NULL;
+}
+
+static void
+init_optflags (void)
+{
+  if (optflags)
+    return;
+  char const * option_names = get_short_opt_names (); /* from new stuff */
+  char const * flag_names = get_short_flag_names ();  /* from old stuff TODO: kill this transition measure */
+  optflags = xmalloc (strlen (option_names) + strlen (flag_names) + 4);
+  sprintf (optflags, "+%s%so;", option_names, flag_names);
+}
+
 /* Set some flags from the word values in the input list.  If LIST is empty,
    then print out the values of the variables instead.  If LIST contains
    non-flags, then set $1 - $9 to the successive words of LIST. */
@@ -705,6 +727,7 @@ set_builtin (WORD_LIST *list)
 
   /* Check validity of flag arguments. */
   rv = EXECUTION_SUCCESS;
+  init_optflags ();
   reset_internal_getopt ();
   while ((flag_name = internal_getopt (list, optflags)) != -1)
     {
