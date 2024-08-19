@@ -134,7 +134,7 @@ extern int
   read_but_dont_execute,
   just_one_command, unbound_vars_is_error, echo_input_at_read, verbose_flag,
   echo_command_at_execute, noclobber,
-  privileged_mode, jobs_m_flag,
+  privileged_mode,
   interactive_comments, no_symbolic_links,
   function_trace_mode, error_trace_mode, pipefail_opt;
 
