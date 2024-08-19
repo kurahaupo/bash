@@ -518,7 +518,7 @@ it_init_hostnames (ITEMLIST *itp)
   STRINGLIST *sl;
 
   sl = strlist_create (0);
-  sl->list = get_hostname_list ();
+  sl->list = (char **)get_hostname_list ();
   sl->list_len = sl->list ? strvec_len (sl->list) : 0;
   sl->list_size = sl->list_len;
   itp->slist = sl;
@@ -628,7 +628,7 @@ it_init_setopts (ITEMLIST *itp)
   STRINGLIST *sl;
 
   sl = strlist_create (0);
-  sl->list = get_minus_o_opts ();
+  sl->list = (char **)get_minus_o_opts ();
   sl->list_len = strvec_len (sl->list);
   itp->slist = sl;
   itp->flags |= LIST_DONTFREEMEMBERS;
