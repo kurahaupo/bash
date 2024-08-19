@@ -2115,6 +2115,7 @@ eval.o: $(topdir)/include/unlocked-io.h
 eval.o: $(topdir)/input.h
 eval.o: $(topdir)/jobs.h
 eval.o: $(topdir)/make_cmd.h
+eval.o: $(topdir)/options.h
 eval.o: $(topdir)/parser.h
 eval.o: $(topdir)/pathnames.h
 eval.o: $(topdir)/quit.h
