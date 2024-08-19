@@ -73,6 +73,7 @@ extern int stdin_redir;
 extern int line_number_for_err_trap;
 extern int echo_command_at_execute;
 
+extern int error_trace_mode;
 extern int exit_immediately_on_error;
 
 extern char *the_printed_command_except_trap;
