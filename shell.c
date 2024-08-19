@@ -113,6 +113,8 @@ extern char **environ;	/* used if no third argument to main() */
 
 extern int gnu_error_format;
 
+static void disable_priv_mode (void);
+
 /* Non-zero means that this shell has already been run; i.e. you should
    call shell_reinitialize () if you need to start afresh. */
 int shell_initialized = 0;
@@ -180,10 +182,40 @@ static opt_def_t const OPTDEF_read_but_dont_execute = {
     "Read commands but do not execute them."),
 };
 
+/* Non-zero means that this shell is running in `privileged' mode.  This
+   is required if the shell is to run setuid.  If the `-p' option is
+   not supplied at startup, and the real and effective uids or gids
+   differ, disable_priv_mode is called to relinquish setuid status. */
+int privileged_mode = 0;
+static op_result_t
+set_privileged_mode (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
+{
+  privileged_mode = new_value;
+  if (! new_value)
+    disable_priv_mode ();
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_privileged_mode = {
+  .store = &privileged_mode,
+  .OPTRESET_false,
+  .direct_reset = true,	/* avoid disable_priv_mode */
+  .set_func = set_privileged_mode,
+  .letter = 'p',
+  .name = "privileged",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Turned on whenever the real and effective user ids do not match.\n"
+    "Disables processing of the $ENV file and importing of shell\n"
+    "functions.  Turning this option off causes the effective uid and\n"
+    "gid to be set to the real uid and gid."),
+};
+
 static void
 register_shell_opts (void)
 {
   register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive */
+  register_option (&OPTDEF_privileged_mode);		/* ±p, ±o privileged */
   register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec */
 }
 
@@ -1434,7 +1466,7 @@ uidget (void)
 	   (current_user.gid != current_user.egid);
 }
 
-void
+static void
 disable_priv_mode (void)
 {
   int e, r;
