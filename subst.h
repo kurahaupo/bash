@@ -367,6 +367,10 @@ extern int disallow_filename_globbing;
 extern int expanding_redir;
 extern int inherit_errexit;
 
+#if defined (BRACE_EXPANSION)
+extern int brace_expansion;
+#endif
+
 extern pid_t last_command_subst_pid;
 extern int last_command_subst_status;
 extern int executing_funsub;
