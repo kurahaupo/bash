@@ -50,16 +50,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means end of file is after one command. */
-int just_one_command = 0;
-static opt_def_t const OPTDEF_just_one_command = {
-  .store = &just_one_command,
-  .letter = 't',
-  .name = "onecmd",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
 static opt_def_t const OPTDEF_noclobber = {
@@ -327,7 +317,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
-  register_option (&OPTDEF_just_one_command);		/* ±t, ±o onecmd       */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
   register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
