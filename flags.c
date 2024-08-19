@@ -47,24 +47,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* By default, follow the symbolic links as if they were real directories
-   while hacking the `cd' command.  This means that `cd ..' moves up in
-   the string of symbolic links that make up the current directory, instead
-   of the absolute directory.  The shell variable `nolinks' also controls
-   this flag. */
-int no_symbolic_links = 0;
-static opt_def_t const OPTDEF_no_symbolic_links = {
-  .store = &no_symbolic_links,
-  .OPTRESET_false,
-  .letter = 'P',
-  .name = "physical",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = N_(
-    "If set, do not resolve symbolic links when executing commands\n"
-    "such as cd which change the current directory."),
-};
-
 /* **************************************************************** */
 /*								    */
 /*		     Non-Standard Flags Follow Here.		    */
@@ -200,6 +182,5 @@ void
 register_flags_opts (void)
 {
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
 
 }
