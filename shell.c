@@ -128,10 +128,36 @@ static opt_def_t OPTDEF_forced_interactive = {
   .hide_shopt = true,
 };
 
+/* Non-zero means read commands, but don't execute them.  This is useful
+   for debugging shell scripts that should do something hairy and possibly
+   destructive. */
+int read_but_dont_execute = 0;
+static op_result_t
+set_read_but_dont_execute (opt_def_t const *d,
+			   accessor_t why,
+			   option_value_t new_value )
+{
+  /* Ignore attempts to set `noexec` when in interactive mode, as it would
+   * result in the user being unable to invoke `exit` or `logout`. */
+  if (interactive_shell && new_value)
+    return Result (Ignored);
+  read_but_dont_execute = new_value;
+  return Result (OK);
+}
+static opt_def_t OPTDEF_read_but_dont_execute = {
+  .store = &read_but_dont_execute,
+  .set_func = set_read_but_dont_execute,
+  .letter = 'n',
+  .name = "noexec",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 static void
 register_shell_opts (void)
 {
   register_option(&OPTDEF_forced_interactive);
+  register_option(&OPTDEF_read_but_dont_execute);
 }
 
 int bash_argv_initialized = 0;
