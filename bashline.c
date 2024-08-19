@@ -221,7 +221,6 @@ static char *prog_complete_return (const char *, int);
 static char **prog_complete_matches;
 #endif
 
-extern int no_symbolic_links;
 extern STRING_INT_ALIST word_token_alist[];
 extern sh_timer *read_timeout;
 

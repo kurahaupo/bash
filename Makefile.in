@@ -3840,6 +3840,7 @@ builtins/cd.o: $(topdir)/include/stdc.h
 builtins/cd.o: $(topdir)/include/unlocked-io.h
 builtins/cd.o: $(topdir)/lib/tilde/tilde.h
 builtins/cd.o: $(topdir)/make_cmd.h
+builtins/cd.o: $(topdir)/options.h
 builtins/cd.o: $(topdir)/pathnames.h
 builtins/cd.o: $(topdir)/quit.h
 builtins/cd.o: $(topdir)/shell.h

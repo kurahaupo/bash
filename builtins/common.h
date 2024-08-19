@@ -145,6 +145,9 @@ extern void initialize_shell_builtins (void);
 extern int set_expand_once (int, int);
 #endif
 
+/* Variables from cd.def */
+extern int no_symbolic_links;
+
 /* Functions from exit.def */
 extern void bash_logout (void);
 
