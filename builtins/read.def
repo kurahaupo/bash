@@ -497,7 +497,7 @@ read_builtin (WORD_LIST *list)
 
 #if defined (READLINE)
   if (edit)
-    add_unwind_protect (xfree, rlbuf);
+    add_unwind_protect (xxfree, rlbuf);
 #endif
 
   if (tmsec > 0 || tmusec > 0)
@@ -656,7 +656,7 @@ read_builtin (WORD_LIST *list)
 
   /* This *must* be the top unwind-protect on the stack, so the manipulation
      of the unwind-protect stack after the realloc() works right. */
-  add_unwind_protect (xfree, input_string);
+  add_unwind_protect (xxfree, input_string);
 
   check_read_timeout ();
   /* These only matter if edit == 0 */
@@ -793,7 +793,7 @@ read_builtin (WORD_LIST *list)
 	    {
 	      input_string = x;
 	      remove_unwind_protect ();
-	      add_unwind_protect (xfree, input_string);
+	      add_unwind_protect (xxfree, input_string);
 	    }
 	}
 
