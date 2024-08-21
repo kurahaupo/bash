@@ -920,3 +920,8 @@ set_array_expand (char *option_name, int mode)
   return 0;
 }
 #endif
+
+void
+register_shopt_opts (void)
+{
+}
