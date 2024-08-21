@@ -116,7 +116,8 @@ bind_builtin (WORD_LIST *list)
   int return_code;
   Keymap kmap, saved_keymap;
   int flags, opt;
-  char *initfile, *map_name, *fun_name, *unbind_name, *remove_seq, *cmd_seq, *t;
+  char *initfile, *map_name, *fun_name, *unbind_name, *remove_seq, *cmd_seq;
+  char const *t;
   WORD_LIST *savelist;
 
   if (no_line_editing)

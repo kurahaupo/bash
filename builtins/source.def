@@ -191,7 +191,7 @@ source_builtin (WORD_LIST *list)
     }
 
   begin_unwind_frame ("source");
-  add_unwind_protect (xfree, filename);
+  add_unwind_protect (xxfree, filename);
 
   if (list->next)
     {
@@ -212,7 +212,7 @@ source_builtin (WORD_LIST *list)
   if (debug_trap && function_trace_mode == 0)
     {
       debug_trap = savestring (debug_trap);
-      add_unwind_protect (xfree, debug_trap);
+      add_unwind_protect (xxfree, debug_trap);
       add_unwind_protect (uw_maybe_set_debug_trap, debug_trap);
       restore_default_signal (DEBUG_TRAP);
     }
