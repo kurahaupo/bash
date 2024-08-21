@@ -532,7 +532,7 @@ fc_builtin (WORD_LIST *list)
   /* Turn on the `v' flag while fc_execute_file runs so the commands
      will be echoed as they are read by the parser. */
   begin_unwind_frame ("fc builtin");
-  add_unwind_protect (xfree, fn);
+  add_unwind_protect (xxfree, fn);
   add_unwind_protect (uw_unlink, fn);
   add_unwind_protect (uw_set_verbose_flag, (char *)NULL);
   unwind_protect_int (suppress_debug_trap_verbose);

@@ -155,7 +155,7 @@ Exit Status:
 Returns success unless an invalid option is given.
 $END
 
-typedef int setopt_set_func_t (int, char *);
+typedef int setopt_set_func_t (int, char const*);
 typedef int setopt_get_func_t (char *);
 
 static int find_minus_o_option (char *);
@@ -593,7 +593,7 @@ set_shellopts (void)
 void
 parse_shellopts (char *value)
 {
-  char *vname;
+  char const *vname;
   int vptr;
 
   vptr = 0;
