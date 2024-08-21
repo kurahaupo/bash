@@ -424,6 +424,7 @@ main (int argc, char **argv, char **env)
   register_redir_opts ();
   register_set_opts ();
   register_shell_opts ();
+  register_shopt_opts ();
   register_subst_opts ();
   register_variables_opts ();
 
