@@ -245,7 +245,8 @@ print_hash_info (BUCKET_CONTENTS *item)
 static int
 print_portable_hash_info (BUCKET_CONTENTS *item)
 {
-  char *fp, *fn;
+  char const *fp;
+  char const *fn;
 
   fp = printable_filename (pathdata(item)->path, 1);
   fn = printable_filename (item->key, 1);
