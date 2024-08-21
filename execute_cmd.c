@@ -831,7 +831,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
       ofifo_list = copy_fifo_list ((int *)&osize);
       begin_unwind_frame ("internal_fifos");
       if (ofifo_list)
-	add_unwind_protect (xfree, ofifo_list);
+	add_unwind_protect (xxfree, ofifo_list);
       saved_fifo = 1;
     }
   else
@@ -3684,7 +3684,7 @@ execute_case_command (CASE_COM *case_command)
   ignore_return = case_command->flags & CMD_IGNORE_RETURN;
 
   begin_unwind_frame ("case");
-  add_unwind_protect (xfree, word);
+  add_unwind_protect (xxfree, word);
   add_unwind_protect (uw_restore_lineno, (void *) (intptr_t) save_line_number);
 
 #define EXIT_CASE()  goto exit_case_command
@@ -4984,7 +4984,7 @@ execute_builtin (sh_builtin_func_t *builtin, WORD_LIST *words, int flags, int su
       if (error_trap)
 	{
 	  error_trap = savestring (error_trap);
-	  add_unwind_protect (xfree, error_trap);
+	  add_unwind_protect (xxfree, error_trap);
 	  add_unwind_protect (uw_set_error_trap, error_trap);
 	  restore_default_signal (ERROR_TRAP);
 	}
@@ -5249,7 +5249,7 @@ execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap 
       if (subshell == 0)
 	{
 	  debug_trap = savestring (debug_trap);
-	  add_unwind_protect (xfree, debug_trap);
+	  add_unwind_protect (xxfree, debug_trap);
 	  add_unwind_protect (uw_maybe_set_debug_trap, debug_trap);
 	}
       restore_default_signal (DEBUG_TRAP);
@@ -5261,7 +5261,7 @@ execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap 
       if (subshell == 0)
 	{
 	  error_trap = savestring (error_trap);
-	  add_unwind_protect (xfree, error_trap);
+	  add_unwind_protect (xxfree, error_trap);
 	  add_unwind_protect (uw_maybe_set_error_trap, error_trap);
 	}
       restore_default_signal (ERROR_TRAP);
@@ -5274,7 +5274,7 @@ execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap 
       if (subshell == 0)
 	{
 	  return_trap = savestring (return_trap);
-	  add_unwind_protect (xfree, return_trap);
+	  add_unwind_protect (xxfree, return_trap);
 	  add_unwind_protect (uw_maybe_set_return_trap, return_trap);
 	}
       restore_default_signal (RETURN_TRAP);
@@ -5573,7 +5573,7 @@ execute_builtin_or_function (WORD_LIST *words,
   ofifo = num_fifos ();
   ofifo_list = copy_fifo_list (&osize);
   if (ofifo_list)
-    add_unwind_protect (xfree, ofifo_list);
+    add_unwind_protect (xxfree, ofifo_list);
 #endif
 
   if (do_redirections (redirects, RX_ACTIVE|RX_UNDOABLE) != 0)
