@@ -1104,3 +1104,8 @@ unset_builtin (WORD_LIST *list)
 
   return (any_failed ? (posix_utility_error ? EX_UTILERROR : EXECUTION_FAILURE) : EXECUTION_SUCCESS);
 }
+
+void
+register_set_opts (void)
+{
+}

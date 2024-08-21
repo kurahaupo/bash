@@ -422,6 +422,7 @@ main (int argc, char **argv, char **env)
   register_hashcmd_opts ();
   register_jobs_opts ();
   register_redir_opts ();
+  register_set_opts ();
   register_shell_opts ();
   register_subst_opts ();
   register_variables_opts ();
