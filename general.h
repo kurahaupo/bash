@@ -339,7 +339,7 @@ extern int absolute_program (const char *);
 
 extern char *make_absolute (const char *, const char *);
 extern char *base_pathname (char *);
-extern char *full_pathname (char *);
+extern char const *full_pathname (char const *);
 extern char *polite_directory_format (char *);
 extern char *trim_pathname (char *, int);
 extern char *printable_filename (char *, int);
