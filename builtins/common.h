@@ -291,5 +291,6 @@ extern int wait_intr_flag;
 
 /* Each register_XX_opts is defined within XX.def */
 extern void register_cd_opts (void);
+extern void register_set_opts (void);
 
 #endif /* !__COMMON_H */
