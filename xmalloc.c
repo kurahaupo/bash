@@ -36,16 +36,17 @@
 
 #include "bashintl.h"
 
-#if !defined (PTR_T)
-#  define PTR_T void *
-#endif /* !PTR_T */
+#if !defined DISABLE_MALLOC_WRAPPERS
+#define DISABLE_MALLOC_WRAPPERS (((disabled_for_function_declarations)))
+#endif
+#include "xmalloc.h"
 
 #if HAVE_SBRK && !HAVE_DECL_SBRK
-extern char *sbrk();
+extern PPTR_T sbrk();
 #endif
 
 #if HAVE_SBRK && defined (USING_BASH_MALLOC)
-static PTR_T lbreak;
+static PPTR_T lbreak;
 static int brkfound;
 static size_t allocated;
 #endif
@@ -61,7 +62,7 @@ static size_t allocated;
 do { \
   if (brkfound == 0) \
     { \
-      lbreak = (PTR_T)sbrk (0); \
+      lbreak = (PPTR_T)sbrk (0); \
       brkfound++; \
     } \
 } while (0)
@@ -70,7 +71,7 @@ static size_t
 findbrk (void)
 {
   FINDBRK();
-  return (char *)sbrk (0) - (char *)lbreak;
+  return (const char *)sbrk (0) - (const char *)lbreak;
 }
 #else
 #define FINDBRK()
@@ -110,7 +111,7 @@ xmalloc (size_t bytes)
 }
 
 PTR_T
-xrealloc (PTR_T pointer, size_t bytes)
+xrealloc (PPTR_T pointer, size_t bytes)
 {
   PTR_T temp;
 
@@ -120,7 +121,7 @@ xrealloc (PTR_T pointer, size_t bytes)
 #endif
 
   FINDBRK();
-  temp = pointer ? realloc (pointer, bytes) : malloc (bytes);
+  temp = pointer ? realloc ((PTR_T) pointer, bytes) : malloc (bytes);
 
   if (temp == 0)
     allocerr ("xrealloc", bytes);
@@ -134,7 +135,7 @@ xrealloc (PTR_T pointer, size_t bytes)
    glibc reallocarray except that it never returns a null pointer;
    if storage is exhausted it reports an error and exits. */
 PTR_T
-xreallocarray (PTR_T ptr, size_t nmemb, size_t size)
+xreallocarray (PPTR_T ptr, size_t nmemb, size_t size)
 {
   size_t nbytes;
 
@@ -147,17 +148,24 @@ xreallocarray (PTR_T ptr, size_t nmemb, size_t size)
 /* Use this as the function to call when adding unwind protects so we
    don't need to know what free() returns. */
 void
-xfree (PTR_T string)
+xfree (PPTR_T string)
 {
   if (string)
-    free (string);
+    free ((PTR_T) string);
+}
+
+/* Use this as the function to pass as a callback. */
+void
+xxfree (PTR_T string)
+{
+  xfree(string);
 }
 
 #ifdef USING_BASH_MALLOC
 #include <malloc/shmalloc.h>
 
 static void
-sh_allocerr (const char *func, size_t bytes, char *file, int line)
+sh_allocerr (const char *func, size_t bytes, char const *file, int line)
 {
 #if HAVE_SBRK
       allocated = findbrk ();
@@ -168,7 +176,7 @@ sh_allocerr (const char *func, size_t bytes, char *file, int line)
 }
 
 PTR_T
-sh_xmalloc (size_t bytes, char *file, int line)
+sh_xmalloc (size_t bytes, char const *file, int line)
 {
   PTR_T temp;
 
@@ -187,7 +195,7 @@ sh_xmalloc (size_t bytes, char *file, int line)
 }
 
 PTR_T
-sh_xrealloc (PTR_T pointer, size_t bytes, char *file, int line)
+sh_xrealloc (PPTR_T pointer, size_t bytes, char const *file, int line)
 {
   PTR_T temp;
 
@@ -197,7 +205,7 @@ sh_xrealloc (PTR_T pointer, size_t bytes, char *file, int line)
 #endif
 
   FINDBRK();
-  temp = pointer ? sh_realloc (pointer, bytes, file, line) : sh_malloc (bytes, file, line);
+  temp = pointer ? sh_realloc ((PTR_T) pointer, bytes, file, line) : sh_malloc (bytes, file, line);
 
   if (temp == 0)
     sh_allocerr ("xrealloc", bytes, file, line);
@@ -206,7 +214,7 @@ sh_xrealloc (PTR_T pointer, size_t bytes, char *file, int line)
 }
 
 PTR_T
-sh_xreallocarray (PTR_T ptr, size_t nmemb, size_t size, char *file, int line)
+sh_xreallocarray (PPTR_T ptr, size_t nmemb, size_t size, char const *file, int line)
 {
   size_t nbytes;
 
@@ -217,9 +225,9 @@ sh_xreallocarray (PTR_T ptr, size_t nmemb, size_t size, char *file, int line)
 }
 
 void
-sh_xfree (PTR_T string, char *file, int line)
+sh_xfree (PPTR_T string, char const *file, int line)
 {
   if (string)
-    sh_free (string, file, line);
+    sh_free ((PTR_T) string, file, line);
 }
 #endif
