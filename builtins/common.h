@@ -290,6 +290,7 @@ extern int wait_intr_flag;
 /* functions defined within builtins that are used elsewhere */
 
 /* Each register_XX_opts is defined within XX.def */
+
 extern void register_cd_opts (void);
 extern void register_set_opts (void);
 extern void register_shopt_opts (void);
