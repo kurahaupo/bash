@@ -589,7 +589,7 @@ read_builtin (WORD_LIST *list)
 	  ttgetattr (fd, &ttattrs);
 	  termsave.attrs = ttattrs;
 
-	  ttset = ttattrs;	  
+	  ttset = ttattrs;
 	  i = silent ? ttfd_cbreak (fd, &ttset) : ttfd_onechar (fd, &ttset);
 	  if (i < 0)
 	    sh_ttyerror (1);
@@ -973,7 +973,7 @@ assign_vars:
 	free (ifs_chars);
       return (retval);
     }
-#endif /* ARRAY_VARS */ 
+#endif /* ARRAY_VARS */
 
   /* If there are no variables, save the text of the line read to the
      variable $REPLY.  ksh93 strips leading and trailing IFS whitespace,
@@ -1161,7 +1161,7 @@ read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 
   memset (&ps, '\0', sizeof (mbstate_t));
   memset (&ps_back, '\0', sizeof (mbstate_t));
-  
+
   mbchar[0] = ch;
   i = 1;
   for (n = 0; n <= MB_LEN_MAX; n++)
@@ -1181,7 +1181,7 @@ read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 	    r = zreadc (fd, &c);
 	  if (r <= 0)
 	    goto mbchar_return;
-	  mbchar[i++] = c;	
+	  mbchar[i++] = c;
 	  continue;
 	}
       else if (ret == (size_t)-1)
