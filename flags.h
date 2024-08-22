@@ -177,6 +177,7 @@ extern void set_current_flags (const char *);
 
 extern char const *get_short_flag_names (void);
 extern void initialize_flags (void);
+extern void register_flags_opts (void);
 
 /* A macro for efficiency. */
 #define change_flag_char(flag, on_or_off)  change_flag (flag, on_or_off)
