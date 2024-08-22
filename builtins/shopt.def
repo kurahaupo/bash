@@ -70,11 +70,6 @@ $END
 #  include "../bashhist.h"
 #endif
 
-#define UNSETOPT	0
-#define SETOPT		1
-
-#define OPTFMT		"%-15s\t%s\n"
-
 extern int allow_null_glob_expansion, fail_glob_expansion, glob_dot_filenames;
 extern int cdable_vars, mail_warning, source_uses_path;
 extern int no_exit_on_failed_exec, print_shift_error;
@@ -268,49 +263,45 @@ static opt_def_t const xo_options[] = {
   { "xpg_echo",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &xpg_echo },
 };
 
-static const char * const on = "on";
-static const char * const off = "off";
-
-static int toggle_shopts (int, WORD_LIST *, int);
-static void print_shopt (char const*, int, int);
-static int list_shopts (WORD_LIST *, int);
-static int list_some_shopts (int, int);
-static int list_shopt_o_options (WORD_LIST *, int);
-static int list_some_o_options (int, int);
-static int set_shopt_o_options (int, WORD_LIST *, int);
-
-#define SFLAG	0x01
-#define UFLAG	0x02
-#define QFLAG	0x04
-#define OFLAG	0x08
-#define PFLAG	0x10
+/*
+ * By default, show *all* options (both shopt and set -o), using the 'standard' format.
+ * Otherwise:
+ *  Select:
+ *    `-o` only show `set -o` options
+ *    `-O` only show non-`set -o` options
+ *    (otherwise show all)
+ *  Choose format:
+ *    `-p` reusable format, matching selection; treat 'select all' as `shopt`)
+ *    `-P` `shopt` reusable format
+ *    `-Pp` `set -o` reusable format
+ *    (otherwise use 'standard' format)
+ */
 
 int
 shopt_builtin (WORD_LIST *list)
 {
-  int opt, flags, rval;
+  _Bool mode_O = false;
+  _Bool mode_P = false;
+  _Bool mode_o = false;
+  _Bool mode_p = false;
+  _Bool quiet = false;
+  _Bool universal = false;
+  _Bool value_s = false;
+  _Bool value_u = false;
 
-  flags = 0;
   reset_internal_getopt ();
-  while ((opt = internal_getopt (list, "psuoq")) != -1)
+  int opt;
+  while ((opt = internal_getopt (list, "aoOpPqsu")) != -1)
     {
       switch (opt)
 	{
-	case 's':
-	  flags |= SFLAG;
-	  break;
-	case 'u':
-	  flags |= UFLAG;
-	  break;
-	case 'q':
-	  flags |= QFLAG;
-	  break;
-	case 'o':
-	  flags |= OFLAG;
-	  break;
-	case 'p':
-	  flags |= PFLAG;
-	  break;
+	case 'o': mode_o = true; break; /* emulate set -o (both choose and show) */
+	case 'O': mode_O = true; break;	/* show like set -o */
+	case 'p': mode_p = true; break;
+	case 'P': mode_P = true; break;
+	case 'q': quiet = true; break;
+	case 's': value_s = true; break;
+	case 'u': value_u = true; break;
 	CASE_HELPOPT;
 	default:
 	  builtin_usage ();
@@ -319,26 +310,72 @@ shopt_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  if ((flags & (SFLAG|UFLAG)) == (SFLAG|UFLAG))
-    {
-      builtin_error (_("cannot set and unset shell options simultaneously"));
-      return (EXECUTION_FAILURE);
-    }
+  accessor_t oc = mode_o ? Accessor (set_o) :
+		  mode_O ? Accessor (shopt) :
+			   Accessor (any);
 
-  rval = EXECUTION_SUCCESS;
-  if ((flags & OFLAG) && ((flags & (SFLAG|UFLAG)) == 0))	/* shopt -o */
-    rval = list_shopt_o_options (list, flags);
-  else if (list && (flags & OFLAG))		/* shopt -so args */
-    rval = set_shopt_o_options ((flags & SFLAG) ? FLAG_ON : FLAG_OFF, list, flags & QFLAG);
-  else if (flags & OFLAG)	/* shopt -so */
-    rval = list_some_o_options ((flags & SFLAG) ? 1 : 0, flags);
-  else if (list && (flags & (SFLAG|UFLAG)))	/* shopt -su args */
-    rval = toggle_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, list, flags & QFLAG);
-  else if ((flags & (SFLAG|UFLAG)) == 0)	/* shopt [args] */
-    rval = list_shopts (list, flags);
-  else						/* shopt -su */
-    rval = list_some_shopts ((flags & SFLAG) ? SETOPT : UNSETOPT, flags);
-  return (rval);
+  display_style_t ds = ! mode_p && ! mode_P ? DisplayStyle (on_off) :
+			  (mode_P ? mode_p
+				  : mode_o) ? DisplayStyle (set_o)
+					    : DisplayStyle (shopt);
+
+  unsigned int value_comb = value_s == value_u ? 0 : 1 << !value_s;
+
+  int rval = EXECUTION_SUCCESS;
+  if (list == NULL)
+    {
+      if (quiet == 0)
+	list_all_options (oc, value_comb, ds);
+    }
+  else if (!(value_s || value_u) || mode_p || mode_P)
+    {
+      for (WORD_LIST *l = list; l; l = l->next)
+	{
+	  char const*name = l->word->word;
+	  opt_def_t const *d = find_option (name);
+	  if (! d)
+	    {
+	      shopt_error (name);
+	      rval = EXECUTION_FAILURE;
+	      continue;
+	    }
+	  int val = get_opt_value (d, oc);
+	  if (value_comb &&
+	      value_comb & 1U << val)
+	    continue;
+	  if (val == 0)
+	    rval = EXECUTION_FAILURE;
+	  if (! quiet)
+	    show_one_option (d, oc, ds);
+	}
+    }
+  else
+    {
+      if (value_s && value_u)
+	{
+	  builtin_error (_("cannot set and unset shell options simultaneously"));
+	  return (EXECUTION_FAILURE);
+	}
+      for (WORD_LIST *l = list; l; l = l->next)
+	{
+	  char const*name = l->word->word;
+	  opt_def_t const *d = find_option (name);
+	  if (! d)
+	    {
+	      shopt_error (name);
+	      rval = EXECUTION_FAILURE; /* TODO: maybe EX_BADUSAGE ? */
+	      continue;
+	    }
+	  op_result_t r = set_opt_value (d, oc, value_s);
+	  if (! GoodResult (r))
+	    rval = EXECUTION_FAILURE;
+	}
+
+      /* Don't set $BASHOPTS here if it hasn't already been initialized */
+      if (find_variable ("BASHOPTS"))
+	set_bashopts ();
+    }
+  return sh_chkwrite (rval);
 }
 
 /* Reset the options managed by `shopt' to the values they would have at
@@ -434,153 +471,6 @@ static void
 shopt_error (char const*s)
 {
   builtin_error (_("%s: invalid shell option name"), s);
-}
-
-static int
-toggle_shopts (int mode, WORD_LIST *list, int quiet)
-{
-  WORD_LIST *l;
-  int rval;
-  SHELL_VAR *v;
-
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
-    {
-      char const*name = l->word->word;
-      opt_def_t const *d = find_option (name);
-      if (! d)
-	{
-	  shopt_error (name);
-	  rval = EXECUTION_FAILURE; /* TODO: maybe EX_BADUSAGE ? */
-	}
-      else
-	{
-	  op_result_t r = set_opt_value (d, Accessor (shopt), mode);
-	  if (! GoodResult (r))
-	    rval = EXECUTION_FAILURE;
-	}
-    }
-
-  /* Don't set $BASHOPTS here if it hasn't already been initialized */
-  if (find_variable ("BASHOPTS"))
-    set_bashopts ();
-  return (rval);
-}
-
-static void
-print_shopt (char const*name, int val, int flags)
-{
-  if (flags & PFLAG)
-    printf ("shopt %s %s\n", val ? "-s" : "-u", name);
-  else
-    printf (OPTFMT, name, val ? on : off);
-}
-
-/* List the values of all or any of the `shopt' options.  Returns 0 if
-   all were listed or all variables queried were on; 1 otherwise. */
-static int
-list_shopts (WORD_LIST *list, int flags)
-{
-  WORD_LIST *l;
-  int rval = EXECUTION_SUCCESS;
-
-  if (list == 0)
-    {
-      if ((flags & QFLAG) == 0)
-	{
-	  opt_def_t const *d;
-	  for_each_option_class (d, Accessor (shopt))
-	    print_shopt (d->name, get_opt_value (d, Accessor (shopt)), flags);
-	}
-    }
-  else
-    for (l = list, rval; l; l = l->next)
-      {
-	char const*name = l->word->word;
-	opt_def_t const *d = find_option (name);
-	if (! d)
-	  {
-	    shopt_error (name);
-	    rval = EXECUTION_FAILURE;
-	    continue;
-	  }
-	int val = get_opt_value (d, Accessor (shopt));
-	if (val == 0)
-	  rval = EXECUTION_FAILURE;
-	if ((flags & QFLAG) == 0)
-	  print_shopt (name, val, flags);
-      }
-  return (sh_chkwrite (rval));
-}
-
-static int
-list_some_shopts (int mode, int flags)
-{
-  opt_def_t const *d;
-  for_each_option_class (d, Accessor (shopt))
-    {
-      int val = get_opt_value (d, Accessor (shopt));
-      if (((flags & QFLAG) == 0) && mode == val)
-	print_shopt (d->name, val, flags);
-    }
-  return (sh_chkwrite (EXECUTION_SUCCESS));
-}
-
-static int
-list_shopt_o_options (WORD_LIST *list, int flags)
-{
-  WORD_LIST *l;
-  int val, rval;
-
-  if (list == 0)
-    {
-      if ((flags & QFLAG) == 0)
-	list_minus_o_opts (-1, (flags & PFLAG));
-      return (sh_chkwrite (EXECUTION_SUCCESS));
-    }
-
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
-    {
-      val = minus_o_option_value (l->word->word);
-      if (val == -1)
-	{
-	  sh_invalidoptname (l->word->word);
-	  rval = EXECUTION_FAILURE;
-	  continue;
-	}
-      if (val == 0)
-	rval = EXECUTION_FAILURE;
-      if ((flags & QFLAG) == 0)
-	{
-	  if (flags & PFLAG)
-	    printf ("set %co %s\n", val ? '-' : '+', l->word->word);
-	  else
-	    printf (OPTFMT, l->word->word, val ? on : off);
-	}
-    }
-  return (sh_chkwrite (rval));
-}
-
-static int
-list_some_o_options (int mode, int flags)
-{
-  if ((flags & QFLAG) == 0)
-    list_minus_o_opts (mode, (flags & PFLAG));
-  return (sh_chkwrite (EXECUTION_SUCCESS));
-}
-
-static int
-set_shopt_o_options (int mode, WORD_LIST *list, int quiet)
-{
-  WORD_LIST *l;
-  int rval;
-
-  for (l = list, rval = EXECUTION_SUCCESS; l; l = l->next)
-    {
-      if (set_minus_o_option (mode, l->word->word) == EXECUTION_FAILURE)
-	rval = EXECUTION_FAILURE;
-    }
-  set_shellopts ();
-  return rval;
 }
 
 /* If we set or unset interactive_comments with shopt, make sure the
@@ -717,37 +607,27 @@ get_shopt_options (void)
 /*
  * External interface for other parts of the shell.  NAME is a string option;
  * MODE is 0 if we want to unset an option; 1 if we want to set an option.
- * REUSABLE is 1 if we want to print output in a form that may be reused.
  */
 int
 shopt_setopt (char const *name, int mode)
 {
-  WORD_LIST *wl;
-  int r;
-
-  wl = add_string_to_list (name, (WORD_LIST *)NULL);
-  r = toggle_shopts (mode, wl, 0);
-  dispose_words (wl);
-  return r;
-}
-
-int
-shopt_listopt (char const *name, int reusable)
-{
-  int i;
-
-  if (name == 0)
-    return (list_shopts ((WORD_LIST *)NULL, reusable ? PFLAG : 0));
-
   opt_def_t const *d = find_option (name);
   if (! d)
     {
       shopt_error (name);
-      return (EXECUTION_FAILURE);
+      return EXECUTION_FAILURE; /* TODO: maybe EX_BADUSAGE ? */
     }
 
-  print_shopt (name, get_opt_value (d, Accessor (shopt)), reusable ? PFLAG : 0);
-  return (sh_chkwrite (EXECUTION_SUCCESS));
+  int rval = EXECUTION_SUCCESS;
+
+  op_result_t r = set_opt_value (d, Accessor (shopt), mode);
+  if (! GoodResult (r))
+    rval = EXECUTION_FAILURE;
+
+  /* Don't set $BASHOPTS here if it hasn't already been initialized */
+  if (find_variable ("BASHOPTS"))
+    set_bashopts ();
+  return rval;
 }
 
 void
@@ -851,6 +731,15 @@ set_array_expand (opt_def_t const *d, accessor_t why, int mode)
   return Result (OK);
 }
 #endif
+
+void
+list_shopts (int reusable)
+{
+  display_style_t ds = reusable ? DisplayStyle (shopt) : DisplayStyle (on_off);
+  opt_def_t const *d;
+  for_each_option_class (d, Accessor (shopt))
+    show_one_option (d, Accessor (shopt), ds);
+}
 
 void
 register_shopt_opts (void)
