@@ -404,6 +404,7 @@ main (int argc, char **argv, char **env)
     exit (2);
 
   initialize_option_framework ();
+  register_flags_opts ();
 
   xtrace_init ();
 
