@@ -468,3 +468,8 @@ void
 initialize_flags (void)
 {
 }
+
+void
+register_flags_opts (void)
+{
+}
