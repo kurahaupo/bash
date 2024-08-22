@@ -175,8 +175,8 @@ static opt_get_func_t get_edit_mode;
 static opt_set_func_t set_history_flag;
 #endif
 
-static const char * const on = "on";
-static const char * const off = "off";
+static const char on[] = "on";
+static const char off[] = "off";
 
 static int previous_option_value;
 
@@ -272,7 +272,7 @@ void
 list_minus_o_opts (int mode, int reusable)
 {
   list_all_options (Accessor (set_o),
-		    0U,
+		    mode < 0 ? 0U : 1 << !mode,
 		    reusable ? DisplayStyle (set_o)
 			     : DisplayStyle (on_off));
 }
@@ -664,7 +664,11 @@ set_builtin (WORD_LIST *list)
 
 		  if (opt == 0)
 		    {
-		      list_minus_o_opts (-1, (on_or_off == '+'));
+		      _Bool reusable = !flag_to_bool (on_or_off);
+		      list_all_options (Accessor (set_o),
+					0U,
+					reusable ? DisplayStyle (set_o)
+						 : DisplayStyle (on_off));
 		      rv = sh_chkwrite (rv);
 		      continue;
 		    }
@@ -674,7 +678,11 @@ set_builtin (WORD_LIST *list)
 		  if (option_name == 0 || *option_name == '\0' ||
 		      *option_name == '-' || *option_name == '+')
 		    {
-		      list_minus_o_opts (-1, (on_or_off == '+'));
+		      _Bool reusable = !flag_to_bool (on_or_off);
+		      list_all_options (Accessor (set_o),
+					0U,
+					reusable ? DisplayStyle (set_o)
+						 : DisplayStyle (on_off));
 		      continue;
 		    }
 		  list = list->next; /* Skip over option name. */
