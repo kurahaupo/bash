@@ -27,6 +27,8 @@
 
 #include "options.h"
 
+#define OPTFMT "%-15s\t%s"
+
 /******************************************************************************/
 
 /* Function called when one of the builtin commands detects an invalid
@@ -497,7 +499,7 @@ static show_func_t show_option_set_o;
 static void
 show_option_on_off (opt_def_t const *d, accessor_t why)
 {
-  printf ("%-15s\t%s\n", d->name, get_opt_value (d, why) ? "on" : "off");
+  printf (OPTFMT "\n", d->name, get_opt_value (d, why) ? "on" : "off");
 }
 
 static void
