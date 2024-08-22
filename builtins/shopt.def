@@ -194,6 +194,11 @@ static opt_def_t const xo_options[] = {
   { "compat42",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 42 },
   { "compat43",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 43 },
   { "compat44",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 44 },
+  { "compat50",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 50 },
+  { "compat51",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 51 },
+  { "compat52",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 52 },
+  { "compat53",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 53 },
+  { "compat54",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 54 },
 #if defined (READLINE)
   { "complete_fullquote",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &complete_fullquote },
   { "direxpand",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &dircomplete_expand,		.set_func = shopt_set_complete_direxpand },
