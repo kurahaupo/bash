@@ -2136,6 +2136,8 @@ shopt.o: $(topdir)/flags.h
 shopt.o: $(topdir)/general.h
 shopt.o: $(topdir)/hashlib.h
 shopt.o: $(topdir)/make_cmd.h
+shopt.o: $(topdir)/parser.h
+shopt.o: $(topdir)/options.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
 shopt.o: $(topdir)/sig.h
