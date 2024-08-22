@@ -1994,6 +1994,7 @@ shopt.o: $(topdir)/include/posixjmp.h
 shopt.o: $(topdir)/include/stdc.h
 shopt.o: $(topdir)/include/unlocked-io.h
 shopt.o: $(topdir)/make_cmd.h
+shopt.o: $(topdir)/options.h
 shopt.o: $(topdir)/pathnames.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
