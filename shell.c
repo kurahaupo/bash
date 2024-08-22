@@ -981,7 +981,7 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
 	      o_option = argv[next_arg];
 	      if (o_option == 0)
 		{
-		  shopt_listopt (o_option, !flag_to_bool (on_or_off));
+		  list_shopts (!flag_to_bool (on_or_off));
 		  break;
 		}
 	      add_shopt_to_alist (o_option, on_or_off);
