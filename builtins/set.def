@@ -150,6 +150,7 @@ typedef option_value_t opt_get_func_t (struct opt_def_s const *option_def,
 typedef struct opt_def_s {
   char const *name;
   option_value_t *store;
+  option_value_t const *init;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
   int   reference_value;
@@ -278,43 +279,386 @@ static void (*show_map[])(opt_def_t const *d, optset_whence_t whence_selection) 
   [Whence_shopt] = show_option_shopt,
 };
 
+/******************************************************************************/
+
+int expaliases_flag = 0;
+
+#if 1
+extern int allow_null_glob_expansion;	// from pathexp.h /* nullglob */
+#if defined (ARRAY_VARS)
+extern int array_expand_once;	// from arrayfunc.h
+#endif
+//extern int autocd;	// in shell.h
+extern int bash_source_fullpath;	// from variables.c
+extern int cdable_vars;	// from cd.def
+extern int cdspelling;	// from cd.def
+extern int check_hashed_filenames;	// from findcmd.h
+//extern int check_jobs_at_exit;	// in shell.h
+extern int check_window_size;	// from jobs.c & nojobs.c
+#if defined (DEBUGGER)
+extern int debugging_mode;	// in shell.h
+#endif
+
+#if defined (READLINE)
+#  if DIRCOMPLETE_EXPAND_DEFAULT
+#define DIRCOMPLETE_EXPAND_INIT one
+#  else
+#define DIRCOMPLETE_EXPAND_INIT zero
+#  endif
+#endif
+
+extern int expand_aliases;	// from parse.y
+
+#if defined (EXTENDED_GLOB)
+extern int extended_glob;	// from pathexp.h
+#endif
+
+extern int extended_quote;	// from parse.y
+extern int fail_glob_expansion;	// from pathexp.h
+extern int glob_always_skip_dot_and_dotdot;	// from glob.c
+extern int glob_asciirange;	// from smatch.c
+extern int glob_dot_filenames;	// from pathexp.h
+extern int glob_ignore_case;	// from glob.h
+extern int glob_star;	// from pathexp.h
+extern int gnu_error_format;	// from error.c
+//extern int hup_on_exit;	// in shell.h
+extern int inherit_errexit;	// from subst.c
+extern int lastpipe_opt;	// from execute_cmd.c
+extern int localvar_inherit;	// from variables.h
+extern int localvar_unset;	// from variables.c
+//extern int login_shell; /* login_shell */
+extern int mail_warning;	// from mailcheck.c
+extern int match_ignore_case;	// from pathexp.h
+extern int no_exit_on_failed_exec;	// from exec.def  /* execfail */
+extern int patsub_replacement;	// from subst.c
+#if defined (STRICT_POSIX)
+#define POSIXLY_CORRECT_INIT  0
+#else
+#define POSIXLY_CORRECT_INIT -1
+#endif
+extern int print_shift_error;	// from general.c
+
+#if defined (PROGRAMMABLE_COMPLETION)
+extern int prog_completion_enabled;	// from pcomplete.h
+extern int progcomp_alias;	// from pcomplete.h
+#endif
+
+extern int promptvars;	// parse.y
+extern int singlequote_translations;	// from parse.y
+extern int source_uses_path;	// from source.def
+
+#if defined (SYSLOG_HISTORY)
+extern int syslog_history;
+#  if defined (SYSLOG_SHOPT)
+#   define SYSLOG_HISTORY_INIT SYSLOG_SHOPT
+#  else
+#   define SYSLOG_HISTORY_INIT 1
+#  endif /* SYSLOG_SHOPT */
+#endif
+
+extern int varassign_redir_autoclose;	// from redir.c
+extern int xpg_echo;	// from echo.def
+
+#if defined (DEFAULT_ECHO_TO_XPG) || defined (STRICT_POSIX)
+#define XPG_ECHO_INIT one
+#else
+#define XPG_ECHO_INIT zero
+#endif /* DEFAULT_ECHO_TO_XPG */
+#endif // 1
+
+#if defined (READLINE)
+
+//extern int complete_fullquote;	// in bashline.h
+//extern int dircomplete_expand;	// in bashline.h
+//extern int dircomplete_spelling;	// in bashline.h
+//extern int enable_hostname_completion (int);	// in bashline.h
+//extern int force_fignore;	// in bashline.h
+//extern int no_empty_command_completion;	// in bashline.h
+//extern int perform_hostname_completion;	// in bashline.h
+
+# if defined (HISTORY)
+//extern int hist_verify;	// in bashhist.h conditional on READLINE
+//extern int history_reediting;	// in bashhist.h conditional on READLINE
+# endif
+#endif
+
+
+static int shopt_login_shell;
+
+/******************************************************************************/
+
+static opt_get_func_t get_compatibility_level;
+static opt_set_func_t set_compatibility_level;
+
+#if defined (READLINE)
+static opt_set_func_t shopt_set_complete_direxpand;
+#endif
+
+static opt_set_func_t shopt_set_debug_mode;
+
+#if defined (READLINE)
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
+#endif
+
+static opt_set_func_t shopt_set_expaliases;
+
+static opt_set_func_t set_errexit_flag;
+#if defined (EXTENDED_GLOB)
+int extglob_flag = EXTGLOB_DEFAULT;
+static opt_set_func_t shopt_set_extglob;
+#endif
+
+#if defined (BANG_HISTORY)
+static opt_set_func_t set_histexp_flag;
+#endif
+
+#if defined (READLINE)
+static opt_set_func_t shopt_enable_hostname_completion;
+#endif
+
+#if defined (BANG_HISTORY)
+static opt_set_func_t set_histexp_flag;
+#endif
+
+#if defined (HISTORY)
+static opt_set_func_t bash_set_history;
+#endif
+
+static opt_set_func_t set_ignoreeof;
+
+#if defined (JOB_CONTROL)
+static opt_set_func_t set_monitor_flag;
+#endif
+
+static opt_set_func_t set_noexec_flag;
+static opt_set_func_t set_posix_mode;
+static opt_set_func_t set_privileged_flag;
+
+#if defined (JOB_CONTROL)
+static opt_set_func_t set_monitor_flag;
+#endif
+
+static opt_set_func_t set_privileged_flag;
+
+#if defined (RESTRICTED_SHELL)
+static opt_set_func_t set_restricted_flag;
+static opt_set_func_t set_restricted_shell;
+#endif
+
+static opt_set_func_t set_verbose_flag;
+
+/******************************************************************************/
+
+/* If you add a new variable name here, make sure to include an appropriate
+ * initializer here (if using the referenced variable), or set the default
+ * value appropriately in reset_shell_options (if using a different variable).
+ * */
+
+/******************************************************************************/
+
+static option_value_t const zero[1] = {0};
+static option_value_t const one[1] = {1};
+
+static const opt_def_t opt_defs[] = {
+  { "allexport",		&mark_modified_vars,	.letter = 'a',	.hide_shopt = 1 },
+#if defined (ARRAY_VARS)
+  { "array_expand_once",	&array_expand_once,	.hide_set_o = 1 },
+  { "assoc_expand_once",	&array_expand_once,	.hide_set_o = 1,	.hide_shopt = 1 },
+#endif
+  { "autocd",			&autocd,	.hide_set_o = 1,	.init = zero },
+#if defined (ARRAY_VARS)
+  { "bash_source_fullpath",	&bash_source_fullpath,	.hide_set_o = 1 },
+#endif
+#if defined (BRACE_EXPANSION)
+  { "braceexpand",		&brace_expansion,	.letter = 'B',	.hide_shopt = 1 },
+#endif
+  { "cdable_vars",		&cdable_vars,	.hide_set_o = 1,	.init = zero },
+  { "cdspell",			&cdspelling,	.hide_set_o = 1,	.init = zero },
+  { "checkhash",		&check_hashed_filenames,	.hide_set_o = 1,	.init = &(int){CHECKHASH_DEFAULT} },
+#if defined (JOB_CONTROL)
+  { "checkjobs",		&check_jobs_at_exit,	.hide_set_o = 1,	.init = zero },
+#endif
+  { "checkwinsize",		&check_window_size,	.hide_set_o = 1,	.init = &(int){CHECKWINSIZE_DEFAULT} },
+#if defined (HISTORY)
+  { "cmdhist",			&command_oriented_history,	.hide_set_o = 1,	.init = one },
+#endif
+  { "compat31",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 31,	.hide_set_o = 1 },
+  { "compat32",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 32,	.hide_set_o = 1 },
+  { "compat40",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 40,	.hide_set_o = 1 },
+  { "compat41",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 41,	.hide_set_o = 1 },
+  { "compat42",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 42,	.hide_set_o = 1 },
+  { "compat43",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 43,	.hide_set_o = 1 },
+  { "compat44",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 44,	.hide_set_o = 1 },
+  { "compat50",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 50,	.hide_set_o = 1 },
+  { "compat51",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 51,	.hide_set_o = 1 },
+  { "compat52",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 52,	.hide_set_o = 1 },
+  { "compat53",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 53,	.hide_set_o = 1 },
+  { "compat54",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 54,	.hide_set_o = 1 },
+#if defined (READLINE)
+  { "complete_fullquote",	&complete_fullquote,	.hide_set_o = 1,	.init = one },
+  { "direxpand",		&dircomplete_expand,	.set_func = shopt_set_complete_direxpand,	.hide_set_o = 1,	.init = DIRCOMPLETE_EXPAND_INIT },
+  { "dirspell",			&dircomplete_spelling,	.hide_set_o = 1,	.init = zero },
+#endif
+  { "dotglob",			&glob_dot_filenames,	.hide_set_o = 1,	.init = zero },
+#if defined (READLINE)
+  { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.hide_shopt = 1 },
+#endif
+  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_errexit_flag,	.hide_shopt = 1 },
+  { "errtrace",			&error_trace_mode,	.letter = 'E',	.hide_shopt = 1 },
+  { "execfail",			&no_exit_on_failed_exec,	.hide_set_o = 1,	.init = zero },
+  { "expand_aliases",		&expaliases_flag,	.set_func = shopt_set_expaliases,	.hide_set_o = 1,	.init = zero },
+#if defined (DEBUGGER)
+  { "extdebug",			&debugging_mode,	.set_func = shopt_set_debug_mode,	.hide_set_o = 1,	.init = zero },
+#endif
+#if defined (EXTENDED_GLOB)
+  { "extglob",			&extglob_flag,		.set_func = shopt_set_extglob,	.hide_set_o = 1,	.init = &(int){EXTGLOB_DEFAULT} },
+#endif
+  { "extquote",			&extended_quote,	.hide_set_o = 1,	.init = one },
+  { "failglob",			&fail_glob_expansion,	.hide_set_o = 1,	.init = zero },
+#if defined (READLINE)
+  { "force_fignore",		&force_fignore,	.hide_set_o = 1,	.init = one },
+#endif
+  { "functrace",		&function_trace_mode,	.letter = 'T',	.hide_shopt = 1 },
+  { "globasciiranges",		&glob_asciirange,	.hide_set_o = 1,	.init = &(int){GLOBASCII_DEFAULT} },
+  { "globskipdots",		&glob_always_skip_dot_and_dotdot,	.hide_set_o = 1,	.init = one },
+  { "globstar",			&glob_star,	.hide_set_o = 1,	.init = zero },
+  { "gnu_errfmt",		&gnu_error_format,	.hide_set_o = 1,	.init = zero },
+  { "hashall",			&hashing_enabled,	.letter = 'h',	.hide_shopt = 1 },
+#if defined (HISTORY)
+  { "histappend",		&force_append_history,	.hide_set_o = 1,	.init = zero },
+#endif
+#if defined (BANG_HISTORY)
+  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_histexp_flag,	.hide_shopt = 1 },
+#endif /* BANG_HISTORY */
+#if defined (HISTORY)
+  { "history",			&enable_history_list,	.set_func = bash_set_history,	.hide_shopt = 1,	.init = one },
+#endif
+#if defined (READLINE) && defined (HISTORY)
+  { "histreedit",		&history_reediting,	.hide_set_o = 1,	.init = zero },
+  { "histverify",		&hist_verify,	.hide_set_o = 1,	.init = zero },
+  { "hostcomplete",		&perform_hostname_completion,	.set_func = shopt_enable_hostname_completion,	.hide_set_o = 1,	.init = one },
+#endif
+  { "huponexit",		&hup_on_exit,	.hide_set_o = 1,	.init = zero },
+  { "ignoreeof",		&ignoreeof,		.set_func = set_ignoreeof,	.hide_shopt = 1,	.init = zero },
+  { "inherit_errexit",		&inherit_errexit,	.hide_set_o = 1,	.init = zero },
+  { "interactive-comments",	&interactive_comments,	.adjust_shellopts = 1,	.hide_shopt = 1,	.init = one },
+  { "interactive_comments",	&interactive_comments,	.adjust_shellopts = 1,	.hide_set_o = 1 },
+  { "keyword",			&place_keywords_in_env,	.letter = 'k',	.hide_shopt = 1 },
+  { "lastpipe",			&lastpipe_opt,	.hide_set_o = 1,	.init = zero },
+#if defined (HISTORY)
+  { "lithist",			&literal_history,	.hide_set_o = 1,	.init = zero },
+#endif
+  { "localvar_inherit",		&localvar_inherit,	.hide_set_o = 1,	.init = zero },
+  { "localvar_unset",		&localvar_unset,	.hide_set_o = 1,	.init = zero },
+  { "login_shell",		&login_shell,		.ignore_change = 1,	.hide_set_o = 1 },
+  { "mailwarn",			&mail_warning,	.hide_set_o = 1,	.init = zero },
+#if defined (JOB_CONTROL)
+  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_monitor_flag,	.hide_shopt = 1 },
+#endif
+#if defined (READLINE)
+  { "no_empty_cmd_completion",	&no_empty_command_completion,	.hide_set_o = 1,	.init = zero },
+#endif
+  { "nocaseglob",		&glob_ignore_case,	.hide_set_o = 1,	.init = zero },
+  { "nocasematch",		&match_ignore_case,	.hide_set_o = 1,	.init = zero },
+  { "noclobber",		&noclobber,		.letter = 'C',	.hide_shopt = 1 },
+  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_noexec_flag,	.hide_shopt = 1 },
+  { "noexpand_translation",	&singlequote_translations,	.hide_set_o = 1,	.init = zero },
+  { "noglob",			&disallow_filename_globbing,	.letter = 'f',	.hide_shopt = 1 },
+#if defined (HISTORY)
+  { "nolog",			&dont_save_function_defs,	.hide_shopt = 1,	.init = zero },
+#endif
+#if defined (JOB_CONTROL)
+  { "notify",			&asynchronous_notification,	.letter = 'b',	.hide_shopt = 1 },
+#endif /* JOB_CONTROL */
+  { "nounset",			&unbound_vars_is_error,	.letter = 'u',	.hide_shopt = 1 },
+  { "nullglob",			&allow_null_glob_expansion,	.hide_set_o = 1,	.init = zero },
+  { "onecmd",			&just_one_command,	.letter = 't',	.hide_shopt = 1 },
+  { "patsub_replacement",	&patsub_replacement,	.hide_set_o = 1,	.init = &(int){PATSUB_REPLACE_DEFAULT} },
+  { "physical",			&no_symbolic_links,	.letter = 'P',	.hide_shopt = 1 },
+  { "pipefail",			&pipefail_opt,	.hide_shopt = 1,	.init = zero },
+  { "posix",			&posixly_correct,	.set_func = set_posix_mode,	.hide_shopt = 1,	.init = (int[]){POSIXLY_CORRECT_INIT} },
+  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_privileged_flag,	.hide_shopt = 1 },
+#if defined (PROGRAMMABLE_COMPLETION)
+  { "progcomp",			&prog_completion_enabled,	.hide_set_o = 1,	.init = one },
+#  if defined (ALIAS)
+  { "progcomp_alias",		&progcomp_alias,	.hide_set_o = 1,	.init = zero },
+#  endif
+#endif
+  { "promptvars",		&promptvars,	.hide_set_o = 1,	.init = one },
+#if defined (RESTRICTED_SHELL)
+  { "restricted_shell",		&restricted_shell,	.set_func = set_restricted_shell,	.hide_set_o = 1 },
+#endif
+  { "shift_verbose",		&print_shift_error,	.hide_set_o = 1,	.init = zero },
+  { "sourcepath",		&source_uses_path,	.hide_set_o = 1,	.init = one },
+#if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
+  { "syslog_history",		&syslog_history,	.hide_set_o = 1,	.init = (int[]){SYSLOG_HISTORY_INIT} },
+#endif
+  { "varredir_close",		&varassign_redir_autoclose,	.hide_set_o = 1,	.init = zero },
+  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_verbose_flag,	.hide_shopt = 1 },
+#if defined (READLINE)
+  { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.hide_shopt = 1 },
+#endif
+  { "xpg_echo",			&xpg_echo,	.hide_set_o = 1,	.init = XPG_ECHO_INIT },
+  { "xtrace",			&echo_command_at_execute,	.letter = 'x',	.hide_shopt = 1 },
+  { no_long_name,		&forced_interactive,	.letter = 'i',	.hide_shopt = 1 },
+#if defined (RESTRICTED_SHELL)
+  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_restricted_flag,	.hide_shopt = 1 },
+#endif /* RESTRICTED_SHELL */
+#if 0
+  { no_long_name,		&lexical_scoping,	.letter = 'l',	.hide_shopt = 1 },
+#endif
+  0
+};
+
+#define N_OPTIONS		(sizeof (opt_defs) / sizeof (opt_defs[0]) - 1)
+
+/******************************************************************************/
+
+static opt_def_t const *
+find_option (char const *name)
+{
+  opt_def_t const *d;
+  for (d = opt_defs; d->name; d++)
+    if (d->name != no_long_name && !strcmp (name, d->name))
+      return d;
+  return NULL;
+}
+
 static void
 show_one_option (opt_def_t const *d,
 		 optset_whence_t whence,
-		 optset_whence_t display)
+		 optset_whence_t display_style)
 {
-  show_map[WhenceC (display)](d, whence);
+  show_map[WhenceC (display_style)](d, whence);
 }
 
 static void
 show_one_option_unless_value (opt_def_t const *d,
 			      optset_whence_t whence,
 			      unsigned hide_value_mask,
-			      optset_whence_t display)
+			      optset_whence_t display_style)
 {
   if (hide_value_mask & (1 << get_opt_value (d, whence)))
-    show_map[WhenceC (display)](d, whence);
+    show_map[WhenceC (display_style)](d, whence);
 }
 
 static void
-list_all_options2 (opt_def_t const *start_of_table,
-		   optset_whence_t whence_selection,
-		   unsigned hide_value_mask,
-		   optset_whence_t display)
+list_all_options (optset_whence_t whence_selection,
+		  unsigned hide_value_mask,
+		  optset_whence_t display_style)
 {
-  opt_def_t const *d = start_of_table;
-
   _Bool (*hide_when)(opt_def_t const *d) =  hide_when_map[WhenceC (whence_selection)];
-  void (*show_how)(opt_def_t const *d, optset_whence_t whence_selection) = show_map[WhenceC (display)];
+  void (*show_how)(opt_def_t const *d, optset_whence_t whence_selection) = show_map[WhenceC (display_style)];
 
-  for (d = start_of_table; d->name; d++)
+  for (opt_def_t const *d = opt_defs; d->name; d++)
     {
       /* Hide options that aren't in the preferred group; use Whence (any) when you want ALL of them */
       if (hide_when && hide_when (d))
 	continue;
 
       /* Hide options that don't have an appropriate kind of name (short or long) */
-      if (WhenceC (display) == Whence_short
+      if (WhenceC (display_style) == Whence_short
 	    ? d->letter == 0
 	    : d->name == no_long_name)
 	continue;
@@ -326,6 +670,43 @@ list_all_options2 (opt_def_t const *start_of_table,
       show_how (d, whence_selection);
     }
 }
+
+/******************************************************************************/
+
+#define MAX_SHORT_NAMES	(1+CHAR_MAX)
+static const opt_def_t *letter_map[MAX_SHORT_NAMES];
+
+static size_t N_short_names = 0;
+static char const *short_opt_names;
+static char const *set_builtin_optflags;
+
+static void
+init_letter_map (void)
+{
+  /* Set up only once; this will have to change if we allow loadables to register new options */
+  if (short_opt_names && set_builtin_optflags)
+    return;
+  opt_def_t const *d;
+  for (d = opt_defs ; d->name; d++)
+    {
+      char c = d->letter;
+      if (c > 0 && c < MAX_SHORT_NAMES)
+	letter_map[c] = d;
+	++N_short_names;
+    }
+
+  char *ep = xmalloc (N_short_names+1);
+  short_opt_names = ep;
+  for (size_t c = 1; c < MAX_SHORT_NAMES; ++c)
+    if (letter_map[c])
+      *ep++ = c;
+  *ep = 0;
+
+  set_builtin_optflags = ep = xmalloc (N_short_names+4);
+  sprintf (ep, "+%so;", short_opt_names);
+}
+
+/******************************************************************************/
 
 /******************************************************************************/
 
@@ -365,212 +746,7 @@ Options:
           history      enable command history
 #endif
           ignoreeof    the shell will not exit upon reading EOF
-          interactive-comments
-                       allow comments to appear in interactive commands
-          keyword      same as -k
-#if defined (JOB_CONTROL)
-          monitor      same as -m
-#endif
-          noclobber    same as -C
-          noexec       same as -n
-          noglob       same as -f
-          nolog        currently accepted but ignored
-#if defined (JOB_CONTROL)
-          notify       same as -b
-#endif
-          nounset      same as -u
-          onecmd       same as -t
-          physical     same as -P
-          pipefail     the return value of a pipeline is the status of
-                       the last command to exit with a non-zero status,
-                       or zero if no command exited with a non-zero status
-          posix        change the behavior of bash where the default
-                       operation differs from the Posix standard to
-                       match the standard
-          privileged   same as -p
-          verbose      same as -v
-#if defined (READLINE)
-          vi           use a vi-style line editing interface
-#endif /* READLINE */
-          xtrace       same as -x
-  -p  Turned on whenever the real and effective user ids do not match.
-      Disables processing of the $ENV file and importing of shell
-      functions.  Turning this option off causes the effective uid and
-      gid to be set to the real uid and gid.
-  -t  Exit after reading and executing one command.
-  -u  Treat unset variables as an error when substituting.
-  -v  Print shell input lines as they are read.
-  -x  Print commands and their arguments as they are executed.
-#if defined (BRACE_EXPANSION)
-  -B  the shell will perform brace expansion
-#endif /* BRACE_EXPANSION */
-  -C  If set, disallow existing regular files to be overwritten
-      by redirection of output.
-  -E  If set, the ERR trap is inherited by shell functions.
-#if defined (BANG_HISTORY)
-  -H  Enable ! style history substitution.  This flag is on
-      by default when the shell is interactive.
-#endif /* BANG_HISTORY */
-  -P  If set, do not resolve symbolic links when executing commands
-      such as cd which change the current directory.
-  -T  If set, the DEBUG and RETURN traps are inherited by shell functions.
-  --  Assign any remaining arguments to the positional parameters.
-      If there are no remaining arguments, the positional parameters
-      are unset.
-  -   Assign any remaining arguments to the positional parameters.
-      The -x and -v options are turned off.
-
-If -o is supplied with no option-name, set prints the current shell
-option settings. If +o is supplied with no option-name, set prints a
-series of set commands to recreate the current option settings.
-
-Using + rather than - causes these flags to be turned off.  The
-flags can also be used upon invocation of the shell.  The current
-set of flags may be found in $-.  The remaining n ARGs are positional
-parameters and are assigned, in order, to $1, $2, .. $n.  If no
-ARGs are given, all shell variables are printed.
-
-Exit Status:
-Returns success unless an invalid option is given.
 $END
-
-#define opt_defs opt_defs1
-#define find_option find_option1
-#define list_all_options(WS, VM, WD) list_all_options2 (opt_defs, WS, VM, WD)
-
-static opt_set_func_t set_errexit_flag;
-static opt_set_func_t set_ignoreeof;
-static opt_set_func_t set_noexec_flag;
-static opt_set_func_t set_posix_mode;
-static opt_set_func_t set_privileged_flag;
-
-#if defined (BANG_HISTORY)
-static opt_set_func_t set_histexp_flag;
-#endif
-
-#if defined (JOB_CONTROL)
-static opt_set_func_t set_monitor_flag;
-#endif
-
-#if defined (READLINE)
-static opt_set_func_t set_edit_mode;
-static opt_get_func_t get_edit_mode;
-#endif
-
-#if defined (RESTRICTED_SHELL)
-static opt_set_func_t set_restricted_flag;
-#endif
-
-#if defined (HISTORY)
-static opt_set_func_t bash_set_history;
-#endif
-
-static opt_set_func_t set_verbose_flag;
-
-/* A struct used to match long options for set -o to the corresponding
-   option letter or internal variable.  The functions can be called to
-   dynamically generate values.  If you add a new variable name here
-   that doesn't have a corresponding single-character option letter, make
-   sure to set the value appropriately in reset_shell_options. */
-
-static const opt_def_t opt_defs[] = {
-  { "allexport",		&mark_modified_vars,	.letter = 'a',	.hide_shopt = 1 },
-#if defined (BRACE_EXPANSION)
-  { "braceexpand",		&brace_expansion,	.letter = 'B',	.hide_shopt = 1 },
-#endif
-#if defined (READLINE)
-  { "emacs",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.hide_shopt = 1 },
-#endif
-  { "errexit",			&errexit_flag,		.letter = 'e',	.set_func = set_errexit_flag,	.hide_shopt = 1 },
-  { "errtrace",			&error_trace_mode,	.letter = 'E',	.hide_shopt = 1 },
-  { "functrace",		&function_trace_mode,	.letter = 'T',	.hide_shopt = 1 },
-  { "hashall",			&hashing_enabled,	.letter = 'h',	.hide_shopt = 1 },
-#if defined (BANG_HISTORY)
-  { "histexpand",		&histexp_flag,		.letter = 'H',	.set_func = set_histexp_flag,	.hide_shopt = 1 },
-#endif /* BANG_HISTORY */
-#if defined (HISTORY)
-  { "history",			&enable_history_list,	.set_func = bash_set_history,	.hide_shopt = 1 },
-#endif
-  { "ignoreeof",		&ignoreeof,		.set_func = set_ignoreeof,	.hide_shopt = 1 },
-  { "interactive-comments",	&interactive_comments,	.hide_shopt = 1 },
-  { "keyword",			&place_keywords_in_env,	.letter = 'k',	.hide_shopt = 1 },
-#if defined (JOB_CONTROL)
-  { "monitor",			&jobs_m_flag,		.letter = 'm',	.set_func = set_monitor_flag,	.hide_shopt = 1 },
-#endif
-  { "noclobber",		&noclobber,		.letter = 'C',	.hide_shopt = 1 },
-  { "noexec",			&read_but_dont_execute,	.letter = 'n',	.set_func = set_noexec_flag,	.hide_shopt = 1 },
-  { "noglob",			&disallow_filename_globbing,	.letter = 'f',	.hide_shopt = 1 },
-#if defined (HISTORY)
-  { "nolog",			&dont_save_function_defs,	.hide_shopt = 1 },
-#endif
-#if defined (JOB_CONTROL)
-  { "notify",			&asynchronous_notification,	.letter = 'b',	.hide_shopt = 1 },
-#endif /* JOB_CONTROL */
-  { "nounset",			&unbound_vars_is_error,	.letter = 'u',	.hide_shopt = 1 },
-  { "onecmd",			&just_one_command,	.letter = 't',	.hide_shopt = 1 },
-  { "physical",			&no_symbolic_links,	.letter = 'P',	.hide_shopt = 1 },
-  { "pipefail",			&pipefail_opt,	.hide_shopt = 1 },
-  { "posix",			&posixly_correct,	.set_func = set_posix_mode,	.hide_shopt = 1 },
-  { "privileged",		&privileged_mode,	.letter = 'p',	.set_func = set_privileged_flag,	.hide_shopt = 1 },
-  { "verbose",			&verbose_flag,		.letter = 'v',	.set_func = set_verbose_flag,	.hide_shopt = 1 },
-#if defined (READLINE)
-  { "vi",						.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.hide_shopt = 1 },
-#endif
-  { "xtrace",			&echo_command_at_execute,	.letter = 'x',	.hide_shopt = 1 },
-  { no_long_name,		&forced_interactive,	.letter = 'i',	.hide_shopt = 1 },
-#if defined (RESTRICTED_SHELL)
-  { no_long_name,		&restricted,		.letter = 'r',	.set_func = set_restricted_flag,	.hide_shopt = 1 },
-#endif /* RESTRICTED_SHELL */
-#if 0
-  { no_long_name,		&lexical_scoping,	.letter = 'l',	.hide_shopt = 1 },
-#endif
-  {0}
-};
-
-#define N_O_OPTIONS	(sizeof (opt_defs) / sizeof (opt_defs[0]))
-
-static opt_def_t const *
-find_option (char const *name)
-{
-  opt_def_t const *d;
-  for (d = opt_defs; d->name; d++)
-    if (d->name != no_long_name && !strcmp (name, d->name))
-      return d;
-  return NULL;
-}
-
-#define MAX_SHORT_NAMES	(1+CHAR_MAX)
-static const opt_def_t *letter_map[MAX_SHORT_NAMES];
-
-static size_t N_short_names = 0;
-static char const *short_opt_names;
-static char const *set_builtin_optflags;
-
-static void
-init_letter_map (void)
-{
-  /* Set up only once; this will have to change if we allow loadables to register new options */
-  if (short_opt_names && set_builtin_optflags)
-    return;
-  opt_def_t const *d;
-  for (d = opt_defs ; d->name; d++)
-    {
-      char c = d->letter;
-      if (c > 0 && c < MAX_SHORT_NAMES)
-	letter_map[c] = d;
-	++N_short_names;
-    }
-
-  char *ep = xmalloc (N_short_names+1);
-  short_opt_names = ep;
-  for (size_t c = 1; c < MAX_SHORT_NAMES; ++c)
-    if (letter_map[c])
-      *ep++ = c;
-  *ep = 0;
-
-  set_builtin_optflags = ep = xmalloc (N_short_names+4);
-  sprintf (ep, "+%so;", short_opt_names);
-}
 
 
 #if defined (BANG_HISTORY)
@@ -707,10 +883,9 @@ minus_o_option_value (char const *name)
 void
 list_minus_o_opts (_Bool reusable)
 {
-  list_all_options2 (opt_defs1,
-		     Whence (set_o),
-		     0,
-		     reusable ? Whence (set_o) : Whence (any));
+  list_all_options (Whence (set_o),
+		    0,
+		    reusable ? Whence (set_o) : Whence (any));
 }
 
 /* get_minus_o_opts is used by pcomplete.c */
@@ -721,7 +896,7 @@ get_minus_o_opts (void)
   char const **ret;
   int i;
 
-  ret = (char const **)strvec_create (N_O_OPTIONS + 1);
+  ret = (char const **)strvec_create (N_OPTIONS + 1);
   opt_def_t const *d;
   for (d = opt_defs, i = 0; d->name; d++)
     {
@@ -745,7 +920,7 @@ get_current_options (void)
   num_posixopts = num_posix_options ();	/* shopts modified by posix mode */
   /* Make the buffer big enough to hold the set -o options and the shopt
      options modified by posix mode. */
-  ret = endp = xmalloc (1 + N_O_OPTIONS + num_posixopts);
+  ret = endp = xmalloc (1 + N_OPTIONS + num_posixopts);
   for (d = opt_defs; d->name; d++)
     *endp++ = bool_to_flag (get_opt_value (d, Whence (set_o)));
 
@@ -899,7 +1074,7 @@ print_all_shell_variables (void)
 void
 set_shellopts (void)
 {
-  char tflag[N_O_OPTIONS];
+  char tflag[N_OPTIONS];
   size_t ti;
   size_t vsize = 0;
   SHELL_VAR *var;
@@ -990,19 +1165,18 @@ initialize_shell_options (int no_shellopts)
 void
 reset_shell_options (void)
 {
-  pipefail_opt = 0;
-  ignoreeof = 0;
+  for (opt_def_t const *d = opt_defs; d->name; d++)
+    if (d->init)
+      *d->store = *d->init;
 
-  interactive_comments = 1;
-
-#if defined (STRICT_POSIX)
-  posixly_correct = 1;
-#else
-  posixly_correct = 0;
+#if defined (ARRAY_VARS)
+  array_expand_once = 0;	/* XXX not in opt_defs */
+#endif
+#if defined (EXTENDED_GLOB)
+  extended_glob = extglob_flag;	/* XXX extended_glob not in opt_defs; extglob_flag already set */
 #endif
 #if defined (HISTORY)
-  dont_save_function_defs = 0;
-  remember_on_history = enable_history_list = 1;	/* XXX */
+  remember_on_history = 1;	/* XXX not in opt_defs */
 #endif
 }
 
@@ -1108,10 +1282,9 @@ set_builtin (WORD_LIST *list)
 
 	      if (option_name == NULL || *option_name == '\0')
 		{
-		  list_all_options2 (opt_defs1,
-				     Whence (set_o),
-				     0,
-				     reusable ? Whence (set_o) : Whence (any));
+		  list_all_options (Whence (set_o),
+				    0,
+				    reusable ? Whence (set_o) : Whence (any));
 		  continue;
 		}
 	    }
@@ -1119,7 +1292,7 @@ set_builtin (WORD_LIST *list)
 	  char short_option_name[] = { on_or_off, flag_name, 0 };
 	  opt_def_t const *d;
 	  if (option_name)
-	    d = find_option1 (option_name);
+	    d = find_option (option_name);
 	  else
 	    {
 	      option_name = short_option_name;
@@ -1199,9 +1372,14 @@ unset_builtin (WORD_LIST *list)
   int posix_utility_error;
   char *name, *tname;
 
-  unset_function = unset_variable = unset_array = nameref = 0;
-  posix_utility_error = any_failed = 0;
-  global_unset_func = global_unset_var = 0;
+  unset_function = 0;
+  unset_variable = 0;
+  unset_array = 0;
+  nameref = 0;
+  posix_utility_error = 0;
+  any_failed = 0;
+  global_unset_func = 0;
+  global_unset_var = 0;
 
   reset_internal_getopt ();
   while ((opt = internal_getopt (list, "fnv")) != -1)
@@ -1414,9 +1592,6 @@ unset_builtin (WORD_LIST *list)
   return (any_failed ? (posix_utility_error ? EX_UTILERROR : EXECUTION_FAILURE) : EXECUTION_SUCCESS);
 }
 
-#undef opt_defs
-#undef find_option
-
 $BUILTIN shopt
 $FUNCTION shopt_builtin
 $SHORT_DOC shopt [-pqsu] [-o] [optname ...]
@@ -1439,248 +1614,9 @@ Returns success if OPTNAME is enabled; fails if an invalid option is
 given or OPTNAME is disabled.
 $END
 
-#define UNSETOPT	0
-#define SETOPT		1
-
-#define OPTFMT		"%-15s\t%s\n"
-
-#if defined (READLINE)
-//extern int complete_fullquote;	// in bashline.h
-//extern int dircomplete_expand;	// in bashline.h
-//extern int dircomplete_spelling;	// in bashline.h
-//extern int force_fignore;	// in bashline.h
-//extern int no_empty_command_completion;	// in bashline.h
-//extern int perform_hostname_completion;	// in bashline.h
-
-//extern int enable_hostname_completion (int);	// in bashline.h
-
-# if defined (HISTORY)
-//extern int hist_verify;	// in bashhist.h conditional on READLINE
-//extern int history_reediting;	// in bashhist.h conditional on READLINE
-# endif
-#endif
-
-extern int cdable_vars;	// from cd.def
-extern int cdspelling;	// from cd.def
-
-extern int xpg_echo;	// from echo.def
-
-extern int gnu_error_format;	// from error.c
-
-extern int no_exit_on_failed_exec;	// from exec.def
-
-extern int lastpipe_opt;	// from execute_cmd.c
-
-extern int check_hashed_filenames;	// from findcmd.h
-
-extern int print_shift_error;	// from general.c
-
-extern int glob_always_skip_dot_and_dotdot;	// from glob.c
-extern int glob_ignore_case;	// from glob.h
-
-extern int mail_warning;	// from mailcheck.c
-
-extern int check_window_size;	// from jobs.c & nojobs.c
-
-extern int expand_aliases;	// from parse.y
-extern int extended_quote;	// from parse.y
-extern int singlequote_translations;	// from parse.y
-extern int promptvars;	// parse.y
-
-extern int allow_null_glob_expansion;	// from pathexp.h
-extern int fail_glob_expansion;	// from pathexp.h
-extern int glob_dot_filenames;	// from pathexp.h
-extern int match_ignore_case;	// from pathexp.h
-extern int glob_star;	// from pathexp.h
-
-#if defined (EXTENDED_GLOB)
-extern int extended_glob;	// from pathexp.h
-#endif
-
-extern int varassign_redir_autoclose;	// from redir.c
-
-//extern int autocd;	// in shell.h
-//extern int check_jobs_at_exit;	// in shell.h
-//extern int hup_on_exit;	// in shell.h
-
-#if defined (DEBUGGER)
-extern int debugging_mode;	// in shell.h
-#endif
-
-extern int glob_asciirange;	// from smatch.c
-
-extern int source_uses_path;	// from source.def
-
-extern int inherit_errexit;	// from subst.c
-extern int patsub_replacement;	// from subst.c
-
-extern int localvar_unset;	// from variables.c
-extern int bash_source_fullpath;	// from variables.c
-extern int localvar_inherit;	// from variables.h
-
-#if defined (PROGRAMMABLE_COMPLETION)
-extern int prog_completion_enabled;	// from pcomplete.h
-extern int progcomp_alias;	// from pcomplete.h
-#endif
-
-#if defined (ARRAY_VARS)
-extern int array_expand_once;	// from arrayfunc.h
-#endif
-
-#if defined (SYSLOG_HISTORY)
-extern int syslog_history;
-#endif
-
-#define opt_defs opt_defs2 /*shopt_vars*/
-#define find_option find_option2 /*find_shopt_option*/
-
-static opt_get_func_t get_compatibility_level;
-static opt_set_func_t set_compatibility_level;
-
-#if defined (RESTRICTED_SHELL)
-static opt_set_func_t set_restricted_shell;
-#endif
-
-#if defined (READLINE)
-static opt_set_func_t shopt_enable_hostname_completion;
-static opt_set_func_t shopt_set_complete_direxpand;
-#endif
-
-#if defined (EXTENDED_GLOB)
-int extglob_flag = EXTGLOB_DEFAULT;
-static opt_set_func_t shopt_set_extglob;
-#endif
-
-int expaliases_flag = 0;
-static opt_set_func_t shopt_set_expaliases;
-
-static opt_set_func_t shopt_set_debug_mode;
-
-static int shopt_login_shell;
 
 /* If you add a new variable name here, make sure to set the default value
    appropriately in reset_shopt_options. */
-
-static const opt_def_t opt_defs[] = {
-#if defined (ARRAY_VARS)
-  { "array_expand_once",	&array_expand_once,	.hide_set_o = 1 },
-  { "assoc_expand_once",	&array_expand_once,	.hide_set_o = 1 },	/* TODO: consider adding .hide_shopt=1 ? */
-#endif
-  { "autocd", &autocd,	.hide_set_o = 1 },
-#if defined (ARRAY_VARS)
-  { "bash_source_fullpath",	&bash_source_fullpath,	.hide_set_o = 1 },
-#endif
-  { "cdable_vars",		&cdable_vars,	.hide_set_o = 1 },
-  { "cdspell",			&cdspelling,	.hide_set_o = 1 },
-  { "checkhash",		&check_hashed_filenames,	.hide_set_o = 1 },
-#if defined (JOB_CONTROL)
-  { "checkjobs",		&check_jobs_at_exit,	.hide_set_o = 1 },
-#endif
-  { "checkwinsize",		&check_window_size,	.hide_set_o = 1 },
-#if defined (HISTORY)
-  { "cmdhist",			&command_oriented_history,	.hide_set_o = 1 },
-#endif
-  { "compat31",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 31,	.hide_set_o = 1 },
-  { "compat32",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 32,	.hide_set_o = 1 },
-  { "compat40",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 40,	.hide_set_o = 1 },
-  { "compat41",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 41,	.hide_set_o = 1 },
-  { "compat42",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 42,	.hide_set_o = 1 },
-  { "compat43",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 43,	.hide_set_o = 1 },
-  { "compat44",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 44,	.hide_set_o = 1 },
-  { "compat50",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 50,	.hide_set_o = 1 },
-  { "compat51",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 51,	.hide_set_o = 1 },
-  { "compat52",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 52,	.hide_set_o = 1 },
-  { "compat53",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 53,	.hide_set_o = 1 },
-  { "compat54",			&shell_compatibility_level,	.get_func = get_compatibility_level,	.set_func = set_compatibility_level,	.reference_value = 54,	.hide_set_o = 1 },
-#if defined (READLINE)
-  { "complete_fullquote",	&complete_fullquote,	.hide_set_o = 1},
-  { "direxpand",		&dircomplete_expand,
-					.set_func = shopt_set_complete_direxpand,	.hide_set_o = 1 },
-  { "dirspell",			&dircomplete_spelling,	.hide_set_o = 1 },
-#endif
-  { "dotglob",			&glob_dot_filenames,	.hide_set_o = 1 },
-  { "execfail",			&no_exit_on_failed_exec,	.hide_set_o = 1 },
-  { "expand_aliases",		&expaliases_flag,
-					.set_func = shopt_set_expaliases,	.hide_set_o = 1 },
-#if defined (DEBUGGER)
-  { "extdebug",			&debugging_mode,
-					.set_func = shopt_set_debug_mode,	.hide_set_o = 1 },
-#endif
-#if defined (EXTENDED_GLOB)
-  { "extglob",			&extglob_flag,
-					.set_func = shopt_set_extglob,	.hide_set_o = 1 },
-#endif
-  { "extquote",			&extended_quote,	.hide_set_o = 1 },
-  { "failglob",			&fail_glob_expansion,	.hide_set_o = 1 },
-#if defined (READLINE)
-  { "force_fignore",		&force_fignore,	.hide_set_o = 1 },
-#endif
-  { "globasciiranges",		&glob_asciirange,	.hide_set_o = 1 },
-  { "globskipdots",		&glob_always_skip_dot_and_dotdot,	.hide_set_o = 1 },
-  { "globstar",			&glob_star,	.hide_set_o = 1 },
-  { "gnu_errfmt",		&gnu_error_format,	.hide_set_o = 1 },
-#if defined (HISTORY)
-  { "histappend",		&force_append_history,	.hide_set_o = 1 },
-#endif
-#if defined (READLINE) && defined (HISTORY)
-  { "histreedit",		&history_reediting,	.hide_set_o = 1 },
-  { "histverify",		&hist_verify,	.hide_set_o = 1 },
-  { "hostcomplete",		&perform_hostname_completion,
-					.set_func = shopt_enable_hostname_completion,	.hide_set_o = 1 },
-#endif
-  { "huponexit",		&hup_on_exit,	.hide_set_o = 1 },
-  { "inherit_errexit",		&inherit_errexit,	.hide_set_o = 1 },
-  { "interactive_comments",	&interactive_comments,
-					.adjust_shellopts = 1,	.hide_set_o = 1 },
-  { "lastpipe",			&lastpipe_opt,	.hide_set_o = 1 },
-#if defined (HISTORY)
-  { "lithist",			&literal_history,	.hide_set_o = 1 },
-#endif
-  { "localvar_inherit",		&localvar_inherit,	.hide_set_o = 1 },
-  { "localvar_unset",		&localvar_unset,	.hide_set_o = 1 },
-  { "login_shell",		&login_shell,
-					.ignore_change = 1,	.hide_set_o = 1 },
-  { "mailwarn",			&mail_warning,	.hide_set_o = 1 },
-#if defined (READLINE)
-  { "no_empty_cmd_completion",	&no_empty_command_completion,	.hide_set_o = 1 },
-#endif
-  { "nocaseglob",		&glob_ignore_case,	.hide_set_o = 1 },
-  { "nocasematch",		&match_ignore_case,	.hide_set_o = 1 },
-  { "noexpand_translation",	&singlequote_translations,	.hide_set_o = 1 },
-  { "nullglob",			&allow_null_glob_expansion,	.hide_set_o = 1 },
-  { "patsub_replacement",	&patsub_replacement,	.hide_set_o = 1 },
-#if defined (PROGRAMMABLE_COMPLETION)
-  { "progcomp",			&prog_completion_enabled,	.hide_set_o = 1 },
-#  if defined (ALIAS)
-  { "progcomp_alias",		&progcomp_alias,	.hide_set_o = 1 },
-#  endif
-#endif
-  { "promptvars",		&promptvars,	.hide_set_o = 1 },
-#if defined (RESTRICTED_SHELL)
-  { "restricted_shell",		&restricted_shell,
-					.set_func = set_restricted_shell,	.hide_set_o = 1 },
-#endif
-  { "shift_verbose",		&print_shift_error,	.hide_set_o = 1 },
-  { "sourcepath",		&source_uses_path,	.hide_set_o = 1 },
-#if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
-  { "syslog_history",		&syslog_history,	.hide_set_o = 1 },
-#endif
-  { "varredir_close",		&varassign_redir_autoclose,	.hide_set_o = 1 },
-  { "xpg_echo",			&xpg_echo,	.hide_set_o = 1 },
-  {0}
-};
-
-#define N_SHOPT_OPTIONS		(sizeof (opt_defs) / sizeof (opt_defs[0]))
-
-static opt_def_t const *
-find_option (char const *name)
-{
-  opt_def_t const *d;
-  for (d = opt_defs; d->name; d++)
-    if (d->name != no_long_name && !strcmp (name, d->name))
-      return d;
-  return NULL;
-}
 
 int
 shopt_builtin (WORD_LIST *list)
@@ -1712,13 +1648,6 @@ shopt_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  /* These 2 will go away when the tables are folded together */
-  opt_def_t const *start = fake_set_o && ! non_set_o ? opt_defs1
-						     : opt_defs2;
-  opt_def_t const *(*finder)(char const *name)
-			 = fake_set_o ? find_option1
-				      : find_option2;
-
   /* This has no effect now, but will select from the table */
   optset_whence_t selection = non_set_o == fake_set_o ? Whence (any)
 					 : fake_set_o ? Whence (set_o)
@@ -1728,10 +1657,10 @@ shopt_builtin (WORD_LIST *list)
   unsigned int value_mask = do_set   ? ~(1 << true)
 			  : do_unset ? ~(1 << false) : 0;
 
-  /* This chooses the preferred display */
-  optset_whence_t display = ! reusable ? Whence (any)
-			  : fake_set_o ? Whence (set_o)
-				       : Whence (shopt);
+  /* This chooses the preferred display style */
+  optset_whence_t display_style = ! reusable ? Whence (any)
+				: fake_set_o ? Whence (set_o)
+					     : Whence (shopt);
 
   if (list && (do_set || do_unset))
     {
@@ -1757,7 +1686,7 @@ shopt_builtin (WORD_LIST *list)
       for (; list; list = list->next)
 	{
 	  char const * option_name = list->word->word;
-	  opt_def_t const *d = finder (option_name);
+	  opt_def_t const *d = find_option (option_name);
 	  if (!d)
 	    {
 	      sh_invalidoptname (option_name);
@@ -1791,14 +1720,13 @@ shopt_builtin (WORD_LIST *list)
        *    LIST OPTIONS    *
        *		    *
        **********************/
-      /* shopt [flags] (without any ARGs) */
-
-      /* When not given any args, always print a list, subject to some
+      /* shopt [flags] (without any ARGs)
+       *
+       * When not given any args, always print a list, subject to some
        * constraints:
        *  -o/-O constrain the selection to match the traditional 'set -o' or 'shopt' list
        *  -p/-po causes the output to be in re-usable format
-       */
-      /*
+       *
        * Select options by:
        *  if (non_set_o)
        *    if (fake_set_o)
@@ -1838,7 +1766,8 @@ shopt_builtin (WORD_LIST *list)
        *    // shopt			: show using standard format
        */
       if (!quiet)
-	list_all_options2 (start, selection, value_mask, display);
+	list_all_options (selection, value_mask, display_style);
+
       return (sh_chkwrite (EXECUTION_SUCCESS));
     }
 
@@ -1850,13 +1779,17 @@ shopt_builtin (WORD_LIST *list)
        ******************************/
 
       /* shopt [-o] ARG... */
+      /* shopt -o OPTS... : show selected options */
+      /* shopt OPTS... : show selected values */
+      /* shopt -o[su] OPTS... : change selected options */
+      /* shopt {-s/-u} ... */
+      /* shopt {-os/-ou} ... */
 
       int rval = EXECUTION_SUCCESS;
-
       for (; list; list = list->next)
 	{
 	  char const * option_name = list->word->word;
-	  opt_def_t const *d = finder (option_name);
+	  opt_def_t const *d = find_option (option_name);
 	  if (!d)
 	    {
 	      sh_invalidoptname (option_name);
@@ -1870,9 +1803,8 @@ shopt_builtin (WORD_LIST *list)
 		rval = 1;	/* looks like EXECUTION_FAILURE but actually means OFF */
 	    }
 	  if (!quiet)
-	    show_one_option (d, Whence (shopt), display);
+	    show_one_option (d, Whence (shopt), display_style);
 	}
-
       if (rval == EX_USAGE)
 	builtin_usage ();
       return (sh_chkwrite (rval));
@@ -1884,88 +1816,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  autocd = cdable_vars = cdspelling = 0;
-  check_hashed_filenames = CHECKHASH_DEFAULT;
-  check_window_size = CHECKWINSIZE_DEFAULT;
-  allow_null_glob_expansion = glob_dot_filenames = 0;
-  no_exit_on_failed_exec = 0;
-  expand_aliases = expaliases_flag = 0;
-  extended_quote = 1;
-  fail_glob_expansion = 0;
-  glob_asciirange = GLOBASCII_DEFAULT;
-  glob_star = 0;
-  gnu_error_format = 0;
-  hup_on_exit = 0;
-  inherit_errexit = 0;
-  interactive_comments = 1;
-  lastpipe_opt = 0;
-  localvar_inherit = localvar_unset = 0;
-  mail_warning = 0;
-  glob_ignore_case = match_ignore_case = 0;
-  print_shift_error = 0;
-  source_uses_path = promptvars = 1;
-  bash_source_fullpath = 0;
-  varassign_redir_autoclose = 0;
-  singlequote_translations = 0;
-  patsub_replacement = PATSUB_REPLACE_DEFAULT;
-
-#if defined (JOB_CONTROL)
-  check_jobs_at_exit = 0;
-#endif
-
-#if defined (EXTENDED_GLOB)
-  extended_glob = extglob_flag = EXTGLOB_DEFAULT;
-#endif
-  glob_always_skip_dot_and_dotdot = 1;		/* new default as of bash-5.2 */
-
-#if defined (ARRAY_VARS)
-  array_expand_once = 0;
-#endif
-
-#if defined (HISTORY)
-  literal_history = 0;
-  force_append_history = 0;
-  command_oriented_history = 1;
-#endif
-
-#if defined (SYSLOG_HISTORY)
-#  if defined (SYSLOG_SHOPT)
-  syslog_history = SYSLOG_SHOPT;
-#  else
-  syslog_history = 1;
-#  endif /* SYSLOG_SHOPT */
-#endif
-
-#if defined (READLINE)
-  complete_fullquote = 1;
-  force_fignore = 1;
-  hist_verify = history_reediting = 0;
-  perform_hostname_completion = 1;
-#  if DIRCOMPLETE_EXPAND_DEFAULT
-  dircomplete_expand = 1;
-#  else
-  dircomplete_expand = 0;
-#endif
-  dircomplete_spelling = 0;
-  no_empty_command_completion = 0;
-#endif
-
-#if defined (PROGRAMMABLE_COMPLETION)
-  prog_completion_enabled = 1;
-#  if defined (ALIAS)
-  progcomp_alias = 0;
-#  endif
-#endif
-
-#if defined (DEFAULT_ECHO_TO_XPG) || defined (STRICT_POSIX)
-  xpg_echo = 1;
-#else
-  xpg_echo = 0;
-#endif /* DEFAULT_ECHO_TO_XPG */
-
-#if defined (DEBUGGER)
-  debugging_mode = 0;
-#endif
 }
 
 static optset_result_t
@@ -2079,15 +1929,10 @@ set_restricted_shell (opt_def_t const *d, optset_whence_t w, option_value_t new_
 char **
 get_shopt_options (void)
 {
-  char **ret;
-  int i;
-  size_t n;
-
-  n = N_SHOPT_OPTIONS;
-  ret = strvec_create (n + 1);
-  for (i = 0; opt_defs[i].name; i++)
+  char **ret = strvec_create (N_OPTIONS + 1);
+  for (size_t i = 0; opt_defs[i].name; i++)
     ret[i] = savestring (opt_defs[i].name);
-  ret[i] = (char *)NULL;
+  ret[N_OPTIONS] = NULL;
   return ret;
 }
 
@@ -2115,11 +1960,9 @@ shopt_setopt (char const *name, option_value_t new_value)
 int
 shopt_listopt (char const *name, int reusable)
 {
+  optset_whence_t display_style = reusable ? Whence (shopt) : Whence (any);
   if (name == NULL)
-    list_all_options2 (opt_defs2,
-		       Whence (any),
-		       0,
-		       reusable ? Whence (shopt) : Whence (any));
+    list_all_options (Whence (any), 0, display_style);
   else
     {
       opt_def_t const *d = find_option (name);
@@ -2129,7 +1972,7 @@ shopt_listopt (char const *name, int reusable)
 	  return (EXECUTION_FAILURE);
 	}
 
-      show_one_option (d, Whence (shopt), reusable ? Whence (shopt) : Whence (any));
+      show_one_option (d, Whence (shopt), display_style);
     }
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }
@@ -2137,7 +1980,7 @@ shopt_listopt (char const *name, int reusable)
 void
 set_bashopts (void)
 {
-  char tflag[N_SHOPT_OPTIONS];
+  char tflag[N_OPTIONS];
   size_t ti, vsize;
   SHELL_VAR *var;
   opt_def_t const *d;
@@ -2216,6 +2059,3 @@ initialize_bashopts (int no_bashopts)
   /* Set up the $BASHOPTS variable. */
   set_bashopts ();
 }
-
-#undef opt_defs
-#undef find_option
