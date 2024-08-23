@@ -47,12 +47,6 @@
 
 /* **************************************************************** */
 /*								    */
-/*			The Standard sh Flags.			    */
-/*								    */
-/* **************************************************************** */
-
-/* **************************************************************** */
-/*								    */
 /*		     Non-Standard Flags Follow Here.		    */
 /*								    */
 /* **************************************************************** */
@@ -66,40 +60,6 @@ int interactive_comments = 1;
 int pipefail_opt = 0;
 
 /* **************************************************************** */
-/*								    */
-/*			The Flags ALIST.			    */
-/*								    */
-/* **************************************************************** */
-
-const struct flags_alist shell_flags[] = {
-  /* Standard sh flags. */
-
-  /* New flags that control non-standard things. */
-  {0}
-};
-
-#define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
-
-static const char opt_letters[] = ""
-			   ;
-
-char const *
-get_short_flag_names (void)
-{
-  return opt_letters;
-}
-
-int *
-find_flag (char name)
-{
-  int i;
-  for (i = 0; shell_flags[i].name; i++)
-    {
-      if (shell_flags[i].name == name)
-	return (shell_flags[i].value);
-    }
-  return (NULL);
-}
 
 /* Change the state of a flag, and return it's original value, or return
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
@@ -107,28 +67,16 @@ find_flag (char name)
 int
 change_flag (char flag, char on_or_off)
 {
-  int *value, old_value;
-
   opt_def_t const *d = find_short_option (flag);
-  if (d)
-    {
-      old_value = get_opt_value (d, Accessor (short));
-      op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
-      if (GoodResult (r))
-	return old_value;
-      else
-	return FLAG_ERROR;
-    }
+  if (! d)
+    return FLAG_ERROR;
 
-  value = find_flag (flag);
-
-  if ((value == NULL) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
-    return (FLAG_ERROR);
-
-  old_value = *value;
-  *value = flag_to_bool (on_or_off);
-
-  return (old_value);
+  int old_value = get_opt_value (d, Accessor (short));
+  op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
+  if (GoodResult (r))
+    return old_value;
+  else
+    return FLAG_ERROR;
 }
 
 /* Return a string which is the names of all the currently
@@ -137,8 +85,7 @@ char *
 which_set_flags (void)
 {
   char const * option_letters = get_short_opt_names ();
-  size_t limit = strlen (option_letters)
-	       + strlen (opt_letters);
+  size_t limit = strlen (option_letters);
 
   char *result = xmalloc (1 + limit + read_from_stdin + want_pending_command);
   size_t j = 0;
@@ -149,13 +96,6 @@ which_set_flags (void)
       if (get_opt_value (find_short_option (letter),
 			 Accessor (short)))
 	result[j++] = letter;
-    }
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    {
-      char letter = sf->name;
-      if (! find_short_option (letter))
-	if (sf->value[0])
-	  result[j++] = letter;
     }
 
   if (want_pending_command)
@@ -171,8 +111,7 @@ char *
 get_current_flags (void)
 {
   char const * option_letters = get_short_opt_names ();
-  size_t limit = strlen (option_letters)
-	       + strlen (opt_letters);
+  size_t limit = strlen (option_letters);
 
   char *bitmap = xmalloc (1 + limit);
   size_t j = 0;
@@ -180,9 +119,6 @@ get_current_flags (void)
   for (size_t i = 0; option_letters[i]; i++)
     bitmap[j++] = get_opt_value (find_short_option (option_letters[i]),
 				 Accessor (unwind));
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    if (! find_short_option (sf->name))
-      bitmap[j++] = sf->value[0];
   bitmap[j] = '\0';	// XXX probably unnecessary
   return bitmap;
 }
@@ -199,9 +135,6 @@ set_current_flags (const char *bitmap)
   for (size_t i = 0; option_letters[i]; i++)
     set_opt_value (find_short_option (option_letters[i]),
 		   Accessor (unwind), bitmap[j++]);
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    if (! find_short_option (sf->name))
-      sf->value[0] = bitmap[j++];
 }
 
 void

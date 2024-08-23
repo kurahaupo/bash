@@ -32,12 +32,6 @@ extern void register_flags (void);
 
 #define FLAG_ERROR -1
 
-/* The thing that we build the array of flags out of. */
-struct flags_alist {
-  char name;
-  int *value;
-};
-
 extern char const *get_opt_letters (void);
 
 static inline char
@@ -144,7 +138,6 @@ extern int
 /* -c, -s invocation options -- not really flags, but they show up in $- */
 extern int want_pending_command, read_from_stdin;
 
-extern int *find_flag (char);
 extern int change_flag (char, char);
 extern char *which_set_flags (void);
 extern void reset_shell_flags (void);
@@ -152,7 +145,6 @@ extern void reset_shell_flags (void);
 extern char *get_current_flags (void);
 extern void set_current_flags (const char *);
 
-extern char const *get_short_flag_names (void);
 extern void initialize_flags (void);
 extern void register_flags_opts (void);
 
