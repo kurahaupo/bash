@@ -416,20 +416,6 @@ int pipefail_opt = 0;
 /*								    */
 /* **************************************************************** */
 
-__attribute__((__deprecated__))
-char const *
-get_short_flag_names (void)
-{
-  return "";
-}
-
-__attribute__((__deprecated__))
-int *
-find_flag (char name)
-{
-  return NULL;
-}
-
 /* Change the state of a flag, and return it's original value, or return
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
    FLAG_ON or FLAG_OFF. */
