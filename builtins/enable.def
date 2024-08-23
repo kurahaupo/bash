@@ -411,7 +411,7 @@ dyn_load_builtin (WORD_LIST *list, int flags, char *filename)
 	}
 
       size = strlen (name);
-      struct_name = (char *)xmalloc (size + 8);
+      struct_name = (char *)xmalloc (size + sizeof STRUCT_SUFFIX);
       strcpy (struct_name, name);
       strcpy (struct_name + size, STRUCT_SUFFIX);
 
