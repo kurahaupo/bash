@@ -36,7 +36,7 @@ extern int errno;
 #endif
 
 extern pid_t dollar_dollar_pid;
-extern int last_command_exit_value;
+extern volatile int last_command_exit_value;
 
 int
 push_builtin (WORD_LIST *list)
