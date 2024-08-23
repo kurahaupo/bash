@@ -704,9 +704,9 @@ initialize_bashopts (int no_bashopts)
     {
       var = find_variable ("BASHOPTS");
       /* set up any shell options we may have inherited. */
-      if (var && imported_p (var))
+      if (var && imported_p (var) && !(array_p (var) || assoc_p (var)))
 	{
-	  temp = (array_p (var) || assoc_p (var)) ? (char *)NULL : savestring (value_cell (var));
+	  temp = savestring (value_cell (var));
 	  if (temp)
 	    {
 	      parse_bashopts (temp);
