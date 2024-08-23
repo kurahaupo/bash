@@ -282,9 +282,7 @@ minus_o_option_value (char const *name)
       opt_def_t const *d = find_short_option (letter);
       if (d)
 	return get_opt_value (d, Accessor (short));
-
-      on_or_off = find_flag (o_options[i].letter);
-      return ((on_or_off == NULL) ? -1 : *on_or_off);
+      return FLAG_ERROR;
     }
   else
     return (GET_BINARY_O_OPTION_VALUE (i, name));
@@ -314,10 +312,9 @@ list_minus_o_opts (int mode, int reusable)
 	{
 	  value = FLAG_ERROR;
 	  opt_def_t const *d = find_short_option (letter);
-	  if (d)
-	    value = get_opt_value (d, Accessor (short));
-	  else
-	    value = find_flag (o_options[i].letter)[0];
+	  if (!d)
+	    continue;
+	  value = get_opt_value (d, Accessor (short));
 	  if (value == FLAG_ERROR)
 	    continue;
 	  if (mode == -1 || mode == value)
@@ -365,7 +362,7 @@ get_current_options (void)
 	  if (d)
 	    temp[i] = get_opt_value (d, Accessor (short));
 	  else
-	    temp[i] = find_flag (letter)[0];
+	    temp[i] = -1;
 	}
       else
 	temp[i] = GET_BINARY_O_OPTION_VALUE (i, o_options[i].name);
@@ -393,23 +390,14 @@ set_current_options (const char *bitmap)
       if (letter)
 	{
 	  struct opt_def_s const *d = find_short_option (letter);
-	  if (d)
-	    {
-	      cv = get_opt_value (d, Accessor (short));
-	      if (v == cv)
-		continue;
-	      op_result_t r = set_opt_value (d, Accessor (short), v);
-	      if (GoodResult (r))
-		continue;
-	    }
-	  else
-	    {
-	      /* We should not get NULL here */
-	      cv = find_flag (letter)[0];
-	      if (v == cv)
-		continue;
-	    }
-	  change_flag (letter, v);
+	  if (!d)
+	    continue;
+	  cv = get_opt_value (d, Accessor (short));
+	  if (v == cv)
+	    continue;
+	  op_result_t r = set_opt_value (d, Accessor (short), v);
+	  if (GoodResult (r))
+	    continue;
 	}
       else
 	{
@@ -581,17 +569,9 @@ set_shellopts (void)
 	{
 	  struct opt_def_s const *d = find_short_option (letter);
 	  if (d)
-	    {
-	      val = get_opt_value (d, Accessor (short));
-	    }
+	    val = get_opt_value (d, Accessor (short));
 	  else
-	    {
-	      ip = find_flag (letter);
-	      if (ip)
-		val = *ip;
-	      else
-		val = 0;
-	    }
+	    val = 0;
 	}
       else
 	val = GET_BINARY_O_OPTION_VALUE (i, name);
@@ -703,10 +683,9 @@ init_optflags (void)
 {
   if (optflags)
     return;
-  char const * option_names = get_short_opt_names (); /* from new stuff */
-  char const * flag_names = get_short_flag_names ();  /* from old stuff TODO: kill this transition measure */
-  optflags = xmalloc (strlen (option_names) + strlen (flag_names) + 4);
-  sprintf (optflags, "+%s%so;", option_names, flag_names);
+  char const * option_names = get_short_opt_names ();
+  optflags = xmalloc (strlen (option_names) + 4);
+  sprintf (optflags, "+%so;", option_names);
 }
 
 /* Set some flags from the word values in the input list.  If LIST is empty,
