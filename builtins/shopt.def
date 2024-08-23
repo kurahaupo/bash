@@ -276,7 +276,7 @@ static const char * const off = "off";
  *    `-O` only show non-`set -o` options
  *    (otherwise show all)
  *  Choose format:
- *    `-p` reusable format, matching selection; treat 'select all' as `shopt`)
+ *    `-p` reusable format, matching selection; treat 'select all' as non-`shopt`)
  *    `-P` `shopt` reusable format
  *    `-Pp` `set -o` reusable format
  *    (otherwise use 'standard' format)
