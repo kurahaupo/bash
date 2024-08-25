@@ -50,6 +50,7 @@ static int indentation_amount = 4;
 
 typedef void PFUNC (const char *, ...);
 
+# pragma GCC diagnostic ignored "-Wformat-zero-length" /* cprintf ("") is permissible */
 static void cprintf (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 static void xprintf (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
