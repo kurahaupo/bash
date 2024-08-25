@@ -37,6 +37,23 @@ extern int errno;
 extern char *strerror (int);
 extern char **make_builtin_argv (WORD_LIST *, int *);
 
+static inline void
+write_str (int fd, char const *s)
+{
+  ssize_t l = strlen (s);
+  l = write (fd, s, l);
+  (void) l;
+}
+
+static inline void
+write_num (int fd, long n)
+{
+  char b[1+3*sizeof n];
+  ssize_t l = snprintf (b, sizeof b, "%ld", n);
+  l = write (fd, b, l);
+  (void) l;
+}
+
 static int
 fcopy (int fd, char *fn)
 {
@@ -49,11 +66,11 @@ fcopy (int fd, char *fn)
       if (n < 0)
 	{
 	  s = strerror (errno);
-	  write (2, "cat: read error: ", 18);
-	  write (2, fn, strlen (fn));
-	  write (2, ": ", 2);
-	  write (2, s, strlen (s));
-	  write (2, "\n", 1);
+	  write_str (2, "cat: read error: ");
+	  write_str (2, fn);
+	  write_str (2, ": ");
+	  write_str (2, s);
+	  write_str (2, "\n");
 	  return 1;
 	}
       QUIT;
@@ -61,21 +78,21 @@ fcopy (int fd, char *fn)
       if (w < 0)
 	{
 	  s = strerror (errno);
-	  write (2, "cat: write error: ", 18);
-	  write (2, s, strlen (s));
-	  write (2, "\n", 1);
+	  write_str (2, "cat: write error: ");
+	  write_str (2, s);
+	  write_str (2, "\n");
 	  return 1;
 	}
       if (w != n)
 	{
 	  /* errno is not set in this case */
-	  write (2, "cat: write shortfall: ", 22);
-          write (2, fn, strlen (fn));
-	  write (2, ": only ", 7);
-	  write (2, "0", 1);    // w
-	  write (2, " of ", 4);
-	  write (2, "0", 1);    // n
-	  write (2, " bytes written\n", 15);
+	  write_str (2, "cat: write shortfall: ");
+	  write_str (2, fn);
+	  write_str (2, ": only ");
+	  write_num (2, w);
+	  write_str (2, " of ");
+	  write_num (2, n);
+	  write_str (2, " bytes written\n");
 	  return 1;
 	}
       QUIT;
@@ -103,11 +120,11 @@ cat_main (int argc, char **argv)
 	  if (fd < 0)
 	    {
 	      s = strerror (errno);
-	      write (2, "cat: cannot open ", 17);
-	      write (2, argv[i], strlen (argv[i]));
-	      write (2, ": ", 2);
-	      write (2, s, strlen (s));
-	      write (2, "\n", 1);
+	      write_str (2, "cat: cannot open ");
+	      write_str (2, argv[i]);
+	      write_str (2, ": ");
+	      write_str (2, s);
+	      write_str (2, "\n");
 	      continue;
 	    }
 	}
