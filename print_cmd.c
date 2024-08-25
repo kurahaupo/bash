@@ -46,7 +46,7 @@
 #include "builtins/common.h"
 
 #if !HAVE_DECL_PRINTF
-extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
+extern int printf (const char *, ...);
 #endif
 
 static int indentation;
@@ -54,6 +54,7 @@ static int indentation_amount = 4;
 
 typedef void PFUNC (const char *, ...);
 
+# pragma GCC diagnostic ignored "-Wformat-zero-length" /* cprintf ("") is permissible */
 static void cprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 static void xprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 
