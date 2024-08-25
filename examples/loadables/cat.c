@@ -26,6 +26,7 @@
 
 #include <fcntl.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include "builtins.h"
 #include "shell.h"
@@ -40,28 +41,25 @@ extern char **make_builtin_argv (WORD_LIST *, int *);
 static int
 fcopy(int fd, char *fn)
 {
-	char	buf[4096], *s;
-	int	n, w, e;
+	char	buf[4096];
+	ssize_t	n, w;
 
 	while (n = read(fd, buf, sizeof (buf))) {
 		if (n < 0) {
-			e = errno;
-			write(2, "cat: read error: ", 18);
-			write(2, fn, strlen(fn));
-			write(2, ": ", 2);
-			s = strerror(e);
-			write(2, s, strlen(s));
-			write(2, "\n", 1);
+			fprintf(stderr, "cat: read error: %s: %s\n", fn, strerror(errno));
 			return 1;
 		}
 		QUIT;
 		w = write(1, buf, n);
+		if (w < 0) {
+			fprintf(stderr, "cat: write error: %s: %s\n", fn, strerror(errno));
+			return 1;
+		}
 		if (w != n) {
-			e = errno;
-			write(2, "cat: write error: ", 18);
-			s = strerror(e);
-			write(2, s, strlen(s));
-			write(2, "\n", 1);
+                        /* errno is not set in this case */
+			fprintf(stderr,
+                        	"cat: write shortfall: %s: only %zd of %zd bytes written\n",
+                                fn, w, n);
 			return 1;
 		}
 		QUIT;
@@ -85,12 +83,8 @@ cat_main (int argc, char **argv)
 		else {
 			fd = open(argv[i], O_RDONLY, 0666);
 			if (fd < 0) {
-				s = strerror(errno);
-				write(2, "cat: cannot open ", 17);
-				write(2, argv[i], strlen(argv[i]));
-				write(2, ": ", 2);
-				write(2, s, strlen(s));
-				write(2, "\n", 1);
+				s = s;
+				fprintf(stderr, "cat: cannot open %s: %s\n", argv[i], strerror(errno));
 				continue;
 			}
 		}
