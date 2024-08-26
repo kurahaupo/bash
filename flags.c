@@ -40,6 +40,7 @@
 #endif
 
 #if defined (JOB_CONTROL)
+#include "jobs.h"
 extern int set_job_control (int);
 #endif
 
@@ -52,54 +53,205 @@ extern int set_job_control (int);
 /* Non-zero means automatically mark variables which are modified or created
    as auto export variables. */
 int mark_modified_vars = 0;
+static opt_def_t const OPTDEF_mark_modified_vars = {
+  .store = &mark_modified_vars,
+  .letter = 'a',
+  .name = "allexport",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
+#if defined (JOB_CONTROL)
 /* Non-zero causes asynchronous job notification.  Otherwise, job state
    notification only takes place just before a primary prompt is printed. */
 int asynchronous_notification = 0;
+static opt_def_t const OPTDEF_asynchronous_notification = {
+  .store = &asynchronous_notification,
+  .letter = 'b',
+  .name = "notify",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif
 
 /* Non-zero means exit immediately if a command exits with a non-zero
    exit status.  The first is what controls set -e; the second is what
    bash uses internally. */
 int errexit_flag = 0;
 int exit_immediately_on_error = 0;
+static opt_set_func_t optset_errexit_flag;
+static op_result_t
+optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  errexit_flag = new_value;
+  if (builtin_ignoring_errexit == 0)
+    exit_immediately_on_error = errexit_flag;
+}
+static opt_def_t const OPTDEF_errexit_flag = {
+  .store = &errexit_flag,
+  .set_func = optset_errexit_flag,
+  .letter = 'e',
+  .name = "errexit",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
+static opt_def_t const OPTDEF_disallow_filename_globbing = {
+  .store = &disallow_filename_globbing,
+  .letter = 'f',
+  .name = "noglob",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means that all keyword arguments are placed into the environment
    for a command, not just those that appear on the line before the command
    name. */
 int place_keywords_in_env = 0;
+static opt_def_t const OPTDEF_place_keywords_in_env = {
+  .store = &place_keywords_in_env,
+  .letter = 'k',
+  .name = "keyword",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means read commands, but don't execute them.  This is useful
    for debugging shell scripts that should do something hairy and possibly
    destructive. */
 int read_but_dont_execute = 0;
+static op_result_t
+set_read_but_dont_execute (opt_def_t const *d,
+			   accessor_t why,
+			   option_value_t new_value)
+{
+  /* The `noexec` option is a trapdoor; once it's on, there's no way to invoke
+     a command to turn it off. So this code ignores attempts to turn `noexec`
+     on when in interactive mode, as it would result in the user being unable
+     to invoke `exit` or `logout`.
+
+     Note that it can be turned off by returning from a function when `local -`
+     is in effect.
+  */
+  #if 0
+  /* TODO decide whether the following is desirable.
+     The original code would always turn noexec off if the shell was
+     interactive, even when attempting to turn it on, and even if it was
+     already on.
+     That pre-supposes that this code could be reached when noexec was already
+     on, which was not possible when the code was written.
+     */
+  read_but_dont_execute = new_value;
+  if (interactive_shell)
+    read_but_dont_execute = 0;
+  #endif
+  if (interactive_shell && new_value)
+    return Result (Ignored);
+  read_but_dont_execute = new_value;
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_read_but_dont_execute = {
+  .store = &read_but_dont_execute,
+  .set_func = set_read_but_dont_execute,
+  .letter = 'n',
+  .name = "noexec",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
 
 /* Non-zero means end of file is after one command. */
 int just_one_command = 0;
+static opt_def_t const OPTDEF_just_one_command = {
+  .store = &just_one_command,
+  .letter = 't',
+  .name = "onecmd",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
+static opt_def_t const OPTDEF_noclobber = {
+  .store = &noclobber,
+  .letter = 'C',
+  .name = "noclobber",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means trying to get the value of $i where $i is undefined
    causes an error, instead of a null substitution. */
 int unbound_vars_is_error = 0;
+static opt_def_t const OPTDEF_unbound_vars_is_error = {
+  .store = &unbound_vars_is_error,
+  .letter = 'u',
+  .name = "nounset",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means type out input lines after you read them. */
 int echo_input_at_read = 0;
 int verbose_flag = 0;
+static op_result_t
+set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
+{
+  echo_input_at_read = verbose_flag = new_value;
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_verbose_flag = {
+  .store = &verbose_flag,
+  .set_func = set_verbose_flag,
+  .letter = 'v',
+  .name = "verbose",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
+static opt_def_t const OPTDEF_echo_command_at_execute = {
+  .store = &echo_command_at_execute,
+  .letter = 'x',
+  .name = "xtrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
+#if defined (JOB_CONTROL)
 /* Non-zero means turn on the job control features. */
 int jobs_m_flag = 0;
+static op_result_t
+set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  jobs_m_flag = new_value;
+  set_job_control (new_value);
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_jobs_m_flag = {
+  .store = &jobs_m_flag,
+  .set_func = set_jobs_m_flag,
+  .letter = 'm',
+  .name = "monitor",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif
 
 /* Non-zero means this shell is interactive, even if running under a
    pipe. */
 int forced_interactive = 0;
+static opt_def_t const OPTDEF_forced_interactive = {
+  .store = &forced_interactive,
+  .letter = 'i',
+  .name = "interactive",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -107,6 +259,13 @@ int forced_interactive = 0;
    of the absolute directory.  The shell variable `nolinks' also controls
    this flag. */
 int no_symbolic_links = 0;
+static opt_def_t const OPTDEF_no_symbolic_links = {
+  .store = &no_symbolic_links,
+  .letter = 'P',
+  .name = "physical",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* **************************************************************** */
 /*								    */
@@ -117,17 +276,48 @@ int no_symbolic_links = 0;
 #if 0
 /* Non-zero means do lexical scoping in the body of a FOR command. */
 int lexical_scoping = 0;
+static opt_def_t const OPTDEF_lexical_scoping = {
+  .store = &lexical_scoping,
+  .letter = 'l',
+  .name = "lexical",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 #endif
 
 /* Non-zero means look up and remember command names in a hash table, */
 int hashing_enabled = 1;
+static opt_def_t const OPTDEF_hashing_enabled = {
+  .store = &hashing_enabled,
+  .letter = 'h',
+  .name = "hashall",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 #if defined (BANG_HISTORY)
 /* Non-zero means that we are doing history expansion.  The default.
    This means !22 gets the 22nd line of history. */
 int history_expansion = HISTEXPAND_DEFAULT;
 int histexp_flag = 0;
-#endif /* BANG_HISTORY */
+static opt_set_func_t set_histexp_flag;
+static op_result_t
+set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
+{
+  history_expansion = histexp_flag = new_value;
+  if (new_value)
+    bash_initialize_history ();
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_histexp_flag = {
+  .store = &histexp_flag,
+  .set_func = set_histexp_flag,
+  .letter = 'H',
+  .name = "histexpand",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif
 
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
@@ -139,24 +329,81 @@ int interactive_comments = 1;
    output redirection. */
 int restricted = 0;		/* currently restricted */
 int restricted_shell = 0;	/* shell was started in restricted mode. */
-#endif /* RESTRICTED_SHELL */
+static op_result_t
+set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
+{
+  /* Don't allow `set +r` or `set +o restrict` in a shell which is
+   * "restricted", but do allow `local -` to unwind `set -r`. */
+  if (restricted && !new_value && ! AccessorIsPrivileged (why))
+    return Result (Forbidden);
+  restricted = new_value;
+  if (new_value && shell_initialized)
+    maybe_make_restricted (shell_name);
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_restricted = {
+  .store = &restricted,
+  .set_func = set_restricted,
+  .letter = 'r',
+  .name = "restricted",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+#endif
 
 /* Non-zero means that this shell is running in `privileged' mode.  This
    is required if the shell is to run setuid.  If the `-p' option is
    not supplied at startup, and the real and effective uids or gids
    differ, disable_priv_mode is called to relinquish setuid status. */
 int privileged_mode = 0;
+static op_result_t
+set_privileged_mode (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
+{
+  privileged_mode = new_value;
+  if (! new_value)
+    disable_priv_mode ();
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_privileged_mode = {
+  .store = &privileged_mode,
+  .set_func = set_privileged_mode,
+  .letter = 'p',
+  .name = "privileged",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 #if defined (BRACE_EXPANSION)
 /* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
 int brace_expansion = 1;
+static opt_def_t const OPTDEF_brace_expansion = {
+  .store = &brace_expansion,
+  .letter = 'B',
+  .name = "braceexpand",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 #endif
 
 /* Non-zero means that shell functions inherit the DEBUG trap. */
 int function_trace_mode = 0;
+static opt_def_t const OPTDEF_function_trace_mode = {
+  .store = &function_trace_mode,
+  .letter = 'T',
+  .name = "functrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means that shell functions inherit the ERR trap. */
 int error_trace_mode = 0;
+static opt_def_t const OPTDEF_error_trace_mode = {
+  .store = &error_trace_mode,
+  .letter = 'E',
+  .name = "errtrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
 
 /* Non-zero means that the rightmost non-zero exit status in a pipeline
    is the exit status of the entire pipeline.  If each processes exits
@@ -169,83 +416,18 @@ int pipefail_opt = 0;
 /*								    */
 /* **************************************************************** */
 
-const struct flags_alist shell_flags[] = {
-  /* Standard sh flags. */
-  { 'a', &mark_modified_vars },
-#if defined (JOB_CONTROL)
-  { 'b', &asynchronous_notification },
-#endif /* JOB_CONTROL */
-  { 'e', &errexit_flag },
-  { 'f', &disallow_filename_globbing },
-  { 'h', &hashing_enabled },
-  { 'i', &forced_interactive },
-  { 'k', &place_keywords_in_env },
-#if defined (JOB_CONTROL)
-  { 'm', &jobs_m_flag },
-#endif /* JOB_CONTROL */
-  { 'n', &read_but_dont_execute },
-  { 'p', &privileged_mode },
-#if defined (RESTRICTED_SHELL)
-  { 'r', &restricted },
-#endif /* RESTRICTED_SHELL */
-  { 't', &just_one_command },
-  { 'u', &unbound_vars_is_error },
-  { 'v', &verbose_flag },
-  { 'x', &echo_command_at_execute },
-
-  /* New flags that control non-standard things. */
-#if 0
-  { 'l', &lexical_scoping },
-#endif
-#if defined (BRACE_EXPANSION)
-  { 'B', &brace_expansion },
-#endif
-  { 'C', &noclobber },
-  { 'E', &error_trace_mode },
-#if defined (BANG_HISTORY)
-  { 'H', &histexp_flag },
-#endif /* BANG_HISTORY */
-  { 'P', &no_symbolic_links },
-  { 'T', &function_trace_mode },
-  {0}
-};
-
-#define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
-
-static const char opt_letters[] = "knptuvxCEPT"
-#if defined (JOB_CONTROL)
-                           "m"
-#endif
-#if defined (RESTRICTED_SHELL)
-                           "r"
-#endif
-#if 0
-                           "l"
-#endif
-#if defined (BRACE_EXPANSION)
-                           "B"
-#endif
-#if defined (BANG_HISTORY)
-                           "H"
-#endif
-			   ;
-
+__attribute__((__deprecated__))
 char const *
 get_short_flag_names (void)
 {
-  return opt_letters;
+  return "";
 }
 
+__attribute__((__deprecated__))
 int *
 find_flag (char name)
 {
-  int i;
-  for (i = 0; shell_flags[i].name; i++)
-    {
-      if (shell_flags[i].name == name)
-	return (shell_flags[i].value);
-    }
-  return (NULL);
+  return NULL;
 }
 
 /* Change the state of a flag, and return it's original value, or return
@@ -254,92 +436,16 @@ find_flag (char name)
 int
 change_flag (char flag, char on_or_off)
 {
-  int *value, old_value;
-
   opt_def_t const *d = find_short_option (flag);
-  if (d)
-    {
-      old_value = get_opt_value (d, Accessor (short));
-      op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
-      if (GoodResult (r))
-	return old_value;
-      else
-	return FLAG_ERROR;
-    }
+  if (! d)
+    return FLAG_ERROR;
 
-  value = find_flag (flag);
-
-  if ((value == NULL) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
-    return (FLAG_ERROR);
-
-  old_value = *value;
-
-  /* Special cases for a few flags. */
-  switch (flag)
-    {
-#if defined (BANG_HISTORY)
-    case 'H':
-      /* *value = ... */
-      histexp_flag = flag_to_bool (on_or_off);
-      history_expansion = histexp_flag;
-      if (flag_to_bool (on_or_off))
-	bash_initialize_history ();
-      break;
-#endif
-
-#if defined (JOB_CONTROL)
-    case 'm':
-      /* *value = ... */
-      jobs_m_flag = flag_to_bool (on_or_off);
-      set_job_control (flag_to_bool (on_or_off));
-      break;
-#endif /* JOB_CONTROL */
-
-    case 'e':
-      /* *value = ... */
-      errexit_flag = flag_to_bool (on_or_off);
-      if (builtin_ignoring_errexit == 0)
-	exit_immediately_on_error = errexit_flag;
-      break;
-
-    case 'n':
-      /* *value = ... */
-      read_but_dont_execute = flag_to_bool (on_or_off);
-      if (interactive_shell)
-	read_but_dont_execute = 0;
-      break;
-
-    case 'p':
-      /* *value = ... */
-      privileged_mode = flag_to_bool (on_or_off);
-      if (! flag_to_bool (on_or_off))
-	disable_priv_mode ();
-      break;
-
-#if defined (RESTRICTED_SHELL)
-    case 'r':
-      /* Don't allow "set +r" in a shell which is `restricted'. */
-      if (restricted && on_or_off == FLAG_OFF)
-	return (FLAG_ERROR);
-      /* *value = ... */
-      restricted = flag_to_bool (on_or_off);
-      if (on_or_off == FLAG_ON && shell_initialized)
-	maybe_make_restricted (shell_name);
-      break;
-#endif
-
-    case 'v':
-      /* *value = ... */
-      verbose_flag = flag_to_bool (on_or_off);
-      echo_input_at_read = verbose_flag;
-      break;
-
-    default:
-      *value = flag_to_bool (on_or_off);
-      break;
-    }
-
-  return (old_value);
+  int old_value = get_opt_value (d, Accessor (short));
+  op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
+  if (GoodResult (r))
+    return old_value;
+  else
+    return FLAG_ERROR;
 }
 
 /* Return a string which is the names of all the currently
@@ -348,8 +454,7 @@ char *
 which_set_flags (void)
 {
   char const * option_letters = get_short_opt_names ();
-  size_t limit = strlen (option_letters)
-	       + strlen (opt_letters);
+  size_t limit = strlen (option_letters);
 
   char *result = xmalloc (1 + limit + read_from_stdin + want_pending_command);
   size_t j = 0;
@@ -360,13 +465,6 @@ which_set_flags (void)
       if (get_opt_value (find_short_option (letter),
 			 Accessor (short)))
 	result[j++] = letter;
-    }
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    {
-      char letter = sf->name;
-      if (! find_short_option (letter))
-	if (sf->value[0])
-	  result[j++] = letter;
     }
 
   if (want_pending_command)
@@ -382,8 +480,7 @@ char *
 get_current_flags (void)
 {
   char const * option_letters = get_short_opt_names ();
-  size_t limit = strlen (option_letters)
-	       + strlen (opt_letters);
+  size_t limit = strlen (option_letters);
 
   char *bitmap = xmalloc (1 + limit);
   size_t j = 0;
@@ -391,9 +488,6 @@ get_current_flags (void)
   for (size_t i = 0; option_letters[i]; i++)
     bitmap[j++] = get_opt_value (find_short_option (option_letters[i]),
 				 Accessor (unwind));
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    if (! find_short_option (sf->name))
-      bitmap[j++] = sf->value[0];
   bitmap[j] = '\0';	// XXX probably unnecessary
   return bitmap;
 }
@@ -410,9 +504,6 @@ set_current_flags (const char *bitmap)
   for (size_t i = 0; option_letters[i]; i++)
     set_opt_value (find_short_option (option_letters[i]),
 		   Accessor (unwind), bitmap[j++]);
-  for (const struct flags_alist *sf = shell_flags; sf->name; ++sf)
-    if (! find_short_option (sf->name))
-      sf->value[0] = bitmap[j++];
 }
 
 void
@@ -474,4 +565,35 @@ initialize_flags (void)
 void
 register_flags_opts (void)
 {
+  register_option (&OPTDEF_mark_modified_vars);		/* ±a, ±o allexport    */
+  register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit      */
+  register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
+  register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
+  register_option (&OPTDEF_hashing_enabled);		/* ±h, ±o hashall      */
+  register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive  */
+  register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword      */
+  register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor      */
+  register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
+  register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec       */
+  register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob       */
+  register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
+  register_option (&OPTDEF_just_one_command);		/* ±t, ±o onecmd       */
+  register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
+  register_option (&OPTDEF_privileged_mode);		/* ±p, ±o privileged"  */
+  register_option (&OPTDEF_restricted);			/* ±r, ±o restricted   */
+  register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
+  register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
+
+#if defined (JOB_CONTROL)
+  register_option (&OPTDEF_asynchronous_notification);	/* ±b, ±o notify */
+#endif
+#if defined (BRACE_EXPANSION)
+  register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
+#endif
+#if defined (BANG_HISTORY)
+  register_option (&OPTDEF_histexp_flag);		/* ±H, ±o histexpand   */
+#endif
+#if 0
+  register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical      */
+#endif
 }
