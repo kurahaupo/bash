@@ -383,6 +383,8 @@ extern int executing_funsub;
 extern void invalidate_cached_quoted_dollar_at (void);
 
 extern int place_keywords_in_env;
+extern int unbound_vars_is_error;
+
 extern void register_subst_opts (void);
 
 #endif /* !_SUBST_H_ */
