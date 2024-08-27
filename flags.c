@@ -278,13 +278,14 @@ change_flag (char flag, char on_or_off)
     return (FLAG_ERROR);
 
   old_value = *value;
-  *value = flag_to_bool (on_or_off);
 
   /* Special cases for a few flags. */
   switch (flag)
     {
 #if defined (BANG_HISTORY)
     case 'H':
+      /* *value = ... */
+      histexp_flag = flag_to_bool (on_or_off);
       history_expansion = histexp_flag;
       if (flag_to_bool (on_or_off))
 	bash_initialize_history ();
@@ -293,34 +294,50 @@ change_flag (char flag, char on_or_off)
 
 #if defined (JOB_CONTROL)
     case 'm':
+      /* *value = ... */
+      jobs_m_flag = flag_to_bool (on_or_off);
       set_job_control (flag_to_bool (on_or_off));
       break;
 #endif /* JOB_CONTROL */
 
     case 'e':
+      /* *value = ... */
+      errexit_flag = flag_to_bool (on_or_off);
       if (builtin_ignoring_errexit == 0)
 	exit_immediately_on_error = errexit_flag;
       break;
 
     case 'n':
+      /* *value = ... */
+      read_but_dont_execute = flag_to_bool (on_or_off);
       if (interactive_shell)
 	read_but_dont_execute = 0;
       break;
 
     case 'p':
+      /* *value = ... */
+      privileged_mode = flag_to_bool (on_or_off);
       if (! flag_to_bool (on_or_off))
 	disable_priv_mode ();
       break;
 
 #if defined (RESTRICTED_SHELL)
     case 'r':
+      /* *value = ... */
+      restricted = flag_to_bool (on_or_off);
       if (on_or_off == FLAG_ON && shell_initialized)
 	maybe_make_restricted (shell_name);
       break;
 #endif
 
     case 'v':
+      /* *value = ... */
+      verbose_flag = flag_to_bool (on_or_off);
       echo_input_at_read = verbose_flag;
+      break;
+
+    default:
+      *value = flag_to_bool (on_or_off);
       break;
     }
 
