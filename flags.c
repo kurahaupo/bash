@@ -155,37 +155,6 @@ static opt_def_t const OPTDEF_lexical_scoping = {
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
 
-#if defined (RESTRICTED_SHELL)
-/* Non-zero means that this shell is `restricted'.  A restricted shell
-   disallows: changing directories, command or path names containing `/',
-   unsetting or resetting the values of $PATH and $SHELL, and any type of
-   output redirection. */
-int restricted = 0;		/* currently restricted */
-int restricted_shell = 0;	/* shell was started in restricted mode. */
-static op_result_t
-set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
-{
-  /* Don't allow `set +r` or `set +o restrict` in a shell which is
-   * "restricted", but do allow `local -` to unwind `set -r`. */
-  if (restricted && !new_value && ! AccessorIsPrivileged (why))
-    return Result (Forbidden);
-  restricted = new_value;
-  if (new_value && shell_initialized)
-    maybe_make_restricted (shell_name);
-  return Result (OK);
-}
-static opt_def_t const OPTDEF_restricted = {
-  .store = &restricted,
-  .set_func = set_restricted,
-  .letter = 'r',
-  .name = "restricted",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "If bash is started with the name rbash, or the -r option is supplied at\n"
-	  "invocation, the shell becomes restricted. This cannot be undone.",
-};
-#endif
-
 #if defined (BRACE_EXPANSION)
 /* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
 int brace_expansion = 1;
@@ -373,7 +342,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
   register_option (&OPTDEF_just_one_command);		/* ±t, ±o onecmd       */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
-  register_option (&OPTDEF_restricted);			/* ±r, ±o restricted   */
   register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
 
