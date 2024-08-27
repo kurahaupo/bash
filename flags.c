@@ -62,18 +62,6 @@ static opt_def_t const OPTDEF_noclobber = {
 	  "overwritten by redirected output.",
 };
 
-/* Non-zero means trying to get the value of $i where $i is undefined
-   causes an error, instead of a null substitution. */
-int unbound_vars_is_error = 0;
-static opt_def_t const OPTDEF_unbound_vars_is_error = {
-  .store = &unbound_vars_is_error,
-  .letter = 'u',
-  .name = "nounset",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "Treat unset variables as an error when substituting.",
-};
-
 /* Non-zero means type out input lines after you read them. */
 int echo_input_at_read = 0;
 int verbose_flag = 0;
@@ -328,7 +316,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
-  register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
   register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
