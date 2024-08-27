@@ -414,6 +414,20 @@ static opt_def_t const OPTDEF_place_keywords_in_env = {
     "command, not just those that precede the command name."),
 };
 
+/* Non-zero means trying to get the value of $i where $i is undefined
+   causes an error, instead of a null substitution. */
+int unbound_vars_is_error = 0;
+static opt_def_t const OPTDEF_unbound_vars_is_error = {
+  .store = &unbound_vars_is_error,
+  .OPTRESET_false,
+  .letter = 'u',
+  .name = "nounset",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Treat unset variables as an error when substituting."),
+};
+
 /* **************************************************************** */
 /*								    */
 /*			Utility Functions			    */
@@ -13265,4 +13279,5 @@ register_subst_opts (void)
 {
   register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
   register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword */
+  register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset */
 }
