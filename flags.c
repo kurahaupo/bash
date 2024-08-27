@@ -50,51 +50,6 @@
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means read commands, but don't execute them.  This is useful
-   for debugging shell scripts that should do something hairy and possibly
-   destructive. */
-int read_but_dont_execute = 0;
-static op_result_t
-set_read_but_dont_execute (opt_def_t const *d,
-			   accessor_t why,
-			   option_value_t new_value)
-{
-  /* The `noexec` option is a trapdoor; once it's on, there's no way to invoke
-     a command to turn it off. So this code ignores attempts to turn `noexec`
-     on when in interactive mode, as it would result in the user being unable
-     to invoke `exit` or `logout`.
-
-     Note that it can be turned off by returning from a function when `local -`
-     is in effect.
-  */
-  #if 0
-  /* TODO decide whether the following is desirable.
-     The original code would always turn noexec off if the shell was
-     interactive, even when attempting to turn it on, and even if it was
-     already on.
-     That pre-supposes that this code could be reached when noexec was already
-     on, which was not possible when the code was written.
-     */
-  read_but_dont_execute = new_value;
-  if (interactive_shell)
-    read_but_dont_execute = 0;
-  #endif
-  if (interactive_shell && new_value)
-    return Result (Ignored);
-  read_but_dont_execute = new_value;
-  return Result (OK);
-}
-static opt_def_t const OPTDEF_read_but_dont_execute = {
-  .store = &read_but_dont_execute,
-  .set_func = set_read_but_dont_execute,
-  .letter = 'n',
-  .name = "noexec",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "Read commands but do not execute them.",
-};
-
-
 /* Non-zero means end of file is after one command. */
 int just_one_command = 0;
 static opt_def_t const OPTDEF_just_one_command = {
@@ -441,7 +396,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
-  register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec       */
   register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
   register_option (&OPTDEF_just_one_command);		/* ±t, ±o onecmd       */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
