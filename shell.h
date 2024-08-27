@@ -96,6 +96,7 @@ extern WORD_LIST *rest_of_args;
 extern char *command_execution_string;
 
 extern int debugging_mode;
+extern int echo_input_at_read;
 extern int executing;
 extern int read_but_dont_execute;
 extern int privileged_mode;
