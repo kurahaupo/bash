@@ -303,7 +303,7 @@ int want_pending_command;	/* -c flag supplied */
 
 /* This variable is not static so it can be bound to $BASH_EXECUTION_STRING */
 char *command_execution_string;	/* argument to -c option */
-char *shell_script_filename; 	/* shell script */
+char *shell_script_filename;	/* shell script */
 
 int malloc_trace_at_exit = 0;
 
@@ -1521,7 +1521,7 @@ bind_args (char **argv, int arg_start, int arg_end, int start_index)
 	    }
 	}
       else			/* bind to $1...$n for shell script */
-        {
+	{
 	  remember_args (args, 1);
 	  /* We do this unconditionally so something like -O extdebug doesn't
 	     do it first.  We're setting the definitive positional params
@@ -1531,7 +1531,7 @@ bind_args (char **argv, int arg_start, int arg_end, int start_index)
 	      push_args (args);		/* BASH_ARGV and BASH_ARGC */
 	      bash_argv_initialized = 1;
 	    }
-        }
+	}
 
       dispose_words (args);
     }
