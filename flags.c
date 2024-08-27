@@ -172,14 +172,7 @@ change_flag (char flag, char on_or_off)
     return (FLAG_ERROR);
 
   old_value = *value;
-
-  /* Special cases for a few flags. */
-  switch (flag)
-    {
-    default:
-      *value = flag_to_bool (on_or_off);
-      break;
-    }
+  *value = flag_to_bool (on_or_off);
 
   return (old_value);
 }
