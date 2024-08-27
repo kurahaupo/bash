@@ -60,17 +60,6 @@ static opt_def_t const OPTDEF_noclobber = {
   .hide_shopt = true,
 };
 
-/* Non-zero means type out the command definition after reading, but
-   before executing. */
-int echo_command_at_execute = 0;
-static opt_def_t const OPTDEF_echo_command_at_execute = {
-  .store = &echo_command_at_execute,
-  .letter = 'x',
-  .name = "xtrace",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-};
-
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
    the string of symbolic links that make up the current directory, instead
@@ -288,7 +277,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
-  register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
 
 #if defined (BRACE_EXPANSION)
   register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand  */
