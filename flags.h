@@ -147,11 +147,6 @@ extern int lexical_scoping;
 extern int brace_expansion;
 #endif
 
-#if defined (RESTRICTED_SHELL)
-extern int restricted;
-extern int restricted_shell;
-#endif /* RESTRICTED_SHELL */
-
 extern int change_flag (char, char);
 extern char *which_set_flags (void);
 
