@@ -197,6 +197,20 @@ static int execute_connection (COMMAND *, int, int, int, struct fd_bitmap *);
 
 static int execute_intern_function (WORD_DESC *, FUNCTION_DEF *);
 
+/* Non-zero means type out the command definition after reading, but
+   before executing. */
+int echo_command_at_execute = 0;
+static opt_def_t const OPTDEF_echo_command_at_execute = {
+  .store = &echo_command_at_execute,
+  .OPTRESET_false,
+  .letter = 'x',
+  .name = "xtrace",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Print commands and their arguments as they are executed."),
+};
+
 /* Set to 1 if fd 0 was the subject of redirection to a subshell.  Global
    so that reader_loop can set it to zero before executing a command. */
 int stdin_redir;
@@ -6413,5 +6427,6 @@ do_piping (int pipe_in, int pipe_out)
 void
 register_execute_cmd_opts (void)
 {
+  register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
   register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
 }

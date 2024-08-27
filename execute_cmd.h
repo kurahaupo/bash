@@ -71,6 +71,7 @@ extern int evalnest, evalnest_max;
 extern int sourcenest, sourcenest_max;
 extern int stdin_redir;
 extern int line_number_for_err_trap;
+extern int echo_command_at_execute;
 
 extern int exit_immediately_on_error;
 
