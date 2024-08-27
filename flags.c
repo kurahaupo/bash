@@ -62,25 +62,6 @@ static opt_def_t const OPTDEF_noclobber = {
 	  "overwritten by redirected output.",
 };
 
-/* Non-zero means type out input lines after you read them. */
-int echo_input_at_read = 0;
-int verbose_flag = 0;
-static op_result_t
-set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
-{
-  echo_input_at_read = verbose_flag = new_value;
-  return Result (OK);
-}
-static opt_def_t const OPTDEF_verbose_flag = {
-  .store = &verbose_flag,
-  .set_func = set_verbose_flag,
-  .letter = 'v',
-  .name = "verbose",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = "Print shell input lines as they are read.",
-};
-
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
@@ -317,7 +298,6 @@ register_flags_opts (void)
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical     */
-  register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose      */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace       */
 
 #if defined (BRACE_EXPANSION)
