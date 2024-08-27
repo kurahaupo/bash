@@ -1521,7 +1521,7 @@ bind_args (char **argv, int arg_start, int arg_end, int start_index)
 	    }
 	}
       else			/* bind to $1...$n for shell script */
-        {
+	{
 	  remember_args (args, 1);
 	  /* We do this unconditionally so something like -O extdebug doesn't
 	     do it first.  We're setting the definitive positional params
@@ -1531,7 +1531,7 @@ bind_args (char **argv, int arg_start, int arg_end, int start_index)
 	      push_args (args);		/* BASH_ARGV and BASH_ARGC */
 	      bash_argv_initialized = 1;
 	    }
-        }
+	}
 
       dispose_words (args);
     }
