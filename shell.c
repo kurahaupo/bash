@@ -206,6 +206,25 @@ static opt_def_t OPTDEF_restricted = {
 };
 #endif /* RESTRICTED_SHELL */
 
+/* Non-zero means type out input lines after you read them. */
+int echo_input_at_read = 0;
+int verbose_flag = 0;
+static op_result_t
+set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_value )
+{
+  echo_input_at_read = verbose_flag = new_value;
+  return Result (OK);
+}
+static opt_def_t OPTDEF_verbose_flag = {
+  .store = &verbose_flag,
+  .set_func = set_verbose_flag,
+  .letter = 'v',
+  .name = "verbose_flag",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+};
+
+
 static void
 register_shell_opts (void)
 {
@@ -213,6 +232,7 @@ register_shell_opts (void)
   register_option(&OPTDEF_privileged_mode);
   register_option(&OPTDEF_read_but_dont_execute);
   register_option(&OPTDEF_restricted);
+  register_option(&OPTDEF_verbose_flag);
 }
 
 int bash_argv_initialized = 0;
