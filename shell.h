@@ -115,6 +115,11 @@ extern int indirection_level;
 extern int shell_compatibility_level;
 extern int running_under_emacs;
 
+#if defined (RESTRICTED_SHELL)
+extern int restricted;
+extern int restricted_shell;
+#endif /* RESTRICTED_SHELL */
+
 extern int pretty_print_mode;
 
 extern int posixly_correct;
