@@ -53,10 +53,6 @@
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
 
-/* Non-zero means type out input lines after you read them. */
-int echo_input_at_read = 0;
-int verbose_flag = 0;
-
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
@@ -106,7 +102,6 @@ int pipefail_opt = 0;
 
 const struct flags_alist shell_flags[] = {
   /* Standard sh flags. */
-  { 'v', &verbose_flag },
   { 'x', &echo_command_at_execute },
 
   /* New flags that control non-standard things. */
@@ -125,7 +120,7 @@ const struct flags_alist shell_flags[] = {
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist) - 1)
 
-static const char opt_letters[] = "vxCEPT"
+static const char opt_letters[] = "xCEPT"
 #if 0
                            "l"
 #endif
@@ -181,12 +176,6 @@ change_flag (char flag, char on_or_off)
   /* Special cases for a few flags. */
   switch (flag)
     {
-    case 'v':
-      /* *value = ... */
-      verbose_flag = flag_to_bool (on_or_off);
-      echo_input_at_read = verbose_flag;
-      break;
-
     default:
       *value = flag_to_bool (on_or_off);
       break;

@@ -131,6 +131,8 @@ extern char *current_host_name;
 extern int subshell_argc;
 extern char **subshell_argv;
 extern char **subshell_envp;
+extern int echo_input_at_read;
+extern int verbose_flag;
 
 /* variables managed using shopt */
 extern int hup_on_exit;
