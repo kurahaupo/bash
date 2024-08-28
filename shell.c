@@ -173,8 +173,8 @@ static opt_def_t const OPTDEF_read_but_dont_execute = {
   .hide_shopt = true,
 };
 
-/* Non-zero means that this shell is running in `privileged' mode.  This
-   is required if the shell is to run setuid.  If the `-p' option is
+/* Non-zero means that this shell is running in `privileged` mode.  This
+   is required if the shell is to run setuid.  If the `-p` option is
    not supplied at startup, and the real and effective uids or gids
    differ, disable_priv_mode is called to relinquish setuid status. */
 int privileged_mode = 0;
@@ -196,8 +196,8 @@ static opt_def_t const OPTDEF_privileged_mode = {
 };
 
 #if defined (RESTRICTED_SHELL)
-/* Non-zero means that this shell is `restricted'.  A restricted shell
-   disallows: changing directories, command or path names containing `/',
+/* Non-zero means that this shell is `restricted`.  A restricted shell
+   disallows: changing directories, command or path names containing `/`,
    unsetting or resetting the values of $PATH and $SHELL, and any type of
    output redirection. */
 int restricted = 0;		/* currently restricted */
@@ -206,7 +206,7 @@ static op_result_t
 set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_value )
 {
   /* Don't allow `set +r` or `set +o restrict` in a shell which is
-   * `restricted', but do allow `local -` to unwind `set -r`. */
+   * "restricted", but do allow `local -` to unwind `set -r`. */
   if (restricted && !new_value && AccessorIsNot (why, unwind))
     return Result (Forbidden);
   restricted = new_value;
@@ -277,7 +277,7 @@ char *current_host_name = (char *)NULL;
  */
 int login_shell = 0;
 
-/* Non-zero if this shell is being run by `su'. */
+/* Non-zero if this shell is being run by `su`. */
 int su_shell = 0;
 
 /* Non-zero means that at this moment, the shell is interactive.  In
@@ -362,7 +362,7 @@ static int debugging;			/* Do debugging things. */
 static int no_rc;			/* Don't execute ~/.bashrc */
 static int no_profile;			/* Don't execute .profile */
 static int do_version;			/* Display interesting version info. */
-static int make_login_shell;		/* Make this shell be a `-bash' shell. */
+static int make_login_shell;		/* Make this shell be a `-bash` shell. */
 static int want_initial_help;		/* --help option */
 
 int debugging_mode = 0;		/* In debugging mode with --debugger */
@@ -595,7 +595,7 @@ main (int argc, char **argv, char **env)
 
   shell_reinitialized = 0;
 
-  /* Initialize `local' variables for all `invocations' of main (). */
+  /* Initialize `local` variables for all "invocations" of main (). */
   arg_index = 1;
   if (arg_index > argc)
     arg_index = argc;
@@ -604,7 +604,7 @@ main (int argc, char **argv, char **env)
   default_input = stdin;
   default_buffered_input = -1;
 
-  /* Fix for the `infinite process creation' bug when running shell scripts
+  /* Fix for the "infinite process creation" bug when running shell scripts
      from startup files on System V. */
   login_shell = make_login_shell = su_shell = 0;
 
@@ -687,13 +687,13 @@ main (int argc, char **argv, char **env)
   this_command_name = NULL;
 
   /* First, let the outside world know about our interactive status.
-     A shell is interactive if the `-i' flag was given, or if all of
+     A shell is interactive if the `-i` flag was given, or if all of
      the following conditions are met:
 	no -c command
 	no arguments remaining or the -s flag given
 	standard input is a terminal
 	standard error is a terminal
-     Refer to Posix.2, the description of the `sh' utility. */
+     Refer to Posix.2, the description of the `sh` utility. */
 
   if (forced_interactive ||		/* -i flag */
       (!command_execution_string &&	/* No -c command and ... */
@@ -777,7 +777,7 @@ main (int argc, char **argv, char **env)
       no_line_editing |= STREQ (term, "emacs");
       no_line_editing |= in_emacs && STREQ (term, "dumb");
 
-      /* running_under_emacs == 2 for `eterm' */
+      /* running_under_emacs == 2 for `eterm` */
       running_under_emacs = in_emacs || STREQN (term, "emacs", 5);
       running_under_emacs += emacs_term && STREQN (term, "eterm", 5);
 
@@ -804,7 +804,7 @@ main (int argc, char **argv, char **env)
 	  /* Reset job control, since run_startup_files turned it off. */
 	  set_job_control (interactive_shell);
 #endif
-	  /* Reset value of `set -e', since it's turned off before running
+	  /* Reset value of `set -e`, since it's turned off before running
 	     the startup files. */
 	  exit_immediately_on_error += old_errexit_flag;
 	  locally_skip_execution++;
@@ -839,11 +839,11 @@ main (int argc, char **argv, char **env)
 
 #if defined (RESTRICTED_SHELL)
   /* Set restricted_shell based on whether the basename of $0 indicates that
-     the shell should be restricted or if the `-r' option was supplied at
+     the shell should be restricted or if the `-r` option was supplied at
      startup. */
   restricted_shell = shell_is_restricted (shell_name);
 
-  /* If the `-r' option is supplied at invocation, make sure that the shell
+  /* If the `-r` option is supplied at invocation, make sure that the shell
      is not in restricted mode when running the startup files. */
   saverst = restricted;
   restricted = 0;
@@ -865,7 +865,7 @@ main (int argc, char **argv, char **env)
   else
     arg_index = bind_args (argv, arg_index, argc, 1);	/* $1 ... $n */
 
-  /* The startup files are run with `set -e' temporarily disabled. */
+  /* The startup files are run with `set -e` temporarily disabled. */
   ssh_reading_startup_files = 0;		/* paranoia */
   if (locally_skip_execution == 0 && running_setuid == 0)
     {
@@ -890,7 +890,7 @@ main (int argc, char **argv, char **env)
       exit_immediately_on_error += old_errexit_flag;
     }
 
-  /* If we are invoked as `sh', turn on Posix mode. */
+  /* If we are invoked as `sh`, turn on Posix mode. */
   if (act_like_sh)
     {
       bind_variable ("POSIXLY_CORRECT", "y", 0);
@@ -899,7 +899,7 @@ main (int argc, char **argv, char **env)
 
 #if defined (RESTRICTED_SHELL)
   /* Turn on the restrictions after executing the startup files.  This
-     means that `bash -r' or `set -r' invoked from a startup file will
+     means that `bash -r` or `set -r` invoked from a startup file will
      turn on the restrictions after the startup files are executed. */
   restricted = saverst || restricted;
   if (shell_reinitialized == 0)
@@ -967,7 +967,7 @@ main (int argc, char **argv, char **env)
       /* Initialize the interactive history stuff. */
       bash_initialize_history ();
       /* Don't load the history from the history file if we've already
-	 saved some lines in this session (e.g., by putting `history -s xx'
+	 saved some lines in this session (e.g., by putting `history -s xx`
 	 into one of the startup files). */
       if (shell_initialized == 0 && history_lines_this_session == 0)
 	load_history ();
@@ -1064,8 +1064,8 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
       /* There are flag arguments, so parse them. */
       next_arg = arg_index + 1;
 
-      /* A single `-' signals the end of options.  From the 4.3 BSD sh.
-	 An option `--' means the same thing; this is the standard
+      /* A single `-` signals the end of options.  From the 4.3 BSD sh.
+	 An option `--` means the same thing; this is the standard
 	 getopt(3) meaning. */
       if (arg_string[0] == '-' &&
 	   (arg_string[1] == '\0' ||
@@ -1179,7 +1179,7 @@ exit_shell (int s)
 #endif
 
 #if defined (JOB_CONTROL)
-  /* If the user has run `shopt -s huponexit', hangup all jobs when we exit
+  /* If the user has run `shopt -s huponexit`, hangup all jobs when we exit
      an interactive login shell.  ksh does this unconditionally. */
   if (interactive_shell && login_shell && hup_on_exit)
     hangup_all_jobs ();
@@ -1256,7 +1256,7 @@ set_exit_status (int s)
 	 bash -c foo		NO
 	 bash foo		NO
 	 foo			NO
-	 rsh machine ls		YES (for rsh, which calls `bash -c')
+	 rsh machine ls		YES (for rsh, which calls `bash -c`)
 	 rsh machine foo	YES (for shell started by rsh) NO (for foo!)
 	 echo ls | bash		NO
 	 login			NO
@@ -1372,9 +1372,9 @@ run_startup_files (void)
       sourced_login = 1;
     }
 
-  /* A non-interactive shell not named `sh' and not in posix mode reads and
-     executes commands from $BASH_ENV.  If `su' starts a shell with `-c cmd'
-     and `-su' as the name of the shell, we want to read the startup files.
+  /* A non-interactive shell not named `sh` and not in posix mode reads and
+     executes commands from $BASH_ENV.  If `su` starts a shell with `-c cmd`
+     and `-su` as the name of the shell, we want to read the startup files.
      No other non-interactive shells read any startup files. */
   if (interactive_shell == 0 && !(su_shell && login_shell))
     {
@@ -1384,7 +1384,7 @@ run_startup_files (void)
       return;
     }
 
-  /* Interactive shell or `-su' shell. */
+  /* Interactive shell or `-su` shell. */
   if (posixly_correct == 0)		  /* bash, sh */
     {
       if (login_shell && sourced_login++ == 0)
@@ -1417,7 +1417,7 @@ run_startup_files (void)
 
 #if defined (RESTRICTED_SHELL)
 /* Return 1 if the shell should be a restricted one based on NAME or the
-   value of `restricted'.  Don't actually do anything, just return a
+   value of `restricted`.  Don't actually do anything, just return a
    boolean value. */
 int
 shell_is_restricted (char *name)
@@ -1432,12 +1432,12 @@ shell_is_restricted (char *name)
   return (STREQ (temp, RESTRICTED_SHELL_NAME));
 }
 
-/* Perhaps make this shell a `restricted' one, based on NAME.  If the
+/* Perhaps make this shell a `restricted` one, based on NAME.  If the
    basename of NAME is "rbash", then this shell is restricted.  The
    name of the restricted shell is a configurable option, see config.h.
    In a restricted shell, PATH, SHELL, ENV, and BASH_ENV are read-only
    and non-unsettable.
-   Do this also if `restricted' is already set to 1; maybe the shell was
+   Do this also if `restricted` is already set to 1; maybe the shell was
    started with -r. */
 int
 maybe_make_restricted (char *name)
@@ -1821,7 +1821,7 @@ open_shell_script (char *script_name)
   /* Only do this with non-tty file descriptors we can seek on. */
   if (fd_is_tty == 0 && (lseek (fd, 0L, 1) != -1))
     {
-      /* Check to see if the `file' in `bash file' is a binary file
+      /* Check to see if the `file` in `bash file` is a binary file
 	 according to the same tests done by execute_simple_command (),
 	 and report an error and exit if it is. */
       sample_len = read (fd, sample, sizeof (sample));
@@ -1868,7 +1868,7 @@ open_shell_script (char *script_name)
   SET_CLOSE_ON_EXEC (default_buffered_input);
 
   /* Just about the only way for this code to be executed is if something
-     like `bash -i /dev/stdin' is executed. */
+     like `bash -i /dev/stdin` is executed. */
   if (interactive_shell && fd_is_tty)
     {
       dup2 (fd, 0);
@@ -1877,7 +1877,7 @@ open_shell_script (char *script_name)
       default_buffered_input = 0;
     }
   else if (forced_interactive && fd_is_tty == 0)
-    /* But if a script is called with something like `bash -i scriptname',
+    /* But if a script is called with something like `bash -i scriptname`,
        we need to do a non-interactive setup here, since we didn't do it
        before. */
     init_interactive_script ();
@@ -1899,7 +1899,7 @@ set_bash_input (void)
   else
     sh_unset_nodelay_mode (fileno (stdin));
 
-  /* with_input_from_stdin really means `with_input_from_readline' */
+  /* with_input_from_stdin really means `with_input_from_readline` */
   if (interactive && no_line_editing == 0)
     with_input_from_stdin ();
   else if (interactive == 0)
@@ -1961,7 +1961,7 @@ set_shell_name (char *argv0)
 
 /* Some options are initialized to -1 so we have a way to determine whether
    they were set on the command line. This is an issue when listing the option
-   values at invocation (`bash -o'), so we set the defaults here and reset
+   values at invocation (`bash -o`), so we set the defaults here and reset
    them after the call to list_minus_o_options (). */
 /* XXX - could also do this for histexp_flag, jobs_m_flag */
 static void
@@ -2239,9 +2239,9 @@ show_shell_usage (FILE *fp, int extra)
 
   if (extra)
     {
-      fprintf (fp, _("Type `%s -c \"help set\"' for more information about shell options.\n"), shell_name);
-      fprintf (fp, _("Type `%s -c help' for more information about shell builtin commands.\n"), shell_name);
-      fprintf (fp, _("Use the `bashbug' command to report bugs.\n"));
+      fprintf (fp, _("Type ‘%s -c \"help set\"’ for more information about shell options.\n"), shell_name);
+      fprintf (fp, _("Type ‘%s -c help’ for more information about shell builtin commands.\n"), shell_name);
+      fprintf (fp, _("Use the ‘bashbug’ command to report bugs.\n"));
       fprintf (fp, "\n");
       fprintf (fp, _("bash home page: <http://www.gnu.org/software/bash>\n"));
       fprintf (fp, _("General help using GNU software: <http://www.gnu.org/gethelp/>\n"));
