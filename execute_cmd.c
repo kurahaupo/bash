@@ -199,7 +199,7 @@ static int execute_intern_function (WORD_DESC *, FUNCTION_DEF *);
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
-static opt_def_t OPTDEF_echo_command_at_execute = {
+static opt_def_t const OPTDEF_echo_command_at_execute = {
   .store = &echo_command_at_execute,
   .letter = 'x',
   .name = "xtrace",
@@ -209,7 +209,7 @@ static opt_def_t OPTDEF_echo_command_at_execute = {
 
 /* Non-zero means that shell functions inherit the ERR trap. */
 int error_trace_mode = 0;
-static opt_def_t OPTDEF_error_trace_mode = {
+static opt_def_t const OPTDEF_error_trace_mode = {
   .store = &error_trace_mode,
   .letter = 'E',
   .name = "errtrace",
@@ -219,7 +219,7 @@ static opt_def_t OPTDEF_error_trace_mode = {
 
 /* Non-zero means that shell functions inherit the DEBUG trap. */
 int function_trace_mode = 0;
-static opt_def_t OPTDEF_function_trace_mode = {
+static opt_def_t const OPTDEF_function_trace_mode = {
   .store = &function_trace_mode,
   .letter = 'T',
   .name = "functrace",
@@ -230,7 +230,7 @@ static opt_def_t OPTDEF_function_trace_mode = {
 #if 0
 /* Non-zero means do lexical scoping in the body of a FOR command. */
 int lexical_scoping = 0;
-static opt_def_t OPTDEF_lexical_scoping = {
+static opt_def_t const OPTDEF_lexical_scoping = {
   .store = &lexical_scoping,
   .letter = 'l',
   .name = "lexical",
@@ -386,13 +386,13 @@ int errexit_flag = 0;
 int exit_immediately_on_error = 0;
 static opt_set_func_t optset_errexit_flag;
 static op_result_t
-optset_errexit_flag(opt_def_t const *d, accessor_t why, option_value_t new_value)
+optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
 {
   errexit_flag = new_value;
   if (builtin_ignoring_errexit == 0)
     exit_immediately_on_error = errexit_flag;
 }
-static opt_def_t OPTDEF_errexit_flag = {
+static opt_def_t const OPTDEF_errexit_flag = {
   .store = &errexit_flag,
   .set_func = optset_errexit_flag,
   .letter = 'e',
@@ -6425,11 +6425,11 @@ do_piping (int pipe_in, int pipe_out)
 void
 register_execute_cmd_opts (void)
 {
-  register_option (&OPTDEF_echo_command_at_execute);
-  register_option (&OPTDEF_errexit_flag);
-  register_option (&OPTDEF_error_trace_mode);
-  register_option (&OPTDEF_function_trace_mode);
+  register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
+  register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
+  register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace */
+  register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace */
   #if 0
-  register_option (&OPTDEF_lexical_scoping);
+  register_option (&OPTDEF_lexical_scoping);		/* ±l, ±o lexical */
   #endif
 }

@@ -56,7 +56,7 @@
 
 /* Non-zero means end of file is after one command. */
 int just_one_command = 0;
-static opt_def_t OPTDEF_just_one_command = {
+static opt_def_t const OPTDEF_just_one_command = {
   .store = &just_one_command,
   .letter = 't',
   .name = "onecmd",
@@ -433,5 +433,5 @@ read_command (void)
 void
 register_eval_opts (void)
 {
-  register_option(&OPTDEF_just_one_command);
+  register_option (&OPTDEF_just_one_command);		/* ±t, ±o onecmd */
 }

@@ -388,7 +388,7 @@ static int do_assignment_statements (WORD_LIST *, char *, int);
 #if defined (BRACE_EXPANSION)
 /* Zero means to disable brace expansion: foo{a,b} -> fooa foob */
 int brace_expansion = 1;
-static opt_def_t OPTDEF_brace_expansion = {
+static opt_def_t const OPTDEF_brace_expansion = {
   .store = &brace_expansion,
   .letter = 'B',
   .name = "braceexpand",
@@ -399,7 +399,7 @@ static opt_def_t OPTDEF_brace_expansion = {
 
 /* Non-zero means disable filename globbing. */
 int disallow_filename_globbing = 0;
-static opt_def_t OPTDEF_disallow_filename_globbing = {
+static opt_def_t const OPTDEF_disallow_filename_globbing = {
   .store = &disallow_filename_globbing,
   .letter = 'f',
   .name = "noglob",
@@ -411,7 +411,7 @@ static opt_def_t OPTDEF_disallow_filename_globbing = {
    for a command, not just those that appear on the line before the command
    name. */
 int place_keywords_in_env = 0;
-static opt_def_t OPTDEF_place_keywords_in_env = {
+static opt_def_t const OPTDEF_place_keywords_in_env = {
   .store = &place_keywords_in_env,
   .letter = 'k',
   .name = "keyword",
@@ -422,14 +422,13 @@ static opt_def_t OPTDEF_place_keywords_in_env = {
 /* Non-zero means trying to get the value of $i where $i is undefined
    causes an error, instead of a null substitution. */
 int unbound_vars_is_error = 0;
-static opt_def_t OPTDEF_unbound_vars_is_error = {
+static opt_def_t const OPTDEF_unbound_vars_is_error = {
   .store = &unbound_vars_is_error,
   .letter = 'u',
   .name = "nounset",
   .adjust_shellopts = true,
   .hide_shopt = true,
 };
-
 
 /* **************************************************************** */
 /*								    */
@@ -13249,7 +13248,7 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
   /* Begin expanding the words that remain.  The expansions take place on
      things that aren't really variable assignments. */
 
-#if defined (BRACE_EXPANSION)
+#if defined BRACE_EXPANSION
   /* Do brace expansion on this word if there are any brace characters
      in the string. */
   if ((eflags & WEXP_BRACEEXP) && brace_expansion && new_list)
@@ -13288,9 +13287,9 @@ void
 register_subst_opts (void)
 {
   #if defined (BRACE_EXPANSION)
-  register_option (&OPTDEF_brace_expansion);
+  register_option (&OPTDEF_brace_expansion);		/* ±B, ±o braceexpand */
   #endif
-  register_option (&OPTDEF_disallow_filename_globbing);
-  register_option (&OPTDEF_place_keywords_in_env);
-  register_option (&OPTDEF_unbound_vars_is_error);
+  register_option (&OPTDEF_disallow_filename_globbing);	/* ±f, ±o noglob */
+  register_option (&OPTDEF_place_keywords_in_env);	/* ±k, ±o keyword */
+  register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset */
 }

@@ -160,8 +160,6 @@ $END
 typedef int setopt_set_func_t (int, char const*);
 typedef int setopt_get_func_t (char const*);
 
-static int find_minus_o_option (char const *);
-
 static void print_minus_o_option (char *, int, int);
 static void print_all_shell_variables (void);
 
@@ -387,7 +385,7 @@ print_all_shell_variables (void)
 
   /* POSIX.2 does not allow function names and definitions to be output when
      `set' is invoked without options (PASC Interp #202). */
-  if (!posixly_correct)
+  if (posixly_correct == 0)
     {
       vars = all_shell_functions ();
       if (vars)

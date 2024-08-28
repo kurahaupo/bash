@@ -38,7 +38,7 @@
 
 /* Non-zero means look up and remember command names in a hash table, */
 int hashing_enabled = 1;
-opt_def_t OPTDEF_hashing_enabled = {
+static opt_def_t const OPTDEF_hashing_enabled = {
   .store = &hashing_enabled,
   .letter = 'h',
   .name = "hashall",
@@ -205,5 +205,5 @@ phash_search (const char *filename)
 
 void register_hashcmd_opts (void)
 {
-  register_option(&OPTDEF_hashing_enabled);
+  register_option (&OPTDEF_hashing_enabled);    	/* ±h, ±o hashall */
 }
