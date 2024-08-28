@@ -122,7 +122,7 @@ set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
     bash_initialize_history ();
   return Result (OK);
 }
-static opt_def_t OPTDEF_histexp_flag = {
+static opt_def_t const OPTDEF_histexp_flag = {
   .store = &histexp_flag,
   .set_func = set_histexp_flag,
   .letter = 'H',
@@ -135,9 +135,9 @@ static opt_def_t OPTDEF_histexp_flag = {
 void
 register_bashhist_opts (void)
 {
-#if defined (BANG_HISTORY)
-  register_option (&OPTDEF_histexp_flag);
-#endif
+  #if defined (BANG_HISTORY)
+  register_option (&OPTDEF_histexp_flag);		/* ±H, ±o histexpand */
+  #endif
 }
 
 /* With the old default, every line was saved in the history individually.

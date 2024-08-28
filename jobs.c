@@ -359,7 +359,7 @@ static char retcode_name_buffer[64];
 /* Non-zero causes asynchronous job notification.  Otherwise, job state
    notification only takes place just before a primary prompt is printed. */
 int asynchronous_notification = 0;
-static opt_def_t OPTDEF_asynchronous_notification = {
+static opt_def_t const OPTDEF_asynchronous_notification = {
   .store = &asynchronous_notification,
   .letter = 'b',
   .name = "notify",
@@ -376,7 +376,7 @@ set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
   set_job_control (new_value);
   return Result (OK);
 }
-static opt_def_t OPTDEF_jobs_m_flag = {
+static opt_def_t const OPTDEF_jobs_m_flag = {
   .store = &jobs_m_flag,
   .set_func = set_jobs_m_flag,
   .letter = 'm',
@@ -5456,6 +5456,6 @@ restore_pgrp_pipe (int *p)
 void
 register_jobs_opts (void)
 {
-  register_option(&OPTDEF_asynchronous_notification);
-  register_option(&OPTDEF_jobs_m_flag);
+  register_option (&OPTDEF_asynchronous_notification);	/* ±b, ±o notify */
+  register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor */
 }

@@ -122,7 +122,7 @@ int shell_initialized = 0;
 /* Non-zero means this shell is interactive, even if running under a
    pipe. */
 int forced_interactive = 0;
-static opt_def_t OPTDEF_forced_interactive = {
+static opt_def_t const OPTDEF_forced_interactive = {
   .store = &forced_interactive,
   .letter = 'i',
   .name = "interactive",
@@ -137,16 +137,34 @@ int read_but_dont_execute = 0;
 static op_result_t
 set_read_but_dont_execute (opt_def_t const *d,
 			   accessor_t why,
-			   option_value_t new_value )
+			   option_value_t new_value)
 {
-  /* Ignore attempts to set `noexec` when in interactive mode, as it would
-   * result in the user being unable to invoke `exit` or `logout`. */
+  /* The `noexec` option is a trapdoor; once it's on, there's no way to invoke
+     a command to turn it off. So this code ignores attempts to turn `noexec`
+     on when in interactive mode, as it would result in the user being unable
+     to invoke `exit` or `logout`.
+
+     Note that it can be turned off by returning from a function when `local -`
+     is in effect.
+  */
+  #if 0
+  /* TODO decide whether the following is desirable.
+     The original code would always turn noexec off if the shell was
+     interactive, even when attempting to turn it on, and even if it was
+     already on.
+     That pre-supposes that this code could be reached when noexec was already
+     on, which was not possible when the code was written.
+     */
+  read_but_dont_execute = new_value;
+  if (interactive_shell)
+    read_but_dont_execute = 0;
+  #endif
   if (interactive_shell && new_value)
     return Result (Ignored);
   read_but_dont_execute = new_value;
   return Result (OK);
 }
-static opt_def_t OPTDEF_read_but_dont_execute = {
+static opt_def_t const OPTDEF_read_but_dont_execute = {
   .store = &read_but_dont_execute,
   .set_func = set_read_but_dont_execute,
   .letter = 'n',
@@ -161,14 +179,14 @@ static opt_def_t OPTDEF_read_but_dont_execute = {
    differ, disable_priv_mode is called to relinquish setuid status. */
 int privileged_mode = 0;
 static op_result_t
-set_privileged_mode (struct opt_def_s const *d, accessor_t why, option_value_t new_value )
+set_privileged_mode (struct opt_def_s const *d, accessor_t why, option_value_t new_value)
 {
   privileged_mode = new_value;
   if (! new_value)
     disable_priv_mode ();
   return Result (OK);
 }
-static opt_def_t OPTDEF_privileged_mode = {
+static opt_def_t const OPTDEF_privileged_mode = {
   .store = &privileged_mode,
   .set_func = set_privileged_mode,
   .letter = 'p',
@@ -196,7 +214,7 @@ set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_va
     maybe_make_restricted (shell_name);
   return Result (OK);
 }
-static opt_def_t OPTDEF_restricted = {
+static opt_def_t const OPTDEF_restricted = {
   .store = &restricted,
   .set_func = set_restricted,
   .letter = 'r',
@@ -204,7 +222,7 @@ static opt_def_t OPTDEF_restricted = {
   .adjust_shellopts = true,
   .hide_shopt = true,
 };
-#endif /* RESTRICTED_SHELL */
+#endif
 
 /* Non-zero means type out input lines after you read them. */
 int echo_input_at_read = 0;
@@ -215,11 +233,11 @@ set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_
   echo_input_at_read = verbose_flag = new_value;
   return Result (OK);
 }
-static opt_def_t OPTDEF_verbose_flag = {
+static opt_def_t const OPTDEF_verbose_flag = {
   .store = &verbose_flag,
   .set_func = set_verbose_flag,
   .letter = 'v',
-  .name = "verbose_flag",
+  .name = "verbose",
   .adjust_shellopts = true,
   .hide_shopt = true,
 };
@@ -228,11 +246,11 @@ static opt_def_t OPTDEF_verbose_flag = {
 static void
 register_shell_opts (void)
 {
-  register_option(&OPTDEF_forced_interactive);
-  register_option(&OPTDEF_privileged_mode);
-  register_option(&OPTDEF_read_but_dont_execute);
-  register_option(&OPTDEF_restricted);
-  register_option(&OPTDEF_verbose_flag);
+  register_option (&OPTDEF_forced_interactive);		/* ±i, ±o interactive */
+  register_option (&OPTDEF_privileged_mode);		/* ±p, ±o privileged */
+  register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec */
+  register_option (&OPTDEF_restricted);			/* ±r, ±o restricted */
+  register_option (&OPTDEF_verbose_flag);		/* ±v, ±o verbose */
 }
 
 int bash_argv_initialized = 0;

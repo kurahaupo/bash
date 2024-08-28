@@ -131,7 +131,6 @@ ValidateFlagOrError (char const *file, unsigned int line, char const *expr_str, 
 
 
 extern int
-  unbound_vars_is_error, echo_input_at_read,
   interactive_comments,
   pipefail_opt;
 

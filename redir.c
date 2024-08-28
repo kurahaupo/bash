@@ -92,7 +92,7 @@ int varassign_redir_autoclose = 0;
 
 /* Non-zero means don't overwrite existing files while doing redirections. */
 int noclobber = 0;
-static opt_def_t OPTDEF_noclobber = {
+static opt_def_t const OPTDEF_noclobber = {
   .store = &noclobber,
   .letter = 'C',
   .name = "noclobber",
@@ -1501,5 +1501,5 @@ redir_varvalue (REDIRECT *redir)
 void
 register_redir_opts (void)
 {
-  register_option (&OPTDEF_noclobber);
+  register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber */
 }

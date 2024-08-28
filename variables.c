@@ -343,7 +343,7 @@ static void delete_local_contexts (VAR_CONTEXT *);
 /* Non-zero means automatically mark variables which are modified or created
    as auto export variables. */
 int mark_modified_vars = 0;
-static opt_def_t OPTDEF_mark_modified_vars = {
+static opt_def_t const OPTDEF_mark_modified_vars = {
   .store = &mark_modified_vars,
   .letter = 'a',
   .name = "allexport",
@@ -6511,5 +6511,5 @@ sv_childmax (const char *name)
 void
 register_variables_opts (void)
 {
-  register_option(&OPTDEF_mark_modified_vars);
+  register_option (&OPTDEF_mark_modified_vars);		/* ±a, ±o allexport */
 }
