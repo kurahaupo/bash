@@ -148,14 +148,14 @@ redirection_error (REDIRECT *temp, int error, char *fn)
   else if (error != NOCLOBBER_REDIRECT && temp->redirector.dest >= 0 && error == EBADF)
     {
       /* If we're dealing with two file descriptors, we have to guess about
-         which one is invalid; in the cases of r_{duplicating,move}_input and
-         r_{duplicating,move}_output we're here because dup2() failed. */
+	 which one is invalid; in the cases of r_{duplicating,move}_input and
+	 r_{duplicating,move}_output we're here because dup2() failed. */
       switch (temp->instruction)
-        {
-        case r_duplicating_input:
-        case r_duplicating_output:
-        case r_move_input:
-        case r_move_output:
+	{
+	case r_duplicating_input:
+	case r_duplicating_output:
+	case r_move_input:
+	case r_move_output:
 	  filename = allocname = itos (temp->redirectee.dest);
 	  break;
 	case r_duplicating_input_word:
@@ -173,7 +173,7 @@ redirection_error (REDIRECT *temp, int error, char *fn)
 	default:
 	  filename = allocname = itos (temp->redirector.dest);
 	  break;
-        }
+	}
     }
 #endif
   else if (fn)
@@ -353,7 +353,7 @@ heredoc_expand (WORD_DESC *redirectee, enum r_instruction ri, size_t *lenp)
   if (redirectee->word == 0 || redirectee->word[0] == '\0')
     {
       if (lenp)
-        *lenp = 0;
+	*lenp = 0;
       return (redirectee->word);
     }
 
@@ -361,7 +361,7 @@ heredoc_expand (WORD_DESC *redirectee, enum r_instruction ri, size_t *lenp)
   if (ri != r_reading_string && (redirectee->flags & W_QUOTED))
     {
       if (lenp)
-        *lenp = STRLEN (redirectee->word);
+	*lenp = STRLEN (redirectee->word);
       return (redirectee->word);
     }
 
@@ -370,7 +370,7 @@ heredoc_expand (WORD_DESC *redirectee, enum r_instruction ri, size_t *lenp)
      environment, see if we need to change the cached IFS values. */
   sv_ifs ("IFS");
   document = (ri == r_reading_string) ? expand_assignment_string_to_string (redirectee->word, 0)
-  				      : expand_string_to_string (redirectee->word, Q_HERE_DOCUMENT);
+				      : expand_string_to_string (redirectee->word, Q_HERE_DOCUMENT);
   expanding_redir = 0;
   /* Now we need to change the variable search order back to include the temp
      environment.  We force the temp environment search by forcing
@@ -778,7 +778,7 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
   if (TRANSLATE_REDIRECT (ri))
     {
       /* We have [N]>&WORD[-] or [N]<&WORD[-] (or {V}>&WORD[-] or {V}<&WORD-).
-         and WORD, then translate the redirection into a new one and
+	 and WORD, then translate the redirection into a new one and
 	 continue. */
       redirectee_word = redirection_expand (redirectee);
 
@@ -1055,7 +1055,7 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
 	  if (flags & RX_ACTIVE)
 	    {
 	      if ((flags & RX_UNDOABLE) && ((redirect->rflags & REDIR_VARASSIGN) == 0 || varassign_redir_autoclose))
-	        {
+		{
 		  /* Only setup to undo it if the thing to undo is active.
 		     Close if the right option is set and we are doing a
 		     varassign redirection. */
@@ -1066,7 +1066,7 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
 		  else
 		    r = add_undo_close_redirect (redirector);
 		  REDIRECTION_ERROR (r, errno, fd);
-	        }
+		}
 
 	      check_bash_input (redirector);
 
@@ -1102,13 +1102,13 @@ do_redirection_internal (REDIRECT *redirect, int flags, char **fnp)
     case r_move_input:
     case r_move_output:
       if ((flags & RX_ACTIVE) && (redirect->rflags & REDIR_VARASSIGN))
-        {
+	{
 	  redirector = fcntl (redir_fd, F_DUPFD, SHELL_FD_BASE);		/* XXX try this for now */
 	  r = errno;
 	  if (redirector < 0)
 	    sys_error (_("redirection error: cannot duplicate fd"));
 	  REDIRECTION_ERROR (redirector, r, -1);
-        }
+	}
 
       if ((flags & RX_ACTIVE) && (redir_fd != redirector))
 	{
@@ -1458,7 +1458,7 @@ redir_varvalue (REDIRECT *redir)
 	      if (vr = valid_array_reference (w, 0))
 		v = array_variable_part (w, 0, &sub, &len);
 	      else
-	        v = find_variable (w);
+		v = find_variable (w);
 	    }
 	}
 #endif
