@@ -2278,6 +2278,7 @@ flags.o: $(topdir)/arrayfunc.h
 flags.o: $(topdir)/assoc.h
 flags.o: $(topdir)/bashansi.h
 flags.o: $(topdir)/bashhist.h
+flags.o: $(topdir)/bashintl.h
 flags.o: $(topdir)/bashjmp.h
 flags.o: $(topdir)/bashtypes.h
 flags.o: $(topdir)/builtins/common.h
