@@ -22,23 +22,45 @@ $PRODUCES shopt.c
 
 $BUILTIN shopt
 $FUNCTION shopt_builtin
-$SHORT_DOC shopt [-pqsu] [-o] [optname ...]
-Set and unset shell options.
+$SHORT_DOC shopt [-oOpP] [-q] [-su] [OPTNAME ...]
+shopt [-oOpP] [-q] [-su] [OPTNAME ...]
+shopt [--list-options | --option-help | --option-usage | -[fhH] ] [OPTNAME ...]
+Display or change shell options.
 
-Change the setting of each shell option OPTNAME.  Without any option
-arguments, list each supplied OPTNAME, or all shell options if no
-OPTNAMEs are given, with an indication of whether or not each is set.
+If one or more OPTNAMEs is given, and one of "-s" or "-u" is given, and neither
+"-p" nor "-P" is given, then the named options will be set (if "-s" is given)
+or unset (if "-u" is given).
+
+Otherwise "shopt" will display options. Initially all options are candidates
+for display, but:
+ - if "-o" is given, limit the display to only those candidates defined for use
+   with "set -o"; if "-O" is given make the inverse limitation.
+ - if "-s" is given, limit the display to only "set"/"on" candidates
+ - if "-u" is given, limit the display to only "unset"/"off" candidates
+ - if OPTNAMEs are given, limit the display to those candidates that are among
+   the OPTNAMEs.
 
 Options:
-  -o	restrict OPTNAMEs to those defined for use with `set -o'
-  -p	print each shell option with an indication of its status
-  -q	suppress output
-  -s	enable (set) each OPTNAME
-  -u	disable (unset) each OPTNAME
+  -o	restrict OPTNAMEs to those defined for use with "set -o"
+  -O	restrict OPTNAMEs to those not defined for use with "set -o"
+  -p, -P
+	Display each shell option in a form that can be re-used as shell input
+	-P	output as "shopt" commands
+	-Pp	output as "set -o" commands
+	-p	output as "set -o" commands if "-o" is also given;
+		output as "shopt" commands if "-o" is not given.
+	Otherwise show each option name with 'on' or 'off'.
+  -q	Suppress output (only return exit status)
+  -s	Enable (set) each OPTNAME (or limit output with -p or -P)
+  -u	Disable (unset) each OPTNAME (or limit output with -p or -P)
 
 Exit Status:
-Returns success if OPTNAME is enabled; fails if an invalid option is
-given or OPTNAME is disabled.
+Returns success if all OPTNAMEs are enabled; fails if an invalid option is
+given or if any OPTNAME is disabled.
+
+Type "shopt --list-options" to see a brief list of options.
+Type "shopt --option-help [OPTNAME ...]" to see short help for each option.
+Type "shopt --option-usage [OPTNAME ...]" to see detailed help for each option.
 $END
 
 #include <config.h>
@@ -166,7 +188,7 @@ typedef int shopt_set_func_t (char *, int);
 static opt_def_t const xo_options[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand },
-  { "assoc_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand },
+  { "assoc_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand,	.hide_shopt = 1 },
 #endif
   { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd },
 #if defined (ARRAY_VARS)
@@ -275,11 +297,25 @@ static opt_def_t const xo_options[] = {
  *    `-P` `shopt` reusable format
  *    `-Pp` `set -o` reusable format
  *    (otherwise use 'standard' format)
+ * Note that --short-help and --long-help are simply treated as
+ * "display" with a funny display style.
  */
+
+static inline _Bool
+match (char const *arg, char const *pattern, size_t min)
+{
+  size_t plen = strlen (pattern);
+  if (min == 0 || min > plen)
+    min = plen;
+  size_t alen = strlen (arg);
+  return min <= alen && alen <= plen
+      && 0 == memcmp (arg, pattern, alen);
+}
 
 int
 shopt_builtin (WORD_LIST *list)
 {
+  int help_level = 0;
   _Bool mode_O = false;
   _Bool mode_P = false;
   _Bool mode_o = false;
@@ -289,14 +325,28 @@ shopt_builtin (WORD_LIST *list)
   _Bool value_s = false;
   _Bool value_u = false;
 
+  /* Long options must come before short options ... */
+  for (char const *arg; list && list->word && (arg = list->word->word) != NULL && arg[0] == '-' && arg[1] == '-' && arg[2] != 0 ;list = list->next)
+    {
+      if (match (arg, "--list-options", 3)) { help_level = 1; continue; }
+      if (match (arg, "--options", 3) || match (arg, "--option-help", 10) || match (arg, "--help-options", 8)) { help_level = 2; continue; }
+      if (match (arg, "--usage",   3) || match (arg, "--option-usage", 10)) { help_level = 3; continue; }
+      builtin_usage ();
+      return (EX_USAGE);
+    }
+
+  /* ... and short options must come before OPTNAMEs */
   reset_internal_getopt ();
   int opt;
-  while ((opt = internal_getopt (list, "aoOpPqsu")) != -1)
+  while ((opt = internal_getopt (list, "fHhoOpPqsSu")) != -1)
     {
       switch (opt)
 	{
-	case 'o': mode_o = true; break; /* emulate set -o (both choose and show) */
-	case 'O': mode_O = true; break;	/* show like set -o */
+	case 'f': help_level = 3; break;
+	case 'H': help_level = 2; break;
+	case 'h': help_level = 1; break;
+	case 'o': mode_o = true; break;	/* emulate set -o (both choice and format) */
+	case 'O': mode_O = true; break;	/* inverse of -o choice */
 	case 'p': mode_p = true; break;
 	case 'P': mode_P = true; break;
 	case 'q': quiet = true; break;
@@ -314,10 +364,11 @@ shopt_builtin (WORD_LIST *list)
 		  mode_O ? Accessor (shopt) :
 			   Accessor (any);
 
-  display_style_t ds = ! mode_p && ! mode_P ? DisplayStyle (on_off) :
-			  (mode_P ? mode_p
-				  : mode_o) ? DisplayStyle (set_o)
-					    : DisplayStyle (shopt);
+  display_style_t ds = help_level > 0 ? DisplayStyle (help1-1+help_level) :
+		 ! mode_p && ! mode_P ? DisplayStyle (on_off) :
+		    (mode_P ? mode_p
+			    : mode_o) ? DisplayStyle (set_o)
+				      : DisplayStyle (shopt);
 
   unsigned int value_comb = value_s == value_u ? 0 : 1 << !value_s;
 
@@ -327,7 +378,7 @@ shopt_builtin (WORD_LIST *list)
       if (quiet == 0)
 	list_all_options (oc, value_comb, ds);
     }
-  else if (!(value_s || value_u) || mode_p || mode_P)
+  else if (!(value_s || value_u) || mode_p || mode_P || help_level > 0)
     {
       for (WORD_LIST *l = list; l; l = l->next)
 	{
