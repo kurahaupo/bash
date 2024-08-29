@@ -30,6 +30,7 @@
 
 #include "shell.h"
 
+#include "bashintl.h"
 #include "builtins/common.h"
 #include "execute_cmd.h"
 #include "flags.h"
@@ -59,6 +60,7 @@ static opt_def_t const OPTDEF_mark_modified_vars = {
   .name = "allexport",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_("Whenever variables are modified or created, mark them for export."),
 };
 
 #if defined (JOB_CONTROL)
@@ -71,6 +73,7 @@ static opt_def_t const OPTDEF_asynchronous_notification = {
   .name = "notify",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_("Notify of job termination immediately (don't wait for prompt)."),
 };
 #endif
 
@@ -94,6 +97,23 @@ static opt_def_t const OPTDEF_errexit_flag = {
   .name = "errexit",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_("Exit immediately if an non-exempt command exits with a non-zero status.\n"
+	     "\n"
+	     "A command is exempt if it is:\n"
+	     "  ‧ immediately preceded by '!';\n"
+	     "  ‧ immediately followed by '&&' or '||';\n"
+	     "  ‧ between 'if' and its corresponding 'then';\n"
+	     "  ‧ between 'while' (or 'until') and its corresponding 'do';\n"
+	     "  ‧ within a compound command whose context is in this list;\n"
+	     "  ‧ within:\n"
+	     "    ‧ a function called that is called from, or\n"
+	     "    ‧ a trap that is triggered in,\n"
+	     "    any context that is recursively in this list.\n"
+	     "\n"
+	     "This will normally cause a cascading exit, as each shell notices that\n"
+	     "a subshell 'fails', however failures within command substitutions\n"
+	     "$(...) and `...` are masked if they occur anywhere other than in\n"
+	     "simple assignments."),
 };
 
 /* Non-zero means disable filename globbing. */
@@ -104,6 +124,8 @@ static opt_def_t const OPTDEF_disallow_filename_globbing = {
   .name = "noglob",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Disable file name generation (globbing)."),
 };
 
 /* Non-zero means that all keyword arguments are placed into the environment
@@ -116,6 +138,9 @@ static opt_def_t const OPTDEF_place_keywords_in_env = {
   .name = "keyword",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "All assignment arguments are placed in the environment for a\n"
+    "command, not just those that precede the command name."),
 };
 
 /* Non-zero means read commands, but don't execute them.  This is useful
@@ -159,6 +184,8 @@ static opt_def_t const OPTDEF_read_but_dont_execute = {
   .name = "noexec",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Read commands but do not execute them."),
 };
 
 
@@ -170,6 +197,8 @@ static opt_def_t const OPTDEF_just_one_command = {
   .name = "onecmd",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Exit after reading and executing one command."),
 };
 
 /* Non-zero means don't overwrite existing files while doing redirections. */
@@ -180,6 +209,9 @@ static opt_def_t const OPTDEF_noclobber = {
   .name = "noclobber",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "If set, prevent existing regular files from being truncated or\n"
+    "overwritten by redirected output."),
 };
 
 /* Non-zero means trying to get the value of $i where $i is undefined
@@ -191,6 +223,8 @@ static opt_def_t const OPTDEF_unbound_vars_is_error = {
   .name = "nounset",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Treat unset variables as an error when substituting."),
 };
 
 /* Non-zero means type out input lines after you read them. */
@@ -209,6 +243,8 @@ static opt_def_t const OPTDEF_verbose_flag = {
   .name = "verbose",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Print shell input lines as they are read."),
 };
 
 /* Non-zero means type out the command definition after reading, but
@@ -220,6 +256,8 @@ static opt_def_t const OPTDEF_echo_command_at_execute = {
   .name = "xtrace",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Print commands and their arguments as they are executed."),
 };
 
 #if defined (JOB_CONTROL)
@@ -239,6 +277,8 @@ static opt_def_t const OPTDEF_jobs_m_flag = {
   .name = "monitor",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Job control is enabled."),
 };
 #endif
 
@@ -252,6 +292,10 @@ static opt_def_t const OPTDEF_forced_interactive = {
   .adjust_shellopts = true,
   .hide_shopt = true,
   .forbid_change = true,
+  .help = N_(
+    "(This option is read-only)\n"
+    "Bash automatically enters interactive mode if it is started without\n"
+    "a script to read or can only be enabled or disabled at start-up.\n"),
 };
 
 /* By default, follow the symbolic links as if they were real directories
@@ -266,6 +310,9 @@ static opt_def_t const OPTDEF_no_symbolic_links = {
   .name = "physical",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "If set, do not resolve symbolic links when executing commands\n"
+    "such as cd which change the current directory."),
 };
 
 /* **************************************************************** */
@@ -283,6 +330,9 @@ static opt_def_t const OPTDEF_lexical_scoping = {
   .name = "lexical",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "(This option is an illusion; it does not actually exist yet.\n"
+    "Some day we hope to have actual lexical scoping in the shell.)"),
 };
 #endif
 
@@ -294,6 +344,8 @@ static opt_def_t const OPTDEF_hashing_enabled = {
   .name = "hashall",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Remember the location of commands as they are looked up."),
 };
 
 #if defined (BANG_HISTORY)
@@ -317,6 +369,9 @@ static opt_def_t const OPTDEF_histexp_flag = {
   .name = "histexpand",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Enable ! style history substitution.  This flag is on\n"
+    "by default when the shell is interactive."),
 };
 #endif
 
@@ -349,6 +404,9 @@ static opt_def_t const OPTDEF_restricted = {
   .name = "restricted",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "If bash is started with the name rbash, or the -r option is supplied at\n"
+    "invocation, the shell becomes restricted. This cannot be undone."),
 };
 #endif
 
@@ -372,6 +430,11 @@ static opt_def_t const OPTDEF_privileged_mode = {
   .name = "privileged",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Turned on whenever the real and effective user ids do not match.\n"
+    "Disables processing of the $ENV file and importing of shell\n"
+    "functions.  Turning this option off causes the effective uid and\n"
+    "gid to be set to the real uid and gid."),
 };
 
 #if defined (BRACE_EXPANSION)
@@ -383,6 +446,8 @@ static opt_def_t const OPTDEF_brace_expansion = {
   .name = "braceexpand",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Perform brace expansion prior to expanding variables."),
 };
 #endif
 
@@ -394,6 +459,8 @@ static opt_def_t const OPTDEF_function_trace_mode = {
   .name = "functrace",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Shell functions inherit the DEBUG and RETURN traps."),
 };
 
 /* Non-zero means that shell functions inherit the ERR trap. */
@@ -404,6 +471,8 @@ static opt_def_t const OPTDEF_error_trace_mode = {
   .name = "errtrace",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .help = N_(
+    "Shell functions inherit the ERR trap."),
 };
 
 /* Non-zero means that the rightmost non-zero exit status in a pipeline
