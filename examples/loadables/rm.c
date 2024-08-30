@@ -165,11 +165,11 @@ rm_builtin (WORD_LIST *list)
   return rval;
 }
 
-char *rm_doc[] = {
+static char const *rm_doc[] = {
 	"Remove files.",
 	"",
 	"rm removes the files specified as arguments.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

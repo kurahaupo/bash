@@ -162,14 +162,14 @@ tee_builtin (WORD_LIST *list)
   return (rval);
 }
 
-char *tee_doc[] = {
+static char const *tee_doc[] = {
 	"Duplicate standard output.",
 	"",
 	"Copy standard input to standard output, making a copy in each",
 	"filename argument.  If the `-a' option is given, the specified",
 	"files are appended to, otherwise they are overwritten.  If the",
 	"`-i' option is supplied, tee ignores interrupts.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin tee_struct = {

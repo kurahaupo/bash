@@ -161,12 +161,12 @@ sleep_builtin (WORD_LIST *list)
 	return (EXECUTION_FAILURE);
 }
 
-static char *sleep_doc[] = {
+static char const *sleep_doc[] = {
 	"Suspend execution for specified period.",
 	""
 	"sleep suspends execution for a minimum of SECONDS[.FRACTION] seconds.",
 	"As an extension, sleep accepts GNU-style time intervals (e.g., 2m30s).",
-	(char *)NULL
+	NULL
 };
 
 struct builtin sleep_struct = {

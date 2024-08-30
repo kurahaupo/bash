@@ -142,7 +142,7 @@ help_builtin (WORD_LIST *list)
 
       for (pass = 1, this_found = 0; pass < 3; pass++)
 	{
-	  for (i = 0; name = shell_builtins[i].name; i++)
+	  for (i = 0; name = (char*) shell_builtins[i].name; i++)
 	    {
 	      QUIT;
 
@@ -200,7 +200,7 @@ builtin_help (void)
 
   ind = current_builtin - shell_builtins;
   printf ("%s: %s\n", this_command_name, _(shell_builtins[ind].short_doc));
-  show_longdoc (ind);  
+  show_longdoc (ind);
 }
 
 static int
@@ -227,7 +227,7 @@ show_longdoc (int i)
   char * const *doc;
   int fd;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   if (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL)
     {
@@ -249,7 +249,7 @@ show_desc (char *name, int i)
   char * const *doc, *line;
   int fd, usefile;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
   if (usefile)
@@ -271,7 +271,7 @@ show_desc (char *name, int i)
       if (line[j] == '\n')
 	break;
     }
-  
+
   fflush (stdout);
 
   if (usefile)
@@ -287,7 +287,7 @@ show_manpage (char *name, int i)
   char *line;
   int fd, usefile;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
   if (usefile)
@@ -473,7 +473,7 @@ wdispcolumn (int i, char *buf, size_t bufsize, int width, int height)
   /* dispchars == number of characters that will be displayed */
   dispchars = wcsnwidth (wcstr+1, slen, width - 2);
   dispcols = wcswidth (wcstr+1, dispchars) + 1;	/* +1 for ' ' or '*' */
-  
+
   wcstr[0] = (shell_builtins[i+height].flags & BUILTIN_ENABLED) ? L' ' : L'*';
 
   /* The dispchars-1 is there for terminals that behave strangely when you

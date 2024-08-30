@@ -51,12 +51,12 @@ rmdir_builtin (WORD_LIST *list)
   return rval;
 }
 
-char *rmdir_doc[] = {
+static char const *rmdir_doc[] = {
 	"Remove directory.",
 	"",
 	"rmdir removes the directory entry specified by each argument,",
 	"provided the directory is empty.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

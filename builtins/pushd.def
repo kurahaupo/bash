@@ -704,7 +704,7 @@ get_directory_stack (int flags)
 }
 
 #ifdef LOADABLE_BUILTIN
-char * const dirs_doc[] = {
+char const * const dirs_doc[] = {
 N_("Display the list of currently remembered directories.  Directories\n\
     find their way onto the list with the `pushd' command; you can get\n\
     back up through the list with the `popd' command.\n\
@@ -726,7 +726,7 @@ N_("Display the list of currently remembered directories.  Directories\n\
   (char *)NULL
 };
 
-char * const pushd_doc[] = {
+char const * const pushd_doc[] = {
 N_("Adds a directory to the top of the directory stack, or rotates\n\
     the stack, making the new top of the stack the current working\n\
     directory.  With no arguments, exchanges the top two directories.\n\
@@ -751,7 +751,7 @@ N_("Adds a directory to the top of the directory stack, or rotates\n\
   (char *)NULL
 };
 
-char * const popd_doc[] = {
+char const * const popd_doc[] = {
 N_("Removes entries from the directory stack.  With no arguments, removes\n\
     the top directory from the stack, and changes to the new top directory.\n\
     \n\

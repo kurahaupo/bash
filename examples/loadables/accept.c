@@ -204,7 +204,7 @@ accept_bind_variable (char *varname, int intval)
   return (v != 0);
 }
 
-char *accept_doc[] = {
+static char const *accept_doc[] = {
 	"Accept a network connection on a specified port.",
 	""
 	"This builtin allows a bash script to act as a TCP/IP server.",
@@ -228,7 +228,7 @@ char *accept_doc[] = {
 	"if supplied, will be unset.",
 	"",
 	"The server socket fd will be closed before accept returns.",
-	(char *) NULL
+	NULL
 };
 
 struct builtin accept_struct = {

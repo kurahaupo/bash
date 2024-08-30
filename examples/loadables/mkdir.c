@@ -231,7 +231,7 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
   return 0;
 }
 
-char *mkdir_doc[] = {
+static char const *mkdir_doc[] = {
 	"Create directories.",
 	"",
 	"Make directories.  Create the directories named as arguments, in",
@@ -246,7 +246,7 @@ char *mkdir_doc[] = {
 	"umask, plus write and search permissions for the owner.  mkdir",
 	"returns 0 if the directories are created successfully, and non-zero",
 	"if an error occurs.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin mkdir_struct = {

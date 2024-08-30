@@ -35,12 +35,12 @@ necho_builtin (WORD_LIST *list)
 	return (EXECUTION_SUCCESS);
 }
 
-char *necho_doc[] = {
+static char const *necho_doc[] = {
 	"Display arguments.",
 	"",
 	"Print the arguments to the standard output separated",
 	"by space characters and terminated with a newline.",
-	(char *)NULL
+	NULL
 };
 	
 struct builtin necho_struct = {

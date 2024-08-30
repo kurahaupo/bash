@@ -423,7 +423,7 @@ stat_builtin (WORD_LIST *list)
 /* An array of strings forming the `long' documentation for a builtin xxx,
    which is printed by `help xxx'.  It must end with a NULL.  By convention,
    the first line is a short description. */
-char *stat_doc[] = {
+static char const *stat_doc[] = {
 	"Load an associative array with file status information.",
 	"",
 	"Take a filename and load the status information returned by a",
@@ -437,7 +437,7 @@ char *stat_doc[] = {
 	"display the file time information.",
 	"The exit status is 0 unless the stat fails or assigning the array",
 	"is unsuccessful.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

@@ -56,11 +56,11 @@ unlink_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *unlink_doc[] = {
+static char const *unlink_doc[] = {
 	"Remove a directory entry.",
 	"",
 	"Forcibly remove a directory entry, even if it's a directory.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin unlink_struct = {

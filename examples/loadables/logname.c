@@ -53,13 +53,13 @@ logname_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *logname_doc[] = {
+static char const *logname_doc[] = {
 	"Display user login name.",
 	"",
 	"Write the current user's login name to the standard output",
 	"and exit.  logname ignores the LOGNAME and USER variables.",
 	"logname ignores any non-option arguments.",
-	(char *)NULL
+	NULL
 };
 	
 struct builtin logname_struct = {

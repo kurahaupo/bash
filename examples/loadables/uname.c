@@ -142,11 +142,11 @@ uprint (int flag, char *info)
     }
 }
 
-char *uname_doc[] = {
+static char const *uname_doc[] = {
 	"Display system information.",
 	"",
 	"Display information about the system hardware and OS.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin uname_struct = {

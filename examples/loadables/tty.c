@@ -60,14 +60,14 @@ tty_builtin (WORD_LIST *list)
   return (t ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
 }
 
-char *tty_doc[] = {
+static char const *tty_doc[] = {
 	"Display terminal name.",
 	"",
 	"tty writes the name of the terminal that is opened for standard",
 	"input to standard output.  If the `-s' option is supplied, nothing",
 	"is written; the exit status determines whether or not the standard",
 	"input is connected to a tty.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
