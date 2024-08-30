@@ -1152,8 +1152,6 @@ initialize_shell_options (int no_shellopts)
 
   if (! no_shellopts)
     get_shellopts ();
-  if (! no_shellopts)
-    get_shellopts ();
 
   /* Set up the $SHELLOPTS variable. */
   set_shellopts ();
