@@ -98,12 +98,12 @@ dirname_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *dirname_doc[] = {
+static char const *dirname_doc[] = {
 	"Display directory portion of pathname.",
 	"",
 	"The STRING is converted to the name of the directory containing",	
 	"the filename corresponding to the last pathname component in STRING.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

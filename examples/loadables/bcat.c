@@ -114,13 +114,13 @@ cat_builtin(WORD_LIST *list)
 	return r;
 }
 
-char *cat_doc[] = {
+static char const *cat_doc[] = {
 	"Display files.",
 	"",
 	"Read each FILE and display it on the standard output.   If any",
 	"FILE is `-' or if no FILE argument is given, the standard input",
 	"is read.",
-	(char *)0
+	NULL
 };
 
 struct builtin cat_struct = {

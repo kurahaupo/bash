@@ -57,11 +57,11 @@ whoami_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *whoami_doc[] = {
+static char const *whoami_doc[] = {
 	"Print user name",
 	"",
 	"Display name of current user.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin whoami_struct = {

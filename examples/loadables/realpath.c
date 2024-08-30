@@ -182,7 +182,7 @@ realpath_builtin(WORD_LIST *list)
 	return es;
 }
 
-char *realpath_doc[] = {
+static char const *realpath_doc[] = {
 	"Display pathname in canonical form.",
 	"",
 	"Display the canonicalized version of each PATHNAME argument, resolving",
@@ -196,7 +196,7 @@ char *realpath_doc[] = {
 	"without resolving symbolic links.",
 	"The -v option produces verbose output.",
 	"The exit status is 0 if each PATHNAME was resolved; non-zero otherwise.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin realpath_struct = {

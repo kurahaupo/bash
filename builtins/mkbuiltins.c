@@ -48,6 +48,7 @@
 #include "filecntl.h"
 
 #include "../bashansi.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -61,16 +62,9 @@ extern int errno;
 
 static void *xmalloc (size_t);
 static void *xrealloc (void *, size_t);
+static void xfree (void const *);
 
 #define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
-#define whitespace(c) (((c) == ' ') || ((c) == '\t'))
-
-/* Flag values that builtins can have. */
-#define BUILTIN_FLAG_SPECIAL	0x01
-#define BUILTIN_FLAG_ASSIGNMENT 0x02
-#define BUILTIN_FLAG_LOCALVAR	0x04
-#define BUILTIN_FLAG_POSIX_BUILTIN	0x08
-#define BUILTIN_FLAG_ARRAYREF_ARG	0x10
 
 #define BASE_INDENT	4
 
@@ -116,41 +110,66 @@ char *include_filename = (char *)NULL;
 
 /* The name of the include file to put into the generated struct filename. */
 
+enum {
+  ACT_STRING = 1,
+  ACT_BIDESC,
+};
 /* Here is a structure for manipulating arrays of data. */
 typedef struct {
-  int size;		/* Number of slots allocated to array. */
-  int sindex;		/* Current location in array. */
+  union {
+    void *data;		/* Raw storage. */
+    void const**vector;
+    char const**strings;
+  };
+  int length;		/* Current location in array. */
+  int content_type;
+  int capacity;		/* Number of slots allocated to array. */
   int width;		/* Size of each element. */
-  int growth_rate;	/* How fast to grow. */
-  char **array;		/* The array itself. */
 } ARRAY;
 
+typedef union {
+  char const**strings;	/* Visible array. */
+  ARRAY array;
+} STR_ARRAY;
+
 /* Here is a structure defining a single BUILTIN. */
-typedef struct {
-  char *name;		/* The name of this builtin. */
-  char *function;	/* The name of the function to call. */
-  char *shortdoc;	/* The short documentation for this builtin. */
-  char *docname;	/* Possible name for documentation string. */
-  ARRAY *longdoc;	/* The long documentation for this builtin. */
-  ARRAY *dependencies;	/* Null terminated array of #define names. */
+typedef struct builtin_desc_s {
+  char const*name;		/* The name of this builtin. */
+  char const*function;	/* The name of the function to call. */
+  char const*shortdoc;	/* The short documentation for this builtin. */
+  char const*docname;	/* Possible name for documentation string. */
+  STR_ARRAY *longdoc;	/* The long documentation for this builtin. */
+  STR_ARRAY *dependencies;	/* Null terminated array of #define names. */
+  __attribute__((__deprecated__))
   int flags;		/* Flags for this builtin. */
+  _Bool flag_special :1;
+  _Bool flag_assignment :1;
+  _Bool flag_localvar :1;
+  _Bool flag_posix_builtin :1;
+  _Bool flag_arrayref_arg :1;
 } BUILTIN_DESC;
+
+typedef union {
+  /* Overlays onto ARRAY */
+  BUILTIN_DESC **descs;	/* Visible array. */
+  ARRAY array;
+} BUILTIN_DESC_ARRAY;
 
 /* Here is a structure which defines a DEF file. */
 typedef struct {
   char *filename;	/* The name of the input def file. */
-  ARRAY *lines;		/* The contents of the file. */
+  STR_ARRAY *lines;	/* The contents of the file. */
   int line_number;	/* The current line number. */
   char *production;	/* The name of the production file. */
   FILE *output;		/* Open file stream for PRODUCTION. */
-  ARRAY *builtins;	/* Null terminated array of BUILTIN_DESC *. */
+  BUILTIN_DESC_ARRAY *builtins;	/* Null terminated array of BUILTIN_DESC *. */
 } DEF_FILE;
 
 /* The array of all builtins encountered during execution of this code. */
-ARRAY *saved_builtins = (ARRAY *)NULL;
+BUILTIN_DESC_ARRAY *saved_builtins = NULL;
 
 /* The Posix.2 so-called `special' builtins. */
-char *special_builtins[] =
+char const*special_builtins[] =
 {
   ":", ".", "source", "break", "continue", "eval", "exec", "exit",
   "export", "readonly", "return", "set", "shift", "times", "trap", "unset",
@@ -158,19 +177,19 @@ char *special_builtins[] =
 };
 
 /* The builtin commands that take assignment statements as arguments. */
-char *assignment_builtins[] =
+char const*assignment_builtins[] =
 {
   "alias", "declare", "export", "local", "readonly", "typeset",
   (char *)NULL
 };
 
-char *localvar_builtins[] =
+char const*localvar_builtins[] =
 {
   "declare", "local", "typeset", (char *)NULL
 };
 
 /* The builtin commands that are special to the POSIX search order. */
-char *posix_builtins[] =
+char const*posix_builtins[] =
 {
   "alias", "bg", "cd", "command", "false", "fc", "fg", "getopts", "hash",
   "jobs", "kill", "newgrp", "pwd", "read", "true", "type", "ulimit",
@@ -181,7 +200,7 @@ char *posix_builtins[] =
 /* The builtin commands that can take array references as arguments and pay
    attention to `array_expand_once'. These are the ones that don't assign
    values, but need to avoid double expansions. */
-char *arrayvar_builtins[] =
+char const*arrayvar_builtins[] =
 {
   "declare", "let", "local", "printf", "read", "test", "[",
   "typeset", "unset", "wait",		/*]*/
@@ -189,39 +208,36 @@ char *arrayvar_builtins[] =
 };
 
 /* Forward declarations. */
-static int is_special_builtin (char *);
-static int is_assignment_builtin (char *);
-static int is_localvar_builtin (char *);
-static int is_posix_builtin (char *);
-static int is_arrayvar_builtin (char *);
+static int is_special_builtin (char const*);
+static int is_assignment_builtin (char const*);
+static int is_localvar_builtin (char const*);
+static int is_posix_builtin (char const*);
+static int is_arrayvar_builtin (char const*);
 
 #if !defined (HAVE_RENAME)
-static int rename (char *, char *);
+static int rename (char const*, char const*);
 #endif
 
 void extract_info (char *, FILE *, FILE *);
 
-void file_error (char *);
-void line_error (DEF_FILE *, char *, char *, char *);
+void file_error (char const*);
+void line_error (DEF_FILE *, char const*, char const*, char const*);
 
 void write_file_headers (FILE *, FILE *);
 void write_file_footers (FILE *, FILE *);
-void write_ifdefs (FILE *, char **);
-void write_endifs (FILE *, char **);
-void write_documentation (FILE *, char **, int, int);
-void write_dummy_declarations (FILE *, ARRAY *);
-void write_longdocs (FILE *, ARRAY *);
+void write_ifdefs (FILE *, char const*const*);
+void write_endifs (FILE *, char const*const*);
+void write_documentation (FILE *, char const*const*, int, int);
+void write_dummy_declarations (FILE *, BUILTIN_DESC_ARRAY *);
+void write_longdocs (FILE *, BUILTIN_DESC_ARRAY *);
 void write_builtins (DEF_FILE *, FILE *, FILE *);
 
-int write_helpfiles (ARRAY *);
-
-static int _find_in_table (char *, char **);
+int write_helpfiles (BUILTIN_DESC_ARRAY *);
 
 void free_defs (DEF_FILE *);
-void add_documentation (DEF_FILE *, char *);
+void add_documentation (DEF_FILE *, char const*);
 
-void must_be_building (char *, DEF_FILE *);
-void remove_trailing_whitespace (char *);
+void must_be_building (char const *, DEF_FILE *);
 
 #define document_name(b)	((b)->docname ? (b)->docname : (b)->name)
 
@@ -260,7 +276,7 @@ main (int argc, char **argv)
 	  int len;
 
 	  if (error_directory)
-	    free (error_directory);
+	    xfree (error_directory);
 
 	  error_directory = xmalloc (2 + strlen (argv[arg_index]));
 	  strcpy (error_directory, argv[arg_index]);
@@ -381,71 +397,116 @@ main (int argc, char **argv)
 
 /* Make a new array, and return a pointer to it.  The array will
    contain elements of size WIDTH, and is initialized to no elements. */
-ARRAY *
-array_create (int width)
+static inline ARRAY *
+create_array (int width)
 {
   ARRAY *array;
 
   array = (ARRAY *)xmalloc (sizeof (ARRAY));
-  array->size = 0;
-  array->sindex = 0;
+  array->capacity = 0;
+  array->length = 0;
   array->width = width;
 
-  /* Default to increasing size in units of 20. */
-  array->growth_rate = 20;
+  array->data = NULL;
 
-  array->array = (char **)NULL;
-
-  return (array);
+  return array;
 }
 
-/* Copy the array of strings in ARRAY. */
-ARRAY *
-copy_string_array (ARRAY *array)
+static inline void
+array_size_check (ARRAY *array, size_t index)
 {
-  register int i;
-  ARRAY *copy;
-
-  if (!array)
-    return (ARRAY *)NULL;
-
-  copy = array_create (sizeof (char *));
-
-  copy->size = array->size;
-  copy->sindex = array->sindex;
-  copy->width = array->width;
-
-  copy->array = (char **)xmalloc ((1 + array->sindex) * sizeof (char *));
-
-  for (i = 0; i < array->sindex; i++)
-    copy->array[i] = savestring (array->array[i]);
-
-  copy->array[i] = (char *)NULL;
-
-  return (copy);
+  if (index < array->capacity)
+    return;
+  array->capacity <<= 1;
+  array->capacity |= index+1;
+  array->data = xrealloc (array->data, array->capacity * array->width);
 }
 
-/* Add ELEMENT to ARRAY, growing the array if necessary. */
-void
-array_add (char *element, ARRAY *array)
-{
-  if (array->sindex + 2 > array->size)
-    array->array = (char **)xrealloc
-      (array->array, (array->size += array->growth_rate) * array->width);
+static void __attribute__((__deprecated__)) array_add (void const *element, ARRAY *a);
 
-  array->array[array->sindex++] = element;
-  array->array[array->sindex] = (char *)NULL;
+static void
+array_append (ARRAY *a, void const *datum)
+{
+  array_size_check (a, a->length+1);
+  memcpy (a->data + a->length++ * a->width, datum, a->width);
+  memset (a->data + a->length * a->width, 0, a->width);
 }
 
 /* Free an allocated array and data pointer. */
 void
-array_free (ARRAY *array)
+free_array (ARRAY *array)
 {
-  if (array->array)
-    free (array->array);
-
-  free (array);
+  if (array->data)
+    xfree (array->data);
+  xfree (array);
 }
+
+STR_ARRAY *
+create_string_array (void)
+{
+  ARRAY *array = create_array (sizeof (char const*));
+  array->content_type = ACT_STRING;
+  return (STR_ARRAY *)array;
+}
+
+/* Add ELEMENT to ARRAY, growing the array if necessary. */
+static inline void
+string_array_append (STR_ARRAY *array, char const*element)
+{
+  array_append (&array->array, &element);
+}
+
+/* Copy the array of strings in ARRAY. */
+STR_ARRAY *
+copy_string_array (STR_ARRAY *array)
+{
+  register int i;
+  STR_ARRAY *copy;
+
+  if (!array)
+    return NULL;
+
+  copy = create_string_array ();
+  array_size_check (&copy->array, array->array.length);
+  copy->array.length = array->array.length;
+
+  for (i = 0; i < array->array.length; i++)
+    copy->strings[i] = savestring (array->strings[i]);
+
+  copy->strings[i] = NULL;
+
+  return copy;
+}
+
+/* Free an allocated array and data pointer. */
+static inline void
+free_string_array (STR_ARRAY *array)
+{
+  free_array ((ARRAY *) array);
+}
+
+BUILTIN_DESC_ARRAY *
+create_bidesc_array (void)
+{
+  ARRAY *array = create_array (sizeof (BUILTIN_DESC_ARRAY *));
+  array->content_type = ACT_BIDESC;
+  return (BUILTIN_DESC_ARRAY *)array;
+}
+
+/* Add ELEMENT to ARRAY, growing the array if necessary. */
+static inline void
+bidesc_array_append (BUILTIN_DESC_ARRAY *array, BUILTIN_DESC const*element)
+{
+  array_append (&array->array, &element);
+}
+
+/* Free an allocated array and data pointer. */
+static inline void
+free_bidesc_array (BUILTIN_DESC_ARRAY *array)
+{
+  free_array ((ARRAY *) array);
+}
+
 
 /* **************************************************************** */
 /*								    */
@@ -454,7 +515,7 @@ array_free (ARRAY *array)
 /* **************************************************************** */
 
 /* The definition of a function. */
-typedef int mk_handler_func_t (char *, DEF_FILE *, char *);
+typedef int mk_handler_func_t (char const *, DEF_FILE *, char const *);
 
 /* Structure handles processor directives. */
 typedef struct {
@@ -462,14 +523,14 @@ typedef struct {
   mk_handler_func_t *function;
 } HANDLER_ENTRY;
 
-extern int builtin_handler (char *, DEF_FILE *, char *);
-extern int function_handler (char *, DEF_FILE *, char *);
-extern int short_doc_handler (char *, DEF_FILE *, char *);
-extern int comment_handler (char *, DEF_FILE *, char *);
-extern int depends_on_handler (char *, DEF_FILE *, char *);
-extern int produces_handler (char *, DEF_FILE *, char *);
-extern int end_handler (char *, DEF_FILE *, char *);
-extern int docname_handler (char *, DEF_FILE *, char *);
+extern mk_handler_func_t builtin_handler;
+extern mk_handler_func_t function_handler;
+extern mk_handler_func_t short_doc_handler;
+extern mk_handler_func_t comment_handler;
+extern mk_handler_func_t depends_on_handler;
+extern mk_handler_func_t produces_handler;
+extern mk_handler_func_t end_handler;
+extern mk_handler_func_t docname_handler;
 
 HANDLER_ENTRY handlers[] = {
   { "BUILTIN", builtin_handler },
@@ -481,7 +542,7 @@ HANDLER_ENTRY handlers[] = {
   { "DEPENDS_ON", depends_on_handler },
   { "PRODUCES", produces_handler },
   { "END", end_handler },
-  { (char *)NULL, (mk_handler_func_t *)NULL }
+  {0}
 };
 
 /* Return the entry in the table of handlers for NAME. */
@@ -494,7 +555,7 @@ find_directive (char *directive)
     if (strcmp (handlers[i].directive, directive) == 0)
       return (&handlers[i]);
 
-  return ((HANDLER_ENTRY *)NULL);
+  return NULL;
 }
 
 /* Non-zero indicates that a $BUILTIN has been seen, but not
@@ -521,7 +582,8 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   DEF_FILE *defs;
   struct stat finfo;
   size_t file_size;
-  char *buffer, *line;
+  char *buffer;
+  char const*line;
   int fd, nr;
 
   if (stat (filename, &finfo) == -1)
@@ -547,36 +609,38 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   if (nr == 0)
     {
       fprintf (stderr, "mkbuiltins: %s: skipping zero-length file\n", filename);
-      free (buffer);
+      xfree (buffer);
       return;
     }
 
   /* Create and fill in the initial structure describing this file. */
   defs = (DEF_FILE *)xmalloc (sizeof (DEF_FILE));
   defs->filename = filename;
-  defs->lines = array_create (sizeof (char *));
+  defs->lines = create_string_array ();
   defs->line_number = 0;
-  defs->production = (char *)NULL;
-  defs->output = (FILE *)NULL;
-  defs->builtins = (ARRAY *)NULL;
+  defs->production = NULL;
+  defs->output = NULL;
+  defs->builtins = NULL;
 
-  /* Build the array of lines. */
-  i = 0;
-  while (i < file_size)
-    {
-      array_add (&buffer[i], defs->lines);
-
-      while (i < file_size && buffer[i] != '\n')
-	i++;
-      buffer[i++] = '\0';
-    }
+  /* Build the array of lines, with trailing whitespace removed. */
+  string_array_append (defs->lines, buffer);
+  for (int j = i = 0; i < file_size; ++i)
+    if (buffer[i] == '\n')
+      {
+	buffer[j] = 0;
+	j = i+1;
+	if (j < file_size)
+	  string_array_append (defs->lines, &buffer[j]);
+      }
+    else if (! isspace (buffer[i]))
+      j = i+1;
 
   /* Begin processing the input file.  We don't write any output
      until we have a file to write output to. */
   output_cpp_line_info = 1;
 
   /* Process each line in the array. */
-  for (i = 0; line = defs->lines->array[i]; i++)
+  for (i = 0; line = defs->lines->strings[i]; i++)
     {
       defs->line_number = i;
 
@@ -587,7 +651,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 	  HANDLER_ENTRY *handler;
 
 	  /* Isolate the directive. */
-	  for (j = 0; line[j] && !whitespace (line[j]); j++);
+	  for (j = 0; line[j] && !isspace (line[j]); j++);
 
 	  directive = xmalloc (j);
 	  strncpy (directive, line + 1, j - 1);
@@ -599,19 +663,19 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 	  if (!handler)
 	    {
 	      line_error (defs, "Unknown directive `%s'", directive, "");
-	      free (directive);
+	      xfree (directive);
 	      continue;
 	    }
 	  else
 	    {
 	      /* Advance to the first non-whitespace character. */
-	      while (whitespace (line[j]))
+	      while (isspace (line[j]))
 		j++;
 
 	      /* Call the directive handler with the FILE, and ARGS. */
 	      (*(handler->function)) (directive, defs, line + j);
 	    }
-	  free (directive);
+	  xfree (directive);
 	}
       else
 	{
@@ -648,30 +712,28 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
      builtext.h file. */
   write_builtins (defs, structfile, externfile);
 
-  free (buffer);
+  xfree (buffer);
   free_defs (defs);
 }
-
-#define free_safely(x) if (x) free (x)
 
 static void
 free_builtin (BUILTIN_DESC *builtin)
 {
   register int i;
 
-  free_safely (builtin->name);
-  free_safely (builtin->function);
-  free_safely (builtin->shortdoc);
-  free_safely (builtin->docname);
+  xfree (builtin->name);
+  xfree (builtin->function);
+  xfree (builtin->shortdoc);
+  xfree (builtin->docname);
 
   if (builtin->longdoc)
-    array_free (builtin->longdoc);
+    free_string_array (builtin->longdoc);
 
   if (builtin->dependencies)
     {
-      for (i = 0; builtin->dependencies->array[i]; i++)
-	free (builtin->dependencies->array[i]);
-      array_free (builtin->dependencies);
+      for (i = 0; builtin->dependencies->strings[i]; i++)
+	xfree (builtin->dependencies->strings[i]);
+      free_string_array (builtin->dependencies);
     }
 }
 
@@ -683,21 +745,21 @@ free_defs (DEF_FILE *defs)
   register BUILTIN_DESC *builtin;
 
   if (defs->production)
-    free (defs->production);
+    xfree (defs->production);
 
   if (defs->lines)
-    array_free (defs->lines);
+    free_string_array (defs->lines);
 
   if (defs->builtins)
     {
-      for (i = 0; builtin = (BUILTIN_DESC *)defs->builtins->array[i]; i++)
+      for (i = 0; builtin = (BUILTIN_DESC *)defs->builtins->descs[i]; i++)
 	{
 	  free_builtin (builtin);
-	  free (builtin);
+	  xfree (builtin);
 	}
-      array_free (defs->builtins);
+      free_bidesc_array (defs->builtins);
     }
-  free (defs);
+  xfree (defs);
 }
 
 /* **************************************************************** */
@@ -706,52 +768,24 @@ free_defs (DEF_FILE *defs)
 /*								    */
 /* **************************************************************** */
 
-/* Strip surrounding whitespace from STRING, and
-   return a pointer to the start of it. */
-char *
-strip_whitespace (char *string)
-{
-  while (whitespace (*string))
-      string++;
-
-  remove_trailing_whitespace (string);
-  return (string);
-}
-
-/* Remove only the trailing whitespace from STRING. */
-void
-remove_trailing_whitespace (char *string)
-{
-  register int i;
-
-  i = strlen (string) - 1;
-
-  while (i > 0 && whitespace (string[i]))
-    i--;
-
-  string[++i] = '\0';
-}
-
 /* Ensure that there is a argument in STRING and return it.
    FOR_WHOM is the name of the directive which needs the argument.
    DEFS is the DEF_FILE in which the directive is found.
    If there is no argument, produce an error. */
 char *
-get_arg (char *for_whom, DEF_FILE *defs, char *string)
+get_arg (char const*for_whom, DEF_FILE *defs, char const*string)
 {
-  char *new;
-
-  new = strip_whitespace (string);
-
-  if (!*new)
+  if (!*string)
     line_error (defs, "%s requires an argument", for_whom, "");
 
-  return (savestring (new));
+  for (; *string && isspace (*string); ++string) {}
+
+  return (savestring (string));
 }
 
 /* Error if not building a builtin. */
 void
-must_be_building (char *directive, DEF_FILE *defs)
+must_be_building (char const *directive, DEF_FILE *defs)
 {
   if (!building_builtin)
     line_error (defs, "%s must be inside of a $BUILTIN block", directive, "");
@@ -759,38 +793,36 @@ must_be_building (char *directive, DEF_FILE *defs)
 
 /* Return the current builtin. */
 BUILTIN_DESC *
-current_builtin (char *directive, DEF_FILE *defs)
+current_builtin (char const*directive, DEF_FILE *defs)
 {
   must_be_building (directive, defs);
-  if (defs->builtins)
-    return ((BUILTIN_DESC *)defs->builtins->array[defs->builtins->sindex - 1]);
+  if (defs->builtins && defs->builtins->array.length > 0)
+    return (defs->builtins->descs[defs->builtins->array.length - 1]);
   else
-    return ((BUILTIN_DESC *)NULL);
+    return NULL;
 }
 
 /* Add LINE to the long documentation for the current builtin.
    Ignore blank lines until the first non-blank line has been seen. */
 void
-add_documentation (DEF_FILE *defs, char *line)
+add_documentation (DEF_FILE *defs, char const*line)
 {
   register BUILTIN_DESC *builtin;
 
   builtin = current_builtin ("(implied LONGDOC)", defs);
 
-  remove_trailing_whitespace (line);
-
   if (!*line && !builtin->longdoc)
     return;
 
   if (!builtin->longdoc)
-    builtin->longdoc = array_create (sizeof (char *));
+    builtin->longdoc = create_string_array ();
 
-  array_add (line, builtin->longdoc);
+  string_array_append (builtin->longdoc, line);
 }
 
 /* How to handle the $BUILTIN directive. */
 int
-builtin_handler (char *self, DEF_FILE *defs, char *arg)
+builtin_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   BUILTIN_DESC *new;
   char *name;
@@ -809,29 +841,19 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
 
   /* If this is the first builtin, create the array to hold them. */
   if (!defs->builtins)
-    defs->builtins = array_create (sizeof (BUILTIN_DESC *));
+    defs->builtins = create_bidesc_array ();
 
-  new = (BUILTIN_DESC *)xmalloc (sizeof (BUILTIN_DESC));
-  new->name = name;
-  new->function = (char *)NULL;
-  new->shortdoc = (char *)NULL;
-  new->docname = (char *)NULL;
-  new->longdoc = (ARRAY *)NULL;
-  new->dependencies = (ARRAY *)NULL;
-  new->flags = 0;
+  new = xmalloc (sizeof (BUILTIN_DESC));
+  *new = (BUILTIN_DESC){
+    .name = name,
+    .flag_special = is_special_builtin (name),
+    .flag_assignment = is_assignment_builtin (name),
+    .flag_localvar = is_localvar_builtin (name),
+    .flag_posix_builtin = is_posix_builtin (name),
+    .flag_arrayref_arg = is_arrayvar_builtin (name),
+  };
 
-  if (is_special_builtin (name))
-    new->flags |= BUILTIN_FLAG_SPECIAL;
-  if (is_assignment_builtin (name))
-    new->flags |= BUILTIN_FLAG_ASSIGNMENT;
-  if (is_localvar_builtin (name))
-    new->flags |= BUILTIN_FLAG_LOCALVAR;
-  if (is_posix_builtin (name))
-    new->flags |= BUILTIN_FLAG_POSIX_BUILTIN;
-  if (is_arrayvar_builtin (name))
-    new->flags |= BUILTIN_FLAG_ARRAYREF_ARG;
-
-  array_add ((char *)new, defs->builtins);
+  bidesc_array_append (defs->builtins, new);
   building_builtin = 1;
 
   return (0);
@@ -839,7 +861,7 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $FUNCTION directive. */
 int
-function_handler (char *self, DEF_FILE *defs, char *arg)
+function_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -861,7 +883,7 @@ function_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $DOCNAME directive. */
 int
-docname_handler (char *self, DEF_FILE *defs, char *arg)
+docname_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -878,7 +900,7 @@ docname_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $SHORT_DOC directive. */
 int
-short_doc_handler (char *self, DEF_FILE *defs, char *arg)
+short_doc_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -895,32 +917,29 @@ short_doc_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $COMMENT directive. */
 int
-comment_handler (char *self, DEF_FILE *defs, char *arg)
+comment_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   return (0);
 }
 
 /* How to handle the $DEPENDS_ON directive. */
 int
-depends_on_handler (char *self, DEF_FILE *defs, char *arg)
+depends_on_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
-  register BUILTIN_DESC *builtin;
-  char *dependent;
+  register BUILTIN_DESC *builtin = current_builtin (self, defs);
+  char const*dependent = get_arg (self, defs, arg);
 
-  builtin = current_builtin (self, defs);
-  dependent = get_arg (self, defs, arg);
+  if (! builtin->dependencies)
+    builtin->dependencies = create_string_array ();
 
-  if (!builtin->dependencies)
-    builtin->dependencies = array_create (sizeof (char *));
-
-  array_add (dependent, builtin->dependencies);
+  string_array_append (builtin->dependencies, dependent);
 
   return (0);
 }
 
 /* How to handle the $PRODUCES directive. */
 int
-produces_handler (char *self, DEF_FILE *defs, char *arg)
+produces_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   /* If just hacking documentation, don't change any of the production
      files. */
@@ -951,7 +970,7 @@ produces_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $END directive. */
 int
-end_handler (char *self, DEF_FILE *defs, char *arg)
+end_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
   must_be_building (self, defs);
   building_builtin = 0;
@@ -966,7 +985,7 @@ end_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* Produce an error for DEFS with FORMAT and ARGS. */
 void
-line_error (DEF_FILE *defs, char *format, char *arg1, char *arg2)
+line_error (DEF_FILE *defs, char const*format, char const*arg1, char const*arg2)
 {
   if (defs->filename[0] != '/')
     fprintf (stderr, "%s", error_directory ? error_directory : "./");
@@ -978,7 +997,7 @@ line_error (DEF_FILE *defs, char *format, char *arg1, char *arg2)
 
 /* Print error message for FILENAME. */
 void
-file_error (char *filename)
+file_error (char const*filename)
 {
   perror (filename);
   exit (2);
@@ -1019,6 +1038,13 @@ xrealloc (void *pointer, size_t bytes)
 }
 
 static void
+xfree (void const*x)
+{
+  if (x)
+    free ((void*)x);
+}
+
+static void
 memory_error_and_abort (void)
 {
   fprintf (stderr, "mkbuiltins: out of virtual memory\n");
@@ -1046,9 +1072,9 @@ copy_builtin (BUILTIN_DESC *builtin)
   new->dependencies = copy_string_array (builtin->dependencies);
 
   new->function =
-    builtin->function ? savestring (builtin->function) : (char *)NULL;
+    builtin->function ? savestring (builtin->function) : NULL;
   new->docname =
-    builtin->docname  ? savestring (builtin->docname)  : (char *)NULL;
+    builtin->docname  ? savestring (builtin->docname)  : NULL;
 
   return (new);
 }
@@ -1057,16 +1083,12 @@ copy_builtin (BUILTIN_DESC *builtin)
 void
 save_builtin (BUILTIN_DESC *builtin)
 {
-  BUILTIN_DESC *newbuiltin;
-
-  newbuiltin = copy_builtin (builtin);
-
   /* If this is the first builtin to be saved, create the array
      to hold it. */
   if (!saved_builtins)
-      saved_builtins = array_create (sizeof (BUILTIN_DESC *));
+      saved_builtins = create_bidesc_array ();
 
-  array_add ((char *)newbuiltin, saved_builtins);
+  bidesc_array_append (saved_builtins, copy_builtin (builtin));
 }
 
 /* Flags that mean something to write_documentation (). */
@@ -1177,17 +1199,17 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
     {
       register BUILTIN_DESC *builtin;
 
-      for (i = 0; i < defs->builtins->sindex; i++)
+      for (i = 0; i < defs->builtins->array.length; i++)
 	{
-	  builtin = (BUILTIN_DESC *)defs->builtins->array[i];
+	  builtin = (BUILTIN_DESC *)defs->builtins->descs[i];
 
 	  /* Write out any #ifdefs that may be there. */
 	  if (!only_documentation)
 	    {
 	      if (builtin->dependencies)
 		{
-		  write_ifdefs (externfile, builtin->dependencies->array);
-		  write_ifdefs (structfile, builtin->dependencies->array);
+		  write_ifdefs (externfile, builtin->dependencies->strings);
+		  write_ifdefs (structfile, builtin->dependencies->strings);
 		}
 
 	      /* Write the extern definition. */
@@ -1197,51 +1219,41 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 		    fprintf (externfile, "extern int %s (WORD_LIST *);\n",
 			     builtin->function);
 
-		  fprintf (externfile, "extern char * const %s_doc[];\n",
+		  fprintf (externfile, "extern char const* const %s_doc[];\n",
 			   document_name (builtin));
 		}
 
 	      /* Write the structure definition. */
 	      if (structfile)
 		{
-		  fprintf (structfile, "  { \"%s\", ", builtin->name);
+		  fprintf (structfile, "  { .name = \"%s\"", builtin->name);
 
-		  if (builtin->function && inhibit_functions == 0)
-		    fprintf (structfile, "%s, ", builtin->function);
-		  else
-		    fprintf (structfile, "(sh_builtin_func_t *)0x0, ");
+		  if (builtin->function && ! inhibit_functions)
+		    fprintf (structfile, ", .function = %s", builtin->function);
 
-		  fprintf (structfile, "%s%s%s%s%s%s, %s_doc,\n",
-		    "BUILTIN_ENABLED | STATIC_BUILTIN",
-		    (builtin->flags & BUILTIN_FLAG_SPECIAL) ? " | SPECIAL_BUILTIN" : "",
-		    (builtin->flags & BUILTIN_FLAG_ASSIGNMENT) ? " | ASSIGNMENT_BUILTIN" : "",
-		    (builtin->flags & BUILTIN_FLAG_LOCALVAR) ? " | LOCALVAR_BUILTIN" : "",
-		    (builtin->flags & BUILTIN_FLAG_POSIX_BUILTIN) ? " | POSIX_BUILTIN" : "",
-		    (builtin->flags & BUILTIN_FLAG_ARRAYREF_ARG) ? " | ARRAYREF_BUILTIN" : "",
-		    document_name (builtin));
+		  fprintf (structfile, ", .flags = %s%s%s%s%s%s",
+						     "BUILTIN_ENABLED"
+						  " | STATIC_BUILTIN",
+		    builtin->flag_special       ? " | SPECIAL_BUILTIN" : "",
+		    builtin->flag_assignment    ? " | ASSIGNMENT_BUILTIN" : "",
+		    builtin->flag_localvar      ? " | LOCALVAR_BUILTIN" : "",
+		    builtin->flag_posix_builtin ? " | POSIX_BUILTIN" : "",
+		    builtin->flag_arrayref_arg  ? " | ARRAYREF_BUILTIN" : "");
 
 		  /* Don't translate short document summaries that are identical
 		     to command names */
 		  if (builtin->shortdoc && strcmp (builtin->name, builtin->shortdoc) == 0)
-		    {
-		      if (inhibit_functions)
-			fprintf (structfile, "     \"%s\", \"%s\" },\n",
-			  builtin->shortdoc ? builtin->shortdoc : builtin->name,
-			  document_name (builtin));
-		      else
-			fprintf (structfile, "     \"%s\", (char *)NULL },\n",
-			  builtin->shortdoc ? builtin->shortdoc : builtin->name);
-		    }
+		    fprintf (structfile, ", .short_doc = \"%s\"",
+		      builtin->shortdoc ? builtin->shortdoc : builtin->name);
 		  else
-		    {
-		      if (inhibit_functions)
-			fprintf (structfile, "     N_(\"%s\"), \"%s\" },\n",
-			  builtin->shortdoc ? builtin->shortdoc : builtin->name,
-			  document_name (builtin));
-		      else
-			fprintf (structfile, "     N_(\"%s\"), (char *)NULL },\n",
-			  builtin->shortdoc ? builtin->shortdoc : builtin->name);
-		    }
+		    fprintf (structfile, ", .short_doc = N_(\"%s\")",
+		      builtin->shortdoc ? builtin->shortdoc : builtin->name);
+
+		  if (inhibit_functions)
+		    fprintf (structfile, ", .handle = \"%s\"", document_name (builtin));
+
+		  fprintf (structfile, ", .long_doc = %s_doc", document_name (builtin));
+		  fprintf (structfile, " },\n");
 		}
 
 	      if (structfile || separate_helpfiles)
@@ -1253,10 +1265,10 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	      if (builtin->dependencies)
 		{
 		  if (externfile)
-		    write_endifs (externfile, builtin->dependencies->array);
+		    write_endifs (externfile, builtin->dependencies->strings);
 
 		  if (structfile)
-		    write_endifs (structfile, builtin->dependencies->array);
+		    write_endifs (structfile, builtin->dependencies->strings);
 		}
 	    }
 
@@ -1264,7 +1276,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	    {
 	      fprintf (documentation_file, "@item %s\n", builtin->name);
 	      write_documentation
-		(documentation_file, builtin->longdoc->array, 0, TEXINFO);
+		(documentation_file, builtin->longdoc->strings, 0, TEXINFO);
 	    }
 	}
     }
@@ -1272,44 +1284,41 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 
 /* Write out the long documentation strings in BUILTINS to STREAM. */
 void
-write_longdocs (FILE *stream, ARRAY *builtins)
+write_longdocs (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 {
   register int i;
   register BUILTIN_DESC *builtin;
-  char *dname;
-  char *sarray[2];
+  char const*dname;
 
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->array.length; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->descs[i];
 
       if (builtin->dependencies)
-	write_ifdefs (stream, builtin->dependencies->array);
+	write_ifdefs (stream, builtin->dependencies->strings);
 
       /* Write the long documentation strings. */
       dname = document_name (builtin);
-      fprintf (stream, "char * const %s_doc[] =", dname);
+      fprintf (stream, "char const* const %s_doc[] =", dname);
 
       if (separate_helpfiles)
 	{
-	  int l = strlen (helpfile_directory) + strlen (dname) + 1;
-	  sarray[0] = (char *)xmalloc (l + 1);
-	  sprintf (sarray[0], "%s/%s", helpfile_directory, dname);
-	  sarray[1] = (char *)NULL;
-	  write_documentation (stream, sarray, 0, STRING_ARRAY|HELPFILE);
-	  free (sarray[0]);
+	  char *p;
+	  int j = asprintf (&p, "%s/%s", helpfile_directory, dname);
+	  write_documentation (stream, (char const*[]){ p, NULL }, 0, STRING_ARRAY|HELPFILE);
+	  xfree (p);
 	}
       else
-	write_documentation (stream, builtin->longdoc->array, 0, STRING_ARRAY);
+	write_documentation (stream, builtin->longdoc->strings, 0, STRING_ARRAY);
 
       if (builtin->dependencies)
-	write_endifs (stream, builtin->dependencies->array);
+	write_endifs (stream, builtin->dependencies->strings);
 
     }
 }
 
 void
-write_dummy_declarations (FILE *stream, ARRAY *builtins)
+write_dummy_declarations (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 {
   register int i;
   BUILTIN_DESC *builtin;
@@ -1318,9 +1327,9 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
 
   fprintf (stream, "#include \"%s\"\n", "../builtins.h");
 
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->array.length; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->descs[i];
 
       /* How to guarantee that no builtin is written more than once? */
       fprintf (stream, "int %s () { return (0); }\n", builtin->function);
@@ -1334,7 +1343,7 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
    If a define is preceded by an `!', then the sense of the test is
    reversed. */
 void
-write_ifdefs (FILE *stream, char **defines)
+write_ifdefs (FILE *stream, char const*const*defines)
 {
   register int i;
 
@@ -1345,7 +1354,7 @@ write_ifdefs (FILE *stream, char **defines)
 
   for (i = 0; defines[i]; i++)
     {
-      char *def = defines[i];
+      char const*def = defines[i];
 
       if (*def == '!')
 	fprintf (stream, "!defined (%s)", def + 1);
@@ -1363,7 +1372,7 @@ write_ifdefs (FILE *stream, char **defines)
    STREAM is the stream to write the information to.
    DEFINES is a null terminated array of define names. */
 void
-write_endifs (FILE *stream, char **defines)
+write_endifs (FILE *stream, char const*const*defines)
 {
   register int i;
 
@@ -1388,17 +1397,17 @@ write_endifs (FILE *stream, char **defines)
    internationalization (gettext) and the single-string vs. multiple-strings
    issues. */
 void
-write_documentation (FILE *stream, char **documentation, int indentation, int flags)
+write_documentation (FILE *stream, char const*const*documentation, int indentation, int flags)
 {
-  register int i, j;
-  register char *line;
-  int string_array, texinfo, base_indent, filename_p;
+  int i, j;
+  char const*line;
+  _Bool texinfo;
 
   if (stream == 0)
     return;
 
-  string_array = flags & STRING_ARRAY;
-  filename_p = flags & HELPFILE;
+  _Bool string_array = flags & STRING_ARRAY;
+  _Bool filename_p = flags & HELPFILE;
 
   if (string_array)
     {
@@ -1417,7 +1426,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 	}
     }
 
-  base_indent = (string_array && single_longdoc_strings && filename_p == 0) ? BASE_INDENT : 0;
+  int base_indent = (string_array && single_longdoc_strings && filename_p == 0) ? BASE_INDENT : 0;
 
   for (i = 0, texinfo = (flags & TEXINFO); documentation && (line = documentation[i]); i++)
     {
@@ -1460,12 +1469,11 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 		{
 		case '\\':
 		case '"':
-		  fprintf (stream, "\\%c", line[j]);
+		  fputc ('\\', stream);
 		  break;
 
-		default:
-		  fprintf (stream, "%c", line[j]);
 		}
+	      fputc (line[j], stream);
 	    }
 
 	  /* closing right paren for gettext */
@@ -1516,9 +1524,10 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 }
 
 int
-write_helpfiles (ARRAY *builtins)
+write_helpfiles (BUILTIN_DESC_ARRAY *builtins)
 {
-  char *helpfile, *bname;
+  char *helpfile;
+  char const*bname;
   FILE *helpfp;
   int i, hdlen;
   BUILTIN_DESC *builtin;
@@ -1531,9 +1540,9 @@ write_helpfiles (ARRAY *builtins)
     }
 
   hdlen = strlen ("helpfiles/");
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->array.length; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->descs[i];
 
       bname = document_name (builtin);
       helpfile = (char *)xmalloc (hdlen + strlen (bname) + 1);
@@ -1543,63 +1552,61 @@ write_helpfiles (ARRAY *builtins)
       if (helpfp == 0)
 	{
 	  fprintf (stderr, "write_helpfiles: cannot open %s\n", helpfile);
-	  free (helpfile);
+	  xfree (helpfile);
 	  continue;
 	}
 
-      write_documentation (helpfp, builtin->longdoc->array, 4, PLAINTEXT);
+      write_documentation (helpfp, builtin->longdoc->strings, 4, PLAINTEXT);
 
       fflush (helpfp);
       fclose (helpfp);
-      free (helpfile);
+      xfree (helpfile);
     }
   return 0;
 }
 
 static int
-_find_in_table (char *name, char **name_table)
+_find_in_table (char const*name, char const*const*name_table)
 {
-  register int i;
-
-  for (i = 0; name_table[i]; i++)
+  for (int i = 0; name_table[i]; i++)
     if (strcmp (name, name_table[i]) == 0)
       return 1;
   return 0;
 }
 
 static int
-is_special_builtin (char *name)
+is_special_builtin (char const*name)
 {
   return (_find_in_table (name, special_builtins));
 }
 
 static int
-is_assignment_builtin (char *name)
+is_assignment_builtin (char const*name)
 {
   return (_find_in_table (name, assignment_builtins));
 }
 
 static int
-is_localvar_builtin (char *name)
+is_localvar_builtin (char const*name)
 {
   return (_find_in_table (name, localvar_builtins));
 }
 
 static int
-is_posix_builtin (char *name)
+is_posix_builtin (char const*name)
 {
   return (_find_in_table (name, posix_builtins));
 }
 
 static int
-is_arrayvar_builtin (char *name)
+is_arrayvar_builtin (char const*name)
 {
   return (_find_in_table (name, arrayvar_builtins));
 }
 
 #if !defined (HAVE_RENAME)
 static int
-rename (char *from, char *to)
+rename (char const*from, char const *to)
 {
   unlink (to);
   if (link (from, to) < 0)

@@ -259,7 +259,7 @@ asort_builtin(WORD_LIST *list)
 
 }
 
-char *asort_doc[] = {
+static char const *asort_doc[] = {
     "Sort arrays in-place.",
     "",
     "Options:",
@@ -276,7 +276,7 @@ char *asort_doc[] = {
     "Exit status:",
     "Return value is zero unless an error happened (like invalid variable name",
     "or readonly array).",
-    (char *)NULL
+    NULL
 };
 
 struct builtin asort_struct = {

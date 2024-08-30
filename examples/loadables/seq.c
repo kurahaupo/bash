@@ -453,7 +453,7 @@ seq_builtin (WORD_LIST *list)
 }
 
 /* Taken largely from GNU seq. */
-char *seq_doc[] = {
+static char const *seq_doc[] = {
 	"Print numbers from FIRST to LAST, in steps of INCREMENT.",
 	"",
 	"-f FORMAT    use printf style floating-point FORMAT",
@@ -469,7 +469,7 @@ char *seq_doc[] = {
 	"FORMAT must be suitable for printing one argument of type 'double';",
 	"it defaults to %.PRECf if FIRST, INCREMENT, and LAST are all fixed point",
 	"decimal numbers with maximum precision PREC, and to %g otherwise.",
-	(char *)NULL
+	NULL
 };	
 
 struct builtin seq_struct = {

@@ -397,7 +397,7 @@ finfo_builtin(WORD_LIST *list)
   return r;
 }
 
-static char *finfo_doc[] = {
+static char const *finfo_doc[] = {
   "Display information about file attributes.",
   "",
   "Display information about each FILE.  Only single operators should",
@@ -425,7 +425,7 @@ static char *finfo_doc[] = {
   "	-s	file size in bytes",
   "	-u	uid of owner",
   "	-U	user name of owner",
-  (char *)0
+  NULL
 };
 
 struct builtin finfo_struct = {

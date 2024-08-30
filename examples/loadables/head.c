@@ -147,13 +147,13 @@ head_builtin (WORD_LIST *list)
   return (rval);
 }
 
-char *head_doc[] = {
+static char const *head_doc[] = {
 	"Display lines from beginning of file.",
 	"",
 	"Copy the first N lines from the input files to the standard output.",
 	"N is supplied as an argument to the `-n' option.  If N is not given,",
 	"the first ten lines are copied.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin head_struct = {

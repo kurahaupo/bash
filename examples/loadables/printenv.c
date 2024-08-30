@@ -76,11 +76,11 @@ printenv_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *printenv_doc[] = {
+static char const *printenv_doc[] = {
 	"Display environment.",
 	"",
 	"Print names and values of environment variables",
-	(char *)NULL
+	NULL
 };
 
 struct builtin printenv_struct = {
