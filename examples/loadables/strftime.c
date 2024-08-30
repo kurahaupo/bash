@@ -110,14 +110,14 @@ strftime_builtin (WORD_LIST *list)
 
 /* An array of strings forming the `long' documentation for a builtin xxx,
    which is printed by `help xxx'.  It must end with a NULL. */
-char *strftime_doc[] = {
+static char const *strftime_doc[] = {
 	"Display formatted time.",
 	"",
 	"Converts date and time format to a string and displays it on the",
 	"standard output.  If the optional second argument is supplied, it",
 	"is used as the number of seconds since the epoch to use in the",
 	"conversion, otherwise the current time is used.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

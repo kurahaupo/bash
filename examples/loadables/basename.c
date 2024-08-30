@@ -109,13 +109,13 @@ basename_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *basename_doc[] = {
+static char const *basename_doc[] = {
 	"Return non-directory portion of pathname.",
 	"",
 	"The STRING is converted to a filename corresponding to the last",
 	"pathname component in STRING.  If the suffix string SUFFIX is",
 	"supplied, it is removed.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

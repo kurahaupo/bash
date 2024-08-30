@@ -1212,12 +1212,12 @@ getconf_builtin (WORD_LIST *list)
   return r;
 }
 
-static char *getconf_doc[] = {
+static char const *getconf_doc[] = {
 	"Display values of system limits and options.",
 	"",
 	"getconf writes the current value of a configurable system limit or",
 	"option variable to the standard output.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin getconf_struct = {

@@ -211,7 +211,7 @@ dolink (char *src, char *dst, int flags)
   return (EXECUTION_SUCCESS);
 }
 
-char *ln_doc[] = {
+static char const *ln_doc[] = {
 	"Link files.",
 	"",
 	"Create a new directory entry with the same modes as the original",
@@ -219,7 +219,7 @@ char *ln_doc[] = {
 	"the link to occur.  The -s option means to create a symbolic link.",
 	"By default, ln makes hard links.  Specifying -n or its synonym -h",
 	"causes ln to not resolve symlinks in the target file or directory.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

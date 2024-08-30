@@ -120,7 +120,7 @@ mkfifo_builtin (WORD_LIST *list)
 }
 
 
-char *mkfifo_doc[] = {
+static char const *mkfifo_doc[] = {
 	"Create FIFOs (named pipes).",
 	"",
 	"Make FIFOs.  Create the FIFOs named as arguments, in",
@@ -132,7 +132,7 @@ char *mkfifo_doc[] = {
 	"an initial mode of \"a=rw\".  mkfifo returns 0 if the FIFOs are",
 	"umask, plus write and search permissions for the owner.  mkdir",
 	"created successfully, and non-zero if an error occurs.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin mkfifo_struct = {

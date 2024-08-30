@@ -37,18 +37,18 @@ false_builtin (WORD_LIST *list)
   return EXECUTION_FAILURE;
 }
 
-static char *true_doc[] = {
+static char const *true_doc[] = {
 	"Exit successfully.",
 	"",
 	"Return a successful result.",
-	(char *)NULL
+	NULL
 };
 
-static char *false_doc[] = {
+static char const *false_doc[] = {
 	"Exit unsuccessfully.",
 	"",
 	"Return an unsuccessful result.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin true_struct = {

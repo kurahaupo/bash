@@ -264,7 +264,7 @@ dsv_builtin_unload (char *name)
 {
 }
 
-char *dsv_doc[] = {
+static char const *dsv_doc[] = {
 	"Read delimiter-separated fields from STRING.",
 	"",	
 	"Parse STRING, a line of delimiter-separated values, into individual",
@@ -289,7 +289,7 @@ char *dsv_doc[] = {
 	"",
 	"The return value is 0 unless an invalid option is supplied or the ARRAYNAME",
 	"argument is invalid or readonly.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin dsv_struct = {

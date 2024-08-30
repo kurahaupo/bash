@@ -219,13 +219,13 @@ strptime_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-char *strptime_doc[] = {
+static char const *strptime_doc[] = {
 	"Convert a date-time string to seconds since the epoch.",
 	"",
 	"Take DATE-TIME, a date-time string, parse it against a set of common",
 	"date-time formats. If the string matches one of the formats, convert",
 	"it into seconds since the epoch and display the result.",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
