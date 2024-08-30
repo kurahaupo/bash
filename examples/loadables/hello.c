@@ -73,11 +73,11 @@ hello_builtin_unload (char *s)
 /* An array of strings forming the `long' documentation for a builtin xxx,
    which is printed by `help xxx'.  It must end with a NULL.  By convention,
    the first line is a short description. */
-char *hello_doc[] = {
+static char const *hello_doc[] = {
 	"Sample builtin.",
 	"",
 	"this is the long doc for the sample hello builtin",
-	(char *)NULL
+	NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array

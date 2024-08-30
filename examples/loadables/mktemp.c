@@ -175,7 +175,7 @@ mktemp_builtin (WORD_LIST *list)
   return (rval);
 }
 
-char *mktemp_doc[] = {
+static char const *mktemp_doc[] = {
 	"Make unique temporary file name",
 	"",
 	"Take each supplied filename template and overwrite a portion of it",
@@ -198,7 +198,7 @@ char *mktemp_doc[] = {
 	"The return status is true if the file or directory was created successfully;",
 	"false if an error occurs or VAR is invalid or readonly.",
 
-	(char *)NULL
+	NULL
 };
 
 struct builtin mktemp_struct = {

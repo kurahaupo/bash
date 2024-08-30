@@ -97,14 +97,14 @@ push_builtin (WORD_LIST *list)
     }   
 }
 
-char *push_doc[] = {
+static char const *push_doc[] = {
 	"Create child shell.",
 	"",
 	"Create a child that is an exact duplicate of the running shell",
 	"and wait for it to exit.  The $SHLVL, $!, $$, and $PPID variables",
 	"are adjusted in the child.  The return value is the exit status",
 	"of the child.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin push_struct = {

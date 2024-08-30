@@ -78,7 +78,7 @@ sync_builtin (WORD_LIST *list)
   return (status);
 }
 
-char *sync_doc[] = {
+static char const *sync_doc[] = {
 	"Sync disks or specified files.",
 	"",
 	"If one or more FILEs is supplied, force completion of pending writes",
@@ -86,7 +86,7 @@ char *sync_doc[] = {
 	"writes.",
 	"",
 	"Exit Status: zero unless any FILE could not be synced.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin sync_struct = {

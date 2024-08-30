@@ -216,7 +216,7 @@ kv_builtin_unload (char *name)
 {
 }
 
-char *kv_doc[] = {
+static char const *kv_doc[] = {
 	"Read key-value pairs into an associative array.",
 	"",
 	"Read delimiter-terminated records composed of a single key-value pair",
@@ -231,7 +231,7 @@ char *kv_doc[] = {
 	"If ARRAYNAME is not supplied, \"KV\" is the default array name.",
 	"",
 	"Returns success if at least one key-value pair is stored in ARRAYNAME.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin kv_struct = {

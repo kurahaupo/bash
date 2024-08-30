@@ -55,11 +55,11 @@ template_builtin_unload (char *name)
 {
 }
 
-char *template_doc[] = {
+static char const *template_doc[] = {
 	"Short description.",
 	""
 	"Longer description of builtin and usage.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin template_struct = {

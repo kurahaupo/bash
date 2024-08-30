@@ -190,13 +190,13 @@ csv_builtin_unload (char *name)
 {
 }
 
-char *csv_doc[] = {
+static char const *csv_doc[] = {
 	"Read comma-separated fields from a string.",
 	"",
 	"Parse STRING, a line of comma-separated values, into individual fields,",
 	"and store them into the indexed array ARRAYNAME starting at index 0.",
 	"If ARRAYNAME is not supplied, \"CSV\" is the default array name.",
-	(char *)NULL
+	NULL
 };
 
 struct builtin csv_struct = {

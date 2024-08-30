@@ -306,11 +306,11 @@ id_prall (char *uname)
   return r;
 }
 
-char *id_doc[] = {
+static char const *id_doc[] = {
 	"Display information about user."
 	"",
 	"Return information about user identity",
-	(char *)NULL
+	NULL
 };
 
 struct builtin id_struct = {
