@@ -67,9 +67,6 @@ res_to_ex (op_result_t res)
 
 /******************************************************************************/
 
-void set_shellopts (void);
-void set_bashopts (void);
-
 option_value_t
 get_opt_value (opt_def_t const *d, accessor_t why)
 {
@@ -95,7 +92,7 @@ set_opt_value (opt_def_t const *d,
       op_result_t r = d->set_func(d, why, new_value);
       if (ResultC (r) == Result_OK)
 	{
-	  /* only for exactly Result_OK; "not changed" or "ignored" should not trigger this */
+	  /* only trigger these for exactly Result_OK; not Result_Unchanged or Result_Ignored */
 	  if (d->adjust_shellopts) set_shellopts ();
 	  if (d->adjust_bashopts) set_bashopts ();
 	}
@@ -117,10 +114,15 @@ set_opt_value (opt_def_t const *d,
   if (d->ignore_change)
     return Result (Ignored);
 
+  /* TODO: handle the case where writing is direct but reading is mediated by a
+	   function; but it seems unlikely that such a case will ever exist.
+  */
+  _Bool adjust_shellopts = d->adjust_shellopts && d->store[0] != new_value;
+  _Bool adjust_bashopts  = d->adjust_bashopts && d->store[0] != new_value;
   if (d->store)
     d->store[0] = new_value;
-  if (d->adjust_shellopts) set_shellopts ();
-  if (d->adjust_bashopts) set_bashopts ();
+  if (adjust_shellopts) set_shellopts ();
+  if (adjust_bashopts) set_bashopts ();
   return Result (OK);
 }
 
@@ -429,7 +431,7 @@ deregister_option (opt_def_t const *def)
   /* If this option was incorporated into BASHOPTS or SHELLOPTS, make sure
    * those variables are regenerated without this option. */
   if ((def->adjust_shellopts ||
-      def->adjust_bashopts) &&
+       def->adjust_bashopts) &&
       get_opt_value (def, Accessor (unload)))
     {
       if (def->adjust_shellopts) set_shellopts ();
@@ -520,11 +522,107 @@ show_option_set_o (opt_def_t const *d, accessor_t why)
   printf ("set %co %s\n", bool_to_flag (get_opt_value (d, why)), d->name);
 }
 
+static void
+show_option_help1 (opt_def_t const *d, accessor_t why)
+{
+  if (d->name)
+    {
+      if (d->letter)
+	printf (OPTFMT "\t%c%c\n",
+		d->name, get_opt_value (d, why) ? "on" : "off",
+		bool_to_flag (get_opt_value (d, why)), d->letter
+	       );
+      else
+	printf (OPTFMT "\n",
+		d->name, get_opt_value (d, why) ? "on" : "off"
+	       );
+    }
+  else if (d->letter)
+    {
+      printf ("%c%c\n",
+	      bool_to_flag (get_opt_value (d, why)), d->letter
+	     );
+    }
+  else
+    printf("(%s)\n", _("This option has no name"));
+}
+
+static void
+show_option_help2 (opt_def_t const *d, accessor_t why)
+{
+  printf ("\n");
+  show_option_help1 (d, why);
+
+  if (d->readonly)
+    printf("\n\t(%s)\n", _("This option is read-only."));
+
+  char const *h = d->help;
+  if (h)
+    {
+      h = _(h);	/* delay localization until we need it */
+      /* print the entire help text, indented one tabstop */
+      for (char const *n; (n = strchr (h, '\n')) != NULL; h = n)
+	printf ("\t%.*s", (int)((++n)-h), h);
+      if (*h)
+	printf ("\t%s\n", h);
+    }
+}
+
+static void
+show_option_help3 (opt_def_t const *d, accessor_t why)
+{
+  show_option_help2 (d, why);
+
+  if (d->name)
+    {
+      printf ("\n\t%s:\n", _("Display"));
+      printf("\t\tshopt -P %s\n", d->name);
+    }
+
+  printf ("\n\t%s:\n", _("Query"));
+  if (d->name)
+    {
+      printf("\t\tshopt -q %s\n", d->name);
+      if (d->adjust_bashopts)
+	printf("\t\t[[ :$BASHOPTS: = *:%s:* ]]\n", d->name);
+      if (d->adjust_shellopts)
+	printf("\t\t[[ :$SHELLOPTS: = *:%s:* ]]\n", d->name);
+    }
+  if (d->letter)
+    printf("\t\t[[ $- = *'%c'* ]]\n", d->letter);
+
+  if (!d->readonly)
+    {
+      printf ("\n\t%s:\n", _("Turn on"));
+      if (d->name)
+	{
+	  printf ("\t\tshopt -s %s\n", d->name);
+	  if (1 || ! d->hide_set_o)
+	    printf ("\t\tset -o %s\n", d->name);
+	}
+      if (d->letter)
+	printf ("\t\tset -%c\n", d->letter);
+
+      printf ("\n\t%s:\n", _("Turn off"));
+      if (d->name)
+	{
+	  printf ("\t\tshopt -u %s\n", d->name);
+	  if (1 || ! d->hide_set_o)
+	    printf ("\t\tset +o %s\n", d->name);
+	}
+      if (d->letter)
+	printf ("\t\tset +%c\n", d->letter);
+    }
+}
+
 static show_func_t *show_map[] = {
   [DS_on_off] = show_option_on_off,
   [DS_short] = show_option_short,
   [DS_set_o] = show_option_set_o,
   [DS_shopt] = show_option_shopt,
+  [DS_help1] = show_option_help1,
+  [DS_help2] = show_option_help2,
+  [DS_help3] = show_option_help3,
 };
 
 static inline show_func_t *
