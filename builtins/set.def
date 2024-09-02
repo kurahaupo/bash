@@ -174,6 +174,7 @@ static opt_def_t const xo_options[] = {
   },
   { "interactive-comments",
     .store = &interactive_comments,
+    .adjust_bashopts = true,
     .adjust_shellopts = true,
     .hide_shopt = true,
     .help = N_(
@@ -709,7 +710,9 @@ set_builtin (WORD_LIST *list)
 		  opts_changed = 1;
 		  if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
 		    {
+		      #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
 		      set_shellopts ();
+		      #endif
 		      return (r);
 		    }
 		}
@@ -720,25 +723,27 @@ set_builtin (WORD_LIST *list)
 		  s[2] = '\0';
 		  sh_invalidopt (s);
 		  builtin_usage ();
+		  #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
 		  set_shellopts ();
+		  #endif
 		  return (EXECUTION_FAILURE);
 		}
 	      opts_changed = 1;
 	    }
 	}
       else
-	{
-	  break;
-	}
+	break;
       list = list->next;
     }
 
   /* Assigning $1 ... $n */
   if (list || force_assignment)
     remember_args (list, 1);
+  #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
   /* Set up new value of $SHELLOPTS */
   if (opts_changed)
     set_shellopts ();
+  #endif
   return (rv);
 }
 
