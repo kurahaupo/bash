@@ -1482,7 +1482,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 	    }
 	  else if (documentation[i+1])
 	    /* don't add extra newline after last line */
-	    fprintf (stream, "\\n\\\n");
+	    fprintf (stream, "\\n\"\n\"");
 	}
       else if (texinfo)
 	{
