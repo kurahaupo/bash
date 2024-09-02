@@ -1444,7 +1444,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 	    fprintf (stream, "  \"");
 	}
 
-      if (indentation)
+      if (indentation && line[0] != 0)
 	for (j = 0; j < indentation; j++)
 	  fprintf (stream, " ");
 
