@@ -106,6 +106,9 @@ enum display_style_e {
   DS_short,		/* using set -X (a short single-letter option) */
   DS_set_o,		/* using set -o NAME */
   DS_shopt,		/* using shopt -s NAME */
+  DS_help1,		/* show names with option letters */
+  DS_help2,		/* as for help1 plus brief explanation */
+  DS_help3,		/* as for help2 plus usage instructions */
 };
 
 #define DisplayStyleV(X)	DS_##X
@@ -201,6 +204,7 @@ struct opt_def_s {
   char const *name;
   option_value_t *store;
   option_value_t const *init;
+  char const *help;
   opt_set_func_t *set_func;
   opt_get_func_t *get_func;
   int   reference_value;
