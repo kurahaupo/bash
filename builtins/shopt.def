@@ -151,7 +151,9 @@ extern int syslog_history;
 
 static void shopt_error (char const*);
 
+#if 0
 static opt_set_func_t set_shellopts_after_change;
+#endif
 static opt_get_func_t get_compatibility_level;
 static opt_set_func_t set_compatibility_level;
 
@@ -249,7 +251,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "huponexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &hup_on_exit },
   { "inherit_errexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &inherit_errexit },
-  { "interactive_comments",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &interactive_comments,		.set_func = set_shellopts_after_change },
+  { "interactive_comments",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &interactive_comments,		.adjust_shellopts = true },
   { "lastpipe",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &lastpipe_opt },
 #if defined (HISTORY)
   { "lithist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &literal_history },
@@ -422,9 +424,11 @@ shopt_builtin (WORD_LIST *list)
 	    rval = EXECUTION_FAILURE;
 	}
 
+      #if 0 /* not needed - this is handled by set_opt_value */
       /* Don't set $BASHOPTS here if it hasn't already been initialized */
       if (find_variable ("BASHOPTS"))
 	set_bashopts ();
+      #endif
     }
   return sh_chkwrite (rval);
 }
@@ -524,8 +528,11 @@ shopt_error (char const*s)
   builtin_error (_("%s: invalid shell option name"), s);
 }
 
-/* If we set or unset interactive_comments with shopt, make sure the
-   change is reflected in $SHELLOPTS. */
+#if 0 /* already covered by set_opt_value when .adjust_shellopts is true */
+/* If we set or unset interactive_comments with shopt, make sure the change is
+   reflected as "interactive-comments" in $SHELLOPTS. Note that this is in
+   addition to adjusting $BASHOPTS, triggered by .adjust_bashopts.
+*/
 static op_result_t
 set_shellopts_after_change (opt_def_t const *d, accessor_t why, int mode)
 {
@@ -533,6 +540,7 @@ set_shellopts_after_change (opt_def_t const *d, accessor_t why, int mode)
   set_shellopts ();
   return Result (OK);
 }
+#endif
 
 static op_result_t
 shopt_set_debug_mode (opt_def_t const *d, accessor_t why, int mode)
