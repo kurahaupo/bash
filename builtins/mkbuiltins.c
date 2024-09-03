@@ -19,7 +19,7 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined (CROSS_COMPILING) 
+#if !defined (CROSS_COMPILING)
 #  include <config.h>
 #else	/* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */
@@ -187,7 +187,7 @@ char *arrayvar_builtins[] =
   "typeset", "unset", "wait",		/*]*/
   (char *)NULL
 };
-	
+
 /* Forward declarations. */
 static int is_special_builtin (char *);
 static int is_assignment_builtin (char *);
@@ -416,7 +416,7 @@ copy_string_array (ARRAY *array)
   copy->width = array->width;
 
   copy->array = (char **)xmalloc ((1 + array->sindex) * sizeof (char *));
-  
+
   for (i = 0; i < array->sindex; i++)
     copy->array[i] = savestring (array->array[i]);
 
@@ -1439,7 +1439,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 	{
 	  if (filename_p == 0)
 	    {
-	      if (line[0])	      
+	      if (line[0])
 		fprintf (stream, "  N_(\"");
 	      else
 		fprintf (stream, "  N_(\" ");		/* the empty string translates specially. */
@@ -1525,7 +1525,7 @@ write_helpfiles (ARRAY *builtins)
   char *helpfile, *bname;
   FILE *helpfp;
   int i, hdlen;
-  BUILTIN_DESC *builtin;	
+  BUILTIN_DESC *builtin;
 
   i = mkdir ("helpfiles", 0777);
   if (i < 0 && errno != EEXIST)
@@ -1558,8 +1558,8 @@ write_helpfiles (ARRAY *builtins)
       free (helpfile);
     }
   return 0;
-}      
-      	        
+}
+
 static int
 _find_in_table (char *name, char **name_table)
 {
