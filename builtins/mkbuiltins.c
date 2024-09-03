@@ -277,10 +277,10 @@ main (int argc, char **argv)
 	  documentation_file = fopen (documentation_filename, "w");
 	}
       else if (strcmp (arg, "-H") == 0)
-        {
+	{
 	  separate_helpfiles = 1;
 	  helpfile_directory = argv[arg_index++];
-        }
+	}
       else if (strcmp (arg, "-S") == 0)
 	single_longdoc_strings = 0;
       else
