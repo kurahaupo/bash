@@ -1075,76 +1075,72 @@ save_builtin (BUILTIN_DESC *builtin)
 #define PLAINTEXT	0x04
 #define HELPFILE	0x08
 
-char *structfile_header[] = {
-  "/* builtins.c -- the built in shell commands. */",
-  "",
-  "/* This file is manufactured by ./mkbuiltins, and should not be",
-  "   edited by hand.  See the source to mkbuiltins for details. */",
-  "",
-  "/* Copyright (C) 1987-2022 Free Software Foundation, Inc.",
-  "",
-  "   This file is part of GNU Bash, the Bourne Again SHell.",
-  "",
-  "   Bash is free software: you can redistribute it and/or modify",
-  "   it under the terms of the GNU General Public License as published by",
-  "   the Free Software Foundation, either version 3 of the License, or",
-  "   (at your option) any later version.",
-  "",
-  "   Bash is distributed in the hope that it will be useful,",
-  "   but WITHOUT ANY WARRANTY; without even the implied warranty of",
-  "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
-  "   GNU General Public License for more details.",
-  "",
-  "   You should have received a copy of the GNU General Public License",
-  "   along with Bash.  If not, see <http://www.gnu.org/licenses/>.",
-  "*/",
-  "",
-  "/* The list of shell builtins.  Each element is name, function, flags,",
-  "   long-doc, short-doc.  The long-doc field contains a pointer to an array",
-  "   of help lines.  The function takes a WORD_LIST *; the first word in the",
-  "   list is the first arg to the command.  The list has already had word",
-  "   expansion performed.",
-  "",
-  "   Functions which need to look at only the simple commands (e.g.",
-  "   the enable_builtin ()), should ignore entries where",
-  "   (array[i].function == (sh_builtin_func_t *)NULL).  Such entries are for",
-  "   the list of shell reserved control structures, like `if' and `while'.",
-  "   The end of the list is denoted with a NULL name field. */",
-  "",
-  "/* TRANSLATORS: Please do not translate command names in descriptions */",
-  "",
-  "#include \"../builtins.h\"",
-  (char *)NULL
-  };
+char const structfile_header[] =
+  "/* builtins.c -- the built in shell commands. */\n"
+  "\n"
+  "/* This file is manufactured by ./mkbuiltins, and should not be\n"
+  "   edited by hand.  See the source to mkbuiltins for details. */\n"
+  "\n"
+  "/* Copyright (C) 1987-2022 Free Software Foundation, Inc.\n"
+  "\n"
+  "   This file is part of GNU Bash, the Bourne Again SHell.\n"
+  "\n"
+  "   Bash is free software: you can redistribute it and/or modify\n"
+  "   it under the terms of the GNU General Public License as published by\n"
+  "   the Free Software Foundation, either version 3 of the License, or\n"
+  "   (at your option) any later version.\n"
+  "\n"
+  "   Bash is distributed in the hope that it will be useful,\n"
+  "   but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+  "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+  "   GNU General Public License for more details.\n"
+  "\n"
+  "   You should have received a copy of the GNU General Public License\n"
+  "   along with Bash.  If not, see <http://www.gnu.org/licenses/>.\n"
+  "*/\n"
+  "\n"
+  "/* The list of shell builtins.  Each element is name, function, flags,\n"
+  "   long-doc, short-doc.  The long-doc field contains a pointer to an array\n"
+  "   of help lines.  The function takes a WORD_LIST *; the first word in the\n"
+  "   list is the first arg to the command.  The list has already had word\n"
+  "   expansion performed.\n"
+  "\n"
+  "   Functions which need to look at only the simple commands (e.g.\n"
+  "   the enable_builtin ()), should ignore entries where\n"
+  "   (array[i].function == (sh_builtin_func_t *)NULL).  Such entries are for\n"
+  "   the list of shell reserved control structures, like `if' and `while'.\n"
+  "   The end of the list is denoted with a NULL name field. */\n"
+  "\n"
+  "/* TRANSLATORS: Please do not translate command names in descriptions */\n"
+  "\n";
 
-char *structfile_footer[] = {
-  "  { (char *)0x0, (sh_builtin_func_t *)0x0, 0, (char **)0x0, (char *)0x0, (char *)0x0 }",
-  "};",
-  "",
-  "struct builtin *shell_builtins = static_shell_builtins;",
-  "struct builtin *current_builtin;",
-  "",
-  "int num_shell_builtins =",
-  "\tsizeof (static_shell_builtins) / sizeof (struct builtin) - 1;",
-  (char *)NULL
-};
+char const structfile_footer[] =
+  "\n"
+  "struct builtin *shell_builtins = static_shell_builtins;\n"
+  "struct builtin *current_builtin;\n"
+  "\n"
+  "int num_shell_builtins =\n"
+  "\tsizeof (static_shell_builtins) / sizeof (struct builtin) - 1;";
 
 /* Write out any necessary opening information for
    STRUCTFILE and EXTERNFILE. */
 void
 write_file_headers (FILE *structfile, FILE *externfile)
 {
-  register int i;
+  char const*inc_name = include_filename;
+
+  if (inc_name == NULL)
+    inc_name = "builtext.h";
 
   if (structfile)
     {
-      for (i = 0; structfile_header[i]; i++)
-	fprintf (structfile, "%s\n", structfile_header[i]);
+      fprintf (structfile, "%s\n", structfile_header);
 
-      fprintf (structfile, "#include \"%s\"\n",
-	       include_filename ? include_filename : "builtext.h");
+      fprintf (structfile, "#include \"%s\"\n", "../builtins.h");
 
-      fprintf (structfile, "#include \"bashintl.h\"\n");
+      fprintf (structfile, "#include \"%s\"\n", inc_name);
+
+      fprintf (structfile, "#include \"%s\"\n", "bashintl.h");
 
       fprintf (structfile, "\nstruct builtin static_shell_builtins[] = {\n");
     }
@@ -1152,7 +1148,7 @@ write_file_headers (FILE *structfile, FILE *externfile)
   if (externfile)
     fprintf (externfile,
 	     "/* %s - The list of builtins found in libbuiltins.a. */\n",
-	     include_filename ? include_filename : "builtext.h");
+	     inc_name);
 }
 
 /* Write out any necessary closing information for
@@ -1160,13 +1156,12 @@ write_file_headers (FILE *structfile, FILE *externfile)
 void
 write_file_footers (FILE *structfile, FILE *externfile)
 {
-  register int i;
-
   /* Write out the footers. */
   if (structfile)
     {
-      for (i = 0; structfile_footer[i]; i++)
-	fprintf (structfile, "%s\n", structfile_footer[i]);
+      fprintf (structfile, "  {0}\n"
+			    "};\n");
+      fprintf (structfile, "%s\n", structfile_footer);
     }
 }
 
@@ -1319,8 +1314,9 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
   register int i;
   BUILTIN_DESC *builtin;
 
-  for (i = 0; structfile_header[i]; i++)
-    fprintf (stream, "%s\n", structfile_header[i]);
+  fprintf (stream, "%s\n", structfile_header);
+
+  fprintf (stream, "#include \"%s\"\n", "../builtins.h");
 
   for (i = 0; i < builtins->sindex; i++)
     {
@@ -1406,7 +1402,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 
   if (string_array)
     {
-      fprintf (stream, " {\n#if defined (HELP_BUILTIN)\n");	/* } */
+      fprintf (stream, " {\n#if defined (HELP_BUILTIN)\n");	/* "}" */
       if (single_longdoc_strings)
 	{
 	  if (filename_p == 0)
