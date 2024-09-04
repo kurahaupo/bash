@@ -6141,6 +6141,7 @@ shell_execve (char *command, char **args, char **env)
 		  interp[ilen] = 'M';
 		  interp[ilen + 1] = '\0';
 		}
+	      # pragma GCC diagnostic ignored "-Wformat-overflow" /* quell erroneous complaint about command being NULL */
 	      sys_error ("%s: %s: %s", command, interp, _("bad interpreter"));
 	      FREE (interp);
 	      return (EX_NOEXEC);
