@@ -230,6 +230,7 @@ extern struct jobstats js;
 
 extern pid_t original_pgrp, shell_pgrp, pipeline_pgrp;
 extern volatile pid_t last_made_pid, last_asynchronous_pid;
+extern int jobs_m_flag;
 extern int want_job_notifications;
 
 extern int already_making_children;
