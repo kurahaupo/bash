@@ -120,20 +120,17 @@ initialize_signames (void)
 
       for (i = 1; i <= rtcnt; i++)
 	{
-	  signal_names[rtmin+i] = (char *)malloc(RTLEN);
-	  if (signal_names[rtmin+i])
-	    sprintf (signal_names[rtmin+i], "SIGRTMIN+%d", i);
-	  signal_names[rtmax-i] = (char *)malloc(RTLEN);
-	  if (signal_names[rtmax-i])
-	    sprintf (signal_names[rtmax-i], "SIGRTMAX-%d", i);
+	  if (!signal_names[rtmin+i])
+	    ! asprintf (&signal_names[rtmin+i], "SIGRTMIN+%d", i);
+	  if (!signal_names[rtmax-i])
+	    ! asprintf (&signal_names[rtmax-i], "SIGRTMAX-%d", i);
 	}
 
       if (rtcnt < RTLIM/2-1 && rtcnt != (rtmax-rtmin)/2)
 	{
 	  /* Need an extra RTMIN signal */
-	  signal_names[rtmin+rtcnt+1] = (char *)malloc(RTLEN);
-	  if (signal_names[rtmin+rtcnt+1])
-	    sprintf (signal_names[rtmin+rtcnt+1], "SIGRTMIN+%d", rtcnt+1);
+	  if (!signal_names[rtmin+rtcnt+1])
+	    ! asprintf (&signal_names[rtmin+rtcnt+1], "SIGRTMIN%+d", rtcnt+1);
 	}
     }
 #endif /* SIGRTMIN && SIGRTMAX */
