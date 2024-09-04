@@ -371,6 +371,28 @@ static opt_def_t const OPTDEF_asynchronous_notification = {
     "Notify of job termination immediately (don't wait for prompt)."),
 };
 
+/* Non-zero means turn on the job control features. */
+int jobs_m_flag = 0;
+static op_result_t
+set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  jobs_m_flag = new_value;
+  set_job_control (new_value);
+  return Result (OK);
+}
+static opt_def_t const OPTDEF_jobs_m_flag = {
+  .store = &jobs_m_flag,
+  .OPTRESET_false,
+  .direct_reset = true,	/* avoid set_job_control */
+  .set_func = set_jobs_m_flag,
+  .letter = 'm',
+  .name = "monitor",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Job control is enabled."),
+};
+
 #if !defined (_POSIX_VERSION)
 
 /* These are definitions to map POSIX 1003.1 functions onto existing BSD
@@ -5470,4 +5492,5 @@ void
 register_jobs_opts (void)
 {
   register_option (&OPTDEF_asynchronous_notification);	/* ±b, ±o notify */
+  register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor */
 }

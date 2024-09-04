@@ -41,11 +41,6 @@
 #  include "bashhist.h"
 #endif
 
-#if defined (JOB_CONTROL)
-#include "jobs.h"
-extern int set_job_control (int);
-#endif
-
 /* **************************************************************** */
 /*								    */
 /*			The Standard sh Flags.			    */
@@ -174,30 +169,6 @@ static opt_def_t const OPTDEF_echo_command_at_execute = {
   .help = N_(
     "Print commands and their arguments as they are executed."),
 };
-
-#if defined (JOB_CONTROL)
-/* Non-zero means turn on the job control features. */
-int jobs_m_flag = 0;
-static op_result_t
-set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
-{
-  jobs_m_flag = new_value;
-  set_job_control (new_value);
-  return Result (OK);
-}
-static opt_def_t const OPTDEF_jobs_m_flag = {
-  .store = &jobs_m_flag,
-  .OPTRESET_false,
-  .direct_reset = true,	/* avoid set_job_control */
-  .set_func = set_jobs_m_flag,
-  .letter = 'm',
-  .name = "monitor",
-  .adjust_shellopts = true,
-  .hide_shopt = true,
-  .help = N_(
-    "Job control is enabled."),
-};
-#endif
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -458,7 +429,6 @@ register_flags_opts (void)
 {
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace     */
   register_option (&OPTDEF_function_trace_mode);	/* ±T, ±o functrace    */
-  register_option (&OPTDEF_jobs_m_flag);		/* ±m, ±o monitor      */
   register_option (&OPTDEF_noclobber);			/* ±C, ±o noclobber    */
   register_option (&OPTDEF_read_but_dont_execute);	/* ±n, ±o noexec       */
   register_option (&OPTDEF_unbound_vars_is_error);	/* ±u, ±o nounset      */
