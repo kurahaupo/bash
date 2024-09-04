@@ -3,7 +3,7 @@
    An example of how to wrap a system call with a loadable builtin.
 
    Originally contributed by Jason Vas Dias <jason.vas.dias@gmail.com>
-   
+
    Copyright (C) 2018-2023 Free Software Foundation, Inc.
 
    Bash is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ setpgid_builtin (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-      
+
   if (valid_number (pidstr, &pid_arg) == 0)
     {
       builtin_error ("%s: pid argument must be numeric", pidstr);
@@ -97,9 +97,9 @@ setpgid_builtin (WORD_LIST *list)
   if (setpgid(pid, pgid) < 0)
     {
       builtin_error("setpgid failed: %s", strerror (errno));
-      return (EXECUTION_FAILURE);     
+      return (EXECUTION_FAILURE);
     }
-  return (EXECUTION_SUCCESS);     
+  return (EXECUTION_SUCCESS);
 }
 
 const char *setpgid_doc[] = {
