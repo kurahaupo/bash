@@ -208,12 +208,18 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Suppress multiple evaluation of array subscripts during arithmetic\n"
+      "expression evaluation, while executing builtins that perform variable\n"
+      "assignments, or that perform array dereferencing."),
   },
   { "assoc_expand_once",
     .store = &array_expand_once,
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "(Obsolete synonym for array_expand_once)"),
   },
 #endif
   { "autocd",
@@ -221,6 +227,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Giving the name of a directory as a command causes cd to that directory.\n"
+      "(Interactive only.)"),
   },
 #if defined (ARRAY_VARS)
   { "bash_source_fullpath",
@@ -228,6 +237,8 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "BASH_SOURCE contains full pathnames with symlinks resolved"),
   },
 #endif
   { "cdable_vars",
@@ -235,6 +246,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "An argument to the cd builtin command that is not a directory is assumed\n"
+      "to be the name of a variable whose value is the directory to change to."),
   },
   { "cdspell",
     .store = &cdspelling,
@@ -248,6 +262,11 @@ static opt_def_t const xo_options[] = {
     .skip_reinit = true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Check that a command found in the hash table exists before trying to\n"
+      "execute it. If a hashed command no longer exists, a normal path search\n"
+      "is performed.\n"
+      "(See hashall)"),
   },
 #if defined (JOB_CONTROL)
   { "checkjobs",
@@ -255,6 +274,8 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Check running jobs (not just stopped ones) when hesitating to exit"),
   },
 #endif
   { "checkwinsize",
@@ -263,6 +284,9 @@ static opt_def_t const xo_options[] = {
     .skip_reinit = true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Check the window size after each external (non-builtin) command and, if\n"
+      "necessary, updates the values of LINES and COLUMNS."),
   },
 #if defined (HISTORY)
   { "cmdhist",
@@ -270,6 +294,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Multi-line commands are recorded as single history lines, with semicolons\n"
+      "inserted as needed."),
   },
 #endif
   { "compat31",
