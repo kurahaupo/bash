@@ -74,7 +74,7 @@ static opt_def_t const OPTDEF_asynchronous_notification = {
   .name = "notify",
   .adjust_shellopts = true,
   .hide_shopt = true,
-  .help = "Notify of job termination immediately.",
+  .help = "Notify of job termination immediately (don't wait for prompt).",
 };
 #endif
 
@@ -296,8 +296,7 @@ static opt_def_t const OPTDEF_forced_interactive = {
   .adjust_shellopts = true,
   .hide_shopt = true,
   .forbid_change = true,
-  .help = "(This option is read-only)\n"
-	  "Bash automatically enters interactive mode if it is started without\n"
+  .help = "Bash automatically enters interactive mode if it is started without\n"
 	  "a script to read or can only be enabled or disabled at start-up.\n",
 };
 
@@ -450,7 +449,7 @@ static opt_def_t const OPTDEF_brace_expansion = {
   .name = "braceexpand",
   .adjust_shellopts = true,
   .hide_shopt = true,
-  .help = "the shell will perform brace expansion",
+  .help = "Perform brace expansion prior to expanding variables.",
 };
 #endif
 
@@ -463,7 +462,7 @@ static opt_def_t const OPTDEF_function_trace_mode = {
   .name = "functrace",
   .adjust_shellopts = true,
   .hide_shopt = true,
-  .help = "If set, the DEBUG and RETURN traps are inherited by shell functions.",
+  .help = "Shell functions inherit the DEBUG and RETURN traps.",
 };
 
 /* Non-zero means that shell functions inherit the ERR trap. */
@@ -475,7 +474,7 @@ static opt_def_t const OPTDEF_error_trace_mode = {
   .name = "errtrace",
   .adjust_shellopts = true,
   .hide_shopt = true,
-  .help = "If set, the ERR trap is inherited by shell functions.",
+  .help = "Shell functions inherit the ERR trap.",
 };
 
 /* Non-zero means that the rightmost non-zero exit status in a pipeline

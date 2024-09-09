@@ -252,13 +252,28 @@ static opt_def_t const xo_options[] = {
   { "execfail",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &no_exit_on_failed_exec },
   { "expand_aliases",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &expaliases_flag,		.set_func = shopt_set_expaliases,	.OPTRESET_REINIT_false },
 #if defined (DEBUGGER)
-  { "extdebug",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &debugging_mode,		.set_func = shopt_set_debug_mode,	.OPTRESET_REINIT_false },
+  { "extdebug",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &debugging_mode,		.set_func = shopt_set_debug_mode,	.OPTRESET_REINIT_false,		.help =
+    "If set in a shell startup file, or by the --debugger option at startup,\n"
+    "arrange to execute the debugger profile before the shell starts.\n"
+    "If set after invocation, behavior intended for use by debuggers is\n"
+    "enabled, especially filename and line number being included:\n"
+    " - in BASH_ARGC and BASH_ARGV\n"
+    " - in the output of 'declare -F' & 'caller'\n"
+    "The DEBUG, ERR, & RETURN traps are inherited by functions and subshells."
+  },
 #endif
 #if defined (EXTENDED_GLOB)
-  { "extglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &extglob_flag,			.set_func = shopt_set_extglob },
+  { "extglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &extglob_flag,			.set_func = shopt_set_extglob,		.help =
+    "Enable extended pattern matching.\n"
+    "Extended pattern matching always applies to [[ WORD = PATTERN ]]\n"
+    "unless compat40 (or earlier) is enabled."
+  },
 #endif
   { "extquote",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &extended_quote },
-  { "failglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &fail_glob_expansion },
+  { "failglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &fail_glob_expansion,		.help =
+    "Pathname expansion applied to patterns that fail to match any filenames\n"
+    "results in an expansion error."
+  },
 #if defined (READLINE)
   { "force_fignore",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &force_fignore },
 #endif
