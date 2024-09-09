@@ -564,35 +564,55 @@ static opt_def_t const xo_options[] = {
     .store = &force_fignore,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Suffixes specified in FIGNORE cause words to be ignored when performing\n"
+      "word completion even if these are the only possible completions."),
   },
 #endif
   { "globasciiranges",
     .store = &glob_asciirange,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Range expressions like '[a-z]' in pattern matching expressions behave as\n"
+      "if in the traditional 'C' locale, so 'b' will not match '[A-Z]'."),
   },
   { "globskipdots",
     .store = &glob_always_skip_dot_and_dotdot,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Globbing will never match the directory names '.' and '..', even if the\n"
+      "pattern begins with a '.'."),
   },
   { "globstar",
     .store = &glob_star,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "When a filename glob starts with `**/` or contains `/**/`, it will\n"
+      "recursively match the remainder of the pattern in all subdirectories. When\n"
+      "a filename glob ends with `/**` (or is entirely `**`), it will recursively\n"
+      "match all files in all subdirectories. The behaviour of `**` when not\n"
+      "bounded by `/` is unspecified, and subject to change.")
   },
   { "gnu_errfmt",
     .store = &gnu_error_format,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Shell error messages are written in the standard GNU error message format."),
   },
 #if defined (HISTORY)
   { "histappend",
     .store = &force_append_history,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "When the shell exits, history will be appended to the shell history file,\n"
+      "rather than overwriting it. (See HISTFILE.)"),
   },
 #endif
 #if defined (READLINE)
@@ -600,17 +620,28 @@ static opt_def_t const xo_options[] = {
     .store = &history_reediting,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "The original text of each failed history substitution is placed in the\n"
+      "readline input buffer, allowing the user to confirm, amend, or cancel it.\n"
+      "(Only effective if readline is also active.)"),
   },
   { "histverify",
     .store = &hist_verify,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "The resulting text of each successful history substitutions are placed in\n"
+      "the readline input buffer, allowing the user to confirm, amend, or cancel\n"
+      "it. (Only effective if readline is also active.)"),
   },
   { "hostcomplete",
     .store = &perform_hostname_completion,
     .set_func = shopt_enable_hostname_completion,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Attempt to perform hostname completion when attempting completion on a\n"
+      "word containing '@'. (Only effective if readline is also active.)\n"),
   },
 #endif
   { "huponexit",
@@ -618,12 +649,17 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Send SIGHUP to all jobs when an interactive login shell exits."),
   },
   { "inherit_errexit",
     .store = &inherit_errexit,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Command substitution subshells inherit the value of the 'errexit' option.\n"
+      "(Enabled when posix mode is enabled.)"),
   },
   { "interactive_comments",
     .store = &interactive_comments,
@@ -631,18 +667,27 @@ static opt_def_t const xo_options[] = {
     .adjust_bashopts = true,
     .adjust_shellopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Allow a word beginning with '#' to cause that word and all remaining\n"
+      "characters on that line to be ignored in an interactive shell."),
   },
   { "lastpipe",
     .store = &lastpipe_opt,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Runs the last command of a pipeline (not executed in the background) in\n"
+      "the current shell environment. (Not effective if job control is active.)"),
   },
 #if defined (HISTORY)
   { "lithist",
     .store = &literal_history,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Modifies the behaviour of the 'cmdhist' option to write newlines rather\n"
+      "than semicolons."),
   },
 #endif
   { "localvar_inherit",
@@ -650,24 +695,40 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Local variables inherit the value and attributes of a variable with the\n"
+      "same name in a previous scope, before any new value is assigned.\n"
+      "(The nameref attribute is not inherited.)"),
   },
   { "localvar_unset",
     .store = &localvar_unset,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Calling 'unset' on local variables in previous function scopes marks them\n"
+      "so that subsequent lookups find them unset until that function returns.\n"
+      "This is identical to the behavior of unsetting local variables at the\n"
+      "current function scope."),
   },
   { "login_shell",
     .store = &login_shell,
     .ignore_change = true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Indicates whether this shell was started as a login shell, either by using\n"
+      "the '-l' option or by modifying argv[0]."),
   },
   { "mailwarn",
     .store = &mail_warning,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "If a file that bash is checking for mail has been accessed since the last\n"
+      "time it was checked, bash displays a message like\n"
+      " \"The mail in <name-of-mailfile> has been read\"."),
   },
 #if defined (READLINE)
   { "no_empty_cmd_completion",
@@ -675,6 +736,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Do not search $PATH for possible completions when completion is attempted\n"
+      "on an empty line. (Only if readline is active.)"),
   },
 #endif
   { "nocaseglob",
@@ -682,41 +746,61 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Match filenames case-insensitively when performing pathname expansion."),
   },
   { "nocasematch",
     .store = &match_ignore_case,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Match patterns case-insensitively when performing matching for 'case' or\n"
+      "'[[' commands, when performing pattern substitution word expansions, or\n"
+      "when filtering possible completions as part of programmable completion."),
   },
   { "noexpand_translation",
     .store = &singlequote_translations,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Treat the translated results of $\"...\" as if single quoted rather than\n"
+      "double quoted. (No effect if the string is not translated.)"),
   },
   { "nullglob",
     .store = &allow_null_glob_expansion,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Pathname expansions that match no filenames expand to no words, rather\n"
+      "than expanding to themselves."),
   },
   { "patsub_replacement",
     .store = &patsub_replacement,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "In ${VAR/PATTERN/REPLACEMENT} expansions, expand occurrences of '&' in\n"
+      "REPLACEMENT to the text matched by PATTERN."),
   },
 #if defined (PROGRAMMABLE_COMPLETION)
   { "progcomp",
     .store = &prog_completion_enabled,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Enable programmable tab-completion."),
   },
 #  if defined (ALIAS)
   { "progcomp_alias",
     .store = &progcomp_alias,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "When completion on a command name doesn't result in any matches, look for\n"
+      "a possible matching aliases instead."),
   },
 #  endif
 #endif
@@ -725,6 +809,10 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "After being expanded, prompt strings ($PS0 through $PS4) undergo parameter\n"
+      "expansion, command substitution, arithmetic expansion, and another round\n"
+      "of quote removal."),
   },
 #if defined (RESTRICTED_SHELL)
   { "restricted_shell",
@@ -732,6 +820,9 @@ static opt_def_t const xo_options[] = {
     .set_func = set_restricted_shell,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Indicates whether this shell was started as a restricted shell, either by\n"
+      "using the '-r' option or by modifying argv[0]."),
   },
 #endif
   { "shift_verbose",
@@ -739,12 +830,18 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Causes the shift builtin to print an error message when the shift count\n"
+      "exceeds the number of positional parameters."),
   },
   { "sourcepath",
     .store = &source_uses_path,
     .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "The '.' (source) builtin searches $PATH to locate the file supplied as its\n"
+      "first argument. (On by default; ignored when the '-p' option is given.)"),
   },
 #if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
   { "syslog_history",
@@ -752,6 +849,8 @@ static opt_def_t const xo_options[] = {
     .init = &(option_value_t const){SYSLOG_SHOPT},
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Immediately write each history entry to the syslog facility"),
   },
 #endif
   { "varredir_close",
@@ -759,11 +858,21 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Automatically closes file descriptors assigned using the {VARNAME}>PATH\n"
+      "redirection syntax, instead of leaving them open when the command\n"
+      "completes."),
   },
   { "xpg_echo",
     .store = &xpg_echo,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "The builtin 'echo' command will expand \\-sequences.\n"
+      "(Has no effect if an external version of echo is used.)\n"
+      "\n"
+      "In this mode, 'echo' recognizes the same \\-sequences as printf recognizes in its\n"
+      "FORMAT parameter, plus '\\c' to suppress the trailing newline.\n"),
   },
 };
 
