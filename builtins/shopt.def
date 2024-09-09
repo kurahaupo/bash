@@ -259,7 +259,7 @@ static opt_def_t const xo_options[] = {
     " ‧ v4.1 In POSIX mode, recognize 'time' keyword even when followed by options.\n"
     "        Do not interpret nested quotes within ${VAR//PATTERN/REPLACE}\n"
     " ‧ v4.2 Adhere to Austin Group interpretations 267 (POSIX 2008)\n"
-    "        Only recognize 'time' keyword when not followed by options"
+    "        Only recognize 'time' keyword when not followed by options\n"
     "        Apply anomalous intermediate nested quotes rule; see 'compat42'."
   },
   { "compat42",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 42,	.help =
