@@ -336,8 +336,8 @@ static opt_def_t const xo_options[] = {
     "arrange to execute the debugger profile before the shell starts.\n"
     "If set after invocation, behavior intended for use by debuggers is\n"
     "enabled, especially filename and line number being included:\n"
-    " - in BASH_ARGC and BASH_ARGV\n"
-    " - in the output of 'declare -F' & 'caller'\n"
+    " ‧ in BASH_ARGC and BASH_ARGV\n"
+    " ‧ in the output of 'declare -F' & 'caller'\n"
     "The DEBUG, ERR, & RETURN traps are inherited by functions and subshells."
   },
 #endif
@@ -371,10 +371,10 @@ static opt_def_t const xo_options[] = {
     "pattern begins with a '.'."
   },
   { "globstar",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &glob_star,			.help =
-    "The pattern '**' used in a pathname expansion context will recursively\n"
-    "match all directories and subdirectories; at the end of a pattern it will\n"
-    "it will also match all files. If preceded or followed by anything other\n"
-    "than '/', it will behave like '*'."
+    "The pattern '**' used in pathname expansion will recursively match all\n"
+    "directories and subdirectories; at the end of a pattern it will it will\n"
+    "also match all files. If preceded or followed by anything other than '/',\n"
+    "it will behave like '*'."
   },
   { "gnu_errfmt",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &gnu_error_format,		.help =
     "Shell error messages are written in the standard GNU error message format."
@@ -382,7 +382,7 @@ static opt_def_t const xo_options[] = {
 #if defined (HISTORY)
   { "histappend",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &force_append_history,		.help =
     "When the shell exits, history will be appended to the shell history file,\n"
-    "rather than overwriting it."
+    "rather than overwriting it. (See HISTFILE.)"
   },
 #endif
 #if defined (READLINE)
@@ -395,7 +395,6 @@ static opt_def_t const xo_options[] = {
     "The resulting text of each successful history substitutions are placed in\n"
     "the readline input buffer, allowing the user to confirm, amend, or cancel\n"
     "it. (Only effective if readline is also active.)"
-
   },
   { "hostcomplete",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &perform_hostname_completion,	.set_func = shopt_enable_hostname_completion,	.help =
     "Attempt to perform hostname completion when attempting completion on a\n"
@@ -450,7 +449,7 @@ static opt_def_t const xo_options[] = {
   },
 #endif
   { "nocaseglob",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &glob_ignore_case,		.help =
-    "Match filenames case-insensitively performing pathname expansion."
+    "Match filenames case-insensitively when performing pathname expansion."
   },
   { "nocasematch",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &match_ignore_case,		.help =
     "Match patterns case-insensitively when performing matching for 'case' or\n"
