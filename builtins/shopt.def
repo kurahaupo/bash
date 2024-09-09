@@ -255,6 +255,10 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Minor errors (single transpositions, omissions, or insertions) in the\n"
+      "spelling of a directory component in a cd command will be corrected.\n"
+      "(Interactive only.)"),
   },
   { "checkhash",
     .store = &check_hashed_filenames,
@@ -305,6 +309,11 @@ static opt_def_t const xo_options[] = {
     .reference_value = 31,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v3.1\n"
+      " ‧ v3.1 Strip quotes from PATTERN in [[ WORD =~ PATTERN ]]\n"
+      "        \n"
+      " ‧ v3.2 Don't strip quotes from PATTERN in [[ WORD =~ PATTERN ]]"),
   },
   { "compat32",
     .set_func = set_compatibility_level,
@@ -312,6 +321,19 @@ static opt_def_t const xo_options[] = {
     .reference_value = 32,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v3.2\n"
+      "(See compat40 for subsequent changes; see compat31 for prior changes)"),
+  },
+  { "compat33",
+    .set_func = set_compatibility_level,
+    .get_func = get_compatibility_level,
+    .reference_value = 33,
+    .adjust_bashopts = true,
+    .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v3.3\n"
+      "(See compat40 for subsequent changes; see compat31 for prior changes)"),
   },
   { "compat40",
     .set_func = set_compatibility_level,
@@ -319,6 +341,10 @@ static opt_def_t const xo_options[] = {
     .reference_value = 40,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v4.0\n"
+      " ‧ v4.0 [[ A < B ]] collation is always ASCII\n"
+      " ‧ v4.1 [[ A < B ]] collation may use current locale"),
   },
   { "compat41",
     .set_func = set_compatibility_level,
@@ -326,6 +352,13 @@ static opt_def_t const xo_options[] = {
     .reference_value = 41,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v4.1\n"
+      " ‧ v4.1 In POSIX mode, recognize 'time' keyword even when followed by options.\n"
+      "        Do not interpret nested quotes within ${VAR//PATTERN/REPLACE}\n"
+      " ‧ v4.2 Adhere to Austin Group interpretations 267 (POSIX 2008)\n"
+      "        Only recognize 'time' keyword when not followed by options\n"
+      "        Apply anomalous intermediate nested quotes rule; see 'compat42'."),
   },
   { "compat42",
     .set_func = set_compatibility_level,
@@ -333,6 +366,12 @@ static opt_def_t const xo_options[] = {
     .reference_value = 42,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v4.2\n"
+      " ‧ v4.1 Do not interpret nested quotes within '${VAR//PATTERN/REPLACE}';\n"
+      " ‧ v4.2 Apply anomalous intermediate nested quotes rule;\n"
+      " ‧ v4.3 Adhere to Austin Group interpretations 221 (POSIX 2008)\n"
+      "        Interpret matching nested quotes within '${VAR//PATTERN/REPLACE}'."),
   },
   { "compat43",
     .set_func = set_compatibility_level,
@@ -340,6 +379,10 @@ static opt_def_t const xo_options[] = {
     .reference_value = 43,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v4.3\n"
+      " ‧ v4.3 ...\n"
+      " ‧ v4.4 ..."),
   },
   { "compat44",
     .set_func = set_compatibility_level,
@@ -347,6 +390,10 @@ static opt_def_t const xo_options[] = {
     .reference_value = 44,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Disable some changes made after Bash v4.4\n"
+      " ‧ v4.4 ...\n"
+      " ‧ v5.0 ..."),
   },
   { "compat50",
     .set_func = set_compatibility_level,
@@ -355,6 +402,10 @@ static opt_def_t const xo_options[] = {
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "Disable some changes made after Bash v5.0\n"
+      " ‧ v5.0 'unset ARRAY[@]' unsets the whole array,\n"
+      " ‧ v5.1 'unset ARRAY[@]' removes all elements"),
   },
   { "compat51",
     .set_func = set_compatibility_level,
@@ -363,6 +414,10 @@ static opt_def_t const xo_options[] = {
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "Disable some changes made after Bash v5.1\n"
+      " ‧ v5.1 Expand array indices twice\n"
+      " ‧ v5.2 Improve handling of array subscripts in numeric context."),
   },
   { "compat52",
     .set_func = set_compatibility_level,
@@ -371,6 +426,10 @@ static opt_def_t const xo_options[] = {
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "Disable some changes made after Bash v5.2\n"
+      " ‧ v5.2 ...\n"
+      " ‧ v5.3 ..."),
   },
   { "compat53",
     .set_func = set_compatibility_level,
@@ -379,14 +438,21 @@ static opt_def_t const xo_options[] = {
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "Disable some changes made after Bash v5.3\n"
+      "(Future changes are not yet known.)"),
   },
   { "compat54",
     .set_func = set_compatibility_level,
     .get_func = get_compatibility_level,
     .reference_value = 54,
+    .readonly = true,
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
+    .help = N_(
+      "Disable some changes made after Bash v5.4\n"
+      "(Features added by this future version of Bash are unavailable.)"),
   },
 #if defined (READLINE)
   { "complete_fullquote",
@@ -394,17 +460,27 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Quote '$' in tab-completion results."),
   },
   { "direxpand",
     .store = &dircomplete_expand,
     .set_func = shopt_set_complete_direxpand,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Replaces directory names with the results of word expansion when\n"
+      "performing filename completion, within the readline editing buffer.\n"
+      "If not set, attempt to preserve what the user typed."),
   },
   { "dirspell",
     .store = &dircomplete_spelling,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Attempt spelling correction on directory names during word completion if\n"
+      "the directory name initially supplied does not exist.\n"
+      "(Same as cdspell but applied to completions.)"),
   },
 #endif
   { "dotglob",
@@ -412,12 +488,18 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Include filenames beginning with a '.' in the results of pathname\n"
+      "expansion. (See GLOBIGNORE, globskipdots, & nocaseglob.)"),
   },
   { "execfail",
     .store = &no_exit_on_failed_exec,
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Do not exit when the 'command' argument to the 'exec' built-in cannot be\n"
+      "executed. (Always applies to interactive shells.)"),
   },
   { "expand_aliases",
     .store = &expaliases_flag,
@@ -425,6 +507,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_REINIT_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Expand aliases that appear where a simple command is expected.\n"
+      "(Off by default for scripts.)")
   },
 #if defined (DEBUGGER)
   { "extdebug",
@@ -460,6 +545,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Expand $'string' and $\"string\" quoting within ${parameter} expansions\n"
+      "even when enclosed in double quotes."),
   },
   { "failglob",
     .store = &fail_glob_expansion,
