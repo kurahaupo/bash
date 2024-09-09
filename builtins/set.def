@@ -153,10 +153,17 @@ static const char off[] = "off";
 static int previous_option_value;
 
 static opt_def_t const xo_options[] = {
-  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.OPTRESET_false,		.set_func = set_ignoreeof,	.help = "The shell will not exit upon reading EOF" },
-  { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help = "Allow comments to appear in interactive commands" },
+  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.OPTRESET_false,		.set_func = set_ignoreeof,	.help =
+    "Do not immediately exit upon reading EOF"
+  },
+  { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help =
+    "Allow comments to appear in interactive commands"
+  },
   { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,		.OPTRESET_REINIT_false,		.help =
-    "The return value of a pipeline is the status of\nthe last command to exit with a non-zero status,\nor zero if no command exited with a non-zero status" },
+    "Make the status of a pipeline be the last non-zero status of any of\n"
+    "its components, or zero if the status of every component is zero.\n"
+    "(Otherwise use the status of its right-most component.)"
+  },
   { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,
 #if defined (STRICT_POSIX)
     .OPTRESET_true,
@@ -164,14 +171,24 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
 #endif
     .help =
-    "Change the behavior of bash where the default\noperation differs from the Posix standard to\nmatch the standard" },
+    "Disable most behaviours that deviate from what is permitted or required by\n"
+    "the POSIX (IEEE-1003.1-2024) standard."
+  },
 #if defined (READLINE)
-  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help = "use an emacs-style line editing interface" },
-  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help = "use a vi-style line editing interface" },
+  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help =
+    "Use an emacs-style line editing interface"
+  },
+  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help =
+    "Use a vi-style line editing interface"
+  },
 #endif
 #if defined (HISTORY)
-  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.OPTRESET_true,	.set_func = set_history_flag,	.help = "Enable command history" },
-  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,	.OPTRESET_false,	.help = "(currently accepted but ignored)" },
+  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.OPTRESET_true,	.set_func = set_history_flag,	.help =
+    "Enable command history"
+  },
+  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,	.OPTRESET_false,	.help =
+    "(currently accepted but ignored)"
+  },
 #endif
   //0
 };
