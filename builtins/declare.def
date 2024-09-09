@@ -941,7 +941,7 @@ restart_new_var_name:
 	      compound_array_assign = array_exists || creating_array;
 	      simple_array_assign = making_array_special;
 	    }
-	  else if (value[0] == '(' && value[vlen-1] == ')' && (shell_compatibility_level < 44 || (wflags & W_COMPASSIGN)))
+	  else if (value[0] == '(' && value[vlen-1] == ')' && (shell_compatibility_level <= 43 || (wflags & W_COMPASSIGN)))
 	    compound_array_assign = 1;
 	  else
 	    simple_array_assign = 1;
