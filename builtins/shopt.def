@@ -189,22 +189,47 @@ typedef int shopt_set_func_t (char *, int);
 
 static opt_def_t const xo_options[] = {
 #if defined (ARRAY_VARS)
-  { "array_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand },
+  { "array_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand,	.help =
+    "Suppress multiple evaluation of array subscripts during arithmetic\n"
+    "expression evaluation, while executing builtins that perform variable\n"
+    "assignments, or that perform array dereferencing."
+  },
   { "assoc_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand,	.hide_shopt = 1 },
 #endif
-  { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd,			.OPTRESET_false },
+  { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd,			.OPTRESET_false,		.help =
+    "Giving the name of a directory as a command causes cd to that directory.\n"
+    "(Interactive only.)"
+  },
 #if defined (ARRAY_VARS)
-  { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath,		.OPTRESET_false },
+  { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath,		.OPTRESET_false,		.help =
+    "BASH_SOURCE contains full pathnames with symlinks resolved"
+  },
 #endif
-  { "cdable_vars",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdable_vars,			.OPTRESET_false },
+  { "cdable_vars",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdable_vars,			.OPTRESET_false,		.help =
+    "An argument to the cd builtin command that is not a directory is assumed\n"
+    "to be the name of a variable whose value is the directory to change to."
+  },
   { "cdspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdspelling,			.OPTRESET_false },
-  { "checkhash",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_hashed_filenames,	.init = &(option_value_t const){CHECKHASH_DEFAULT},	.skip_reinit = true },
+  { "checkhash",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_hashed_filenames,	.init = &(option_value_t const){CHECKHASH_DEFAULT},	.skip_reinit = true,	.help =
+    "Check that a command found in the hash table exists before trying to\n"
+    "execute it. If a hashed command no longer exists, a normal path search\n"
+    "is performed.\n"
+    "(See hashall)"
+  },
 #if defined (JOB_CONTROL)
-  { "checkjobs",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_jobs_at_exit,		.OPTRESET_false },
+  { "checkjobs",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_jobs_at_exit,		.OPTRESET_false,		.help =
+    "Check running jobs (not just stopped ones) when hesitating to exit"
+  },
 #endif
-  { "checkwinsize",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_window_size,		.init = &(option_value_t const){CHECKWINSIZE_DEFAULT},	.skip_reinit = true },
+  { "checkwinsize",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_window_size,		.init = &(option_value_t const){CHECKWINSIZE_DEFAULT},	.skip_reinit = true,		.help =
+    "Check the window size after each external (non-builtin) command and, if\n"
+    "necessary, updates the values of LINES and COLUMNS."
+  },
 #if defined (HISTORY)
-  { "cmdhist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &command_oriented_history,	.OPTRESET_true },
+  { "cmdhist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &command_oriented_history,	.OPTRESET_true,	.help =
+    "Multi-line commands are recorded as single history lines, with semicolons\n"
+    "inserted as needed."
+  },
 #endif
   { "compat31",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 31 },
   { "compat32",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 32 },
