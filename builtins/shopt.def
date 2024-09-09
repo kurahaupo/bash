@@ -433,6 +433,14 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_REINIT_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "If set in a shell startup file, or by the --debugger option at startup,\n"
+      "arrange to execute the debugger profile before the shell starts.\n"
+      "If set after invocation, behavior intended for use by debuggers is\n"
+      "enabled, especially filename and line number being included:\n"
+      " ‧ in BASH_ARGC and BASH_ARGV\n"
+      " ‧ in the output of 'declare -F' & 'caller'\n"
+      "The DEBUG, ERR, & RETURN traps are inherited by functions and subshells."),
   },
 #endif
 #if defined (EXTENDED_GLOB)
@@ -441,6 +449,10 @@ static opt_def_t const xo_options[] = {
     .set_func = shopt_set_extglob,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Enable extended pattern matching.\n"
+      "Extended pattern matching always applies to [[ WORD = PATTERN ]]\n"
+      "unless compat40 (or earlier) is enabled."),
   },
 #endif
   { "extquote",
@@ -454,6 +466,9 @@ static opt_def_t const xo_options[] = {
     .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .help = N_(
+      "Pathname expansion applied to patterns that fail to match any filenames\n"
+      "results in an expansion error."),
   },
 #if defined (READLINE)
   { "force_fignore",
