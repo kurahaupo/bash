@@ -37,6 +37,8 @@
 #define NEED_XTRACE_SET_DECL
 
 #include "shell.h"
+
+#include "execute_cmd.h"
 #include "flags.h"
 #include <y.tab.h>	/* use <...> so we pick it up from the build directory */
 #include "input.h"
@@ -449,7 +451,6 @@ indirection_level_string (void)
   char *ps4;
   char ps4_firstc[MB_LEN_MAX+1];
   size_t ps4_firstc_len, ps4_len, ineed;
-  int old;
   DECLARE_MBSTATE;
 
   ps4 = get_string_value ("PS4");
@@ -460,10 +461,15 @@ indirection_level_string (void)
   if (ps4 == 0 || *ps4 == '\0')
     return (indirection_string);
 
-  old = change_flag ('x', FLAG_OFF);
-  ps4 = decode_prompt_string (ps4, 1);
-  if (old)
-    change_flag ('x', FLAG_ON);
+  {
+    /* Bypass options.h to temporarily turn off xtrace */
+    int old = echo_command_at_execute;
+    echo_command_at_execute = false;
+
+    ps4 = decode_prompt_string (ps4, 1);
+
+    echo_command_at_execute = old;
+  }
 
   if (ps4 == 0 || *ps4 == '\0')
     {
