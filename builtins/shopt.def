@@ -77,6 +77,7 @@ $END
 #include "version.h"
 
 #include "../bashintl.h"
+#include "../parser.h"
 
 #include "../shell.h"
 #include "../flags.h"
@@ -89,6 +90,7 @@ $END
 
 #if defined (READLINE)
 #  include "../bashline.h"
+#  include <readline/readline.h>
 #endif
 
 #if defined (HISTORY)
@@ -184,6 +186,18 @@ static opt_set_func_t shopt_set_expaliases;
 static opt_set_func_t shopt_set_debug_mode;
 
 static int shopt_login_shell;
+
+static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_posix_mode;
+
+#if defined (READLINE)
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
+#endif
+
+#if defined (HISTORY)
+static opt_set_func_t set_history_flag;
+#endif
 
 typedef int shopt_set_func_t (char *, int);
 
@@ -325,6 +339,11 @@ static opt_def_t const xo_options[] = {
     "Include filenames beginning with a '.' in the results of pathname\n"
     "expansion. (See GLOBIGNORE, globskipdots, & nocaseglob.)"
   },
+#if defined (READLINE)
+  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help =
+    "Use an emacs-style line editing interface"
+  },
+#endif
   { "execfail",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &no_exit_on_failed_exec,	.help =
     "Do not exit when the 'command' argument to the 'exec' built-in cannot be\n"
     "executed. (Always applies to interactive shells.)"
@@ -387,6 +406,9 @@ static opt_def_t const xo_options[] = {
     "When the shell exits, history will be appended to the shell history file,\n"
     "rather than overwriting it. (See HISTFILE.)"
   },
+  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.set_func = set_history_flag,	.help =
+    "Enable command history"
+  },
 #endif
 #if defined (READLINE)
   { "histreedit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &history_reediting,		.help =
@@ -406,6 +428,12 @@ static opt_def_t const xo_options[] = {
 #endif
   { "huponexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &hup_on_exit,			.help =
     "Send SIGHUP to all jobs when an interactive login shell exits."
+  },
+  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.OPTRESET_false,		.set_func = set_ignoreeof,	.help =
+    "Do not immediately exit upon reading EOF"
+  },
+  { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help =
+    "(see interactive_comments)"
   },
   { "inherit_errexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &inherit_errexit,		.help =
     "Command substitution subshells inherit the value of the 'errexit' option.\n"
@@ -463,6 +491,37 @@ static opt_def_t const xo_options[] = {
     "Enclose the translated results of $\"...\" quoting in single quotes instead\n"
     "of double quotes. (No effect if the string is not translated.)"
   },
+  { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,		.OPTRESET_REINIT_false,		.help =
+    "Make the status of a pipeline be the last non-zero status of any of\n"
+    "its components, or zero if the status of every component is zero.\n"
+    "(Otherwise use the status of its right-most component.)"
+  },
+  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,
+#if defined (STRICT_POSIX)
+    .OPTRESET_true,
+#else
+    .OPTRESET_false,
+#endif
+    .help =
+    "Disable most behaviours that deviate from what is permitted or required by\n"
+    "the POSIX (IEEE-1003.1-2024) standard."
+  },
+#if defined (READLINE)
+  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help =
+    "Use an emacs-style line editing interface"
+  },
+  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help =
+    "Use a vi-style line editing interface"
+  },
+#endif
+#if defined (HISTORY)
+  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.OPTRESET_true,			.set_func = set_history_flag,	.help =
+    "Enable command history"
+  },
+  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,	.OPTRESET_false,	.help =
+    "(currently accepted but ignored)"
+  },
+#endif
   { "nullglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &allow_null_glob_expansion,	.OPTRESET_false,		.help =
     "Pathname expansions that match no filenames expand to no words, rather\n"
     "than expanding to themselves."
@@ -471,6 +530,17 @@ static opt_def_t const xo_options[] = {
     "In ${VAR/PATTERN/REPLACEMENT} expansions, expand occurrences of '&' in\n"
     "REPLACEMENT to the text matched by PATTERN."
   },
+  { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,						.help =
+    "Make the status of a pipeline be the status of the last non-zero status\n"
+    "returned by any of its components, or zero if zero is returned by all its\n"
+    "components. (Otherwise the status of a pipeline is simply the status of\n"
+    "its right-most component.)"
+  },
+  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,	.help =
+    "Disable most behaviours that deviate from what is permitted or required by\n"
+    "the POSIX (IEEE-1003.1-2024) standard."
+  },
+
 #if defined (PROGRAMMABLE_COMPLETION)
   { "progcomp",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &prog_completion_enabled,	.help =
     "Enable programmable tab-completion."
@@ -511,6 +581,11 @@ static opt_def_t const xo_options[] = {
     "redirection syntax, instead of leaving them open when the command\n"
     "completes."
   },
+#if defined (READLINE)
+  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help =
+    "Use a vi-style line editing interface"
+  },
+#endif
   { "xpg_echo",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &xpg_echo,			.help =
     "The builtin 'echo' command will expand \\-sequences.\n"
     "(Has no effect if an external version of echo is used.)\n"
@@ -1008,6 +1083,80 @@ set_array_expand (opt_def_t const *d, accessor_t why, int mode)
   if (shell_compatibility_level <= 51)
 #endif
     array_expand_once = expand_once_flag;
+  return Result (OK);
+}
+#endif
+
+static op_result_t
+set_ignoreeof (opt_def_t const *d, accessor_t why, int new_value)
+{
+  unbind_variable_noref ("ignoreeof");
+  if (new_value)
+    bind_variable ("IGNOREEOF", "10", 0);
+  else
+    unbind_variable_noref ("IGNOREEOF");
+  sv_ignoreeof ("IGNOREEOF");
+  return Result (OK);
+}
+
+static op_result_t
+set_posix_mode (opt_def_t const *d, accessor_t why, int new_value)
+{
+  /* short-circuit on no-op */
+  if (new_value != posixly_correct)
+    {
+      posixly_correct = new_value;
+      if (posixly_correct)
+	bind_variable ("POSIXLY_CORRECT", "y", 0);
+      else
+	unbind_variable_noref ("POSIXLY_CORRECT");
+      sv_strict_posix ("POSIXLY_CORRECT");
+    }
+  return Result (OK);
+}
+
+#if defined (READLINE)
+/* Magic.  This code `knows' how readline handles rl_editing_mode. */
+static op_result_t
+set_edit_mode (opt_def_t const *d, accessor_t why, option_value_t turn_on)
+{
+  if (turn_on)
+    {
+      rl_variable_bind ("editing-mode", d->name);
+      if (interactive && !command_execution_string)
+	with_input_from_stdin ();
+    }
+  else if (rl_editing_mode == d->reference_value)
+    {
+      if (interactive && !command_execution_string)
+	with_input_from_stream (stdin, "stdin");
+    }
+  else
+    return Result (Ignored);	/* Don't flip no_line_editing */
+  no_line_editing = ! turn_on;
+  return Result (OK);
+}
+
+static option_value_t
+get_edit_mode (opt_def_t const *d, accessor_t why)
+{
+  return !no_line_editing && rl_editing_mode == d->reference_value;
+}
+#endif /* READLINE */
+
+#if defined (HISTORY)
+static op_result_t
+set_history_flag (opt_def_t const *d, accessor_t why, int new_value)
+{
+  enable_history_list = new_value;
+  if (enable_history_list)
+    {
+      bash_history_enable ();
+      if (history_lines_this_session == 0)
+	load_history ();
+    }
+  else
+    bash_history_disable ();
   return Result (OK);
 }
 #endif

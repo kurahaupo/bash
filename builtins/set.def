@@ -40,12 +40,6 @@ $PRODUCES set.c
 #include "common.h"
 #include "bashgetopt.h"
 
-#if defined (READLINE)
-#  include "../input.h"
-#  include "../bashline.h"
-#  include <readline/readline.h>
-#endif
-
 #if defined (HISTORY)
 #  include "../bashhist.h"
 #endif
@@ -63,9 +57,9 @@ Shell attributes and options have 'long' names, adjustable by using
 "set -o OPTNAME" and "set +o OPTNAME", or equivalently by using
 "shopt -s OPTNAME" and "shopt -u OPTNAME".
 
-In addition, shell attributes have single-letter names, which are the same as
-the options that Bash accepts when invoked, except for "-i", "-l", and "-r"
-which can only be set at invocation.
+In addition, shell attributes have single-letter 'short' names, which are the
+same as the options that Bash accepts when invoked, except for "-i", "-l", and
+"-r" which can only be set at invocation.
 
 Options:
 
@@ -130,62 +124,6 @@ Type "set --option-usage [OPTNAME ...]" to see detailed help for each option.
 $END
 
 static void print_all_shell_variables (void);
-
-static opt_set_func_t set_ignoreeof;
-static opt_set_func_t set_posix_mode;
-
-#if defined (READLINE)
-static opt_set_func_t set_edit_mode;
-static opt_get_func_t get_edit_mode;
-#endif
-
-#if defined (HISTORY)
-static opt_set_func_t set_history_flag;
-#endif
-
-static const char on[] = "on";
-static const char off[] = "off";
-
-static opt_def_t const xo_options[] = {
-  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.OPTRESET_false,		.set_func = set_ignoreeof,	.help =
-    "Do not immediately exit upon reading EOF"
-  },
-  { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help =
-    "Allow comments to appear in interactive commands"
-  },
-  { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,		.OPTRESET_REINIT_false,		.help =
-    "Make the status of a pipeline be the last non-zero status of any of\n"
-    "its components, or zero if the status of every component is zero.\n"
-    "(Otherwise use the status of its right-most component.)"
-  },
-  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,
-#if defined (STRICT_POSIX)
-    .OPTRESET_true,
-#else
-    .OPTRESET_false,
-#endif
-    .help =
-    "Disable most behaviours that deviate from what is permitted or required by\n"
-    "the POSIX (IEEE-1003.1-2024) standard."
-  },
-#if defined (READLINE)
-  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help =
-    "Use an emacs-style line editing interface"
-  },
-  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help =
-    "Use a vi-style line editing interface"
-  },
-#endif
-#if defined (HISTORY)
-  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.OPTRESET_true,	.set_func = set_history_flag,	.help =
-    "Enable command history"
-  },
-  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,	.OPTRESET_false,	.help =
-    "(currently accepted but ignored)"
-  },
-#endif
-  //0
-};
 
 int
 minus_o_option_value (char const *name)
@@ -259,80 +197,6 @@ set_current_options (const char *bitmap)
   /* Now reset the variables changed by posix mode */
   set_posix_options (bitmap+i);
 }
-
-static op_result_t
-set_ignoreeof (opt_def_t const *d, accessor_t why, int new_value)
-{
-  unbind_variable_noref ("ignoreeof");
-  if (new_value)
-    bind_variable ("IGNOREEOF", "10", 0);
-  else
-    unbind_variable_noref ("IGNOREEOF");
-  sv_ignoreeof ("IGNOREEOF");
-  return Result (OK);
-}
-
-static op_result_t
-set_posix_mode (opt_def_t const *d, accessor_t why, int new_value)
-{
-  /* short-circuit on no-op */
-  if (new_value != posixly_correct)
-    {
-      posixly_correct = new_value;
-      if (posixly_correct)
-	bind_variable ("POSIXLY_CORRECT", "y", 0);
-      else
-	unbind_variable_noref ("POSIXLY_CORRECT");
-      sv_strict_posix ("POSIXLY_CORRECT");
-    }
-  return Result (OK);
-}
-
-#if defined (READLINE)
-/* Magic.  This code `knows' how readline handles rl_editing_mode. */
-static op_result_t
-set_edit_mode (opt_def_t const *d, accessor_t why, option_value_t turn_on)
-{
-  if (turn_on)
-    {
-      rl_variable_bind ("editing-mode", d->name);
-      if (interactive && !command_execution_string)
-	with_input_from_stdin ();
-    }
-  else if (rl_editing_mode == d->reference_value)
-    {
-      if (interactive && !command_execution_string)
-	with_input_from_stream (stdin, "stdin");
-    }
-  else
-    return Result (Ignored);	/* Don't flip no_line_editing */
-  no_line_editing = ! turn_on;
-  return Result (OK);
-}
-
-static option_value_t
-get_edit_mode (opt_def_t const *d, accessor_t why)
-{
-  return !no_line_editing && rl_editing_mode == d->reference_value;
-}
-#endif /* READLINE */
-
-#if defined (HISTORY)
-static op_result_t
-set_history_flag (opt_def_t const *d, accessor_t why, int new_value)
-{
-  enable_history_list = new_value;
-  if (enable_history_list)
-    {
-      bash_history_enable ();
-      if (history_lines_this_session == 0)
-	load_history ();
-    }
-  else
-    bash_history_disable ();
-  return Result (OK);
-}
-#endif
 
 int
 set_minus_o_option (char on_or_off, char const*option_name)
@@ -932,6 +796,4 @@ unset_builtin (WORD_LIST *list)
 void
 register_set_opts (void)
 {
-  for (size_t i = 0 ; i < (sizeof (xo_options) / sizeof (xo_options[0])) ; ++i)
-    register_option (&xo_options[i]);
 }
