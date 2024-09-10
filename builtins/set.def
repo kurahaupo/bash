@@ -129,14 +129,7 @@ Type "set --option-help [OPTNAME ...]" to see short help for each option.
 Type "set --option-usage [OPTNAME ...]" to see detailed help for each option.
 $END
 
-typedef int setopt_set_func_t (int, char const*);
-typedef int setopt_get_func_t (char const*);
-
-static void print_minus_o_option (char *, int, int);
 static void print_all_shell_variables (void);
-
-static const char on[] = "on";
-static const char off[] = "off";
 
 int
 minus_o_option_value (char const *name)
@@ -147,17 +140,6 @@ minus_o_option_value (char const *name)
     return get_opt_value (d, Accessor (set_o));
   else
     return FLAG_ERROR;
-}
-
-#define MINUS_O_FORMAT "%-15s\t%s\n"
-
-static void
-print_minus_o_option (char *name, int value, int pflag)
-{
-  if (pflag == 0)
-    printf (MINUS_O_FORMAT, name, value ? on : off);
-  else
-    printf ("set %co %s\n", value ? '-' : '+', name);
 }
 
 void
