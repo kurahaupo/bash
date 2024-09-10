@@ -135,117 +135,8 @@ typedef int setopt_get_func_t (char const*);
 static void print_minus_o_option (char *, int, int);
 static void print_all_shell_variables (void);
 
-static opt_set_func_t set_ignoreeof;
-static opt_set_func_t set_posix_mode;
-
-#if defined (READLINE)
-static opt_set_func_t set_edit_mode;
-static opt_get_func_t get_edit_mode;
-#endif
-
-#if defined (HISTORY)
-static opt_set_func_t set_history_flag;
-#endif
-
 static const char on[] = "on";
 static const char off[] = "off";
-
-static int previous_option_value;
-
-/*
- * Keep aach option's terms in this order:
- *  Name, Letter
- *  Store (pointer)
- *  Init (pointer), Skip-reset
- *  Getter & Setter functions, Reference value
- *  Read-only, Forbid-change, Ignore-change
- *  (everything else in alphabetical order)
- *  Help
- */
-
-static opt_def_t const xo_options[] = {
-  { "ignoreeof",
-    .store = &ignoreeof,
-    .OPTRESET_false,
-    .set_func = set_ignoreeof,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Do not immediately exit upon reading EOF"),
-  },
-  { "interactive-comments",
-    .store = &interactive_comments,
-    .adjust_bashopts = true,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Allow comments to appear in interactive commands"),
-  },
-  { "pipefail",
-    .store = &pipefail_opt,
-    .OPTRESET_REINIT_false,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Make the exit status of a pipeline be the last non-zero exit status of any of\n"
-      "its components, or zero if the status of every component is zero.\n"
-      "(Otherwise use the exit status of its right-most component.)"),
-  },
-  { "posix",
-    .store = &posixly_correct,
-#if defined (STRICT_POSIX)
-    .OPTRESET_true,
-#else
-    .OPTRESET_false,
-#endif
-    .set_func = set_posix_mode,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Disable most behaviours that deviate from what is permitted or required by\n"
-      "the POSIX (IEEE-1003.1-2024) standard.")
-  },
-#if defined (READLINE)
-  { "emacs",
-    .hide_shopt = true,
-    .get_func = get_edit_mode,
-    .set_func = set_edit_mode,
-    .reference_value = EMACS_EDITING_MODE,
-    .adjust_shellopts = true,
-    .help = N_(
-      "Use an emacs-style line editing interface"),
-  },
-  { "vi",
-    .get_func = get_edit_mode,
-    .set_func = set_edit_mode,
-    .reference_value = VI_EDITING_MODE,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Use a vi-style line editing interface"),
-  },
-#endif
-#if defined (HISTORY)
-  { "history",
-    .store = &enable_history_list,
-    .OPTRESET_true,
-    .set_func = set_history_flag,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "Enable command history"),
-  },
-  { "nolog",
-    .store = &dont_save_function_defs,
-    .OPTRESET_false,
-    .adjust_shellopts = true,
-    .hide_shopt = true,
-    .help = N_(
-      "(currently accepted but ignored)"),
-  },
-#endif
-  //0
-};
 
 int
 minus_o_option_value (char const *name)
@@ -1003,6 +894,4 @@ unset_builtin (WORD_LIST *list)
 void
 register_set_opts (void)
 {
-  for (size_t i = 0 ; i < (sizeof (xo_options) / sizeof (xo_options[0])) ; ++i)
-    register_option (&xo_options[i]);
 }

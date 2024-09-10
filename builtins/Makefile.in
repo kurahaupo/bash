@@ -2085,8 +2085,10 @@ shopt.o: $(topdir)/lib/readline/rltypedefs.h
 shopt.o: $(topdir)/lib/tilde/tilde.h
 shopt.o: $(topdir)/make_cmd.h
 shopt.o: $(topdir)/options.h
+shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/pathnames.h
 shopt.o: $(topdir)/quit.h
+shopt.o: $(topdir)/readline/readline.h
 shopt.o: $(topdir)/shell.h
 shopt.o: $(topdir)/sig.h
 shopt.o: $(topdir)/subst.h

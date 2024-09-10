@@ -77,6 +77,7 @@ $END
 #include "version.h"
 
 #include "../bashintl.h"
+#include "../parser.h"
 
 #include "../shell.h"
 #include "../flags.h"
@@ -89,6 +90,7 @@ $END
 
 #if defined (READLINE)
 #  include "../bashline.h"
+#  include <readline/readline.h>
 #endif
 
 #if defined (HISTORY)
@@ -187,10 +189,17 @@ static opt_set_func_t shopt_set_debug_mode;
 
 static int shopt_login_shell;
 
-typedef int shopt_set_func_t (char *, int);
+static opt_set_func_t set_ignoreeof;
+static opt_set_func_t set_posix_mode;
 
-/* If you add a new variable name here, make sure to set the default value
-   appropriately in reset_shopt_options. */
+#if defined (READLINE)
+static opt_set_func_t set_edit_mode;
+static opt_get_func_t get_edit_mode;
+#endif
+
+#if defined (HISTORY)
+static opt_set_func_t set_history_flag;
+#endif
 
 /*
  * Keep aach option's terms in this order:
@@ -484,6 +493,17 @@ static opt_def_t const xo_options[] = {
       "Include filenames beginning with a '.' in the results of pathname\n"
       "expansion. (See GLOBIGNORE, globskipdots, & nocaseglob.)"),
   },
+#if defined (READLINE)
+  { "emacs",
+    .set_func = set_edit_mode,
+    .get_func = get_edit_mode,
+    .reference_value = EMACS_EDITING_MODE,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Use an emacs-style line editing interface"),
+  },
+#endif
   { "execfail",
     .store = &no_exit_on_failed_exec,
     .OPTRESET_false,
@@ -607,6 +627,17 @@ static opt_def_t const xo_options[] = {
       "rather than overwriting it. (See HISTFILE.)"),
   },
 #endif
+#if defined (HISTORY)
+  { "history",
+    .store = &enable_history_list,
+    .OPTRESET_true,
+    .set_func = set_history_flag,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Enable command history"),
+  },
+#endif
 #if defined (READLINE)
   { "histreedit",
     .store = &history_reediting,
@@ -644,6 +675,15 @@ static opt_def_t const xo_options[] = {
     .help = N_(
       "Send SIGHUP to all jobs when an interactive login shell exits."),
   },
+  { "ignoreeof",
+    .store = &ignoreeof,
+    .OPTRESET_false,
+    .set_func = set_ignoreeof,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Do not immediately exit upon reading EOF"),
+  },
   { "inherit_errexit",
     .store = &inherit_errexit,
     .OPTRESET_false,
@@ -652,6 +692,14 @@ static opt_def_t const xo_options[] = {
     .help = N_(
       "Command substitution subshells inherit the value of the 'errexit' option.\n"
       "(Enabled when posix mode is enabled.)"),
+  },
+  { "interactive-comments",
+    .store = &interactive_comments,
+    .adjust_bashopts = true,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "(see interactive_comments)"),
   },
   { "interactive_comments",
     .store = &interactive_comments,
@@ -760,6 +808,16 @@ static opt_def_t const xo_options[] = {
       "Treat the translated results of $\"...\" as if single quoted rather than\n"
       "double quoted. (No effect if the string is not translated.)"),
   },
+#if defined (HISTORY)
+  { "nolog",
+    .store = &dont_save_function_defs,
+    .OPTRESET_false,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "(currently accepted but ignored)"),
+  },
+#endif
   { "nullglob",
     .store = &allow_null_glob_expansion,
     .OPTRESET_false,
@@ -776,6 +834,30 @@ static opt_def_t const xo_options[] = {
     .help = N_(
       "In ${VAR/PATTERN/REPLACEMENT} expansions, expand occurrences of '&' in\n"
       "REPLACEMENT to the text matched by PATTERN."),
+  },
+  { "pipefail",
+    .store = &pipefail_opt,
+    .OPTRESET_REINIT_false,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Make the exit status of a pipeline be the last non-zero exit status of any of\n"
+      "its components, or zero if the status of every component is zero.\n"
+      "(Otherwise use the exit status of its right-most component.)"),
+  },
+  { "posix",
+    .store = &posixly_correct,
+#if defined (STRICT_POSIX)
+    .OPTRESET_true,
+#else
+    .OPTRESET_false,
+#endif
+    .set_func = set_posix_mode,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Disable most behaviours that deviate from what is permitted or required by\n"
+      "the POSIX (IEEE-1003.1-2024) standard.")
   },
 #if defined (PROGRAMMABLE_COMPLETION)
   { "progcomp",
@@ -855,6 +937,17 @@ static opt_def_t const xo_options[] = {
       "redirection syntax, instead of leaving them open when the command\n"
       "completes."),
   },
+#if defined (READLINE)
+  { "vi",
+    .set_func = set_edit_mode,
+    .get_func = get_edit_mode,
+    .reference_value = VI_EDITING_MODE,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+    .help = N_(
+      "Use a vi-style line editing interface"),
+  },
+#endif
   { "xpg_echo",
     .store = &xpg_echo,
     .adjust_bashopts = true,
@@ -1306,6 +1399,80 @@ initialize_bashopts (_Bool no_bashopts)
   /* Set up the $BASHOPTS variable. */
   set_bashopts ();
 }
+
+static op_result_t
+set_ignoreeof (opt_def_t const *d, accessor_t why, int new_value)
+{
+  unbind_variable_noref ("ignoreeof");
+  if (new_value)
+    bind_variable ("IGNOREEOF", "10", 0);
+  else
+    unbind_variable_noref ("IGNOREEOF");
+  sv_ignoreeof ("IGNOREEOF");
+  return Result (OK);
+}
+
+static op_result_t
+set_posix_mode (opt_def_t const *d, accessor_t why, int new_value)
+{
+  /* short-circuit on no-op */
+  if (new_value != posixly_correct)
+    {
+      posixly_correct = new_value;
+      if (posixly_correct)
+	bind_variable ("POSIXLY_CORRECT", "y", 0);
+      else
+	unbind_variable_noref ("POSIXLY_CORRECT");
+      sv_strict_posix ("POSIXLY_CORRECT");
+    }
+  return Result (OK);
+}
+
+#if defined (READLINE)
+/* Magic.  This code `knows' how readline handles rl_editing_mode. */
+static op_result_t
+set_edit_mode (opt_def_t const *d, accessor_t why, option_value_t turn_on)
+{
+  if (turn_on)
+    {
+      rl_variable_bind ("editing-mode", d->name);
+      if (interactive && !command_execution_string)
+	with_input_from_stdin ();
+    }
+  else if (rl_editing_mode == d->reference_value)
+    {
+      if (interactive && !command_execution_string)
+	with_input_from_stream (stdin, "stdin");
+    }
+  else
+    return Result (Ignored);	/* Don't flip no_line_editing */
+  no_line_editing = ! turn_on;
+  return Result (OK);
+}
+
+static option_value_t
+get_edit_mode (opt_def_t const *d, accessor_t why)
+{
+  return !no_line_editing && rl_editing_mode == d->reference_value;
+}
+#endif /* READLINE */
+
+#if defined (HISTORY)
+static op_result_t
+set_history_flag (opt_def_t const *d, accessor_t why, int new_value)
+{
+  enable_history_list = new_value;
+  if (enable_history_list)
+    {
+      bash_history_enable ();
+      if (history_lines_this_session == 0)
+	load_history ();
+    }
+  else
+    bash_history_disable ();
+  return Result (OK);
+}
+#endif
 
 void
 list_shopts (int reusable)
