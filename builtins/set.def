@@ -129,19 +129,6 @@ Type "set --option-help [OPTNAME ...]" to see short help for each option.
 Type "set --option-usage [OPTNAME ...]" to see detailed help for each option.
 $END
 
-static void print_all_shell_variables (void);
-
-int
-minus_o_option_value (char const *name)
-{
-
-  opt_def_t const *d = find_option (name);
-  if (d)
-    return get_opt_value (d, Accessor (set_o));
-  else
-    return FLAG_ERROR;
-}
-
 void
 list_minus_o_opts (int mode, int reusable)
 {

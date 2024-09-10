@@ -3264,6 +3264,7 @@ test.o: $(topdir)/externs.h
 test.o: $(topdir)/general.h
 test.o: $(topdir)/hashlib.h
 test.o: $(topdir)/make_cmd.h
+test.o: $(topdir)/options.h
 test.o: $(topdir)/pathexp.h
 test.o: $(topdir)/quit.h
 test.o: $(topdir)/shell.h
