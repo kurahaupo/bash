@@ -3274,6 +3274,7 @@ test.o: $(topdir)/include/stdc.h
 test.o: $(topdir)/include/unlocked-io.h
 test.o: $(topdir)/lib/glob/strmatch.h
 test.o: $(topdir)/make_cmd.h
+test.o: $(topdir)/options.h
 test.o: $(topdir)/pathexp.h
 test.o: $(topdir)/pathnames.h
 test.o: $(topdir)/quit.h
