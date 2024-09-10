@@ -2250,6 +2250,7 @@ shopt.o: $(topdir)/input.h
 shopt.o: $(topdir)/make_cmd.h
 shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/options.h
+shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
 shopt.o: $(topdir)/sig.h
