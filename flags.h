@@ -137,7 +137,7 @@ extern int
 /* -c, -s invocation options -- not really flags, but they show up in $- */
 extern int want_pending_command, read_from_stdin;
 
-extern int change_flag (char, char);
+extern int change_flag (char, char) __attribute__((__deprecated__));
 extern char *which_set_flags (void);
 
 extern char *get_current_flags (void);
