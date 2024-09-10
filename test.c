@@ -55,6 +55,8 @@ extern int errno;
 #include "bashintl.h"
 
 #include "shell.h"
+
+#include "options.h"
 #include "pathexp.h"
 #include "test.h"
 #include "builtins/common.h"
@@ -645,7 +647,10 @@ unary_test (char *op, char *arg, int flags)
       return (arg[0] == '\0');
 
     case 'o':			/* True if option `arg' is set. */
-      return (minus_o_option_value (arg) == 1);
+      {
+	opt_def_t const *d = find_option (arg);
+	return d && get_opt_value (d, Accessor (set_o));
+      }
 
     case 'v':
 #if defined (ARRAY_VARS)
