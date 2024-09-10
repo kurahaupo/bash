@@ -67,24 +67,6 @@ int pipefail_opt = 0;
 /*								    */
 /* **************************************************************** */
 
-/* Change the state of a flag, and return it's original value, or return
-   FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
-   FLAG_ON or FLAG_OFF. */
-int
-change_flag (char flag, char on_or_off)
-{
-  opt_def_t const *d = find_short_option (flag);
-  if (! d)
-    return FLAG_ERROR;
-
-  int old_value = get_opt_value (d, Accessor (short));
-  op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
-  if (GoodResult (r))
-    return old_value;
-  else
-    return FLAG_ERROR;
-}
-
 /* Return a string which is the names of all the currently
    set shell flags; this value is used for `$-`. */
 char *

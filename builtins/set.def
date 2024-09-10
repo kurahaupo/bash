@@ -441,7 +441,7 @@ match (char const *arg, char const *pattern, size_t min)
 int
 set_builtin (WORD_LIST *list)
 {
-  int on_or_off, flag_name, force_assignment, opts_changed, rv, r;
+  int on_or_off, flag_name, force_assignment, rv, r;
   register char *arg;
   char s[3];
 
@@ -495,7 +495,7 @@ set_builtin (WORD_LIST *list)
   /* Do the set command.  While the list consists of words starting with
      '-' or '+' treat them as flags, otherwise, start assigning them to
      $1 ... $n. */
-  for (force_assignment = opts_changed = 0; list; )
+  for (force_assignment = 0; list; )
     {
       arg = list->word->word;
 
@@ -514,9 +514,10 @@ set_builtin (WORD_LIST *list)
 	     stands.  Posix.2 says the behaviour is marked as obsolescent. */
 	  else
 	    {
-	      change_flag ('x', '+');
-	      change_flag ('v', '+');
-	      opts_changed = 1;
+	      extern opt_def_t const OPTDEF_echo_command_at_execute;
+	      set_opt_value (&OPTDEF_echo_command_at_execute, Accessor (short), false);
+	      extern opt_def_t const OPTDEF_verbose_flag;
+	      set_opt_value (&OPTDEF_verbose_flag, Accessor (short), false);
 	    }
 
 	  break;
@@ -563,28 +564,27 @@ set_builtin (WORD_LIST *list)
 		    }
 		  list = list->next; /* Skip over option name. */
 
-		  opts_changed = 1;
 		  if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
 		    {
-		      #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
-		      set_shellopts ();
-		      #endif
 		      return (r);
 		    }
 		}
-	      else if (change_flag (flag_name, on_or_off) == FLAG_ERROR)
+	      else
 		{
-		  s[0] = on_or_off;
-		  s[1] = flag_name;
-		  s[2] = '\0';
-		  sh_invalidopt (s);
-		  builtin_usage ();
-		  #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
-		  set_shellopts ();
-		  #endif
-		  return (EXECUTION_FAILURE);
+		  opt_def_t const *d = find_short_option (flag_name);
+		  if (! d)
+		    {
+		      sh_invalidopt ((char[3]){ on_or_off, flag_name, 0 });
+		      builtin_usage ();
+		      return (EXECUTION_FAILURE);
+		    }
+		  op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
+		  if (! GoodResult (r))
+		    {
+		      fprintf (stderr, _("Cannot change %c%c; %s\n"), on_or_off, flag_name, res_to_desc (r));
+		      return (EXECUTION_FAILURE);
+		    }
 		}
-	      opts_changed = 1;
 	    }
 	}
       else
@@ -595,11 +595,6 @@ set_builtin (WORD_LIST *list)
   /* Assigning $1 ... $n */
   if (list || force_assignment)
     remember_args (list, 1);
-  #if 0 /* not needed - this is handled by set_opt_value when .adjust_shellopts is true */
-  /* Set up new value of $SHELLOPTS */
-  if (opts_changed)
-    set_shellopts ();
-  #endif
   return (rv);
 }
 
