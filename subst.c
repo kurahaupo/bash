@@ -6486,9 +6486,12 @@ process_substitute (char *string, int open_for_read_in_child)
 
       subshell_environment |= SUBSHELL_COMSUB|SUBSHELL_PROCSUB|SUBSHELL_ASYNC;
 
-      /* We don't inherit the verbose option for command substitutions now, so
-	 let's try it for process substitutions. */
-      change_flag ('v', FLAG_OFF);
+      {
+	/* We don't inherit the verbose option for command substitutions now, so
+	   let's try it for process substitutions. */
+	/* set +v */
+	verbose_flag = 0;
+      }
 
       /* if we're expanding a redirection, we shouldn't have access to the
 	 temporary environment, but commands in the subshell should have
@@ -6932,8 +6935,8 @@ uw_restore_pipeline (void *discard)
 static void
 uw_restore_errexit (void *eflag)
 {
-  change_flag ('e', (intptr_t) eflag ? FLAG_ON : FLAG_OFF);
-  set_shellopts ();
+  extern opt_def_t const OPTDEF_errexit_flag;
+  set_opt_value (&OPTDEF_errexit_flag, Accessor (unwind), (intptr_t) eflag);
 }
 
 /* Quote the output of nofork varsub command substitution in the way that the
@@ -7062,7 +7065,12 @@ function_substitute (char *string, int quoted, int flags)
   this_shell_function = &lambdafunc;
 
   unwind_protect_int (verbose_flag);
-  change_flag ('v', FLAG_OFF);
+  {
+    /* We don't currently inherit the verbose option for command substitutions,
+       so let's turn it off for process substitutions. */
+    /* set +v */
+    verbose_flag = 0;
+  }
 
   /* When inherit_errexit option is not enabled, command substitution does
      not inherit the -e flag.  It is enabled when Posix mode is enabled */
@@ -7071,7 +7079,7 @@ function_substitute (char *string, int quoted, int flags)
       unwind_protect_int (builtin_ignoring_errexit);
       builtin_ignoring_errexit = 0;
       add_unwind_protect (uw_restore_errexit, (void *) (intptr_t) errexit_flag);
-      change_flag ('e', FLAG_OFF);
+      errexit_flag = false;   /* set +e */
     }
   set_shellopts ();
 
@@ -7398,14 +7406,26 @@ command_substitute (char *string, int quoted, int flags)
 
       /* Many shells do not appear to inherit the -v option for command
 	 substitutions. */
-      change_flag ('v', FLAG_OFF);
+      #if 1
+      verbose_flag = false;
+      #else
+      {
+	extern opt_def_t const OPTDEF_verbose_flag;
+	set_opt_value (&OPTDEF_verbose_flag, Accessor (unwind), false);
+      }
+      #endif
 
       /* When inherit_errexit option is not enabled, command substitution does
 	 not inherit the -e flag.  It is enabled when Posix mode is enabled */
       if (inherit_errexit == 0)
 	{
 	  builtin_ignoring_errexit = 0;
-	  change_flag ('e', FLAG_OFF);
+	  #if 1
+	  errexit_flag = false;
+	  #else
+	  extern opt_def_t const OPTDEF_verbose_flag;
+	  set_opt_value (&OPTDEF_verbose_flag, Accessor (unwind), false);
+	  #endif
 	}
       set_shellopts ();
 
