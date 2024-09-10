@@ -213,7 +213,8 @@ static opt_def_t OPTDEF_autocd = {
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
-static opt_def_t const OPTDEF_echo_command_at_execute = {
+opt_def_t const OPTDEF_echo_command_at_execute = {
+  /* not static; referenced by set.def */
   .store = &echo_command_at_execute,
   .OPTRESET_false,
   .letter = 'x',
@@ -419,7 +420,8 @@ optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_valu
   if (builtin_ignoring_errexit == 0 || AccessorIs (why, reinit))
     exit_immediately_on_error = errexit_flag;
 }
-static opt_def_t const OPTDEF_errexit_flag = {
+opt_def_t const OPTDEF_errexit_flag = {
+  /* not static; referenced in subst.c */
   .store = &errexit_flag,
   .OPTRESET_false,
   .set_func = optset_errexit_flag,
@@ -6340,8 +6342,16 @@ shell_execve (char *command, char **args, char **env)
     args[0]++;
 
 #if defined (RESTRICTED_SHELL)
-  if (restricted)
-    change_flag ('r', FLAG_OFF);
+  /* Ensure «set +r» applies */
+  #if 1
+    restricted = 0;
+  #else
+  {
+    extern opt_def_t const OPTDEF_restricted;
+    if (restricted)
+      set_opt_value (&OPTDEF_restricted, Accessor (unwind), false)
+  }
+  #endif
 #endif
 
   if (subshell_argv)

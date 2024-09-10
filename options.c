@@ -67,6 +67,31 @@ res_to_ex (op_result_t res)
 
 /******************************************************************************/
 
+static char const * const result_to_description[] = {
+  [Result_OK]		= "changed",				/* Success! */
+  [Result_Unchanged]	= "unchanged",				/* New value is same as old value */
+  [Result_Ignored]	= "change ignored",			/* Change request ignored, silently */
+  [Result_NotFound]	= "no such setting",
+  [Result_ReadOnly]	= "cannot change immutable setting",	/* Change never possible */
+  [Result_Forbidden]	= "not allowed to change setting",	/* Not changed because new value is permitted */
+  [Result_BadValue]	= "cannot use new value",		/* Not changed because new value not valid */
+};
+
+const char*
+res_to_desc (op_result_t res)
+{
+  enum op_result_e r = ResultC (res);
+  char const *rr = NULL;
+  if (r >= Result_OK
+   && r < sizeof result_to_description / sizeof *result_to_description)
+    rr = result_to_description[r];
+  if (! rr)
+    rr = "INTERNAL ERROR: unknown result when setting option";
+  return _(rr);
+}
+
+/******************************************************************************/
+
 option_value_t
 get_opt_value (opt_def_t const *d, accessor_t why)
 {

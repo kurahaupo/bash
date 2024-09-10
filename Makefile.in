@@ -2944,6 +2944,7 @@ print_cmd.o: $(topdir)/config-top.h
 print_cmd.o: $(topdir)/conftypes.h
 print_cmd.o: $(topdir)/dispose_cmd.h
 print_cmd.o: $(topdir)/error.h
+print_cmd.o: $(topdir)/execute_cmd.h
 print_cmd.o: $(topdir)/externs.h
 print_cmd.o: $(topdir)/flags.h
 print_cmd.o: $(topdir)/general.h

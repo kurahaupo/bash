@@ -253,7 +253,8 @@ set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_
   echo_input_at_read = verbose_flag = new_value;
   return Result (OK);
 }
-static opt_def_t const OPTDEF_verbose_flag = {
+opt_def_t const OPTDEF_verbose_flag = {
+  /* not static; referenced by set.def */
   .store = &verbose_flag,
   .OPTRESET_false,
   .set_func = set_verbose_flag,
@@ -527,14 +528,12 @@ _cygwin32_check_tmp (void)
 }
 #endif /* __CYGWIN__ */
 
-#if defined (NO_MAIN_ENV_ARG)
-/* systems without third argument to main() */
 int
-main (int argc, char **argv)
-#else /* !NO_MAIN_ENV_ARG */
-int
-main (int argc, char **argv, char **env)
+main (int argc, char **argv
+#if ! defined (NO_MAIN_ENV_ARG)
+      , char **env
 #endif /* !NO_MAIN_ENV_ARG */
+)
 {
   register int i;
   int code, old_errexit_flag;
@@ -847,13 +846,11 @@ main (int argc, char **argv, char **env)
     }
   else
     {
-      #if 0
-      change_flag ('i', FLAG_ON);
-      #else
-      forced_interactive = true;
-      #endif
+      set_opt_value (&OPTDEF_forced_interactive, Accessor (argv), true);
+      /* ^^ update SHELLOPTS */
       interactive = 1;
       if (forced_interactive == 0)
+        /*NOTREACHED*/
 	read_but_dont_execute = 0;
     }
 
@@ -1146,12 +1143,22 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
 	      break;
 
 	    default:
-	      if (change_flag (arg_character, on_or_off) == FLAG_ERROR)
-		{
-		  report_error (_("%c%c: invalid option"), on_or_off, arg_character);
-		  show_shell_usage (stderr, 0);
-		  exit (EX_BADUSAGE);
-		}
+	      {
+		opt_def_t const *d = find_short_option (arg_character);
+		if (! d)
+		  {
+		    report_error (_("%c%c: invalid option"), on_or_off, arg_character);
+		    show_shell_usage (stderr, 0);
+		    exit (EX_BADUSAGE);
+		  }
+		/* "Accessor (argv)" overrides read-only */
+		op_result_t r = set_opt_value (d, Accessor (argv), flag_to_bool (on_or_off));
+		if (! GoodResult (r))
+		  {
+		    report_error (_("%c%c: %s\n"), on_or_off, arg_character, res_to_desc (r));
+		    exit (EX_BADUSAGE);
+		  }
+	      }
 	    }
 	}
       /* Can't do just a simple increment anymore -- what about

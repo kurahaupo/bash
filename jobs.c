@@ -390,7 +390,7 @@ static opt_def_t const OPTDEF_jobs_m_flag = {
   .adjust_shellopts = true,
   .hide_shopt = true,
   .help = N_(
-    "Job control is enabled."),
+    "Enable job control, and report when jobs are stopped."),
 };
 
 #if !defined (_POSIX_VERSION)
@@ -4875,7 +4875,8 @@ just_bail:
 
   set_signal_handler (SIGCHLD, sigchld_handler);
 
-  change_flag ('m', job_control ? '-' : '+');
+  set_opt_value (&OPTDEF_jobs_m_flag, Accessor (argv), job_control);
+  jobs_m_flag = job_control;
 
   if (interactive)
     get_tty_state ();
