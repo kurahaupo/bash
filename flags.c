@@ -251,6 +251,7 @@ static opt_def_t const OPTDEF_forced_interactive = {
   .name = "interactive",
   .adjust_shellopts = true,
   .hide_shopt = true,
+  .forbid_change = true,
 };
 
 /* By default, follow the symbolic links as if they were real directories
