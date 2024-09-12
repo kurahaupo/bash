@@ -341,12 +341,10 @@ extern void list_all_options (accessor_t why,
 
 /* manage SHELLOPTS and BASHOPTS */
 
-extern void get_shellopts (void);
 extern void set_shellopts (void);
 extern void initialize_shell_options (_Bool dont_import_environment);
 
 extern void set_bashopts (void);
-extern void get_bashopts (void);
 
 /* set all options to their default values */
 
