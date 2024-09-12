@@ -167,11 +167,11 @@ extern void check_read_timeout (void);
 /* Functions from set.def */
 extern void list_minus_o_opts (int, int);
 extern char const*const*get_minus_o_opts (void);
-extern int set_minus_o_option (char, char const*);
 
 extern void set_shellopts (void);
-extern void parse_shellopts (char *);
 extern void initialize_shell_options (_Bool);
+
+extern void reset_shell_options (void);
 
 extern char *get_current_options (void);
 extern void set_current_options (const char *);
