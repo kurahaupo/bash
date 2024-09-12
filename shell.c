@@ -1108,32 +1108,44 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
 	      break;
 
 	    case 'o':
-	      o_option = argv[next_arg];
-	      if (o_option == 0)
+	      if (o_option = argv[next_arg])
+		{
+		  next_arg++;
+		  opt_def_t const *d = find_option (o_option);
+		  if (! d)
+		    {
+		      sh_invalidoptname (o_option);
+		      exit (EX_BADUSAGE);
+		    }
+
+		  op_result_t r = set_opt_value (d, Accessor (set_o), flag_to_bool (on_or_off));
+
+		  if (BadResult (r))
+		    {
+		      builtin_error (_("Cannot change %co %s; %s\n"), on_or_off, o_option, res_to_desc (r));
+		      exit (EXECUTION_FAILURE);
+		    }
+		}
+	      else
 		{
 		  set_option_defaults ();
 		  list_minus_o_opts (-1, !flag_to_bool (on_or_off));
 		  reset_option_defaults ();
-		  break;
 		}
-	      if (set_minus_o_option (on_or_off, o_option) != EXECUTION_SUCCESS)
-		exit (EX_BADUSAGE);
-	      next_arg++;
 	      break;
 
 	    case 'O':
-	      /* Since some of these can be overridden by the normal
-		 interactive/non-interactive shell initialization or
-		 initializing posix mode, we save the options and process
-		 them after initialization. */
-	      o_option = argv[next_arg];
-	      if (o_option == 0)
+	      if (o_option = argv[next_arg])
 		{
-		  list_shopts (!flag_to_bool (on_or_off));
-		  break;
+		  /* Since some of these can be overridden by the normal
+		     interactive/non-interactive shell initialization or
+		     initializing posix mode, we save the options and process
+		     them after initialization. */
+		  add_shopt_to_alist (o_option, on_or_off);
+		  next_arg++;
 		}
-	      add_shopt_to_alist (o_option, on_or_off);
-	      next_arg++;
+	      else
+		list_shopts (!flag_to_bool (on_or_off));
 	      break;
 
 	    case 'D':
