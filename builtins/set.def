@@ -185,25 +185,6 @@ set_current_options (const char *bitmap)
   set_posix_options (bitmap+i);
 }
 
-int
-set_minus_o_option (char on_or_off, char const*option_name)
-{
-  opt_def_t const *d = find_option (option_name);
-  if (!d)
-    {
-      sh_invalidoptname (option_name);
-      return EX_USAGE;
-    }
-
-  op_result_t r = set_opt_value (d, Accessor (set_o), flag_to_bool (on_or_off));
-
-  if (GoodResult (r))
-    return EXECUTION_SUCCESS;
-
-  sh_invalidoptname (option_name);
-  return EXECUTION_FAILURE;
-}
-
 static void
 print_all_shell_variables (void)
 {
@@ -275,37 +256,46 @@ set_shellopts (void)
   VSETATTR (var, att_readonly);
 }
 
-void
-parse_shellopts (char *value)
+static void
+get_shellopts (void)
 {
-  char const *vname;
-  int vptr;
+  /* set up any shell options we may have inherited. */
 
-  vptr = 0;
+  SHELL_VAR *var = find_variable ("SHELLOPTS");
+
+  if (! var)
+    return;	/* var not set */
+
+  if (! imported_p (var))
+    return;	/* var wasn't imported */
+
+  if (array_p (var) || assoc_p (var))
+    return;
+
+  char *value = savestring (value_cell (var));
+
+  if (! value)
+    return;	/* var is empty or locally unset */
+
+  /* Treat each word from a colon-separated list */
+  char const *vname;
+  int vptr = 0;
   while (vname = extract_colon_unit (value, &vptr))
     {
-      set_minus_o_option (FLAG_ON, vname);
-      free (vname);
+      opt_def_t const *d = find_option (vname);
+      free (vname);	/* needed by extract_colon_unit */
+      if (! d)
+	continue;	/* vname isn't the name of an option */
+      set_opt_value (d, Accessor (env_shellopts), true);
     }
+  free (value);
 }
 
 void
 initialize_shell_options (_Bool no_shellopts)
 {
-  if (!no_shellopts)
-    {
-      SHELL_VAR *var = find_variable ("SHELLOPTS");
-      /* set up any shell options we may have inherited. */
-      if (var && imported_p (var) && !(array_p (var) || assoc_p (var)))
-	{
-	  char *temp = savestring (value_cell (var));
-	  if (temp)
-	    {
-	      parse_shellopts (temp);
-	      free (temp);
-	    }
-	}
-    }
+  if (! no_shellopts)
+    get_shellopts ();
 
   /* Set up the $SHELLOPTS variable. */
   set_shellopts ();
@@ -484,9 +474,19 @@ set_builtin (WORD_LIST *list)
 		    }
 		  list = list->next; /* Skip over option name. */
 
-		  if ((r = set_minus_o_option (on_or_off, option_name)) != EXECUTION_SUCCESS)
+		  opt_def_t const *d = find_option (option_name);
+		  if (! d)
 		    {
-		      return (r);
+		      sh_invalidoptname (option_name);
+		      return EX_USAGE;
+		    }
+
+		  op_result_t r = set_opt_value (d, Accessor (set_o), flag_to_bool (on_or_off));
+
+		  if (BadResult (r))
+		    {
+		      builtin_error (_("Cannot change %co %s; %s\n"), on_or_off, option_name, res_to_desc (r));
+		      return EXECUTION_FAILURE;
 		    }
 		}
 	      else
@@ -501,7 +501,7 @@ set_builtin (WORD_LIST *list)
 		  op_result_t r = set_opt_value (d, Accessor (short), flag_to_bool (on_or_off));
 		  if (! GoodResult (r))
 		    {
-		      fprintf (stderr, _("Cannot change %c%c; %s\n"), on_or_off, flag_name, res_to_desc (r));
+		      builtin_error (_("Cannot change %c%c; %s\n"), on_or_off, flag_name, res_to_desc (r));
 		      return (EXECUTION_FAILURE);
 		    }
 		}
