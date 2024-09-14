@@ -45,7 +45,7 @@ includedir = $(prefix)/include
 # Directory in which to optionally also install termcap.h,
 # so compilers besides gcc can find it by default.
 # If it is empty or not defined, termcap.h will only be installed in
-# includedir. 
+# includedir.
 oldincludedir = /usr/include
 
 # Directory in which to install the documentation info files.
@@ -136,3 +136,10 @@ dist: $(DISTFILES)
 	ln $(DISTFILES) `cat .fname`
 	tar chzf `cat .fname`.tar.gz `cat .fname`
 	rm -rf `cat .fname` .fname
+
+.PHONY: depends depend
+depends:
+	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
+depend: depends
+
+#MKDEP-CUT-HERE
