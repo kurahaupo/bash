@@ -17,44 +17,43 @@
 
 #if !defined (HAVE_GETPAGESIZE)
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#  if defined (_SC_PAGESIZE)
-#    define getpagesize() sysconf(_SC_PAGESIZE)
-#  endif /* _SC_PAGESIZE */
-#endif
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#    if defined (_SC_PAGESIZE)
+#      define getpagesize() sysconf(_SC_PAGESIZE)
+#    endif	/* _SC_PAGESIZE */
+#  endif
 
-#if !defined (getpagesize)
-#  include <sys/param.h>
-#  if defined (PAGESIZE)
-#     define getpagesize() PAGESIZE
-#  else /* !PAGESIZE */
-#    if defined (EXEC_PAGESIZE)
-#      define getpagesize() EXEC_PAGESIZE
-#    else /* !EXEC_PAGESIZE */
-#      if defined (NBPG)
-#        if !defined (CLSIZE)
-#          define CLSIZE 1
-#        endif /* !CLSIZE */
-#        define getpagesize() (NBPG * CLSIZE)
-#      else /* !NBPG */
-#        if defined (NBPC)
-#          define getpagesize() NBPC
-#        endif /* NBPC */
-#      endif /* !NBPG */
-#    endif /* !EXEC_PAGESIZE */
-#  endif /* !PAGESIZE */
-#endif /* !getpagesize */
+#  if !defined (getpagesize)
+#    include <sys/param.h>
+#    if defined (PAGESIZE)
+#      define getpagesize() PAGESIZE
+#    else	/* !PAGESIZE */
+#      if defined (EXEC_PAGESIZE)
+#        define getpagesize() EXEC_PAGESIZE
+#      else	/* !EXEC_PAGESIZE */
+#        if defined (NBPG)
+#          if !defined (CLSIZE)
+#            define CLSIZE 1
+#          endif	/* !CLSIZE */
+#          define getpagesize() (NBPG * CLSIZE)
+#        else	/* !NBPG */
+#          if defined (NBPC)
+#            define getpagesize() NBPC
+#          endif	/* NBPC */
+#        endif	/* !NBPG */
+#      endif	/* !EXEC_PAGESIZE */
+#    endif	/* !PAGESIZE */
+#  endif	/* !getpagesize */
 
-#if !defined (getpagesize)
-#  define getpagesize() 4096  /* Just punt and use reasonable value */
-#endif
-
-#endif /* no EXEC_PAGESIZE */
+#  if !defined (getpagesize)
+#    define getpagesize() 4096	/* Just punt and use reasonable value */
+#  endif
 
 #endif /* not HAVE_GETPAGESIZE */
 
-main()
+int
+main (int argc, char **argv)
 {
 #if defined (HAVE_GETPAGESIZE) || defined (getpagesize)
   printf ("%ld\n", getpagesize ());
