@@ -50,14 +50,13 @@
 #  define getpagesize() 4096  /* Just punt and use reasonable value */
 #endif
 
-#endif /* no EXEC_PAGESIZE */
-
 #endif /* not HAVE_GETPAGESIZE */
 
-main()
+int
+main(void)
 {
 #if defined (HAVE_GETPAGESIZE) || defined (getpagesize)
-  printf ("%ld\n", getpagesize ());
+  printf ("%zu\n", (size_t) getpagesize ());
 #else
   puts ("1024");
 #endif
