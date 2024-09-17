@@ -13,6 +13,7 @@
 *.a
 *.dSYM
 .build
+.depend
 .made
 .*~
 
