@@ -2246,6 +2246,7 @@ flags.o: $(topdir)/execute_cmd.h
 flags.o: $(topdir)/externs.h
 flags.o: $(topdir)/flags.h
 flags.o: $(topdir)/general.h
+flags.o: $(topdir)/hashcmd.h
 flags.o: $(topdir)/hashlib.h
 flags.o: $(topdir)/include/chartypes.h
 flags.o: $(topdir)/include/maxpath.h
@@ -2253,11 +2254,15 @@ flags.o: $(topdir)/include/ocache.h
 flags.o: $(topdir)/include/posixjmp.h
 flags.o: $(topdir)/include/stdc.h
 flags.o: $(topdir)/include/unlocked-io.h
+flags.o: $(topdir)/jobs.h
 flags.o: $(topdir)/make_cmd.h
+flags.o: $(topdir)/options.h
 flags.o: $(topdir)/pathnames.h
 flags.o: $(topdir)/quit.h
+flags.o: $(topdir)/redir.h
 flags.o: $(topdir)/shell.h
 flags.o: $(topdir)/sig.h
+flags.o: $(topdir)/siglist.h
 flags.o: $(topdir)/subst.h
 flags.o: $(topdir)/syntax.h
 flags.o: $(topdir)/unwind_prot.h
@@ -2341,6 +2346,7 @@ hashcmd.o: $(topdir)/include/posixstat.h
 hashcmd.o: $(topdir)/include/stdc.h
 hashcmd.o: $(topdir)/include/unlocked-io.h
 hashcmd.o: $(topdir)/make_cmd.h
+hashcmd.o: $(topdir)/options.h
 hashcmd.o: $(topdir)/pathnames.h
 hashcmd.o: $(topdir)/quit.h
 hashcmd.o: $(topdir)/shell.h
@@ -2469,6 +2475,7 @@ jobs.o: $(topdir)/lib/readline/rlstdc.h
 jobs.o: $(topdir)/lib/readline/rltypedefs.h
 jobs.o: $(topdir)/lib/tilde/tilde.h
 jobs.o: $(topdir)/make_cmd.h
+jobs.o: $(topdir)/options.h
 jobs.o: $(topdir)/parser.h
 jobs.o: $(topdir)/pathnames.h
 jobs.o: $(topdir)/quit.h
@@ -2892,6 +2899,7 @@ print_cmd.o: $(topdir)/config-top.h
 print_cmd.o: $(topdir)/conftypes.h
 print_cmd.o: $(topdir)/dispose_cmd.h
 print_cmd.o: $(topdir)/error.h
+print_cmd.o: $(topdir)/execute_cmd.h
 print_cmd.o: $(topdir)/externs.h
 print_cmd.o: $(topdir)/flags.h
 print_cmd.o: $(topdir)/general.h
@@ -2951,6 +2959,7 @@ redir.o: $(topdir)/include/stdc.h
 redir.o: $(topdir)/include/unlocked-io.h
 redir.o: $(topdir)/input.h
 redir.o: $(topdir)/make_cmd.h
+redir.o: $(topdir)/options.h
 redir.o: $(topdir)/pathnames.h
 redir.o: $(topdir)/quit.h
 redir.o: $(topdir)/redir.h
@@ -2987,6 +2996,7 @@ shell.o: $(topdir)/externs.h
 shell.o: $(topdir)/findcmd.h
 shell.o: $(topdir)/flags.h
 shell.o: $(topdir)/general.h
+shell.o: $(topdir)/hashcmd.h
 shell.o: $(topdir)/hashlib.h
 shell.o: $(topdir)/include/ansi_stdlib.h
 shell.o: $(topdir)/include/chartypes.h
@@ -3012,9 +3022,11 @@ shell.o: $(topdir)/lib/readline/rltypedefs.h
 shell.o: $(topdir)/lib/tilde/tilde.h
 shell.o: $(topdir)/mailcheck.h
 shell.o: $(topdir)/make_cmd.h
+shell.o: $(topdir)/options.h
 shell.o: $(topdir)/parser.h
 shell.o: $(topdir)/pathnames.h
 shell.o: $(topdir)/quit.h
+shell.o: $(topdir)/redir.h
 shell.o: $(topdir)/shell.h
 shell.o: $(topdir)/sig.h
 shell.o: $(topdir)/siglist.h
@@ -3164,6 +3176,7 @@ subst.o: $(topdir)/lib/glob/strmatch.h
 subst.o: $(topdir)/lib/tilde/tilde.h
 subst.o: $(topdir)/mailcheck.h
 subst.o: $(topdir)/make_cmd.h
+subst.o: $(topdir)/options.h
 subst.o: $(topdir)/parser.h
 subst.o: $(topdir)/pathexp.h
 subst.o: $(topdir)/pathnames.h
@@ -3216,6 +3229,7 @@ test.o: $(topdir)/include/stdc.h
 test.o: $(topdir)/include/unlocked-io.h
 test.o: $(topdir)/lib/glob/strmatch.h
 test.o: $(topdir)/make_cmd.h
+test.o: $(topdir)/options.h
 test.o: $(topdir)/pathexp.h
 test.o: $(topdir)/pathnames.h
 test.o: $(topdir)/quit.h
@@ -3354,6 +3368,7 @@ variables.o: $(topdir)/lib/readline/rltypedefs.h
 variables.o: $(topdir)/lib/tilde/tilde.h
 variables.o: $(topdir)/mailcheck.h
 variables.o: $(topdir)/make_cmd.h
+variables.o: $(topdir)/options.h
 variables.o: $(topdir)/parser.h
 variables.o: $(topdir)/pathexp.h
 variables.o: $(topdir)/pathnames.h
