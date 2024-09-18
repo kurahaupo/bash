@@ -1080,9 +1080,9 @@ parse_bashopts (char *value)
 }
 
 void
-initialize_bashopts (int no_bashopts)
+initialize_bashopts (_Bool no_bashopts)
 {
-  if (no_bashopts == 0)
+  if (!no_bashopts)
     {
       SHELL_VAR *var = find_variable ("BASHOPTS");
       /* set up any shell options we may have inherited. */

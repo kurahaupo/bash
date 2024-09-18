@@ -163,7 +163,6 @@ extern int restricted_shell;
 
 extern int change_flag (char, char);
 extern char *which_set_flags (void);
-extern void reset_shell_flags (void);
 
 extern char *get_current_flags (void);
 extern void set_current_flags (const char *);

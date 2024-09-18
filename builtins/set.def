@@ -501,18 +501,15 @@ parse_shellopts (char *value)
 }
 
 void
-initialize_shell_options (int no_shellopts)
+initialize_shell_options (_Bool no_shellopts)
 {
-  char *temp;
-  SHELL_VAR *var;
-
-  if (no_shellopts == 0)
+  if (!no_shellopts)
     {
-      var = find_variable ("SHELLOPTS");
+      SHELL_VAR *var = find_variable ("SHELLOPTS");
       /* set up any shell options we may have inherited. */
       if (var && imported_p (var) && !(array_p (var) || assoc_p (var)))
 	{
-	  temp = savestring (value_cell (var));
+	  char *temp = savestring (value_cell (var));
 	  if (temp)
 	    {
 	      parse_shellopts (temp);
