@@ -79,6 +79,7 @@ extern int errno;
 #include "trap.h"
 #include "pathexp.h"
 #include "hashcmd.h"
+#include "options.h"
 
 #if defined (COND_COMMAND)
 #  include "test.h"
@@ -6030,9 +6031,7 @@ initialize_subshell (void)
 #endif /* JOB_CONTROL */
 
   /* Reset the values of the shell flags and options. */
-  reset_shell_flags ();
-  reset_shell_options ();
-  reset_shopt_options ();
+  reset_all_options ();
 
   /* Zero out builtin_env, since this could be a shell script run from a
      sourced file with a temporary environment supplied to the `source/.'
