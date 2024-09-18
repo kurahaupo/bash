@@ -70,6 +70,7 @@ static opt_def_t const OPTDEF_mark_modified_vars = {
 int asynchronous_notification = 0;
 static opt_def_t const OPTDEF_asynchronous_notification = {
   .store = &asynchronous_notification,
+  .OPTRESET_false,
   .letter = 'b',
   .name = "notify",
   .adjust_shellopts = true,
@@ -586,10 +587,6 @@ reset_shell_flags (void)
   read_but_dont_execute = 0;
   unbound_vars_is_error = 0;
   verbose_flag = 0;
-
-#if defined (JOB_CONTROL)
-  asynchronous_notification = 0;
-#endif
 
 #if defined (BANG_HISTORY)
   histexp_flag = 0;
