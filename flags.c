@@ -344,6 +344,7 @@ static opt_def_t const OPTDEF_lexical_scoping = {
 int hashing_enabled = 1;
 static opt_def_t const OPTDEF_hashing_enabled = {
   .store = &hashing_enabled,
+  .OPTRESET_true,
   .letter = 'h',
   .name = "hashall",
   .adjust_shellopts = true,
@@ -597,7 +598,6 @@ reset_shell_flags (void)
 
   /* unity initialisation */
 
-  hashing_enabled = 1;
   interactive_comments = 1;
 
 #if defined (BRACE_EXPANSION)
