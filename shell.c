@@ -2022,7 +2022,6 @@ shell_reinitialize (void)
   executing = 0;
   expaliases_flag = 0;
   expand_aliases = 0;
-  forced_interactive = 0;
   interactive = 0;
   interactive_shell = 0;
   last_command_exit_value = 0;

@@ -291,6 +291,7 @@ static opt_def_t const OPTDEF_jobs_m_flag = {
 int forced_interactive = 0;
 static opt_def_t const OPTDEF_forced_interactive = {
   .store = &forced_interactive,
+  .OPTRESET_REINIT_false,
   .letter = 'i',
   .name = "interactive",
   .adjust_shellopts = true,
@@ -575,7 +576,6 @@ reset_shell_flags (void)
   echo_command_at_execute = 0;
   echo_input_at_read = 0;
   error_trace_mode = 0;
-  forced_interactive = 0;
   function_trace_mode = 0;
   jobs_m_flag = 0;
   just_one_command = 0;
