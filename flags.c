@@ -123,6 +123,7 @@ static opt_def_t const OPTDEF_errexit_flag = {
 int disallow_filename_globbing = 0;
 static opt_def_t const OPTDEF_disallow_filename_globbing = {
   .store = &disallow_filename_globbing,
+  .OPTRESET_false,
   .letter = 'f',
   .name = "noglob",
   .adjust_shellopts = true,
@@ -570,7 +571,6 @@ reset_shell_flags (void)
 {
   /* zero initialisation */
 
-  disallow_filename_globbing = 0;
   echo_command_at_execute = 0;
   echo_input_at_read = 0;
   error_trace_mode = 0;
