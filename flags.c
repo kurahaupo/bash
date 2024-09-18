@@ -138,6 +138,7 @@ static opt_def_t const OPTDEF_disallow_filename_globbing = {
 int place_keywords_in_env = 0;
 static opt_def_t const OPTDEF_place_keywords_in_env = {
   .store = &place_keywords_in_env,
+  .OPTRESET_false,
   .letter = 'k',
   .name = "keyword",
   .adjust_shellopts = true,
@@ -583,7 +584,6 @@ reset_shell_flags (void)
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
-  place_keywords_in_env = 0;
   privileged_mode = 0;
   read_but_dont_execute = 0;
   unbound_vars_is_error = 0;
