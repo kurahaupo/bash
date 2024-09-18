@@ -169,15 +169,12 @@ extern int set_minus_o_option (char, char const*);
 
 extern void set_shellopts (void);
 extern void parse_shellopts (char *);
-extern void initialize_shell_options (int);
-
-extern void reset_shell_options (void);
+extern void initialize_shell_options (_Bool);
 
 extern char *get_current_options (void);
 extern void set_current_options (const char *);
 
 /* Functions from shopt.def */
-extern void reset_shopt_options (void);
 extern char **get_shopt_options (void);
 
 extern int shopt_setopt (char const*, int);
@@ -186,7 +183,7 @@ extern void list_shopts (int);
 extern int set_login_shell (char *, int);
 
 extern void set_bashopts (void);
-extern void initialize_bashopts (int);
+extern void initialize_bashopts (_Bool);
 
 extern void set_compatibility_opts (void);
 
