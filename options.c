@@ -827,7 +827,7 @@ set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filt
 #if 0
 
 void
-initialize_shell_options (int dont_import_environment)
+initialize_shell_options (_Bool dont_import_environment)
 {
   if (! dont_import_environment)
     {
@@ -841,5 +841,53 @@ initialize_shell_options (int dont_import_environment)
 }
 
 #endif
+
+static inline void
+selective_reset_options (_Bool skip_reinit)
+{
+  opt_def_t const *d;
+  for_each_option(d)
+    {
+      if (!d->init)
+	continue;
+      if (skip_reinit && d->skip_reinit)
+	continue;
+      if (d->direct_reset)
+	d->store[0] = d->init[0];
+      else
+	set_opt_value (d, Accessor (reinit), d->init[0]);
+    }
+}
+
+void
+reinit_all_options (void)
+{
+  selective_reset_options (true);
+}
+
+/* Reset the values of all boolean options.
+ * Called from initialize_subshell() in execute_cmd.c when setting up a
+ * subshell to run an executable shell script without a leading `#!'. */
+
+extern void reset_shell_flags (void);	/* from flags.c */
+extern void reset_shell_options (void);	/* from set.def */
+extern void reset_shopt_options (void);	/* from shopt.def */
+void
+reset_all_options (void)
+{
+  reset_shell_flags ();		/* from flags.c:
+				 */
+  reset_shell_options ();	/* from set.def: reset the values of the -o
+				 * options that are not also shell flags.
+				 * This is called from
+				 * execute_cmd.c:initialize_subshell () when
+				 * setting up a subshell to run an executable
+				 * shell script without a leading `#!'. */
+  reset_shopt_options ();	/* from shopt.def: reset the options managed by
+				 * `shopt' to the values they would have at
+				 * shell startup. */
+
+  selective_reset_options (false);
+}
 
 /******************************************************************************/
