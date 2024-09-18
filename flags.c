@@ -56,6 +56,7 @@ extern int set_job_control (int);
 int mark_modified_vars = 0;
 static opt_def_t const OPTDEF_mark_modified_vars = {
   .store = &mark_modified_vars,
+  .OPTRESET_false,
   .letter = 'a',
   .name = "allexport",
   .adjust_shellopts = true,
@@ -577,7 +578,6 @@ reset_shell_flags (void)
   function_trace_mode = 0;
   jobs_m_flag = 0;
   just_one_command = 0;
-  mark_modified_vars = 0;
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
