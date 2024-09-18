@@ -2001,9 +2001,9 @@ shell_initialize (void)
   initialize_bashopts (dont_import_settings);
 }
 
-/* Function called by main () when it appears that the shell has already
-   had some initialization performed.  This is supposed to reset the world
-   back to a pristine state, as if we had been exec'ed. */
+/* Function called by main () after longjmp, when it appears that the shell has
+ * already had some initialization performed.  This is supposed to reset the
+ * world back to a pristine state, as if we had been exec'ed. */
 static void
 shell_reinitialize (void)
 {
@@ -2012,32 +2012,45 @@ shell_reinitialize (void)
   secondary_prompt = SPROMPT;
 
   /* Things that get 1. */
-  current_command_number = 1;
+  current_command_number = 1;	/* Not bool but rather the ordinary number */
 
+  /* Options that get 0. */
+  bash_argv_initialized = 0;
+  debugging = 0;
+  debugging_mode = 0;
+  do_version = 0;
+  executing = 0;
+  expaliases_flag = 0;
+  expand_aliases = 0;
+  forced_interactive = 0;
+  interactive = 0;
+  interactive_shell = 0;
+  last_command_exit_value = 0;
+  line_number = 0;
+  login_shell = 0;
+  make_login_shell = 0;
+  reading_shell_script = 0; /* 20240120 */
+  running_in_background = 0;
+  startup_state = 0; /* 20240120 */
+  su_shell = 0;
+  subshell_environment = 0;
+
+  /* Options that get 1. */
   /* We have decided that the ~/.bashrc file should not be executed
      for the invocation of each shell script.  If the variable $ENV
      (or $BASH_ENV) is set, its value is used as the name of a file
      to source. */
-  no_rc = no_profile = 1;
+  no_profile = 1;
+  no_rc = 1;
 
-  /* Things that get 0. */
-  login_shell = make_login_shell = su_shell = executing = 0;
-  debugging = debugging_mode = 0;
-  do_version = line_number = last_command_exit_value = 0;
-  forced_interactive = interactive_shell = interactive = 0;
-  subshell_environment = running_in_background = 0;
-  expand_aliases = expaliases_flag = 0;
-  bash_argv_initialized = 0;
-
-  /* 20240120 */
-  startup_state = reading_shell_script = 0;
   /* XXX - inherit posixly_correct? */
 
-  /* The shell has never done this. Should it? */
-#if 0
-  reset_shell_flags ();
-  reset_shell_options ();
-  reset_shopt_options ();
+#if 0	/* The shell has never done this. Should it? */
+  /* Apply '.init' in each option */
+  reset_all_options ();
+#else
+  /* Apply '.init' in each option but only where not marked '.skip_reinit' */
+  reinit_all_options ();
 #endif
 
   /* XXX - should we set jobs_m_flag to 0 here? */

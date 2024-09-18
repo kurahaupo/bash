@@ -1084,18 +1084,15 @@ parse_bashopts (char const*value)
 }
 
 void
-initialize_bashopts (int no_bashopts)
+initialize_bashopts (_Bool no_bashopts)
 {
-  char *temp;
-  SHELL_VAR *var;
-
-  if (no_bashopts == 0)
+  if (!no_bashopts)
     {
-      var = find_variable ("BASHOPTS");
+      SHELL_VAR *var = find_variable ("BASHOPTS");
       /* set up any shell options we may have inherited. */
       if (var && imported_p (var) && !(array_p (var) || assoc_p (var)))
 	{
-	  temp = savestring (value_cell (var));
+	  char *temp = savestring (value_cell (var));
 	  if (temp)
 	    {
 	      parse_bashopts (temp);
