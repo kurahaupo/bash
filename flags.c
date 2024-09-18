@@ -436,6 +436,8 @@ set_privileged_mode (struct opt_def_s const *d, accessor_t why, option_value_t n
 }
 static opt_def_t const OPTDEF_privileged_mode = {
   .store = &privileged_mode,
+  .OPTRESET_false,
+  .direct_reset = true,	/* avoid disable_priv_mode */
   .set_func = set_privileged_mode,
   .letter = 'p',
   .name = "privileged",
@@ -586,7 +588,6 @@ reset_shell_flags (void)
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
-  privileged_mode = 0;
   unbound_vars_is_error = 0;
   verbose_flag = 0;
 
