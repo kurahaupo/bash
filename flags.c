@@ -93,6 +93,7 @@ optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_valu
 }
 static opt_def_t const OPTDEF_errexit_flag = {
   .store = &errexit_flag,
+  .OPTRESET_false,
   .set_func = optset_errexit_flag,
   .letter = 'e',
   .name = "errexit",
@@ -547,14 +548,13 @@ set_current_flags (const char *bitmap)
 void
 reset_shell_flags (void)
 {
+  builtin_ignoring_errexit = 0;	/* ensure that exit_immediately_on_error gets reset */
   /* zero initialisation */
 
   disallow_filename_globbing = 0;
   echo_command_at_execute = 0;
   echo_input_at_read = 0;
-  errexit_flag = 0;
   error_trace_mode = 0;
-  exit_immediately_on_error = 0;
   forced_interactive = 0;
   function_trace_mode = 0;
   jobs_m_flag = 0;
