@@ -62,6 +62,7 @@ enum accessor_e {
   AC_env_shellopts,	/* read from the environment when Bash starts up */
   AC_env_bashopts,	/* read from the environment when Bash starts up */
   AC_unwind,		/* automatically being restored during unwinding */
+  AC_reinit,		/* restoring to default value */
   AC_unload,		/* option being removed */
 };
 
@@ -216,6 +217,8 @@ struct opt_def_s {
 	readonly:1,		/* when attempting to set an option: error (Readonly) unconditionally */
 	forbid_change:1,	/*				     error (Forbidden) if attempting to change its value */
 	ignore_change:1,	/*				     succeed (Ignored) without actually changing the value */
+	skip_reinit:1,		/* only apply .init for "reset" and not "reinit" */
+	direct_reset:1,		/* bypass .set_func for "reset" and "reinit" */
 	:0;
 };
 
@@ -318,10 +321,15 @@ extern void list_all_options (accessor_t why,
 
 extern void get_shellopts (void);
 extern void set_shellopts (void);
-extern void initialize_shell_options (int dont_import_environment);
+extern void initialize_shell_options (_Bool dont_import_environment);
 
 extern void set_bashopts (void);
 extern void get_bashopts (void);
+
+/* set all options to their default values */
+
+extern void reinit_all_options (void);
+extern void reset_all_options (void);
 
 /******************************************************************************/
 
