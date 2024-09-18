@@ -277,6 +277,8 @@ set_jobs_m_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
 }
 static opt_def_t const OPTDEF_jobs_m_flag = {
   .store = &jobs_m_flag,
+  .OPTRESET_false,
+  .direct_reset = true,	/* avoid set_job_control */
   .set_func = set_jobs_m_flag,
   .letter = 'm',
   .name = "monitor",
@@ -579,7 +581,6 @@ reset_shell_flags (void)
   echo_input_at_read = 0;
   error_trace_mode = 0;
   function_trace_mode = 0;
-  jobs_m_flag = 0;
   just_one_command = 0;
   no_symbolic_links = 0;
   noclobber = 0;
