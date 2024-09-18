@@ -565,19 +565,27 @@ set_current_flags (const char *bitmap)
 void
 reset_shell_flags (void)
 {
-  mark_modified_vars = disallow_filename_globbing = 0;
-  place_keywords_in_env = read_but_dont_execute = just_one_command = 0;
-  noclobber = unbound_vars_is_error = 0;
-  echo_command_at_execute = jobs_m_flag = forced_interactive = 0;
+  /* zero initialisation */
+
+  disallow_filename_globbing = 0;
+  echo_command_at_execute = 0;
+  echo_input_at_read = 0;
+  errexit_flag = 0;
+  error_trace_mode = 0;
+  exit_immediately_on_error = 0;
+  forced_interactive = 0;
+  function_trace_mode = 0;
+  jobs_m_flag = 0;
+  just_one_command = 0;
+  mark_modified_vars = 0;
   no_symbolic_links = 0;
-  privileged_mode = pipefail_opt = 0;
-
-  error_trace_mode = function_trace_mode = 0;
-
-  exit_immediately_on_error = errexit_flag = 0;
-  echo_input_at_read = verbose_flag = 0;
-
-  hashing_enabled = interactive_comments = 1;
+  noclobber = 0;
+  pipefail_opt = 0;
+  place_keywords_in_env = 0;
+  privileged_mode = 0;
+  read_but_dont_execute = 0;
+  unbound_vars_is_error = 0;
+  verbose_flag = 0;
 
 #if defined (JOB_CONTROL)
   asynchronous_notification = 0;
@@ -587,12 +595,17 @@ reset_shell_flags (void)
   histexp_flag = 0;
 #endif
 
-#if defined (BRACE_EXPANSION)
-  brace_expansion = 1;
-#endif
-
 #if defined (RESTRICTED_SHELL)
   restricted = 0;
+#endif
+
+  /* unity initialisation */
+
+  hashing_enabled = 1;
+  interactive_comments = 1;
+
+#if defined (BRACE_EXPANSION)
+  brace_expansion = 1;
 #endif
 }
 
