@@ -370,6 +370,7 @@ set_histexp_flag (opt_def_t const *d, accessor_t why, int new_value)
 }
 static opt_def_t const OPTDEF_histexp_flag = {
   .store = &histexp_flag,
+  .OPTRESET_false,
   .set_func = set_histexp_flag,
   .letter = 'H',
   .name = "histexpand",
@@ -587,10 +588,6 @@ reset_shell_flags (void)
   read_but_dont_execute = 0;
   unbound_vars_is_error = 0;
   verbose_flag = 0;
-
-#if defined (BANG_HISTORY)
-  histexp_flag = 0;
-#endif
 
 #if defined (RESTRICTED_SHELL)
   restricted = 0;
