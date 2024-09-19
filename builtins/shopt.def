@@ -198,7 +198,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "cdable_vars",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdable_vars,			.OPTRESET_false },
   { "cdspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdspelling,			.OPTRESET_false },
-  { "checkhash",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_hashed_filenames },
+  { "checkhash",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_hashed_filenames,	.init = &(option_value_t const){CHECKHASH_DEFAULT},	.skip_reinit = true },
 #if defined (JOB_CONTROL)
   { "checkjobs",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_jobs_at_exit },
 #endif
@@ -459,7 +459,6 @@ reset_shopt_options (void)
   promptvars = 1;
   source_uses_path = 1;
 
-  check_hashed_filenames = CHECKHASH_DEFAULT;
   check_window_size = CHECKWINSIZE_DEFAULT;
   glob_asciirange = GLOBASCII_DEFAULT;
   patsub_replacement = PATSUB_REPLACE_DEFAULT;
