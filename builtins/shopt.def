@@ -754,29 +754,38 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  autocd = cdable_vars = cdspelling = 0;
-  check_hashed_filenames = CHECKHASH_DEFAULT;
-  check_window_size = CHECKWINSIZE_DEFAULT;
-  allow_null_glob_expansion = glob_dot_filenames = 0;
-  no_exit_on_failed_exec = 0;
-  expand_aliases = expaliases_flag = 0;
-  extended_quote = 1;
+  allow_null_glob_expansion = 0;
+  autocd = 0;
+  bash_source_fullpath = 0;
+  cdable_vars = 0;
+  cdspelling = 0;
+  expaliases_flag = 0;
+  expand_aliases = 0;
   fail_glob_expansion = 0;
-  glob_asciirange = GLOBASCII_DEFAULT;
+  glob_dot_filenames = 0;
+  glob_ignore_case = 0;
   glob_star = 0;
   gnu_error_format = 0;
   hup_on_exit = 0;
   inherit_errexit = 0;
-  interactive_comments = 1;
   lastpipe_opt = 0;
-  localvar_inherit = localvar_unset = 0;
+  localvar_inherit = 0;
+  localvar_unset = 0;
   mail_warning = 0;
-  glob_ignore_case = match_ignore_case = 0;
+  match_ignore_case = 0;
+  no_exit_on_failed_exec = 0;
   print_shift_error = 0;
-  source_uses_path = promptvars = 1;
-  bash_source_fullpath = 0;
-  varassign_redir_autoclose = 0;
   singlequote_translations = 0;
+  varassign_redir_autoclose = 0;
+
+  extended_quote = 1;
+  interactive_comments = 1;
+  promptvars = 1;
+  source_uses_path = 1;
+
+  check_hashed_filenames = CHECKHASH_DEFAULT;
+  check_window_size = CHECKWINSIZE_DEFAULT;
+  glob_asciirange = GLOBASCII_DEFAULT;
   patsub_replacement = PATSUB_REPLACE_DEFAULT;
 
 #if defined (JOB_CONTROL)
@@ -784,18 +793,20 @@ reset_shopt_options (void)
 #endif
 
 #if defined (EXTENDED_GLOB)
-  extended_glob = extglob_flag = EXTGLOB_DEFAULT;
+  extended_glob = EXTGLOB_DEFAULT;
+  extglob_flag = EXTGLOB_DEFAULT;
 #endif
   glob_always_skip_dot_and_dotdot = 1;		/* new default as of bash-5.2 */
 
 #if defined (ARRAY_VARS)
-  expand_once_flag = array_expand_once = 0;
+  array_expand_once = 0;
+  expand_once_flag = 0;
 #endif
 
 #if defined (HISTORY)
-  literal_history = 0;
-  force_append_history = 0;
   command_oriented_history = 1;
+  force_append_history = 0;
+  literal_history = 0;
 #endif
 
 #if defined (SYSLOG_HISTORY)
