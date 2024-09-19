@@ -2019,8 +2019,6 @@ shell_reinitialize (void)
   debugging = 0;
   do_version = 0;
   executing = 0;
-  expaliases_flag = 0;
-  expand_aliases = 0;
   interactive = 0;
   interactive_shell = 0;
   last_command_exit_value = 0;

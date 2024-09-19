@@ -384,6 +384,7 @@ static opt_def_t const xo_options[] = {
   { "expand_aliases",
     .store = &expaliases_flag,
     .set_func = shopt_set_expaliases,
+    .OPTRESET_REINIT_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -764,8 +765,6 @@ reset_shopt_options (void)
   bash_source_fullpath = 0;
   cdable_vars = 0;
   cdspelling = 0;
-  expaliases_flag = 0;
-  expand_aliases = 0;
   fail_glob_expansion = 0;
   glob_dot_filenames = 0;
   glob_ignore_case = 0;
