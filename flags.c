@@ -468,6 +468,7 @@ static opt_def_t const OPTDEF_function_trace_mode = {
 int error_trace_mode = 0;
 static opt_def_t const OPTDEF_error_trace_mode = {
   .store = &error_trace_mode,
+  .OPTRESET_false,
   .letter = 'E',
   .name = "errtrace",
   .adjust_shellopts = true,
@@ -569,7 +570,6 @@ reset_shell_flags (void)
   /* zero initialisation */
 
   echo_input_at_read = 0;
-  error_trace_mode = 0;
   function_trace_mode = 0;
   no_symbolic_links = 0;
   pipefail_opt = 0;
