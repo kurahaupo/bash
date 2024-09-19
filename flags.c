@@ -207,6 +207,7 @@ static opt_def_t const OPTDEF_just_one_command = {
 int noclobber = 0;
 static opt_def_t const OPTDEF_noclobber = {
   .store = &noclobber,
+  .OPTRESET_false,
   .letter = 'C',
   .name = "noclobber",
   .adjust_shellopts = true,
@@ -571,7 +572,6 @@ reset_shell_flags (void)
   error_trace_mode = 0;
   function_trace_mode = 0;
   no_symbolic_links = 0;
-  noclobber = 0;
   pipefail_opt = 0;
 
   /* unity initialisation */
