@@ -227,7 +227,7 @@ static opt_def_t const xo_options[] = {
   { "execfail",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &no_exit_on_failed_exec },
   { "expand_aliases",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &expaliases_flag,		.set_func = shopt_set_expaliases },
 #if defined (DEBUGGER)
-  { "extdebug",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &debugging_mode,		.set_func = shopt_set_debug_mode },
+  { "extdebug",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &debugging_mode,		.set_func = shopt_set_debug_mode,	.OPTRESET_REINIT_false },
 #endif
 #if defined (EXTENDED_GLOB)
   { "extglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &extglob_flag,			.set_func = shopt_set_extglob },
@@ -526,10 +526,6 @@ reset_shopt_options (void)
 #else
   xpg_echo = 0;
 #endif /* DEFAULT_ECHO_TO_XPG */
-
-#if defined (DEBUGGER)
-  debugging_mode = 0;
-#endif
 }
 
 static void
@@ -552,18 +548,18 @@ set_shellopts_after_change (opt_def_t const *d, accessor_t why, int mode)
 }
 #endif
 
+#if defined (DEBUGGER)
 static op_result_t
 shopt_set_debug_mode (opt_def_t const *d, accessor_t why, int mode)
 {
   d->store[0] = mode;
-#if defined (DEBUGGER)
   error_trace_mode = function_trace_mode = debugging_mode;
   set_shellopts ();
   if (debugging_mode)
     init_bash_argv ();
-#endif
   return Result (OK);
 }
+#endif
 
 static op_result_t
 shopt_set_expaliases (opt_def_t const *d, accessor_t why, int mode)
