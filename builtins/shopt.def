@@ -219,7 +219,7 @@ static opt_def_t const xo_options[] = {
   { "compat53",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 53 },
   { "compat54",			.hide_set_o = true,	.adjust_bashopts = true,	.hide_shopt = true,			.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 54 },
 #if defined (READLINE)
-  { "complete_fullquote",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &complete_fullquote },
+  { "complete_fullquote",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &complete_fullquote,		.OPTRESET_true },
   { "direxpand",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &dircomplete_expand,		.set_func = shopt_set_complete_direxpand },
   { "dirspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &dircomplete_spelling },
 #endif
@@ -487,7 +487,6 @@ reset_shopt_options (void)
 #endif
 
 #if defined (READLINE)
-  complete_fullquote = 1;
   force_fignore = 1;
   hist_verify = history_reediting = 0;
   perform_hostname_completion = 1;
