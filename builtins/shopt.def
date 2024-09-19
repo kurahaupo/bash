@@ -251,7 +251,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "huponexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &hup_on_exit },
   { "inherit_errexit",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &inherit_errexit },
-  { "interactive_comments",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &interactive_comments,		.adjust_shellopts = true },
+  { "interactive_comments",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &interactive_comments,		.OPTRESET_REINIT_true,		.adjust_shellopts = true },
   { "lastpipe",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &lastpipe_opt },
 #if defined (HISTORY)
   { "lithist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &literal_history },
@@ -458,7 +458,6 @@ reset_shopt_options (void)
   varassign_redir_autoclose = 0;
 
   extended_quote = 1;
-  interactive_comments = 1;
   promptvars = 1;
   source_uses_path = 1;
 
