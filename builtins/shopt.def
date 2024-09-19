@@ -194,7 +194,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd,			.OPTRESET_false },
 #if defined (ARRAY_VARS)
-  { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath },
+  { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath,		.OPTRESET_false },
 #endif
   { "cdable_vars",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdable_vars },
   { "cdspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdspelling },
@@ -438,7 +438,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  bash_source_fullpath = 0;
   cdable_vars = 0;
   cdspelling = 0;
   fail_glob_expansion = 0;
