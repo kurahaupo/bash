@@ -258,6 +258,8 @@ static opt_def_t const xo_options[] = {
 #endif
   { "checkwinsize",
     .store = &check_window_size,
+    .init = &(option_value_t const){CHECKWINSIZE_DEFAULT},
+    .skip_reinit = true,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -784,7 +786,6 @@ reset_shopt_options (void)
   promptvars = 1;
   source_uses_path = 1;
 
-  check_window_size = CHECKWINSIZE_DEFAULT;
   glob_asciirange = GLOBASCII_DEFAULT;
   patsub_replacement = PATSUB_REPLACE_DEFAULT;
 
