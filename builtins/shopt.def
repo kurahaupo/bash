@@ -220,6 +220,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "autocd",
     .store = &autocd,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -761,7 +762,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  autocd = 0;
   bash_source_fullpath = 0;
   cdable_vars = 0;
   cdspelling = 0;
