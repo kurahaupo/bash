@@ -593,8 +593,6 @@ reset_shell_flags (void)
   echo_input_at_read = 0;
 
   /* unity initialisation */
-
-  interactive_comments = 1;
 }
 
 #ifndef NDEBUG
