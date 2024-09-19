@@ -891,3 +891,6 @@ reset_all_options (void)
 }
 
 /******************************************************************************/
+
+const option_value_t OPTINIT0[] = {0};
+const option_value_t OPTINIT1[] = {1};
