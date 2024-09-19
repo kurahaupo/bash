@@ -591,7 +591,6 @@ reset_shell_flags (void)
   /* zero initialisation */
 
   echo_input_at_read = 0;
-  pipefail_opt = 0;
 
   /* unity initialisation */
 
