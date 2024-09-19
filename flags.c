@@ -246,6 +246,7 @@ set_verbose_flag (struct opt_def_s const *d, accessor_t why, option_value_t new_
 }
 static opt_def_t const OPTDEF_verbose_flag = {
   .store = &verbose_flag,
+  .OPTRESET_false,
   .set_func = set_verbose_flag,
   .letter = 'v',
   .name = "verbose",
@@ -590,7 +591,6 @@ reset_shell_flags (void)
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
-  verbose_flag = 0;
 
   /* unity initialisation */
 
