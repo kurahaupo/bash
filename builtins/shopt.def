@@ -262,6 +262,7 @@ static opt_def_t const xo_options[] = {
 #if defined (HISTORY)
   { "cmdhist",
     .store = &command_oriented_history,
+    .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -805,7 +806,6 @@ reset_shopt_options (void)
 #endif
 
 #if defined (HISTORY)
-  command_oriented_history = 1;
   force_append_history = 0;
   literal_history = 0;
 #endif
