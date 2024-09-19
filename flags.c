@@ -443,6 +443,7 @@ static opt_def_t const OPTDEF_privileged_mode = {
 int brace_expansion = 1;
 static opt_def_t const OPTDEF_brace_expansion = {
   .store = &brace_expansion,
+  .OPTRESET_true,
   .letter = 'B',
   .name = "braceexpand",
   .adjust_shellopts = true,
@@ -576,10 +577,6 @@ reset_shell_flags (void)
   /* unity initialisation */
 
   interactive_comments = 1;
-
-#if defined (BRACE_EXPANSION)
-  brace_expansion = 1;
-#endif
 }
 
 #ifndef NDEBUG
