@@ -320,6 +320,7 @@ static opt_def_t const OPTDEF_forced_interactive = {
 int no_symbolic_links = 0;
 static opt_def_t const OPTDEF_no_symbolic_links = {
   .store = &no_symbolic_links,
+  .OPTRESET_false,
   .letter = 'P',
   .name = "physical",
   .adjust_shellopts = true,
@@ -590,7 +591,6 @@ reset_shell_flags (void)
 
   echo_input_at_read = 0;
   function_trace_mode = 0;
-  no_symbolic_links = 0;
   pipefail_opt = 0;
 
   /* unity initialisation */
