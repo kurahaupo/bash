@@ -410,6 +410,7 @@ set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_va
 }
 static opt_def_t const OPTDEF_restricted = {
   .store = &restricted,
+  .OPTRESET_REINIT_false,
   .set_func = set_restricted,
   .letter = 'r',
   .name = "restricted",
@@ -590,10 +591,6 @@ reset_shell_flags (void)
   pipefail_opt = 0;
   unbound_vars_is_error = 0;
   verbose_flag = 0;
-
-#if defined (RESTRICTED_SHELL)
-  restricted = 0;
-#endif
 
   /* unity initialisation */
 

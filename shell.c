@@ -2058,10 +2058,6 @@ shell_reinitialize (void)
   bash_history_reinit (enable_history_list = 0);
 #endif /* HISTORY */
 
-#if defined (RESTRICTED_SHELL)
-  restricted = 0;
-#endif /* RESTRICTED_SHELL */
-
   /* Ensure that the default startup file is used.  (Except that we don't
      execute this file for reinitialized shells). */
   bashrc_file = NULL;
