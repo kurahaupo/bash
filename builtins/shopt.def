@@ -225,7 +225,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "dotglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &glob_dot_filenames },
   { "execfail",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &no_exit_on_failed_exec },
-  { "expand_aliases",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &expaliases_flag,		.set_func = shopt_set_expaliases },
+  { "expand_aliases",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &expaliases_flag,		.set_func = shopt_set_expaliases,	.OPTRESET_REINIT_false },
 #if defined (DEBUGGER)
   { "extdebug",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &debugging_mode,		.set_func = shopt_set_debug_mode,	.OPTRESET_REINIT_false },
 #endif
@@ -442,8 +442,6 @@ reset_shopt_options (void)
   bash_source_fullpath = 0;
   cdable_vars = 0;
   cdspelling = 0;
-  expaliases_flag = 0;
-  expand_aliases = 0;
   fail_glob_expansion = 0;
   glob_dot_filenames = 0;
   glob_ignore_case = 0;
