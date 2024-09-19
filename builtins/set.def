@@ -531,8 +531,6 @@ reset_shell_options (void)
 {
   ignoreeof = 0;
 
-  interactive_comments = 1;
-
 #if defined (STRICT_POSIX)
   posixly_correct = 1;
 #else
