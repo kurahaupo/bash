@@ -222,6 +222,27 @@ struct opt_def_s {
 	:0;
 };
 
+extern const option_value_t OPTINIT_0[], OPTINIT_1[];
+#define OPTINIT_false	OPTINIT_0
+#define OPTINIT_true 	OPTINIT_1
+
+#define OPTR1_(NoReinit, Ref)	skip_reinit = NoReinit,	.init = Ref
+#define OPTR2_(NoReinit, Val)	OPTR1_(NoReinit, (option_value_t const[]){ Val })
+
+/* Options marked with these will be updated only by reset_all_options() */
+#define OPTRESET_0		OPTR1_(true, OPTINIT_0)
+#define OPTRESET_1		OPTR1_(true, OPTINIT_1)
+#define OPTRESET_false		OPTR1_(true, OPTINIT_0)
+#define OPTRESET_true		OPTR1_(true, OPTINIT_1)
+#define OPTRESET(Val)		OPTR2_(true, Val)	/* Use this when Val isn't literally true/false/0/1 */
+
+/* Options marked with these will be updated by both reset_all_options() and reinit_all_options() */
+#define OPTRESET_REINIT_0	OPTR1_(false, OPTINIT_0)
+#define OPTRESET_REINIT_1	OPTR1_(false, OPTINIT_1)
+#define OPTRESET_REINIT_false	OPTR1_(false, OPTINIT_0)
+#define OPTRESET_REINIT_true	OPTR1_(false, OPTINIT_1)
+#define OPTRESET_REINIT(Val)	OPTR2_(false, Val)	/* Use this when V isn't literally true/false/0/1 */
+
 /******************************************************************************/
 
 extern op_result_t register_option (opt_def_t const *def);
