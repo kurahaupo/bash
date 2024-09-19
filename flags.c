@@ -261,6 +261,7 @@ static opt_def_t const OPTDEF_verbose_flag = {
 int echo_command_at_execute = 0;
 static opt_def_t const OPTDEF_echo_command_at_execute = {
   .store = &echo_command_at_execute,
+  .OPTRESET_false,
   .letter = 'x',
   .name = "xtrace",
   .adjust_shellopts = true,
@@ -584,7 +585,6 @@ reset_shell_flags (void)
 {
   /* zero initialisation */
 
-  echo_command_at_execute = 0;
   echo_input_at_read = 0;
   error_trace_mode = 0;
   function_trace_mode = 0;
