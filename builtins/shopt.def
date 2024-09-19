@@ -204,7 +204,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "checkwinsize",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_window_size,		.init = &(option_value_t const){CHECKWINSIZE_DEFAULT},	.skip_reinit = true },
 #if defined (HISTORY)
-  { "cmdhist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &command_oriented_history },
+  { "cmdhist",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &command_oriented_history,	.OPTRESET_true },
 #endif
   { "compat31",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 31 },
   { "compat32",			.hide_set_o = true,	.adjust_bashopts = true,						.set_func = set_compatibility_level,	.get_func = get_compatibility_level,	.reference_value = 32 },
@@ -474,7 +474,6 @@ reset_shopt_options (void)
 #endif
 
 #if defined (HISTORY)
-  command_oriented_history = 1;
   force_append_history = 0;
   literal_history = 0;
 #endif
