@@ -199,6 +199,7 @@ static opt_def_t const OPTDEF_read_but_dont_execute = {
 int just_one_command = 0;
 static opt_def_t const OPTDEF_just_one_command = {
   .store = &just_one_command,
+  .OPTRESET_false,
   .letter = 't',
   .name = "onecmd",
   .adjust_shellopts = true,
@@ -585,7 +586,6 @@ reset_shell_flags (void)
   echo_input_at_read = 0;
   error_trace_mode = 0;
   function_trace_mode = 0;
-  just_one_command = 0;
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
