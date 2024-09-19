@@ -192,7 +192,7 @@ static opt_def_t const xo_options[] = {
   { "array_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand },
   { "assoc_expand_once",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &expand_once_flag,		.set_func = set_array_expand,	.hide_shopt = 1 },
 #endif
-  { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd },
+  { "autocd",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &autocd,			.OPTRESET_false },
 #if defined (ARRAY_VARS)
   { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath },
 #endif
@@ -438,7 +438,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  autocd = 0;
   bash_source_fullpath = 0;
   cdable_vars = 0;
   cdspelling = 0;
