@@ -226,6 +226,7 @@ static opt_def_t const OPTDEF_noclobber = {
 int unbound_vars_is_error = 0;
 static opt_def_t const OPTDEF_unbound_vars_is_error = {
   .store = &unbound_vars_is_error,
+  .OPTRESET_false,
   .letter = 'u',
   .name = "nounset",
   .adjust_shellopts = true,
@@ -589,7 +590,6 @@ reset_shell_flags (void)
   no_symbolic_links = 0;
   noclobber = 0;
   pipefail_opt = 0;
-  unbound_vars_is_error = 0;
   verbose_flag = 0;
 
   /* unity initialisation */
