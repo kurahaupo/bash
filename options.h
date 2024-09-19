@@ -222,6 +222,13 @@ struct opt_def_s {
 	:0;
 };
 
+extern const option_value_t OPTINIT0[], OPTINIT1[];
+
+#define OPTRESET_false		skip_reinit = true,	.init = OPTINIT0
+#define OPTRESET_true		skip_reinit = true,	.init = OPTINIT1
+#define OPTRESET_REINIT_false	skip_reinit = false,	.init = OPTINIT0
+#define OPTRESET_REINIT_true	skip_reinit = false,	.init = OPTINIT1
+
 /******************************************************************************/
 
 extern op_result_t register_option (opt_def_t const *def);
