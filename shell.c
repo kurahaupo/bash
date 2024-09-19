@@ -2017,7 +2017,6 @@ shell_reinitialize (void)
   /* Options that get 0. */
   bash_argv_initialized = 0;
   debugging = 0;
-  debugging_mode = 0;
   do_version = 0;
   executing = 0;
   expaliases_flag = 0;

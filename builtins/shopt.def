@@ -391,6 +391,7 @@ static opt_def_t const xo_options[] = {
   { "extdebug",
     .store = &debugging_mode,
     .set_func = shopt_set_debug_mode,
+    .OPTRESET_REINIT_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -846,10 +847,6 @@ reset_shopt_options (void)
 #else
   xpg_echo = 0;
 #endif /* DEFAULT_ECHO_TO_XPG */
-
-#if defined (DEBUGGER)
-  debugging_mode = 0;
-#endif
 }
 
 static void
@@ -872,18 +869,18 @@ set_shellopts_after_change (opt_def_t const *d, accessor_t why, int mode)
 }
 #endif
 
+#if defined (DEBUGGER)
 static op_result_t
 shopt_set_debug_mode (opt_def_t const *d, accessor_t why, int mode)
 {
   d->store[0] = mode;
-#if defined (DEBUGGER)
   error_trace_mode = function_trace_mode = debugging_mode;
   set_shellopts ();
   if (debugging_mode)
     init_bash_argv ();
-#endif
   return Result (OK);
 }
+#endif
 
 static op_result_t
 shopt_set_expaliases (opt_def_t const *d, accessor_t why, int mode)
