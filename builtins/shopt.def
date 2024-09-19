@@ -197,7 +197,7 @@ static opt_def_t const xo_options[] = {
   { "bash_source_fullpath",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &bash_source_fullpath,		.OPTRESET_false },
 #endif
   { "cdable_vars",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdable_vars,			.OPTRESET_false },
-  { "cdspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdspelling },
+  { "cdspell",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &cdspelling,			.OPTRESET_false },
   { "checkhash",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_hashed_filenames },
 #if defined (JOB_CONTROL)
   { "checkjobs",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &check_jobs_at_exit },
@@ -438,7 +438,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  cdspelling = 0;
   fail_glob_expansion = 0;
   glob_dot_filenames = 0;
   glob_ignore_case = 0;
