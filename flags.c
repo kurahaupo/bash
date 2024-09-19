@@ -476,6 +476,7 @@ static opt_def_t const OPTDEF_brace_expansion = {
 int function_trace_mode = 0;
 static opt_def_t const OPTDEF_function_trace_mode = {
   .store = &function_trace_mode,
+  .OPTRESET_false,
   .letter = 'T',
   .name = "functrace",
   .adjust_shellopts = true,
@@ -590,7 +591,6 @@ reset_shell_flags (void)
   /* zero initialisation */
 
   echo_input_at_read = 0;
-  function_trace_mode = 0;
   pipefail_opt = 0;
 
   /* unity initialisation */
