@@ -266,7 +266,7 @@ static opt_def_t const xo_options[] = {
   { "nocaseglob",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &glob_ignore_case },
   { "nocasematch",		.hide_set_o = true,	.adjust_bashopts = true,	.store = &match_ignore_case },
   { "noexpand_translation",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &singlequote_translations },
-  { "nullglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &allow_null_glob_expansion },
+  { "nullglob",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &allow_null_glob_expansion,	.OPTRESET_false },
   { "patsub_replacement",	.hide_set_o = true,	.adjust_bashopts = true,	.store = &patsub_replacement },
 #if defined (PROGRAMMABLE_COMPLETION)
   { "progcomp",			.hide_set_o = true,	.adjust_bashopts = true,	.store = &prog_completion_enabled },
@@ -438,7 +438,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  allow_null_glob_expansion = 0;
   autocd = 0;
   bash_source_fullpath = 0;
   cdable_vars = 0;
