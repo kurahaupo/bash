@@ -228,6 +228,7 @@ static opt_def_t const xo_options[] = {
 #if defined (HISTORY)
   { "history",
     .store = &enable_history_list,
+    .OPTRESET_true,
     .set_func = set_history_flag,
     .adjust_shellopts = true,
     .hide_shopt = true,
@@ -538,7 +539,7 @@ reset_shell_options (void)
 {
 
 #if defined (HISTORY)
-  remember_on_history = enable_history_list = 1;	/* XXX */
+  remember_on_history = 1;	/* XXX */
 #endif
 }
 
