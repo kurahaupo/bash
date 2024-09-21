@@ -418,19 +418,22 @@ mostlyclean:
 distclean maintainer-clean: clean
 	$(RM) Makefile
 
-$(OFILES):	$(MKBUILTINS) ../config.h
+$(OFILES):	$(MKBUILTINS) $(BUILD_DIR)/config.h
 
-../version.h: ../config.h $(BUILD_DIR)/Makefile Makefile
-	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+$(BUILD_DIR)/version.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
 
 # maintainer special - for now
 po:	builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
-${LIBINTL_H}:
-	@echo making $@ in ${INTL_BUILDDIR}
-	@(cd ${INTL_BUILDDIR} && \
-		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
+$(BUILD_DIR)/version.h \
+$(BUILD_DIR)/y.tab.c \
+$(BUILD_DIR)/y.tab.h \
+$(INTL_BUILDDIR)/libintl.h \
+$(LIBINTL_H) \
+:
+	@ echo making $(@F) in $(@D)
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 .PHONY: depends depend
 depends depend: $(MKBUILTINS) tmpbuiltins.h
@@ -577,7 +580,6 @@ break.o: $(BASHINCDIR)/stdc.h
 break.o: $(BASHINCDIR)/unlocked-io.h
 break.o: $(LIBINTL_H)
 break.o: $(srcdir)/break.def
-break.o: $(srcdir)/builtins/break.c
 break.o: $(srcdir)/common.h
 break.o: $(topdir)/array.h
 break.o: $(topdir)/arrayfunc.h
@@ -616,6 +618,7 @@ builtin.o: $(BASHINCDIR)/posixjmp.h
 builtin.o: $(BASHINCDIR)/stdc.h
 builtin.o: $(BASHINCDIR)/unlocked-io.h
 builtin.o: $(srcdir)/bashgetopt.h
+builtin.o: $(srcdir)/builtin.c
 builtin.o: $(srcdir)/builtin.def
 builtin.o: $(srcdir)/common.h
 builtin.o: $(topdir)/array.h
@@ -951,7 +954,6 @@ declare.o: $(BASHINCDIR)/stdc.h
 declare.o: $(BASHINCDIR)/unlocked-io.h
 declare.o: $(LIBINTL_H)
 declare.o: $(srcdir)/bashgetopt.h
-declare.o: $(srcdir)/builtins/declare.c
 declare.o: $(srcdir)/common.h
 declare.o: $(srcdir)/declare.def
 declare.o: $(topdir)/array.h
@@ -1213,12 +1215,7 @@ evalstring.o: $(topdir)/unwind_prot.h
 evalstring.o: $(topdir)/variables.h
 evalstring.o: $(topdir)/xmalloc.h
 evalstring.o: ../config.h
-evalstring.o: ../flags.h
-evalstring.o: ../input.h
-evalstring.o: ../jobs.h
 evalstring.o: ../pathnames.h
-evalstring.o: ../redir.h
-evalstring.o: ../siglist.h
 evalstring.o: ../y.tab.h
 evalstring.o: builtext.h
 exec.c: $(srcdir)/exec.def
@@ -1282,7 +1279,6 @@ exit.o: $(BASHINCDIR)/posixwait.h
 exit.o: $(BASHINCDIR)/stdc.h
 exit.o: $(BASHINCDIR)/unlocked-io.h
 exit.o: $(LIBINTL_H)
-exit.o: $(srcdir)/builtins/exit.c
 exit.o: $(srcdir)/common.h
 exit.o: $(srcdir)/exit.def
 exit.o: $(topdir)/array.h

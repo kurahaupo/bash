@@ -114,7 +114,7 @@ VERSOBJ = bashversion.$(OBJEXT)
 
 Program = bash$(EXEEXT)
 Version = @BASHVERS@
-PatchLevel = `$(BUILD_DIR)/$(VERSPROG) -p`
+PatchLevel = `./$(VERSPROG) -p`
 RELSTATUS = @RELSTATUS@
 
 Machine = @host_cpu@
@@ -126,7 +126,7 @@ MACHTYPE = @host@
 DEBUG = @DEBUG@
 MALLOC_DEBUG = @MALLOC_DEBUG@
 
-THIS_SH = $(BUILD_DIR)/$(Program)
+THIS_SH = $$PWD/$(Program)
 
 # PROFILE_FLAGS is either -pg, to generate profiling info for use
 # with gprof, or nothing (the default).
@@ -219,7 +219,7 @@ dot = .
 LIBSUBDIR = lib
 LIBSRC = $(srcdir)/$(LIBSUBDIR)
 
-LIBBUILD = ${BUILD_DIR}/${LIBSUBDIR}
+LIBBUILD = $(LIBSUBDIR)
 
 SUBDIR_INCLUDES = -I. @RL_INCLUDE@ -I$(topdir) -I$(topdir)/$(LIBSUBDIR)
 
@@ -1058,7 +1058,7 @@ CREATED_MAKEFILES = \
 
 
 CREATED_HEADERS	= \
-		  $(DEFDIR)/builtext.h \
+		  builtins/builtext.h \
 		  config.h \
 		  pathnames.h \
 		  signames.h \
@@ -1102,7 +1102,7 @@ $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
 	@echo
 	@echo "	  ***********************************************************"
 	@echo "	  *                                                         *"
-	@echo "	  * `$(BUILD_DIR)/$(VERSPROG) -l`"
+	@echo "	  * `./$(VERSPROG) -l`"
 	@echo "	  *                                                         *"
 	@echo "	  ***********************************************************"
 	@echo
@@ -1141,15 +1141,15 @@ gcov:
 asan-tests: asan  $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
-	@( cd $(srcdir)/tests && \
-		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$(THIS_SH) ; \
+	  cd $(srcdir)/tests && $(SHELL) $(TESTSCRIPT)
 
 # have to make this separate because making tests depend on $(PROGRAM)
 lsan-tests: lsan  $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
-	@( cd $(srcdir)/tests && \
-		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$(THIS_SH) ; \
+	  cd $(srcdir)/tests && $(SHELL) $(TESTSCRIPT)
 
 profiling-tests: ${PROGRAM}
 	@test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2; exit 1; }
@@ -1395,8 +1395,8 @@ install-headers: install-headers-dirs
 		${INSTALL_DATA} $(BUILTIN_SRCDIR)/"$$hf" $(DESTDIR)$(headersdir)/builtins/$$hf || exit 1; \
 	done
 	@for hf in $(CREATED_HEADERS) ; do \
-		if test -f $(BUILD_DIR)/"$$hf" ; then \
-			${INSTALL_DATA} $(BUILD_DIR)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1; \
+		if test -f "$$hf" ; then \
+			${INSTALL_DATA} "$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1; \
 		else \
 			${INSTALL_DATA} $(srcdir)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1; \
 		fi ; \
@@ -1504,8 +1504,8 @@ xcase$(EXEEXT): $(SUPPORT_SRC)xcase.c
 test tests check: force $(Program) $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
-	@( cd $(srcdir)/tests && \
-		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$(THIS_SH) ; \
+	  cd $(srcdir)/tests && $(SHELL) $(TESTSCRIPT)
 
 symlinks:
 	$(SHELL) $(SUPPORT_SRC)fixlinks -s $(srcdir)
@@ -1816,7 +1816,6 @@ bashline.o: $(topdir)/unwind_prot.h
 bashline.o: $(topdir)/variables.h
 bashline.o: $(topdir)/xmalloc.h
 bashline.o: builtins/builtext.h
-bashline.o: builtins/builtins.h
 bashline.o: config.h
 bashline.o: pathnames.h
 bracecomp.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -1864,7 +1863,6 @@ bracecomp.o: $(topdir)/syntax.h
 bracecomp.o: $(topdir)/unwind_prot.h
 bracecomp.o: $(topdir)/variables.h
 bracecomp.o: $(topdir)/xmalloc.h
-bracecomp.o: builtins.h
 bracecomp.o: config.h
 bracecomp.o: pathnames.h
 braces.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -1903,7 +1901,6 @@ braces.o: $(topdir)/parser.h
 braces.o: $(topdir)/quit.h
 braces.o: $(topdir)/shell.h
 braces.o: $(topdir)/sig.h
-braces.o: $(topdir)/stdckdint.h
 braces.o: $(topdir)/subst.h
 braces.o: $(topdir)/syntax.h
 braces.o: $(topdir)/unwind_prot.h
@@ -2905,7 +2902,6 @@ redir.o: $(BASHINCDIR)/posixstat.h
 redir.o: $(BASHINCDIR)/stdc.h
 redir.o: $(BASHINCDIR)/unlocked-io.h
 redir.o: $(DEFDIR)/pipesize.h
-redir.o: $(DEFSRC)/pipesize.h
 redir.o: $(LIBINTL_H)
 redir.o: $(srcdir)/redir.c
 redir.o: $(topdir)/array.h
@@ -3277,7 +3273,6 @@ trap.o: $(topdir)/quit.h
 trap.o: $(topdir)/shell.h
 trap.o: $(topdir)/sig.h
 trap.o: $(topdir)/siglist.h
-trap.o: $(topdir)/signames.h
 trap.o: $(topdir)/subst.h
 trap.o: $(topdir)/syntax.h
 trap.o: $(topdir)/trap.h
@@ -3372,7 +3367,6 @@ variables.o: $(topdir)/subst.h
 variables.o: $(topdir)/syntax.h
 variables.o: $(topdir)/unwind_prot.h
 variables.o: $(topdir)/variables.h
-variables.o: $(topdir)/version.h
 variables.o: $(topdir)/xmalloc.h
 variables.o: builtins/builtext.h
 variables.o: config.h
@@ -3382,12 +3376,11 @@ version.o: $(BASHINCDIR)/gettext.h
 version.o: $(LIBINTL_H)
 version.o: $(srcdir)/version.c
 version.o: $(topdir)/bashintl.h
-version.o: $(topdir)/buildconf.h
 version.o: $(topdir)/config-bot.h
 version.o: $(topdir)/config-top.h
 version.o: $(topdir)/conftypes.h
 version.o: $(topdir)/patchlevel.h
-version.o: $(topdir)/version.h
+version.o: buildconf.h
 version.o: config.h
 version.o: version.h
 xmalloc.o: $(ALLOC_LIBSRC)/shmalloc.h
@@ -3403,7 +3396,6 @@ xmalloc.o: $(topdir)/bashtypes.h
 xmalloc.o: $(topdir)/config-bot.h
 xmalloc.o: $(topdir)/config-top.h
 xmalloc.o: $(topdir)/error.h
-xmalloc.o: $(topdir)/stdckdint.h
 xmalloc.o: $(topdir)/xmalloc.h
 xmalloc.o: config.h
 xmalloc.o: stdckdint.h
@@ -3722,7 +3714,6 @@ builtins/builtins.o: $(BASHINCDIR)/chartypes.h
 builtins/builtins.o: $(BASHINCDIR)/gettext.h
 builtins/builtins.o: $(BASHINCDIR)/stdc.h
 builtins/builtins.o: $(BASHINCDIR)/unlocked-io.h
-builtins/builtins.o: $(DEFSRC)/builtins.c
 builtins/builtins.o: $(topdir)/alias.h
 builtins/builtins.o: $(topdir)/bashansi.h
 builtins/builtins.o: $(topdir)/bashintl.h
@@ -3901,7 +3892,6 @@ builtins/command.o: $(topdir)/variables.h
 builtins/command.o: $(topdir)/xmalloc.h
 builtins/command.o: config.h
 builtins/command.o: pathnames.h
-builtins/common.c: $(BASHINCDIR)/gettext.h
 builtins/common.c: $(LIBINTL_H)
 builtins/common.c: $(topdir)/bashintl.h
 builtins/common.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -3958,7 +3948,7 @@ builtins/common.o: $(topdir)/trap.h
 builtins/common.o: $(topdir)/unwind_prot.h
 builtins/common.o: $(topdir)/variables.h
 builtins/common.o: $(topdir)/xmalloc.h
-builtins/common.o: builtins.h
+builtins/common.o: $(topdir)/builtins.h
 builtins/common.o: builtins/builtext.h
 builtins/common.o: config.h
 builtins/common.o: pathnames.h
@@ -4012,10 +4002,9 @@ builtins/complete.o: $(topdir)/syntax.h
 builtins/complete.o: $(topdir)/unwind_prot.h
 builtins/complete.o: $(topdir)/variables.h
 builtins/complete.o: $(topdir)/xmalloc.h
-builtins/complete.o: builtins.h
+builtins/complete.o: $(topdir)/builtins.h
 builtins/complete.o: config.h
 builtins/complete.o: pathnames.h
-builtins/complete.o: pcomplete.h
 builtins/declare.c: $(DEFSRC)/declare.def
 builtins/declare.o: $(BASHINCDIR)/chartypes.h
 builtins/declare.o: $(BASHINCDIR)/gettext.h
@@ -4235,12 +4224,7 @@ builtins/evalfile.o: $(topdir)/trap.h
 builtins/evalfile.o: $(topdir)/unwind_prot.h
 builtins/evalfile.o: $(topdir)/variables.h
 builtins/evalfile.o: $(topdir)/xmalloc.h
-builtins/evalfile.o: builtins.h
 builtins/evalfile.o: config.h
-builtins/evalfile.o: flags.h
-builtins/evalfile.o: input.h
-builtins/evalfile.o: jobs.h
-builtins/evalfile.o: parser.h
 builtins/evalfile.o: pathnames.h
 builtins/evalfile.o: y.tab.h
 builtins/evalstring.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -4295,15 +4279,9 @@ builtins/evalstring.o: $(topdir)/trap.h
 builtins/evalstring.o: $(topdir)/unwind_prot.h
 builtins/evalstring.o: $(topdir)/variables.h
 builtins/evalstring.o: $(topdir)/xmalloc.h
-builtins/evalstring.o: builtins.h
 builtins/evalstring.o: builtins/builtext.h
 builtins/evalstring.o: config.h
-builtins/evalstring.o: flags.h
-builtins/evalstring.o: input.h
-builtins/evalstring.o: jobs.h
 builtins/evalstring.o: pathnames.h
-builtins/evalstring.o: redir.h
-builtins/evalstring.o: siglist.h
 builtins/evalstring.o: y.tab.h
 builtins/exec.c: $(DEFSRC)/exec.def
 builtins/exec.o: $(BASHINCDIR)/chartypes.h
@@ -4354,8 +4332,6 @@ builtins/exec.o: $(topdir)/unwind_prot.h
 builtins/exec.o: $(topdir)/variables.h
 builtins/exec.o: $(topdir)/xmalloc.h
 builtins/exec.o: config.h
-builtins/exec.o: findcmd.h
-builtins/exec.o: flags.h
 builtins/exec.o: pathnames.h
 builtins/exit.c: $(DEFSRC)/exit.def
 builtins/exit.o: $(BASHINCDIR)/chartypes.h
@@ -4452,10 +4428,8 @@ builtins/fc.o: $(topdir)/syntax.h
 builtins/fc.o: $(topdir)/unwind_prot.h
 builtins/fc.o: $(topdir)/variables.h
 builtins/fc.o: $(topdir)/xmalloc.h
-builtins/fc.o: builtins.h
+builtins/fc.o: $(topdir)/builtins.h
 builtins/fc.o: config.h
-builtins/fc.o: flags.h
-builtins/fc.o: parser.h
 builtins/fc.o: pathnames.h
 builtins/fg_bg.c: $(DEFSRC)/fg_bg.def
 builtins/fg_bg.o: $(BASHINCDIR)/chartypes.h
@@ -4646,9 +4620,7 @@ builtins/hash.o: $(topdir)/syntax.h
 builtins/hash.o: $(topdir)/unwind_prot.h
 builtins/hash.o: $(topdir)/variables.h
 builtins/hash.o: $(topdir)/xmalloc.h
-builtins/hash.o: builtins.h
 builtins/hash.o: config.h
-builtins/hash.o: findcmd.h
 builtins/hash.o: pathnames.h
 builtins/help.c: $(DEFSRC)/help.def
 builtins/help.o: $(BASHINCDIR)/chartypes.h
@@ -4750,7 +4722,6 @@ builtins/history.o: $(topdir)/unwind_prot.h
 builtins/history.o: $(topdir)/variables.h
 builtins/history.o: $(topdir)/xmalloc.h
 builtins/history.o: config.h
-builtins/history.o: parser.h
 builtins/history.o: pathnames.h
 builtins/jobs.c: $(DEFSRC)/jobs.def
 builtins/jobs.o: $(BASHINCDIR)/chartypes.h
@@ -4842,7 +4813,6 @@ builtins/kill.o: $(topdir)/variables.h
 builtins/kill.o: $(topdir)/xmalloc.h
 builtins/kill.o: config.h
 builtins/kill.o: pathnames.h
-builtins/kill.o: trap.h
 builtins/let.c: $(DEFSRC)/let.def
 builtins/let.o: $(BASHINCDIR)/chartypes.h
 builtins/let.o: $(BASHINCDIR)/gettext.h
@@ -4975,7 +4945,6 @@ builtins/printf.o: $(topdir)/make_cmd.h
 builtins/printf.o: $(topdir)/quit.h
 builtins/printf.o: $(topdir)/shell.h
 builtins/printf.o: $(topdir)/sig.h
-builtins/printf.o: $(topdir)/stdckdint.h
 builtins/printf.o: $(topdir)/subst.h
 builtins/printf.o: $(topdir)/syntax.h
 builtins/printf.o: $(topdir)/unwind_prot.h
@@ -5095,7 +5064,6 @@ builtins/read.o: $(topdir)/variables.h
 builtins/read.o: $(topdir)/xmalloc.h
 builtins/read.o: config.h
 builtins/read.o: pathnames.h
-builtins/reserved.o: $(DEFSRC)/reserved.def
 builtins/return.c: $(DEFSRC)/return.def
 builtins/return.o: $(BASHINCDIR)/chartypes.h
 builtins/return.o: $(BASHINCDIR)/gettext.h
@@ -5189,8 +5157,6 @@ builtins/set.o: $(topdir)/unwind_prot.h
 builtins/set.o: $(topdir)/variables.h
 builtins/set.o: $(topdir)/xmalloc.h
 builtins/set.o: config.h
-builtins/set.o: flags.h
-builtins/set.o: parser.h
 builtins/set.o: pathnames.h
 builtins/setattr.c: $(DEFSRC)/setattr.def
 builtins/setattr.o: $(BASHINCDIR)/chartypes.h
@@ -5234,7 +5200,6 @@ builtins/setattr.o: $(topdir)/variables.h
 builtins/setattr.o: $(topdir)/xmalloc.h
 builtins/setattr.o: builtins/builtext.h
 builtins/setattr.o: config.h
-builtins/setattr.o: flags.h
 builtins/setattr.o: pathnames.h
 builtins/shift.c: $(DEFSRC)/shift.def
 builtins/shift.o: $(BASHINCDIR)/chartypes.h
@@ -5325,7 +5290,6 @@ builtins/shopt.o: $(topdir)/subst.h
 builtins/shopt.o: $(topdir)/syntax.h
 builtins/shopt.o: $(topdir)/unwind_prot.h
 builtins/shopt.o: $(topdir)/variables.h
-builtins/shopt.o: $(topdir)/version.h
 builtins/shopt.o: $(topdir)/xmalloc.h
 builtins/shopt.o: config.h
 builtins/shopt.o: pathnames.h
@@ -5459,7 +5423,6 @@ builtins/test.o: $(topdir)/variables.h
 builtins/test.o: $(topdir)/xmalloc.h
 builtins/test.o: config.h
 builtins/test.o: pathnames.h
-builtins/test.o: test.h
 builtins/times.c: $(DEFSRC)/times.def
 builtins/times.o: $(BASHINCDIR)/chartypes.h
 builtins/times.o: $(BASHINCDIR)/maxpath.h
@@ -5501,6 +5464,9 @@ builtins/tmpbuiltins.o: $(BASHINCDIR)/chartypes.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/gettext.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/stdc.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/unlocked-io.h
+builtins/tmpbuiltins.o: builtins/tmpbuiltins.c
+builtins/tmpbuiltins.o: builtins/tmpbuiltins.c
+builtins/tmpbuiltins.o: builtins/tmpbuiltins.h
 builtins/tmpbuiltins.o: $(topdir)/alias.h
 builtins/tmpbuiltins.o: $(topdir)/bashansi.h
 builtins/tmpbuiltins.o: $(topdir)/bashintl.h
@@ -5601,8 +5567,6 @@ builtins/type.o: $(topdir)/unwind_prot.h
 builtins/type.o: $(topdir)/variables.h
 builtins/type.o: $(topdir)/xmalloc.h
 builtins/type.o: config.h
-builtins/type.o: findcmd.h
-builtins/type.o: parser.h
 builtins/type.o: pathnames.h
 builtins/ulimit.c: $(DEFSRC)/ulimit.def
 builtins/ulimit.o: $(BASHINCDIR)/chartypes.h
@@ -5613,9 +5577,9 @@ builtins/ulimit.o: $(BASHINCDIR)/ocache.h
 builtins/ulimit.o: $(BASHINCDIR)/posixjmp.h
 builtins/ulimit.o: $(BASHINCDIR)/stdc.h
 builtins/ulimit.o: $(BASHINCDIR)/unlocked-io.h
+builtins/ulimit.o: builtins/pipesize.h
 builtins/ulimit.o: $(DEFSRC)/bashgetopt.h
 builtins/ulimit.o: $(DEFSRC)/common.h
-builtins/ulimit.o: $(DEFSRC)/pipesize.h
 builtins/ulimit.o: $(DEFSRC)/ulimit.def
 builtins/ulimit.o: $(LIBINTL_H)
 builtins/ulimit.o: $(topdir)/array.h
@@ -5643,7 +5607,6 @@ builtins/ulimit.o: $(topdir)/syntax.h
 builtins/ulimit.o: $(topdir)/unwind_prot.h
 builtins/ulimit.o: $(topdir)/variables.h
 builtins/ulimit.o: $(topdir)/xmalloc.h
-builtins/ulimit.o: builtins/pipesize.h
 builtins/ulimit.o: config.h
 builtins/ulimit.o: pathnames.h
 builtins/umask.c: $(DEFSRC)/umask.def
@@ -8009,80 +7972,80 @@ lib/intl.old/textdomain.o: $(topdir)/lib/intl.old/libgnuintl.h
 lib/intl.old/textdomain.o: $(topdir)/lib/intl.old/loadinfo.h
 lib/intl.old/textdomain.o: config.h
 
-lib/malloc/alloca.o: $(srcdir)/lib/malloc/alloca.c
+lib/malloc/alloca.o: $(ALLOC_LIBSRC)/alloca.c
 lib/malloc/alloca.o: $(topdir)/config-bot.h
 lib/malloc/alloca.o: $(topdir)/config-top.h
 lib/malloc/alloca.o: config.h
 lib/malloc/malloc.o: $(ALLOC_LIBSRC)/imalloc.h
+lib/malloc/malloc.o: $(ALLOC_LIBSRC)/malloc.c
 lib/malloc/malloc.o: $(BASHINCDIR)/gettext.h
 lib/malloc/malloc.o: $(BASHINCDIR)/stdc.h
-lib/malloc/malloc.o: $(srcdir)/lib/malloc/malloc.c
 lib/malloc/malloc.o: $(topdir)/bashintl.h
 lib/malloc/malloc.o: $(topdir)/bashtypes.h
 lib/malloc/malloc.o: $(topdir)/config-bot.h
 lib/malloc/malloc.o: $(topdir)/config-top.h
 lib/malloc/malloc.o: config.h
+lib/malloc/memtest.o: $(ALLOC_LIBSRC)/memtest.c
 lib/malloc/memtest.o: $(BASHINCDIR)/ansi_stdlib.h
 lib/malloc/memtest.o: $(BASHINCDIR)/stdc.h
-lib/malloc/memtest.o: $(srcdir)/lib/malloc/memtest.c
 lib/malloc/memtest.o: $(topdir)/bashansi.h
 lib/malloc/memtest.o: $(topdir)/xmalloc.h
-lib/malloc/sbrk.o: $(srcdir)/lib/malloc/sbrk.c
+lib/malloc/sbrk.o: $(ALLOC_LIBSRC)/sbrk.c
 lib/malloc/sbrk.o: $(topdir)/config-bot.h
 lib/malloc/sbrk.o: $(topdir)/config-top.h
 lib/malloc/sbrk.o: config.h
 lib/malloc/stats.o: $(ALLOC_LIBSRC)/imalloc.h
+lib/malloc/stats.o: $(ALLOC_LIBSRC)/stats.c
 lib/malloc/stats.o: $(BASHINCDIR)/gettext.h
-lib/malloc/stats.o: $(srcdir)/lib/malloc/stats.c
 lib/malloc/stats.o: $(topdir)/bashintl.h
 lib/malloc/stats.o: $(topdir)/config-bot.h
 lib/malloc/stats.o: $(topdir)/config-top.h
 lib/malloc/stats.o: config.h
-lib/malloc/stub.o: $(srcdir)/lib/malloc/stub.c
+lib/malloc/stub.o: $(ALLOC_LIBSRC)/stub.c
 lib/malloc/table.o: $(ALLOC_LIBSRC)/imalloc.h
+lib/malloc/table.o: $(ALLOC_LIBSRC)/table.c
 lib/malloc/table.o: $(ALLOC_LIBSRC)/table.h
 lib/malloc/table.o: $(BASHINCDIR)/gettext.h
-lib/malloc/table.o: $(srcdir)/lib/malloc/table.c
 lib/malloc/table.o: $(topdir)/bashintl.h
 lib/malloc/table.o: $(topdir)/config-bot.h
 lib/malloc/table.o: $(topdir)/config-top.h
 lib/malloc/table.o: config.h
 lib/malloc/trace.o: $(ALLOC_LIBSRC)/imalloc.h
+lib/malloc/trace.o: $(ALLOC_LIBSRC)/trace.c
 lib/malloc/trace.o: $(BASHINCDIR)/gettext.h
-lib/malloc/trace.o: $(srcdir)/lib/malloc/trace.c
 lib/malloc/trace.o: $(topdir)/bashintl.h
 lib/malloc/trace.o: $(topdir)/config-bot.h
 lib/malloc/trace.o: $(topdir)/config-top.h
 lib/malloc/trace.o: config.h
 lib/malloc/watch.o: $(ALLOC_LIBSRC)/imalloc.h
+lib/malloc/watch.o: $(ALLOC_LIBSRC)/watch.c
 lib/malloc/watch.o: $(BASHINCDIR)/gettext.h
-lib/malloc/watch.o: $(srcdir)/lib/malloc/watch.c
 lib/malloc/watch.o: $(topdir)/bashintl.h
 lib/malloc/watch.o: $(topdir)/config-bot.h
 lib/malloc/watch.o: $(topdir)/config-top.h
 lib/malloc/watch.o: config.h
-lib/malloc/xmalloc.o: $(srcdir)/lib/malloc/xmalloc.c
+lib/malloc/xmalloc.o: $(ALLOC_LIBSRC)/xmalloc.c
 lib/malloc/xmalloc.o: $(topdir)/config-bot.h
 lib/malloc/xmalloc.o: $(topdir)/config-top.h
 lib/malloc/xmalloc.o: config.h
 
+lib/malloc/OLD/gmalloc.o: $(ALLOC_LIBSRC)/OLD/gmalloc.c
 lib/malloc/OLD/gmalloc.o: $(BASHINCDIR)/stdc.h
-lib/malloc/OLD/gmalloc.o: $(srcdir)/lib/malloc/OLD/gmalloc.c
 lib/malloc/OLD/gmalloc.o: $(topdir)/config-bot.h
 lib/malloc/OLD/gmalloc.o: $(topdir)/config-top.h
 lib/malloc/OLD/gmalloc.o: config.h
-lib/malloc/OLD/ogmalloc.o: $(srcdir)/lib/malloc/OLD/ogmalloc.c
+lib/malloc/OLD/ogmalloc.o: $(ALLOC_LIBSRC)/OLD/ogmalloc.c
 lib/malloc/OLD/ogmalloc.o: $(topdir)/config-bot.h
 lib/malloc/OLD/ogmalloc.o: $(topdir)/config-top.h
 lib/malloc/OLD/ogmalloc.o: config.h
+lib/malloc/OLD/old-nmalloc.o: $(ALLOC_LIBSRC)/OLD/old-nmalloc.c
 lib/malloc/OLD/old-nmalloc.o: $(ALLOC_LIBSRC)/getpagesize.h
-lib/malloc/OLD/old-nmalloc.o: $(srcdir)/lib/malloc/OLD/old-nmalloc.c
 lib/malloc/OLD/old-nmalloc.o: $(topdir)/bashtypes.h
 lib/malloc/OLD/old-nmalloc.o: $(topdir)/config-bot.h
 lib/malloc/OLD/old-nmalloc.o: $(topdir)/config-top.h
 lib/malloc/OLD/old-nmalloc.o: config.h
+lib/malloc/OLD/omalloc.o: $(ALLOC_LIBSRC)/OLD/omalloc.c
 lib/malloc/OLD/omalloc.o: $(ALLOC_LIBSRC)/getpagesize.h
-lib/malloc/OLD/omalloc.o: $(srcdir)/lib/malloc/OLD/omalloc.c
 lib/malloc/OLD/omalloc.o: $(topdir)/bashtypes.h
 lib/malloc/OLD/omalloc.o: $(topdir)/config-bot.h
 lib/malloc/OLD/omalloc.o: $(topdir)/config-top.h
@@ -9252,8 +9215,8 @@ lib/sh/reallocarray.o: $(SH_LIBSRC)/reallocarray.c
 lib/sh/reallocarray.o: $(topdir)/bashansi.h
 lib/sh/reallocarray.o: $(topdir)/config-bot.h
 lib/sh/reallocarray.o: $(topdir)/config-top.h
-lib/sh/reallocarray.o: $(topdir)/stdckdint.h
 lib/sh/reallocarray.o: config.h
+lib/sh/reallocarray.o: stdckdint.h
 lib/sh/rename.o: $(SH_LIBSRC)/rename.c
 lib/sh/rename.o: $(topdir)/config-bot.h
 lib/sh/rename.o: $(topdir)/config-top.h
@@ -9423,7 +9386,6 @@ lib/sh/stringvec.o: $(topdir)/make_cmd.h
 lib/sh/stringvec.o: $(topdir)/quit.h
 lib/sh/stringvec.o: $(topdir)/shell.h
 lib/sh/stringvec.o: $(topdir)/sig.h
-lib/sh/stringvec.o: $(topdir)/stdckdint.h
 lib/sh/stringvec.o: $(topdir)/subst.h
 lib/sh/stringvec.o: $(topdir)/syntax.h
 lib/sh/stringvec.o: $(topdir)/unwind_prot.h
@@ -9431,6 +9393,7 @@ lib/sh/stringvec.o: $(topdir)/variables.h
 lib/sh/stringvec.o: $(topdir)/xmalloc.h
 lib/sh/stringvec.o: config.h
 lib/sh/stringvec.o: pathnames.h
+lib/sh/stringvec.o: stdckdint.h
 lib/sh/strlcpy.o: $(SH_LIBSRC)/strlcpy.c
 lib/sh/strlcpy.o: $(topdir)/bashansi.h
 lib/sh/strlcpy.o: $(topdir)/config-bot.h
@@ -9713,15 +9676,15 @@ lib/sh/zwrite.o: $(topdir)/config-bot.h
 lib/sh/zwrite.o: $(topdir)/config-top.h
 lib/sh/zwrite.o: config.h
 
+lib/termcap/termcap.o: $(TERM_LIBSRC)/ltcap.h
 lib/termcap/termcap.o: $(TERM_LIBSRC)/termcap.c
 lib/termcap/termcap.o: $(topdir)/config-bot.h
 lib/termcap/termcap.o: $(topdir)/config-top.h
-lib/termcap/termcap.o: $(topdir)/lib/termcap/ltcap.h
 lib/termcap/termcap.o: config.h
+lib/termcap/tparam.o: $(TERM_LIBSRC)/ltcap.h
 lib/termcap/tparam.o: $(TERM_LIBSRC)/tparam.c
 lib/termcap/tparam.o: $(topdir)/config-bot.h
 lib/termcap/tparam.o: $(topdir)/config-top.h
-lib/termcap/tparam.o: $(topdir)/lib/termcap/ltcap.h
 lib/termcap/tparam.o: config.h
 lib/termcap/version.o: $(TERM_LIBSRC)/version.c
 
@@ -9743,8 +9706,8 @@ support/bashversion.o: $(srcdir)/support/bashversion.c
 support/bashversion.o: $(topdir)/config-bot.h
 support/bashversion.o: $(topdir)/config-top.h
 support/bashversion.o: $(topdir)/conftypes.h
-support/bashversion.o: $(topdir)/version.h
 support/bashversion.o: config.h
+support/bashversion.o: version.h
 support/endian.o: $(srcdir)/support/endian.c
 support/endian.o: $(topdir)/bashansi.h
 support/endian.o: $(topdir)/config-bot.h
@@ -9775,5 +9738,14 @@ support/xcase.o: $(topdir)/config-bot.h
 support/xcase.o: $(topdir)/config-top.h
 support/xcase.o: config.h
 support/zecho.o: $(srcdir)/support/zecho.c
+
+buildsignames.o: $(srcdir)/support/signames.c
+buildsignames.o: $(topdir)/config-bot.h
+buildsignames.o: $(topdir)/config-top.h
+buildsignames.o: config.h
+mksignames.o: $(srcdir)/support/mksignames.c
+mksignames.o: $(topdir)/config-bot.h
+mksignames.o: $(topdir)/config-top.h
+mksignames.o: config.h
 
 tests/cracauer-testsuite/catcher.o: $(srcdir)/tests/cracauer-testsuite/catcher.c
