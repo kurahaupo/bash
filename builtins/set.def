@@ -157,7 +157,14 @@ static opt_def_t const xo_options[] = {
   { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help = "Allow comments to appear in interactive commands" },
   { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,		.OPTRESET_REINIT_false,		.help =
     "The return value of a pipeline is the status of\nthe last command to exit with a non-zero status,\nor zero if no command exited with a non-zero status" },
-  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,	.help = "Change the behavior of bash where the default\noperation differs from the Posix standard to\nmatch the standard" },
+  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode,
+#if defined (STRICT_POSIX)
+    .OPTRESET_true,
+#else
+    .OPTRESET_false,
+#endif
+    .help =
+    "Change the behavior of bash where the default\noperation differs from the Posix standard to\nmatch the standard" },
 #if defined (READLINE)
   { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE,	.help = "use an emacs-style line editing interface" },
   { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE,	.help = "use a vi-style line editing interface" },
@@ -460,11 +467,6 @@ void
 reset_shell_options (void)
 {
 
-#if defined (STRICT_POSIX)
-  posixly_correct = 1;
-#else
-  posixly_correct = 0;
-#endif
 #if defined (HISTORY)
   dont_save_function_defs = 0;
   remember_on_history = enable_history_list = 1;	/* XXX */
