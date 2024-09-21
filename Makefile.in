@@ -3394,7 +3394,6 @@ xmalloc.o: $(topdir)/xmalloc.h
 y.tab.o: $(BUILD_DIR)/config.h
 y.tab.o: $(BUILD_DIR)/y.tab.c
 y.tab.o: $(srcdir)/parse.y
-y.tab.o: $(srcdir)/y.tab.c
 y.tab.o: $(topdir)/alias.h
 y.tab.o: $(topdir)/array.h
 y.tab.o: $(topdir)/arrayfunc.h
@@ -3458,6 +3457,7 @@ y.tab.o: $(topdir)/trap.h
 y.tab.o: $(topdir)/unwind_prot.h
 y.tab.o: $(topdir)/variables.h
 y.tab.o: $(topdir)/xmalloc.h
+y.tab.o: y.tab.c
 
 CWRU/devfd.o: $(srcdir)/CWRU/devfd.c
 CWRU/devstdin.o: $(srcdir)/CWRU/devstdin.c
