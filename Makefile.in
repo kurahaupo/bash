@@ -1258,15 +1258,9 @@ builtins::
 
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h  version.h
 
-# these require special rules to circumvent make builtin rules
-${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
-
-${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
-
 $(DEFDIR)/builtext.h: $(BUILTIN_DEFS)
 
 $(DEFDIR)/pipesize.h: $(BUILTINS_LIBRARY)
-
 
 $(BUILTIN_OBJS) \
 $(BUILTINS_LIBRARY) \
@@ -4486,6 +4480,7 @@ builtins/gen-helpfiles.o: $(topdir)/general.h
 builtins/gen-helpfiles.o: $(topdir)/hashlib.h
 builtins/gen-helpfiles.o: $(topdir)/xmalloc.h
 builtins/gen-helpfiles.o: builtins/tmpbuiltins.h
+builtins/gen-helpfiles.o: builtins/tmpbuiltins.h
 builtins/gen-helpfiles.o: config.h
 builtins/getopt.o: $(BASHINCDIR)/chartypes.h
 builtins/getopt.o: $(BASHINCDIR)/gettext.h
@@ -5055,6 +5050,8 @@ builtins/read.o: $(topdir)/variables.h
 builtins/read.o: $(topdir)/xmalloc.h
 builtins/read.o: config.h
 builtins/read.o: pathnames.h
+builtins/reserved.o: $(BUILTIN_SRCDIR)/reserved.c
+builtins/reserved.o: $(BUILTIN_SRCDIR)/reserved.def
 builtins/return.c: $(BUILTIN_SRCDIR)/return.def
 builtins/return.o: $(BASHINCDIR)/chartypes.h
 builtins/return.o: $(BASHINCDIR)/gettext.h
@@ -5466,6 +5463,8 @@ builtins/tmpbuiltins.o: $(topdir)/general.h
 builtins/tmpbuiltins.o: $(topdir)/hashlib.h
 builtins/tmpbuiltins.o: $(topdir)/xmalloc.h
 builtins/tmpbuiltins.o: builtins/tmpbuiltins.c
+builtins/tmpbuiltins.o: builtins/tmpbuiltins.c
+builtins/tmpbuiltins.o: builtins/tmpbuiltins.h
 builtins/tmpbuiltins.o: builtins/tmpbuiltins.h
 builtins/tmpbuiltins.o: config.h
 builtins/trap.c: $(BUILTIN_SRCDIR)/trap.def
@@ -5566,6 +5565,7 @@ builtins/ulimit.o: $(BASHINCDIR)/stdc.h
 builtins/ulimit.o: $(BASHINCDIR)/unlocked-io.h
 builtins/ulimit.o: $(BUILTIN_SRCDIR)/bashgetopt.h
 builtins/ulimit.o: $(BUILTIN_SRCDIR)/common.h
+builtins/ulimit.o: $(BUILTIN_SRCDIR)/pipesize.h
 builtins/ulimit.o: $(BUILTIN_SRCDIR)/ulimit.def
 builtins/ulimit.o: $(LIBINTL_H)
 builtins/ulimit.o: $(topdir)/array.h
