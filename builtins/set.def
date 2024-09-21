@@ -171,7 +171,7 @@ static opt_def_t const xo_options[] = {
 #endif
 #if defined (HISTORY)
   { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.set_func = set_history_flag,	.help = "enable command history" },
-  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,				.help = "(currently accepted but ignored)" },
+  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs,	.OPTRESET_false,	.help = "(currently accepted but ignored)" },
 #endif
   //0
 };
@@ -468,7 +468,6 @@ reset_shell_options (void)
 {
 
 #if defined (HISTORY)
-  dont_save_function_defs = 0;
   remember_on_history = enable_history_list = 1;	/* XXX */
 #endif
 }
