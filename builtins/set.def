@@ -305,7 +305,7 @@ void
 list_minus_o_opts (int mode, int reusable)
 {
   register int	i;
-  int *on_or_off, value;
+  int value;
 
   for (i = 0; o_options[i].name; i++)
     {
