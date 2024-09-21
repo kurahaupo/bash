@@ -153,7 +153,7 @@ static const char off[] = "off";
 static int previous_option_value;
 
 static opt_def_t const xo_options[] = {
-  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.set_func = set_ignoreeof,	.help = "The shell will not exit upon reading EOF" },
+  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.OPTRESET_false,		.set_func = set_ignoreeof,	.help = "The shell will not exit upon reading EOF" },
   { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments,	.adjust_bashopts = true,	.help = "Allow comments to appear in interactive commands" },
   { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt,		.OPTRESET_REINIT_false,		.help =
     "The return value of a pipeline is the status of\nthe last command to exit with a non-zero status,\nor zero if no command exited with a non-zero status" },
@@ -459,7 +459,6 @@ initialize_shell_options (_Bool no_shellopts)
 void
 reset_shell_options (void)
 {
-  ignoreeof = 0;
 
 #if defined (STRICT_POSIX)
   posixly_correct = 1;
