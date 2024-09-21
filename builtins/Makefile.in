@@ -614,8 +614,6 @@ builtin.o: $(topdir)/variables.h
 builtin.o: $(topdir)/xmalloc.h
 builtin.o: ../config.h
 builtin.o: builtin.c
-builtins.o: $(srcdir)/builtext.h
-builtins.o: $(srcdir)/builtins.c
 builtins.o: $(topdir)/alias.h
 builtins.o: $(topdir)/bashansi.h
 builtins.o: $(topdir)/bashintl.h
@@ -632,9 +630,10 @@ builtins.o: $(topdir)/include/stdc.h
 builtins.o: $(topdir)/include/unlocked-io.h
 builtins.o: $(topdir)/xmalloc.h
 builtins.o: ../config.h
+builtins.o: builtext.h
+builtins.o: builtins.c
 caller.c: $(srcdir)/caller.def
 caller.o: $(srcdir)/bashgetopt.h
-caller.o: $(srcdir)/builtext.h
 caller.o: $(srcdir)/common.h
 caller.o: $(topdir)/array.h
 caller.o: $(topdir)/arrayfunc.h
@@ -671,6 +670,7 @@ caller.o: $(topdir)/unwind_prot.h
 caller.o: $(topdir)/variables.h
 caller.o: $(topdir)/xmalloc.h
 caller.o: ../config.h
+caller.o: builtext.h
 caller.o: caller.c
 cd.c: $(srcdir)/cd.def
 cd.o: $(srcdir)/bashgetopt.h
@@ -792,7 +792,6 @@ command.o: $(topdir)/xmalloc.h
 command.o: ../config.h
 command.o: command.c
 common.o: $(srcdir)/bashgetopt.h
-common.o: $(srcdir)/builtext.h
 common.o: $(srcdir)/common.c
 common.o: $(srcdir)/common.h
 common.o: $(topdir)/alias.h
@@ -844,6 +843,7 @@ common.o: $(topdir)/unwind_prot.h
 common.o: $(topdir)/variables.h
 common.o: $(topdir)/xmalloc.h
 common.o: ../config.h
+common.o: builtext.h
 complete.c: $(srcdir)/complete.def
 complete.o: $(srcdir)/bashgetopt.h
 complete.o: $(srcdir)/common.h
@@ -895,7 +895,6 @@ complete.o: ../config.h
 complete.o: complete.c
 declare.c: $(srcdir)/declare.def
 declare.o: $(srcdir)/bashgetopt.h
-declare.o: $(srcdir)/builtext.h
 declare.o: $(srcdir)/common.h
 declare.o: $(topdir)/array.h
 declare.o: $(topdir)/arrayfunc.h
@@ -933,6 +932,7 @@ declare.o: $(topdir)/unwind_prot.h
 declare.o: $(topdir)/variables.h
 declare.o: $(topdir)/xmalloc.h
 declare.o: ../config.h
+declare.o: builtext.h
 declare.o: declare.c
 echo.c: $(srcdir)/echo.def
 echo.o: $(srcdir)/common.h
@@ -1103,7 +1103,6 @@ evalfile.o: $(topdir)/variables.h
 evalfile.o: $(topdir)/xmalloc.h
 evalfile.o: ../config.h
 evalfile.o: ../y.tab.h
-evalstring.o: $(srcdir)/builtext.h
 evalstring.o: $(srcdir)/common.h
 evalstring.o: $(srcdir)/evalstring.c
 evalstring.o: $(topdir)/alias.h
@@ -1156,6 +1155,7 @@ evalstring.o: $(topdir)/variables.h
 evalstring.o: $(topdir)/xmalloc.h
 evalstring.o: ../config.h
 evalstring.o: ../y.tab.h
+evalstring.o: builtext.h
 exec.c: $(srcdir)/exec.def
 exec.o: $(srcdir)/bashgetopt.h
 exec.o: $(srcdir)/common.h
@@ -1206,7 +1206,6 @@ exec.o: $(topdir)/xmalloc.h
 exec.o: ../config.h
 exec.o: exec.c
 exit.c: $(srcdir)/exit.def
-exit.o: $(srcdir)/builtext.h
 exit.o: $(srcdir)/common.h
 exit.o: $(topdir)/array.h
 exit.o: $(topdir)/arrayfunc.h
@@ -1248,6 +1247,7 @@ exit.o: $(topdir)/unwind_prot.h
 exit.o: $(topdir)/variables.h
 exit.o: $(topdir)/xmalloc.h
 exit.o: ../config.h
+exit.o: builtext.h
 exit.o: exit.c
 fc.c: $(srcdir)/fc.def
 fc.o: $(srcdir)/bashgetopt.h
@@ -1343,7 +1343,6 @@ fg_bg.o: $(topdir)/xmalloc.h
 fg_bg.o: ../config.h
 fg_bg.o: fg_bg.c
 gen-helpfiles.o: $(srcdir)/gen-helpfiles.c
-gen-helpfiles.o: $(srcdir)/tmpbuiltins.h
 gen-helpfiles.o: $(topdir)/alias.h
 gen-helpfiles.o: $(topdir)/bashansi.h
 gen-helpfiles.o: $(topdir)/bashtypes.h
@@ -1360,6 +1359,7 @@ gen-helpfiles.o: $(topdir)/include/stdc.h
 gen-helpfiles.o: $(topdir)/include/unlocked-io.h
 gen-helpfiles.o: $(topdir)/xmalloc.h
 gen-helpfiles.o: ../config.h
+gen-helpfiles.o: tmpbuiltins.h
 getopt.o: $(srcdir)/getopt.c
 getopt.o: $(srcdir)/getopt.h
 getopt.o: $(topdir)/array.h
@@ -1813,7 +1813,6 @@ psize.o: $(topdir)/sig.h
 psize.o: $(topdir)/xmalloc.h
 psize.o: ../config.h
 pushd.c: $(srcdir)/pushd.def
-pushd.o: $(srcdir)/builtext.h
 pushd.o: $(srcdir)/common.h
 pushd.o: $(topdir)/array.h
 pushd.o: $(topdir)/arrayfunc.h
@@ -1851,6 +1850,7 @@ pushd.o: $(topdir)/unwind_prot.h
 pushd.o: $(topdir)/variables.h
 pushd.o: $(topdir)/xmalloc.h
 pushd.o: ../config.h
+pushd.o: builtext.h
 pushd.o: pushd.c
 read.c: $(srcdir)/read.def
 read.o: $(srcdir)/bashgetopt.h
@@ -1997,7 +1997,6 @@ set.o: ../config.h
 set.o: set.c
 setattr.c: $(srcdir)/setattr.def
 setattr.o: $(srcdir)/bashgetopt.h
-setattr.o: $(srcdir)/builtext.h
 setattr.o: $(srcdir)/common.h
 setattr.o: $(topdir)/array.h
 setattr.o: $(topdir)/arrayfunc.h
@@ -2036,6 +2035,7 @@ setattr.o: $(topdir)/unwind_prot.h
 setattr.o: $(topdir)/variables.h
 setattr.o: $(topdir)/xmalloc.h
 setattr.o: ../config.h
+setattr.o: builtext.h
 setattr.o: setattr.c
 shift.c: $(srcdir)/shift.def
 shift.o: $(srcdir)/common.h
@@ -2290,8 +2290,6 @@ times.o: $(topdir)/variables.h
 times.o: $(topdir)/xmalloc.h
 times.o: ../config.h
 times.o: times.c
-tmpbuiltins.o: $(srcdir)/tmpbuiltins.c
-tmpbuiltins.o: $(srcdir)/tmpbuiltins.h
 tmpbuiltins.o: $(topdir)/alias.h
 tmpbuiltins.o: $(topdir)/bashansi.h
 tmpbuiltins.o: $(topdir)/bashintl.h
@@ -2308,6 +2306,8 @@ tmpbuiltins.o: $(topdir)/include/stdc.h
 tmpbuiltins.o: $(topdir)/include/unlocked-io.h
 tmpbuiltins.o: $(topdir)/xmalloc.h
 tmpbuiltins.o: ../config.h
+tmpbuiltins.o: tmpbuiltins.c
+tmpbuiltins.o: tmpbuiltins.h
 trap.c: $(srcdir)/trap.def
 trap.o: $(srcdir)/bashgetopt.h
 trap.o: $(srcdir)/common.h
@@ -2396,7 +2396,6 @@ type.o: type.c
 ulimit.c: $(srcdir)/ulimit.def
 ulimit.o: $(srcdir)/bashgetopt.h
 ulimit.o: $(srcdir)/common.h
-ulimit.o: $(srcdir)/pipesize.h
 ulimit.o: $(topdir)/array.h
 ulimit.o: $(topdir)/arrayfunc.h
 ulimit.o: $(topdir)/assoc.h
@@ -2432,6 +2431,7 @@ ulimit.o: $(topdir)/unwind_prot.h
 ulimit.o: $(topdir)/variables.h
 ulimit.o: $(topdir)/xmalloc.h
 ulimit.o: ../config.h
+ulimit.o: pipesize.h
 ulimit.o: ulimit.c
 umask.c: $(srcdir)/umask.def
 umask.o: $(srcdir)/bashgetopt.h
