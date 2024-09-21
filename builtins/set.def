@@ -166,6 +166,7 @@ static int previous_option_value;
 static opt_def_t const xo_options[] = {
   { "ignoreeof",
     .store = &ignoreeof,
+    .OPTRESET_false,
     .set_func = set_ignoreeof,
     .adjust_shellopts = true,
     .hide_shopt = true,
@@ -529,7 +530,6 @@ initialize_shell_options (_Bool no_shellopts)
 void
 reset_shell_options (void)
 {
-  ignoreeof = 0;
 
 #if defined (STRICT_POSIX)
   posixly_correct = 1;
