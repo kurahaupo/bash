@@ -193,6 +193,11 @@ static opt_def_t const xo_options[] = {
   },
   { "posix",
     .store = &posixly_correct,
+#if defined (STRICT_POSIX)
+    .OPTRESET_true,
+#else
+    .OPTRESET_false,
+#endif
     .set_func = set_posix_mode,
     .adjust_shellopts = true,
     .hide_shopt = true,
@@ -531,11 +536,6 @@ void
 reset_shell_options (void)
 {
 
-#if defined (STRICT_POSIX)
-  posixly_correct = 1;
-#else
-  posixly_correct = 0;
-#endif
 #if defined (HISTORY)
   dont_save_function_defs = 0;
   remember_on_history = enable_history_list = 1;	/* XXX */
