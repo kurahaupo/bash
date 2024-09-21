@@ -71,7 +71,7 @@ MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
 MKDEP_CCFLAGS = ${CCFLAGS}
 MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
-INCLUDES = -I. -I$(BUILD_DIR) -I$(topdir) -I$(topdir)/lib
+INCLUDES = -I. -I$(BUILD_DIR) -I$(topdir) -I$(topdir)/lib -I$(topdir)/include
 
 CCFLAGS		= $(DEFS) $(LOCAL_DEFS) $(APP_CFLAGS) $(CPPFLAGS) ${INCLUDES} \
 	  $(STYLE_CFLAGS) $(LOCAL_CFLAGS) $(CFLAGS) ${ADDON_CFLAGS}
