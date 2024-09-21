@@ -236,6 +236,7 @@ static opt_def_t const xo_options[] = {
   },
   { "nolog",
     .store = &dont_save_function_defs,
+    .OPTRESET_false,
     .adjust_shellopts = true,
     .hide_shopt = true,
     .help = N_(
@@ -537,7 +538,6 @@ reset_shell_options (void)
 {
 
 #if defined (HISTORY)
-  dont_save_function_defs = 0;
   remember_on_history = enable_history_list = 1;	/* XXX */
 #endif
 }
