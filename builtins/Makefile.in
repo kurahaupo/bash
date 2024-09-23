@@ -365,8 +365,9 @@ umask.o: ${LIBINTL_H}
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)
 
+alias.c: $(srcdir)/alias.def
+alias.o: $(BUILD_DIR)/builtins/alias.c
 alias.o: $(BUILD_DIR)/config.h
-alias.o: $(srcdir)/alias.c
 alias.o: $(srcdir)/bashgetopt.h
 alias.o: $(srcdir)/common.h
 alias.o: $(topdir)/alias.h
@@ -389,6 +390,7 @@ alias.o: $(topdir)/hashlib.h
 alias.o: $(topdir)/include/chartypes.h
 alias.o: $(topdir)/include/gettext.h
 alias.o: $(topdir)/include/maxpath.h
+alias.o: $(topdir)/include/memalloc.h
 alias.o: $(topdir)/include/ocache.h
 alias.o: $(topdir)/include/posixjmp.h
 alias.o: $(topdir)/include/stdc.h
@@ -439,9 +441,10 @@ bashgetopt.o: $(topdir)/syntax.h
 bashgetopt.o: $(topdir)/unwind_prot.h
 bashgetopt.o: $(topdir)/variables.h
 bashgetopt.o: $(topdir)/xmalloc.h
+bind.c: $(srcdir)/bind.def
+bind.o: $(BUILD_DIR)/builtins/bind.c
 bind.o: $(BUILD_DIR)/config.h
 bind.o: $(srcdir)/bashgetopt.h
-bind.o: $(srcdir)/bind.c
 bind.o: $(srcdir)/common.h
 bind.o: $(topdir)/array.h
 bind.o: $(topdir)/arrayfunc.h
@@ -463,6 +466,7 @@ bind.o: $(topdir)/hashlib.h
 bind.o: $(topdir)/include/chartypes.h
 bind.o: $(topdir)/include/gettext.h
 bind.o: $(topdir)/include/maxpath.h
+bind.o: $(topdir)/include/memalloc.h
 bind.o: $(topdir)/include/ocache.h
 bind.o: $(topdir)/include/posixjmp.h
 bind.o: $(topdir)/include/stdc.h
@@ -473,7 +477,7 @@ bind.o: $(topdir)/lib/readline/keymaps.h
 bind.o: $(topdir)/lib/readline/readline.h
 bind.o: $(topdir)/lib/readline/rlstdc.h
 bind.o: $(topdir)/lib/readline/rltypedefs.h
-bind.o: $(topdir)/lib/readline/tilde.h
+bind.o: $(topdir)/lib/tilde/tilde.h
 bind.o: $(topdir)/make_cmd.h
 bind.o: $(topdir)/pathnames.h
 bind.o: $(topdir)/quit.h
@@ -484,8 +488,9 @@ bind.o: $(topdir)/syntax.h
 bind.o: $(topdir)/unwind_prot.h
 bind.o: $(topdir)/variables.h
 bind.o: $(topdir)/xmalloc.h
+break.c: $(srcdir)/break.def
+break.o: $(BUILD_DIR)/builtins/break.c
 break.o: $(BUILD_DIR)/config.h
-break.o: $(srcdir)/break.c
 break.o: $(srcdir)/common.h
 break.o: $(topdir)/array.h
 break.o: $(topdir)/arrayfunc.h
@@ -507,6 +512,7 @@ break.o: $(topdir)/hashlib.h
 break.o: $(topdir)/include/chartypes.h
 break.o: $(topdir)/include/gettext.h
 break.o: $(topdir)/include/maxpath.h
+break.o: $(topdir)/include/memalloc.h
 break.o: $(topdir)/include/ocache.h
 break.o: $(topdir)/include/posixjmp.h
 break.o: $(topdir)/include/stdc.h
@@ -521,9 +527,10 @@ break.o: $(topdir)/syntax.h
 break.o: $(topdir)/unwind_prot.h
 break.o: $(topdir)/variables.h
 break.o: $(topdir)/xmalloc.h
+builtin.c: $(srcdir)/builtin.def
+builtin.o: $(BUILD_DIR)/builtins/builtin.c
 builtin.o: $(BUILD_DIR)/config.h
 builtin.o: $(srcdir)/bashgetopt.h
-builtin.o: $(srcdir)/builtin.c
 builtin.o: $(srcdir)/common.h
 builtin.o: $(topdir)/array.h
 builtin.o: $(topdir)/arrayfunc.h
@@ -543,6 +550,7 @@ builtin.o: $(topdir)/general.h
 builtin.o: $(topdir)/hashlib.h
 builtin.o: $(topdir)/include/chartypes.h
 builtin.o: $(topdir)/include/maxpath.h
+builtin.o: $(topdir)/include/memalloc.h
 builtin.o: $(topdir)/include/ocache.h
 builtin.o: $(topdir)/include/posixjmp.h
 builtin.o: $(topdir)/include/stdc.h
@@ -575,10 +583,11 @@ builtins.o: $(topdir)/include/gettext.h
 builtins.o: $(topdir)/include/stdc.h
 builtins.o: $(topdir)/include/unlocked-io.h
 builtins.o: $(topdir)/xmalloc.h
+caller.c: $(srcdir)/caller.def
+caller.o: $(BUILD_DIR)/builtins/caller.c
 caller.o: $(BUILD_DIR)/config.h
 caller.o: $(srcdir)/bashgetopt.h
 caller.o: $(srcdir)/builtext.h
-caller.o: $(srcdir)/caller.c
 caller.o: $(srcdir)/common.h
 caller.o: $(topdir)/array.h
 caller.o: $(topdir)/arrayfunc.h
@@ -599,6 +608,7 @@ caller.o: $(topdir)/hashlib.h
 caller.o: $(topdir)/include/chartypes.h
 caller.o: $(topdir)/include/gettext.h
 caller.o: $(topdir)/include/maxpath.h
+caller.o: $(topdir)/include/memalloc.h
 caller.o: $(topdir)/include/ocache.h
 caller.o: $(topdir)/include/posixjmp.h
 caller.o: $(topdir)/include/stdc.h
@@ -613,9 +623,10 @@ caller.o: $(topdir)/syntax.h
 caller.o: $(topdir)/unwind_prot.h
 caller.o: $(topdir)/variables.h
 caller.o: $(topdir)/xmalloc.h
+cd.c: $(srcdir)/cd.def
+cd.o: $(BUILD_DIR)/builtins/cd.c
 cd.o: $(BUILD_DIR)/config.h
 cd.o: $(srcdir)/bashgetopt.h
-cd.o: $(srcdir)/cd.c
 cd.o: $(srcdir)/common.h
 cd.o: $(topdir)/array.h
 cd.o: $(topdir)/arrayfunc.h
@@ -637,6 +648,7 @@ cd.o: $(topdir)/hashlib.h
 cd.o: $(topdir)/include/chartypes.h
 cd.o: $(topdir)/include/gettext.h
 cd.o: $(topdir)/include/maxpath.h
+cd.o: $(topdir)/include/memalloc.h
 cd.o: $(topdir)/include/ocache.h
 cd.o: $(topdir)/include/posixdir.h
 cd.o: $(topdir)/include/posixjmp.h
@@ -645,7 +657,6 @@ cd.o: $(topdir)/include/stdc.h
 cd.o: $(topdir)/include/unlocked-io.h
 cd.o: $(topdir)/lib/tilde/tilde.h
 cd.o: $(topdir)/make_cmd.h
-cd.o: $(topdir)/options.h
 cd.o: $(topdir)/options.h
 cd.o: $(topdir)/pathnames.h
 cd.o: $(topdir)/quit.h
@@ -656,8 +667,9 @@ cd.o: $(topdir)/syntax.h
 cd.o: $(topdir)/unwind_prot.h
 cd.o: $(topdir)/variables.h
 cd.o: $(topdir)/xmalloc.h
+colon.c: $(srcdir)/colon.def
+colon.o: $(BUILD_DIR)/builtins/colon.c
 colon.o: $(BUILD_DIR)/config.h
-colon.o: $(srcdir)/colon.c
 colon.o: $(topdir)/array.h
 colon.o: $(topdir)/arrayfunc.h
 colon.o: $(topdir)/assoc.h
@@ -675,6 +687,7 @@ colon.o: $(topdir)/general.h
 colon.o: $(topdir)/hashlib.h
 colon.o: $(topdir)/include/chartypes.h
 colon.o: $(topdir)/include/maxpath.h
+colon.o: $(topdir)/include/memalloc.h
 colon.o: $(topdir)/include/ocache.h
 colon.o: $(topdir)/include/posixjmp.h
 colon.o: $(topdir)/include/stdc.h
@@ -689,9 +702,10 @@ colon.o: $(topdir)/syntax.h
 colon.o: $(topdir)/unwind_prot.h
 colon.o: $(topdir)/variables.h
 colon.o: $(topdir)/xmalloc.h
+command.c: $(srcdir)/command.def
+command.o: $(BUILD_DIR)/builtins/command.c
 command.o: $(BUILD_DIR)/config.h
 command.o: $(srcdir)/bashgetopt.h
-command.o: $(srcdir)/command.c
 command.o: $(srcdir)/common.h
 command.o: $(topdir)/array.h
 command.o: $(topdir)/arrayfunc.h
@@ -712,6 +726,7 @@ command.o: $(topdir)/general.h
 command.o: $(topdir)/hashlib.h
 command.o: $(topdir)/include/chartypes.h
 command.o: $(topdir)/include/maxpath.h
+command.o: $(topdir)/include/memalloc.h
 command.o: $(topdir)/include/ocache.h
 command.o: $(topdir)/include/posixjmp.h
 command.o: $(topdir)/include/stdc.h
@@ -758,6 +773,7 @@ common.o: $(topdir)/include/ansi_stdlib.h
 common.o: $(topdir)/include/chartypes.h
 common.o: $(topdir)/include/gettext.h
 common.o: $(topdir)/include/maxpath.h
+common.o: $(topdir)/include/memalloc.h
 common.o: $(topdir)/include/ocache.h
 common.o: $(topdir)/include/posixjmp.h
 common.o: $(topdir)/include/posixstat.h
@@ -780,10 +796,11 @@ common.o: $(topdir)/trap.h
 common.o: $(topdir)/unwind_prot.h
 common.o: $(topdir)/variables.h
 common.o: $(topdir)/xmalloc.h
+complete.c: $(srcdir)/complete.def
+complete.o: $(BUILD_DIR)/builtins/complete.c
 complete.o: $(BUILD_DIR)/config.h
 complete.o: $(srcdir)/bashgetopt.h
 complete.o: $(srcdir)/common.h
-complete.o: $(srcdir)/complete.c
 complete.o: $(topdir)/alias.h
 complete.o: $(topdir)/array.h
 complete.o: $(topdir)/arrayfunc.h
@@ -816,7 +833,7 @@ complete.o: $(topdir)/lib/readline/keymaps.h
 complete.o: $(topdir)/lib/readline/readline.h
 complete.o: $(topdir)/lib/readline/rlstdc.h
 complete.o: $(topdir)/lib/readline/rltypedefs.h
-complete.o: $(topdir)/lib/readline/tilde.h
+complete.o: $(topdir)/lib/tilde/tilde.h
 complete.o: $(topdir)/make_cmd.h
 complete.o: $(topdir)/pathnames.h
 complete.o: $(topdir)/pcomplete.h
@@ -828,11 +845,12 @@ complete.o: $(topdir)/syntax.h
 complete.o: $(topdir)/unwind_prot.h
 complete.o: $(topdir)/variables.h
 complete.o: $(topdir)/xmalloc.h
+declare.c: $(srcdir)/declare.def
+declare.o: $(BUILD_DIR)/builtins/declare.c
 declare.o: $(BUILD_DIR)/config.h
 declare.o: $(srcdir)/bashgetopt.h
 declare.o: $(srcdir)/builtext.h
 declare.o: $(srcdir)/common.h
-declare.o: $(srcdir)/declare.c
 declare.o: $(topdir)/array.h
 declare.o: $(topdir)/arrayfunc.h
 declare.o: $(topdir)/assoc.h
@@ -853,6 +871,7 @@ declare.o: $(topdir)/hashlib.h
 declare.o: $(topdir)/include/chartypes.h
 declare.o: $(topdir)/include/gettext.h
 declare.o: $(topdir)/include/maxpath.h
+declare.o: $(topdir)/include/memalloc.h
 declare.o: $(topdir)/include/ocache.h
 declare.o: $(topdir)/include/posixjmp.h
 declare.o: $(topdir)/include/stdc.h
@@ -867,9 +886,10 @@ declare.o: $(topdir)/syntax.h
 declare.o: $(topdir)/unwind_prot.h
 declare.o: $(topdir)/variables.h
 declare.o: $(topdir)/xmalloc.h
+echo.c: $(srcdir)/echo.def
+echo.o: $(BUILD_DIR)/builtins/echo.c
 echo.o: $(BUILD_DIR)/config.h
 echo.o: $(srcdir)/common.h
-echo.o: $(srcdir)/echo.c
 echo.o: $(topdir)/array.h
 echo.o: $(topdir)/arrayfunc.h
 echo.o: $(topdir)/assoc.h
@@ -887,6 +907,7 @@ echo.o: $(topdir)/general.h
 echo.o: $(topdir)/hashlib.h
 echo.o: $(topdir)/include/chartypes.h
 echo.o: $(topdir)/include/maxpath.h
+echo.o: $(topdir)/include/memalloc.h
 echo.o: $(topdir)/include/ocache.h
 echo.o: $(topdir)/include/posixjmp.h
 echo.o: $(topdir)/include/stdc.h
@@ -901,10 +922,11 @@ echo.o: $(topdir)/syntax.h
 echo.o: $(topdir)/unwind_prot.h
 echo.o: $(topdir)/variables.h
 echo.o: $(topdir)/xmalloc.h
+enable.c: $(srcdir)/enable.def
+enable.o: $(BUILD_DIR)/builtins/enable.c
 enable.o: $(BUILD_DIR)/config.h
 enable.o: $(srcdir)/bashgetopt.h
 enable.o: $(srcdir)/common.h
-enable.o: $(srcdir)/enable.c
 enable.o: $(topdir)/alias.h
 enable.o: $(topdir)/array.h
 enable.o: $(topdir)/arrayfunc.h
@@ -928,6 +950,7 @@ enable.o: $(topdir)/hashlib.h
 enable.o: $(topdir)/include/chartypes.h
 enable.o: $(topdir)/include/gettext.h
 enable.o: $(topdir)/include/maxpath.h
+enable.o: $(topdir)/include/memalloc.h
 enable.o: $(topdir)/include/ocache.h
 enable.o: $(topdir)/include/posixjmp.h
 enable.o: $(topdir)/include/stdc.h
@@ -943,10 +966,11 @@ enable.o: $(topdir)/syntax.h
 enable.o: $(topdir)/unwind_prot.h
 enable.o: $(topdir)/variables.h
 enable.o: $(topdir)/xmalloc.h
+eval.c: $(srcdir)/eval.def
+eval.o: $(BUILD_DIR)/builtins/eval.c
 eval.o: $(BUILD_DIR)/config.h
 eval.o: $(srcdir)/bashgetopt.h
 eval.o: $(srcdir)/common.h
-eval.o: $(srcdir)/eval.c
 eval.o: $(topdir)/array.h
 eval.o: $(topdir)/arrayfunc.h
 eval.o: $(topdir)/assoc.h
@@ -964,6 +988,7 @@ eval.o: $(topdir)/general.h
 eval.o: $(topdir)/hashlib.h
 eval.o: $(topdir)/include/chartypes.h
 eval.o: $(topdir)/include/maxpath.h
+eval.o: $(topdir)/include/memalloc.h
 eval.o: $(topdir)/include/ocache.h
 eval.o: $(topdir)/include/posixjmp.h
 eval.o: $(topdir)/include/stdc.h
@@ -1061,6 +1086,7 @@ evalstring.o: $(topdir)/include/chartypes.h
 evalstring.o: $(topdir)/include/filecntl.h
 evalstring.o: $(topdir)/include/gettext.h
 evalstring.o: $(topdir)/include/maxpath.h
+evalstring.o: $(topdir)/include/memalloc.h
 evalstring.o: $(topdir)/include/ocache.h
 evalstring.o: $(topdir)/include/posixjmp.h
 evalstring.o: $(topdir)/include/posixwait.h
@@ -1082,10 +1108,11 @@ evalstring.o: $(topdir)/trap.h
 evalstring.o: $(topdir)/unwind_prot.h
 evalstring.o: $(topdir)/variables.h
 evalstring.o: $(topdir)/xmalloc.h
+exec.c: $(srcdir)/exec.def
+exec.o: $(BUILD_DIR)/builtins/exec.c
 exec.o: $(BUILD_DIR)/config.h
 exec.o: $(srcdir)/bashgetopt.h
 exec.o: $(srcdir)/common.h
-exec.o: $(srcdir)/exec.c
 exec.o: $(topdir)/array.h
 exec.o: $(topdir)/arrayfunc.h
 exec.o: $(topdir)/assoc.h
@@ -1109,6 +1136,7 @@ exec.o: $(topdir)/hashlib.h
 exec.o: $(topdir)/include/chartypes.h
 exec.o: $(topdir)/include/gettext.h
 exec.o: $(topdir)/include/maxpath.h
+exec.o: $(topdir)/include/memalloc.h
 exec.o: $(topdir)/include/ocache.h
 exec.o: $(topdir)/include/posixjmp.h
 exec.o: $(topdir)/include/posixstat.h
@@ -1129,10 +1157,11 @@ exec.o: $(topdir)/trap.h
 exec.o: $(topdir)/unwind_prot.h
 exec.o: $(topdir)/variables.h
 exec.o: $(topdir)/xmalloc.h
+exit.c: $(srcdir)/exit.def
+exit.o: $(BUILD_DIR)/builtins/exit.c
 exit.o: $(BUILD_DIR)/config.h
 exit.o: $(srcdir)/builtext.h
 exit.o: $(srcdir)/common.h
-exit.o: $(srcdir)/exit.c
 exit.o: $(topdir)/array.h
 exit.o: $(topdir)/arrayfunc.h
 exit.o: $(topdir)/assoc.h
@@ -1153,6 +1182,7 @@ exit.o: $(topdir)/hashlib.h
 exit.o: $(topdir)/include/chartypes.h
 exit.o: $(topdir)/include/gettext.h
 exit.o: $(topdir)/include/maxpath.h
+exit.o: $(topdir)/include/memalloc.h
 exit.o: $(topdir)/include/ocache.h
 exit.o: $(topdir)/include/posixjmp.h
 exit.o: $(topdir)/include/posixwait.h
@@ -1171,10 +1201,11 @@ exit.o: $(topdir)/trap.h
 exit.o: $(topdir)/unwind_prot.h
 exit.o: $(topdir)/variables.h
 exit.o: $(topdir)/xmalloc.h
+fc.c: $(srcdir)/fc.def
+fc.o: $(BUILD_DIR)/builtins/fc.c
 fc.o: $(BUILD_DIR)/config.h
 fc.o: $(srcdir)/bashgetopt.h
 fc.o: $(srcdir)/common.h
-fc.o: $(srcdir)/fc.c
 fc.o: $(topdir)/alias.h
 fc.o: $(topdir)/array.h
 fc.o: $(topdir)/arrayfunc.h
@@ -1195,9 +1226,11 @@ fc.o: $(topdir)/externs.h
 fc.o: $(topdir)/flags.h
 fc.o: $(topdir)/general.h
 fc.o: $(topdir)/hashlib.h
+fc.o: $(topdir)/include/ansi_stdlib.h
 fc.o: $(topdir)/include/chartypes.h
 fc.o: $(topdir)/include/gettext.h
 fc.o: $(topdir)/include/maxpath.h
+fc.o: $(topdir)/include/memalloc.h
 fc.o: $(topdir)/include/ocache.h
 fc.o: $(topdir)/include/posixjmp.h
 fc.o: $(topdir)/include/posixstat.h
@@ -1218,10 +1251,11 @@ fc.o: $(topdir)/syntax.h
 fc.o: $(topdir)/unwind_prot.h
 fc.o: $(topdir)/variables.h
 fc.o: $(topdir)/xmalloc.h
+fg_bg.c: $(srcdir)/fg_bg.def
+fg_bg.o: $(BUILD_DIR)/builtins/fg_bg.c
 fg_bg.o: $(BUILD_DIR)/config.h
 fg_bg.o: $(srcdir)/bashgetopt.h
 fg_bg.o: $(srcdir)/common.h
-fg_bg.o: $(srcdir)/fg_bg.c
 fg_bg.o: $(topdir)/array.h
 fg_bg.o: $(topdir)/arrayfunc.h
 fg_bg.o: $(topdir)/assoc.h
@@ -1242,6 +1276,7 @@ fg_bg.o: $(topdir)/hashlib.h
 fg_bg.o: $(topdir)/include/chartypes.h
 fg_bg.o: $(topdir)/include/gettext.h
 fg_bg.o: $(topdir)/include/maxpath.h
+fg_bg.o: $(topdir)/include/memalloc.h
 fg_bg.o: $(topdir)/include/ocache.h
 fg_bg.o: $(topdir)/include/posixjmp.h
 fg_bg.o: $(topdir)/include/posixwait.h
@@ -1314,11 +1349,12 @@ getopt.o: $(topdir)/syntax.h
 getopt.o: $(topdir)/unwind_prot.h
 getopt.o: $(topdir)/variables.h
 getopt.o: $(topdir)/xmalloc.h
+getopts.c: $(srcdir)/getopts.def
+getopts.o: $(BUILD_DIR)/builtins/getopts.c
 getopts.o: $(BUILD_DIR)/config.h
 getopts.o: $(srcdir)/bashgetopt.h
 getopts.o: $(srcdir)/common.h
 getopts.o: $(srcdir)/getopt.h
-getopts.o: $(srcdir)/getopts.c
 getopts.o: $(topdir)/array.h
 getopts.o: $(topdir)/arrayfunc.h
 getopts.o: $(topdir)/assoc.h
@@ -1339,6 +1375,7 @@ getopts.o: $(topdir)/hashlib.h
 getopts.o: $(topdir)/include/chartypes.h
 getopts.o: $(topdir)/include/gettext.h
 getopts.o: $(topdir)/include/maxpath.h
+getopts.o: $(topdir)/include/memalloc.h
 getopts.o: $(topdir)/include/ocache.h
 getopts.o: $(topdir)/include/posixjmp.h
 getopts.o: $(topdir)/include/stdc.h
@@ -1353,10 +1390,11 @@ getopts.o: $(topdir)/syntax.h
 getopts.o: $(topdir)/unwind_prot.h
 getopts.o: $(topdir)/variables.h
 getopts.o: $(topdir)/xmalloc.h
+hash.c: $(srcdir)/hash.def
+hash.o: $(BUILD_DIR)/builtins/hash.c
 hash.o: $(BUILD_DIR)/config.h
 hash.o: $(srcdir)/bashgetopt.h
 hash.o: $(srcdir)/common.h
-hash.o: $(srcdir)/hash.c
 hash.o: $(topdir)/alias.h
 hash.o: $(topdir)/array.h
 hash.o: $(topdir)/arrayfunc.h
@@ -1382,6 +1420,7 @@ hash.o: $(topdir)/hashlib.h
 hash.o: $(topdir)/include/chartypes.h
 hash.o: $(topdir)/include/gettext.h
 hash.o: $(topdir)/include/maxpath.h
+hash.o: $(topdir)/include/memalloc.h
 hash.o: $(topdir)/include/ocache.h
 hash.o: $(topdir)/include/posixjmp.h
 hash.o: $(topdir)/include/stdc.h
@@ -1396,10 +1435,11 @@ hash.o: $(topdir)/syntax.h
 hash.o: $(topdir)/unwind_prot.h
 hash.o: $(topdir)/variables.h
 hash.o: $(topdir)/xmalloc.h
+help.c: $(srcdir)/help.def
+help.o: $(BUILD_DIR)/builtins/help.c
 help.o: $(BUILD_DIR)/config.h
 help.o: $(srcdir)/bashgetopt.h
 help.o: $(srcdir)/common.h
-help.o: $(srcdir)/help.c
 help.o: $(topdir)/alias.h
 help.o: $(topdir)/array.h
 help.o: $(topdir)/arrayfunc.h
@@ -1423,6 +1463,7 @@ help.o: $(topdir)/include/chartypes.h
 help.o: $(topdir)/include/filecntl.h
 help.o: $(topdir)/include/gettext.h
 help.o: $(topdir)/include/maxpath.h
+help.o: $(topdir)/include/memalloc.h
 help.o: $(topdir)/include/ocache.h
 help.o: $(topdir)/include/posixjmp.h
 help.o: $(topdir)/include/stdc.h
@@ -1440,10 +1481,11 @@ help.o: $(topdir)/syntax.h
 help.o: $(topdir)/unwind_prot.h
 help.o: $(topdir)/variables.h
 help.o: $(topdir)/xmalloc.h
+history.c: $(srcdir)/history.def
+history.o: $(BUILD_DIR)/builtins/history.c
 history.o: $(BUILD_DIR)/config.h
 history.o: $(srcdir)/bashgetopt.h
 history.o: $(srcdir)/common.h
-history.o: $(srcdir)/history.c
 history.o: $(topdir)/array.h
 history.o: $(topdir)/arrayfunc.h
 history.o: $(topdir)/assoc.h
@@ -1466,6 +1508,7 @@ history.o: $(topdir)/include/chartypes.h
 history.o: $(topdir)/include/filecntl.h
 history.o: $(topdir)/include/gettext.h
 history.o: $(topdir)/include/maxpath.h
+history.o: $(topdir)/include/memalloc.h
 history.o: $(topdir)/include/ocache.h
 history.o: $(topdir)/include/posixjmp.h
 history.o: $(topdir)/include/posixstat.h
@@ -1486,10 +1529,11 @@ history.o: $(topdir)/syntax.h
 history.o: $(topdir)/unwind_prot.h
 history.o: $(topdir)/variables.h
 history.o: $(topdir)/xmalloc.h
+jobs.c: $(srcdir)/jobs.def
+jobs.o: $(BUILD_DIR)/builtins/jobs.c
 jobs.o: $(BUILD_DIR)/config.h
 jobs.o: $(srcdir)/bashgetopt.h
 jobs.o: $(srcdir)/common.h
-jobs.o: $(srcdir)/jobs.c
 jobs.o: $(topdir)/array.h
 jobs.o: $(topdir)/arrayfunc.h
 jobs.o: $(topdir)/assoc.h
@@ -1510,6 +1554,7 @@ jobs.o: $(topdir)/hashlib.h
 jobs.o: $(topdir)/include/chartypes.h
 jobs.o: $(topdir)/include/gettext.h
 jobs.o: $(topdir)/include/maxpath.h
+jobs.o: $(topdir)/include/memalloc.h
 jobs.o: $(topdir)/include/ocache.h
 jobs.o: $(topdir)/include/posixjmp.h
 jobs.o: $(topdir)/include/posixwait.h
@@ -1529,9 +1574,10 @@ jobs.o: $(topdir)/syntax.h
 jobs.o: $(topdir)/unwind_prot.h
 jobs.o: $(topdir)/variables.h
 jobs.o: $(topdir)/xmalloc.h
+kill.c: $(srcdir)/kill.def
+kill.o: $(BUILD_DIR)/builtins/kill.c
 kill.o: $(BUILD_DIR)/config.h
 kill.o: $(srcdir)/common.h
-kill.o: $(srcdir)/kill.c
 kill.o: $(topdir)/array.h
 kill.o: $(topdir)/arrayfunc.h
 kill.o: $(topdir)/assoc.h
@@ -1551,6 +1597,7 @@ kill.o: $(topdir)/hashlib.h
 kill.o: $(topdir)/include/chartypes.h
 kill.o: $(topdir)/include/gettext.h
 kill.o: $(topdir)/include/maxpath.h
+kill.o: $(topdir)/include/memalloc.h
 kill.o: $(topdir)/include/ocache.h
 kill.o: $(topdir)/include/posixjmp.h
 kill.o: $(topdir)/include/posixwait.h
@@ -1569,9 +1616,10 @@ kill.o: $(topdir)/trap.h
 kill.o: $(topdir)/unwind_prot.h
 kill.o: $(topdir)/variables.h
 kill.o: $(topdir)/xmalloc.h
+let.c: $(srcdir)/let.def
+let.o: $(BUILD_DIR)/builtins/let.c
 let.o: $(BUILD_DIR)/config.h
 let.o: $(srcdir)/common.h
-let.o: $(srcdir)/let.c
 let.o: $(topdir)/array.h
 let.o: $(topdir)/arrayfunc.h
 let.o: $(topdir)/assoc.h
@@ -1591,6 +1639,7 @@ let.o: $(topdir)/hashlib.h
 let.o: $(topdir)/include/chartypes.h
 let.o: $(topdir)/include/gettext.h
 let.o: $(topdir)/include/maxpath.h
+let.o: $(topdir)/include/memalloc.h
 let.o: $(topdir)/include/ocache.h
 let.o: $(topdir)/include/posixjmp.h
 let.o: $(topdir)/include/stdc.h
@@ -1605,10 +1654,11 @@ let.o: $(topdir)/syntax.h
 let.o: $(topdir)/unwind_prot.h
 let.o: $(topdir)/variables.h
 let.o: $(topdir)/xmalloc.h
+mapfile.c: $(srcdir)/mapfile.def
+mapfile.o: $(BUILD_DIR)/builtins/mapfile.c
 mapfile.o: $(BUILD_DIR)/config.h
 mapfile.o: $(srcdir)/bashgetopt.h
 mapfile.o: $(srcdir)/common.h
-mapfile.o: $(srcdir)/mapfile.c
 mapfile.o: $(topdir)/alias.h
 mapfile.o: $(topdir)/array.h
 mapfile.o: $(topdir)/arrayfunc.h
@@ -1630,6 +1680,7 @@ mapfile.o: $(topdir)/hashlib.h
 mapfile.o: $(topdir)/include/chartypes.h
 mapfile.o: $(topdir)/include/gettext.h
 mapfile.o: $(topdir)/include/maxpath.h
+mapfile.o: $(topdir)/include/memalloc.h
 mapfile.o: $(topdir)/include/ocache.h
 mapfile.o: $(topdir)/include/posixjmp.h
 mapfile.o: $(topdir)/include/posixstat.h
@@ -1655,10 +1706,11 @@ mkbuiltins.o: $(topdir)/include/ansi_stdlib.h
 mkbuiltins.o: $(topdir)/include/filecntl.h
 mkbuiltins.o: $(topdir)/include/posixstat.h
 mkbuiltins.o: $(topdir)/include/stdc.h
+printf.c: $(srcdir)/printf.def
+printf.o: $(BUILD_DIR)/builtins/printf.c
 printf.o: $(BUILD_DIR)/config.h
 printf.o: $(srcdir)/bashgetopt.h
 printf.o: $(srcdir)/common.h
-printf.o: $(srcdir)/printf.c
 printf.o: $(topdir)/array.h
 printf.o: $(topdir)/arrayfunc.h
 printf.o: $(topdir)/assoc.h
@@ -1679,6 +1731,7 @@ printf.o: $(topdir)/include/chartypes.h
 printf.o: $(topdir)/include/gettext.h
 printf.o: $(topdir)/include/intprops-internal.h
 printf.o: $(topdir)/include/maxpath.h
+printf.o: $(topdir)/include/memalloc.h
 printf.o: $(topdir)/include/ocache.h
 printf.o: $(topdir)/include/posixjmp.h
 printf.o: $(topdir)/include/posixtime.h
@@ -1711,10 +1764,11 @@ psize.o: $(topdir)/include/stdc.h
 psize.o: $(topdir)/include/unlocked-io.h
 psize.o: $(topdir)/sig.h
 psize.o: $(topdir)/xmalloc.h
+pushd.c: $(srcdir)/pushd.def
+pushd.o: $(BUILD_DIR)/builtins/pushd.c
 pushd.o: $(BUILD_DIR)/config.h
 pushd.o: $(srcdir)/builtext.h
 pushd.o: $(srcdir)/common.h
-pushd.o: $(srcdir)/pushd.c
 pushd.o: $(topdir)/array.h
 pushd.o: $(topdir)/arrayfunc.h
 pushd.o: $(topdir)/assoc.h
@@ -1734,6 +1788,7 @@ pushd.o: $(topdir)/hashlib.h
 pushd.o: $(topdir)/include/chartypes.h
 pushd.o: $(topdir)/include/gettext.h
 pushd.o: $(topdir)/include/maxpath.h
+pushd.o: $(topdir)/include/memalloc.h
 pushd.o: $(topdir)/include/ocache.h
 pushd.o: $(topdir)/include/posixjmp.h
 pushd.o: $(topdir)/include/stdc.h
@@ -1749,10 +1804,11 @@ pushd.o: $(topdir)/syntax.h
 pushd.o: $(topdir)/unwind_prot.h
 pushd.o: $(topdir)/variables.h
 pushd.o: $(topdir)/xmalloc.h
+read.c: $(srcdir)/read.def
+read.o: $(BUILD_DIR)/builtins/read.c
 read.o: $(BUILD_DIR)/config.h
 read.o: $(srcdir)/bashgetopt.h
 read.o: $(srcdir)/common.h
-read.o: $(srcdir)/read.c
 read.o: $(topdir)/array.h
 read.o: $(topdir)/arrayfunc.h
 read.o: $(topdir)/assoc.h
@@ -1773,6 +1829,7 @@ read.o: $(topdir)/hashlib.h
 read.o: $(topdir)/include/chartypes.h
 read.o: $(topdir)/include/gettext.h
 read.o: $(topdir)/include/maxpath.h
+read.o: $(topdir)/include/memalloc.h
 read.o: $(topdir)/include/ocache.h
 read.o: $(topdir)/include/posixjmp.h
 read.o: $(topdir)/include/posixstat.h
@@ -1788,7 +1845,7 @@ read.o: $(topdir)/lib/readline/keymaps.h
 read.o: $(topdir)/lib/readline/readline.h
 read.o: $(topdir)/lib/readline/rlstdc.h
 read.o: $(topdir)/lib/readline/rltypedefs.h
-read.o: $(topdir)/lib/readline/tilde.h
+read.o: $(topdir)/lib/tilde/tilde.h
 read.o: $(topdir)/make_cmd.h
 read.o: $(topdir)/pathnames.h
 read.o: $(topdir)/quit.h
@@ -1800,10 +1857,11 @@ read.o: $(topdir)/trap.h
 read.o: $(topdir)/unwind_prot.h
 read.o: $(topdir)/variables.h
 read.o: $(topdir)/xmalloc.h
+return.c: $(srcdir)/return.def
+return.o: $(BUILD_DIR)/builtins/return.c
 return.o: $(BUILD_DIR)/config.h
 return.o: $(srcdir)/bashgetopt.h
 return.o: $(srcdir)/common.h
-return.o: $(srcdir)/return.c
 return.o: $(topdir)/array.h
 return.o: $(topdir)/arrayfunc.h
 return.o: $(topdir)/assoc.h
@@ -1824,6 +1882,7 @@ return.o: $(topdir)/hashlib.h
 return.o: $(topdir)/include/chartypes.h
 return.o: $(topdir)/include/gettext.h
 return.o: $(topdir)/include/maxpath.h
+return.o: $(topdir)/include/memalloc.h
 return.o: $(topdir)/include/ocache.h
 return.o: $(topdir)/include/posixjmp.h
 return.o: $(topdir)/include/stdc.h
@@ -1838,10 +1897,11 @@ return.o: $(topdir)/syntax.h
 return.o: $(topdir)/unwind_prot.h
 return.o: $(topdir)/variables.h
 return.o: $(topdir)/xmalloc.h
+set.c: $(srcdir)/set.def
+set.o: $(BUILD_DIR)/builtins/set.c
 set.o: $(BUILD_DIR)/config.h
 set.o: $(srcdir)/bashgetopt.h
 set.o: $(srcdir)/common.h
-set.o: $(srcdir)/set.c
 set.o: $(topdir)/array.h
 set.o: $(topdir)/arrayfunc.h
 set.o: $(topdir)/assoc.h
@@ -1864,6 +1924,7 @@ set.o: $(topdir)/hashlib.h
 set.o: $(topdir)/include/chartypes.h
 set.o: $(topdir)/include/gettext.h
 set.o: $(topdir)/include/maxpath.h
+set.o: $(topdir)/include/memalloc.h
 set.o: $(topdir)/include/ocache.h
 set.o: $(topdir)/include/posixjmp.h
 set.o: $(topdir)/include/stdc.h
@@ -1874,9 +1935,8 @@ set.o: $(topdir)/lib/readline/keymaps.h
 set.o: $(topdir)/lib/readline/readline.h
 set.o: $(topdir)/lib/readline/rlstdc.h
 set.o: $(topdir)/lib/readline/rltypedefs.h
-set.o: $(topdir)/lib/readline/tilde.h
+set.o: $(topdir)/lib/tilde/tilde.h
 set.o: $(topdir)/make_cmd.h
-set.o: $(topdir)/options.h
 set.o: $(topdir)/parser.h
 set.o: $(topdir)/pathnames.h
 set.o: $(topdir)/quit.h
@@ -1887,11 +1947,12 @@ set.o: $(topdir)/syntax.h
 set.o: $(topdir)/unwind_prot.h
 set.o: $(topdir)/variables.h
 set.o: $(topdir)/xmalloc.h
+setattr.c: $(srcdir)/setattr.def
+setattr.o: $(BUILD_DIR)/builtins/setattr.c
 setattr.o: $(BUILD_DIR)/config.h
 setattr.o: $(srcdir)/bashgetopt.h
 setattr.o: $(srcdir)/builtext.h
 setattr.o: $(srcdir)/common.h
-setattr.o: $(srcdir)/setattr.c
 setattr.o: $(topdir)/array.h
 setattr.o: $(topdir)/arrayfunc.h
 setattr.o: $(topdir)/assoc.h
@@ -1913,6 +1974,7 @@ setattr.o: $(topdir)/hashlib.h
 setattr.o: $(topdir)/include/chartypes.h
 setattr.o: $(topdir)/include/gettext.h
 setattr.o: $(topdir)/include/maxpath.h
+setattr.o: $(topdir)/include/memalloc.h
 setattr.o: $(topdir)/include/ocache.h
 setattr.o: $(topdir)/include/posixjmp.h
 setattr.o: $(topdir)/include/stdc.h
@@ -1927,9 +1989,10 @@ setattr.o: $(topdir)/syntax.h
 setattr.o: $(topdir)/unwind_prot.h
 setattr.o: $(topdir)/variables.h
 setattr.o: $(topdir)/xmalloc.h
+shift.c: $(srcdir)/shift.def
+shift.o: $(BUILD_DIR)/builtins/shift.c
 shift.o: $(BUILD_DIR)/config.h
 shift.o: $(srcdir)/common.h
-shift.o: $(srcdir)/shift.c
 shift.o: $(topdir)/array.h
 shift.o: $(topdir)/arrayfunc.h
 shift.o: $(topdir)/assoc.h
@@ -1949,6 +2012,7 @@ shift.o: $(topdir)/hashlib.h
 shift.o: $(topdir)/include/chartypes.h
 shift.o: $(topdir)/include/gettext.h
 shift.o: $(topdir)/include/maxpath.h
+shift.o: $(topdir)/include/memalloc.h
 shift.o: $(topdir)/include/ocache.h
 shift.o: $(topdir)/include/posixjmp.h
 shift.o: $(topdir)/include/stdc.h
@@ -1963,10 +2027,11 @@ shift.o: $(topdir)/syntax.h
 shift.o: $(topdir)/unwind_prot.h
 shift.o: $(topdir)/variables.h
 shift.o: $(topdir)/xmalloc.h
+shopt.c: $(srcdir)/shopt.def
+shopt.o: $(BUILD_DIR)/builtins/shopt.c
 shopt.o: $(BUILD_DIR)/config.h
 shopt.o: $(srcdir)/bashgetopt.h
 shopt.o: $(srcdir)/common.h
-shopt.o: $(srcdir)/shopt.c
 shopt.o: $(topdir)/array.h
 shopt.o: $(topdir)/arrayfunc.h
 shopt.o: $(topdir)/assoc.h
@@ -1990,6 +2055,7 @@ shopt.o: $(topdir)/hashlib.h
 shopt.o: $(topdir)/include/chartypes.h
 shopt.o: $(topdir)/include/gettext.h
 shopt.o: $(topdir)/include/maxpath.h
+shopt.o: $(topdir)/include/memalloc.h
 shopt.o: $(topdir)/include/ocache.h
 shopt.o: $(topdir)/include/posixjmp.h
 shopt.o: $(topdir)/include/stdc.h
@@ -2000,10 +2066,8 @@ shopt.o: $(topdir)/lib/readline/keymaps.h
 shopt.o: $(topdir)/lib/readline/readline.h
 shopt.o: $(topdir)/lib/readline/rlstdc.h
 shopt.o: $(topdir)/lib/readline/rltypedefs.h
-shopt.o: $(topdir)/lib/readline/tilde.h
+shopt.o: $(topdir)/lib/tilde/tilde.h
 shopt.o: $(topdir)/make_cmd.h
-shopt.o: $(topdir)/options.h
-shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/pathnames.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
@@ -2014,10 +2078,11 @@ shopt.o: $(topdir)/unwind_prot.h
 shopt.o: $(topdir)/variables.h
 shopt.o: $(topdir)/version.h
 shopt.o: $(topdir)/xmalloc.h
+source.c: $(srcdir)/source.def
+source.o: $(BUILD_DIR)/builtins/source.c
 source.o: $(BUILD_DIR)/config.h
 source.o: $(srcdir)/bashgetopt.h
 source.o: $(srcdir)/common.h
-source.o: $(srcdir)/source.c
 source.o: $(topdir)/array.h
 source.o: $(topdir)/arrayfunc.h
 source.o: $(topdir)/assoc.h
@@ -2041,6 +2106,7 @@ source.o: $(topdir)/include/chartypes.h
 source.o: $(topdir)/include/filecntl.h
 source.o: $(topdir)/include/gettext.h
 source.o: $(topdir)/include/maxpath.h
+source.o: $(topdir)/include/memalloc.h
 source.o: $(topdir)/include/ocache.h
 source.o: $(topdir)/include/posixjmp.h
 source.o: $(topdir)/include/posixstat.h
@@ -2057,10 +2123,11 @@ source.o: $(topdir)/trap.h
 source.o: $(topdir)/unwind_prot.h
 source.o: $(topdir)/variables.h
 source.o: $(topdir)/xmalloc.h
+suspend.c: $(srcdir)/suspend.def
+suspend.o: $(BUILD_DIR)/builtins/suspend.c
 suspend.o: $(BUILD_DIR)/config.h
 suspend.o: $(srcdir)/bashgetopt.h
 suspend.o: $(srcdir)/common.h
-suspend.o: $(srcdir)/suspend.c
 suspend.o: $(topdir)/array.h
 suspend.o: $(topdir)/arrayfunc.h
 suspend.o: $(topdir)/assoc.h
@@ -2080,6 +2147,7 @@ suspend.o: $(topdir)/hashlib.h
 suspend.o: $(topdir)/include/chartypes.h
 suspend.o: $(topdir)/include/gettext.h
 suspend.o: $(topdir)/include/maxpath.h
+suspend.o: $(topdir)/include/memalloc.h
 suspend.o: $(topdir)/include/ocache.h
 suspend.o: $(topdir)/include/posixjmp.h
 suspend.o: $(topdir)/include/posixwait.h
@@ -2097,9 +2165,10 @@ suspend.o: $(topdir)/syntax.h
 suspend.o: $(topdir)/unwind_prot.h
 suspend.o: $(topdir)/variables.h
 suspend.o: $(topdir)/xmalloc.h
+test.c: $(srcdir)/test.def
+test.o: $(BUILD_DIR)/builtins/test.c
 test.o: $(BUILD_DIR)/config.h
 test.o: $(srcdir)/common.h
-test.o: $(srcdir)/test.c
 test.o: $(topdir)/array.h
 test.o: $(topdir)/arrayfunc.h
 test.o: $(topdir)/assoc.h
@@ -2120,6 +2189,7 @@ test.o: $(topdir)/hashlib.h
 test.o: $(topdir)/include/chartypes.h
 test.o: $(topdir)/include/gettext.h
 test.o: $(topdir)/include/maxpath.h
+test.o: $(topdir)/include/memalloc.h
 test.o: $(topdir)/include/ocache.h
 test.o: $(topdir)/include/posixjmp.h
 test.o: $(topdir)/include/stdc.h
@@ -2135,9 +2205,10 @@ test.o: $(topdir)/test.h
 test.o: $(topdir)/unwind_prot.h
 test.o: $(topdir)/variables.h
 test.o: $(topdir)/xmalloc.h
+times.c: $(srcdir)/times.def
+times.o: $(BUILD_DIR)/builtins/times.c
 times.o: $(BUILD_DIR)/config.h
 times.o: $(srcdir)/common.h
-times.o: $(srcdir)/times.c
 times.o: $(topdir)/array.h
 times.o: $(topdir)/arrayfunc.h
 times.o: $(topdir)/assoc.h
@@ -2155,6 +2226,7 @@ times.o: $(topdir)/general.h
 times.o: $(topdir)/hashlib.h
 times.o: $(topdir)/include/chartypes.h
 times.o: $(topdir)/include/maxpath.h
+times.o: $(topdir)/include/memalloc.h
 times.o: $(topdir)/include/ocache.h
 times.o: $(topdir)/include/posixjmp.h
 times.o: $(topdir)/include/posixtime.h
@@ -2188,10 +2260,11 @@ tmpbuiltins.o: $(topdir)/include/gettext.h
 tmpbuiltins.o: $(topdir)/include/stdc.h
 tmpbuiltins.o: $(topdir)/include/unlocked-io.h
 tmpbuiltins.o: $(topdir)/xmalloc.h
+trap.c: $(srcdir)/trap.def
+trap.o: $(BUILD_DIR)/builtins/trap.c
 trap.o: $(BUILD_DIR)/config.h
 trap.o: $(srcdir)/bashgetopt.h
 trap.o: $(srcdir)/common.h
-trap.o: $(srcdir)/trap.c
 trap.o: $(topdir)/array.h
 trap.o: $(topdir)/arrayfunc.h
 trap.o: $(topdir)/assoc.h
@@ -2209,6 +2282,7 @@ trap.o: $(topdir)/general.h
 trap.o: $(topdir)/hashlib.h
 trap.o: $(topdir)/include/chartypes.h
 trap.o: $(topdir)/include/maxpath.h
+trap.o: $(topdir)/include/memalloc.h
 trap.o: $(topdir)/include/ocache.h
 trap.o: $(topdir)/include/posixjmp.h
 trap.o: $(topdir)/include/stdc.h
@@ -2224,10 +2298,11 @@ trap.o: $(topdir)/trap.h
 trap.o: $(topdir)/unwind_prot.h
 trap.o: $(topdir)/variables.h
 trap.o: $(topdir)/xmalloc.h
+type.c: $(srcdir)/type.def
+type.o: $(BUILD_DIR)/builtins/type.c
 type.o: $(BUILD_DIR)/config.h
 type.o: $(srcdir)/bashgetopt.h
 type.o: $(srcdir)/common.h
-type.o: $(srcdir)/type.c
 type.o: $(topdir)/alias.h
 type.o: $(topdir)/array.h
 type.o: $(topdir)/arrayfunc.h
@@ -2252,6 +2327,7 @@ type.o: $(topdir)/hashlib.h
 type.o: $(topdir)/include/chartypes.h
 type.o: $(topdir)/include/gettext.h
 type.o: $(topdir)/include/maxpath.h
+type.o: $(topdir)/include/memalloc.h
 type.o: $(topdir)/include/ocache.h
 type.o: $(topdir)/include/posixjmp.h
 type.o: $(topdir)/include/posixstat.h
@@ -2269,11 +2345,12 @@ type.o: $(topdir)/syntax.h
 type.o: $(topdir)/unwind_prot.h
 type.o: $(topdir)/variables.h
 type.o: $(topdir)/xmalloc.h
+ulimit.c: $(srcdir)/ulimit.def
+ulimit.o: $(BUILD_DIR)/builtins/ulimit.c
 ulimit.o: $(BUILD_DIR)/config.h
 ulimit.o: $(srcdir)/bashgetopt.h
 ulimit.o: $(srcdir)/common.h
 ulimit.o: $(srcdir)/pipesize.h
-ulimit.o: $(srcdir)/ulimit.c
 ulimit.o: $(topdir)/array.h
 ulimit.o: $(topdir)/arrayfunc.h
 ulimit.o: $(topdir)/assoc.h
@@ -2293,6 +2370,7 @@ ulimit.o: $(topdir)/hashlib.h
 ulimit.o: $(topdir)/include/chartypes.h
 ulimit.o: $(topdir)/include/gettext.h
 ulimit.o: $(topdir)/include/maxpath.h
+ulimit.o: $(topdir)/include/memalloc.h
 ulimit.o: $(topdir)/include/ocache.h
 ulimit.o: $(topdir)/include/posixjmp.h
 ulimit.o: $(topdir)/include/stdc.h
@@ -2307,10 +2385,11 @@ ulimit.o: $(topdir)/syntax.h
 ulimit.o: $(topdir)/unwind_prot.h
 ulimit.o: $(topdir)/variables.h
 ulimit.o: $(topdir)/xmalloc.h
+umask.c: $(srcdir)/umask.def
+umask.o: $(BUILD_DIR)/builtins/umask.c
 umask.o: $(BUILD_DIR)/config.h
 umask.o: $(srcdir)/bashgetopt.h
 umask.o: $(srcdir)/common.h
-umask.o: $(srcdir)/umask.c
 umask.o: $(topdir)/array.h
 umask.o: $(topdir)/arrayfunc.h
 umask.o: $(topdir)/assoc.h
@@ -2331,6 +2410,7 @@ umask.o: $(topdir)/include/chartypes.h
 umask.o: $(topdir)/include/filecntl.h
 umask.o: $(topdir)/include/gettext.h
 umask.o: $(topdir)/include/maxpath.h
+umask.o: $(topdir)/include/memalloc.h
 umask.o: $(topdir)/include/ocache.h
 umask.o: $(topdir)/include/posixjmp.h
 umask.o: $(topdir)/include/posixstat.h
@@ -2346,10 +2426,11 @@ umask.o: $(topdir)/syntax.h
 umask.o: $(topdir)/unwind_prot.h
 umask.o: $(topdir)/variables.h
 umask.o: $(topdir)/xmalloc.h
+wait.c: $(srcdir)/wait.def
+wait.o: $(BUILD_DIR)/builtins/wait.c
 wait.o: $(BUILD_DIR)/config.h
 wait.o: $(srcdir)/bashgetopt.h
 wait.o: $(srcdir)/common.h
-wait.o: $(srcdir)/wait.c
 wait.o: $(topdir)/array.h
 wait.o: $(topdir)/arrayfunc.h
 wait.o: $(topdir)/assoc.h
@@ -2368,6 +2449,7 @@ wait.o: $(topdir)/general.h
 wait.o: $(topdir)/hashlib.h
 wait.o: $(topdir)/include/chartypes.h
 wait.o: $(topdir)/include/maxpath.h
+wait.o: $(topdir)/include/memalloc.h
 wait.o: $(topdir)/include/ocache.h
 wait.o: $(topdir)/include/posixjmp.h
 wait.o: $(topdir)/include/posixwait.h
