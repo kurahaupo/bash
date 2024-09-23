@@ -1994,16 +1994,8 @@ shopt.o: $(topdir)/include/ocache.h
 shopt.o: $(topdir)/include/posixjmp.h
 shopt.o: $(topdir)/include/stdc.h
 shopt.o: $(topdir)/include/unlocked-io.h
-shopt.o: $(topdir)/input.h
-shopt.o: $(topdir)/lib/readline/chardefs.h
-shopt.o: $(topdir)/lib/readline/keymaps.h
-shopt.o: $(topdir)/lib/readline/readline.h
-shopt.o: $(topdir)/lib/readline/rlstdc.h
-shopt.o: $(topdir)/lib/readline/rltypedefs.h
-shopt.o: $(topdir)/lib/readline/tilde.h
 shopt.o: $(topdir)/make_cmd.h
 shopt.o: $(topdir)/options.h
-shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/pathnames.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
