@@ -1937,6 +1937,7 @@ set.o: $(topdir)/lib/readline/rlstdc.h
 set.o: $(topdir)/lib/readline/rltypedefs.h
 set.o: $(topdir)/lib/tilde/tilde.h
 set.o: $(topdir)/make_cmd.h
+set.o: $(topdir)/options.h
 set.o: $(topdir)/parser.h
 set.o: $(topdir)/pathnames.h
 set.o: $(topdir)/quit.h
@@ -2068,6 +2069,8 @@ shopt.o: $(topdir)/lib/readline/rlstdc.h
 shopt.o: $(topdir)/lib/readline/rltypedefs.h
 shopt.o: $(topdir)/lib/tilde/tilde.h
 shopt.o: $(topdir)/make_cmd.h
+shopt.o: $(topdir)/options.h
+shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/pathnames.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
