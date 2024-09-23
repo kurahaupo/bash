@@ -273,11 +273,10 @@ ${LIBINTL_H}:
 	@(cd ${INTL_BUILDDIR} && \
 		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
 
-.PHONY: depend depends
-depend: $(MKBUILTINS)
+.PHONY: depends depend
+depends depend: $(MKBUILTINS)
 	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
-	sh $(MKDEP) -c $(CC) -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) *.c
-depends: depend
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 
 # dependencies
 

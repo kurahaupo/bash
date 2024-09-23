@@ -36,6 +36,8 @@ RM = rm -f
 CP = cp
 MV = mv
 
+MKDEP = $(topdir)/support/mkdep
+
 SHELL = @MAKE_SHELL@
 
 PROFILE_FLAGS = @PROFILE_FLAGS@
@@ -124,9 +126,8 @@ ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
 
 .PHONY: depends depend
-depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
-depend: depends
+depends depend:
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 
 #MKDEP-CUT-HERE
 

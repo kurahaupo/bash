@@ -1043,11 +1043,9 @@ xdist:	force
 	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	( cd po && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
-depend:	depends
-
-depends: force y.tab.c
-	$(Program) $(MKDEP) -c $(CC) -- $(CCFLAGS) $(srcdir)/*.c y.tab.c
-	( sed < Makefile '/^#* *MKDEP-CUT-HERE/,$$ d' && echo '#MKDEP-CUT-HERE' && cat .depend ) > Makefile.tmp$$$$ && mv Makefile.tmp$$$$ Makefile
+.PHONY: depends depend
+depends depend: force y.tab.c
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c y.tab.c
 
 #### PRIVATE TARGETS ####
 hashtest:	hashlib.c
@@ -9207,3 +9205,4 @@ support/xcase.o: $(topdir)/config-top.h
 support/zecho.o: $(srcdir)/support/zecho.c
 
 tests/cracauer-testsuite/catcher.o: $(srcdir)/tests/cracauer-testsuite/catcher.c
+

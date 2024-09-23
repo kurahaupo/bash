@@ -335,9 +335,8 @@ OBJS = print.o truefalse.o accept.o sleep.o finfo.o getconf.o logname.o \
 ${OBJS}:	${BUILD_DIR}/config.h
 
 .PHONY: depends depend
-depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
-depend: depends
+depends depend:
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
 
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)

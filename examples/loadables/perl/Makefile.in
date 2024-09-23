@@ -42,6 +42,8 @@ SHELL = @MAKE_SHELL@
 
 PERL5 = perl5
 
+MKDEP = $(topdir)/support/mkdep
+
 CFLAGS = @CFLAGS@
 
 #
@@ -97,9 +99,9 @@ clean mostlyclean:
 distclean maintainer-clean: clean
 	${RM} perlxsi.c
 
-depends:
-	sh $(MKDEP) -c $(CC) -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
-depend: depends
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
 
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)

@@ -73,6 +73,8 @@ LIBS = @LIBS@
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
+MKDEP = $(topdir)/support/mkdep
+
 HEADERS = \
   gmo.h \
   gettextP.h \
@@ -472,9 +474,8 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 .NOEXPORT:
 
 .PHONY: depends depend
-depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
-depend: depends
+depend depends:
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 
 #MKDEP-CUT-HERE
 

@@ -38,6 +38,8 @@ MV = mv
 
 SHELL = @MAKE_SHELL@
 
+MKDEP = $(topdir)/support/mkdep
+
 PROFILE_FLAGS = @PROFILE_FLAGS@
 
 CFLAGS = @CFLAGS@
@@ -116,7 +118,7 @@ mostlyclean: clean
 
 .PHONY: depends depend
 depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 depend: depends
 
 #MKDEP-CUT-HERE

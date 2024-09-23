@@ -57,6 +57,8 @@ termcapfile = @termcapfile@
 
 #### End of system configuration section. ####
 
+MKDEP = $(topdir)/support/mkdep
+
 SHELL = /bin/sh
 
 SRCS = termcap.c tparam.c version.c
@@ -139,7 +141,7 @@ dist: $(DISTFILES)
 
 .PHONY: depends depend
 depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 depend: depends
 
 #MKDEP-CUT-HERE

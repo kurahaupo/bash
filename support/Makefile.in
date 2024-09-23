@@ -37,6 +37,8 @@ SHELL	= @MAKE_SHELL@
 CC = @CC@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 
+MKDEP = $(topdir)/support/mkdep
+
 EXEEXT = @EXEEXT@
 
 #
@@ -89,7 +91,7 @@ distclean maintainer-clean mostlyclean: clean
 
 .PHONY: depends depend
 depends:
-	sh $(MKDEP) -c gcc -P -S "$(srcdir)" -T "$(BUILD_DIR)" -- $(CCFLAGS) $(INC) $(topdir)c
+	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
 depend: depends
 
 #MKDEP-CUT-HERE
