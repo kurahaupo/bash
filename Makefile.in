@@ -2250,7 +2250,6 @@ flags.o: $(topdir)/execute_cmd.h
 flags.o: $(topdir)/externs.h
 flags.o: $(topdir)/flags.h
 flags.o: $(topdir)/general.h
-flags.o: $(topdir)/hashcmd.h
 flags.o: $(topdir)/hashlib.h
 flags.o: $(topdir)/include/chartypes.h
 flags.o: $(topdir)/include/maxpath.h
@@ -2258,15 +2257,11 @@ flags.o: $(topdir)/include/ocache.h
 flags.o: $(topdir)/include/posixjmp.h
 flags.o: $(topdir)/include/stdc.h
 flags.o: $(topdir)/include/unlocked-io.h
-flags.o: $(topdir)/jobs.h
 flags.o: $(topdir)/make_cmd.h
-flags.o: $(topdir)/options.h
 flags.o: $(topdir)/pathnames.h
 flags.o: $(topdir)/quit.h
-flags.o: $(topdir)/redir.h
 flags.o: $(topdir)/shell.h
 flags.o: $(topdir)/sig.h
-flags.o: $(topdir)/siglist.h
 flags.o: $(topdir)/subst.h
 flags.o: $(topdir)/syntax.h
 flags.o: $(topdir)/unwind_prot.h
