@@ -2345,7 +2345,6 @@ hashcmd.o: $(topdir)/include/posixstat.h
 hashcmd.o: $(topdir)/include/stdc.h
 hashcmd.o: $(topdir)/include/unlocked-io.h
 hashcmd.o: $(topdir)/make_cmd.h
-hashcmd.o: $(topdir)/options.h
 hashcmd.o: $(topdir)/pathnames.h
 hashcmd.o: $(topdir)/quit.h
 hashcmd.o: $(topdir)/shell.h
