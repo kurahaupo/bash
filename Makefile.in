@@ -2991,7 +2991,6 @@ shell.o: $(topdir)/externs.h
 shell.o: $(topdir)/findcmd.h
 shell.o: $(topdir)/flags.h
 shell.o: $(topdir)/general.h
-shell.o: $(topdir)/hashcmd.h
 shell.o: $(topdir)/hashlib.h
 shell.o: $(topdir)/include/ansi_stdlib.h
 shell.o: $(topdir)/include/chartypes.h
@@ -3017,11 +3016,9 @@ shell.o: $(topdir)/lib/readline/rltypedefs.h
 shell.o: $(topdir)/lib/tilde/tilde.h
 shell.o: $(topdir)/mailcheck.h
 shell.o: $(topdir)/make_cmd.h
-shell.o: $(topdir)/options.h
 shell.o: $(topdir)/parser.h
 shell.o: $(topdir)/pathnames.h
 shell.o: $(topdir)/quit.h
-shell.o: $(topdir)/redir.h
 shell.o: $(topdir)/shell.h
 shell.o: $(topdir)/sig.h
 shell.o: $(topdir)/siglist.h
