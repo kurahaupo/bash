@@ -20,6 +20,9 @@ VPATH = @srcdir@
 
 topdir = @top_srcdir@
 BUILD_DIR = @BUILD_DIR@
+top_builddir = $(BUILD_DIR)
+
+subdir = po
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
