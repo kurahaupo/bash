@@ -618,6 +618,7 @@ static opt_def_t const xo_options[] = {
 #if defined (SYSLOG_HISTORY) && defined (SYSLOG_SHOPT)
   { "syslog_history",
     .store = &syslog_history,
+    .init = &(option_value_t const){SYSLOG_SHOPT},
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -804,13 +805,10 @@ reset_shopt_options (void)
   literal_history = 0;
 #endif
 
-#if defined (SYSLOG_HISTORY)
-#  if defined (SYSLOG_SHOPT)
-  syslog_history = SYSLOG_SHOPT;
-#  else
+#if defined (SYSLOG_HISTORY) && ! defined (SYSLOG_SHOPT)
+  /* Have syslog history without the shopt to turn it off... */
   syslog_history = 1;
-#  endif /* SYSLOG_SHOPT */
-#endif
+#endif /* !SYSLOG_SHOPT */
 
 #if defined (READLINE)
   force_fignore = 1;
