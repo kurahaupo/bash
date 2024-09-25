@@ -450,6 +450,7 @@ static opt_def_t const xo_options[] = {
   },
   { "gnu_errfmt",
     .store = &gnu_error_format,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -777,7 +778,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  gnu_error_format = 0;
   inherit_errexit = 0;
   localvar_unset = 0;
   no_exit_on_failed_exec = 0;
