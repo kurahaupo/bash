@@ -610,6 +610,7 @@ static opt_def_t const xo_options[] = {
   },
   { "sourcepath",
     .store = &source_uses_path,
+    .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -787,7 +788,6 @@ void
 reset_shopt_options (void)
 {
 
-  source_uses_path = 1;
 
   glob_asciirange = GLOBASCII_DEFAULT;
   patsub_replacement = PATSUB_REPLACE_DEFAULT;
