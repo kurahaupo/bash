@@ -601,6 +601,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "shift_verbose",
     .store = &print_shift_error,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -781,7 +782,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  print_shift_error = 0;
   singlequote_translations = 0;
   varassign_redir_autoclose = 0;
 
