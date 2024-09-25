@@ -498,6 +498,7 @@ static opt_def_t const xo_options[] = {
   },
   { "lastpipe",
     .store = &lastpipe_opt,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -774,7 +775,6 @@ reset_shopt_options (void)
 {
   gnu_error_format = 0;
   inherit_errexit = 0;
-  lastpipe_opt = 0;
   localvar_inherit = 0;
   localvar_unset = 0;
   mail_warning = 0;
