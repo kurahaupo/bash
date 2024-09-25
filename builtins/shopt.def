@@ -444,6 +444,7 @@ static opt_def_t const xo_options[] = {
   },
   { "globstar",
     .store = &glob_star,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -770,7 +771,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  glob_star = 0;
   gnu_error_format = 0;
   hup_on_exit = 0;
   inherit_errexit = 0;
