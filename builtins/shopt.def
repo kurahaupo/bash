@@ -535,6 +535,7 @@ static opt_def_t const xo_options[] = {
 #if defined (READLINE)
   { "no_empty_cmd_completion",
     .store = &no_empty_command_completion,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -824,7 +825,6 @@ reset_shopt_options (void)
   dircomplete_expand = 0;
 #endif
   dircomplete_spelling = 0;
-  no_empty_command_completion = 0;
 #endif
 
 #if defined (PROGRAMMABLE_COMPLETION)
