@@ -585,16 +585,6 @@ set_current_flags (const char *bitmap)
 		   Accessor (unwind), bitmap[j++]);
 }
 
-void
-reset_shell_flags (void)
-{
-  /* zero initialisation */
-
-  echo_input_at_read = 0;
-
-  /* unity initialisation */
-}
-
 #ifndef NDEBUG
 void
 FailedValidation (char const *file, unsigned int line,

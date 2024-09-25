@@ -869,14 +869,11 @@ reinit_all_options (void)
  * Called from initialize_subshell() in execute_cmd.c when setting up a
  * subshell to run an executable shell script without a leading `#!'. */
 
-extern void reset_shell_flags (void);	/* from flags.c */
 extern void reset_shell_options (void);	/* from set.def */
 extern void reset_shopt_options (void);	/* from shopt.def */
 void
 reset_all_options (void)
 {
-  reset_shell_flags ();		/* from flags.c:
-				 */
   reset_shell_options ();	/* from set.def: reset the values of the -o
 				 * options that are not also shell flags.
 				 * This is called from
