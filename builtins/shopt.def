@@ -528,6 +528,7 @@ static opt_def_t const xo_options[] = {
   },
   { "mailwarn",
     .store = &mail_warning,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -777,7 +778,6 @@ reset_shopt_options (void)
   gnu_error_format = 0;
   inherit_errexit = 0;
   localvar_unset = 0;
-  mail_warning = 0;
   match_ignore_case = 0;
   no_exit_on_failed_exec = 0;
   print_shift_error = 0;
