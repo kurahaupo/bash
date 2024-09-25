@@ -205,6 +205,7 @@ static opt_def_t const xo_options[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once",
     .store = &array_expand_once,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -797,10 +798,6 @@ reset_shopt_options (void)
   extglob_flag = EXTGLOB_DEFAULT;
 #endif
   glob_always_skip_dot_and_dotdot = 1;		/* new default as of bash-5.2 */
-
-#if defined (ARRAY_VARS)
-  array_expand_once = 0;
-#endif
 
 #if defined (HISTORY)
   force_append_history = 0;
