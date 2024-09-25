@@ -487,6 +487,7 @@ static opt_def_t const xo_options[] = {
   },
   { "inherit_errexit",
     .store = &inherit_errexit,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -778,7 +779,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  inherit_errexit = 0;
   localvar_unset = 0;
   no_exit_on_failed_exec = 0;
   print_shift_error = 0;
