@@ -536,6 +536,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "nocaseglob",
     .store = &glob_ignore_case,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -769,7 +770,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  glob_ignore_case = 0;
   glob_star = 0;
   gnu_error_format = 0;
   hup_on_exit = 0;
