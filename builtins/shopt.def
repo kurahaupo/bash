@@ -92,41 +92,52 @@ $END
 #  include "../bashhist.h"
 #endif
 
-extern int allow_null_glob_expansion, fail_glob_expansion, glob_dot_filenames;
-extern int cdable_vars, mail_warning, source_uses_path;
-extern int no_exit_on_failed_exec, print_shift_error;
-extern int check_hashed_filenames, promptvars;
-extern int cdspelling, expand_aliases;
-extern int extended_quote;
-extern int check_window_size;
-extern int glob_ignore_case, match_ignore_case;
-extern int hup_on_exit;
-extern int xpg_echo;
-extern int gnu_error_format;
-extern int check_jobs_at_exit;
+extern int allow_null_glob_expansion;
 extern int autocd;
-extern int glob_star;
-extern int glob_asciirange;
+extern int bash_source_fullpath;
+extern int cdable_vars;
+extern int cdspelling;
+extern int check_hashed_filenames;
+extern int check_jobs_at_exit;
+extern int check_window_size;
+extern int expand_aliases;
+extern int extended_quote;
+extern int fail_glob_expansion;
 extern int glob_always_skip_dot_and_dotdot;
-extern int lastpipe_opt;
+extern int glob_asciirange;
+extern int glob_dot_filenames;
+extern int glob_ignore_case;
+extern int glob_star;
+extern int gnu_error_format;
+extern int hup_on_exit;
 extern int inherit_errexit;
+extern int lastpipe_opt;
 extern int localvar_inherit;
 extern int localvar_unset;
-extern int varassign_redir_autoclose;
-extern int singlequote_translations;
+extern int mail_warning;
+extern int match_ignore_case;
+extern int no_exit_on_failed_exec;
 extern int patsub_replacement;
-extern int bash_source_fullpath;
+extern int print_shift_error;
+extern int promptvars;
+extern int singlequote_translations;
+extern int source_uses_path;
+extern int varassign_redir_autoclose;
+extern int xpg_echo;
 
 #if defined (EXTENDED_GLOB)
 extern int extended_glob;
 #endif
 
 #if defined (READLINE)
-extern int hist_verify, history_reediting, perform_hostname_completion;
-extern int no_empty_command_completion;
-extern int force_fignore;
-extern int dircomplete_spelling, dircomplete_expand;
 extern int complete_fullquote;
+extern int dircomplete_expand;
+extern int dircomplete_spelling;
+extern int force_fignore;
+extern int hist_verify;
+extern int history_reediting;
+extern int no_empty_command_completion;
+extern int perform_hostname_completion;
 
 extern int enable_hostname_completion (int);
 #endif
