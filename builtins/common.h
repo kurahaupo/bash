@@ -255,10 +255,6 @@ extern int loop_level;
 extern int print_shift_error;
 
 /* variables from shopt.def */
-#if defined (ARRAY_VARS)
-extern int expand_once_flag;
-#endif
-
 #if defined (EXTENDED_GLOB)
 extern int extglob_flag;
 #endif

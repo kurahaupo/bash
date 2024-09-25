@@ -153,7 +153,6 @@ extern int debugging_mode;
 
 #if defined (ARRAY_VARS)
 extern int array_expand_once;
-int expand_once_flag;
 #endif
 
 #if defined (SYSLOG_HISTORY)
@@ -175,10 +174,6 @@ static opt_set_func_t set_restricted_shell;
 #if defined (READLINE)
 static opt_set_func_t shopt_enable_hostname_completion;
 static opt_set_func_t shopt_set_complete_direxpand;
-#endif
-
-#if defined (ARRAY_VARS)
-static opt_set_func_t set_array_expand;
 #endif
 
 #if defined (EXTENDED_GLOB)
@@ -212,14 +207,12 @@ typedef int shopt_set_func_t (char *, int);
 static opt_def_t const xo_options[] = {
 #if defined (ARRAY_VARS)
   { "array_expand_once",
-    .store = &expand_once_flag,
-    .set_func = set_array_expand,
+    .store = &array_expand_once,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
   { "assoc_expand_once",
-    .store = &expand_once_flag,
-    .set_func = set_array_expand,
+    .store = &array_expand_once,
     .adjust_bashopts = true,
     .hide_set_o = true,
     .hide_shopt = true,
@@ -811,7 +804,6 @@ reset_shopt_options (void)
 
 #if defined (ARRAY_VARS)
   array_expand_once = 0;
-  expand_once_flag = 0;
 #endif
 
 #if defined (HISTORY)
@@ -1115,19 +1107,6 @@ initialize_bashopts (int no_bashopts)
   /* Set up the $BASHOPTS variable. */
   set_bashopts ();
 }
-
-#if defined (ARRAY_VARS)
-static op_result_t
-set_array_expand (opt_def_t const *d, accessor_t why, int mode)
-{
-  d->store[0] = mode;
-#if 0 /* leave this disabled */
-  if (shell_compatibility_level <= 51)
-#endif
-    array_expand_once = expand_once_flag;
-  return Result (OK);
-}
-#endif
 
 void
 list_shopts (int reusable)
