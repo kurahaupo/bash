@@ -417,6 +417,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "extquote",
     .store = &extended_quote,
+    .OPTRESET_true,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -785,7 +786,6 @@ void
 reset_shopt_options (void)
 {
 
-  extended_quote = 1;
   promptvars = 1;
   source_uses_path = 1;
 
