@@ -480,6 +480,7 @@ static opt_def_t const xo_options[] = {
 #endif
   { "huponexit",
     .store = &hup_on_exit,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -772,7 +773,6 @@ void
 reset_shopt_options (void)
 {
   gnu_error_format = 0;
-  hup_on_exit = 0;
   inherit_errexit = 0;
   lastpipe_opt = 0;
   localvar_inherit = 0;
