@@ -420,6 +420,7 @@ static opt_def_t const xo_options[] = {
   },
   { "failglob",
     .store = &fail_glob_expansion,
+    .OPTRESET_false,
     .adjust_bashopts = true,
     .hide_set_o = true,
   },
@@ -767,7 +768,6 @@ shopt_builtin (WORD_LIST *list)
 void
 reset_shopt_options (void)
 {
-  fail_glob_expansion = 0;
   glob_dot_filenames = 0;
   glob_ignore_case = 0;
   glob_star = 0;
