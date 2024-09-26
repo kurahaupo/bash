@@ -66,19 +66,19 @@ DISTFILES = $(SRCS) $(HDRS) ChangeLog COPYING README INSTALL NEWS \
 termcap.src termcap.texi termcap.info* \
 texinfo.tex Makefile.in configure configure.in mkinstalldirs install-sh
 
-all:	libtermcap.a info
+all: libtermcap.a info
 
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
 
 install: all installdirs @installdata@
 	$(INSTALL_DATA) libtermcap.a $(libdir)/libtermcap.a
-	-$(RANLIB) $(libdir)/libtermcap.a
-	cd $(srcdir); $(INSTALL_DATA) termcap.h $(includedir)/termcap.h
-	-cd $(srcdir); test -z "$(oldincludedir)" || \
+	- $(RANLIB) $(libdir)/libtermcap.a
+	cd $(srcdir) ; $(INSTALL_DATA) termcap.h $(includedir)/termcap.h
+	- cd $(srcdir) ; test -z "$(oldincludedir)" || \
 	  $(INSTALL_DATA) termcap.h $(oldincludedir)/termcap.h
-	cd $(srcdir); for f in termcap.info*; \
-	do $(INSTALL_DATA) $$f $(infodir)/$$f; done
+	cd $(srcdir) ; for f in termcap.info* ; \
+	do $(INSTALL_DATA) $$f $(infodir)/$$f ; done
 
 uninstall: @uninstalldata@
 	rm -f $(libdir)/libtermcap.a $(includedir)/termcap.h
@@ -106,14 +106,14 @@ configure: configure.in
 
 libtermcap.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
-	-$(RANLIB) $@
+	- $(RANLIB) $@
 
 info: termcap.info
 
 termcap.info: termcap.texi
 	$(MAKEINFO) $(srcdir)/termcap.texi --output=$@
 
-TAGS:	$(SRCS)
+TAGS: $(SRCS)
 	etags $(SRCS)
 
 clean:
@@ -125,8 +125,8 @@ distclean: clean
 	rm -f Makefile config.status config.cache config.log
 
 maintainer-clean: distclean
-	@echo "This command is intended for maintainers to use;"
-	@echo "rebuilding the deleted files requires makeinfo."
+	@ echo "This command is intended for maintainers to use;"
+	@ echo "rebuilding the deleted files requires makeinfo."
 	rm -f TAGS *.info*
 
 dist: $(DISTFILES)

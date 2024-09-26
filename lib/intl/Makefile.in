@@ -80,34 +80,34 @@ LIBS = @LIBS@
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
 HEADERS = gmo.h gettextP.h hash-string.h loadinfo.h plural-exp.h \
-        eval-plural.h localcharset.h lock.h \
-        relocatable.h arg-nonnull.h attribute.h \
-        filename.h flexmember.h localename-table.in.h setlocale_null.h \
-        thread-optim.h tsearch.h verify.h xsize.h \
-        printf-args.h printf-parse.h wprintf-parse.h \
+	eval-plural.h localcharset.h lock.h \
+	relocatable.h arg-nonnull.h attribute.h \
+	filename.h flexmember.h localename-table.in.h setlocale_null.h \
+	thread-optim.h tsearch.h verify.h xsize.h \
+	printf-args.h printf-parse.h wprintf-parse.h \
 	export.h os2compat.h plural-exp.h vasnprintf.h vasnwprintf.h \
 	libgnuintl.in.h
 
 SOURCES = bindtextdom.c dcgettext.c dgettext.c gettext.c \
-        finddomain.c hash-string.c loadmsgcat.c localealias.c \
-        textdomain.c l10nflist.c explodename.c dcigettext.c \
-        dcngettext.c dngettext.c ngettext.c plural.y plural-exp.c \
-        localcharset.c threadlib.c lock.c relocatable.c langprefs.c \
-        localename.c localename-table.c log.c printf.c setlocale.c \
-        setlocale-lock.c setlocale_null.c version.c xsize.c osdep.c \
-        intl-compat.c
+	finddomain.c hash-string.c loadmsgcat.c localealias.c \
+	textdomain.c l10nflist.c explodename.c dcigettext.c \
+	dcngettext.c dngettext.c ngettext.c plural.y plural-exp.c \
+	localcharset.c threadlib.c lock.c relocatable.c langprefs.c \
+	localename.c localename-table.c log.c printf.c setlocale.c \
+	setlocale-lock.c setlocale_null.c version.c xsize.c osdep.c \
+	intl-compat.c
 
 EXTRASOURCES = tsearch.c printf-args.c printf-parse.c vasnprintf.c \
 	intl-exports.c os2compat.c
 
 OBJECTS = bindtextdom.o dcgettext.o dgettext.o gettext.o \
-        finddomain.o hash-string.o loadmsgcat.o localealias.o \
-        textdomain.o l10nflist.o explodename.o dcigettext.o \
-        dcngettext.o dngettext.o ngettext.o plural.o plural-exp.o \
-        localcharset.o threadlib.o lock.o relocatable.o langprefs.o \
-        localename.o localename-table.o log.o printf.o setlocale.o \
-        setlocale-lock.o setlocale_null.o version.o xsize.o osdep.o \
-        intl-compat.o
+	finddomain.o hash-string.o loadmsgcat.o localealias.o \
+	textdomain.o l10nflist.o explodename.o dcigettext.o \
+	dcngettext.o dngettext.o ngettext.o plural.o plural-exp.o \
+	localcharset.o threadlib.o lock.o relocatable.o langprefs.o \
+	localename.o localename-table.o log.o printf.o setlocale.o \
+	setlocale-lock.o setlocale_null.o version.o xsize.o osdep.o \
+	intl-compat.o
 
 CREATED_HEADERS = libintl.h libgnuintl.h localename-table.h
 CREATED_SOURCES = plural.c plural.h
@@ -153,10 +153,10 @@ libgnuintl.h: $(srcdir)/libgnuintl.in.h $(srcdir)/export.h
 	    -e 's,@''HAVE_NEWLOCALE''@,@HAVE_NEWLOCALE@,g' \
 	    -e 's,@''ENHANCE_LOCALE_FUNCS''@,@ENHANCE_LOCALE_FUNCS@,g' \
 	  < $(srcdir)/libgnuintl.in.h \
-	| if test '@WOE32DLL@' = yes; then \
-	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/'; \
+	| if test '@WOE32DLL@' = yes ; then \
+	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/' ; \
 	  else \
-	    cat; \
+	    cat ; \
 	  fi \
 	| sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/' \
 	      -e "/#define _LIBINTL_H/r $(srcdir)/export.h" \
@@ -189,11 +189,11 @@ $(srcdir)/plural.c: $(srcdir)/plural.y
 	      -e 's|"plural\.tab\.h"|"plural.h"|' \
 	      < plural.tab.c > plural.c-tmp \
 	  && sed -e 's|".*/plural.y"|"plural.y"|' \
-		 -e 's|"plural\.tab\.h"|"plural.h"|' \
-		 < plural.tab.h > plural.h-tmp \
+	         -e 's|"plural\.tab\.h"|"plural.h"|' \
+	         < plural.tab.h > plural.h-tmp \
 	  && rm -f plural.tab.c plural.tab.h \
 	  && mv plural.c-tmp $(srcdir)/plural.c \
-	  && mv plural.h-tmp $(srcdir)/plural.h; \
+	  && mv plural.h-tmp $(srcdir)/plural.h ; \
 	}
 
 check: all
