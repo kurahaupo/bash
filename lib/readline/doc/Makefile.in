@@ -78,23 +78,23 @@ CREATED_DOCS = $(DVIOBJ) $(INFOOBJ) $(PSOBJ) $(HTMLOBJ) $(PDFOBJ) $(TEXTOBJ)
 .SUFFIXES: .0 .3 .ps .txt .dvi .html .pdf
 
 .3.0:
-	$(RM) $@
+	@- $(RM) $@
 	- ${NROFF} -man $< > $@
 
 .3.pdf:
-	$(RM) $@
+	@- $(RM) $@
 	- ${GROFF} -man -T pdf $< > $@
 
 .3.ps:
-	$(RM) $@
+	@- $(RM) $@
 	- ${GROFF} -man $< > $@
 
 #.ps.pdf:
-#	$(RM) $@
+#	@- $(RM) $@
 #	- ${PSPDF} $<
 
 .dvi.pdf:
-	$(RM) $@
+	@- $(RM) $@
 	- ${DVIPDF} $<
 
 all: info html text pdf ps dvi
@@ -102,55 +102,55 @@ nodvi: info html text
 pdf: $(PDFOBJ)
 
 readline.dvi: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	TEXINPUTS=.:$(TEXINPUTDIR):$$TEXINPUTS $(TEXI2DVI) -o $@ $(srcdir)/rlman.texi
 
 readline.info: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	$(MAKEINFO) --no-split -I $(TEXINPUTDIR) -o $@ $(srcdir)/rlman.texi
 
 readline.pdf: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	$(TEXI2PDF) -I $(TEXINPUTDIR) -o $@ $(srcdir)/rlman.texi
 
 rluserman.dvi: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	TEXINPUTS=.:$(TEXINPUTDIR):$$TEXINPUTS $(TEXI2DVI) $(srcdir)/rluserman.texi
 
 rluserman.info: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	$(MAKEINFO) --no-split -I $(TEXINPUTDIR) -o $@ $(srcdir)/rluserman.texi
 
 rluserman.pdf: $(RLSRC)
-	$(RM) $@
+	@- $(RM) $@
 	$(TEXI2PDF) -I $(TEXINPUTDIR) -o $@ $(srcdir)/rluserman.texi
 
 history.dvi: ${HISTSRC}
-	$(RM) $@
+	@- $(RM) $@
 	TEXINPUTS=.:$(TEXINPUTDIR):$$TEXINPUTS $(TEXI2DVI) $(srcdir)/history.texi
 
 history.info: ${HISTSRC}
-	$(RM) $@
+	@- $(RM) $@
 	$(MAKEINFO) --no-split -I $(TEXINPUTDIR) -o $@ $(srcdir)/history.texi
 
 history.pdf: $(HISTSRC)
-	$(RM) $@
+	@- $(RM) $@
 	$(TEXI2PDF) -I $(TEXINPUTDIR) -o $@ $(srcdir)/history.texi
 
 readline.ps: readline.dvi
-	$(RM) $@
+	@- $(RM) $@
 	$(DVIPS) readline.dvi
 
 rluserman.ps: rluserman.dvi
-	$(RM) $@
+	@- $(RM) $@
 	$(DVIPS) rluserman.dvi
 
 history.ps: history.dvi
-	$(RM) $@
+	@- $(RM) $@
 	$(DVIPS) history.dvi
 
 readline.html: ${RLSRC}
-	$(RM) $@
+	@- $(RM) $@
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) -o $@ $(srcdir)/rlman.texi
 
 rluserman.html: ${RLSRC}
@@ -163,11 +163,11 @@ history.0: $(srcdir)/history.3
 readline.0: $(srcdir)/readline.3
 
 history_3.pdf: $(srcdir)/history.3
-	$(RM) $@
+	@- $(RM) $@
 	-${GROFF} -man -T pdf $< > $@
 
 readline_3.pdf: $(srcdir)/readline.3
-	$(RM) $@
+	@- $(RM) $@
 	-${GROFF} -man -T pdf $< > $@
 
 info:	$(INFOOBJ)

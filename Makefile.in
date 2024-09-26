@@ -98,7 +98,7 @@ DEBUGGER_START_FILE = @DEBUGGER_START_FILE@
 # Here is a rule for making .o files from .c files that does not
 # force the type of the machine (like -M_MACHINE) into the flags.
 .c.o:
-	$(RM) $@
+	@- $(RM) $@
 	$(CC) $(CCFLAGS) -c $<
 
 EXEEXT = @EXEEXT@
@@ -1211,7 +1211,7 @@ ${GRAM_H}: y.tab.h
 y.tab.c: parse.y
 #	- if test -f y.tab.h ; then mv -f y.tab.h old-y.tab.h ; fi
 	$(YACC) -d $(srcdir)/parse.y
-	$(RM) parser-built
+	@- $(RM) parser-built
 	touch parser-built
 #	- if cmp -s old-y.tab.h y.tab.h ; then mv old-y.tab.h y.tab.h ; else cp -p y.tab.h ${GRAM_H} ; fi
 
@@ -1258,31 +1258,31 @@ ${LIBINTL_H}: ${INTL_DEP}
 # If we are cross-compiling, we link in this file and initialize the array
 # of signal names at runtime
 signames.o: $(SUPPORT_SRC)signames.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC) $(CCFLAGS) -o $@ -c $(SUPPORT_SRC)signames.c
 
 buildsignames.o: $(SUPPORT_SRC)signames.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -o $@ -c $(SUPPORT_SRC)signames.c
 
 mksignames.o: $(SUPPORT_SRC)mksignames.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -o $@ -c $(SUPPORT_SRC)mksignames.c
 
 # If we are not cross-compiling, we write out a header file (lsignames.h) with
 # the signal name definitions at build time
 mksignames$(EXEEXT): mksignames.o buildsignames.o
-	$(RM) $@
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) ${LDFLAGS_FOR_BUILD} -o $@ mksignames.o buildsignames.o ${LIBS_FOR_BUILD}
 
 mksyntax$(EXEEXT): ${srcdir}/mksyntax.c buildconf.h syntax.h ${BASHINCDIR}/chartypes.h
-	$(RM) $@
+	@- $(RM) $@
 	${CC_FOR_BUILD} ${CCFLAGS_FOR_BUILD} ${LDFLAGS_FOR_BUILD} -o $@ ${srcdir}/mksyntax.c ${LIBS_FOR_BUILD}
 
 # make a list of signals for the local system -- this is done when we're
 # *not* cross-compiling
 lsignames.h: mksignames$(EXEEXT)
-	$(RM) $@
+	@- $(RM) $@
 	./mksignames$(EXEEXT) $@
 
 # copy the correct signames header file to signames.h
@@ -1290,7 +1290,7 @@ signames.h: $(SIGNAMES_H)
 	- if cmp -s $(SIGNAMES_H) $@ ; then : ; else $(RM) $@ ; $(CP) $(SIGNAMES_H) $@ ; fi
 
 syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
-	$(RM) $@
+	@- $(RM) $@
 	./mksyntax$(EXEEXT) -o $@
 
 .PHONY: builtins
@@ -1374,7 +1374,7 @@ loadables: .made
 	cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
 
 #newversion: mkversion
-#	$(RM) .build
+#	@- $(RM) .build
 #	./mkversion -dir $(srcdir) -dist
 #	mv -f newversion.h version.h
 #	$(MAKE) -f $(srcdir)/Makefile $(BASH_MAKEFLAGS) srcdir=$(srcdir)

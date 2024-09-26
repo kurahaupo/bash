@@ -182,16 +182,16 @@ html: ${HTMLFILES}
 pdf: ${PDFFILES}
 
 bashref.dvi: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
-	$(RM) $@
+	@- $(RM) $@
 	${SET_TEXINPUTS} $(TEXI2DVI) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1 ; }
 
 bashref.info: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
-	$(RM) $@
+	@- $(RM) $@
 	$(MAKEINFO) --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
 
 # experimental
 bashref.pdf: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
-	$(RM) $@
+	@- $(RM) $@
 	${SET_TEXINPUTS} $(TEXI2PDF) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1 ; }
 
 # can also use:
@@ -200,7 +200,7 @@ bashref.html: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 	$(MAKEINFO) --html --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
 
 bash.info: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
-	$(RM) $@
+	@- $(RM) $@
 	$(MAKEINFO) -o $@ --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
 
 bash.txt: bash.1
@@ -355,15 +355,15 @@ faq.headers.news2: FAQ.headers.news2 FAQ
 	$(SHELL) mkfaqvers FAQ.headers.news2 > $@
 
 faq.news: FAQ faq.headers.news faq.version
-	$(RM) $@
+	@- $(RM) $@
 	cat faq.headers.news faq.version FAQ > $@
 
 faq.news2: FAQ faq.headers.news2 faq.version
-	$(RM) $@
+	@- $(RM) $@
 	cat faq.headers.news2 faq.version FAQ > $@
 
 faq.mail: FAQ faq.headers.mail faq.version
-	$(RM) $@
+	@- $(RM) $@
 	cat faq.headers.mail faq.version FAQ > $@
 
 inst: bashref.texi
