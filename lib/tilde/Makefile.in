@@ -92,10 +92,10 @@ all: $(LIBRARY_NAME)
 $(LIBRARY_NAME): $(OBJECTS)
 	$(RM) -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 documentation: force
-	-(cd doc; $(MAKE) $(BASH_MAKEFLAGS))
+	- ( cd doc ; $(MAKE) $(BASH_MAKEFLAGS) )
 
 force:
 
@@ -104,20 +104,20 @@ force:
 # include files.
 install:
 	$(INSTALL_DATA) -c -m 644 $(LIBRARY_NAME) $(libdir)/$(LIBRARY_NAME)
-	-test -n "$(RANLIB)" && $(RANLIB) -t $(libdir)/$(LIBRARY_NAME)
+	- test -n "$(RANLIB)" && $(RANLIB) -t $(libdir)/$(LIBRARY_NAME)
 
-.PHONY: clean maintainer-clean distclean mostlyclean 
+.PHONY: clean maintainer-clean distclean mostlyclean
 
 mostlyclean:
 	$(RM) -f $(OBJECTS) $(LIBRARY_NAME)
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
 realclean distclean maintainer-clean: clean
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	$(RM) -f Makefile
 
 clean: mostlyclean
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
 ######################################################################
 #								     #

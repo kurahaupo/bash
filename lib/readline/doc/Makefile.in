@@ -76,27 +76,27 @@ INTERMEDIATE_OBJ = rlman.dvi
 
 CREATED_DOCS = $(DVIOBJ) $(INFOOBJ) $(PSOBJ) $(HTMLOBJ) $(PDFOBJ) $(TEXTOBJ)
 
-.SUFFIXES:      .0 .3 .ps .txt .dvi .html .pdf
+.SUFFIXES: .0 .3 .ps .txt .dvi .html .pdf
 
 .3.0:
 	$(RM) $@
-	-${NROFF} -man $< > $@
+	- ${NROFF} -man $< > $@
 
 .3.pdf:
 	$(RM) $@
-	-${GROFF} -man -T pdf $< > $@
+	- ${GROFF} -man -T pdf $< > $@
 
 .3.ps:
 	$(RM) $@
-	-${GROFF} -man $< > $@
+	- ${GROFF} -man $< > $@
 
 #.ps.pdf:
 #	$(RM) $@
-#	-${PSPDF} $<
+#	- ${PSPDF} $<
 
 .dvi.pdf:
 	$(RM) $@
-	-${DVIPDF} $<
+	- ${DVIPDF} $<
 
 all: info html text pdf ps dvi
 nodvi: info html text
@@ -138,26 +138,26 @@ history.pdf: $(HISTSRC)
 	$(RM) $@
 	$(TEXI2PDF) -I $(TEXINPUTDIR) -o $@ $(srcdir)/history.texi
 
-readline.ps:	readline.dvi
+readline.ps: readline.dvi
 	$(RM) $@
 	$(DVIPS) readline.dvi
 
-rluserman.ps:	rluserman.dvi
+rluserman.ps: rluserman.dvi
 	$(RM) $@
 	$(DVIPS) rluserman.dvi
 
-history.ps:	history.dvi
+history.ps: history.dvi
 	$(RM) $@
 	$(DVIPS) history.dvi
 
-readline.html:	${RLSRC}
+readline.html: ${RLSRC}
 	$(RM) $@
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) -o $@ $(srcdir)/rlman.texi
 
-rluserman.html:	${RLSRC}
+rluserman.html: ${RLSRC}
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/rluserman.texi
 
-history.html:	${HISTSRC}
+history.html: ${HISTSRC}
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/history.texi
 
 history.0: $(srcdir)/history.3
@@ -178,7 +178,7 @@ html:	$(HTMLOBJ)
 text:	$(TEXTOBJ)
 pdf:	$(PDFOBJ)
 
-.PHONY: clean maintainer-clean distclean mostlyclean 
+.PHONY: clean maintainer-clean distclean mostlyclean
 
 mostlyclean:
 	$(RM) *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr *.cps *.pgs \
@@ -194,6 +194,6 @@ maintainer-clean: distclean
 	$(RM) Makefile
 
 install:
-	@echo "This documentation should not be installed."
+	@ echo "This documentation should not be installed."
 
 uninstall:
