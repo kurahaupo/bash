@@ -99,59 +99,59 @@ RLUSER      = $(RL_LIBDIR)/doc/rluser.texi
 
 BASHREF_FILES = $(srcdir)/bashref.texi $(srcdir)/fdl.texi $(srcdir)/version.texi
 
-.SUFFIXES:	.0 .1 .3 .ms .ps .txt .dvi .html .pdf
+.SUFFIXES: .0 .1 .3 .ms .ps .txt .dvi .html .pdf
 
 .1.ps:
 	$(RM) $@
-	-${GROFF} -I${srcdir} -man $< > $@
+	- ${GROFF} -I${srcdir} -man $< > $@
 
 .1.pdf:
 	$(RM) $@
-	-${GROFF} -I${srcdir} -man -T pdf $< > $@
+	- ${GROFF} -I${srcdir} -man -T pdf $< > $@
 
 .1.0:
 	$(RM) $@
-	-${NROFF} -I${srcdir} -man $< > $@
+	- ${NROFF} -I${srcdir} -man $< > $@
 
 .1.html:
 	$(RM) $@
-	-${MAN2HTML} $< | ${HTMLPOST} > $@
+	- ${MAN2HTML} $< | ${HTMLPOST} > $@
 
 .ms.ps:
 	$(RM) $@
-	-${GROFF} -ms $< > $@
+	- ${GROFF} -ms $< > $@
 
 .ms.txt:
 	$(RM) $@
-	-${NROFF} -ms $< > $@
+	- ${NROFF} -ms $< > $@
 
 .3.ps:
 	$(RM) $@
-	-${GROFF} -I${srcdir} -man $< > $@
+	- ${GROFF} -I${srcdir} -man $< > $@
 
 .3.0:
 	$(RM) $@
-	-${NROFF} -I${srcdir} -man $< > $@
+	- ${NROFF} -I${srcdir} -man $< > $@
 
 .3.html:
 	$(RM) $@
-	-${MAN2HTML} $< > $@
+	- ${MAN2HTML} $< > $@
 
 .ps.pdf:
 	$(RM) $@
-	-${PSPDF} $<
+	- ${PSPDF} $<
 
 .dvi.pdf:
 	$(RM) $@
-	-${DVIPDF} $<
+	- ${DVIPDF} $<
 
 .dvi.ps:
 	${RM} $@
-	-${DVIPS} $<
+	- ${DVIPS} $<
 
 #.texi.pdf:
 #	$(RM) $@
-#	-${TEXI2PDF} $<
+#	- ${TEXI2PDF} $<
 
 all: info dvi text html pdf $(MAN2HTML)
 nodvi: ps info text html
@@ -175,7 +175,7 @@ pdf: ${PDFFILES}
 
 bashref.dvi: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 	$(RM) $@
-	${SET_TEXINPUTS} $(TEXI2DVI) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1; }
+	${SET_TEXINPUTS} $(TEXI2DVI) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1 ; }
 
 bashref.info: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 	$(RM) $@
@@ -184,7 +184,7 @@ bashref.info: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 # experimental
 bashref.pdf: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
 	$(RM) $@
-	${SET_TEXINPUTS} $(TEXI2PDF) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1; }
+	${SET_TEXINPUTS} $(TEXI2PDF) $(srcdir)/bashref.texi || { ${RM} $@ ; exit 1 ; }
 
 # can also use:
 #	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/bashref.texi
@@ -223,14 +223,14 @@ rose94.pdf: rose94.ps
 OTHER_DOCS = $(srcdir)/FAQ $(srcdir)/INTRO
 OTHER_INSTALLED_DOCS = FAQ INTRO
 
-$(MAN2HTML):	${topdir}/support/man2html.c
-	-( cd ${BUILD_DIR}/support ; ${MAKE} ${BASH_MAKEFLAGS} man2html)
+$(MAN2HTML): ${topdir}/support/man2html.c
+	- ( cd ${BUILD_DIR}/support ; ${MAKE} ${BASH_MAKEFLAGS} man2html)
 
 .PHONY: clean maintainer-clean distclean mostlyclean maybe-clean
 
 mostlyclean:
 	$(RM) *.aux *.bak *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr *.cps \
-		*.pgs *.bt *.bts *.rw *.rws *.fns *.kys *.tps *.vrs *.o
+	      *.pgs *.bt *.bts *.rw *.rws *.fns *.kys *.tps *.vrs *.o
 	${RM} core *.core
 
 clean: mostlyclean
@@ -238,7 +238,7 @@ clean: mostlyclean
 distclean: clean maybe-clean
 	$(RM) Makefile
 
-maintainer-clean:	clean
+maintainer-clean: clean
 	${RM} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES}
 	${RM} ${CREATED_PS} ${CREATED_PDF}
 	${RM} ${CREATED_FAQ}
@@ -246,83 +246,83 @@ maintainer-clean:	clean
 
 # I'd like to use realpath here, but it's not universal
 maybe-clean:
-	-TD=$$(cd $(topdir) && pwd -P) ; \
-	BD=$$(cd $(BUILD_DIR) && pwd -P) ; \
-	if test "X$$TD" != "X$$BD"; then \
-		$(RM) ${CREATED_PS} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES} ${CREATED_PDF}; \
-	fi
+	- TD=$$( cd $(topdir) &&    pwd -P ) ; \
+	  BD=$$( cd $(BUILD_DIR) && pwd -P ) ; \
+	  if test "X$$TD" != "X$$BD" ; then \
+	    $(RM) ${CREATED_PS} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES} ${CREATED_PDF} ; \
+	  fi
 
 installdirs:
-	-$(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(man1dir)
-	-$(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(infodir)
-	-$(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(docdir)
-	-if test -n "$(htmldir)" ; then \
-		$(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(htmldir) ; \
-	fi
+	- $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(man1dir)
+	- $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(infodir)
+	- $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(docdir)
+	- if test -n "$(htmldir)" ; then \
+	    $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(htmldir) ; \
+	  fi
 
 install: info installdirs
-	-$(INSTALL_DATA) $(srcdir)/bash.1 $(DESTDIR)$(man1dir)/bash${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashbug.1 $(DESTDIR)$(man1dir)/bashbug${man1ext}
-	-$(INSTALL_DATA) $(OTHER_DOCS) $(DESTDIR)$(docdir)
+	- $(INSTALL_DATA) $(srcdir)/bash.1 $(DESTDIR)$(man1dir)/bash${man1ext}
+	- $(INSTALL_DATA) $(srcdir)/bashbug.1 $(DESTDIR)$(man1dir)/bashbug${man1ext}
+	- $(INSTALL_DATA) $(OTHER_DOCS) $(DESTDIR)$(docdir)
 # uncomment the next lines to install the builtins man page
 #	sed 's:bash\.1:man1/&:' $(srcdir)/builtins.1 > $${TMPDIR:-/var/tmp}/builtins.1
-#	-$(INSTALL_DATA) $${TMPDIR:-/var/tmp}/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
-#	-$(RM) $${TMPDIR:-/var/tmp}/builtins.1
-	-if test -f bash.info; then d=.; else d=$(srcdir); fi; \
+#	- $(INSTALL_DATA) $${TMPDIR:-/var/tmp}/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
+#	- $(RM) $${TMPDIR:-/var/tmp}/builtins.1
+	- if test -f bash.info ; then d=. ; else d=$(srcdir) ; fi ; \
 	  $(INSTALL_DATA) $$d/bash.info $(DESTDIR)$(infodir)/bash.info
 # run install-info if it is present to update the info directory
-	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-		install-info --dir-file=$(DESTDIR)$(infodir)/dir $(DESTDIR)$(infodir)/bash.info; \
-	else true; fi
+	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1 ; then \
+	  install-info --dir-file=$(DESTDIR)$(infodir)/dir $(DESTDIR)$(infodir)/bash.info ; \
+	else true ; fi
 # if htmldir is set, install the html files into that directory
-	-if test -n "${htmldir}" ; then \
-		$(INSTALL_DATA) $(srcdir)/bash.html $(DESTDIR)$(htmldir) ; \
-		$(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
-	fi
+	- if test -n "${htmldir}" ; then \
+	    $(INSTALL_DATA) $(srcdir)/bash.html $(DESTDIR)$(htmldir) ; \
+	    $(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
+	  fi
 
-install_builtins:	installdirs
+install_builtins: installdirs
 	sed 's:bash\.1:man1/&:' $(srcdir)/builtins.1 > $${TMPDIR:-/var/tmp}/builtins.1
-	-$(INSTALL_DATA) $${TMPDIR:-/var/tmp}/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
-	-$(RM) $${TMPDIR:-/var/tmp}/builtins.1
+	- $(INSTALL_DATA) $${TMPDIR:-/var/tmp}/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
+	- $(RM) $${TMPDIR:-/var/tmp}/builtins.1
 
-install_everything:	install install_builtins
+install_everything: install install_builtins
 
-install-html:	html
-	-if test -n "${htmldir}" ; then \
-		$(INSTALL_DATA) $(srcdir)/bash.html $(DESTDIR)$(htmldir) ; \
-		$(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
-	fi
+install-html: html
+	- if test -n "${htmldir}" ; then \
+	    $(INSTALL_DATA) $(srcdir)/bash.html $(DESTDIR)$(htmldir) ; \
+	    $(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
+	  fi
 
 install-dvi:
 install-pdf:
 install-ps:
 
 uninstall-html:
-	-if test -n "$(htmldir)" ; then \
-		$(RM) $(DESTDIR)$(htmldir)/bash.html ; \
-		$(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
-	fi
+	- if test -n "$(htmldir)" ; then \
+	    $(RM) $(DESTDIR)$(htmldir)/bash.html ; \
+	    $(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
+	  fi
 
 uninstall:
-	-$(RM) $(DESTDIR)$(man1dir)/bash${man1ext} $(DESTDIR)$(man1dir)/bashbug${man1ext}
-	-$(RM) $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
+	- $(RM) $(DESTDIR)$(man1dir)/bash${man1ext} $(DESTDIR)$(man1dir)/bashbug${man1ext}
+	- $(RM) $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
 	$(RM) $(DESTDIR)$(infodir)/bash.info
 # run install-info if it is present to update the info directory
-	-if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-		install-info --delete --dir-file=$(DESTDIR)$(infodir)/dir $(DESTDIR)$(infodir)/bash.info; \
-	else true; fi
-	-( cd $(DESTDIR)$(docdir) && $(RM) $(OTHER_INSTALLED_DOCS) )
-	-if test -n "$(htmldir)" ; then \
-		$(RM) $(DESTDIR)$(htmldir)/bash.html ; \
-		$(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
-	fi
+	- if $(SHELL) -c 'install-info --version' >/dev/null 2>&1 ; then \
+	    install-info --delete --dir-file=$(DESTDIR)$(infodir)/dir $(DESTDIR)$(infodir)/bash.info ; \
+	  else true ; fi
+	- ( cd $(DESTDIR)$(docdir) && $(RM) $(OTHER_INSTALLED_DOCS) )
+	- if test -n "$(htmldir)" ; then \
+	    $(RM) $(DESTDIR)$(htmldir)/bash.html ; \
+	    $(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
+	  fi
 
 # for use by chet
 CREATED_FAQ = faq.news faq.news2 faq.mail faq.version
 
-faq:	${CREATED_FAQ}
+faq: ${CREATED_FAQ}
 
-faq.version:	FAQ.version FAQ
+faq.version: FAQ.version FAQ
 	sh mkfaqvers FAQ.version > $@
 
 faq.headers.mail: FAQ.headers.mail FAQ
@@ -346,17 +346,17 @@ faq.mail: FAQ faq.headers.mail faq.version
 	$(RM) $@
 	cat faq.headers.mail faq.version FAQ > $@
 
-inst:	bashref.texi
+inst: bashref.texi
 	$(SHELL) ${srcdir}/mkinstall -t ${topdir} -s ${srcdir}
 	cmp -s INSTALL ${topdir}/INSTALL || mv INSTALL ${topdir}/INSTALL
 	$(RM) INSTALL
 
-posix:	bashref.texi
+posix: bashref.texi
 	$(SHELL) ${srcdir}/mkposix -t ${topdir} -s ${srcdir}
 	cmp -s POSIX ${topdir}/POSIX || mv POSIX ${topdir}/POSIX
 	$(RM) POSIX
 
-rbash:	bashref.texi
+rbash: bashref.texi
 	$(SHELL) ${srcdir}/mkrbash -t ${topdir} -s ${srcdir}
 	cmp -s RBASH ${topdir}/RBASH || mv RBASH ${topdir}/RBASH
 	$(RM) RBASH

@@ -66,10 +66,10 @@ THINGS_TO_TAR = $(SOURCES) $(DOCUMENTATION)
 
 all: libtermcap.a
 
-libtermcap.a:	$(OBJECTS)
+libtermcap.a: $(OBJECTS)
 	$(RM) -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 install:
 
@@ -83,7 +83,7 @@ distclean maintainer-clean: clean
 
 $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 	${INSTALL_DATA} -c -m 644 libtermcap.a $@
-	-test -n "$(RANLIB)" && $(RANLIB) -t $@
+	- test -n "$(RANLIB)" && $(RANLIB) -t $@
 
 termcap.o: $(BUILD_DIR)/config.h
 tparam.o: $(BUILD_DIR)/config.h

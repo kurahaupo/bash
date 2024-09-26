@@ -72,22 +72,22 @@ INC = -I. -I.. -I$(topdir) -I$(topdir)/lib -I$(topdir)/builtins \
       -I$(BUILD_DIR)/builtins
 
 
-${BUILTIN}:	${OBJ}
+${BUILTIN}: ${OBJ}
 	${RM} $@
 	${SHOBJ_LD} ${SHOBJ_LDFLAGS} ${SHOBJ_XLDFLAGS} -o $@ ${OBJ} ${PERL_LDOPTS} ${SHOBJ_LIBS}
 
-bperl.o:	bperl.c
+bperl.o: bperl.c
 	${RM} $@
 	$(SHOBJ_CC) $(SHOBJ_CFLAGS) $(CFLAGS) $(INC) -c -o $@ ${srcdir}/bperl.c
 
-iperl.o:	iperl.c
+iperl.o: iperl.c
 	${RM} $@
 	$(SHOBJ_CC) ${SHOBJ_CFLAGS} $(PERL_CFLAGS) -c -o $@ ${srcdir}/iperl.c
 
 perlxsi.c:
 	${PERL5} -MExtUtils::Embed -e xsinit -- -o $@
 
-perlxsi.o:	perlxsi.c
+perlxsi.o: perlxsi.c
 	${RM} $@
 	${SHOBJ_CC} ${SHOBJ_CFLAGS} $(PERL_CFLAGS) -c -o $@ perlxsi.c
 

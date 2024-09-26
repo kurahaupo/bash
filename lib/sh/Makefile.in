@@ -126,7 +126,7 @@ all: $(LIBRARY_NAME)
 $(LIBRARY_NAME): $(OBJECTS)
 	$(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 force:
 
@@ -148,10 +148,10 @@ clean: mostlyclean
 # Dependencies
 
 #${BUILD_DIR}/version.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-#	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+#	- ( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h )
 
 ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
+	- ( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
 
 # rules for losing makes, like SunOS
 anonfile.o: anonfile.c
@@ -306,7 +306,7 @@ strscpy.o: ${BUILD_DIR}/config.h
 timers.o: ${BUILD_DIR}/config.h
 times.o: ${BUILD_DIR}/config.h
 timeval.o: ${BUILD_DIR}/config.h
-tmpfile.o: ${BUILD_DIR}/config.h ${topdir}/config-top.h 
+tmpfile.o: ${BUILD_DIR}/config.h ${topdir}/config-top.h
 uconvert.o: ${BUILD_DIR}/config.h
 ufuncs.o: ${BUILD_DIR}/config.h
 unicode.o: ${BUILD_DIR}/config.h
