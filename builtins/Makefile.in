@@ -170,12 +170,12 @@ libbuiltins.a: $(MKBUILTINS) $(OFILES) builtins.o
 	$(AR) $(ARFLAGS) $@ $(OFILES)
 	-$(RANLIB) $@
 
-tmpbuiltins.c:	$(MKBUILTINS) $(DEFSRC)
-	./$(MKBUILTINS) -externfile tmpbuiltins.h -structfile $@ \
+tmpbuiltins.c tmpbuiltins.h :	$(MKBUILTINS) $(DEFSRC)
+	./$(MKBUILTINS) \
+		-externfile tmpbuiltins.h \
+		-structfile tmpbuiltins.c \
 		-noproduction -nofunctions \
 		$(DIRECTDEFINE) $(HELPSTRINGS) $(DEFSRC)
-
-tmpbuiltins.h:	tmpbuiltins.c
 
 gen-helpfiles.o: ../config.h
 gen-helpfiles.o: gen-helpfiles.c
