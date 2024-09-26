@@ -71,7 +71,7 @@ THINGS_TO_TAR = $(SOURCES) $(DOCUMENTATION)
 all: libtermcap.a
 
 libtermcap.a: $(OBJECTS)
-	$(RM) -f $@
+	@- $(RM) -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
 	- test -n "$(RANLIB)" && $(RANLIB) $@
 

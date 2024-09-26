@@ -78,22 +78,22 @@ INC = -I. \
 
 
 ${BUILTIN}: ${OBJ}
-	${RM} $@
+	@- ${RM} $@
 	${SHOBJ_LD} ${SHOBJ_LDFLAGS} ${SHOBJ_XLDFLAGS} -o $@ ${OBJ} ${PERL_LDOPTS} ${SHOBJ_LIBS}
 
 bperl.o: bperl.c
-	${RM} $@
+	@- ${RM} $@
 	$(SHOBJ_CC) $(SHOBJ_CFLAGS) $(CFLAGS) $(INC) -c -o $@ ${srcdir}/bperl.c
 
 iperl.o: iperl.c
-	${RM} $@
+	@- ${RM} $@
 	$(SHOBJ_CC) ${SHOBJ_CFLAGS} $(PERL_CFLAGS) -c -o $@ ${srcdir}/iperl.c
 
 perlxsi.c:
 	${PERL5} -MExtUtils::Embed -e xsinit -- -o $@
 
 perlxsi.o: perlxsi.c
-	${RM} $@
+	@- ${RM} $@
 	${SHOBJ_CC} ${SHOBJ_CFLAGS} $(PERL_CFLAGS) -c -o $@ perlxsi.c
 
 clean mostlyclean:

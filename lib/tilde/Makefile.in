@@ -94,7 +94,7 @@ THINGS_TO_TAR = $(SOURCES) $(SUPPORT)
 all: $(LIBRARY_NAME)
 
 $(LIBRARY_NAME): $(OBJECTS)
-	$(RM) -f $@
+	@- $(RM) -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
 	- test -n "$(RANLIB)" && $(RANLIB) $@
 
