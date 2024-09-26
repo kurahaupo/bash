@@ -1135,21 +1135,21 @@ gcov:
 	${MAKE} $(BASH_MAKEFLAGS) CFLAGS=-g ADDON_CFLAGS='${GCOV_XCFLAGS}' ADDON_LDFLAGS='${GCOV_XLDFLAGS}' .made
 
 
-# have to make this separate because making tests depend on $(PROGRAM)
+# have to make this separate because making tests depend on $(Program)
 asan-tests: asan  $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
 	@( cd $(srcdir)/tests && \
 		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
 
-# have to make this separate because making tests depend on $(PROGRAM)
+# have to make this separate because making tests depend on $(Program)
 lsan-tests: lsan  $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
 	@( cd $(srcdir)/tests && \
 		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
 
-profiling-tests: ${PROGRAM}
+profiling-tests: ${Program}
 	@test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2; exit 1; }
 	@${MAKE} $(BASH_MAKEFLAGS) tests TESTSCRIPT=run-gprof
 
