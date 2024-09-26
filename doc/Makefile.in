@@ -382,3 +382,7 @@ rbash: bashref.texi
 	$(RM) RBASH
 
 xdist: everything inst posix rbash
+
+.PHONY: depends depend
+depends depend:
+	@:
