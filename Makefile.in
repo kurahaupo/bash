@@ -762,22 +762,22 @@ signames.o: $(SUPPORT_SRC)signames.c
 	$(RM) $@
 	$(CC) $(CCFLAGS) -c $(SUPPORT_SRC)signames.c
 
-buildsignames.o:	$(SUPPORT_SRC)signames.c
-	$(RM) $@
+buildsignames.o: $(SUPPORT_SRC)signames.c
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -o $@ -c $(SUPPORT_SRC)signames.c
 
-mksignames.o:	$(SUPPORT_SRC)mksignames.c
-	$(RM) $@
+mksignames.o: $(SUPPORT_SRC)mksignames.c
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -c $(SUPPORT_SRC)mksignames.c
 
 # If we are not cross-compiling, we write out a header file (lsignames.h) with
 # the signal name definitions at build time
-mksignames$(EXEEXT):	mksignames.o buildsignames.o
-	$(RM) $@
+mksignames$(EXEEXT): mksignames.o buildsignames.o
+	@- $(RM) $@
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) ${LDFLAGS_FOR_BUILD} -o $@ mksignames.o buildsignames.o ${LIBS_FOR_BUILD}
 
-mksyntax$(EXEEXT):	${srcdir}/mksyntax.c buildconf.h syntax.h ${BASHINCDIR}/chartypes.h
-	$(RM) $@
+mksyntax$(EXEEXT): ${srcdir}/mksyntax.c buildconf.h syntax.h ${BASHINCDIR}/chartypes.h
+	@- $(RM) $@
 	${CC_FOR_BUILD} ${CCFLAGS_FOR_BUILD} ${LDFLAGS_FOR_BUILD} -o $@ ${srcdir}/mksyntax.c ${LIBS_FOR_BUILD}
 
 # make a list of signals for the local system -- this is done when we're
@@ -791,7 +791,7 @@ signames.h: $(SIGNAMES_H)
 	-if cmp -s $(SIGNAMES_H) $@ ; then :; else $(RM) $@ ; $(CP) $(SIGNAMES_H) $@ ; fi
 
 syntax.c:	mksyntax${EXEEXT} $(srcdir)/syntax.h
-	$(RM) $@
+	@- $(RM) $@
 	./mksyntax$(EXEEXT) -o $@
 
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h  version.h
@@ -860,7 +860,7 @@ loadables: .made
 	cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
 
 #newversion:	mkversion
-#	$(RM) .build
+#	@- $(RM) .build
 #	./mkversion -dir $(srcdir) -dist
 #	mv -f newversion.h version.h
 #	$(MAKE) -f $(srcdir)/Makefile $(BASH_MAKEFLAGS) srcdir=$(srcdir)
