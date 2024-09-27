@@ -316,7 +316,7 @@ targets: libbuiltins.a $(HELPFILES_TARGET)
 libbuiltins.a: $(MKBUILTINS) $(OFILES) builtins.o
 	$(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OFILES)
-	-$(RANLIB) $@
+	- $(RANLIB) $@
 
 tmpbuiltins.c tmpbuiltins.h :	$(MKBUILTINS) $(DEFSRC)
 	./$(MKBUILTINS) \
@@ -334,7 +334,7 @@ gen-helpfiles:	tmpbuiltins.o gen-helpfiles.o
 	$(CC_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ gen-helpfiles.o tmpbuiltins.o $(LIBS_FOR_BUILD)
 
 builtext.h builtins.c: $(MKBUILTINS) $(DEFSRC)
-	@RECPID=$$$$ ; \
+	@ RECPID=$$$$ ; \
 	NEW_BUILTEXT=builtext-$$RECPID.h NEW_BUILTINS=builtins-$$RECPID.c ; \
 	./$(MKBUILTINS) -externfile $$NEW_BUILTEXT \
 	    -includefile builtext.h \
@@ -357,13 +357,13 @@ helpdoc:	gen-helpfiles
 
 .PHONY: install-help
 install-help:	$(HELPFILES_TARGET)
-	@-if test -n "${HELPDIR}" && test -d helpfiles ; then \
-		test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
-		( for f in helpfiles/*; do \
-			echo installing $$f; \
-			${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR); \
-		  done; ) ; \
-	fi
+	@- if test -n "${HELPDIR}" && test -d helpfiles ; then \
+	    test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
+	    ( for f in helpfiles/*; do \
+	        echo installing $$f; \
+	        ${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR); \
+	      done; ) ; \
+	  fi
 
 .PHONY: install
 install:	@HELPINSTALL@
@@ -408,7 +408,7 @@ builtins.texi: $(MKBUILTINS)
 clean:
 	$(RM) $(OFILES) $(CREATED_FILES) libbuiltins.a
 	$(RM) $(MKBUILTINS) gen-helpfiles $(CREATED_OBJECTS)
-	-test -d helpfiles && $(RM) -r helpfiles
+	- test -d helpfiles && $(RM) -r helpfiles
 
 .PHONY: mostlyclean
 mostlyclean:
