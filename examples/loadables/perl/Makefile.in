@@ -97,3 +97,44 @@ clean mostlyclean:
 
 distclean maintainer-clean: clean
 	${RM} perlxsi.c
+
+#MKDEP-CUT-HERE
+# C *.c source & *.h header dependencies (generated)
+
+bperl.o: $(BUILD_DIR)/config.h
+bperl.o: $(srcdir)/bperl.c
+bperl.o: $(topdir)/alias.h
+bperl.o: $(topdir)/array.h
+bperl.o: $(topdir)/arrayfunc.h
+bperl.o: $(topdir)/assoc.h
+bperl.o: $(topdir)/bashansi.h
+bperl.o: $(topdir)/bashjmp.h
+bperl.o: $(topdir)/bashtypes.h
+bperl.o: $(topdir)/builtins.h
+bperl.o: $(topdir)/builtins/common.h
+bperl.o: $(topdir)/command.h
+bperl.o: $(topdir)/config-bot.h
+bperl.o: $(topdir)/config-top.h
+bperl.o: $(topdir)/conftypes.h
+bperl.o: $(topdir)/dispose_cmd.h
+bperl.o: $(topdir)/error.h
+bperl.o: $(topdir)/externs.h
+bperl.o: $(topdir)/general.h
+bperl.o: $(topdir)/hashlib.h
+bperl.o: $(topdir)/include/chartypes.h
+bperl.o: $(topdir)/include/maxpath.h
+bperl.o: $(topdir)/include/ocache.h
+bperl.o: $(topdir)/include/posixjmp.h
+bperl.o: $(topdir)/include/stdc.h
+bperl.o: $(topdir)/include/unlocked-io.h
+bperl.o: $(topdir)/make_cmd.h
+bperl.o: $(topdir)/pathnames.h
+bperl.o: $(topdir)/quit.h
+bperl.o: $(topdir)/shell.h
+bperl.o: $(topdir)/sig.h
+bperl.o: $(topdir)/subst.h
+bperl.o: $(topdir)/syntax.h
+bperl.o: $(topdir)/unwind_prot.h
+bperl.o: $(topdir)/variables.h
+bperl.o: $(topdir)/xmalloc.h
+iperl.o: $(srcdir)/iperl.c

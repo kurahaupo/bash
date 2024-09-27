@@ -145,563 +145,1036 @@ ${BUILD_DIR}/version.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
 
-# rules for losing makes, like SunOS
-anonfile.o: anonfile.c
-casemod.o: casemod.c
-clktck.o: clktck.c
-clock.o: clock.c
-compat.o: compat.c
-eaccess.o: eaccess.c
-dprintf.o: dprintf.c
-fmtullong.o: fmtullong.c
-fmtulong.o: fmtulong.c
-fmtumax.o: fmtumax.c
-fnxform.o: fnxform.c
-fpurge.o: fpurge.c
-getcwd.o: getcwd.c
-getenv.o: getenv.c
-gettimeofday.o: gettimeofday.c
-inet_aton.o: inet_aton.c
-input_avail.o: input_avail.c
-itos.o: itos.c
-mailstat.o: mailstat.c
-makepath.o: makepath.c
-mbscasecmp.o: mbscasecmp.c
-mbschr.o: mbschr.c
-mbscmp.o: mbscmp.c
-mbsncmp.o: mbsncmp.c
-memset.o: memset.c
-mktime.o: mktime.c
-netconn.o: netconn.c
-netopen.o: netopen.c
-oslib.o: oslib.c
-pathcanon.o: pathcanon.c
-pathphys.o: pathphys.c
-random.o: random.c
-reallocarray.o: reallocarray.c
-rename.o: rename.c
-setlinebuf.o: setlinebuf.c
-shmatch.o: shmatch.c
-shmbchar.o: shmbchar.c
-shquote.o: shquote.c
-shtty.o: shtty.c
-snprintf.o: snprintf.c
-spell.o: spell.c
-strcasecmp.o: strcasecmp.c
-strchrnul.o: strchrnul.c
-strerror.o: strerror.c
-strftime.o: strftime.c
-strcasestr.o: strcasestr.c
-stringlist.o: stringlist.c
-stringvec.o: stringvec.c
-strnlen.o: strnlen.c
-strpbrk.o: strpbrk.c
-strtod.o: strtod.c
-strtoimax.o: strtoimax.c
-strtol.o: strtol.c
-strtoll.o: strtoll.c
-strtoul.o: strtoul.c
-strtoull.o: strtoull.c
-strtoumax.o: strtoumax.c
-strtrans.o: strtrans.c
-strvis.o: strvis.c
-strlcpy.o: strlcpy.c
-strscpy.o: strscpy.c
-timers.o: timers.c
-times.o: times.c
-timeval.o: timeval.c
-tmpfile.o: tmpfile.c
-uconvert.o: uconvert.c
-ufuncs.o: ufuncs.c
-unicode.o: unicode.c
-utf8.o: utf8.c
-vprint.o: vprint.c
-wcsdup.o: wcsdup.c
-wcsnwidth.o: wcsnwidth.c
-wcswidth.o: wcswidth.c
-winsize.o: winsize.c
-zcatfd.o: zcatfd.c
-zmapfd.o: zmapfd.c
-zgetline.o: zgetline.c
-zread.o: zread.c
-zwrite.o: zwrite.c
 
-# dependencies for c files that include other c files
-fmtullong.o: fmtulong.c
-fmtumax.o: fmtulong.c
-strtoll.o: strtol.c
-strtoul.o: strtol.c
-strtoull.o: strtol.c
-
-# all files in the library depend on config.h
-anonfile.o: ${BUILD_DIR}/config.h
-casemod.o: ${BUILD_DIR}/config.h
-clktck.o: ${BUILD_DIR}/config.h
-clock.o: ${BUILD_DIR}/config.h
-compat.o: ${BUILD_DIR}/config.h
-eaccess.o: ${BUILD_DIR}/config.h
-dprintf.o: ${BUILD_DIR}/config.h
-fmtullong.o: ${BUILD_DIR}/config.h
-fmtulong.o: ${BUILD_DIR}/config.h
-fmtumax.o: ${BUILD_DIR}/config.h
-fnxform.o: ${BUILD_DIR}/config.h
-fpurge.o: ${BUILD_DIR}/config.h
-getcwd.o: ${BUILD_DIR}/config.h
-getenv.o: ${BUILD_DIR}/config.h
-gettimeofday.o: ${BUILD_DIR}/config.h
-inet_aton.o: ${BUILD_DIR}/config.h
-input_avail.o: ${BUILD_DIR}/config.h
-itos.o: ${BUILD_DIR}/config.h
-mailstat.o: ${BUILD_DIR}/config.h
-makepath.o: ${BUILD_DIR}/config.h
-mbscasecmp.o: ${BUILD_DIR}/config.h
-mbschr.o: ${BUILD_DIR}/config.h
-mbscmp.o: ${BUILD_DIR}/config.h
-mbsncmp.o: ${BUILD_DIR}/config.h
-memset.o: ${BUILD_DIR}/config.h
-mktime.o: ${BUILD_DIR}/config.h
-netconn.o: ${BUILD_DIR}/config.h
-netopen.o: ${BUILD_DIR}/config.h
-oslib.o: ${BUILD_DIR}/config.h
-pathcanon.o: ${BUILD_DIR}/config.h
-pathphys.o: ${BUILD_DIR}/config.h
-random.o: ${BUILD_DIR}/config.h
-reallocarray.o: ${BUILD_DIR}/config.h
-rename.o: ${BUILD_DIR}/config.h
-setlinebuf.o: ${BUILD_DIR}/config.h
-shmatch.o: ${BUILD_DIR}/config.h
-shmbchar.o: ${BUILD_DIR}/config.h
-shquote.o: ${BUILD_DIR}/config.h
-shtty.o: ${BUILD_DIR}/config.h
-snprintf.o: ${BUILD_DIR}/config.h
-spell.o: ${BUILD_DIR}/config.h
-strcasecmp.o: ${BUILD_DIR}/config.h
-strchrnul.o: ${BUILD_DIR}/config.h
-strerror.o: ${BUILD_DIR}/config.h
-strftime.o: ${BUILD_DIR}/config.h
-strcasestr.o: ${BUILD_DIR}/config.h
-stringlist.o: ${BUILD_DIR}/config.h
-stringvec.o: ${BUILD_DIR}/config.h
-strnlen.o: ${BUILD_DIR}/config.h
-strpbrk.o: ${BUILD_DIR}/config.h
-strtod.o: ${BUILD_DIR}/config.h
-strtoimax.o: ${BUILD_DIR}/config.h
-strtol.o: ${BUILD_DIR}/config.h
-strtoll.o: ${BUILD_DIR}/config.h
-strtoul.o: ${BUILD_DIR}/config.h
-strtoull.o: ${BUILD_DIR}/config.h
-strtoumax.o: ${BUILD_DIR}/config.h
-strtrans.o: ${BUILD_DIR}/config.h
-strvis.o: ${BUILD_DIR}/config.h
-strlcpy.o: ${BUILD_DIR}/config.h
-strscpy.o: ${BUILD_DIR}/config.h
-timers.o: ${BUILD_DIR}/config.h
-times.o: ${BUILD_DIR}/config.h
-timeval.o: ${BUILD_DIR}/config.h
-tmpfile.o: ${BUILD_DIR}/config.h ${topdir}/config-top.h 
-uconvert.o: ${BUILD_DIR}/config.h
-ufuncs.o: ${BUILD_DIR}/config.h
-unicode.o: ${BUILD_DIR}/config.h
-utf8.o: ${BUILD_DIR}/config.h
-vprint.o: ${BUILD_DIR}/config.h
-wcsdup.o: ${BUILD_DIR}/config.h
-wcsnwidth.o: ${BUILD_DIR}/config.h
-wcswidth.o: ${BUILD_DIR}/config.h
-winsize.o: ${BUILD_DIR}/config.h
-zcatfd.o: ${BUILD_DIR}/config.h
-zgetline.o: ${BUILD_DIR}/config.h
-zmapfd.o: ${BUILD_DIR}/config.h
-zread.o: ${BUILD_DIR}/config.h
-zwrite.o: ${BUILD_DIR}/config.h
-
-clktck.o: ${topdir}/bashtypes.h
-
-getcwd.o: ${topdir}/bashtypes.h ${topdir}/bashansi.h ${BASHINCDIR}/maxpath.h
-getcwd.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/posixdir.h
-getcwd.o: ${BASHINCDIR}/memalloc.h ${BASHINCDIR}/ansi_stdlib.h
-
-getenv.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-getenv.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-getenv.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-getenv.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-getenv.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-getenv.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-getenv.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-getenv.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#getenv.o: ${BUILD_DIR}/version.h
-
-inet_aton.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-inet_aton.o: ${BASHINCDIR}/stdc.h
-
-itos.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-itos.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-itos.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-itos.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-itos.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-itos.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-itos.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-itos.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#itos.o: ${BUILD_DIR}/version.h
-
-makepath.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-makepath.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-makepath.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-makepath.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-makepath.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-makepath.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-makepath.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-makepath.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#makepath.o: ${BUILD_DIR}/version.h
-
-netconn.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/filecntl.h
-netconn.o: ${topdir}/bashtypes.h
-
-netopen.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h ${topdir}/xmalloc.h
-netopen.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-netopen.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-netopen.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-netopen.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-netopen.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-netopen.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-netopen.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-netopen.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
-#netopen.o: ${BUILD_DIR}/version.h
-
-oslib.o: ${topdir}/bashtypes.h ${topdir}/bashansi.h ${BASHINCDIR}/maxpath.h
-oslib.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-oslib.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-oslib.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-oslib.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-oslib.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-oslib.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-oslib.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-oslib.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/filecntl.h
-oslib.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-#oslib.o: ${BUILD_DIR}/version.h
-
-pathcanon.o: ${topdir}/bashtypes.h ${topdir}/bashansi.h ${BASHINCDIR}/maxpath.h
-pathcanon.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-pathcanon.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-pathcanon.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-pathcanon.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-pathcanon.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-pathcanon.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-pathcanon.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-pathcanon.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/filecntl.h
-pathcanon.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-#pathcanon.o: ${BUILD_DIR}/version.h
-
-pathphys.o: ${topdir}/bashtypes.h ${topdir}/bashansi.h ${BASHINCDIR}/maxpath.h
-pathphys.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-pathphys.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-pathphys.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-pathphys.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-pathphys.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-pathphys.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-pathphys.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-pathphys.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/filecntl.h
-pathphys.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-#pathphys.o: ${BUILD_DIR}/version.h
-
-random.o: ${topdir}/bashtypes.h ${BASHINCDIR}/stdc.h
-random.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-random.o: ${BASHINCDIR}/filecntl.h
-
-rename.o: ${topdir}/bashtypes.h ${BASHINCDIR}/stdc.h
-rename.o: ${BASHINCDIR}/posixstat.h
-
-setlinebuf.o: ${topdir}/xmalloc.h ${topdir}/bashansi.h
-setlinebuf.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/stdc.h
-
-eaccess.o: ${topdir}/bashtypes.h
-eaccess.o: ${BASHINCDIR}/posixstat.h
-eaccess.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-eaccess.o: ${BASHINCDIR}/filecntl.h
-eaccess.o: ${BASHINCDIR}/stdc.h
-eaccess.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-eaccess.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-eaccess.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-eaccess.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-eaccess.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-eaccess.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-eaccess.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#eaccess.o: ${BUILD_DIR}/version.h
-
-shmatch.o: ${BASHINCDIR}/stdc.h ${topdir}/bashansi.h
-shmatch.o: ${BASHINCDIR}/ansi_stdlib.h ${topdir}/xmalloc.h
-shmatch.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-shmatch.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-shmatch.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-shmatch.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-shmatch.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-shmatch.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-shmatch.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-
-shquote.o: ${BASHINCDIR}/stdc.h ${topdir}/bashansi.h
-shquote.o: ${BASHINCDIR}/ansi_stdlib.h ${topdir}/xmalloc.h
-shquote.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-
-shtty.o: ${BASHINCDIR}/shtty.h
-shtty.o: ${BASHINCDIR}/stdc.h
-
-snprintf.o: ${BASHINCDIR}/stdc.h ${topdir}/bashansi.h ${topdir}/xmalloc.h
-snprintf.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-snprintf.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-snprintf.o: ${BASHINCDIR}/typemax.h
-
-spell.o: ${topdir}/bashtypes.h
-spell.o: ${BASHINCDIR}/posixstat.h ${BASHINCDIR}/posixdir.h
-spell.o: ${BASHINCDIR}/ansi_stdlib.h
-
-strcasecmp.o: ${BASHINCDIR}/stdc.h ${topdir}/bashansi.h
-strcasecmp.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-
-strerror.o: ${topdir}/bashtypes.h
-strerror.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-strerror.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-strerror.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-strerror.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-strerror.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-strerror.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-strerror.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#strerror.o: ${BUILD_DIR}/version.h
-
-strcasestr.o: ${BASHINCDIR}/stdc.h ${topdir}/bashansi.h
-strcasestr.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-
-stringlist.o: ${topdir}/bashansi.h
-stringlist.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-stringlist.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-stringlist.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-stringlist.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-stringlist.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-stringlist.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-stringlist.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#stringlist.o: ${BUILD_DIR}/version.h
-
-stringvec.o: ${topdir}/bashansi.h ${BASHINCDIR}/chartypes.h
-stringvec.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-stringvec.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-stringvec.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-stringvec.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-stringvec.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-stringvec.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-stringvec.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-#stringvec.o: ${BUILD_DIR}/version.h
-
-strnlen.o: ${BASHINCDIR}/stdc.h
-
-strpbrk.o: ${BASHINCDIR}/stdc.h
-
-strtod.o: ${topdir}/bashansi.h
-strtod.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-
-strtoimax.o: ${BASHINCDIR}/stdc.h
-
-strtol.o: ${topdir}/bashansi.h
-strtol.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strtol.o: ${BASHINCDIR}/typemax.h
-
-strtoll.o: ${topdir}/bashansi.h
-strtoll.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strtoll.o: ${BASHINCDIR}/typemax.h
-
-strtoul.o: ${topdir}/bashansi.h
-strtoul.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strtoul.o: ${BASHINCDIR}/typemax.h
-
-strtoull.o: ${topdir}/bashansi.h
-strtoull.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strtoull.o: ${BASHINCDIR}/typemax.h
-
-strtoumax.o: ${BASHINCDIR}/stdc.h
-
-strtrans.o: ${topdir}/bashansi.h
-strtrans.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strtrans.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-strtrans.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-strtrans.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-strtrans.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-strtrans.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-strtrans.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-strtrans.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-strtrans.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-#strtrans.o: ${BUILD_DIR}/version.h
-
-strvis.o: ${topdir}/bashansi.h
-strvis.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strvis.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-strvis.o: ${topdir}/bashintl.h ${LIBINTL_H} $(BASHINCDIR)/gettext.h
-
-strlcpy.o: ${topdir}/bashansi.h
-strlcpy.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strlcpy.o: ${BASHINCDIR}/typemax.h
-
-strscpy.o: ${topdir}/bashansi.h
-strscpy.o: ${BASHINCDIR}/ansi_stdlib.h ${BASHINCDIR}/chartypes.h
-strscpy.o: ${BASHINCDIR}/typemax.h
-
-times.o: ${BASHINCDIR}/systimes.h
-times.o: ${BASHINCDIR}/posixtime.h
-
-timeval.o: ${BASHINCDIR}/posixtime.h
-gettimeofday.o: ${BASHINCDIR}/posixtime.h
-
-tmpfile.o: ${topdir}/bashtypes.h
-tmpfile.o: ${BASHINCDIR}/chartypes.h
-tmpfile.o: ${BASHINCDIR}/posixstat.h
-tmpfile.o: ${BASHINCDIR}/filecntl.h
-tmpfile.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-tmpfile.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-tmpfile.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-tmpfile.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-tmpfile.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-tmpfile.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-tmpfile.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-
-uconvert.o: ${BASHINCDIR}/chartypes.h
-uconvert.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-uconvert.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-uconvert.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-uconvert.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-uconvert.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-uconvert.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-uconvert.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-
-ufuncs.o: ${topdir}/bashtypes.h
-ufuncs.o: ${BASHINCDIR}/posixtime.h ${BASHINCDIR}/posixselect.h
-
-clock.o: ${BASHINCDIR}/posixtime.h
-
-mailstat.o: ${topdir}/bashansi.h
-mailstat.o: ${topdir}/bashtypes.h
-mailstat.o: ${BASHINCDIR}/ansi_stdlib.h
-mailstat.o: ${BASHINCDIR}/posixstat.h
-mailstat.o: ${BASHINCDIR}/posixdir.h
-mailstat.o: ${BASHINCDIR}/maxpath.h
-
-fmtulong.o: ${topdir}/bashansi.h
-fmtulong.o: ${BASHINCDIR}/ansi_stdlib.h
-fmtulong.o: ${BASHINCDIR}/chartypes.h
-fmtulong.o: ${BASHINCDIR}/stdc.h
-fmtulong.o: ${BASHINCDIR}/typemax.h
-fmtulong.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-fmtullong.o: ${topdir}/bashansi.h
-fmtullong.o: ${BASHINCDIR}/ansi_stdlib.h
-fmtullong.o: ${BASHINCDIR}/chartypes.h
-fmtullong.o: ${BASHINCDIR}/stdc.h
-fmtullong.o: ${BASHINCDIR}/typemax.h
-fmtullong.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-fmtumax.o: ${topdir}/bashansi.h
-fmtumax.o: ${BASHINCDIR}/ansi_stdlib.h
-fmtumax.o: ${BASHINCDIR}/chartypes.h
-fmtumax.o: ${BASHINCDIR}/stdc.h
-fmtumax.o: ${BASHINCDIR}/typemax.h
-fmtumax.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-wcsdup.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-wcsdup.o: ${BASHINCDIR}/stdc.h
-wcsdup.o: ${topdir}/xmalloc.h
-
-wcsnwidth.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-wcsnwidth.o: ${BASHINCDIR}/stdc.h
-
-wcswidth.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-wcswidth.o: ${BASHINCDIR}/stdc.h
-
-mbschr.o: ${topdir}/bashansi.h
-mbschr.o: ${BASHINCDIR}/ansi_stdlib.h
-mbschr.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-
-zgetline.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-zgetline.o: ${BASHINCDIR}/stdc.h
-zgetline.o: ${topdir}/xmalloc.h
-zgetline.o: ${topdir}/bashtypes.h
-
-mbscasecmp.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-mbscasecmp.o: ${BASHINCDIR}/stdc.h
-mbscasecmp.o: ${topdir}/xmalloc.h
-
-mbscmp.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-mbscmp.o: ${BASHINCDIR}/stdc.h
-mbscmp.o: ${topdir}/xmalloc.h
-
-mbsncmp.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-mbsncmp.o: ${BASHINCDIR}/stdc.h
-mbsncmp.o: ${topdir}/xmalloc.h
-
-casemod.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-casemod.o: ${BASHINCDIR}/stdc.h
-casemod.o: ${topdir}/xmalloc.h
-casemod.o: ${topdir}/bashtypes.h
-casemod.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-casemod.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-dprintf.o: ${BASHINCDIR}/stdc.h
-
-input_avail.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-input_avail.o: ${BASHINCDIR}/stdc.h
-input_avail.o: ${topdir}/xmalloc.h ${BASHINCDIR}/posixselect.h
-
-mktime.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-mktime.o: ${BASHINCDIR}/stdc.h
-
-fnxform.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-fnxform.o: ${BASHINCDIR}/stdc.h
-fnxform.o: ${topdir}/bashtypes.h
-fnxform.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-shmbchar.o: ${BASHINCDIR}/shmbchar.h
-shmbchar.o: ${BASHINCDIR}/shmbutil.h
-
-timers.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-timers.o: ${BASHINCDIR}/stdc.h
-timers.o: ${topdir}/xmalloc.h ${topdir}/sig.h
-timers.o: ${BASHINCDIR}/posixtime.h ${BASHINCDIR}/stat-time.h
-timers.o: ${BASHINCDIR}/posixselect.h
-timers.o: ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-timers.o: ${BASHINCDIR}/timer.h
-
-unicode.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-unicode.o: ${BASHINCDIR}/stdc.h
-unicode.o: ${topdir}/xmalloc.h
-
-utf8.o: ${topdir}/bashansi.h
-utf8.o: ${BASHINCDIR}/ansi_stdlib.h
-utf8.o: ${BASHINCDIR}/shmbutil.h ${BASHINCDIR}/shmbchar.h
-
-winsize.o: ${BASHINCDIR}/stdc.h
-winsize.o: ${topdir}/xmalloc.h
-winsize.o: ${topdir}/bashtypes.h
-
-zmapfd.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-zmapfd.o: ${BASHINCDIR}/stdc.h
-zmapfd.o: ${topdir}/command.h
-zmapfd.o: ${topdir}/general.h
-zmapfd.o: ${topdir}/bashtypes.h ${BASHINCDIR}/chartypes.h ${topdir}/xmalloc.h
-
-anonfile.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-anonfile.o: ${topdir}/bashtypes.h
-anonfile.o: ${BASHINCDIR}/filecntl.h
-anonfile.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-anonfile.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-anonfile.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-anonfile.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-anonfile.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-anonfile.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-anonfile.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
-
-reallocarray.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-
-compat.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-compat.o: ${topdir}/bashtypes.h
-compat.o: ${BASHINCDIR}/filecntl.h
-compat.o: ${topdir}/shell.h ${topdir}/syntax.h ${topdir}/bashjmp.h ${BASHINCDIR}/posixjmp.h
-compat.o: ${topdir}/command.h ${BASHINCDIR}/stdc.h ${topdir}/error.h
-compat.o: ${topdir}/general.h ${topdir}/bashtypes.h ${topdir}/variables.h ${topdir}/conftypes.h
-compat.o: ${topdir}/array.h ${topdir}/hashlib.h ${topdir}/quit.h
-compat.o: ${topdir}/unwind_prot.h ${topdir}/dispose_cmd.h
-compat.o: ${topdir}/make_cmd.h ${topdir}/subst.h ${topdir}/sig.h
-compat.o: ${BUILD_DIR}/pathnames.h ${topdir}/externs.h
+#MKDEP-CUT-HERE
+
+# C *.c source & *.h header dependencies (generated)
+
+anonfile.o: $(BUILD_DIR)/config.h
+anonfile.o: $(srcdir)/anonfile.c
+anonfile.o: $(topdir)/array.h
+anonfile.o: $(topdir)/arrayfunc.h
+anonfile.o: $(topdir)/assoc.h
+anonfile.o: $(topdir)/bashansi.h
+anonfile.o: $(topdir)/bashjmp.h
+anonfile.o: $(topdir)/bashtypes.h
+anonfile.o: $(topdir)/command.h
+anonfile.o: $(topdir)/config-bot.h
+anonfile.o: $(topdir)/config-top.h
+anonfile.o: $(topdir)/conftypes.h
+anonfile.o: $(topdir)/dispose_cmd.h
+anonfile.o: $(topdir)/error.h
+anonfile.o: $(topdir)/externs.h
+anonfile.o: $(topdir)/general.h
+anonfile.o: $(topdir)/hashlib.h
+anonfile.o: $(topdir)/include/chartypes.h
+anonfile.o: $(topdir)/include/filecntl.h
+anonfile.o: $(topdir)/include/maxpath.h
+anonfile.o: $(topdir)/include/ocache.h
+anonfile.o: $(topdir)/include/posixjmp.h
+anonfile.o: $(topdir)/include/stdc.h
+anonfile.o: $(topdir)/include/unlocked-io.h
+anonfile.o: $(topdir)/make_cmd.h
+anonfile.o: $(topdir)/pathnames.h
+anonfile.o: $(topdir)/quit.h
+anonfile.o: $(topdir)/shell.h
+anonfile.o: $(topdir)/sig.h
+anonfile.o: $(topdir)/subst.h
+anonfile.o: $(topdir)/syntax.h
+anonfile.o: $(topdir)/unwind_prot.h
+anonfile.o: $(topdir)/variables.h
+anonfile.o: $(topdir)/xmalloc.h
+casemod.o: $(BUILD_DIR)/config.h
+casemod.o: $(srcdir)/../glob/strmatch.h
+casemod.o: $(srcdir)/casemod.c
+casemod.o: $(topdir)/bashansi.h
+casemod.o: $(topdir)/bashintl.h
+casemod.o: $(topdir)/bashtypes.h
+casemod.o: $(topdir)/config-bot.h
+casemod.o: $(topdir)/config-top.h
+casemod.o: $(topdir)/include/ansi_stdlib.h
+casemod.o: $(topdir)/include/chartypes.h
+casemod.o: $(topdir)/include/gettext.h
+casemod.o: $(topdir)/include/shmbchar.h
+casemod.o: $(topdir)/include/shmbutil.h
+casemod.o: $(topdir)/include/stdc.h
+casemod.o: $(topdir)/include/typemax.h
+casemod.o: $(topdir)/xmalloc.h
+clktck.o: $(BUILD_DIR)/config.h
+clktck.o: $(srcdir)/clktck.c
+clktck.o: $(topdir)/bashtypes.h
+clktck.o: $(topdir)/config-bot.h
+clktck.o: $(topdir)/config-top.h
+clock.o: $(BUILD_DIR)/config.h
+clock.o: $(srcdir)/clock.c
+clock.o: $(topdir)/bashintl.h
+clock.o: $(topdir)/config-bot.h
+clock.o: $(topdir)/config-top.h
+clock.o: $(topdir)/include/gettext.h
+clock.o: $(topdir)/include/posixtime.h
+clock.o: $(topdir)/include/stdc.h
+clock.o: $(topdir)/include/systimes.h
+compat.o: $(BUILD_DIR)/config.h
+compat.o: $(srcdir)/compat.c
+compat.o: $(topdir)/array.h
+compat.o: $(topdir)/arrayfunc.h
+compat.o: $(topdir)/assoc.h
+compat.o: $(topdir)/bashansi.h
+compat.o: $(topdir)/bashjmp.h
+compat.o: $(topdir)/bashtypes.h
+compat.o: $(topdir)/command.h
+compat.o: $(topdir)/config-bot.h
+compat.o: $(topdir)/config-top.h
+compat.o: $(topdir)/conftypes.h
+compat.o: $(topdir)/dispose_cmd.h
+compat.o: $(topdir)/error.h
+compat.o: $(topdir)/externs.h
+compat.o: $(topdir)/general.h
+compat.o: $(topdir)/hashlib.h
+compat.o: $(topdir)/include/chartypes.h
+compat.o: $(topdir)/include/maxpath.h
+compat.o: $(topdir)/include/ocache.h
+compat.o: $(topdir)/include/posixjmp.h
+compat.o: $(topdir)/include/stdc.h
+compat.o: $(topdir)/include/unlocked-io.h
+compat.o: $(topdir)/make_cmd.h
+compat.o: $(topdir)/pathnames.h
+compat.o: $(topdir)/quit.h
+compat.o: $(topdir)/shell.h
+compat.o: $(topdir)/sig.h
+compat.o: $(topdir)/subst.h
+compat.o: $(topdir)/syntax.h
+compat.o: $(topdir)/unwind_prot.h
+compat.o: $(topdir)/variables.h
+compat.o: $(topdir)/xmalloc.h
+dprintf.o: $(BUILD_DIR)/config.h
+dprintf.o: $(srcdir)/dprintf.c
+dprintf.o: $(topdir)/config-bot.h
+dprintf.o: $(topdir)/config-top.h
+dprintf.o: $(topdir)/include/stdc.h
+eaccess.o: $(BUILD_DIR)/config.h
+eaccess.o: $(srcdir)/eaccess.c
+eaccess.o: $(topdir)/array.h
+eaccess.o: $(topdir)/arrayfunc.h
+eaccess.o: $(topdir)/assoc.h
+eaccess.o: $(topdir)/bashansi.h
+eaccess.o: $(topdir)/bashjmp.h
+eaccess.o: $(topdir)/bashtypes.h
+eaccess.o: $(topdir)/command.h
+eaccess.o: $(topdir)/config-bot.h
+eaccess.o: $(topdir)/config-top.h
+eaccess.o: $(topdir)/conftypes.h
+eaccess.o: $(topdir)/dispose_cmd.h
+eaccess.o: $(topdir)/error.h
+eaccess.o: $(topdir)/externs.h
+eaccess.o: $(topdir)/general.h
+eaccess.o: $(topdir)/hashlib.h
+eaccess.o: $(topdir)/include/ansi_stdlib.h
+eaccess.o: $(topdir)/include/chartypes.h
+eaccess.o: $(topdir)/include/filecntl.h
+eaccess.o: $(topdir)/include/maxpath.h
+eaccess.o: $(topdir)/include/ocache.h
+eaccess.o: $(topdir)/include/posixjmp.h
+eaccess.o: $(topdir)/include/posixstat.h
+eaccess.o: $(topdir)/include/stdc.h
+eaccess.o: $(topdir)/include/unlocked-io.h
+eaccess.o: $(topdir)/make_cmd.h
+eaccess.o: $(topdir)/pathnames.h
+eaccess.o: $(topdir)/quit.h
+eaccess.o: $(topdir)/shell.h
+eaccess.o: $(topdir)/sig.h
+eaccess.o: $(topdir)/subst.h
+eaccess.o: $(topdir)/syntax.h
+eaccess.o: $(topdir)/unwind_prot.h
+eaccess.o: $(topdir)/variables.h
+eaccess.o: $(topdir)/xmalloc.h
+fmtullong.o: $(BUILD_DIR)/config.h
+fmtullong.o: $(srcdir)/fmtullong.c
+fmtullong.o: $(srcdir)/fmtulong.c
+fmtullong.o: $(topdir)/bashansi.h
+fmtullong.o: $(topdir)/bashintl.h
+fmtullong.o: $(topdir)/config-bot.h
+fmtullong.o: $(topdir)/config-top.h
+fmtullong.o: $(topdir)/include/chartypes.h
+fmtullong.o: $(topdir)/include/gettext.h
+fmtullong.o: $(topdir)/include/stdc.h
+fmtullong.o: $(topdir)/include/typemax.h
+fmtulong.o: $(BUILD_DIR)/config.h
+fmtulong.o: $(srcdir)/fmtulong.c
+fmtulong.o: $(topdir)/bashansi.h
+fmtulong.o: $(topdir)/bashintl.h
+fmtulong.o: $(topdir)/config-bot.h
+fmtulong.o: $(topdir)/config-top.h
+fmtulong.o: $(topdir)/include/ansi_stdlib.h
+fmtulong.o: $(topdir)/include/chartypes.h
+fmtulong.o: $(topdir)/include/gettext.h
+fmtulong.o: $(topdir)/include/stdc.h
+fmtulong.o: $(topdir)/include/typemax.h
+fmtumax.o: $(BUILD_DIR)/config.h
+fmtumax.o: $(srcdir)/fmtulong.c
+fmtumax.o: $(srcdir)/fmtumax.c
+fmtumax.o: $(topdir)/bashansi.h
+fmtumax.o: $(topdir)/bashintl.h
+fmtumax.o: $(topdir)/config-bot.h
+fmtumax.o: $(topdir)/config-top.h
+fmtumax.o: $(topdir)/include/chartypes.h
+fmtumax.o: $(topdir)/include/gettext.h
+fmtumax.o: $(topdir)/include/stdc.h
+fmtumax.o: $(topdir)/include/typemax.h
+fnxform.o: $(BUILD_DIR)/config.h
+fnxform.o: $(srcdir)/fnxform.c
+fnxform.o: $(topdir)/bashansi.h
+fnxform.o: $(topdir)/bashintl.h
+fnxform.o: $(topdir)/bashtypes.h
+fnxform.o: $(topdir)/config-bot.h
+fnxform.o: $(topdir)/config-top.h
+fnxform.o: $(topdir)/include/gettext.h
+fnxform.o: $(topdir)/include/stdc.h
+fnxform.o: $(topdir)/xmalloc.h
+fpurge.o: $(BUILD_DIR)/config.h
+fpurge.o: $(srcdir)/fpurge.c
+fpurge.o: $(topdir)/config-bot.h
+fpurge.o: $(topdir)/config-top.h
+fpurge.o: $(topdir)/include/stdc.h
+getcwd.o: $(BUILD_DIR)/config.h
+getcwd.o: $(srcdir)/getcwd.c
+getcwd.o: $(topdir)/config-bot.h
+getcwd.o: $(topdir)/config-top.h
+getenv.o: $(BUILD_DIR)/config.h
+getenv.o: $(srcdir)/getenv.c
+getenv.o: $(topdir)/array.h
+getenv.o: $(topdir)/arrayfunc.h
+getenv.o: $(topdir)/assoc.h
+getenv.o: $(topdir)/bashansi.h
+getenv.o: $(topdir)/bashjmp.h
+getenv.o: $(topdir)/bashtypes.h
+getenv.o: $(topdir)/command.h
+getenv.o: $(topdir)/config-bot.h
+getenv.o: $(topdir)/config-top.h
+getenv.o: $(topdir)/conftypes.h
+getenv.o: $(topdir)/dispose_cmd.h
+getenv.o: $(topdir)/error.h
+getenv.o: $(topdir)/externs.h
+getenv.o: $(topdir)/general.h
+getenv.o: $(topdir)/hashlib.h
+getenv.o: $(topdir)/include/chartypes.h
+getenv.o: $(topdir)/include/maxpath.h
+getenv.o: $(topdir)/include/ocache.h
+getenv.o: $(topdir)/include/posixjmp.h
+getenv.o: $(topdir)/include/stdc.h
+getenv.o: $(topdir)/include/unlocked-io.h
+getenv.o: $(topdir)/make_cmd.h
+getenv.o: $(topdir)/pathnames.h
+getenv.o: $(topdir)/quit.h
+getenv.o: $(topdir)/shell.h
+getenv.o: $(topdir)/sig.h
+getenv.o: $(topdir)/subst.h
+getenv.o: $(topdir)/syntax.h
+getenv.o: $(topdir)/unwind_prot.h
+getenv.o: $(topdir)/variables.h
+getenv.o: $(topdir)/xmalloc.h
+gettimeofday.o: $(BUILD_DIR)/config.h
+gettimeofday.o: $(srcdir)/gettimeofday.c
+gettimeofday.o: $(topdir)/config-bot.h
+gettimeofday.o: $(topdir)/config-top.h
+inet_aton.o: $(BUILD_DIR)/config.h
+inet_aton.o: $(srcdir)/inet_aton.c
+inet_aton.o: $(topdir)/config-bot.h
+inet_aton.o: $(topdir)/config-top.h
+input_avail.o: $(BUILD_DIR)/config.h
+input_avail.o: $(srcdir)/input_avail.c
+input_avail.o: $(topdir)/bashansi.h
+input_avail.o: $(topdir)/config-bot.h
+input_avail.o: $(topdir)/config-top.h
+input_avail.o: $(topdir)/include/ansi_stdlib.h
+input_avail.o: $(topdir)/include/posixselect.h
+input_avail.o: $(topdir)/include/posixtime.h
+itos.o: $(BUILD_DIR)/config.h
+itos.o: $(srcdir)/itos.c
+itos.o: $(topdir)/array.h
+itos.o: $(topdir)/arrayfunc.h
+itos.o: $(topdir)/assoc.h
+itos.o: $(topdir)/bashansi.h
+itos.o: $(topdir)/bashjmp.h
+itos.o: $(topdir)/bashtypes.h
+itos.o: $(topdir)/command.h
+itos.o: $(topdir)/config-bot.h
+itos.o: $(topdir)/config-top.h
+itos.o: $(topdir)/conftypes.h
+itos.o: $(topdir)/dispose_cmd.h
+itos.o: $(topdir)/error.h
+itos.o: $(topdir)/externs.h
+itos.o: $(topdir)/general.h
+itos.o: $(topdir)/hashlib.h
+itos.o: $(topdir)/include/ansi_stdlib.h
+itos.o: $(topdir)/include/chartypes.h
+itos.o: $(topdir)/include/maxpath.h
+itos.o: $(topdir)/include/ocache.h
+itos.o: $(topdir)/include/posixjmp.h
+itos.o: $(topdir)/include/stdc.h
+itos.o: $(topdir)/include/unlocked-io.h
+itos.o: $(topdir)/make_cmd.h
+itos.o: $(topdir)/pathnames.h
+itos.o: $(topdir)/quit.h
+itos.o: $(topdir)/shell.h
+itos.o: $(topdir)/sig.h
+itos.o: $(topdir)/subst.h
+itos.o: $(topdir)/syntax.h
+itos.o: $(topdir)/unwind_prot.h
+itos.o: $(topdir)/variables.h
+itos.o: $(topdir)/xmalloc.h
+mailstat.o: $(BUILD_DIR)/config.h
+mailstat.o: $(srcdir)/mailstat.c
+mailstat.o: $(topdir)/bashansi.h
+mailstat.o: $(topdir)/bashtypes.h
+mailstat.o: $(topdir)/config-bot.h
+mailstat.o: $(topdir)/config-top.h
+mailstat.o: $(topdir)/include/maxpath.h
+mailstat.o: $(topdir)/include/posixdir.h
+mailstat.o: $(topdir)/include/posixstat.h
+makepath.o: $(BUILD_DIR)/config.h
+makepath.o: $(srcdir)/../tilde/tilde.h
+makepath.o: $(srcdir)/makepath.c
+makepath.o: $(topdir)/array.h
+makepath.o: $(topdir)/arrayfunc.h
+makepath.o: $(topdir)/assoc.h
+makepath.o: $(topdir)/bashansi.h
+makepath.o: $(topdir)/bashjmp.h
+makepath.o: $(topdir)/bashtypes.h
+makepath.o: $(topdir)/command.h
+makepath.o: $(topdir)/config-bot.h
+makepath.o: $(topdir)/config-top.h
+makepath.o: $(topdir)/conftypes.h
+makepath.o: $(topdir)/dispose_cmd.h
+makepath.o: $(topdir)/error.h
+makepath.o: $(topdir)/externs.h
+makepath.o: $(topdir)/general.h
+makepath.o: $(topdir)/hashlib.h
+makepath.o: $(topdir)/include/chartypes.h
+makepath.o: $(topdir)/include/maxpath.h
+makepath.o: $(topdir)/include/ocache.h
+makepath.o: $(topdir)/include/posixjmp.h
+makepath.o: $(topdir)/include/stdc.h
+makepath.o: $(topdir)/include/unlocked-io.h
+makepath.o: $(topdir)/lib/tilde/tilde.h
+makepath.o: $(topdir)/make_cmd.h
+makepath.o: $(topdir)/pathnames.h
+makepath.o: $(topdir)/quit.h
+makepath.o: $(topdir)/shell.h
+makepath.o: $(topdir)/sig.h
+makepath.o: $(topdir)/subst.h
+makepath.o: $(topdir)/syntax.h
+makepath.o: $(topdir)/unwind_prot.h
+makepath.o: $(topdir)/variables.h
+makepath.o: $(topdir)/xmalloc.h
+mbscasecmp.o: $(BUILD_DIR)/config.h
+mbscasecmp.o: $(srcdir)/mbscasecmp.c
+mbscasecmp.o: $(topdir)/config-bot.h
+mbscasecmp.o: $(topdir)/config-top.h
+mbschr.o: $(BUILD_DIR)/config.h
+mbschr.o: $(srcdir)/mbschr.c
+mbschr.o: $(topdir)/bashansi.h
+mbschr.o: $(topdir)/config-bot.h
+mbschr.o: $(topdir)/config-top.h
+mbschr.o: $(topdir)/include/shmbchar.h
+mbschr.o: $(topdir)/include/shmbutil.h
+mbschr.o: $(topdir)/include/stdc.h
+mbscmp.o: $(BUILD_DIR)/config.h
+mbscmp.o: $(srcdir)/mbscmp.c
+mbscmp.o: $(topdir)/config-bot.h
+mbscmp.o: $(topdir)/config-top.h
+mbsncmp.o: $(BUILD_DIR)/config.h
+mbsncmp.o: $(srcdir)/mbsncmp.c
+mbsncmp.o: $(topdir)/config-bot.h
+mbsncmp.o: $(topdir)/config-top.h
+memset.o: $(srcdir)/memset.c
+mktime.o: $(BUILD_DIR)/config.h
+mktime.o: $(srcdir)/mktime.c
+mktime.o: $(topdir)/bashansi.h
+mktime.o: $(topdir)/config-bot.h
+mktime.o: $(topdir)/config-top.h
+mktime.o: $(topdir)/include/ansi_stdlib.h
+netconn.o: $(BUILD_DIR)/config.h
+netconn.o: $(srcdir)/netconn.c
+netconn.o: $(topdir)/bashtypes.h
+netconn.o: $(topdir)/config-bot.h
+netconn.o: $(topdir)/config-top.h
+netconn.o: $(topdir)/include/filecntl.h
+netconn.o: $(topdir)/include/posixstat.h
+netopen.o: $(BUILD_DIR)/config.h
+netopen.o: $(srcdir)/netopen.c
+netopen.o: $(topdir)/array.h
+netopen.o: $(topdir)/arrayfunc.h
+netopen.o: $(topdir)/assoc.h
+netopen.o: $(topdir)/bashansi.h
+netopen.o: $(topdir)/bashintl.h
+netopen.o: $(topdir)/bashjmp.h
+netopen.o: $(topdir)/bashtypes.h
+netopen.o: $(topdir)/command.h
+netopen.o: $(topdir)/config-bot.h
+netopen.o: $(topdir)/config-top.h
+netopen.o: $(topdir)/conftypes.h
+netopen.o: $(topdir)/dispose_cmd.h
+netopen.o: $(topdir)/error.h
+netopen.o: $(topdir)/externs.h
+netopen.o: $(topdir)/general.h
+netopen.o: $(topdir)/hashlib.h
+netopen.o: $(topdir)/include/chartypes.h
+netopen.o: $(topdir)/include/gettext.h
+netopen.o: $(topdir)/include/maxpath.h
+netopen.o: $(topdir)/include/ocache.h
+netopen.o: $(topdir)/include/posixjmp.h
+netopen.o: $(topdir)/include/stdc.h
+netopen.o: $(topdir)/include/unlocked-io.h
+netopen.o: $(topdir)/make_cmd.h
+netopen.o: $(topdir)/pathnames.h
+netopen.o: $(topdir)/quit.h
+netopen.o: $(topdir)/shell.h
+netopen.o: $(topdir)/sig.h
+netopen.o: $(topdir)/subst.h
+netopen.o: $(topdir)/syntax.h
+netopen.o: $(topdir)/unwind_prot.h
+netopen.o: $(topdir)/variables.h
+netopen.o: $(topdir)/xmalloc.h
+oslib.o: $(BUILD_DIR)/config.h
+oslib.o: $(srcdir)/oslib.c
+oslib.o: $(topdir)/array.h
+oslib.o: $(topdir)/arrayfunc.h
+oslib.o: $(topdir)/assoc.h
+oslib.o: $(topdir)/bashansi.h
+oslib.o: $(topdir)/bashjmp.h
+oslib.o: $(topdir)/bashtypes.h
+oslib.o: $(topdir)/command.h
+oslib.o: $(topdir)/config-bot.h
+oslib.o: $(topdir)/config-top.h
+oslib.o: $(topdir)/conftypes.h
+oslib.o: $(topdir)/dispose_cmd.h
+oslib.o: $(topdir)/error.h
+oslib.o: $(topdir)/externs.h
+oslib.o: $(topdir)/general.h
+oslib.o: $(topdir)/hashlib.h
+oslib.o: $(topdir)/include/chartypes.h
+oslib.o: $(topdir)/include/filecntl.h
+oslib.o: $(topdir)/include/maxpath.h
+oslib.o: $(topdir)/include/ocache.h
+oslib.o: $(topdir)/include/posixjmp.h
+oslib.o: $(topdir)/include/posixstat.h
+oslib.o: $(topdir)/include/stdc.h
+oslib.o: $(topdir)/include/unlocked-io.h
+oslib.o: $(topdir)/make_cmd.h
+oslib.o: $(topdir)/pathnames.h
+oslib.o: $(topdir)/quit.h
+oslib.o: $(topdir)/shell.h
+oslib.o: $(topdir)/sig.h
+oslib.o: $(topdir)/subst.h
+oslib.o: $(topdir)/syntax.h
+oslib.o: $(topdir)/unwind_prot.h
+oslib.o: $(topdir)/variables.h
+oslib.o: $(topdir)/xmalloc.h
+pathcanon.o: $(BUILD_DIR)/config.h
+pathcanon.o: $(srcdir)/pathcanon.c
+pathcanon.o: $(topdir)/array.h
+pathcanon.o: $(topdir)/arrayfunc.h
+pathcanon.o: $(topdir)/assoc.h
+pathcanon.o: $(topdir)/bashansi.h
+pathcanon.o: $(topdir)/bashjmp.h
+pathcanon.o: $(topdir)/bashtypes.h
+pathcanon.o: $(topdir)/command.h
+pathcanon.o: $(topdir)/config-bot.h
+pathcanon.o: $(topdir)/config-top.h
+pathcanon.o: $(topdir)/conftypes.h
+pathcanon.o: $(topdir)/dispose_cmd.h
+pathcanon.o: $(topdir)/error.h
+pathcanon.o: $(topdir)/externs.h
+pathcanon.o: $(topdir)/general.h
+pathcanon.o: $(topdir)/hashlib.h
+pathcanon.o: $(topdir)/include/chartypes.h
+pathcanon.o: $(topdir)/include/filecntl.h
+pathcanon.o: $(topdir)/include/maxpath.h
+pathcanon.o: $(topdir)/include/ocache.h
+pathcanon.o: $(topdir)/include/posixjmp.h
+pathcanon.o: $(topdir)/include/posixstat.h
+pathcanon.o: $(topdir)/include/stdc.h
+pathcanon.o: $(topdir)/include/unlocked-io.h
+pathcanon.o: $(topdir)/make_cmd.h
+pathcanon.o: $(topdir)/pathnames.h
+pathcanon.o: $(topdir)/quit.h
+pathcanon.o: $(topdir)/shell.h
+pathcanon.o: $(topdir)/sig.h
+pathcanon.o: $(topdir)/subst.h
+pathcanon.o: $(topdir)/syntax.h
+pathcanon.o: $(topdir)/unwind_prot.h
+pathcanon.o: $(topdir)/variables.h
+pathcanon.o: $(topdir)/xmalloc.h
+pathphys.o: $(BUILD_DIR)/config.h
+pathphys.o: $(srcdir)/pathphys.c
+pathphys.o: $(topdir)/array.h
+pathphys.o: $(topdir)/arrayfunc.h
+pathphys.o: $(topdir)/assoc.h
+pathphys.o: $(topdir)/bashansi.h
+pathphys.o: $(topdir)/bashjmp.h
+pathphys.o: $(topdir)/bashtypes.h
+pathphys.o: $(topdir)/command.h
+pathphys.o: $(topdir)/config-bot.h
+pathphys.o: $(topdir)/config-top.h
+pathphys.o: $(topdir)/conftypes.h
+pathphys.o: $(topdir)/dispose_cmd.h
+pathphys.o: $(topdir)/error.h
+pathphys.o: $(topdir)/externs.h
+pathphys.o: $(topdir)/general.h
+pathphys.o: $(topdir)/hashlib.h
+pathphys.o: $(topdir)/include/chartypes.h
+pathphys.o: $(topdir)/include/filecntl.h
+pathphys.o: $(topdir)/include/maxpath.h
+pathphys.o: $(topdir)/include/ocache.h
+pathphys.o: $(topdir)/include/posixjmp.h
+pathphys.o: $(topdir)/include/posixstat.h
+pathphys.o: $(topdir)/include/stdc.h
+pathphys.o: $(topdir)/include/unlocked-io.h
+pathphys.o: $(topdir)/make_cmd.h
+pathphys.o: $(topdir)/pathnames.h
+pathphys.o: $(topdir)/quit.h
+pathphys.o: $(topdir)/shell.h
+pathphys.o: $(topdir)/sig.h
+pathphys.o: $(topdir)/subst.h
+pathphys.o: $(topdir)/syntax.h
+pathphys.o: $(topdir)/unwind_prot.h
+pathphys.o: $(topdir)/variables.h
+pathphys.o: $(topdir)/xmalloc.h
+random.o: $(BUILD_DIR)/config.h
+random.o: $(srcdir)/random.c
+random.o: $(topdir)/array.h
+random.o: $(topdir)/arrayfunc.h
+random.o: $(topdir)/assoc.h
+random.o: $(topdir)/bashansi.h
+random.o: $(topdir)/bashjmp.h
+random.o: $(topdir)/bashtypes.h
+random.o: $(topdir)/command.h
+random.o: $(topdir)/config-bot.h
+random.o: $(topdir)/config-top.h
+random.o: $(topdir)/conftypes.h
+random.o: $(topdir)/dispose_cmd.h
+random.o: $(topdir)/error.h
+random.o: $(topdir)/externs.h
+random.o: $(topdir)/general.h
+random.o: $(topdir)/hashlib.h
+random.o: $(topdir)/include/chartypes.h
+random.o: $(topdir)/include/filecntl.h
+random.o: $(topdir)/include/maxpath.h
+random.o: $(topdir)/include/ocache.h
+random.o: $(topdir)/include/posixjmp.h
+random.o: $(topdir)/include/stdc.h
+random.o: $(topdir)/include/unlocked-io.h
+random.o: $(topdir)/make_cmd.h
+random.o: $(topdir)/pathnames.h
+random.o: $(topdir)/quit.h
+random.o: $(topdir)/shell.h
+random.o: $(topdir)/sig.h
+random.o: $(topdir)/subst.h
+random.o: $(topdir)/syntax.h
+random.o: $(topdir)/unwind_prot.h
+random.o: $(topdir)/variables.h
+random.o: $(topdir)/xmalloc.h
+reallocarray.o: $(BUILD_DIR)/config.h
+reallocarray.o: $(srcdir)/reallocarray.c
+reallocarray.o: $(topdir)/bashansi.h
+reallocarray.o: $(topdir)/config-bot.h
+reallocarray.o: $(topdir)/config-top.h
+reallocarray.o: $(topdir)/include/intprops-internal.h
+reallocarray.o: $(topdir)/stdckdint.h
+rename.o: $(BUILD_DIR)/config.h
+rename.o: $(srcdir)/rename.c
+rename.o: $(topdir)/config-bot.h
+rename.o: $(topdir)/config-top.h
+setlinebuf.o: $(BUILD_DIR)/config.h
+setlinebuf.o: $(srcdir)/setlinebuf.c
+setlinebuf.o: $(topdir)/bashansi.h
+setlinebuf.o: $(topdir)/config-bot.h
+setlinebuf.o: $(topdir)/config-top.h
+setlinebuf.o: $(topdir)/include/stdc.h
+setlinebuf.o: $(topdir)/xmalloc.h
+shmatch.o: $(BUILD_DIR)/config.h
+shmatch.o: $(srcdir)/shmatch.c
+shmatch.o: $(topdir)/array.h
+shmatch.o: $(topdir)/arrayfunc.h
+shmatch.o: $(topdir)/assoc.h
+shmatch.o: $(topdir)/bashansi.h
+shmatch.o: $(topdir)/bashjmp.h
+shmatch.o: $(topdir)/bashtypes.h
+shmatch.o: $(topdir)/command.h
+shmatch.o: $(topdir)/config-bot.h
+shmatch.o: $(topdir)/config-top.h
+shmatch.o: $(topdir)/conftypes.h
+shmatch.o: $(topdir)/dispose_cmd.h
+shmatch.o: $(topdir)/error.h
+shmatch.o: $(topdir)/externs.h
+shmatch.o: $(topdir)/general.h
+shmatch.o: $(topdir)/hashlib.h
+shmatch.o: $(topdir)/include/chartypes.h
+shmatch.o: $(topdir)/include/maxpath.h
+shmatch.o: $(topdir)/include/ocache.h
+shmatch.o: $(topdir)/include/posixjmp.h
+shmatch.o: $(topdir)/include/stdc.h
+shmatch.o: $(topdir)/include/unlocked-io.h
+shmatch.o: $(topdir)/make_cmd.h
+shmatch.o: $(topdir)/pathnames.h
+shmatch.o: $(topdir)/quit.h
+shmatch.o: $(topdir)/shell.h
+shmatch.o: $(topdir)/sig.h
+shmatch.o: $(topdir)/subst.h
+shmatch.o: $(topdir)/syntax.h
+shmatch.o: $(topdir)/unwind_prot.h
+shmatch.o: $(topdir)/variables.h
+shmatch.o: $(topdir)/xmalloc.h
+shmbchar.o: $(BUILD_DIR)/config.h
+shmbchar.o: $(srcdir)/shmbchar.c
+shmbchar.o: $(topdir)/config-bot.h
+shmbchar.o: $(topdir)/config-top.h
+shmbchar.o: $(topdir)/include/shmbchar.h
+shmbchar.o: $(topdir)/include/shmbutil.h
+shmbchar.o: $(topdir)/include/stdc.h
+shquote.o: $(BUILD_DIR)/config.h
+shquote.o: $(srcdir)/shquote.c
+shquote.o: $(topdir)/bashansi.h
+shquote.o: $(topdir)/config-bot.h
+shquote.o: $(topdir)/config-top.h
+shquote.o: $(topdir)/include/shmbchar.h
+shquote.o: $(topdir)/include/shmbutil.h
+shquote.o: $(topdir)/include/stdc.h
+shquote.o: $(topdir)/syntax.h
+shquote.o: $(topdir)/xmalloc.h
+shtty.o: $(BUILD_DIR)/config.h
+shtty.o: $(srcdir)/shtty.c
+shtty.o: $(topdir)/config-bot.h
+shtty.o: $(topdir)/config-top.h
+shtty.o: $(topdir)/include/shtty.h
+shtty.o: $(topdir)/include/stdc.h
+snprintf.o: $(BUILD_DIR)/config.h
+snprintf.o: $(srcdir)/snprintf.c
+snprintf.o: $(topdir)/array.h
+snprintf.o: $(topdir)/arrayfunc.h
+snprintf.o: $(topdir)/assoc.h
+snprintf.o: $(topdir)/bashansi.h
+snprintf.o: $(topdir)/bashjmp.h
+snprintf.o: $(topdir)/bashtypes.h
+snprintf.o: $(topdir)/command.h
+snprintf.o: $(topdir)/config-bot.h
+snprintf.o: $(topdir)/config-top.h
+snprintf.o: $(topdir)/conftypes.h
+snprintf.o: $(topdir)/dispose_cmd.h
+snprintf.o: $(topdir)/error.h
+snprintf.o: $(topdir)/externs.h
+snprintf.o: $(topdir)/general.h
+snprintf.o: $(topdir)/hashlib.h
+snprintf.o: $(topdir)/include/ansi_stdlib.h
+snprintf.o: $(topdir)/include/chartypes.h
+snprintf.o: $(topdir)/include/maxpath.h
+snprintf.o: $(topdir)/include/ocache.h
+snprintf.o: $(topdir)/include/posixjmp.h
+snprintf.o: $(topdir)/include/shmbchar.h
+snprintf.o: $(topdir)/include/shmbutil.h
+snprintf.o: $(topdir)/include/stdc.h
+snprintf.o: $(topdir)/include/typemax.h
+snprintf.o: $(topdir)/include/unlocked-io.h
+snprintf.o: $(topdir)/make_cmd.h
+snprintf.o: $(topdir)/pathnames.h
+snprintf.o: $(topdir)/quit.h
+snprintf.o: $(topdir)/shell.h
+snprintf.o: $(topdir)/sig.h
+snprintf.o: $(topdir)/subst.h
+snprintf.o: $(topdir)/syntax.h
+snprintf.o: $(topdir)/unwind_prot.h
+snprintf.o: $(topdir)/variables.h
+snprintf.o: $(topdir)/xmalloc.h
+spell.o: $(BUILD_DIR)/config.h
+spell.o: $(srcdir)/spell.c
+spell.o: $(topdir)/bashansi.h
+spell.o: $(topdir)/bashtypes.h
+spell.o: $(topdir)/config-bot.h
+spell.o: $(topdir)/config-top.h
+spell.o: $(topdir)/include/maxpath.h
+spell.o: $(topdir)/include/posixdir.h
+spell.o: $(topdir)/include/posixstat.h
+spell.o: $(topdir)/include/stdc.h
+strcasecmp.o: $(BUILD_DIR)/config.h
+strcasecmp.o: $(srcdir)/strcasecmp.c
+strcasecmp.o: $(topdir)/config-bot.h
+strcasecmp.o: $(topdir)/config-top.h
+strcasestr.o: $(BUILD_DIR)/config.h
+strcasestr.o: $(srcdir)/strcasestr.c
+strcasestr.o: $(topdir)/bashansi.h
+strcasestr.o: $(topdir)/config-bot.h
+strcasestr.o: $(topdir)/config-top.h
+strcasestr.o: $(topdir)/include/chartypes.h
+strcasestr.o: $(topdir)/include/stdc.h
+strchrnul.o: $(BUILD_DIR)/config.h
+strchrnul.o: $(srcdir)/strchrnul.c
+strchrnul.o: $(topdir)/config-bot.h
+strchrnul.o: $(topdir)/config-top.h
+strdup.o: $(BUILD_DIR)/config.h
+strdup.o: $(srcdir)/strdup.c
+strdup.o: $(topdir)/config-bot.h
+strdup.o: $(topdir)/config-top.h
+strerror.o: $(BUILD_DIR)/config.h
+strerror.o: $(srcdir)/strerror.c
+strerror.o: $(topdir)/config-bot.h
+strerror.o: $(topdir)/config-top.h
+strftime.o: $(BUILD_DIR)/config.h
+strftime.o: $(srcdir)/strftime.c
+strftime.o: $(topdir)/config-bot.h
+strftime.o: $(topdir)/config-top.h
+strftime.o: $(topdir)/include/posixtime.h
+stringlist.o: $(BUILD_DIR)/config.h
+stringlist.o: $(srcdir)/stringlist.c
+stringlist.o: $(topdir)/array.h
+stringlist.o: $(topdir)/arrayfunc.h
+stringlist.o: $(topdir)/assoc.h
+stringlist.o: $(topdir)/bashansi.h
+stringlist.o: $(topdir)/bashjmp.h
+stringlist.o: $(topdir)/bashtypes.h
+stringlist.o: $(topdir)/command.h
+stringlist.o: $(topdir)/config-bot.h
+stringlist.o: $(topdir)/config-top.h
+stringlist.o: $(topdir)/conftypes.h
+stringlist.o: $(topdir)/dispose_cmd.h
+stringlist.o: $(topdir)/error.h
+stringlist.o: $(topdir)/externs.h
+stringlist.o: $(topdir)/general.h
+stringlist.o: $(topdir)/hashlib.h
+stringlist.o: $(topdir)/include/chartypes.h
+stringlist.o: $(topdir)/include/maxpath.h
+stringlist.o: $(topdir)/include/ocache.h
+stringlist.o: $(topdir)/include/posixjmp.h
+stringlist.o: $(topdir)/include/stdc.h
+stringlist.o: $(topdir)/include/unlocked-io.h
+stringlist.o: $(topdir)/make_cmd.h
+stringlist.o: $(topdir)/pathnames.h
+stringlist.o: $(topdir)/quit.h
+stringlist.o: $(topdir)/shell.h
+stringlist.o: $(topdir)/sig.h
+stringlist.o: $(topdir)/subst.h
+stringlist.o: $(topdir)/syntax.h
+stringlist.o: $(topdir)/unwind_prot.h
+stringlist.o: $(topdir)/variables.h
+stringlist.o: $(topdir)/xmalloc.h
+stringvec.o: $(BUILD_DIR)/config.h
+stringvec.o: $(srcdir)/stringvec.c
+stringvec.o: $(topdir)/array.h
+stringvec.o: $(topdir)/arrayfunc.h
+stringvec.o: $(topdir)/assoc.h
+stringvec.o: $(topdir)/bashansi.h
+stringvec.o: $(topdir)/bashjmp.h
+stringvec.o: $(topdir)/bashtypes.h
+stringvec.o: $(topdir)/command.h
+stringvec.o: $(topdir)/config-bot.h
+stringvec.o: $(topdir)/config-top.h
+stringvec.o: $(topdir)/conftypes.h
+stringvec.o: $(topdir)/dispose_cmd.h
+stringvec.o: $(topdir)/error.h
+stringvec.o: $(topdir)/externs.h
+stringvec.o: $(topdir)/general.h
+stringvec.o: $(topdir)/hashlib.h
+stringvec.o: $(topdir)/include/chartypes.h
+stringvec.o: $(topdir)/include/intprops-internal.h
+stringvec.o: $(topdir)/include/maxpath.h
+stringvec.o: $(topdir)/include/ocache.h
+stringvec.o: $(topdir)/include/posixjmp.h
+stringvec.o: $(topdir)/include/stdc.h
+stringvec.o: $(topdir)/include/unlocked-io.h
+stringvec.o: $(topdir)/make_cmd.h
+stringvec.o: $(topdir)/pathnames.h
+stringvec.o: $(topdir)/quit.h
+stringvec.o: $(topdir)/shell.h
+stringvec.o: $(topdir)/sig.h
+stringvec.o: $(topdir)/stdckdint.h
+stringvec.o: $(topdir)/subst.h
+stringvec.o: $(topdir)/syntax.h
+stringvec.o: $(topdir)/unwind_prot.h
+stringvec.o: $(topdir)/variables.h
+stringvec.o: $(topdir)/xmalloc.h
+strlcpy.o: $(BUILD_DIR)/config.h
+strlcpy.o: $(srcdir)/strlcpy.c
+strlcpy.o: $(topdir)/bashansi.h
+strlcpy.o: $(topdir)/config-bot.h
+strlcpy.o: $(topdir)/config-top.h
+strnlen.o: $(BUILD_DIR)/config.h
+strnlen.o: $(srcdir)/strnlen.c
+strnlen.o: $(topdir)/config-bot.h
+strnlen.o: $(topdir)/config-top.h
+strnlen.o: $(topdir)/include/stdc.h
+strpbrk.o: $(BUILD_DIR)/config.h
+strpbrk.o: $(srcdir)/strpbrk.c
+strpbrk.o: $(topdir)/config-bot.h
+strpbrk.o: $(topdir)/config-top.h
+strpbrk.o: $(topdir)/include/stdc.h
+strscpy.o: $(BUILD_DIR)/config.h
+strscpy.o: $(srcdir)/strscpy.c
+strscpy.o: $(topdir)/bashansi.h
+strscpy.o: $(topdir)/config-bot.h
+strscpy.o: $(topdir)/config-top.h
+strstr.o: $(BUILD_DIR)/config.h
+strstr.o: $(srcdir)/strstr.c
+strstr.o: $(topdir)/config-bot.h
+strstr.o: $(topdir)/config-top.h
+strtod.o: $(BUILD_DIR)/config.h
+strtod.o: $(srcdir)/strtod.c
+strtod.o: $(topdir)/bashansi.h
+strtod.o: $(topdir)/config-bot.h
+strtod.o: $(topdir)/config-top.h
+strtod.o: $(topdir)/include/ansi_stdlib.h
+strtod.o: $(topdir)/include/chartypes.h
+strtoimax.o: $(BUILD_DIR)/config.h
+strtoimax.o: $(srcdir)/strtoimax.c
+strtoimax.o: $(topdir)/config-bot.h
+strtoimax.o: $(topdir)/config-top.h
+strtoimax.o: $(topdir)/include/stdc.h
+strtol.o: $(BUILD_DIR)/config.h
+strtol.o: $(srcdir)/strtol.c
+strtol.o: $(topdir)/config-bot.h
+strtol.o: $(topdir)/config-top.h
+strtoll.o: $(BUILD_DIR)/config.h
+strtoll.o: $(srcdir)/strtoll.c
+strtoll.o: $(topdir)/config-bot.h
+strtoll.o: $(topdir)/config-top.h
+strtoul.o: $(BUILD_DIR)/config.h
+strtoul.o: $(srcdir)/strtoul.c
+strtoul.o: $(topdir)/config-bot.h
+strtoul.o: $(topdir)/config-top.h
+strtoull.o: $(BUILD_DIR)/config.h
+strtoull.o: $(srcdir)/strtoull.c
+strtoull.o: $(topdir)/config-bot.h
+strtoull.o: $(topdir)/config-top.h
+strtoumax.o: $(BUILD_DIR)/config.h
+strtoumax.o: $(srcdir)/strtoumax.c
+strtoumax.o: $(topdir)/config-bot.h
+strtoumax.o: $(topdir)/config-top.h
+strtoumax.o: $(topdir)/include/stdc.h
+strtrans.o: $(BUILD_DIR)/config.h
+strtrans.o: $(srcdir)/strtrans.c
+strtrans.o: $(topdir)/array.h
+strtrans.o: $(topdir)/arrayfunc.h
+strtrans.o: $(topdir)/assoc.h
+strtrans.o: $(topdir)/bashansi.h
+strtrans.o: $(topdir)/bashjmp.h
+strtrans.o: $(topdir)/bashtypes.h
+strtrans.o: $(topdir)/command.h
+strtrans.o: $(topdir)/config-bot.h
+strtrans.o: $(topdir)/config-top.h
+strtrans.o: $(topdir)/conftypes.h
+strtrans.o: $(topdir)/dispose_cmd.h
+strtrans.o: $(topdir)/error.h
+strtrans.o: $(topdir)/externs.h
+strtrans.o: $(topdir)/general.h
+strtrans.o: $(topdir)/hashlib.h
+strtrans.o: $(topdir)/include/chartypes.h
+strtrans.o: $(topdir)/include/maxpath.h
+strtrans.o: $(topdir)/include/ocache.h
+strtrans.o: $(topdir)/include/posixjmp.h
+strtrans.o: $(topdir)/include/shmbchar.h
+strtrans.o: $(topdir)/include/shmbutil.h
+strtrans.o: $(topdir)/include/stdc.h
+strtrans.o: $(topdir)/include/unlocked-io.h
+strtrans.o: $(topdir)/make_cmd.h
+strtrans.o: $(topdir)/pathnames.h
+strtrans.o: $(topdir)/quit.h
+strtrans.o: $(topdir)/shell.h
+strtrans.o: $(topdir)/sig.h
+strtrans.o: $(topdir)/subst.h
+strtrans.o: $(topdir)/syntax.h
+strtrans.o: $(topdir)/unwind_prot.h
+strtrans.o: $(topdir)/variables.h
+strtrans.o: $(topdir)/xmalloc.h
+strvis.o: $(BUILD_DIR)/config.h
+strvis.o: $(srcdir)/strvis.c
+strvis.o: $(topdir)/bashansi.h
+strvis.o: $(topdir)/bashintl.h
+strvis.o: $(topdir)/config-bot.h
+strvis.o: $(topdir)/config-top.h
+strvis.o: $(topdir)/include/chartypes.h
+strvis.o: $(topdir)/include/gettext.h
+strvis.o: $(topdir)/include/shmbchar.h
+strvis.o: $(topdir)/include/shmbutil.h
+strvis.o: $(topdir)/include/stdc.h
+timers.o: $(BUILD_DIR)/config.h
+timers.o: $(srcdir)/timers.c
+timers.o: $(topdir)/bashansi.h
+timers.o: $(topdir)/bashjmp.h
+timers.o: $(topdir)/bashtypes.h
+timers.o: $(topdir)/config-bot.h
+timers.o: $(topdir)/config-top.h
+timers.o: $(topdir)/include/posixjmp.h
+timers.o: $(topdir)/include/posixselect.h
+timers.o: $(topdir)/include/posixtime.h
+timers.o: $(topdir)/include/stat-time.h
+timers.o: $(topdir)/include/stdc.h
+timers.o: $(topdir)/include/timer.h
+timers.o: $(topdir)/sig.h
+timers.o: $(topdir)/xmalloc.h
+times.o: $(BUILD_DIR)/config.h
+times.o: $(srcdir)/times.c
+times.o: $(topdir)/config-bot.h
+times.o: $(topdir)/config-top.h
+timeval.o: $(BUILD_DIR)/config.h
+timeval.o: $(srcdir)/timeval.c
+timeval.o: $(topdir)/bashintl.h
+timeval.o: $(topdir)/config-bot.h
+timeval.o: $(topdir)/config-top.h
+timeval.o: $(topdir)/include/gettext.h
+timeval.o: $(topdir)/include/posixtime.h
+timeval.o: $(topdir)/include/stdc.h
+tmpfile.o: $(BUILD_DIR)/config.h
+tmpfile.o: $(srcdir)/tmpfile.c
+tmpfile.o: $(topdir)/array.h
+tmpfile.o: $(topdir)/arrayfunc.h
+tmpfile.o: $(topdir)/assoc.h
+tmpfile.o: $(topdir)/bashansi.h
+tmpfile.o: $(topdir)/bashjmp.h
+tmpfile.o: $(topdir)/bashtypes.h
+tmpfile.o: $(topdir)/command.h
+tmpfile.o: $(topdir)/config-bot.h
+tmpfile.o: $(topdir)/config-top.h
+tmpfile.o: $(topdir)/conftypes.h
+tmpfile.o: $(topdir)/dispose_cmd.h
+tmpfile.o: $(topdir)/error.h
+tmpfile.o: $(topdir)/externs.h
+tmpfile.o: $(topdir)/general.h
+tmpfile.o: $(topdir)/hashlib.h
+tmpfile.o: $(topdir)/include/chartypes.h
+tmpfile.o: $(topdir)/include/filecntl.h
+tmpfile.o: $(topdir)/include/maxpath.h
+tmpfile.o: $(topdir)/include/ocache.h
+tmpfile.o: $(topdir)/include/posixjmp.h
+tmpfile.o: $(topdir)/include/posixstat.h
+tmpfile.o: $(topdir)/include/posixtime.h
+tmpfile.o: $(topdir)/include/stdc.h
+tmpfile.o: $(topdir)/include/unlocked-io.h
+tmpfile.o: $(topdir)/make_cmd.h
+tmpfile.o: $(topdir)/pathnames.h
+tmpfile.o: $(topdir)/quit.h
+tmpfile.o: $(topdir)/shell.h
+tmpfile.o: $(topdir)/sig.h
+tmpfile.o: $(topdir)/subst.h
+tmpfile.o: $(topdir)/syntax.h
+tmpfile.o: $(topdir)/unwind_prot.h
+tmpfile.o: $(topdir)/variables.h
+tmpfile.o: $(topdir)/xmalloc.h
+uconvert.o: $(BUILD_DIR)/config.h
+uconvert.o: $(srcdir)/uconvert.c
+uconvert.o: $(topdir)/alias.h
+uconvert.o: $(topdir)/array.h
+uconvert.o: $(topdir)/arrayfunc.h
+uconvert.o: $(topdir)/assoc.h
+uconvert.o: $(topdir)/bashansi.h
+uconvert.o: $(topdir)/bashjmp.h
+uconvert.o: $(topdir)/bashtypes.h
+uconvert.o: $(topdir)/builtins.h
+uconvert.o: $(topdir)/command.h
+uconvert.o: $(topdir)/config-bot.h
+uconvert.o: $(topdir)/config-top.h
+uconvert.o: $(topdir)/conftypes.h
+uconvert.o: $(topdir)/dispose_cmd.h
+uconvert.o: $(topdir)/error.h
+uconvert.o: $(topdir)/externs.h
+uconvert.o: $(topdir)/general.h
+uconvert.o: $(topdir)/hashlib.h
+uconvert.o: $(topdir)/include/chartypes.h
+uconvert.o: $(topdir)/include/maxpath.h
+uconvert.o: $(topdir)/include/ocache.h
+uconvert.o: $(topdir)/include/posixjmp.h
+uconvert.o: $(topdir)/include/posixtime.h
+uconvert.o: $(topdir)/include/stdc.h
+uconvert.o: $(topdir)/include/unlocked-io.h
+uconvert.o: $(topdir)/make_cmd.h
+uconvert.o: $(topdir)/pathnames.h
+uconvert.o: $(topdir)/quit.h
+uconvert.o: $(topdir)/shell.h
+uconvert.o: $(topdir)/sig.h
+uconvert.o: $(topdir)/subst.h
+uconvert.o: $(topdir)/syntax.h
+uconvert.o: $(topdir)/unwind_prot.h
+uconvert.o: $(topdir)/variables.h
+uconvert.o: $(topdir)/xmalloc.h
+ufuncs.o: $(BUILD_DIR)/config.h
+ufuncs.o: $(srcdir)/ufuncs.c
+ufuncs.o: $(topdir)/bashtypes.h
+ufuncs.o: $(topdir)/config-bot.h
+ufuncs.o: $(topdir)/config-top.h
+ufuncs.o: $(topdir)/error.h
+ufuncs.o: $(topdir)/include/posixselect.h
+ufuncs.o: $(topdir)/include/posixtime.h
+ufuncs.o: $(topdir)/include/stat-time.h
+ufuncs.o: $(topdir)/include/stdc.h
+ufuncs.o: $(topdir)/quit.h
+ufuncs.o: $(topdir)/sig.h
+ufuncs.o: $(topdir)/trap.h
+unicode.o: $(BUILD_DIR)/config.h
+unicode.o: $(srcdir)/unicode.c
+unicode.o: $(topdir)/bashansi.h
+unicode.o: $(topdir)/config-bot.h
+unicode.o: $(topdir)/config-top.h
+unicode.o: $(topdir)/include/stdc.h
+unicode.o: $(topdir)/xmalloc.h
+utf8.o: $(BUILD_DIR)/config.h
+utf8.o: $(srcdir)/utf8.c
+utf8.o: $(topdir)/bashansi.h
+utf8.o: $(topdir)/config-bot.h
+utf8.o: $(topdir)/config-top.h
+utf8.o: $(topdir)/include/shmbchar.h
+utf8.o: $(topdir)/include/shmbutil.h
+utf8.o: $(topdir)/include/stdc.h
+vprint.o: $(BUILD_DIR)/config.h
+vprint.o: $(srcdir)/vprint.c
+vprint.o: $(topdir)/config-bot.h
+vprint.o: $(topdir)/config-top.h
+wcsdup.o: $(BUILD_DIR)/config.h
+wcsdup.o: $(srcdir)/wcsdup.c
+wcsdup.o: $(topdir)/config-bot.h
+wcsdup.o: $(topdir)/config-top.h
+wcsnwidth.o: $(BUILD_DIR)/config.h
+wcsnwidth.o: $(srcdir)/wcsnwidth.c
+wcsnwidth.o: $(topdir)/bashansi.h
+wcsnwidth.o: $(topdir)/config-bot.h
+wcsnwidth.o: $(topdir)/config-top.h
+wcsnwidth.o: $(topdir)/include/stdc.h
+wcswidth.o: $(BUILD_DIR)/config.h
+wcswidth.o: $(srcdir)/wcswidth.c
+wcswidth.o: $(topdir)/config-bot.h
+wcswidth.o: $(topdir)/config-top.h
+winsize.o: $(BUILD_DIR)/config.h
+winsize.o: $(srcdir)/winsize.c
+winsize.o: $(topdir)/bashtypes.h
+winsize.o: $(topdir)/config-bot.h
+winsize.o: $(topdir)/config-top.h
+winsize.o: $(topdir)/include/stdc.h
+zcatfd.o: $(BUILD_DIR)/config.h
+zcatfd.o: $(srcdir)/zcatfd.c
+zcatfd.o: $(topdir)/config-bot.h
+zcatfd.o: $(topdir)/config-top.h
+zcatfd.o: $(topdir)/include/stdc.h
+zgetline.o: $(BUILD_DIR)/config.h
+zgetline.o: $(srcdir)/zgetline.c
+zgetline.o: $(topdir)/bashansi.h
+zgetline.o: $(topdir)/config-bot.h
+zgetline.o: $(topdir)/config-top.h
+zgetline.o: $(topdir)/include/stdc.h
+zgetline.o: $(topdir)/xmalloc.h
+zmapfd.o: $(BUILD_DIR)/config.h
+zmapfd.o: $(srcdir)/zmapfd.c
+zmapfd.o: $(topdir)/bashansi.h
+zmapfd.o: $(topdir)/bashtypes.h
+zmapfd.o: $(topdir)/command.h
+zmapfd.o: $(topdir)/config-bot.h
+zmapfd.o: $(topdir)/config-top.h
+zmapfd.o: $(topdir)/general.h
+zmapfd.o: $(topdir)/include/chartypes.h
+zmapfd.o: $(topdir)/include/stdc.h
+zmapfd.o: $(topdir)/include/unlocked-io.h
+zmapfd.o: $(topdir)/xmalloc.h
+zread.o: $(BUILD_DIR)/config.h
+zread.o: $(srcdir)/zread.c
+zread.o: $(topdir)/config-bot.h
+zread.o: $(topdir)/config-top.h
+zwrite.o: $(BUILD_DIR)/config.h
+zwrite.o: $(srcdir)/zwrite.c
+zwrite.o: $(topdir)/config-bot.h
+zwrite.o: $(topdir)/config-top.h

@@ -85,6 +85,18 @@ $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 	${INSTALL_DATA} -c -m 644 libtermcap.a $@
 	-test -n "$(RANLIB)" && $(RANLIB) -t $@
 
+#MKDEP-CUT-HERE
+
+# C *.c source & *.h header dependencies (generated)
+
 termcap.o: $(BUILD_DIR)/config.h
+termcap.o: $(srcdir)/ltcap.h
+termcap.o: $(srcdir)/termcap.c
+termcap.o: $(topdir)/config-bot.h
+termcap.o: $(topdir)/config-top.h
 tparam.o: $(BUILD_DIR)/config.h
-version.o: $(BUILD_DIR)/config.h
+tparam.o: $(srcdir)/ltcap.h
+tparam.o: $(srcdir)/tparam.c
+tparam.o: $(topdir)/config-bot.h
+tparam.o: $(topdir)/config-top.h
+version.o: $(srcdir)/version.c

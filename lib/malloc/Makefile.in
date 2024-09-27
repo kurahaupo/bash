@@ -109,31 +109,85 @@ mostlyclean clean:
 distclean realclean maintainer-clean: clean
 	$(RM) Makefile
 
+#MKDEP-CUT-HERE
+
+# C *.c source & *.h header dependencies (generated)
+
 alloca.o: $(BUILD_DIR)/config.h
-malloc.o: $(BUILD_DIR)/config.h $(topdir)/bashtypes.h getpagesize.h
-xmalloc.o: $(BUILD_DIR)/config.h $(BASHINCDIR)/ansi_stdlib.h
-trace.o: ${BUILD_DIR}/config.h
-stats.o: ${BUILD_DIR}/config.h
-table.o: ${BUILD_DIR}/config.h
-watch.o: ${BUILD_DIR}/config.h
+alloca.o: $(srcdir)/alloca.c
+alloca.o: $(topdir)/config-bot.h
+alloca.o: $(topdir)/config-top.h
+malloc.o: $(BUILD_DIR)/config.h
+malloc.o: $(srcdir)/getpagesize.h
+malloc.o: $(srcdir)/imalloc.h
+malloc.o: $(srcdir)/malloc.c
+malloc.o: $(topdir)/bashintl.h
+malloc.o: $(topdir)/bashtypes.h
+malloc.o: $(topdir)/config-bot.h
+malloc.o: $(topdir)/config-top.h
+malloc.o: $(topdir)/include/gettext.h
+malloc.o: $(topdir)/include/stdc.h
+memtest.o: $(srcdir)/memtest.c
+memtest.o: $(topdir)/bashansi.h
+memtest.o: $(topdir)/include/ansi_stdlib.h
+memtest.o: $(topdir)/include/stdc.h
+memtest.o: $(topdir)/xmalloc.h
+sbrk.o: $(BUILD_DIR)/config.h
+sbrk.o: $(srcdir)/sbrk.c
+sbrk.o: $(topdir)/config-bot.h
+sbrk.o: $(topdir)/config-top.h
+stats.o: $(BUILD_DIR)/config.h
+stats.o: $(srcdir)/imalloc.h
+stats.o: $(srcdir)/stats.c
+stats.o: $(topdir)/bashintl.h
+stats.o: $(topdir)/config-bot.h
+stats.o: $(topdir)/config-top.h
+stats.o: $(topdir)/include/gettext.h
+stub.o: $(srcdir)/stub.c
+table.o: $(BUILD_DIR)/config.h
+table.o: $(srcdir)/imalloc.h
+table.o: $(srcdir)/table.c
+table.o: $(srcdir)/table.h
+table.o: $(topdir)/bashintl.h
+table.o: $(topdir)/config-bot.h
+table.o: $(topdir)/config-top.h
+table.o: $(topdir)/include/gettext.h
+trace.o: $(BUILD_DIR)/config.h
+trace.o: $(srcdir)/imalloc.h
+trace.o: $(srcdir)/trace.c
+trace.o: $(topdir)/bashintl.h
+trace.o: $(topdir)/config-bot.h
+trace.o: $(topdir)/config-top.h
+trace.o: $(topdir)/include/gettext.h
+watch.o: $(BUILD_DIR)/config.h
+watch.o: $(srcdir)/imalloc.h
+watch.o: $(srcdir)/watch.c
+watch.o: $(topdir)/bashintl.h
+watch.o: $(topdir)/config-bot.h
+watch.o: $(topdir)/config-top.h
+watch.o: $(topdir)/include/gettext.h
+xmalloc.o: $(BUILD_DIR)/config.h
+xmalloc.o: $(srcdir)/xmalloc.c
+xmalloc.o: $(topdir)/config-bot.h
+xmalloc.o: $(topdir)/config-top.h
+xmalloc.o: $(topdir)/include/ansi_stdlib.h
 
-malloc.o: ${srcdir}/imalloc.h ${srcdir}/mstats.h
-malloc.o: ${srcdir}/table.h ${srcdir}/watch.h
-stats.o: ${srcdir}/imalloc.h ${srcdir}/mstats.h
-trace.o: ${srcdir}/imalloc.h
-table.o: ${srcdir}/imalloc.h ${srcdir}/table.h
-watch.o: ${srcdir}/imalloc.h ${srcdir}/watch.h
-
-malloc.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-stats.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-trace.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-table.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-watch.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-# Rules for deficient makes, like SunOS and Solaris
-stub.o: stub.c
-malloc.o: malloc.c
-table.o: table.c
-trace.o: trace.c
-stats.o: stats.c
-watch.o: watch.c
+OLD/gmalloc.o: $(BUILD_DIR)/config.h
+OLD/gmalloc.o: $(srcdir)/OLD/gmalloc.c
+OLD/gmalloc.o: $(topdir)/config-bot.h
+OLD/gmalloc.o: $(topdir)/config-top.h
+OLD/gmalloc.o: $(topdir)/include/stdc.h
+OLD/ogmalloc.o: $(BUILD_DIR)/config.h
+OLD/ogmalloc.o: $(srcdir)/OLD/ogmalloc.c
+OLD/ogmalloc.o: $(topdir)/config-bot.h
+OLD/ogmalloc.o: $(topdir)/config-top.h
+OLD/old-nmalloc.o: $(BUILD_DIR)/config.h
+OLD/old-nmalloc.o: $(srcdir)/OLD/old-nmalloc.c
+OLD/old-nmalloc.o: $(topdir)/bashtypes.h
+OLD/old-nmalloc.o: $(topdir)/config-bot.h
+OLD/old-nmalloc.o: $(topdir)/config-top.h
+OLD/omalloc.o: $(BUILD_DIR)/config.h
+OLD/omalloc.o: $(srcdir)/OLD/omalloc.c
+OLD/omalloc.o: $(topdir)/bashtypes.h
+OLD/omalloc.o: $(topdir)/config-bot.h
+OLD/omalloc.o: $(topdir)/config-top.h
