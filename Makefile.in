@@ -1276,11 +1276,14 @@ ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
 	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} bashgetopt.o) || exit 1
 
+${DEFDIR}/builtext.h \
+${DEFDIR}/pipesize.h \
+ :
+	cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
+
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h ) || exit 1
 
 ${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h ) || exit 1
 
 $(SDIR)/man2html$(EXEEXT): ${SUPPORT_SRC}/man2html.c
 	@(cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) all ) || exit 1
