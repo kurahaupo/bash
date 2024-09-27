@@ -94,23 +94,23 @@ all:		malloc
 malloc: ${MALLOC_OBJS}
 	${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${MALLOC_OBJS}
-	-test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
+	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 
 stubmalloc: ${STUB_OBJS}
 	${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${STUB_OBJS}
-	-test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
+	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 
 alloca: ${ALLOCA}
 	${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${ALLOCA}
-	-test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
+	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 
 alloca.o:	$(srcdir)/$(ALLOCA_SOURCE)
 	$(CC) $(CCFLAGS) -c $(srcdir)/$(ALLOCA_SOURCE)
 	@- if test "$(ALLOCA_OBJECT)" != alloca.o ; then \
 		mv $(ALLOCA_OBJECT) alloca.o >/dev/null 2>&1 ; \
-	fi
+	  fi
 
 mostlyclean clean:
 	$(RM) *.o libmalloc.a
