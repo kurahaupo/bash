@@ -702,15 +702,10 @@ ${GRAM_H}: y.tab.h
 		cmp -s $@ y.tab.h 2>/dev/null || cp -p y.tab.h $@; \
 	fi
 
-y.tab.c: parse.y
-#	-if test -f y.tab.h; then mv -f y.tab.h old-y.tab.h; fi
+y.tab.c y.tab.h: $(srcdir)/parse.y
 	$(YACC) -d $(srcdir)/parse.y
 	$(RM) parser-built
 	touch parser-built
-#	-if cmp -s old-y.tab.h y.tab.h; then mv old-y.tab.h y.tab.h; else cp -p y.tab.h ${GRAM_H}; fi
-
-y.tab.h: y.tab.c
-	@true
 
 
 # Subdirs will often times want version.h, so they'll change back up to
