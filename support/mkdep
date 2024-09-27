@@ -22,25 +22,133 @@
 # Modified by Chet Ramey <chet.ramey@case.edu> for inclusion in Bash
 #
 
+{ # parse whole script before starting
+
 append_depfile=false
 compiler=cc
-depfile=.depend
-keep_path=false
-keep_output=false
-m_flag=-MM
-skip_o=false
-
 debug=false
+depfile=.depend
+keep_temps=false
+keep_temps_on_error=false
+keep_path=false
+unset m_flag
+patch_makefile=
+presort_depfile=true
+rewrite_list=
+sort_depfile=false
+srcdir=
+topdir=
+tgtdir=
 
-usage()
-{
-  echo "$PROG: usage: $PROG [-a] [-c compiler] [-f depend_file] [-k f|p] [-m M|MM] [-p] [--] [cc_flags] file ..." >&2
-  exit 2
-}
+# These excluded pathnames doesn't work for every system (e.g., macOS), but
+# this list is only needed if your compiler doesn't understand the -MM option;
+# which usually does the right thing.
+exclusion_list="\
+: /usr/include
+: /usr/lib"
+
+# POSIX grep accepts multiple patterns separated by a newline
+NL='
+'
 
 PROG=${0##*/}
 
-while getopts ac:f:k:m:pD opt "$@"
+die()
+{
+  ex=$?
+  case $1 in EX_*) ex=2 ; shift ;; [0-9]*) ex=$1 ; shift ; esac
+  echo "$PROG: $*"
+  exit $ex
+} >&2
+
+show_usage()
+{
+  cat <<EndOfHelp
+Usage: $PROG [OPTIONS] [-- [COMPILER_FLAGS...]] FILES...
+
+Options:
+
+  --append,
+  -a		append to dependency file
+
+  --compiler=COMPILER,
+  -c COMPILER	change compiler (default: gcc)
+
+  --exclude=PATH,
+  -e PATH	add to exclusion path list
+
+  --dep-file=FILE,
+  -f FILE	use dependency file (default: .depend)
+
+  --keep-errors,
+  -ke		keep temp files if an error occurs
+
+  --keep-temps,
+  -kt		keep temp files
+
+  --keep-path,
+  -kp		keep PATH from environment
+
+  -M		pass -M compiler (don't exclude system includes)
+  -m       	pass -MM to compiler (default with gcc or clang)
+
+  -p		shorthand for '-r %.o=%'
+
+  --patch=[Makefile],
+  -P		incorporate dependency file into Makefile
+
+  --srcdir=SRCDIR,
+  -S SRCDIR
+
+  --topdir=TOP_SRCDIR
+  -T TOP_SRCDIR
+
+  -r REPLACEMENT-RULE (for sources)
+  -R REPLACEMENT-RULE (for targets)
+
+Replacement rules can be:
+  FROM_PATH%FROM_SUFFIX=TO_PATH%TO_SUFFIX
+		("%" matches a file not in a subdirectory)
+
+  s@PATTERN@REPLACEMENT@
+		(can use '@' or '%' or '#'; avoid '/')
+EndOfHelp
+  exit 0
+}
+
+add_replacement ()
+{
+  rep=$1 how=$2
+  case $1 in
+
+    *%*=*%*)
+	    # With a wildcard
+	    fr=${OPTARG%=*%*}  fp=${fr%'%'*} fs=${fr#"$fp%"}
+	    to=${OPTARG#"$fr="} tp=${to%'%'*} ts=${to#"$tp%"}
+	    case $2 in
+	      s*) fp=' '$fp tp=' '$tp fs=$fs'$' ;;
+	      t*) fp='^'$fp fs=$fs': '  ;;
+	    esac
+	    rewrite_list="$rewrite_list$NL s#$fp\([^/: ]*\)$fs#$tp\1$ts# ;" ;;
+
+    *=*)
+	    # Without a wildcard
+	    fr=${OPTARG%=*}
+	    to=${OPTARG#"$fr="}
+	    case $2 in
+	      s*) fr=' '$fr'$' to=' '$to ;;
+	      t*) fr='^'$fr': '  ;;
+	    esac
+	    rewrite_list="$rewrite_list$NL s#$fr#$to# ;" ;;
+
+    s#*#*#)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
+    s@*@*@)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
+    s%*%*%)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
+    *)	die EX_USAGE "Invalid replacement pattern '$OPTARG'; type '$PROG --help' for more" ;;
+  esac
+}
+
+while getopts ac:Df:k:mMpPr:R:sS:T:-: opt "$@"
 do
   case $opt in
     a)
@@ -49,67 +157,401 @@ do
 
     c)
       # change compiler
-      compiler=$OPTARG ;;
+      compiler=$OPTARG
+      ;;
+
+    D)
+      debug=true ;;
+
+    e)
+      # add item to the exclusion list
+      exclusion_list="$exclusion_list$NL: $OPTARG"
+      ;;
 
     f)
       # select a dependency file
-      depfile=$2 ;;
+      depfile=$OPTARG
+      ;;
+
+    h)
+      show_usage
+      ;;
 
     k)
       case $OPTARG in
-      f)  # Keep the temporary files on failure
-	  keep_output=true ;;
+      e)
+	# Keep the temporary files on failure
+	keep_temps_on_error=true ;;
+
+      t)
+	# Keep the temporary files always
+	keep_temps=true ;;
+
       p)
-	  # keep PATH from environment
-	  keep_path=true ;;
-      *) usage ; exit 2 ;;
+	# keep PATH from environment
+	keep_path=true ;;
+
+      *) die EX_USAGE "Invalid -k suboption '$OPTARG'; type '$PROG --help' for more" ;;
       esac ;;
 
     m)
-      case $OPTARG in
-      M) m_flag=-M ;;
-      MM) m_flag=-MM ;;
-      *) usage ; exit 2 ;;
-      esac;;
+      # ignore system-supplied #include files
+      m_flag=-MM
+      ;;
+
+    M)
+      # include system-supplied #include files
+      m_flag=-M
+      ;;
 
     p)
-      # produce “program: program.c”-style dependencies
+      # If the real target is a completed executable, create a dependency list
+      # directly targetting it, rather than the intermediate .o file(s).
+      # Produce “program: program.c”-style dependencies
       # (to avoid generating .o files)
-      skip_o=true ;;
+      rewrite_list="$rewrite_list s#^\([^/]*\)\.o:#\1:# ;$NL"
+      ;;
 
-    D) debug=true ;;
-    
+    P)
+      patch_makefile=Makefile ;;
+
+    r)
+      # Target replacement rule
+      add_replacement "$OPTARG" t
+      ;;
+
+    R)
+      # Source replacement rule
+      add_replacement "$OPTARG" s
+      ;;
+
+    s)
+      # re-sort whole depfile, after normalisation and merging, to prevent
+      # creating duplicates
+      presort_depfile=false # no need to sort twice
+      sort_depfile=true ;;
+
+    S)
+      srcdir=$OPTARG
+      ;;
+
+    T)
+      topdir=$OPTARG
+      ;;
+
+    -)
+      opt=${OPTARG%%=*}
+      arg=${OPTARG#"$opt"}
+      case $arg in '') unset arg ;; *) arg=${arg#=} ; esac
+      hopt=${opt%%-*}
+      case $opt in
+	ap*)	case append		in "$opt"*) append_depfile=true ; continue ; esac ;;
+	cc)					    compiler=$arg ; continue ;;
+	co*)	case compiler		in "$opt"*) compiler=$arg ; continue ; esac ;;
+	de*-f*)	case dependency		in "$hopt"*)
+		  opt=${opt#*-}
+		  case file		in "$opt"*) depfile=$arg ; continue ; esac ;;
+		esac ;;
+	exc*)	case exclude		in "$opt"*) exclusion_list="$exclusion_list$NL: $arg" ; continue ; esac ;;
+	h*)	case help		in "$opt"*) show_usage ; esac ;;
+	k*-*)	case keep		in "$hopt"*)
+		  opt=${opt#*-}
+		  case $opt in
+		    e*)	case errors	in "$opt"*) keep_temps=false keep_temps_on_error=true ; continue ; esac ;;
+		    p*)	case path	in "$opt"*) keep_path=true ; continue ; esac ;;
+		    t*)	case temps	in "$opt"*) keep_temps=true keep_temps_on_error=true ; continue ; esac ;;
+		  esac
+		esac ;;
+	n*-*)
+		case no	in "$hopt"*)
+		  opt=${opt#*-}
+		  hopt=${opt%%-*}
+		  case $opt in
+		    k*-*)
+		      case keep		in "$hopt"*)
+			opt=${opt#*-}
+			case $opt in
+			p*) case path	in "$opt"*) keep_path=false ; continue ; esac ;;
+			t*) case temps	in "$opt"*) keep_temps=true keep_temps_on_error=false ; continue ; esac ;;
+			esac
+		      esac ;;
+		    p*)	case patch	in "$opt"*) patch_makefile= ; continue ; esac
+		  esac
+		esac ;;
+	p*)	case patch-makefile	in "$opt"*) patch_makefile=${arg-Makefile} ; continue ; esac ;;
+	r*-s*)	case replace		in "$hopt"*)
+		  opt=${opt#*-}
+		  case source		in "$opt"*) add_replacement "$arg" s ; continue ; esac
+		  case src		in "$opt"*) add_replacement "$arg" s ; continue ; esac
+		esac ;;
+	r*-t*)	case replace		in "$hopt"*)
+		  opt=${opt#*-}
+		  case target		in "$opt"*) add_replacement "$arg" t ; continue ; esac
+		  case tgt		in "$opt"*) add_replacement $arg t ; continue ; esac
+		esac ;;
+	s*d*)	case srcdir		in "$opt"*) srcdir=$arg ; continue ; esac ;;
+	s*t*)	case srctop		in "$opt"*) topdir=$arg ; continue ; esac ;;
+	t*)	case topdir		in "$opt"*) topdir=$arg ; continue ; esac ;;
+	u*)	case usage		in "$opt"*) show_usage ; esac ;;
+      esac
+      die EX_USAGE "Invalid or ambiguous option '--$opt'; type '$PROG --help' for more" ;;
+
     ?)
-      usage ;;
+      die EX_USAGE "Invalid option '-$opt'; type '$PROG --help' for more" ;;
   esac
 
 done
 
 shift $(( $OPTIND - 1 ))
 
-if [ $# = 0 ] ; then
-  usage
-fi
+[ $# != 0 ] ||
+  die EX_USAGE 'At least one source file required'
+
+case ${compiler##*/} in
+ gcc* | clang*) _=${m_flag=-MM} ;;
+             *) _=${m_flag=-M} ;;
+esac
+
+exclusion_list=${exclusion_list#"$NL"}
+
+"$keep_path" ||
+  export PATH=/bin:/usr/bin:/usr/local/bin:/opt/bin:$PATH
 
 "$debug" && set -x
 
-"$keep_path" || export PATH=/bin:/usr/bin:/usr/local/bin:/opt/bin:$PATH
+#
+# There are 4 directories of interest
+# * supplied:
+#       $topdir - the top of the source tree
+#       $srcdir - the source directory (within the source tree) that corresponds to the target directory
+# * calculated:
+#       $blddir - the top of the target tree; should always be '' or '../' or '../../' etc
+#       $tgtdir - the target directory (within the target tree); should always be '' ($PWD)
+# Which is to say, the relative paths from $topdir to $srcdir and from $blddir
+# to $tgtdir must be the same. Moreover, $tgtdir must be $PWD (or '.'), because
+# otherwise the paths produced by 'gcc -MM' will be wrong.
+
+# For each given path, make sure it ends with a slash (or is empty)
+srcdir=${srcdir:+${srcdir%/}/}  srcdir=${srcdir#./}
+topdir=${topdir:+${topdir%/}/}  topdir=${topdir#./}
+
+# Minimize all paths:
+#   - where a path is relative, leave it as-is
+#   - if a path is a subdir of $PWD, strip the leading $PWD/
+#   - if a path is a parent dir of $PWD, convert it to a chain of '../'
+#   - all paths have a trailing '/' (unless it's empty, meaning $PWD); avoid './'
+#   - set blddir to some repetition of '../'
+#   - where a path is absolute and neither
+#
+# Various cases to cope with; given topdir & srcdir, set corresponding subdir,
+# tgtdir & blddir:
+#   topdir                  srcdir			subdir  blddir  tgtdir
+#   /abs/path/              /abs/path/                  [./]    [./]    [./]            when building at an independent path
+#   /abs/path/              /abs/path/s1/               s1/     ../     [./]
+#   /abs/path/              /abs/path/s1/s2/            s1/s2/  ../../  [./]
+#
+#   [./]                    [./]                        [./]    [./]    [./]            when building at the apex of the source tree
+#   ../                     [./]                        s1/     ../     [./]		  (infer s1/s2/ from $PWD)
+#   ../../                  [./]                        s1/s2/  ../../  [./]
+#
+#   (../)                   (../)                       [./]    [./]    [./]            when building in a subdir of the source tree
+#   ../(../)                ../(../)s1/                 s1/     ../     [./]
+#   ../../(../)             ../../(../)s1/s2/           s1/s2/  ../../  [./]
+#   ../                     s2/                         s1/s2/  ../../  [./]
+#
+#   rel/path/               rel/path/                   [./]    [./]    [./]            when building in a parent directory of the source tree
+#   ../../rel/path/         ../../rel/path/s1/s2/       s1/s2/  ../../  [./]
+#
+#   (../)rel/path/          (../)rel/path/              [./]    [./]    [./]            when building beside the source tree
+#   ../(../)rel/path/       ../(../)rel/path/s1/        s1/     ../     [./]
+#   ../../(../)rel/path/    ../../(../)rel/path/s1/s2/  s1/s2/  ../../  [./]
+
+# Get the relative path of the target dir within the build tree, or abort
+
+cwd=$PWD down= up=
+
+case $srcdir in
+  "$topdir"*)
+    subdir=${srcdir#"$topdir"}
+    ;;
+
+  /*)
+    case $topdir in
+    # '') ... already excluded ... ;;
+
+      /*)
+	die 2 " src_dir (-S $srcdir) is not within top_dir (-T $topdir)" ;;
+
+      *)
+	# TODO - figure out how to make this work
+	die 2 " src_dir (-S $srcdir) is absolute but top_dir (-T $topdir) is relative"
+    esac
+    ;;
+
+  *)
+    case $topdir in
+    # '') ... already excluded ... ;;
+
+      /*)
+	# TODO - figure out how to make this work
+	die 2 " src_dir (-S $srcdir) is relative but top_dir (-T $topdir) is absolute" ;;
+
+      ../*) ;;
+
+      *)
+	# impossible?
+	die 2 " src_dir (-S $srcdir) is not within top_dir (-T $topdir)" ;;
+    esac
+
+    while
+      ! case $topdir in $up../*) ! : ; esac &&
+      ! case $srcdir in $up../*) ! : ; esac
+    do
+      up=$up../
+      c=${cwd##*/} cwd=${cwd%"$c"} cwd=${cwd%/}
+      down=$c/$down
+    done
+
+    subdir=${srcdir#"$up"}
+
+    case /$subdir in
+      */../*)
+	# srcdir appears to be further "up" than
+	die 2 " src_dir (-S $srcdir) is not within top_dir (-T $topdir)"
+    esac
+
+    while
+      #echo >&2 "DEBUG                   topdir={$topdir}  up={$up}  subdir={$subdir}"
+      ! case $topdir in $up../*) ! : ; esac
+    do
+      up=$up../
+      c=${cwd##*/} cwd=${cwd%"$c"} cwd=${cwd%/}
+      subdir=$c/$subdir
+    done
+
+    ;;
+esac
+
+#echo >&2 "DEBUG srcdir={$srcdir}  topdir={$topdir}  subdir={$subdir}"
+
+# Make "blddir" the reverse relative path of "subdir", relative to tgtdir
+
+# Building in the source tree
+blddir=$tgtdir
+
+t=/$subdir
+while test / != "$t"
+do
+  blddir=$blddir../
+  t=${t%/*/}/
+done
+
+#echo >&2 "DEBUG tgtdir={$tgtdir}  blddir={$blddir}"
+
+#######
+
+rewrite_path()
+{
+  case $1 in
+    \#*) return ;;
+    \$*) echo "$1" ; return ;;
+  esac
+
+  f=${1##*/}
+  p=${1%"$f"}
+
+  case $p in
+    '' | ./ | "$PWD/" ) p= ;;
+
+    /*/)
+      common_prefix=${PWD%/}/ up2=
+      while
+	case $p in "$common_prefix"*) false ; esac &&
+	! case $common_prefix in /*/) false ; esac
+      do
+	common_prefix=${common_prefix%/*/}/
+	up2=../$up2
+      done
+      case $p in
+	"$common_prefix"*)
+	  p=$up2${p#"$common_prefix"}
+	  ;;
+      esac
+      ;;
+
+    # Handle case when PWD is /a/b/c/d and p is ../d or ../../c/d etc;
+    # You might need to add more cases if 4 isn't enough.
+    ../../../../"${PWD#"${PWD%/*/*/*/*}"}/" |\
+       ../../../"${PWD#"${PWD%/*/*/*}"}/" |\
+	  ../../"${PWD#"${PWD%/*/*}"}/" |\
+	     ../"${PWD#"${PWD%/*}"}/" )
+      p= ;;
+  esac
+
+  echo "$p$f"
+}
+
+rewrite()
+{
+# echo "# topdir=$topdir"
+# echo "# srcdir=$srcdir"
+# echo "# subdir=$subdir"
+# echo "# blddir=$blddir"
+# echo "# tgtdir=$tgtdir"
+# echo "# PWD=$PWD"
+  while
+    IFS= read -r line
+  do
+    case $line in
+      '' |\
+      '#'* |\
+      [$/]*': $'* ) echo "$line" ;;
+
+      *': $'* ) echo "$tgtdir$line" ;;
+
+      *': '*)
+	s=${line#*': '}
+	t=${line%%': '*}
+
+	echo "$tgtdir${t#./}: $( rewrite_path "$s" )"
+	;;
+      * ) echo "$line"
+	echo >&2 '# Warning: copying unmatched line: '"$line"
+	;;
+    esac
+  done
+} 2>&1
 
 output=$depfile.mkdep$$
 
 cleanup()
 {
   rm -f "$output".*
+  :
 }
 
-if "$keep_output"
+if "$keep_temps"
+then end_cleanup() { :; }
+else end_cleanup() { cleanup ; }
+fi
+
+if "$keep_temps_on_error"
 then soft_cleanup() { :; }
 else soft_cleanup() { cleanup ; }
 fi
 
+die()
+{
+  ex=$?
+  soft_cleanup
+  case $1 in EX_*) ex=2 ; shift ;; [0-9]*) ex=$1 ; shift ; esac
+  echo "$PROG: $*"
+  exit $ex
+}
+
 caught () {
   soft_cleanup
-  trap 2	# SIGINT?
+  trap 2	# SIGINT
   kill -2 $$
 }
 
@@ -122,78 +564,121 @@ trap caught 1 2 3 13 15
   exit "$ex"
 }
 
-# The pathnames here don't work for every system (e.g., macOS), but the -MM
-# option (the default) usually does the right thing
-{
-  if "$append_depfile"
-  then
+# (1) roll up lines ending with \\
+# (2) split each dependency pair into a separate line
+
+sed '
+    s@ \./@ @g
+    :a
+    / \\$/ {
+      N
+      s/[[:space:]]*\\\n[[:space:]]*/ /
+      ta
+      s/\\$//
+    }
+    s/  *$//
+    /^[^ ]*:$/d
+    :b
+    /^[^ :][^ :]*:/ {
+      s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
+      P
+      D
+      tb
+    }
+  ' < "$output.1" > "$output.2" ||
+  die 'Unrolling failed'
+
+# Custom rewriting
+
+sed < "$output.2" > "$output.3" "
+    $rewrite_list
+    s#\$(srcdir)#$srcdir#g;
+    s#\$(topdir)#$topdir#g;
+" ||
+  die 'Path rewriting failed'
+
+# Apply exclusion list
+
+if test -n "$exclusion_list"
+then
+  grep -vF "$exclusion_list"  < "$output.3" > "$output.4"
+else
+  ln "$output.3" "$output.4"
+fi ||
+  die 'Filtering failed'
+
+# Canonicalize paths changing A/B/C/../../D to A/D
+
+sed < "$output.4" > "$output.5" '
+    :a
+    s@^\./@@
+    s@ \./@ @g
+    s@/\./@/@g
+    ta
+    :b
+    s@^[^/. ][^/ ]*/\.\./@@
+    s@ [^/. ][^/ ]*/\.\./@ @g
+    s@/[^/. ][^/ ]*/\.\./@/@g
+    tb
+' ||
+  die 'Path normalization failed'
+
+# Sort the generated dependency list to eliminate duplicates
+
+if "$presort_depfile"
+then
+  sort -u "$output.5" > "$output.6"
+else
+  ln "$output.5" "$output.6"
+fi ||
+  die 'Pre-sorting failed'
+
+# Optionally incorporate the original depfile
+
+if "$append_depfile"
+then
+  cat "$depfile" "$output.6" > "$output.7"
+else
+  ln "$output.6" "$output.7"
+fi ||
+  die 'Concatenation failed'
+
+# Rewrite paths as needed
+
+rewrite < "$output.7" > "$output.8" ||
+  die 'Rewriting failed'
+
+# Sort the entire output (this only makes a difference if incorporating the
+# original depfile rather than overwriting it.
+
+if "$sort_depfile"
+then
+  sort -u "$output.8" > "$output.9"
+else
+  ln "$output.8" "$output.9"
+fi ||
+  die 'Sorting failed'
+
+# If everything has worked, replace the depfile
+
+mv "$output.9" "$depfile" ||
+  die 'Installation failed'
+
+# And then if requested, apply the patches to the Makefile
+
+if [ -n "$patch_makefile" ]
+then
+  pmt=$patch_makefile.tmp$$
+  {
+    sed < "$patch_makefile" '/^#* *MKDEP-CUT-HERE/,$ d' &&
+    echo '#####   MKDEP-CUT-HERE  #####   Generated dependencies below; DO NOT EDIT  #####' &&
     cat "$depfile"
-  fi
+  } > "$pmt" &&
+  mv "$pmt" "$patch_makefile"
+fi ||
+  die 'Patching failed'
 
-  if "$skip_o"
-  then
-    sed '
-	s@ \./@ @g
-	s@ /usr/include[^ ]*@@g
-	s@ /usr/lib/gcc[^ ]*@@g
+end_cleanup
 
-	s@\.o @ @
-
-        :a
-        / \\$/ {
-          N
-          s/[[:space:]]*\\\n[[:space:]]*/ /
-          ta
-          s/\\$//
-        }
-
-        s/  *$//
-	/^[^ ]*:$/d
-
-        :b
-        /^[^ :][^ :]*:/ {
-          s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
-          /: \/usr\/include/bd
-          /: \/usr\/lib/bd
-          P
-          :d
-          D
-          tb
-        }
-      '
-  else
-    sed '
-	s@ \./@ @g;
-	s@ /usr/include[^ ]*@@g;
-	s@ /usr/lib/gcc[^ ]*@@g;
-
-        :a
-        / \\$/ {
-          N
-          s/[[:space:]]*\\\n[[:space:]]*/ /
-          ta
-          s/\\$//
-        }
-
-        s/  *$//
-	/^[^ ]*:$/d
-
-        :b
-        /^[^ :][^ :]*:/ {
-          s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
-          /: \/usr\/include/bd
-          /: \/usr\/lib/bd
-          P
-          :d
-          D
-          tb
-        }
-      '
-  fi < "$output.1"
-} |
-sort -o "$output.2"
-
-mv "$output.2" "$depfile"
-
-cleanup
-exit 0
+exit
+}
