@@ -1149,7 +1149,7 @@ lsan-tests: lsan  $(TESTS_SUPPORT)
 	@( cd $(srcdir)/tests && \
 		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
 
-profiling-tests:	${PROGRAM}
+profiling-tests: ${PROGRAM}
 	@test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2; exit 1; }
 	@${MAKE} $(BASH_MAKEFLAGS) tests TESTSCRIPT=run-gprof
 
@@ -1277,7 +1277,7 @@ ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
 	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h ) || exit 1
 
-${DEFDIR}/pipesize.h:	${BUILTINS_LIBRARY}
+${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
 	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h ) || exit 1
 
 $(SDIR)/man2html$(EXEEXT): ${SUPPORT_SRC}/man2html.c
@@ -1286,10 +1286,10 @@ $(SDIR)/man2html$(EXEEXT): ${SUPPORT_SRC}/man2html.c
 # For the justification of the following Makefile rules, see node
 # `Automatic Remaking' in GNU Autoconf documentation.
 
-Makefile makefile:	config.status $(srcdir)/Makefile.in
+Makefile makefile: config.status $(srcdir)/Makefile.in
 	CONFIG_FILES=Makefile CONFIG_HEADERS= $(SHELL) ./config.status
 
-Makefiles makefiles:	config.status $(srcdir)/Makefile.in
+Makefiles makefiles: config.status $(srcdir)/Makefile.in
 	@for mf in $(CREATED_MAKEFILES); do \
 		CONFIG_FILES=$$mf CONFIG_HEADERS= $(SHELL) ./config.status || exit 1; \
 	done
@@ -1499,7 +1499,7 @@ printenv$(EXEEXT): $(SUPPORT_SRC)printenv.c
 xcase$(EXEEXT): $(SUPPORT_SRC)xcase.c
 	@$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) ${LDFLAGS_FOR_BUILD} -o $@ $(SUPPORT_SRC)xcase.c ${LIBS_FOR_BUILD}
 
-test tests check:	force $(Program) $(TESTS_SUPPORT)
+test tests check: force $(Program) $(TESTS_SUPPORT)
 	@-test -d tests || mkdir tests
 	@cp $(TESTS_SUPPORT) tests
 	@( cd $(srcdir)/tests && \
