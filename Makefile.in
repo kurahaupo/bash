@@ -627,13 +627,9 @@ CREATED_CONFIGURE = \
 		  stdckdint.h \
 
 
-CREATED_MAKEFILES = \
-		  Makefile \
+CREATED_CODE_MAKEFILES = \
 		  builtins/Makefile \
-		  doc/Makefile \
 		  examples/loadables/Makefile \
-		  examples/loadables/Makefile.inc \
-		  examples/loadables/Makefile.sample \
 		  examples/loadables/perl/Makefile \
 		  lib/glob/Makefile \
 		  lib/intl/Makefile \
@@ -642,9 +638,21 @@ CREATED_MAKEFILES = \
 		  lib/sh/Makefile \
 		  lib/termcap/Makefile \
 		  lib/tilde/Makefile \
-		  po/Makefile \
-		  po/Makefile.in
 		  support/Makefile \
+
+
+CREATED_NONCODE_MAKEFILES = \
+		  doc/Makefile \
+		  examples/loadables/Makefile.inc \
+		  examples/loadables/Makefile.sample \
+		  po/Makefile.in \
+		  po/Makefile \
+
+
+CREATED_MAKEFILES = \
+		  Makefile \
+		  $(CREATED_CODE_MAKEFILES) \
+		  $(CREATED_NONCODE_MAKEFILES) \
 
 
 CREATED_HEADERS	= \
@@ -1112,8 +1120,7 @@ xdist: force
 .PHONY: depends depend
 depends depend: force y.tab.c makefiles
 	$(SHELL) $(MKDEP) ${MKDEP_OPTS} -- ${MKDEP_CCFLAGS} ${MKDEP_CSOURCES}
-	@# "shift" drops *this* Makefile from the list to be processed
-	@ set -- $(CREATED_MAKEFILES) ; shift ; for mf do \
+	@ for mf in $(CREATED_CODE_MAKEFILES) ; do \
 	    ( cd "$${mf%/*}" && $(MAKE) $(MAKEFLAGS) depends ) || exit 1 ;\
 	  done
 
