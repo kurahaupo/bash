@@ -583,32 +583,98 @@ SUPPORT_SRC = $(srcdir)/support/
 SDIR = $(dot)/support
 
 TESTS_SUPPORT = recho$(EXEEXT) zecho$(EXEEXT) printenv$(EXEEXT) xcase$(EXEEXT)
-CREATED_SUPPORT = signames.h recho$(EXEEXT) zecho$(EXEEXT) printenv$(EXEEXT) \
-		  tests/recho$(EXEEXT) tests/zecho$(EXEEXT) \
-		  tests/printenv$(EXEEXT) xcase$(EXEEXT) tests/xcase$(EXEEXT) \
-		  mksignames$(EXEEXT) lsignames.h \
-		  mksyntax${EXEEXT} syntax.c $(VERSPROG) $(VERSOBJ) \
-		  buildversion.o mksignames.o signames.o buildsignames.o
-CREATED_MACOS = recho.dSYM zecho.dSYM printenv.dSYM xcase.dSYM \
-		 bashversion.dSYM mksyntax.dSYM ${DEFDIR}/psize.aux.dSYM
-CREATED_CONFIGURE = config.h config.cache config.status config.log \
-		    stamp-h po/POTFILES config.status.lineno \
-		    stdckdint.h buildconf.h
-CREATED_MAKEFILES = Makefile builtins/Makefile doc/Makefile \
-		    lib/readline/Makefile lib/glob/Makefile \
-		    lib/sh/Makefile lib/tilde/Makefile lib/malloc/Makefile \
-		    lib/termcap/Makefile examples/loadables/Makefile \
-		    examples/loadables/Makefile.inc examples/loadables/Makefile.sample \
-		    examples/loadables/perl/Makefile support/Makefile \
-		    lib/intl/Makefile po/Makefile po/Makefile.in
-CREATED_HEADERS = signames.h config.h pathnames.h version.h y.tab.h \
-		  ${DEFDIR}/builtext.h
+CREATED_SUPPORT	= \
+		  $(VERSOBJ) \
+		  $(VERSPROG) \
+		  buildsignames.o \
+		  buildversion.o \
+		  lsignames.h \
+		  mksignames$(EXEEXT) \
+		  mksignames.o \
+		  mksyntax$(EXEEXT) \
+		  printenv$(EXEEXT) \
+		  recho$(EXEEXT) \
+		  signames.h \
+		  signames.o \
+		  syntax.c \
+		  tests/printenv$(EXEEXT) \
+		  tests/recho$(EXEEXT) \
+		  tests/xcase$(EXEEXT) \
+		  tests/zecho$(EXEEXT) \
+		  xcase$(EXEEXT) \
+		  zecho$(EXEEXT) \
 
-OTHER_DOCS = $(srcdir)/CHANGES $(srcdir)/COMPAT $(srcdir)/NEWS $(srcdir)/POSIX \
-	$(srcdir)/RBASH $(srcdir)/README
-OTHER_INSTALLED_DOCS = CHANGES COMPAT NEWS POSIX RBASH README
 
-LOADABLES_DIR = ${top_builddir}/examples/loadables
+CREATED_MACOS	= \
+		  $(DEFDIR)/psize.aux.dSYM \
+		  bashversion.dSYM \
+		  mksyntax.dSYM \
+		  printenv.dSYM \
+		  recho.dSYM \
+		  xcase.dSYM \
+		  zecho.dSYM \
+
+
+CREATED_CONFIGURE = \
+		  buildconf.h \
+		  config.cache \
+		  config.h \
+		  config.log \
+		  config.status \
+		  config.status.lineno \
+		  po/POTFILES \
+		  stamp-h \
+		  stdckdint.h \
+
+
+CREATED_MAKEFILES = \
+		  Makefile \
+		  builtins/Makefile \
+		  doc/Makefile \
+		  examples/loadables/Makefile \
+		  examples/loadables/Makefile.inc \
+		  examples/loadables/Makefile.sample \
+		  examples/loadables/perl/Makefile \
+		  lib/glob/Makefile \
+		  lib/intl/Makefile \
+		  lib/malloc/Makefile \
+		  lib/readline/Makefile \
+		  lib/sh/Makefile \
+		  lib/termcap/Makefile \
+		  lib/tilde/Makefile \
+		  po/Makefile \
+		  po/Makefile.in
+		  support/Makefile \
+
+
+CREATED_HEADERS	= \
+		  $(DEFDIR)/builtext.h \
+		  config.h \
+		  pathnames.h \
+		  signames.h \
+		  version.h \
+		  y.tab.h \
+
+
+OTHER_DOCS	= \
+		  $(srcdir)/CHANGES \
+		  $(srcdir)/COMPAT \
+		  $(srcdir)/NEWS \
+		  $(srcdir)/POSIX \
+		  $(srcdir)/RBASH \
+		  $(srcdir)/README \
+
+
+OTHER_INSTALLED_DOCS = \
+		  CHANGES \
+		  COMPAT \
+		  NEWS \
+		  POSIX \
+		  RBASH \
+		  README \
+
+
+LOADABLES_DIR	= ${top_builddir}/examples/loadables
 
 # Keep GNU Make from exporting the entire environment for small machines.
 .NOEXPORT:
