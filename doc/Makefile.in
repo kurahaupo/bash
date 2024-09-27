@@ -231,7 +231,7 @@ OTHER_DOCS = $(srcdir)/FAQ $(srcdir)/INTRO
 OTHER_INSTALLED_DOCS = FAQ INTRO
 
 $(MAN2HTML):	${topdir}/support/man2html.c
-	- ( cd ${BUILD_DIR}/support && ${MAKE} ${BASH_MAKEFLAGS} man2html)
+	- cd ${BUILD_DIR}/support && ${MAKE} ${BASH_MAKEFLAGS} man2html
 
 .PHONY: clean
 clean:
@@ -313,7 +313,7 @@ uninstall:
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 		install-info --delete --dir-file=$(DESTDIR)$(infodir)/dir $(DESTDIR)$(infodir)/bash.info; \
 	else true; fi
-	- ( cd $(DESTDIR)$(docdir) && $(RM) $(OTHER_INSTALLED_DOCS) )
+	- cd $(DESTDIR)$(docdir) && $(RM) $(OTHER_INSTALLED_DOCS)
 	- if test -n "$(htmldir)" ; then \
 		$(RM) $(DESTDIR)$(htmldir)/bash.html ; \
 		$(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
