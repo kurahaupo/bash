@@ -38,6 +38,8 @@ RM = rm -f
 CP = cp
 MV = mv
 
+SUPPORT_SRC = $(topdir)/support/
+
 SHELL = @MAKE_SHELL@
 
 CFLAGS = @CFLAGS@
@@ -45,6 +47,12 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 
 DEFS = @DEFS@
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 INCLUDES = -I. -I../.. -I$(topdir) -I$(topdir)/lib -I$(srcdir)
 
@@ -84,6 +92,10 @@ distclean maintainer-clean: clean
 $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 	${INSTALL_DATA} -c -m 644 libtermcap.a $@
 	-test -n "$(RANLIB)" && $(RANLIB) -t $@
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

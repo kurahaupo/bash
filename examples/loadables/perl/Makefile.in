@@ -44,6 +44,8 @@ PERL5 = perl5
 
 CFLAGS = @CFLAGS@
 
+SUPPORT_SRC = $(topdir)/support/
+
 #
 # These values are generated for configure by ${topdir}/support/shobj-conf.
 # If your system is not supported by that script, but includes facilities for
@@ -67,10 +69,16 @@ OBJ = bperl.o iperl.o perlxsi.o
 
 BUILTIN = bperl5
 
-INC = -I. -I.. -I$(topdir) -I$(topdir)/lib -I$(topdir)/builtins \
-      -I$(topdir)/include -I$(BUILD_DIR) -I$(BUILD_DIR)/lib \
-      -I$(BUILD_DIR)/builtins
+INC = -I. -I.. \
+      -I$(BUILD_DIR) -I$(BUILD_DIR)/lib -I$(BUILD_DIR)/builtins \
+	 -I$(topdir)    -I$(topdir)/lib    -I$(topdir)/builtins -I$(topdir)/include \
 
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS) $(INC)
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 ${BUILTIN}:	${OBJ}
 	${RM} $@
@@ -97,6 +105,13 @@ clean mostlyclean:
 
 distclean maintainer-clean: clean
 	${RM} perlxsi.c
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+
+$(topdir)/builtins.h:
+	cd "$(@D)" && $(MAKE) $(MAKEFLAGS) $(@F)
 
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)

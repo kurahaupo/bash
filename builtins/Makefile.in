@@ -90,6 +90,7 @@ INTL_DEP = @INTL_DEP@
 LIBINTL_H = @LIBINTL_H@
 
 HELPDIR = @HELPDIR@
+
 MKDIRS = ${topdir}/support/mkdirs
 
 HELPFILES_TARGET = @HELPFILES_TARGET@
@@ -795,7 +796,6 @@ common.o: $(topdir)/trap.h
 common.o: $(topdir)/unwind_prot.h
 common.o: $(topdir)/variables.h
 common.o: $(topdir)/xmalloc.h
-common.o: ../builtins.h
 common.o: ../config.h
 common.o: ../pathnames.h
 common.o: builtext.h
@@ -849,10 +849,8 @@ complete.o: $(topdir)/syntax.h
 complete.o: $(topdir)/unwind_prot.h
 complete.o: $(topdir)/variables.h
 complete.o: $(topdir)/xmalloc.h
-complete.o: ../builtins.h
 complete.o: ../config.h
 complete.o: ../pathnames.h
-complete.o: ../pcomplete.h
 declare.c: $(srcdir)/declare.def
 declare.o: $(BASHINCDIR)/chartypes.h
 declare.o: $(BASHINCDIR)/gettext.h
@@ -894,7 +892,6 @@ declare.o: $(topdir)/unwind_prot.h
 declare.o: $(topdir)/variables.h
 declare.o: $(topdir)/xmalloc.h
 declare.o: ../config.h
-declare.o: ../flags.h
 declare.o: ../pathnames.h
 declare.o: builtext.h
 echo.c: $(srcdir)/echo.def
@@ -979,7 +976,6 @@ enable.o: $(topdir)/variables.h
 enable.o: $(topdir)/xmalloc.h
 enable.o: ../config.h
 enable.o: ../pathnames.h
-enable.o: ../pcomplete.h
 eval.c: $(srcdir)/eval.def
 eval.o: $(BASHINCDIR)/chartypes.h
 eval.o: $(BASHINCDIR)/maxpath.h
@@ -1072,12 +1068,7 @@ evalfile.o: $(topdir)/trap.h
 evalfile.o: $(topdir)/unwind_prot.h
 evalfile.o: $(topdir)/variables.h
 evalfile.o: $(topdir)/xmalloc.h
-evalfile.o: ../builtins.h
 evalfile.o: ../config.h
-evalfile.o: ../flags.h
-evalfile.o: ../input.h
-evalfile.o: ../jobs.h
-evalfile.o: ../parser.h
 evalfile.o: ../pathnames.h
 evalfile.o: ../y.tab.h
 evalstring.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -1132,7 +1123,6 @@ evalstring.o: $(topdir)/trap.h
 evalstring.o: $(topdir)/unwind_prot.h
 evalstring.o: $(topdir)/variables.h
 evalstring.o: $(topdir)/xmalloc.h
-evalstring.o: ../builtins.h
 evalstring.o: ../config.h
 evalstring.o: ../flags.h
 evalstring.o: ../input.h
@@ -1191,8 +1181,6 @@ exec.o: $(topdir)/unwind_prot.h
 exec.o: $(topdir)/variables.h
 exec.o: $(topdir)/xmalloc.h
 exec.o: ../config.h
-exec.o: ../findcmd.h
-exec.o: ../flags.h
 exec.o: ../pathnames.h
 exit.c: $(srcdir)/exit.def
 exit.o: $(BASHINCDIR)/chartypes.h
@@ -1289,10 +1277,7 @@ fc.o: $(topdir)/syntax.h
 fc.o: $(topdir)/unwind_prot.h
 fc.o: $(topdir)/variables.h
 fc.o: $(topdir)/xmalloc.h
-fc.o: ../builtins.h
 fc.o: ../config.h
-fc.o: ../flags.h
-fc.o: ../parser.h
 fc.o: ../pathnames.h
 fg_bg.c: $(srcdir)/fg_bg.def
 fg_bg.o: $(BASHINCDIR)/chartypes.h
@@ -1483,9 +1468,7 @@ hash.o: $(topdir)/syntax.h
 hash.o: $(topdir)/unwind_prot.h
 hash.o: $(topdir)/variables.h
 hash.o: $(topdir)/xmalloc.h
-hash.o: ../builtins.h
 hash.o: ../config.h
-hash.o: ../findcmd.h
 hash.o: ../pathnames.h
 help.c: $(srcdir)/help.def
 help.o: $(BASHINCDIR)/chartypes.h
@@ -1679,7 +1662,6 @@ kill.o: $(topdir)/variables.h
 kill.o: $(topdir)/xmalloc.h
 kill.o: ../config.h
 kill.o: ../pathnames.h
-kill.o: ../trap.h
 let.c: $(srcdir)/let.def
 let.o: $(BASHINCDIR)/chartypes.h
 let.o: $(BASHINCDIR)/gettext.h
@@ -2026,8 +2008,6 @@ set.o: $(topdir)/unwind_prot.h
 set.o: $(topdir)/variables.h
 set.o: $(topdir)/xmalloc.h
 set.o: ../config.h
-set.o: ../flags.h
-set.o: ../parser.h
 set.o: ../pathnames.h
 setattr.c: $(srcdir)/setattr.def
 setattr.o: $(BASHINCDIR)/chartypes.h
@@ -2070,7 +2050,6 @@ setattr.o: $(topdir)/unwind_prot.h
 setattr.o: $(topdir)/variables.h
 setattr.o: $(topdir)/xmalloc.h
 setattr.o: ../config.h
-setattr.o: ../flags.h
 setattr.o: ../pathnames.h
 setattr.o: builtext.h
 shift.c: $(srcdir)/shift.def
@@ -2438,8 +2417,6 @@ type.o: $(topdir)/unwind_prot.h
 type.o: $(topdir)/variables.h
 type.o: $(topdir)/xmalloc.h
 type.o: ../config.h
-type.o: ../findcmd.h
-type.o: ../parser.h
 type.o: ../pathnames.h
 ulimit.c: $(srcdir)/ulimit.def
 ulimit.o: $(BASHINCDIR)/chartypes.h
@@ -2453,7 +2430,6 @@ ulimit.o: $(BASHINCDIR)/unlocked-io.h
 ulimit.o: $(LIBINTL_H)
 ulimit.o: $(srcdir)/bashgetopt.h
 ulimit.o: $(srcdir)/common.h
-ulimit.o: $(srcdir)/pipesize.h
 ulimit.o: $(srcdir)/ulimit.def
 ulimit.o: $(topdir)/array.h
 ulimit.o: $(topdir)/arrayfunc.h

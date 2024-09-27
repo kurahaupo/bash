@@ -1048,7 +1048,8 @@ xdist: force
 .PHONY: depends depend
 depends depend: force y.tab.c makefiles signames.h builtins/pipesize.h version.h
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
-	@ for mf in $(CREATED_CODE_MAKEFILES) ; do \
+	# "shift" drops *this* Makefile from the list to be processed
+	@ set -- $(CREATED_MAKEFILES) ; shift ; for mf do \
 	    ( cd "$${mf%/*}" && $(MAKE) $(MAKEFLAGS) depends ) || exit 1 ; \
 	  done
 
