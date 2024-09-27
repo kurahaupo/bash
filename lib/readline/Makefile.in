@@ -232,7 +232,7 @@ libhistory.a: $(HISTOBJ) xmalloc.o xfree.o
 
 documentation: force
 	test -d doc || mkdir doc
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS)
 
 # Since tilde.c is shared between readline and bash, make sure we compile
 # it with the right flags when it's built as part of readline
@@ -256,13 +256,13 @@ tags:	force
 
 clean:	force
 	$(RM) $(OBJECTS) *.a
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 mostlyclean: clean
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 distclean maintainer-clean: clean
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 	$(RM) Makefile
 	$(RM) TAGS tags
 

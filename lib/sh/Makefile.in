@@ -271,7 +271,7 @@ mostlyclean: clean
 
 # Dependencies
 
-$(BUILD_DIR)/version.h:   $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
+$(BUILD_DIR)/version.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
 
 $(BUILD_DIR)/pathnames.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
 

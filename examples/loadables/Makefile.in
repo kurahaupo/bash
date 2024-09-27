@@ -303,7 +303,7 @@ install-dev:	installdirs
 	@ $(INSTALL_DATA) Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.inc
 	@ $(INSTALL_DATA) Makefile.sample $(DESTDIR)$(loadablesdir)/Makefile.sample
 	@ $(INSTALL_DATA) $(srcdir)/loadables.h $(DESTDIR)$(loadablesdir)/loadables.h
-	@ ( cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" install-headers)
+	@ cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" install-headers
 
 .PHONY: install-supported
 install-supported:	all installdirs install-dev
@@ -317,11 +317,11 @@ install-supported:	all installdirs install-dev
 uninstall-dev:
 	- $(RM) $(DESTDIR)$(loadablesdir)/Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.sample
 	- $(RM) $(DESTDIR)$(loadablesdir)/loadables.h
-	- ( cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers)
+	- cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers
 
 .PHONY: uninstall-supported
 uninstall-supported:	uninstall-dev
-	- ( cd $(DESTDIR)${loadablesdir} && $(RM) ${ALLPROG} )
+	- cd $(DESTDIR)${loadablesdir} && $(RM) ${ALLPROG}
 
 .PHONY: install-unsupported uninstall-unsupported
 install-unsupported:
