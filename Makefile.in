@@ -1274,11 +1274,14 @@ ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
 	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} bashgetopt.o) || exit 1
 
+${DEFDIR}/builtext.h \
+${DEFDIR}/pipesize.h \
+ :
+	cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
+
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h ) || exit 1
 
 ${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h ) || exit 1
 
 $(SDIR)/man2html$(EXEEXT): ${SUPPORT_SRC}/man2html.c
 	@(cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) all ) || exit 1
@@ -1518,7 +1521,7 @@ xdist: force
 	( cd po && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
 .PHONY: depends depend
-depends depend: force y.tab.c makefiles
+depends depend: force y.tab.c makefiles signames.h
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 	@ for mf in $(CREATED_CODE_MAKEFILES) ; do \
 	    ( cd "$${mf%/*}" && $(MAKE) $(MAKEFLAGS) depends ) || exit 1 ; \

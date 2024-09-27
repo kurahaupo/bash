@@ -369,7 +369,7 @@ ${LIBINTL_H}:
 		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
 
 .PHONY: depends depend
-depends depend: $(MKBUILTINS) tmpbuiltins.h
+depends depend: $(MKBUILTINS) builtext.h pipesize.h tmpbuiltins.h
 	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 

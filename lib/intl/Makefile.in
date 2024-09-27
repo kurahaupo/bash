@@ -314,7 +314,7 @@ maintainer-clean: distclean
 .NOEXPORT:
 
 .PHONY: depends depend
-depends depend:
+depends depend: libgnuintl.h
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
