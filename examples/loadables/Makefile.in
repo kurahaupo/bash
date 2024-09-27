@@ -93,9 +93,18 @@ SHOBJ_XLDFLAGS = @SHOBJ_XLDFLAGS@
 SHOBJ_LIBS = @SHOBJ_LIBS@
 SHOBJ_STATUS = @SHOBJ_STATUS@
 
-INC = -I. -I.. -I$(topdir) -I$(topdir)/lib -I$(topdir)/builtins -I${srcdir} \
-      -I$(BASHINCDIR) -I$(BUILD_DIR) -I$(LIBBUILD) \
-      -I$(BUILD_DIR)/builtins $(INTL_INC)
+INC = -I. \
+      -I.. \
+      -I$(topdir) \
+      -I$(topdir)/lib \
+      -I$(topdir)/builtins \
+      -I${srcdir} \
+      -I$(BASHINCDIR) \
+      -I$(BUILD_DIR) \
+      -I$(LIBBUILD) \
+      -I$(BUILD_DIR)/builtins \
+      $(INTL_INC) \
+
 
 .c.o:
 	$(SHOBJ_CC) $(SHOBJ_CFLAGS) $(CCFLAGS) $(INC) -c -o $@ $<

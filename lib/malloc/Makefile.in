@@ -54,7 +54,13 @@ INTL_BUILDDIR = ${LIBBUILD}/intl
 INTL_INC = @INTL_INC@
 LIBINTL_H = @LIBINTL_H@
 
-INCLUDES = -I. -I../.. -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib $(INTL_INC)
+INCLUDES = -I. \
+	   -I../.. \
+	   -I$(topdir) \
+	   -I$(BASHINCDIR) \
+	   -I$(topdir)/lib \
+	   $(INTL_INC) \
+
 
 CCFLAGS = ${PROFILE_FLAGS} ${INCLUDES} $(DEFS) $(LOCAL_DEFS) $(LOCAL_CFLAGS) \
 	  $(CFLAGS) $(MALLOC_CFLAGS) $(STYLE_CFLAGS) $(CPPFLAGS)

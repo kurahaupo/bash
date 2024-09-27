@@ -46,7 +46,12 @@ LDFLAGS = @LDFLAGS@
 
 DEFS = @DEFS@
 
-INCLUDES = -I. -I../.. -I$(topdir) -I$(topdir)/lib -I$(srcdir)
+INCLUDES = -I. \
+	   -I../.. \
+	   -I$(topdir) \
+	   -I$(topdir)/lib \
+	   -I$(srcdir) \
+
 
 CCFLAGS = $(CFLAGS) $(DEFS) $(CPPFLAGS) ${INCLUDES}
 
