@@ -356,7 +356,7 @@ distclean maintainer-clean: clean
 $(OFILES):	$(MKBUILTINS) ../config.h
 
 ../version.h: ../config.h ../Makefile Makefile
-	- ( cd .. && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+	- cd .. && ${MAKE} ${BASH_MAKEFLAGS} version.h
 
 # maintainer special - for now
 .PHONY: po
@@ -365,8 +365,8 @@ po:	builtins.c
 
 ${LIBINTL_H}:
 	@ echo making $@ in ${INTL_BUILDDIR}
-	@ (cd ${INTL_BUILDDIR} && \
-		$(MAKE) $(BASH_MAKEFLAGS) libintl.h)
+	@ cd ${INTL_BUILDDIR} && \
+		$(MAKE) $(BASH_MAKEFLAGS) libintl.h
 
 .PHONY: depends depend
 depends depend: $(MKBUILTINS) builtext.h pipesize.h tmpbuiltins.h
