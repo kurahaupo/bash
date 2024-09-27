@@ -102,7 +102,7 @@ DEBUGGER_START_FILE = @DEBUGGER_START_FILE@
 # Here is a rule for making .o files from .c files that does not
 # force the type of the machine (like -M_MACHINE) into the flags.
 .c.o:
-	$(RM) $@
+	@- $(RM) $@
 	$(CC) $(CCFLAGS) -c $<
 
 EXEEXT = @EXEEXT@
@@ -616,7 +616,7 @@ LOADABLES_DIR = ${top_builddir}/examples/loadables
 	@echo "$(Program) last made for a $(Machine) running $(OS)" >.made
 
 $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
-	$(RM) $@
+	@- $(RM) $@
 	$(PURIFY) $(CC) $(BUILTINS_LDFLAGS) $(LIBRARY_LDFLAGS) $(LDFLAGS) -o $(Program) $(OBJECTS) $(LIBS)
 	ls -l $(Program)
 	-$(SIZE) $(Program)
@@ -704,7 +704,7 @@ ${GRAM_H}: y.tab.h
 
 y.tab.c y.tab.h: $(srcdir)/parse.y
 	$(YACC) -d $(srcdir)/parse.y
-	$(RM) parser-built
+	@- $(RM) parser-built
 	touch parser-built
 
 
@@ -754,7 +754,7 @@ ${LIBINTL_H}: ${INTL_DEP}
 # If we are cross-compiling, we link in this file and initialize the array
 # of signal names at runtime
 signames.o: $(SUPPORT_SRC)signames.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC) $(CCFLAGS) -c $(SUPPORT_SRC)signames.c
 
 buildsignames.o: $(SUPPORT_SRC)signames.c
@@ -778,7 +778,7 @@ mksyntax$(EXEEXT): ${srcdir}/mksyntax.c buildconf.h syntax.h ${BASHINCDIR}/chart
 # make a list of signals for the local system -- this is done when we're
 # *not* cross-compiling
 lsignames.h:   mksignames$(EXEEXT)
-	$(RM) $@
+	@- $(RM) $@
 	./mksignames$(EXEEXT) $@
 
 # copy the correct signames header file to signames.h
