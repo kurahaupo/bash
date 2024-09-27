@@ -108,7 +108,7 @@ what-tar:
 	  done
 
 documentation: force
-	- (cd doc; $(MAKE) $(BASH_MAKEFLAGS))
+	- (cd doc && $(MAKE) $(BASH_MAKEFLAGS))
 force:
 
 # The rule for 'includes' is written funny so that the if statement
