@@ -326,16 +326,16 @@ CREATED_FAQ = faq.news faq.news2 faq.mail faq.version
 faq:	${CREATED_FAQ}
 
 faq.version:	FAQ.version FAQ
-	sh mkfaqvers FAQ.version > $@
+	$(SHELL) mkfaqvers FAQ.version > $@
 
 faq.headers.mail: FAQ.headers.mail FAQ
-	sh mkfaqvers FAQ.headers.mail > $@
+	$(SHELL) mkfaqvers FAQ.headers.mail > $@
 
 faq.headers.news: FAQ.headers.news FAQ
-	sh mkfaqvers FAQ.headers.news > $@
+	$(SHELL) mkfaqvers FAQ.headers.news > $@
 
 faq.headers.news2: FAQ.headers.news2 FAQ
-	sh mkfaqvers FAQ.headers.news2 > $@
+	$(SHELL) mkfaqvers FAQ.headers.news2 > $@
 
 faq.news: FAQ faq.headers.news faq.version
 	$(RM) $@
