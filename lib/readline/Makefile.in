@@ -83,35 +83,114 @@ CCFLAGS = $(DEFS) $(LOCAL_DEFS) $(APP_CFLAGS) $(CPPFLAGS) ${INCLUDES} \
 LIBRARY_NAME = libreadline.a
 
 # The C code source files for this library.
-CSOURCES = $(srcdir)/readline.c $(srcdir)/funmap.c $(srcdir)/keymaps.c \
-	   $(srcdir)/vi_mode.c $(srcdir)/parens.c $(srcdir)/rltty.c \
-	   $(srcdir)/complete.c $(srcdir)/bind.c $(srcdir)/isearch.c \
-	   $(srcdir)/display.c $(srcdir)/signals.c $(srcdir)/emacs_keymap.c \
-	   $(srcdir)/vi_keymap.c $(srcdir)/util.c $(srcdir)/kill.c \
-	   $(srcdir)/undo.c $(srcdir)/macro.c $(srcdir)/input.c \
-	   $(srcdir)/callback.c $(srcdir)/terminal.c $(srcdir)/xmalloc.c \
-	   $(srcdir)/history.c $(srcdir)/histsearch.c $(srcdir)/histexpand.c \
-	   $(srcdir)/histfile.c $(srcdir)/nls.c $(srcdir)/search.c \
-	   $(srcdir)/shell.c $(srcdir)/tilde.c $(srcdir)/savestring.c \
-	   $(srcdir)/text.c $(srcdir)/misc.c $(srcdir)/compat.c \
-	   $(srcdir)/colors.c $(srcdir)/parse-colors.c \
-	   $(srcdir)/mbutil.c $(srcdir)/xfree.c
+CSOURCES	= \
+		  $(srcdir)/bind.c \
+		  $(srcdir)/callback.c \
+		  $(srcdir)/colors.c \
+		  $(srcdir)/compat.c \
+		  $(srcdir)/complete.c \
+		  $(srcdir)/display.c \
+		  $(srcdir)/emacs_keymap.c \
+		  $(srcdir)/funmap.c \
+		  $(srcdir)/histexpand.c \
+		  $(srcdir)/histfile.c \
+		  $(srcdir)/history.c \
+		  $(srcdir)/histsearch.c \
+		  $(srcdir)/input.c \
+		  $(srcdir)/isearch.c \
+		  $(srcdir)/keymaps.c \
+		  $(srcdir)/kill.c \
+		  $(srcdir)/macro.c \
+		  $(srcdir)/mbutil.c \
+		  $(srcdir)/misc.c \
+		  $(srcdir)/nls.c \
+		  $(srcdir)/parens.c \
+		  $(srcdir)/parse-colors.c \
+		  $(srcdir)/readline.c \
+		  $(srcdir)/rltty.c \
+		  $(srcdir)/savestring.c \
+		  $(srcdir)/search.c \
+		  $(srcdir)/shell.c \
+		  $(srcdir)/signals.c \
+		  $(srcdir)/terminal.c \
+		  $(srcdir)/text.c \
+		  $(srcdir)/tilde.c \
+		  $(srcdir)/undo.c \
+		  $(srcdir)/util.c \
+		  $(srcdir)/vi_keymap.c \
+		  $(srcdir)/vi_mode.c \
+		  $(srcdir)/xfree.c \
+		  $(srcdir)/xmalloc.c \
+
 
 # The header files for this library.
-HSOURCES = readline.h rldefs.h chardefs.h keymaps.h history.h histlib.h \
-	   posixstat.h posixdir.h posixjmp.h tilde.h rlconf.h rltty.h \
-	   ansi_stdlib.h rlstdc.h tcap.h xmalloc.h rlprivate.h rlshell.h \
-	   rltypedefs.h rlmbutil.h colors.h parse-colors.h
+HSOURCES	= \
+		  $(srcdir)/ansi_stdlib.h \
+		  $(srcdir)/chardefs.h \
+		  $(srcdir)/colors.h \
+		  $(srcdir)/histlib.h \
+		  $(srcdir)/history.h \
+		  $(srcdir)/keymaps.h \
+		  $(srcdir)/parse-colors.h \
+		  $(srcdir)/posixdir.h \
+		  $(srcdir)/posixjmp.h \
+		  $(srcdir)/posixstat.h \
+		  $(srcdir)/readline.h \
+		  $(srcdir)/rlconf.h \
+		  $(srcdir)/rldefs.h \
+		  $(srcdir)/rlmbutil.h \
+		  $(srcdir)/rlprivate.h \
+		  $(srcdir)/rlshell.h \
+		  $(srcdir)/rlstdc.h \
+		  $(srcdir)/rltty.h \
+		  $(srcdir)/rltypedefs.h \
+		  $(srcdir)/tcap.h \
+		  $(srcdir)/tilde.h \
+		  $(srcdir)/xmalloc.h \
 
-HISTOBJ = history.o histexpand.o histfile.o histsearch.o shell.o savestring.o \
-	  mbutil.o
-TILDEOBJ = tilde.o
-COLORSOBJ = colors.o parse-colors.o
-OBJECTS = readline.o vi_mode.o funmap.o keymaps.o parens.o search.o \
-	  rltty.o complete.o bind.o isearch.o display.o signals.o \
-	  util.o kill.o undo.o macro.o input.o callback.o terminal.o \
-	  text.o nls.o misc.o $(HISTOBJ) $(TILDEOBJ) $(COLORSOBJ) \
-	  xmalloc.o xfree.o compat.o
+
+HISTOBJ		= \
+		  histexpand.o \
+		  histfile.o \
+		  history.o \
+		  histsearch.o \
+		  mbutil.o \
+		  savestring.o \
+		  shell.o \
+
+
+TILDEOBJ	= tilde.o
+COLORSOBJ	= colors.o parse-colors.o
+OBJECTS		= \
+		  $(COLORSOBJ) \
+		  $(HISTOBJ) \
+		  $(TILDEOBJ) \
+		  bind.o \
+		  callback.o \
+		  compat.o \
+		  complete.o \
+		  display.o \
+		  funmap.o \
+		  input.o \
+		  isearch.o \
+		  keymaps.o \
+		  kill.o \
+		  macro.o \
+		  misc.o \
+		  nls.o \
+		  parens.o \
+		  readline.o \
+		  rltty.o \
+		  search.o \
+		  signals.o \
+		  terminal.o \
+		  text.o \
+		  undo.o \
+		  util.o \
+		  vi_mode.o \
+		  xfree.o \
+		  xmalloc.o \
+
 
 # The texinfo files which document this library.
 DOCSOURCE = doc/rlman.texinfo doc/rltech.texinfo doc/rluser.texinfo
@@ -125,8 +204,16 @@ SOURCES  = $(CSOURCES) $(HSOURCES) $(DOCSOURCE)
 
 THINGS_TO_TAR = $(SOURCES) $(SUPPORT)
 
-INSTALLED_HEADERS = readline.h chardefs.h keymaps.h history.h tilde.h \
-		    rlstdc.h rlconf.h rltypedefs.h
+INSTALLED_HEADERS = \
+		  chardefs.h \
+		  history.h \
+		  keymaps.h \
+		  readline.h \
+		  rlconf.h \
+		  rlstdc.h \
+		  rltypedefs.h \
+		  tilde.h \
+
 
 ##########################################################################
 
