@@ -41,6 +41,7 @@ libdir = $(exec_prefix)/lib
 
 # Directory in which to install termcap.h.
 includedir = $(prefix)/include
+SUPPORT_SRC = $(topdir)/support/
 
 # Directory in which to optionally also install termcap.h,
 # so compilers besides gcc can find it by default.
@@ -56,6 +57,12 @@ infodir = $(prefix)/info
 termcapfile = @termcapfile@
 
 #### End of system configuration section. ####
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 SHELL = /bin/sh
 
@@ -136,5 +143,9 @@ dist: $(DISTFILES)
 	ln $(DISTFILES) `cat .fname`
 	tar chzf `cat .fname`.tar.gz `cat .fname`
 	rm -rf `cat .fname` .fname
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
