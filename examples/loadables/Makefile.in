@@ -341,7 +341,7 @@ ${OBJS}:	${BUILD_DIR}/config.h
 
 .PHONY: depends depend
 depends depend:
-	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)

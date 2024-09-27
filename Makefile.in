@@ -1323,7 +1323,7 @@ $(srcdir)/configure: $(srcdir)/configure.ac $(srcdir)/aclocal.m4 $(srcdir)/confi
 
 # for chet
 reconfig: force
-	sh $(srcdir)/configure -C
+	$(SHELL) $(srcdir)/configure -C
 
 # force loadables to wait until the shell is built
 loadables: .made

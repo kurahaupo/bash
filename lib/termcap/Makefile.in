@@ -95,7 +95,7 @@ $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 
 .PHONY: depends depend
 depends depend:
-	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

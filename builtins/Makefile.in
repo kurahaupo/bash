@@ -371,7 +371,7 @@ ${LIBINTL_H}:
 .PHONY: depends depend
 depends depend: $(MKBUILTINS) tmpbuiltins.h
 	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
-	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 # dependencies
 
