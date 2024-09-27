@@ -203,9 +203,11 @@ builtext.h builtins.c: $(MKBUILTINS) $(DEFSRC)
 		mv $$NEW_BUILTINS builtins.c; \
 	fi
 
+.PHONY: helpdoc
 helpdoc:	gen-helpfiles
 	./gen-helpfiles ${HELPDIRDEFINE}
 
+.PHONY: install-help
 install-help:	$(HELPFILES_TARGET)
 	@-if test -n "${HELPDIR}" && test -d helpfiles ; then \
 		test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
@@ -215,6 +217,7 @@ install-help:	$(HELPFILES_TARGET)
 		  done; ) ; \
 	fi
 
+.PHONY: install
 install:	@HELPINSTALL@
 
 mkbuiltins.o: ../config.h
@@ -233,19 +236,23 @@ pipesize.h:	psize.aux
 psize.aux:	psize.c
 	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) ${LDFLAGS_FOR_BUILD} -o $@ $(srcdir)/psize.c
 
+.PHONY: documentation
 documentation: builtins.texi
 
 builtins.texi: $(MKBUILTINS)
 	./$(MKBUILTINS) -documentonly $(DEFSRC)
 
+.PHONY: clean
 clean:
 	$(RM) $(OFILES) $(CREATED_FILES) libbuiltins.a
 	$(RM) $(MKBUILTINS) gen-helpfiles $(CREATED_OBJECTS)
 	-test -d helpfiles && $(RM) -r helpfiles
 
+.PHONY: mostlyclean
 mostlyclean:
 	$(RM) $(OFILES) libbuiltins.a
 
+.PHONY: distclean maintainer-clean
 distclean maintainer-clean: clean
 	$(RM) Makefile
 

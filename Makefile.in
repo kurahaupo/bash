@@ -943,15 +943,15 @@ uninstall: .made
 	-( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	-( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
-.PHONY: basic-clean clean maintainer-clean distclean mostlyclean maybe-clean
-
 LIB_SUBDIRS = ${RL_LIBDIR}  ${HIST_LIBDIR} ${TERM_LIBDIR} ${GLOB_LIBDIR} \
 		${INTL_LIBDIR} ${TILDE_LIBDIR} ${ALLOC_LIBDIR} ${SH_LIBDIR}
 
+.PHONY: basic-clean
 basic-clean:
 	$(RM) $(OBJECTS) $(Program) bashbug
 	$(RM) .build .made version.h
 
+.PHONY: clean
 clean: basic-clean
 	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
@@ -964,6 +964,7 @@ clean: basic-clean
 	$(RM) $(CREATED_SUPPORT)
 	$(RM) -rf $(CREATED_MACOS)
 
+.PHONY: mostlyclean
 mostlyclean: basic-clean
 	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
@@ -974,6 +975,7 @@ mostlyclean: basic-clean
 	-( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	-( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
+.PHONY: distclean
 distclean: basic-clean maybe-clean
 	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
@@ -987,6 +989,7 @@ distclean: basic-clean maybe-clean
 	$(RM) $(CREATED_SUPPORT) Makefile $(CREATED_MAKEFILES) $(CREATED_HEADERS)
 	$(RM) -rf $(CREATED_MACOS)
 
+.PHONY: maintainer-clean
 maintainer-clean: basic-clean
 	@echo This command is intended for maintainers to use.
 	@echo It deletes files that may require special tools to rebuild.
@@ -1003,6 +1006,7 @@ maintainer-clean: basic-clean
 	$(RM) $(CREATED_SUPPORT) $(CREATED_HEADERS)
 	$(RM) -rf $(CREATED_MACOS)
 
+.PHONY: maybe-clean
 maybe-clean:
 	-if test X"`cd $(topdir) && pwd -P`" != X"`cd $(BUILD_DIR) && pwd -P`" ; then \
 		$(RM) parser-built y.tab.c y.tab.h ; \
