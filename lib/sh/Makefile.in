@@ -71,7 +71,14 @@ ADDON_CFLAGS =
 DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
-INCLUDES = -I. -I../.. -I$(topdir) -I$(topdir)/lib -I$(BASHINCDIR) -I$(srcdir) $(INTL_INC)
+INCLUDES = -I. \
+	   -I../.. \
+	   -I$(topdir) \
+	   -I$(topdir)/lib \
+	   -I$(BASHINCDIR) \
+	   -I$(srcdir) \
+	   $(INTL_INC) \
+
 
 CCFLAGS = ${ADDON_CFLAGS} ${PROFILE_FLAGS} ${INCLUDES} $(DEFS) $(LOCAL_DEFS) \
 	  $(LOCAL_CFLAGS) $(STYLE_CFLAGS) $(CFLAGS) $(CPPFLAGS)

@@ -95,7 +95,15 @@ MKDIRS = ${topdir}/support/mkdirs
 
 HELPFILES_TARGET = @HELPFILES_TARGET@
 
-INCLUDES = -I. -I.. @RL_INCLUDE@ -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib -I$(srcdir) ${INTL_INC}
+INCLUDES = -I. \
+	   -I.. \
+	   @RL_INCLUDE@ \
+	   -I$(srcdir) \
+	   -I$(topdir) \
+	   -I$(topdir)/lib \
+	   -I$(BASHINCDIR) \
+	   $(INTL_INC) \
+
 
 BASE_CCFLAGS = ${PROFILE_FLAGS} $(DEFS) $(LOCAL_DEFS) \
 	 ${INCLUDES} $(STYLE_CFLAGS) $(LOCAL_CFLAGS)

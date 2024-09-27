@@ -142,7 +142,11 @@ ref-del.sed: $(srcdir)/ref-del.sin
 	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-del.sin > t-ref-del.sed
 	mv t-ref-del.sed ref-del.sed
 
-INCLUDES = -I. -I$(srcdir) -I${top_builddir} -I${top_srcdir}
+INCLUDES = -I. \
+	   -I$(srcdir) \
+	   -I$(top_builddir) \
+	   -I$(top_srcdir) \
+
 
 libgnuintl.h: $(srcdir)/libgnuintl.in.h $(srcdir)/export.h
 	sed -e '/IN_LIBGLOCALE/d' \
