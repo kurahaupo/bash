@@ -123,47 +123,98 @@ mostlyclean: clean
 ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
 
+#MKDEP-CUT-HERE
+
 ######################################################################
 #								     #
 #  Dependencies for the object files which make up this library.     #
 #								     #
 ######################################################################
 
-smatch.o: strmatch.h
-smatch.o: $(BUILD_DIR)/config.h
-smatch.o: $(BASHINCDIR)/chartypes.h
-smatch.o: $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
-smatch.o: $(BASHINCDIR)/shmbutil.h
-smatch.o: $(topdir)/xmalloc.h
-
-strmatch.o: strmatch.h
-strmatch.o: $(BUILD_DIR)/config.h
-strmatch.o: $(BASHINCDIR)/stdc.h
+# C *.c source & *.h header dependencies (generated)
 
 glob.o: $(BUILD_DIR)/config.h
-glob.o: $(topdir)/shell.h $(BUILD_DIR)/pathnames.h
-glob.o: $(topdir)/bashtypes.h $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
-glob.o: $(BASHINCDIR)/posixstat.h $(BASHINCDIR)/memalloc.h
-glob.o: strmatch.h glob.h
-glob.o: $(BASHINCDIR)/shmbutil.h
+glob.o: $(srcdir)/glob.c
+glob.o: $(srcdir)/glob.h
+glob.o: $(srcdir)/glob_loop.c
+glob.o: $(srcdir)/strmatch.h
+glob.o: $(topdir)/array.h
+glob.o: $(topdir)/arrayfunc.h
+glob.o: $(topdir)/assoc.h
+glob.o: $(topdir)/bashansi.h
+glob.o: $(topdir)/bashjmp.h
+glob.o: $(topdir)/bashtypes.h
+glob.o: $(topdir)/command.h
+glob.o: $(topdir)/config-bot.h
+glob.o: $(topdir)/config-top.h
+glob.o: $(topdir)/conftypes.h
+glob.o: $(topdir)/dispose_cmd.h
+glob.o: $(topdir)/error.h
+glob.o: $(topdir)/externs.h
+glob.o: $(topdir)/general.h
+glob.o: $(topdir)/hashlib.h
+glob.o: $(topdir)/include/chartypes.h
+glob.o: $(topdir)/include/filecntl.h
+glob.o: $(topdir)/include/maxpath.h
+glob.o: $(topdir)/include/memalloc.h
+glob.o: $(topdir)/include/ocache.h
+glob.o: $(topdir)/include/posixdir.h
+glob.o: $(topdir)/include/posixjmp.h
+glob.o: $(topdir)/include/posixstat.h
+glob.o: $(topdir)/include/shmbchar.h
+glob.o: $(topdir)/include/shmbutil.h
+glob.o: $(topdir)/include/stdc.h
+glob.o: $(topdir)/include/unlocked-io.h
+glob.o: $(topdir)/make_cmd.h
+glob.o: $(topdir)/pathnames.h
+glob.o: $(topdir)/quit.h
+glob.o: $(topdir)/shell.h
+glob.o: $(topdir)/sig.h
+glob.o: $(topdir)/subst.h
+glob.o: $(topdir)/syntax.h
+glob.o: $(topdir)/unwind_prot.h
+glob.o: $(topdir)/variables.h
 glob.o: $(topdir)/xmalloc.h
-
+glob_loop.o: $(srcdir)/glob_loop.c
+gm_loop.o: $(srcdir)/gm_loop.c
 gmisc.o: $(BUILD_DIR)/config.h
-gmisc.o: $(topdir)/bashtypes.h $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
-gmisc.o: $(BASHINCDIR)/shmbutil.h
-
-xmbsrtowcs.o: ${BUILD_DIR}/config.h
-xmbsrtowcs.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
-xmbsrtowcs.o: ${BASHINCDIR}/shmbutil.h
-
-# Rules for deficient makes, like SunOS and Solaris
-glob.o: glob.c
-gmisc.o: gmisc.c
-strmatch.o: strmatch.c
-smatch.o: smatch.c
-xmbsrtowcs.o: xmbsrtowcs.c
-
-# dependencies for C files that include other C files
-glob.o: glob_loop.c
-gmisc.o: gm_loop.c
-smatch.o: sm_loop.c
+gmisc.o: $(srcdir)/glob.h
+gmisc.o: $(srcdir)/gm_loop.c
+gmisc.o: $(srcdir)/gmisc.c
+gmisc.o: $(srcdir)/strmatch.h
+gmisc.o: $(topdir)/bashansi.h
+gmisc.o: $(topdir)/bashtypes.h
+gmisc.o: $(topdir)/config-bot.h
+gmisc.o: $(topdir)/config-top.h
+gmisc.o: $(topdir)/include/chartypes.h
+gmisc.o: $(topdir)/include/shmbchar.h
+gmisc.o: $(topdir)/include/shmbutil.h
+gmisc.o: $(topdir)/include/stdc.h
+sm_loop.o: $(srcdir)/sm_loop.c
+smatch.o: $(BUILD_DIR)/config.h
+smatch.o: $(srcdir)/collsyms.h
+smatch.o: $(srcdir)/sm_loop.c
+smatch.o: $(srcdir)/smatch.c
+smatch.o: $(srcdir)/strmatch.h
+smatch.o: $(topdir)/bashansi.h
+smatch.o: $(topdir)/config-bot.h
+smatch.o: $(topdir)/config-top.h
+smatch.o: $(topdir)/include/chartypes.h
+smatch.o: $(topdir)/include/shmbchar.h
+smatch.o: $(topdir)/include/shmbutil.h
+smatch.o: $(topdir)/include/stdc.h
+smatch.o: $(topdir)/xmalloc.h
+strmatch.o: $(BUILD_DIR)/config.h
+strmatch.o: $(srcdir)/strmatch.c
+strmatch.o: $(srcdir)/strmatch.h
+strmatch.o: $(topdir)/config-bot.h
+strmatch.o: $(topdir)/config-top.h
+strmatch.o: $(topdir)/include/stdc.h
+xmbsrtowcs.o: $(BUILD_DIR)/config.h
+xmbsrtowcs.o: $(srcdir)/xmbsrtowcs.c
+xmbsrtowcs.o: $(topdir)/bashansi.h
+xmbsrtowcs.o: $(topdir)/config-bot.h
+xmbsrtowcs.o: $(topdir)/config-top.h
+xmbsrtowcs.o: $(topdir)/include/shmbchar.h
+xmbsrtowcs.o: $(topdir)/include/shmbutil.h
+xmbsrtowcs.o: $(topdir)/include/stdc.h

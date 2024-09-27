@@ -87,4 +87,44 @@ clean:
 distclean maintainer-clean mostlyclean: clean
 	$(RM) bash.pc bashbug.sh
 
-man2html.o: man2html.c
+
+#MKDEP-CUT-HERE
+
+# C *.c source & *.h header dependencies (generated)
+
+bashversion.o: $(BUILD_DIR)/config.h
+bashversion.o: $(srcdir)/bashversion.c
+bashversion.o: $(topdir)/config-bot.h
+bashversion.o: $(topdir)/config-top.h
+bashversion.o: $(topdir)/conftypes.h
+bashversion.o: $(topdir)/version.h
+endian.o: $(BUILD_DIR)/config.h
+endian.o: $(srcdir)/endian.c
+endian.o: $(topdir)/bashansi.h
+endian.o: $(topdir)/config-bot.h
+endian.o: $(topdir)/config-top.h
+man2html.o: $(BUILD_DIR)/config.h
+man2html.o: $(srcdir)/man2html.c
+man2html.o: $(topdir)/config-bot.h
+man2html.o: $(topdir)/config-top.h
+memtest.o: $(srcdir)/memtest.c
+memtest.o: $(topdir)/bashansi.h
+memtest.o: $(topdir)/include/ansi_stdlib.h
+memtest.o: $(topdir)/include/stdc.h
+memtest.o: $(topdir)/xmalloc.h
+mksignames.o: $(BUILD_DIR)/config.h
+mksignames.o: $(srcdir)/mksignames.c
+mksignames.o: $(topdir)/config-bot.h
+mksignames.o: $(topdir)/config-top.h
+printenv.o: $(srcdir)/printenv.c
+recho.o: $(srcdir)/recho.c
+siglen.o: $(srcdir)/siglen.c
+signames.o: $(BUILD_DIR)/config.h
+signames.o: $(srcdir)/signames.c
+signames.o: $(topdir)/config-bot.h
+signames.o: $(topdir)/config-top.h
+xcase.o: $(BUILD_DIR)/config.h
+xcase.o: $(srcdir)/xcase.c
+xcase.o: $(topdir)/config-bot.h
+xcase.o: $(topdir)/config-top.h
+zecho.o: $(srcdir)/zecho.c
