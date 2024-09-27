@@ -50,6 +50,13 @@ DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
 BASHINCDIR = ${topdir}/include
+SUPPORT_SRC = $(topdir)/support/
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 INCLUDES = -I. -I../.. -I$(topdir) -I${BASHINCDIR} -I$(topdir)/lib
 
@@ -113,6 +120,10 @@ realclean distclean maintainer-clean: clean
 
 mostlyclean: clean
 	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

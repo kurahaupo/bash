@@ -55,6 +55,7 @@ INSTALL_DATA = @INSTALL_DATA@
 BUILD_DIR = @BUILD_DIR@
 
 LIBBUILD = ${BUILD_DIR}/lib
+SUPPORT_SRC = $(topdir)/support/
 
 PROFILE_FLAGS = @PROFILE_FLAGS@
 CFLAGS = @CFLAGS@
@@ -86,11 +87,18 @@ INTL_DEP = @INTL_DEP@
 LIBINTL_H = @LIBINTL_H@
 
 HELPDIR = @HELPDIR@
+
 MKDIRS = ${topdir}/support/mkdirs
 
 HELPFILES_TARGET = @HELPFILES_TARGET@
 
 INCLUDES = -I. -I.. @RL_INCLUDE@ -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib -I$(srcdir) ${INTL_INC}
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS)
+MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
 BASE_CCFLAGS = ${PROFILE_FLAGS} $(DEFS) $(LOCAL_DEFS) $(SYSTEM_FLAGS) \
 	 ${INCLUDES} $(STYLE_CFLAGS) $(LOCAL_CFLAGS)
@@ -272,9 +280,9 @@ ${LIBINTL_H}:
 		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
 
 .PHONY: depends depend
-depends depend: $(MKBUILTINS)
+depends depend: $(MKBUILTINS) tmpbuiltins.h
 	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
-	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(srcdir)/*.c
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 # dependencies
 

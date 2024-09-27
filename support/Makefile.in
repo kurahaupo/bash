@@ -39,6 +39,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 
 EXEEXT = @EXEEXT@
 
+SUPPORT_SRC = $(topdir)/support/
+
 #
 # Compiler options:
 #
@@ -61,7 +63,13 @@ LOCAL_LDFLAGS = @LOCAL_LDFLAGS@
 LDFLAGS = @LDFLAGS@ $(LOCAL_LDFLAGS)
 LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@ $(LOCAL_LDFLAGS) $(CFLAGS_FOR_BUILD)
 
-INCLUDES = -I${BUILD_DIR} -I${topdir}
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
+
+INCLUDES = -I${BUILD_DIR} -I${topdir} -I${topdir}/include
 
 BASE_CCFLAGS = ${PROFILE_FLAGS} $(DEFS) $(LOCAL_DEFS) $(SYSTEM_FLAGS) \
 	  ${INCLUDES} $(STYLE_CFLAGS) $(LOCAL_CFLAGS)
@@ -87,6 +95,9 @@ clean:
 distclean maintainer-clean mostlyclean: clean
 	$(RM) bash.pc bashbug.sh
 
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

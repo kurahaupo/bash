@@ -40,6 +40,8 @@ gettextsrcdir = $(datadir)/gettext/intl
 aliaspath = $(localedir)
 subdir = intl
 
+SUPPORT_SRC = $(topdir)/support/
+
 @SET_MAKE@
 
 INSTALL = @INSTALL@
@@ -72,6 +74,12 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
 HEADERS = \
   gmo.h \
@@ -470,6 +478,10 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

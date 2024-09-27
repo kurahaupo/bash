@@ -63,6 +63,14 @@ LDFLAGS = @LDFLAGS@
 DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
+SUPPORT_SRC = $(topdir)/support/
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
+
 INCLUDES = -I. -I$(BUILD_DIR) -I$(topdir) -I$(topdir)/lib
 
 CCFLAGS = $(DEFS) $(LOCAL_DEFS) $(APP_CFLAGS) $(CPPFLAGS) ${INCLUDES} \
@@ -170,6 +178,10 @@ distclean maintainer-clean: clean
 	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	$(RM) Makefile
 	$(RM) TAGS tags
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

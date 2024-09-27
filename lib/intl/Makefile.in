@@ -21,7 +21,7 @@ VERSION = @PACKAGE_VERSION@
 SHELL = /bin/sh
 
 srcdir = @srcdir@
-top_srcdir = @top_srcdir@
+topdir = @top_srcdir@
 top_builddir = @BUILD_DIR@
 VPATH = $(srcdir)
 
@@ -39,6 +39,8 @@ localedir = @localedir@
 gettextsrcdir = $(datadir)/gettext/intl
 aliaspath = $(localedir)
 subdir = intl
+
+SUPPORT_SRC = $(topdir)/support/
 
 @SET_MAKE@
 
@@ -61,6 +63,12 @@ YFLAGS = --name-prefix=__gettext
 ARFLAGS = @ARFLAGS@
 
 LOCAL_DEFS = @LOCAL_DEFS@
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS) $(INCLUDES) -DIN_LIBINTL
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
 	-DLIBDIR=\"$(libdir)\" -DIN_LIBINTL -DBUILDING_LIBINTL @DEFS@
@@ -142,7 +150,7 @@ ref-del.sed: $(srcdir)/ref-del.sin
 	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-del.sin > t-ref-del.sed
 	mv t-ref-del.sed ref-del.sed
 
-INCLUDES = -I. -I$(srcdir) -I${top_builddir} -I${top_srcdir}
+INCLUDES = -I. -I$(srcdir) -I${top_builddir} -I${topdir}
 
 libgnuintl.h: $(srcdir)/libgnuintl.in.h $(srcdir)/export.h
 	sed -e '/IN_LIBGLOCALE/d' \
@@ -222,6 +230,10 @@ maintainer-clean: distclean
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
+
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

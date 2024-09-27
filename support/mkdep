@@ -22,25 +22,43 @@
 # Modified by Chet Ramey <chet.ramey@case.edu> for inclusion in Bash
 #
 
+{ # parse whole script before starting
+
 append_depfile=false
+blddir=.
 compiler=cc
-depfile=.depend
-keep_path=false
-keep_output=false
-m_flag=-MM
-skip_o=false
-
 debug=false
+depfile=.depend
+keep_output=false
+keep_path=false
+m_flag=-MM
+patch_makefile=
+skip_o=false
+sort_depfile=false
+srcdir=
+topdir=
 
-usage()
-{
-  echo "$PROG: usage: $PROG [-a] [-c compiler] [-f depend_file] [-k f|p] [-m M|MM] [-p] [--] [cc_flags] file ..." >&2
-  exit 2
-}
+# These excluded pathnames doesn't work for every system (e.g., macOS), but
+# this list is only needed if your compiler doesn't understand the -MM option;
+# which usually does the right thing.
+exclusion_list="\
+: /usr/include
+: /usr/lib"
+
+# POSIX grep accepts multiple patterns separated by a newline
+NL='
+'
 
 PROG=${0##*/}
 
-while getopts ac:f:k:m:pD opt "$@"
+usage()
+{
+  echo "$PROG: usage: $PROG [-a] [-c compiler] [-f depend_file] [-k f|p] [-m M|MM] [-p] [-P|--patch=[Makefile]] [-S SRCDIR] [-T SRCTOP] [--] [cc_flags] file ..." >&2
+  exit 2
+}
+
+
+while getopts ac:f:k:m:psDPS:T:-: opt "$@"
 do
   case $opt in
     a)
@@ -51,26 +69,30 @@ do
       # change compiler
       compiler=$OPTARG ;;
 
+    e)
+      # add item to the exclusion list
+      exclusion_list="$exclusion_list$NL: $OPTARG"
+      ;;
+
     f)
       # select a dependency file
-      depfile=$2 ;;
+      depfile=$OPTARG ;;
 
     k)
       case $OPTARG in
       f)  # Keep the temporary files on failure
 	  keep_output=true ;;
-      p)
-	  # keep PATH from environment
+      p)  # keep PATH from environment
 	  keep_path=true ;;
-      *) usage ; exit 2 ;;
+      *) usage ;;
       esac ;;
 
     m)
+      # report or ignore system-supplied #include files
       case $OPTARG in
-      M) m_flag=-M ;;
-      MM) m_flag=-MM ;;
-      *) usage ; exit 2 ;;
-      esac;;
+      M | MM) m_flag=-$OPTARG ;;
+      *) usage ;;
+      esac ;;
 
     p)
       # produce “program: program.c”-style dependencies
@@ -78,7 +100,37 @@ do
       skip_o=true ;;
 
     D) debug=true ;;
-    
+
+    s)
+      # "sort" after rewriting, to prevent creating duplicates
+      sort_depfile=true
+      ;;
+
+    P)
+      patch_makefile=Makefile ;;
+
+    S)
+      srcdir=$OPTARG ;;
+
+    T)
+      topdir=$OPTARG ;;
+
+    -)
+      LONGOPT=${OPTARG%%=*}
+      OPTVAL=${OPTARG#"$LONGOPT"}
+      case $OPTVAL in '') unset OPTVAL ;; *) OPTVAL=${OPTVAR#=} ; esac
+      case $LONGOPT in
+	n*p*)
+	    case nopatch	in "$LONGOPT"*) patch_makefile= ; continue ; esac
+	    case no-patch	in "$LONGOPT"*) patch_makefile= ; continue ; esac ;;
+	p*) case patch-makefile	in "$LONGOPT"*) patch_makefile=${OPTVAL-Makefile} ; continue ; esac ;;
+	s*) case srcdir		in "$LONGOPT"*) srcdir=${OPTVAL} ; continue ; esac
+	    case srctop		in "$LONGOPT"*) topdir=${OPTVAL} ; continue ; esac
+	    ;;
+	t*) case topdir		in "$LONGOPT"*) topdir=${OPTVAL} ; continue ; esac ;;
+      esac
+      usage ;;
+
     ?)
       usage ;;
   esac
@@ -93,6 +145,28 @@ fi
 
 "$debug" && set -x
 
+srcdir=${srcdir:+${srcdir%/}/}  # append a slash if non-empty and doesn't already end with one
+topdir=${topdir:+${topdir%/}/}  # append a slash if non-empty and doesn't already end with one
+blddir=${blddir:+${blddir%/}/}  # append a slash if non-empty and doesn't already end with one
+xtopdir=${topdir:+'$(topdir)'/}
+
+_=${srcdir:=$topdir}
+
+rsrcdir=$( realpath "$srcdir" )/
+rtopdir=$( realpath "$topdir" )/
+
+case $rsrcdir in
+  "$rtopdir"*) ;;
+  *)	    echo >&2 "mkdep: src_dir (-S $rsrcdir) is not within top_dir (-T $rtopdir)" ; exit 2
+esac
+
+subdir=${rsrcdir#"$rtopdir"}      # where is the target dir within the build tree?
+
+srcdir=${rsrcdir#"$PWD/"}
+topdir=${rtopdir#"$PWD/"}
+
+tgtdir=$blddir$subdir
+
 "$keep_path" || export PATH=/bin:/usr/bin:/usr/local/bin:/opt/bin:$PATH
 
 output=$depfile.mkdep$$
@@ -100,6 +174,7 @@ output=$depfile.mkdep$$
 cleanup()
 {
   rm -f "$output".*
+  :
 }
 
 if "$keep_output"
@@ -109,7 +184,7 @@ fi
 
 caught () {
   soft_cleanup
-  trap 2	# SIGINT?
+  trap 2	# SIGINT
   kill -2 $$
 }
 
@@ -122,78 +197,137 @@ trap caught 1 2 3 13 15
   exit "$ex"
 }
 
-# The pathnames here don't work for every system (e.g., macOS), but the -MM
-# option (the default) usually does the right thing
-{
-  if "$append_depfile"
-  then
+# (1) roll up lines ending with \\
+# (2) split each dependency pair into a separate line
+
+sed '
+    s@ \./@ @g
+    :a
+    / \\$/ {
+      N
+      s/[[:space:]]*\\\n[[:space:]]*/ /
+      ta
+      s/\\$//
+    }
+    s/  *$//
+    /^[^ ]*:$/d
+    :b
+    /^[^ :][^ :]*:/ {
+      s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
+      P
+      D
+      tb
+    }
+  ' < "$output.1" > "$output.2" &&
+
+if test -n "$exclusion_list"
+then
+  grep -vF "${exclusion_list#$NL}"  < "$output.2" > "$output.3"
+else
+  ln "$output.2" "$output.3"
+fi &&
+
+# If the real target is a completed executable, create a dependency list
+# directly targetting it, rather than the intermediate .o file(s).
+
+if "$skip_o"
+then
+  sed 's@\.o: @: @' < "$output.3" > "$output.4"
+else
+  ln "$output.3" "$output.4"
+fi &&
+
+# Canonicalize paths changing A/B/C/../../D to A/D
+
+
+# Canonicalize paths changing A/B/C/../../D to A/D
+
+sed '
+    :a
+    s@^\./@@
+    s@ \./@ @g
+    s@/\./@/@g
+    ta
+    :b
+    s@^[^/. ][^/ ]*/\.\./@@
+    s@ [^/. ][^/ ]*/\.\./@ @g
+    s@/[^/. ][^/ ]*/\.\./@/@g
+    tb
+  ' < "$output.4" > "$output.5" &&
+
+
+# Sort the generated dependency list to eliminate duplicates
+
+sort -u "$output.5" > "$output.6" &&
+
+# Optionally incorporate the original depfile
+
+if "$append_depfile"
+then
+  cat "$depfile" "$output.6" > "$output.7"
+else
+  ln "$output.6" "$output.7"
+fi &&
+
+# Optionally sort the entire output (this only makes a difference if
+# incorporating the original depfile rather than overwriting it.
+
+if "$sort_depfile"
+then
+  sort -u "$output.7" > "$output.8"
+else
+  ln "$output.7" "$output.8"
+fi &&
+
+# Rewrite paths as needed
+
+while
+  IFS= read -r line
+do
+  case $line in
+    '' |\
+    '#'* |\
+    *': $'* ) echo "$line" ;;
+    *': '*)
+      s=${line#*': '}
+      t=${line%%': '*}
+      t=${t#././} t=${t#./}
+
+      x=$topdir$subdir
+      while
+	case $x///$s in
+	  *///./*) s=${s#./} ;;
+	  */.///*) x=${x%/.} ;;
+	  */..///*) false ;;
+	  */?*////../*) x=${x%/*/}/ s=${s#../} ;;
+	  *) false ;;
+	esac
+      do : ; done
+
+      printf '%s: %s\n' "$t" "$x$s"
+      ;;
+    * ) echo "$line"
+      echo >&2 'Warning: copying unmatched line: '"$line"
+      ;;
+  esac
+done < "$output.8" > "$output.9" &&
+
+# If everything has worked, replace the depfile
+
+mv "$output.9" "$depfile" &&
+
+if [ -n "$patch_makefile" ]
+then
+  pmt=$patch_makefile.tmp$$
+  {
+    sed < "$patch_makefile" '/^#* *MKDEP-CUT-HERE/,$ d' &&
+    echo '#####   MKDEP-CUT-HERE  #####   Generated dependencies below; DO NOT EDIT  #####' &&
     cat "$depfile"
-  fi
+  } > "$pmt" &&
+  mv "$pmt" "$patch_makefile"
+fi &&
 
-  if "$skip_o"
-  then
-    sed '
-	s@ \./@ @g
-	s@ /usr/include[^ ]*@@g
-	s@ /usr/lib/gcc[^ ]*@@g
+cleanup &&
 
-	s@\.o @ @
-
-        :a
-        / \\$/ {
-          N
-          s/[[:space:]]*\\\n[[:space:]]*/ /
-          ta
-          s/\\$//
-        }
-
-        s/  *$//
-	/^[^ ]*:$/d
-
-        :b
-        /^[^ :][^ :]*:/ {
-          s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
-          /: \/usr\/include/bd
-          /: \/usr\/lib/bd
-          P
-          :d
-          D
-          tb
-        }
-      '
-  else
-    sed '
-	s@ \./@ @g;
-	s@ /usr/include[^ ]*@@g;
-	s@ /usr/lib/gcc[^ ]*@@g;
-
-        :a
-        / \\$/ {
-          N
-          s/[[:space:]]*\\\n[[:space:]]*/ /
-          ta
-          s/\\$//
-        }
-
-        s/  *$//
-	/^[^ ]*:$/d
-
-        :b
-        /^[^ :][^ :]*:/ {
-          s@^\([^ :][^ :]*: \)\([^ ][^ ]*\) @\1\2\n\1@
-          /: \/usr\/include/bd
-          /: \/usr\/lib/bd
-          P
-          :d
-          D
-          tb
-        }
-      '
-  fi < "$output.1"
-} |
-sort -o "$output.2"
-
-mv "$output.2" "$depfile"
-
-cleanup
 exit 0
+}
