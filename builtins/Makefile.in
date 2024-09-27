@@ -138,37 +138,126 @@ RL_LIBSRC = $(topdir)/lib/readline
 	$(RM) $@
 	$(CC) -c $(CCFLAGS) $<
 
-DEFSRC =  $(srcdir)/alias.def $(srcdir)/bind.def $(srcdir)/break.def \
-	  $(srcdir)/builtin.def $(srcdir)/caller.def \
-	  $(srcdir)/cd.def $(srcdir)/colon.def \
-	  $(srcdir)/command.def $(srcdir)/declare.def $(srcdir)/echo.def \
-	  $(srcdir)/enable.def $(srcdir)/eval.def $(srcdir)/getopts.def \
-	  $(srcdir)/exec.def $(srcdir)/exit.def $(srcdir)/fc.def \
-	  $(srcdir)/fg_bg.def $(srcdir)/hash.def $(srcdir)/help.def \
-	  $(srcdir)/history.def $(srcdir)/jobs.def $(srcdir)/kill.def \
-	  $(srcdir)/let.def $(srcdir)/read.def $(srcdir)/return.def \
-	  $(srcdir)/set.def $(srcdir)/setattr.def $(srcdir)/shift.def \
-	  $(srcdir)/source.def $(srcdir)/suspend.def $(srcdir)/test.def \
-	  $(srcdir)/times.def $(srcdir)/trap.def $(srcdir)/type.def \
-	  $(srcdir)/ulimit.def $(srcdir)/umask.def $(srcdir)/wait.def \
-	  $(srcdir)/reserved.def $(srcdir)/pushd.def $(srcdir)/shopt.def \
-	  $(srcdir)/printf.def $(srcdir)/complete.def $(srcdir)/mapfile.def
+DEFSRC		= \
+		  $(srcdir)/alias.def \
+		  $(srcdir)/bind.def \
+		  $(srcdir)/break.def \
+		  $(srcdir)/builtin.def \
+		  $(srcdir)/caller.def \
+		  $(srcdir)/cd.def \
+		  $(srcdir)/colon.def \
+		  $(srcdir)/command.def \
+		  $(srcdir)/complete.def \
+		  $(srcdir)/declare.def \
+		  $(srcdir)/echo.def \
+		  $(srcdir)/enable.def \
+		  $(srcdir)/eval.def \
+		  $(srcdir)/exec.def \
+		  $(srcdir)/exit.def \
+		  $(srcdir)/fc.def \
+		  $(srcdir)/fg_bg.def \
+		  $(srcdir)/getopts.def \
+		  $(srcdir)/hash.def \
+		  $(srcdir)/help.def \
+		  $(srcdir)/history.def \
+		  $(srcdir)/jobs.def \
+		  $(srcdir)/kill.def \
+		  $(srcdir)/let.def \
+		  $(srcdir)/mapfile.def \
+		  $(srcdir)/printf.def \
+		  $(srcdir)/pushd.def \
+		  $(srcdir)/read.def \
+		  $(srcdir)/reserved.def \
+		  $(srcdir)/return.def \
+		  $(srcdir)/set.def \
+		  $(srcdir)/setattr.def \
+		  $(srcdir)/shift.def \
+		  $(srcdir)/shopt.def \
+		  $(srcdir)/source.def \
+		  $(srcdir)/suspend.def \
+		  $(srcdir)/test.def \
+		  $(srcdir)/times.def \
+		  $(srcdir)/trap.def \
+		  $(srcdir)/type.def \
+		  $(srcdir)/ulimit.def \
+		  $(srcdir)/umask.def \
+		  $(srcdir)/wait.def \
 
-STATIC_SOURCE = common.c evalstring.c evalfile.c getopt.c bashgetopt.c \
-		getopt.h
 
-OFILES = builtins.o \
-	alias.o bind.o break.o builtin.o caller.o cd.o colon.o command.o \
-	common.o declare.o echo.o enable.o eval.o evalfile.o \
-	evalstring.o exec.o exit.o fc.o fg_bg.o hash.o help.o history.o \
-	jobs.o kill.o let.o mapfile.o \
-	pushd.o read.o return.o set.o setattr.o shift.o source.o \
-	suspend.o test.o times.o trap.o type.o ulimit.o umask.o \
-	wait.o getopts.o shopt.o printf.o getopt.o bashgetopt.o complete.o
+STATIC_SOURCE 	= \
+		  bashgetopt.c \
+		  common.c \
+		  evalfile.c \
+		  evalstring.c \
+		  getopt.c \
+		  getopt.h \
 
-CREATED_FILES = builtext.h builtins.c psize.aux pipesize.h tmpbuiltins.c \
-	tmpbuiltins.h
-CREATED_OBJECTS = tmpbuiltins.o gen-helpfiles.o mkbuiltins.o
+
+OFILES		= \
+		  alias.o \
+		  bashgetopt.o \
+		  bind.o \
+		  break.o \
+		  builtin.o \
+		  builtins.o \
+		  caller.o \
+		  cd.o \
+		  colon.o \
+		  command.o \
+		  common.o \
+		  complete.o \
+		  declare.o \
+		  echo.o \
+		  enable.o \
+		  eval.o \
+		  evalfile.o \
+		  evalstring.o \
+		  exec.o \
+		  exit.o \
+		  fc.o \
+		  fg_bg.o \
+		  getopt.o \
+		  getopts.o \
+		  hash.o \
+		  help.o \
+		  history.o \
+		  jobs.o \
+		  kill.o \
+		  let.o \
+		  mapfile.o \
+		  printf.o \
+		  pushd.o \
+		  read.o \
+		  return.o \
+		  set.o \
+		  setattr.o \
+		  shift.o \
+		  shopt.o \
+		  source.o \
+		  suspend.o \
+		  test.o \
+		  times.o \
+		  trap.o \
+		  type.o \
+		  ulimit.o \
+		  umask.o \
+		  wait.o \
+
+
+CREATED_FILES	= \
+		  builtext.h \
+		  builtins.c \
+		  pipesize.h \
+		  psize.aux \
+		  tmpbuiltins.c \
+		  tmpbuiltins.h \
+
+
+CREATED_OBJECTS	= \
+		  gen-helpfiles.o \
+		  mkbuiltins.o \
+		  tmpbuiltins.o \
+
 
 all: $(MKBUILTINS) libbuiltins.a $(HELPFILES_TARGET)
 targets: libbuiltins.a $(HELPFILES_TARGET)
@@ -285,50 +374,6 @@ depends depend: $(MKBUILTINS) tmpbuiltins.h
 	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 # dependencies
-
-alias.c: alias.def
-bind.c: bind.def
-break.c: break.def
-builtin.c: builtin.def
-caller.c: caller.def
-cd.c: cd.def
-colon.c: colon.def
-command.c: command.def
-complete.c: complete.def
-declare.c: declare.def
-echo.c: echo.def
-enable.c: enable.def
-eval.c: eval.def
-exec.c: exec.def
-exit.c: exit.def
-fc.c: fc.def
-fg_bg.c: fg_bg.def
-getopts.c: getopts.def
-hash.c: hash.def
-help.c: help.def
-history.c: history.def
-jobs.c: jobs.def
-kill.c: kill.def
-let.c: let.def
-mapfile.c: mapfile.def
-printf.c: printf.def
-pushd.c: pushd.def
-read.c: read.def
-reserved.c: reserved.def
-return.c: return.def
-set.c: set.def
-setattr.c: setattr.def
-shift.c: shift.def
-shopt.c: shopt.def
-source.c: source.def
-suspend.c: suspend.def
-test.c: test.def
-times.c: times.def
-trap.c: trap.def
-type.c: type.def
-ulimit.c: ulimit.def
-umask.c: umask.def
-wait.c: wait.def
 
 bind.o: ${LIBINTL_H}
 break.o: ${LIBINTL_H}

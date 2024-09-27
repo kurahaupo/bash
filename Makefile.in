@@ -152,8 +152,8 @@ LOCAL_LDFLAGS = @LOCAL_LDFLAGS@
 
 SYSTEM_FLAGS = -DPROGRAM='"$(Program)"' -DCONF_HOSTTYPE='"$(Machine)"' -DCONF_OSTYPE='"$(OS)"' -DCONF_MACHTYPE='"$(MACHTYPE)"' -DCONF_VENDOR='"$(VENDOR)"' $(LOCALE_DEFS)
 
-BASE_CCFLAGS = $(SYSTEM_FLAGS) $(LOCAL_DEFS) \
-	  $(DEFS) $(LOCAL_CFLAGS) $(INCLUDES) $(STYLE_CFLAGS)
+BASE_CCFLAGS	= $(SYSTEM_FLAGS) $(LOCAL_DEFS) \
+		  $(DEFS) $(LOCAL_CFLAGS) $(INCLUDES) $(STYLE_CFLAGS)
 
 CCFLAGS = $(ADDON_CFLAGS) $(BASE_CCFLAGS) ${PROFILE_FLAGS} $(CPPFLAGS) $(CFLAGS)
 
@@ -186,13 +186,27 @@ MKDEP_CCFLAGS = $(CCFLAGS)
 MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
 # Maybe add: -Wextra
-GCC_LINT_FLAGS = -O -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wno-parentheses \
-		 -Wcast-align -Wstrict-prototypes -Wconversion -Wformat \
-		 -Wmissing-braces -Wuninitialized \
-		 -Wmissing-declarations  -Winline \
-		 -Wmissing-prototypes -Wredundant-decls \
-		 -Wformat-security -pedantic \
-		  -Werror=incompatible-pointer-types
+GCC_LINT_FLAGS	= \
+		  -O \
+		  -Wall \
+		  -Wcast-align \
+		  -Wcast-qual \
+		  -Wconversion \
+		  -Werror=incompatible-pointer-types \
+		  -Wformat \
+		  -Wformat-security \
+		  -Winline \
+		  -Wmissing-braces \
+		  -Wmissing-declarations \
+		  -Wmissing-prototypes \
+		  -Wno-parentheses \
+		  -Wpointer-arith \
+		  -Wredundant-decls \
+		  -Wshadow \
+		  -Wstrict-prototypes \
+		  -Wuninitialized \
+		  -pedantic \
+
 
 GCC_LINT_CFLAGS = $(BASE_CCFLAGS) $(CPPFLAGS) $(GCC_LINT_FLAGS)
 
@@ -219,46 +233,86 @@ SH_LIBSRC = $(LIBSRC)/sh
 SH_LIBDIR = $(dot)/${LIBSUBDIR}/sh
 SH_ABSSRC = ${topdir}/${SH_LIBSRC}
 
-SHLIB_SOURCE =	${SH_LIBSRC}/clktck.c ${SH_LIBSRC}/getcwd.c \
-		${SH_LIBSRC}/getenv.c ${SH_LIBSRC}/oslib.c \
-		${SH_LIBSRC}/setlinebuf.c ${SH_LIBSRC}/strchrnul.c \
-		${SH_LIBSRC}/strcasecmp.c ${SH_LIBSRC}/strdup.c \
-		${SH_LIBSRC}/strerror.c \
-		${SH_LIBSRC}/strtod.c ${SH_LIBSRC}/strtol.c \
-		${SH_LIBSRC}/strtoul.c ${SH_LIBSRC}/vprint.c \
-		${SH_LIBSRC}/itos.c ${SH_LIBSRC}/rename.c \
-		${SH_LIBSRC}/zread.c ${SH_LIBSRC}/zwrite.c \
-		${SH_LIBSRC}/shtty.c ${SH_LIBSRC}/inet_aton.c \
-		${SH_LIBSRC}/netopen.c ${SH_LIBSRC}/strpbrk.c \
-		${SH_LIBSRC}/timeval.c ${SH_LIBSRC}/clock.c \
-		${SH_LIBSRC}/makepath.c ${SH_LIBSRC}/pathcanon.c \
-		${SH_LIBSRC}/pathphys.c ${SH_LIBSRC}/stringlist.c \
-		${SH_LIBSRC}/stringvec.c ${SH_LIBSRC}/tmpfile.c \
-		${SH_LIBSRC}/spell.c ${SH_LIBSRC}/strtrans.c \
-		${SH_LIBSRC}/strcasestr.c ${SH_LIBSRC}/shquote.c \
-		${SH_LIBSRC}/snprintf.c ${SH_LIBSRC}/mailstat.c \
-		${SH_LIBSRC}/fmtulong.c ${SH_LIBSRC}/fmtullong.c \
-		${SH_LIBSRC}/strtoll.c ${SH_LIBSRC}/strtoull.c \
-		${SH_LIBSRC}/strtoimax.c ${SH_LIBSRC}/strtoumax.c \
-		${SH_LIBSRC}/fmtumax.c ${SH_LIBSRC}/netconn.c \
-		${SH_LIBSRC}/mktime.c ${SH_LIBSRC}/strftime.c \
-		${SH_LIBSRC}/memset.c ${SH_LIBSRC}/mbschr.c \
-		${SH_LIBSRC}/zcatfd.c ${SH_LIBSRC}/shmatch.c \
-		${SH_LIBSRC}/strnlen.c ${SH_LIBSRC}/winsize.c \
-		${SH_LIBSRC}/eaccess.c ${SH_LIBSRC}/wcsdup.c \
-		${SH_LIBSRC}/zmapfd.c ${SH_LIBSRC}/fpurge.c \
-		${SH_LIBSRC}/zgetline.c ${SH_LIBSRC}/mbscmp.c \
-		${SH_LIBSRC}/mbsncmp.c ${SH_LIBSRC}/anonfile.c \
-		${SH_LIBSRC}/casemod.c ${SH_LIBSRC}/uconvert.c \
-		${SH_LIBSRC}/ufuncs.c ${SH_LIBSRC}/dprintf.c \
-		${SH_LIBSRC}/input_avail.c ${SH_LIBSRC}/mbscasecmp.c \
-		${SH_LIBSRC}/fnxform.c ${SH_LIBSRC}/unicode.c \
-		${SH_LIBSRC}/wcswidth.c ${SH_LIBSRC}/wcsnwidth.c \
-		${SH_LIBSRC}/shmbchar.c ${SH_LIBSRC}/utf8.c \
-		${SH_LIBSRC}/random.c ${SH_LIBSRC}/gettimeofday.c \
-		${SH_LIBSRC}/timers.c ${SH_LIBSRC}/strvis.c \
-		${SH_LIBSRC}/strlcpy.c ${SH_LIBSRC}/strscpy.c \
-		${SH_LIBSRC}/compat.c
+SHLIB_SOURCE	= \
+		  ${SH_LIBSRC}/anonfile.c \
+		  ${SH_LIBSRC}/casemod.c \
+		  ${SH_LIBSRC}/clktck.c \
+		  ${SH_LIBSRC}/clock.c \
+		  ${SH_LIBSRC}/compat.c \
+		  ${SH_LIBSRC}/dprintf.c \
+		  ${SH_LIBSRC}/eaccess.c \
+		  ${SH_LIBSRC}/fmtullong.c \
+		  ${SH_LIBSRC}/fmtulong.c \
+		  ${SH_LIBSRC}/fmtumax.c \
+		  ${SH_LIBSRC}/fnxform.c \
+		  ${SH_LIBSRC}/fpurge.c \
+		  ${SH_LIBSRC}/getcwd.c \
+		  ${SH_LIBSRC}/getenv.c \
+		  ${SH_LIBSRC}/gettimeofday.c \
+		  ${SH_LIBSRC}/inet_aton.c \
+		  ${SH_LIBSRC}/input_avail.c \
+		  ${SH_LIBSRC}/itos.c \
+		  ${SH_LIBSRC}/mailstat.c \
+		  ${SH_LIBSRC}/makepath.c \
+		  ${SH_LIBSRC}/mbscasecmp.c \
+		  ${SH_LIBSRC}/mbschr.c \
+		  ${SH_LIBSRC}/mbscmp.c \
+		  ${SH_LIBSRC}/mbsncmp.c \
+		  ${SH_LIBSRC}/memset.c \
+		  ${SH_LIBSRC}/mktime.c \
+		  ${SH_LIBSRC}/netconn.c \
+		  ${SH_LIBSRC}/netopen.c \
+		  ${SH_LIBSRC}/oslib.c \
+		  ${SH_LIBSRC}/pathcanon.c \
+		  ${SH_LIBSRC}/pathphys.c \
+		  ${SH_LIBSRC}/random.c \
+		  ${SH_LIBSRC}/rename.c \
+		  ${SH_LIBSRC}/setlinebuf.c \
+		  ${SH_LIBSRC}/shmatch.c \
+		  ${SH_LIBSRC}/shmbchar.c \
+		  ${SH_LIBSRC}/shquote.c \
+		  ${SH_LIBSRC}/shtty.c \
+		  ${SH_LIBSRC}/snprintf.c \
+		  ${SH_LIBSRC}/spell.c \
+		  ${SH_LIBSRC}/strcasecmp.c \
+		  ${SH_LIBSRC}/strcasestr.c \
+		  ${SH_LIBSRC}/strchrnul.c \
+		  ${SH_LIBSRC}/strdup.c \
+		  ${SH_LIBSRC}/strerror.c \
+		  ${SH_LIBSRC}/strftime.c \
+		  ${SH_LIBSRC}/stringlist.c \
+		  ${SH_LIBSRC}/stringvec.c \
+		  ${SH_LIBSRC}/strlcpy.c \
+		  ${SH_LIBSRC}/strnlen.c \
+		  ${SH_LIBSRC}/strpbrk.c \
+		  ${SH_LIBSRC}/strscpy.c \
+		  ${SH_LIBSRC}/strtod.c \
+		  ${SH_LIBSRC}/strtoimax.c \
+		  ${SH_LIBSRC}/strtol.c \
+		  ${SH_LIBSRC}/strtoll.c \
+		  ${SH_LIBSRC}/strtoul.c \
+		  ${SH_LIBSRC}/strtoull.c \
+		  ${SH_LIBSRC}/strtoumax.c \
+		  ${SH_LIBSRC}/strtrans.c \
+		  ${SH_LIBSRC}/strvis.c \
+		  ${SH_LIBSRC}/timers.c \
+		  ${SH_LIBSRC}/timeval.c \
+		  ${SH_LIBSRC}/tmpfile.c \
+		  ${SH_LIBSRC}/uconvert.c \
+		  ${SH_LIBSRC}/ufuncs.c \
+		  ${SH_LIBSRC}/unicode.c \
+		  ${SH_LIBSRC}/utf8.c \
+		  ${SH_LIBSRC}/vprint.c \
+		  ${SH_LIBSRC}/wcsdup.c \
+		  ${SH_LIBSRC}/wcsnwidth.c \
+		  ${SH_LIBSRC}/wcswidth.c \
+		  ${SH_LIBSRC}/winsize.c \
+		  ${SH_LIBSRC}/zcatfd.c \
+		  ${SH_LIBSRC}/zgetline.c \
+		  ${SH_LIBSRC}/zmapfd.c \
+		  ${SH_LIBSRC}/zread.c \
+		  ${SH_LIBSRC}/zwrite.c \
+
 
 SHLIB_LIB = -lsh
 SHLIB_LIBNAME = libsh.a
@@ -280,47 +334,94 @@ READLINE_LDFLAGS = -L${RL_LIBDIR}
 READLINE_DEP = @READLINE_DEP@
 
 # The source, object and documentation of the GNU Readline library.
-READLINE_SOURCE	= $(RL_LIBSRC)/rldefs.h $(RL_LIBSRC)/rlconf.h \
-		  $(RL_LIBSRC)/readline.h $(RL_LIBSRC)/tcap.h \
-		  $(RL_LIBSRC)/chardefs.h $(RL_LIBSRC)/keymaps.h \
-		  $(RL_LIBSRC)/history.h $(RL_LIBSRC)/histlib.h \
-		  $(RL_LIBSRC)/posixstat.h $(RL_LIBSRC)/tilde.h \
-		  $(RL_LIBSRC)/rlstdc.h ${RL_LIBSRC}/xmalloc.h \
-		  $(RL_LIBSRC)/rlshell.h ${RL_LIBSRC}/rlprivate.h \
-		  $(RL_LIBSRC)/colors.h  $(RL_LIBSRC)/parse-colors.h \
-		  $(RL_LIBSRC)/funmap.c $(RL_LIBSRC)/emacs_keymap.c \
-		  $(RL_LIBSRC)/search.c $(RL_LIBSRC)/vi_keymap.c \
-		  $(RL_LIBSRC)/keymaps.c $(RL_LIBSRC)/parens.c \
-		  $(RL_LIBSRC)/vi_mode.c $(RL_LIBSRC)/callback.c \
-		  $(RL_LIBSRC)/readline.c $(RL_LIBSRC)/tilde.c \
-		  $(RL_LIBSRC)/rltty.c $(RL_LIBSRC)/complete.c \
-		  $(RL_LIBSRC)/bind.c $(RL_LIBSRC)/isearch.c \
-		  $(RL_LIBSRC)/display.c $(RL_LIBSRC)/signals.c \
-		  $(RL_LIBSRC)/util.c $(RL_LIBSRC)/kill.c $(RL_LIBSRC)/text.c \
-		  $(RL_LIBSRC)/undo.c $(RL_LIBSRC)/macro.c \
-		  $(RL_LIBSRC)/terminal.c $(RL_LIBSRC)/nls.c \
-		  $(RL_LIBSRC)/input.c $(RL_LIBSRC)/xmalloc.c \
-		  $(RL_LIBSRC)/shell.c $(RL_LIBSRC)/savestring.c \
-		  $(RL_LIBSRC)/colors.c $(RL_LIBSRC)/parse-colors.c \
-		  $(RL_LIBSRC)/misc.c $(RL_LIBSRC)/mbutil.c $(RL_LIBSRC)/compat.c \
-		  $(RL_LIBSRC)/histexpand.c $(RL_LIBSRC)/history.c \
-		  $(RL_LIBSRC)/histsearch.c $(RL_LIBSRC)/histfile.c
+READLINE_SOURCE	= \
+		  $(RL_LIBSRC)/bind.c \
+		  $(RL_LIBSRC)/callback.c \
+		  $(RL_LIBSRC)/chardefs.h \
+		  $(RL_LIBSRC)/colors.c \
+		  $(RL_LIBSRC)/colors.h \
+		  $(RL_LIBSRC)/compat.c \
+		  $(RL_LIBSRC)/complete.c \
+		  $(RL_LIBSRC)/display.c \
+		  $(RL_LIBSRC)/emacs_keymap.c \
+		  $(RL_LIBSRC)/funmap.c \
+		  $(RL_LIBSRC)/histexpand.c \
+		  $(RL_LIBSRC)/histfile.c \
+		  $(RL_LIBSRC)/histlib.h \
+		  $(RL_LIBSRC)/history.c \
+		  $(RL_LIBSRC)/history.h \
+		  $(RL_LIBSRC)/histsearch.c \
+		  $(RL_LIBSRC)/input.c \
+		  $(RL_LIBSRC)/isearch.c \
+		  $(RL_LIBSRC)/keymaps.c \
+		  $(RL_LIBSRC)/keymaps.h \
+		  $(RL_LIBSRC)/kill.c \
+		  $(RL_LIBSRC)/macro.c \
+		  $(RL_LIBSRC)/mbutil.c \
+		  $(RL_LIBSRC)/misc.c \
+		  $(RL_LIBSRC)/nls.c \
+		  $(RL_LIBSRC)/parens.c \
+		  $(RL_LIBSRC)/parse-colors.c \
+		  $(RL_LIBSRC)/parse-colors.h \
+		  $(RL_LIBSRC)/posixstat.h \
+		  $(RL_LIBSRC)/readline.c \
+		  $(RL_LIBSRC)/readline.h \
+		  $(RL_LIBSRC)/rlconf.h \
+		  $(RL_LIBSRC)/rldefs.h \
+		  $(RL_LIBSRC)/rlshell.h \
+		  $(RL_LIBSRC)/rlstdc.h \
+		  $(RL_LIBSRC)/rltty.c \
+		  $(RL_LIBSRC)/savestring.c \
+		  $(RL_LIBSRC)/search.c \
+		  $(RL_LIBSRC)/shell.c \
+		  $(RL_LIBSRC)/signals.c \
+		  $(RL_LIBSRC)/tcap.h \
+		  $(RL_LIBSRC)/terminal.c \
+		  $(RL_LIBSRC)/text.c \
+		  $(RL_LIBSRC)/tilde.c \
+		  $(RL_LIBSRC)/tilde.h \
+		  $(RL_LIBSRC)/undo.c \
+		  $(RL_LIBSRC)/util.c \
+		  $(RL_LIBSRC)/vi_keymap.c \
+		  $(RL_LIBSRC)/vi_mode.c \
+		  $(RL_LIBSRC)/xmalloc.c \
+		  ${RL_LIBSRC}/rlprivate.h \
+		  ${RL_LIBSRC}/xmalloc.h \
 
-READLINE_OBJ	= $(RL_LIBDIR)/readline.o $(RL_LIBDIR)/funmap.o \
-		  $(RL_LIBDIR)/parens.o $(RL_LIBDIR)/search.o \
-		  $(RL_LIBDIR)/keymaps.o $(RL_LIBDIR)/xmalloc.o \
-		  $(RL_LIBDIR)/rltty.o $(RL_LIBDIR)/complete.o \
-		  $(RL_LIBDIR)/bind.o $(RL_LIBDIR)/isearch.o \
-		  $(RL_LIBDIR)/display.o $(RL_LIBDIR)/signals.o \
-		  $(RL_LIBDIR)/tilde.o $(RL_LIBDIR)/util.o \
-		  $(RL_LIBDIR)/kill.o $(RL_LIBDIR)/undo.o $(RL_LIBDIR)/nls.o \
-		  $(RL_LIBDIR)/macro.o $(RL_LIBDIR)/input.o \
-		  $(RL_LIBDIR)/terminal.o $(RL_LIBDIR)/callback.o \
-		  $(RL_LIBDIR)/shell.o $(RL_LIBDIR)/savestring.o \
-		  $(RL_LIBDIR)/mbutil.o $(RL_LIBDIR)/compat.o \
-		  $(RL_LIBDIR)/history.o $(RL_LIBDIR)/histexpand.o \
-		  $(RL_LIBDIR)/histsearch.o $(RL_LIBDIR)/histfile.o \
-		  $(RL_LIBDIR)/colors.o $(RL_LIBDIR)/parse-colors.o
+
+READLINE_OBJ	= \
+		  $(RL_LIBDIR)/bind.o \
+		  $(RL_LIBDIR)/callback.o \
+		  $(RL_LIBDIR)/colors.o \
+		  $(RL_LIBDIR)/compat.o \
+		  $(RL_LIBDIR)/complete.o \
+		  $(RL_LIBDIR)/display.o \
+		  $(RL_LIBDIR)/funmap.o \
+		  $(RL_LIBDIR)/histexpand.o \
+		  $(RL_LIBDIR)/histfile.o \
+		  $(RL_LIBDIR)/history.o \
+		  $(RL_LIBDIR)/histsearch.o \
+		  $(RL_LIBDIR)/input.o \
+		  $(RL_LIBDIR)/isearch.o \
+		  $(RL_LIBDIR)/keymaps.o \
+		  $(RL_LIBDIR)/kill.o \
+		  $(RL_LIBDIR)/macro.o \
+		  $(RL_LIBDIR)/mbutil.o \
+		  $(RL_LIBDIR)/nls.o \
+		  $(RL_LIBDIR)/parens.o \
+		  $(RL_LIBDIR)/parse-colors.o \
+		  $(RL_LIBDIR)/readline.o \
+		  $(RL_LIBDIR)/rltty.o \
+		  $(RL_LIBDIR)/savestring.o \
+		  $(RL_LIBDIR)/search.o \
+		  $(RL_LIBDIR)/shell.o \
+		  $(RL_LIBDIR)/signals.o \
+		  $(RL_LIBDIR)/terminal.o \
+		  $(RL_LIBDIR)/tilde.o \
+		  $(RL_LIBDIR)/undo.o \
+		  $(RL_LIBDIR)/util.o \
+		  $(RL_LIBDIR)/xmalloc.o \
+
 
 HIST_LIBSRC = $(LIBSRC)/readline
 HIST_LIBDIR = @HIST_LIBDIR@
@@ -332,13 +433,23 @@ HISTORY_LDFLAGS = -L$(HIST_LIBDIR)
 HISTORY_DEP = @HISTORY_DEP@
 
 # The source, object and documentation of the history library.
-HISTORY_SOURCE	= $(HIST_LIBSRC)/history.c $(HIST_LIBSRC)/histexpand.c \
-		  $(HIST_LIBSRC)/histsearch.c $(HIST_LIBSRC)/histfile.c \
+HISTORY_SOURCE	= \
+		  $(HIST_LIBSRC)/histexpand.c \
+		  $(HIST_LIBSRC)/histfile.c \
+		  $(HIST_LIBSRC)/histlib.h \
+		  $(HIST_LIBSRC)/history.c \
+		  $(HIST_LIBSRC)/history.h \
+		  $(HIST_LIBSRC)/histsearch.c \
 		  $(HIST_LIBSRC)/shell.c \
-		  $(HIST_LIBSRC)/history.h $(HIST_LIBSRC)/histlib.h
-HISTORY_OBJ	= $(HIST_LIBDIR)/history.o $(HIST_LIBDIR)/histexpand.o \
-		  $(HIST_LIBDIR)/histsearch.o $(HIST_LIBDIR)/histfile.o \
-		  $(HIST_LIBDIR)/shell.o
+
+
+HISTORY_OBJ	= \
+		  $(HIST_LIBDIR)/histexpand.o \
+		  $(HIST_LIBDIR)/histfile.o \
+		  $(HIST_LIBDIR)/history.o \
+		  $(HIST_LIBDIR)/histsearch.o \
+		  $(HIST_LIBDIR)/shell.o \
+
 
 # You only need termcap (or curses) if you are linking with GNU Readline.
 TERM_LIBSRC = $(LIBSRC)/termcap
@@ -350,8 +461,10 @@ TERMCAP_LIBRARY = $(TERM_LIBDIR)/libtermcap.a
 TERMCAP_LDFLAGS = -L$(TERM_LIBDIR)
 TERMCAP_DEP = @TERMCAP_DEP@
 
-TERMCAP_SOURCE	= $(TERM_LIBSRC)/termcap.c $(TERM_LIBSRC)/tparam.c
-TERMCAP_OBJ	= $(TERM_LIBDIR)/termcap.o $(TERM_LIBDIR)/tparam.o
+TERMCAP_SOURCE	= $(TERM_LIBSRC)/termcap.c \
+		  $(TERM_LIBSRC)/tparam.c
+TERMCAP_OBJ	= $(TERM_LIBDIR)/termcap.o \
+		  $(TERM_LIBDIR)/tparam.o
 
 GLOB_LIBSRC = $(LIBSRC)/glob
 GLOB_LIBDIR = $(dot)/$(LIBSUBDIR)/glob
@@ -362,14 +475,25 @@ GLOB_LIBRARY = $(GLOB_LIBDIR)/libglob.a
 GLOB_LDFLAGS = -L$(GLOB_LIBDIR)
 GLOB_DEP = $(GLOB_LIBRARY)
 
-GLOB_SOURCE = $(GLOB_LIBSRC)/glob.c $(GLOB_LIBSRC)/strmatch.c \
-	      $(GLOB_LIBSRC)/smatch.c $(GLOB_LIBSRC)/xmbsrtowcs.c \
-	      $(GLOB_LIBSRC)/glob_loop.c $(GLOB_LIBSRC)/sm_loop.c \
-	      $(GLOB_LIBSRC)/gmisc.c \
-	      $(GLOB_LIBSRC)/glob.h $(GLOB_LIBSRC)/strmatch.h
-GLOB_OBJ    = $(GLOB_LIBDIR)/glob.o $(GLOB_LIBDIR)/strmatch.o \
-	      $(GLOB_LIBDIR)/smatch.o $(GLOB_LIBDIR)/xmbsrtowcs.o \
-	      $(GLOB_LIBDIR)/gmisc.o
+GLOB_SOURCE	= \
+		  $(GLOB_LIBSRC)/glob.c \
+		  $(GLOB_LIBSRC)/glob.h \
+		  $(GLOB_LIBSRC)/glob_loop.c \
+		  $(GLOB_LIBSRC)/gmisc.c \
+		  $(GLOB_LIBSRC)/sm_loop.c \
+		  $(GLOB_LIBSRC)/smatch.c \
+		  $(GLOB_LIBSRC)/strmatch.c \
+		  $(GLOB_LIBSRC)/strmatch.h \
+		  $(GLOB_LIBSRC)/xmbsrtowcs.c \
+
+
+GLOB_OBJ	= \
+		  $(GLOB_LIBDIR)/glob.o \
+		  $(GLOB_LIBDIR)/gmisc.o \
+		  $(GLOB_LIBDIR)/smatch.o \
+		  $(GLOB_LIBDIR)/strmatch.o \
+		  $(GLOB_LIBDIR)/xmbsrtowcs.o \
+
 
 # The source, object and documentation for the GNU Tilde library.
 TILDE_LIBSRC = $(LIBSRC)/tilde
@@ -381,7 +505,8 @@ TILDE_LIBRARY = $(TILDE_LIBDIR)/libtilde.a
 TILDE_LDFLAGS = -L$(TILDE_LIBDIR)
 TILDE_DEP = $(TILDE_LIBRARY)
 
-TILDE_SOURCE	= $(TILDE_LIBSRC)/tilde.c $(TILDE_LIBSRC)/tilde.h
+TILDE_SOURCE	= $(TILDE_LIBSRC)/tilde.c \
+		  $(TILDE_LIBSRC)/tilde.h
 TILDE_OBJ	= $(TILDE_LIBDIR)/tilde.o
 
 # libintl
@@ -417,8 +542,13 @@ ALLOC_LIBDIR = $(dot)/$(LIBSUBDIR)/malloc
 ALLOC_ABSSRC = ${topdir}/$(ALLOC_LIBDIR)
 
 MALLOC_SRC = @MALLOC_SRC@
-MALLOC_OTHERSRC = ${ALLOC_LIBSRC}/trace.c ${ALLOC_LIBSRC}/stats.c \
-		  ${ALLOC_LIBSRC}/table.c ${ALLOC_LIBSRC}/watch.c
+MALLOC_OTHERSRC = \
+		  ${ALLOC_LIBSRC}/stats.c \
+		  ${ALLOC_LIBSRC}/table.c \
+		  ${ALLOC_LIBSRC}/trace.c \
+		  ${ALLOC_LIBSRC}/watch.c \
+
+
 MALLOC_SOURCE = ${ALLOC_LIBSRC}/${MALLOC_SRC} ${MALLOC_OTHERSRC}
 MALLOC_CFLAGS = -DRCHECK -Dbotch=programming_error ${MALLOC_DEBUG}
 
@@ -427,9 +557,14 @@ MALLOC_LIBRARY = @MALLOC_LIBRARY@
 MALLOC_LDFLAGS = @MALLOC_LDFLAGS@
 MALLOC_DEP = @MALLOC_DEP@
 
-ALLOC_HEADERS = $(ALLOC_LIBSRC)/getpagesize.h $(ALLOC_LIBSRC)/shmalloc.h \
-		$(ALLOC_LIBSRC)/imalloc.h $(ALLOC_LIBSRC)/mstats.h \
-		$(ALLOC_LIBSRC)/table.h $(ALLOC_LIBSRC)/watch.h
+ALLOC_HEADERS	= \
+		  $(ALLOC_LIBSRC)/getpagesize.h \
+		  $(ALLOC_LIBSRC)/imalloc.h \
+		  $(ALLOC_LIBSRC)/mstats.h \
+		  $(ALLOC_LIBSRC)/shmalloc.h \
+		  $(ALLOC_LIBSRC)/table.h \
+		  $(ALLOC_LIBSRC)/watch.h \
+
 
 $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
 	@( cd $(ALLOC_LIBDIR) && \
@@ -437,18 +572,31 @@ $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
 	   MALLOC_CFLAGS="$(MALLOC_CFLAGS)" ${MALLOC_TARGET} ) || exit 1
 
 BASHINCDIR = ${srcdir}/include
-BASHINCFILES =	 $(BASHINCDIR)/posixstat.h $(BASHINCDIR)/ansi_stdlib.h \
-		 $(BASHINCDIR)/filecntl.h $(BASHINCDIR)/posixdir.h \
-		 $(BASHINCDIR)/memalloc.h $(BASHINCDIR)/stdc.h \
-		 $(BASHINCDIR)/posixjmp.h $(BASHINCDIR)/posixwait.h \
-		 $(BASHINCDIR)/posixtime.h $(BASHINCDIR)/systimes.h \
-		 $(BASHINCDIR)/unionwait.h $(BASHINCDIR)/maxpath.h \
-		 $(BASHINCDIR)/shtty.h $(BASHINCDIR)/typemax.h \
-		 $(BASHINCDIR)/ocache.h $(BASHINCDIR)/unlocked-io.h \
-		 $(BASHINCDIR)/chartypes.h \
-		 $(BASHINCDIR)/gettext.h $(BASHINCDIR)/posixselect.h \
-		 $(BASHINCDIR)/shmbchar.h $(BASHINCDIR)/shmbutil.h \
-		 $(BASHINCDIR)/stat-time.h $(BASHINCDIR)/timer.h
+BASHINCFILES	= \
+		  $(BASHINCDIR)/ansi_stdlib.h \
+		  $(BASHINCDIR)/chartypes.h \
+		  $(BASHINCDIR)/filecntl.h \
+		  $(BASHINCDIR)/gettext.h \
+		  $(BASHINCDIR)/maxpath.h \
+		  $(BASHINCDIR)/memalloc.h \
+		  $(BASHINCDIR)/ocache.h \
+		  $(BASHINCDIR)/posixdir.h \
+		  $(BASHINCDIR)/posixjmp.h \
+		  $(BASHINCDIR)/posixselect.h \
+		  $(BASHINCDIR)/posixstat.h \
+		  $(BASHINCDIR)/posixtime.h \
+		  $(BASHINCDIR)/posixwait.h \
+		  $(BASHINCDIR)/shmbchar.h \
+		  $(BASHINCDIR)/shmbutil.h \
+		  $(BASHINCDIR)/shtty.h \
+		  $(BASHINCDIR)/stat-time.h \
+		  $(BASHINCDIR)/stdc.h \
+		  $(BASHINCDIR)/systimes.h \
+		  $(BASHINCDIR)/timer.h \
+		  $(BASHINCDIR)/typemax.h \
+		  $(BASHINCDIR)/unionwait.h \
+		  $(BASHINCDIR)/unlocked-io.h \
+
 
 LIBRARIES = $(GLOB_LIB) $(SHLIB_LIB) $(READLINE_LIB) $(HISTORY_LIB) \
 	    $(TERMCAP_LIB) $(TILDE_LIB) $(MALLOC_LIB) $(INTL_LIB) $(LIBICONV) \
@@ -465,40 +613,169 @@ LIBRARY_LDFLAGS = $(READLINE_LDFLAGS) $(HISTORY_LDFLAGS) $(GLOB_LDFLAGS) \
 #
 
 # The main source code for the Bourne Again SHell.
-CSOURCES = shell.c eval.c parse.y general.c make_cmd.c print_cmd.c y.tab.c \
-	   dispose_cmd.c execute_cmd.c variables.c $(GLOBC) version.c \
-	   expr.c copy_cmd.c flags.c subst.c hashcmd.c hashlib.c mailcheck.c \
-	   test.c trap.c alias.c jobs.c nojobs.c $(ALLOC_FILES) braces.c \
-	   input.c bashhist.c array.c arrayfunc.c assoc.c sig.c pathexp.c \
-	   unwind_prot.c siglist.c bashline.c bracecomp.c error.c \
-	   list.c stringlib.c locale.c findcmd.c redir.c \
-	   pcomplete.c pcomplib.c syntax.c xmalloc.c
+CSOURCES	= \
+		  $(ALLOC_FILES) \
+		  $(GLOBC) \
+		  alias.c \
+		  array.c \
+		  arrayfunc.c \
+		  assoc.c \
+		  bashhist.c \
+		  bashline.c \
+		  bracecomp.c \
+		  braces.c \
+		  copy_cmd.c \
+		  dispose_cmd.c \
+		  error.c \
+		  eval.c \
+		  execute_cmd.c \
+		  expr.c \
+		  findcmd.c \
+		  flags.c \
+		  general.c \
+		  hashcmd.c \
+		  hashlib.c \
+		  input.c \
+		  jobs.c \
+		  list.c \
+		  locale.c \
+		  mailcheck.c \
+		  make_cmd.c \
+		  nojobs.c \
+		  parse.y \
+		  pathexp.c \
+		  pcomplete.c \
+		  pcomplib.c \
+		  print_cmd.c \
+		  redir.c \
+		  shell.c \
+		  sig.c \
+		  siglist.c \
+		  stringlib.c \
+		  subst.c \
+		  syntax.c \
+		  test.c \
+		  trap.c \
+		  unwind_prot.c \
+		  variables.c \
+		  version.c \
+		  xmalloc.c \
+		  y.tab.c \
 
-HSOURCES = shell.h flags.h trap.h hashcmd.h hashlib.h jobs.h builtins.h \
-	   general.h variables.h config.h $(ALLOC_HEADERS) alias.h \
-	   quit.h unwind_prot.h syntax.h ${GRAM_H} \
-	   command.h input.h error.h bashansi.h dispose_cmd.h make_cmd.h \
-	   subst.h externs.h siglist.h bashhist.h bashline.h bashtypes.h \
-	   array.h arrayfunc.h sig.h mailcheck.h bashintl.h bashjmp.h \
-	   execute_cmd.h parser.h pathexp.h pathnames.h pcomplete.h assoc.h \
-	   $(BASHINCFILES)
+
+HSOURCES	= \
+		  $(ALLOC_HEADERS) \
+		  $(BASHINCFILES) \
+		  ${GRAM_H} \
+		  alias.h \
+		  array.h \
+		  arrayfunc.h \
+		  assoc.h \
+		  bashansi.h \
+		  bashhist.h \
+		  bashintl.h \
+		  bashjmp.h \
+		  bashline.h \
+		  bashtypes.h \
+		  builtins.h \
+		  command.h \
+		  config.h \
+		  dispose_cmd.h \
+		  error.h \
+		  execute_cmd.h \
+		  externs.h \
+		  flags.h \
+		  general.h \
+		  hashcmd.h \
+		  hashlib.h \
+		  input.h \
+		  jobs.h \
+		  mailcheck.h \
+		  make_cmd.h \
+		  parser.h \
+		  pathexp.h \
+		  pathnames.h \
+		  pcomplete.h \
+		  quit.h \
+		  shell.h \
+		  sig.h \
+		  siglist.h \
+		  subst.h \
+		  syntax.h \
+		  trap.h \
+		  unwind_prot.h \
+		  variables.h \
+
 
 SOURCES	 = $(CSOURCES) $(HSOURCES) $(BUILTIN_DEFS)
 
 # headers in top-level source directory that get installed by install-headers
-INSTALLED_HEADERS = shell.h bashjmp.h command.h syntax.h general.h error.h \
-		    variables.h array.h assoc.h arrayfunc.h quit.h dispose_cmd.h \
-		    make_cmd.h subst.h sig.h externs.h builtins.h \
-		    bashtypes.h xmalloc.h config-top.h config-bot.h \
-		    bashintl.h bashansi.h bashjmp.h alias.h hashlib.h \
-		    conftypes.h unwind_prot.h jobs.h siglist.h \
-		    execute_cmd.h
-INSTALLED_BUILTINS_HEADERS = bashgetopt.h common.h getopt.h
-INSTALLED_INCFILES =	 posixstat.h ansi_stdlib.h filecntl.h posixdir.h \
-	memalloc.h stdc.h posixjmp.h posixwait.h posixtime.h systimes.h \
-	unionwait.h maxpath.h shtty.h typemax.h ocache.h chartypes.h gettext.h \
-	posixstat.h shmbchar.h shmbutil.h stat-time.h posixselect.h \
-	timer.h unlocked-io.h
+INSTALLED_HEADERS = \
+		  alias.h \
+		  array.h \
+		  arrayfunc.h \
+		  assoc.h \
+		  bashansi.h \
+		  bashintl.h \
+		  bashjmp.h \
+		  bashjmp.h \
+		  bashtypes.h \
+		  builtins.h \
+		  command.h \
+		  config-bot.h \
+		  config-top.h \
+		  conftypes.h \
+		  dispose_cmd.h \
+		  error.h \
+		  execute_cmd.h \
+		  externs.h \
+		  general.h \
+		  hashlib.h \
+		  jobs.h \
+		  make_cmd.h \
+		  quit.h \
+		  shell.h \
+		  sig.h \
+		  siglist.h \
+		  subst.h \
+		  syntax.h \
+		  unwind_prot.h \
+		  variables.h \
+		  xmalloc.h \
+
+
+INSTALLED_BUILTINS_HEADERS = \
+		  bashgetopt.h \
+		  common.h \
+		  getopt.h \
+
+
+INSTALLED_INCFILES = \
+		  ansi_stdlib.h \
+		  chartypes.h \
+		  filecntl.h \
+		  gettext.h \
+		  maxpath.h \
+		  memalloc.h \
+		  ocache.h \
+		  posixdir.h \
+		  posixjmp.h \
+		  posixselect.h \
+		  posixstat.h \
+		  posixstat.h \
+		  posixtime.h \
+		  posixwait.h \
+		  shmbchar.h \
+		  shmbutil.h \
+		  shtty.h \
+		  stat-time.h \
+		  stdc.h \
+		  systimes.h \
+		  timer.h \
+		  typemax.h \
+		  unionwait.h \
+		  unlocked-io.h \
+
 
 # header files chosen based on running of configure
 SIGNAMES_H = @SIGNAMES_H@
@@ -511,13 +788,53 @@ SIGNAMES_O = @SIGNAMES_O@
 ARRAY_O = @ARRAY_O@
 
 # Matching object files.
-OBJECTS	 = shell.o eval.o y.tab.o general.o make_cmd.o print_cmd.o $(GLOBO) \
-	   dispose_cmd.o execute_cmd.o variables.o copy_cmd.o error.o \
-	   expr.o flags.o $(JOBS_O) subst.o hashcmd.o hashlib.o mailcheck.o \
-	   trap.o input.o unwind_prot.o pathexp.o sig.o test.o version.o \
-	   alias.o $(ARRAY_O) arrayfunc.o assoc.o braces.o bracecomp.o bashhist.o \
-	   bashline.o $(SIGLIST_O) list.o stringlib.o locale.o findcmd.o redir.o \
-	   pcomplete.o pcomplib.o syntax.o xmalloc.o $(SIGNAMES_O)
+OBJECTS		= \
+		  $(ARRAY_O) \
+		  $(GLOBO) \
+		  $(JOBS_O) \
+		  $(SIGLIST_O) \
+		  $(SIGNAMES_O) \
+		  alias.o \
+		  arrayfunc.o \
+		  assoc.o \
+		  bashhist.o \
+		  bashline.o \
+		  bracecomp.o \
+		  braces.o \
+		  copy_cmd.o \
+		  dispose_cmd.o \
+		  error.o \
+		  eval.o \
+		  execute_cmd.o \
+		  expr.o \
+		  findcmd.o \
+		  flags.o \
+		  general.o \
+		  hashcmd.o \
+		  hashlib.o \
+		  input.o \
+		  list.o \
+		  locale.o \
+		  mailcheck.o \
+		  make_cmd.o \
+		  pathexp.o \
+		  pcomplete.o \
+		  pcomplib.o \
+		  print_cmd.o \
+		  redir.o \
+		  shell.o \
+		  sig.o \
+		  stringlib.o \
+		  subst.o \
+		  syntax.o \
+		  test.o \
+		  trap.o \
+		  unwind_prot.o \
+		  variables.o \
+		  version.o \
+		  xmalloc.o \
+		  y.tab.o \
+
 
 # Where the source code of the shell builtins resides.
 BUILTIN_SRCDIR=$(srcdir)/builtins
@@ -526,43 +843,122 @@ BUILTIN_ABSSRC=${topdir}/builtins
 DEFDIR = $(dot)/builtins
 DEBUGGER_DIR = $(dot)/debugger
 
-BUILTIN_DEFS = $(DEFSRC)/alias.def $(DEFSRC)/bind.def $(DEFSRC)/break.def \
-	       $(DEFSRC)/builtin.def $(DEFSRC)/cd.def $(DEFSRC)/colon.def \
-	       $(DEFSRC)/command.def ${DEFSRC}/complete.def \
-	       $(DEFSRC)/caller.def $(DEFSRC)/declare.def \
-	       $(DEFSRC)/echo.def $(DEFSRC)/enable.def $(DEFSRC)/eval.def \
-	       $(DEFSRC)/exec.def $(DEFSRC)/exit.def $(DEFSRC)/fc.def \
-	       $(DEFSRC)/fg_bg.def $(DEFSRC)/hash.def $(DEFSRC)/help.def \
-	       $(DEFSRC)/history.def $(DEFSRC)/jobs.def $(DEFSRC)/kill.def \
-	       $(DEFSRC)/let.def $(DEFSRC)/read.def $(DEFSRC)/return.def \
-	       $(DEFSRC)/set.def $(DEFSRC)/setattr.def $(DEFSRC)/shift.def \
-	       $(DEFSRC)/source.def $(DEFSRC)/suspend.def $(DEFSRC)/test.def \
-	       $(DEFSRC)/times.def $(DEFSRC)/trap.def $(DEFSRC)/type.def \
-	       $(DEFSRC)/ulimit.def $(DEFSRC)/umask.def $(DEFSRC)/wait.def \
-	       $(DEFSRC)/getopts.def $(DEFSRC)/reserved.def \
-	       $(DEFSRC)/pushd.def $(DEFSRC)/shopt.def $(DEFSRC)/printf.def \
-	       $(DEFSRC)/mapfile.def
-BUILTIN_C_SRC  = $(DEFSRC)/mkbuiltins.c $(DEFSRC)/common.c \
-		 $(DEFSRC)/evalstring.c $(DEFSRC)/evalfile.c \
-		 $(DEFSRC)/bashgetopt.c $(GETOPT_SOURCE)
-BUILTIN_C_OBJ  = $(DEFDIR)/common.o $(DEFDIR)/evalstring.o \
-		 $(DEFDIR)/evalfile.o $(DEFDIR)/bashgetopt.o
-BUILTIN_OBJS = $(DEFDIR)/alias.o $(DEFDIR)/bind.o $(DEFDIR)/break.o \
-	       $(DEFDIR)/builtin.o $(DEFDIR)/cd.o $(DEFDIR)/colon.o \
-	       $(DEFDIR)/command.o $(DEFDIR)/caller.o $(DEFDIR)/declare.o \
-	       $(DEFDIR)/echo.o $(DEFDIR)/enable.o $(DEFDIR)/eval.o \
-	       $(DEFDIR)/exec.o $(DEFDIR)/exit.o $(DEFDIR)/fc.o \
-	       $(DEFDIR)/fg_bg.o $(DEFDIR)/hash.o $(DEFDIR)/help.o \
-	       $(DEFDIR)/history.o $(DEFDIR)/jobs.o $(DEFDIR)/kill.o \
-	       $(DEFDIR)/let.o $(DEFDIR)/pushd.o $(DEFDIR)/read.o \
-	       $(DEFDIR)/return.o $(DEFDIR)/shopt.o $(DEFDIR)/printf.o \
-	       $(DEFDIR)/set.o $(DEFDIR)/setattr.o $(DEFDIR)/shift.o \
-	       $(DEFDIR)/source.o $(DEFDIR)/suspend.o $(DEFDIR)/test.o \
-	       $(DEFDIR)/times.o $(DEFDIR)/trap.o $(DEFDIR)/type.o \
-	       $(DEFDIR)/ulimit.o $(DEFDIR)/umask.o $(DEFDIR)/wait.o \
-	       $(DEFDIR)/getopts.o $(DEFDIR)/mapfile.o $(BUILTIN_C_OBJ)
-GETOPT_SOURCE   = $(DEFSRC)/getopt.c $(DEFSRC)/getopt.h
-PSIZE_SOURCE	= $(DEFSRC)/psize.sh $(DEFSRC)/psize.c
+BUILTIN_DEFS	= \
+		  $(DEFSRC)/alias.def \
+		  $(DEFSRC)/bind.def \
+		  $(DEFSRC)/break.def \
+		  $(DEFSRC)/builtin.def \
+		  $(DEFSRC)/caller.def \
+		  $(DEFSRC)/cd.def \
+		  $(DEFSRC)/colon.def \
+		  $(DEFSRC)/command.def \
+		  $(DEFSRC)/declare.def \
+		  $(DEFSRC)/echo.def \
+		  $(DEFSRC)/enable.def \
+		  $(DEFSRC)/eval.def \
+		  $(DEFSRC)/exec.def \
+		  $(DEFSRC)/exit.def \
+		  $(DEFSRC)/fc.def \
+		  $(DEFSRC)/fg_bg.def \
+		  $(DEFSRC)/getopts.def \
+		  $(DEFSRC)/hash.def \
+		  $(DEFSRC)/help.def \
+		  $(DEFSRC)/history.def \
+		  $(DEFSRC)/jobs.def \
+		  $(DEFSRC)/kill.def \
+		  $(DEFSRC)/let.def \
+		  $(DEFSRC)/mapfile.def \
+		  $(DEFSRC)/printf.def \
+		  $(DEFSRC)/pushd.def \
+		  $(DEFSRC)/read.def \
+		  $(DEFSRC)/reserved.def \
+		  $(DEFSRC)/return.def \
+		  $(DEFSRC)/set.def \
+		  $(DEFSRC)/setattr.def \
+		  $(DEFSRC)/shift.def \
+		  $(DEFSRC)/shopt.def \
+		  $(DEFSRC)/source.def \
+		  $(DEFSRC)/suspend.def \
+		  $(DEFSRC)/test.def \
+		  $(DEFSRC)/times.def \
+		  $(DEFSRC)/trap.def \
+		  $(DEFSRC)/type.def \
+		  $(DEFSRC)/ulimit.def \
+		  $(DEFSRC)/umask.def \
+		  $(DEFSRC)/wait.def \
+		  ${DEFSRC}/complete.def \
+
+
+BUILTIN_C_SRC	= \
+		  $(DEFSRC)/bashgetopt.c \
+		  $(DEFSRC)/common.c \
+		  $(DEFSRC)/evalfile.c \
+		  $(DEFSRC)/evalstring.c \
+		  $(DEFSRC)/mkbuiltins.c \
+		  $(GETOPT_SOURCE) \
+
+
+BUILTIN_C_OBJ	= \
+		  $(DEFDIR)/bashgetopt.o \
+		  $(DEFDIR)/common.o \
+		  $(DEFDIR)/evalfile.o \
+		  $(DEFDIR)/evalstring.o \
+
+
+BUILTIN_OBJS	= \
+		  $(BUILTIN_C_OBJ) \
+		  $(DEFDIR)/alias.o \
+		  $(DEFDIR)/bind.o \
+		  $(DEFDIR)/break.o \
+		  $(DEFDIR)/builtin.o \
+		  $(DEFDIR)/caller.o \
+		  $(DEFDIR)/cd.o \
+		  $(DEFDIR)/colon.o \
+		  $(DEFDIR)/command.o \
+		  $(DEFDIR)/declare.o \
+		  $(DEFDIR)/echo.o \
+		  $(DEFDIR)/enable.o \
+		  $(DEFDIR)/eval.o \
+		  $(DEFDIR)/exec.o \
+		  $(DEFDIR)/exit.o \
+		  $(DEFDIR)/fc.o \
+		  $(DEFDIR)/fg_bg.o \
+		  $(DEFDIR)/getopts.o \
+		  $(DEFDIR)/hash.o \
+		  $(DEFDIR)/help.o \
+		  $(DEFDIR)/history.o \
+		  $(DEFDIR)/jobs.o \
+		  $(DEFDIR)/kill.o \
+		  $(DEFDIR)/let.o \
+		  $(DEFDIR)/mapfile.o \
+		  $(DEFDIR)/printf.o \
+		  $(DEFDIR)/pushd.o \
+		  $(DEFDIR)/read.o \
+		  $(DEFDIR)/return.o \
+		  $(DEFDIR)/set.o \
+		  $(DEFDIR)/setattr.o \
+		  $(DEFDIR)/shift.o \
+		  $(DEFDIR)/shopt.o \
+		  $(DEFDIR)/source.o \
+		  $(DEFDIR)/suspend.o \
+		  $(DEFDIR)/test.o \
+		  $(DEFDIR)/times.o \
+		  $(DEFDIR)/trap.o \
+		  $(DEFDIR)/type.o \
+		  $(DEFDIR)/ulimit.o \
+		  $(DEFDIR)/umask.o \
+		  $(DEFDIR)/wait.o \
+
+
+GETOPT_SOURCE	= \
+		  $(DEFSRC)/getopt.c \
+		  $(DEFSRC)/getopt.h \
+
+
+PSIZE_SOURCE	= \
+		  $(DEFSRC)/psize.c \
+		  $(DEFSRC)/psize.sh \
+
 
 BUILTINS_LIBRARY = $(DEFDIR)/libbuiltins.a
 BUILTINS_LIB = -lbuiltins
@@ -582,7 +978,13 @@ SIGNAMES_SUPPORT = $(SUPPORT_SRC)mksignames.c
 SUPPORT_SRC = $(srcdir)/support/
 SDIR = $(dot)/support
 
-TESTS_SUPPORT = recho$(EXEEXT) zecho$(EXEEXT) printenv$(EXEEXT) xcase$(EXEEXT)
+TESTS_SUPPORT	= \
+		  printenv$(EXEEXT) \
+		  recho$(EXEEXT) \
+		  xcase$(EXEEXT) \
+		  zecho$(EXEEXT) \
+
+
 CREATED_SUPPORT	= \
 		  $(VERSOBJ) \
 		  $(VERSPROG) \
@@ -601,8 +1003,6 @@ CREATED_SUPPORT	= \
 		  tests/recho$(EXEEXT) \
 		  tests/xcase$(EXEEXT) \
 		  tests/zecho$(EXEEXT) \
-		  xcase$(EXEEXT) \
-		  zecho$(EXEEXT) \
 
 
 CREATED_MACOS	= \

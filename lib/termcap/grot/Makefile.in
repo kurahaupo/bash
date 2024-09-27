@@ -69,9 +69,24 @@ SHELL = /bin/sh
 SRCS = termcap.c tparam.c version.c
 OBJS = termcap.o tparam.o version.o
 HDRS = termcap.h
-DISTFILES = $(SRCS) $(HDRS) ChangeLog COPYING README INSTALL NEWS \
-termcap.src termcap.texi termcap.info* \
-texinfo.tex Makefile.in configure configure.in mkinstalldirs install-sh
+DISTFILES	= \
+		  $(HDRS) \
+		  $(SRCS) \
+		  COPYING \
+		  ChangeLog \
+		  INSTALL \
+		  Makefile.in \
+		  NEWS \
+		  README \
+		  configure \
+		  configure.in \
+		  install-sh \
+		  mkinstalldirs \
+		  termcap.info* \
+		  termcap.src \
+		  termcap.texi \
+		  texinfo.tex \
+
 
 all:	libtermcap.a info
 

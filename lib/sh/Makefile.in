@@ -78,9 +78,19 @@ INCLUDES = -I. -I../.. -I$(topdir) -I$(topdir)/lib -I$(BASHINCDIR) -I$(srcdir) $
 CCFLAGS = ${ADDON_CFLAGS} ${PROFILE_FLAGS} ${INCLUDES} $(DEFS) $(LOCAL_DEFS) \
 	  $(LOCAL_CFLAGS) $(STYLE_CFLAGS) $(CFLAGS) $(CPPFLAGS)
 
-GCC_LINT_FLAGS = -Wall -Wshadow -Wpointer-arith -Wcast-qual \
-		 -Wcast-align -Wstrict-prototypes -Wconversion \
-		 -Wmissing-prototypes -Wtraditional -Wredundant-decls -pedantic
+GCC_LINT_FLAGS	= \
+		  -Wall \
+		  -Wcast-align \
+		  -Wcast-qual \
+		  -Wconversion \
+		  -Wmissing-prototypes \
+		  -Wpointer-arith \
+		  -Wredundant-decls \
+		  -Wshadow \
+		  -Wstrict-prototypes \
+		  -Wtraditional \
+		  -pedantic \
+
 
 .c.o:
 	$(CC) -c $(CCFLAGS) $<
@@ -89,36 +99,151 @@ GCC_LINT_FLAGS = -Wall -Wshadow -Wpointer-arith -Wcast-qual \
 LIBRARY_NAME = libsh.a
 
 # The C code source files for this library.
-CSOURCES = clktck.c clock.c getcwd.c getenv.c oslib.c setlinebuf.c \
-	   strcasecmp.c strerror.c strtod.c strtol.c strtoul.c \
-	   vprint.c itos.c rename.c zread.c zwrite.c shtty.c \
-	   inet_aton.c netconn.c netopen.c strpbrk.c timeval.c makepath.c \
-	   pathcanon.c pathphys.c tmpfile.c stringlist.c stringvec.c spell.c \
-	   shquote.c strtrans.c strcasestr.c snprintf.c mailstat.c \
-	   fmtulong.c fmtullong.c fmtumax.c shmatch.c strnlen.c \
-	   strtoll.c strtoull.c strtoimax.c strtoumax.c memset.c strstr.c \
-	   mktime.c strftime.c mbschr.c zcatfd.c zmapfd.c winsize.c eaccess.c \
-	   wcsdup.c fpurge.c zgetline.c mbscmp.c mbsncmp.c  uconvert.c \
-	   ufuncs.c casemod.c dprintf.c input_avail.c mbscasecmp.c fnxform.c \
-	   strchrnul.c unicode.c wcswidth.c wcsnwidth.c shmbchar.c strdup.c \
-	   strvis.c strlcpy.c strscpy.c utf8.c random.c gettimeofday.c \
-	   timers.c anonfile.c reallocarray.c compat.c
+CSOURCES	= \
+		  anonfile.c \
+		  casemod.c \
+		  clktck.c \
+		  clock.c \
+		  compat.c \
+		  dprintf.c \
+		  eaccess.c \
+		  fmtullong.c \
+		  fmtulong.c \
+		  fmtumax.c \
+		  fnxform.c \
+		  fpurge.c \
+		  getcwd.c \
+		  getenv.c \
+		  gettimeofday.c \
+		  inet_aton.c \
+		  input_avail.c \
+		  itos.c \
+		  mailstat.c \
+		  makepath.c \
+		  mbscasecmp.c \
+		  mbschr.c \
+		  mbscmp.c \
+		  mbsncmp.c \
+		  memset.c \
+		  mktime.c \
+		  netconn.c \
+		  netopen.c \
+		  oslib.c \
+		  pathcanon.c \
+		  pathphys.c \
+		  random.c \
+		  reallocarray.c \
+		  rename.c \
+		  setlinebuf.c \
+		  shmatch.c \
+		  shmbchar.c \
+		  shquote.c \
+		  shtty.c \
+		  snprintf.c \
+		  spell.c \
+		  strcasecmp.c \
+		  strcasestr.c \
+		  strchrnul.c \
+		  strdup.c \
+		  strerror.c \
+		  strftime.c \
+		  stringlist.c \
+		  stringvec.c \
+		  strlcpy.c \
+		  strnlen.c \
+		  strpbrk.c \
+		  strscpy.c \
+		  strstr.c \
+		  strtod.c \
+		  strtoimax.c \
+		  strtol.c \
+		  strtoll.c \
+		  strtoul.c \
+		  strtoull.c \
+		  strtoumax.c \
+		  strtrans.c \
+		  strvis.c \
+		  timers.c \
+		  timeval.c \
+		  tmpfile.c \
+		  uconvert.c \
+		  ufuncs.c \
+		  unicode.c \
+		  utf8.c \
+		  vprint.c \
+		  wcsdup.c \
+		  wcsnwidth.c \
+		  wcswidth.c \
+		  winsize.c \
+		  zcatfd.c \
+		  zgetline.c \
+		  zmapfd.c \
+		  zread.c \
+		  zwrite.c \
+
 
 # The header files for this library.
 HSOURCES =
 
 # The object files contained in $(LIBRARY_NAME)
 LIBOBJS = @LIBOBJS@
-OBJECTS = clktck.o clock.o getenv.o oslib.o setlinebuf.o strnlen.o \
-	  itos.o zread.o zwrite.o shtty.o shmatch.o eaccess.o \
-	  netconn.o netopen.o timeval.o makepath.o pathcanon.o \
-	  pathphys.o tmpfile.o stringlist.o stringvec.o spell.o shquote.o \
-	  strtrans.o snprintf.o mailstat.o fmtulong.o \
-	  fmtullong.o fmtumax.o zcatfd.o zmapfd.o winsize.o wcsdup.o \
-	  fpurge.o zgetline.o mbscmp.o mbsncmp.o uconvert.o ufuncs.o casemod.o \
-	  input_avail.o mbscasecmp.o fnxform.o unicode.o shmbchar.o strvis.o \
-	  strscpy.o anonfile.o compat.o \
-	  utf8.o random.o gettimeofday.o timers.o wcsnwidth.o ${LIBOBJS}
+OBJECTS		= \
+		  ${LIBOBJS} \
+		  anonfile.o \
+		  casemod.o \
+		  clktck.o \
+		  clock.o \
+		  compat.o \
+		  eaccess.o \
+		  fmtullong.o \
+		  fmtulong.o \
+		  fmtumax.o \
+		  fnxform.o \
+		  fpurge.o \
+		  getenv.o \
+		  gettimeofday.o \
+		  input_avail.o \
+		  itos.o \
+		  mailstat.o \
+		  makepath.o \
+		  mbscasecmp.o \
+		  mbscmp.o \
+		  mbsncmp.o \
+		  netconn.o \
+		  netopen.o \
+		  oslib.o \
+		  pathcanon.o \
+		  pathphys.o \
+		  random.o \
+		  setlinebuf.o \
+		  shmatch.o \
+		  shmbchar.o \
+		  shquote.o \
+		  shtty.o \
+		  snprintf.o \
+		  spell.o \
+		  stringlist.o \
+		  stringvec.o \
+		  strnlen.o \
+		  strscpy.o \
+		  strtrans.o \
+		  strvis.o \
+		  timers.o \
+		  timeval.o \
+		  tmpfile.o \
+		  uconvert.o \
+		  ufuncs.o \
+		  unicode.o \
+		  utf8.o \
+		  wcsdup.o \
+		  wcsnwidth.o \
+		  winsize.o \
+		  zcatfd.o \
+		  zgetline.o \
+		  zmapfd.o \
+		  zread.o \
+		  zwrite.o \
+
 
 SUPPORT = Makefile
 

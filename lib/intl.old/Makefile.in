@@ -81,64 +81,70 @@ MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
 MKDEP_CCFLAGS = ${CCFLAGS}
 MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
-HEADERS = \
-  gmo.h \
-  gettextP.h \
-  hash-string.h \
-  loadinfo.h \
-  plural-exp.h \
-  eval-plural.h \
-  localcharset.h \
-  relocatable.h \
-  os2compat.h \
-  libgnuintl.h.in
-SOURCES = \
-  bindtextdom.c \
-  dcgettext.c \
-  dgettext.c \
-  gettext.c \
-  finddomain.c \
-  loadmsgcat.c \
-  localealias.c \
-  textdomain.c \
-  l10nflist.c \
-  explodename.c \
-  dcigettext.c \
-  dcngettext.c \
-  dngettext.c \
-  ngettext.c \
-  plural.y \
-  plural-exp.c \
-  localcharset.c \
-  relocatable.c \
-  localename.c \
-  log.c \
-  osdep.c \
-  os2compat.c \
-  intl-compat.c
-OBJECTS = \
-  bindtextdom.$lo \
-  dcgettext.$lo \
-  dgettext.$lo \
-  gettext.$lo \
-  finddomain.$lo \
-  loadmsgcat.$lo \
-  localealias.$lo \
-  textdomain.$lo \
-  l10nflist.$lo \
-  explodename.$lo \
-  dcigettext.$lo \
-  dcngettext.$lo \
-  dngettext.$lo \
-  ngettext.$lo \
-  plural.$lo \
-  plural-exp.$lo \
-  localcharset.$lo \
-  relocatable.$lo \
-  localename.$lo \
-  log.$lo \
-  osdep.$lo \
-  intl-compat.$lo
+HEADERS		= \
+		  eval-plural.h \
+		  gettextP.h \
+		  gmo.h \
+		  hash-string.h \
+		  libgnuintl.h.in \
+		  loadinfo.h \
+		  localcharset.h \
+		  os2compat.h \
+		  plural-exp.h \
+		  relocatable.h \
+
+
+SOURCES		= \
+		  bindtextdom.c \
+		  dcgettext.c \
+		  dcigettext.c \
+		  dcngettext.c \
+		  dgettext.c \
+		  dngettext.c \
+		  explodename.c \
+		  finddomain.c \
+		  gettext.c \
+		  intl-compat.c \
+		  l10nflist.c \
+		  loadmsgcat.c \
+		  localcharset.c \
+		  localealias.c \
+		  localename.c \
+		  log.c \
+		  ngettext.c \
+		  os2compat.c \
+		  osdep.c \
+		  plural-exp.c \
+		  plural.y \
+		  relocatable.c \
+		  textdomain.c \
+
+
+OBJECTS		= \
+		  bindtextdom.$lo \
+		  dcgettext.$lo \
+		  dcigettext.$lo \
+		  dcngettext.$lo \
+		  dgettext.$lo \
+		  dngettext.$lo \
+		  explodename.$lo \
+		  finddomain.$lo \
+		  gettext.$lo \
+		  intl-compat.$lo \
+		  l10nflist.$lo \
+		  loadmsgcat.$lo \
+		  localcharset.$lo \
+		  localealias.$lo \
+		  localename.$lo \
+		  log.$lo \
+		  ngettext.$lo \
+		  osdep.$lo \
+		  plural-exp.$lo \
+		  plural.$lo \
+		  relocatable.$lo \
+		  textdomain.$lo \
+
+
 DISTFILES.common = Makefile.in \
 config.charset locale.alias ref-add.sin ref-del.sin $(HEADERS) $(SOURCES)
 DISTFILES.generated = plural.c
