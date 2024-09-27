@@ -153,8 +153,11 @@ BASHREF_FILES = $(srcdir)/bashref.texi $(srcdir)/fdl.texi $(srcdir)/version.texi
 #	$(RM) $@
 #	- ${TEXI2PDF} $<
 
+.PHONY: all
 all: info dvi text html pdf $(MAN2HTML)
+.PHONY: nodvi
 nodvi: ps info text html
+.PHONY: everything
 everything: all ps
 
 CREATED_PS = bash.ps bashref.ps
@@ -166,11 +169,17 @@ HTMLFILES = bashref.html bash.html
 CREATED_PDF = bash.pdf bashref.pdf builtins.pdf rbash.pdf
 PDFFILES = ${CREATED_PDF} article.pdf rose94.pdf
 
+.PHONY: ps
 ps: ${PSFILES}
+.PHONY: dvi
 dvi: ${DVIFILES}
+.PHONY: info
 info: ${INFOFILES}
+.PHONY: text
 text: ${MAN0FILES}
+.PHONY: html
 html: ${HTMLFILES}
+.PHONY: pdf
 pdf: ${PDFFILES}
 
 bashref.dvi: $(BASHREF_FILES) $(HSUSER) $(RLUSER)
@@ -226,18 +235,21 @@ OTHER_INSTALLED_DOCS = FAQ INTRO
 $(MAN2HTML): ${topdir}/support/man2html.c
 	- ( cd ${BUILD_DIR}/support ; ${MAKE} ${BASH_MAKEFLAGS} man2html)
 
-.PHONY: clean maintainer-clean distclean mostlyclean maybe-clean
-
+.PHONY: mostlyclean
 mostlyclean:
 	$(RM) *.aux *.bak *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr *.cps \
 	      *.pgs *.bt *.bts *.rw *.rws *.fns *.kys *.tps *.vrs *.o
 	${RM} core *.core
 
+.PHONY: clean
 clean: mostlyclean
+	$(RM) Makefile
 
+.PHONY: distclean
 distclean: clean maybe-clean
 	$(RM) Makefile
 
+.PHONY: maintainer-clean
 maintainer-clean: clean
 	${RM} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES}
 	${RM} ${CREATED_PS} ${CREATED_PDF}
@@ -245,6 +257,7 @@ maintainer-clean: clean
 	$(RM) Makefile
 
 # I'd like to use realpath here, but it's not universal
+.PHONY: maybe-clean
 maybe-clean:
 	- TD=$$( cd $(topdir) &&    pwd -P ) ; \
 	  BD=$$( cd $(BUILD_DIR) && pwd -P ) ; \
@@ -252,6 +265,7 @@ maybe-clean:
 	    $(RM) ${CREATED_PS} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES} ${CREATED_PDF} ; \
 	  fi
 
+.PHONY: installdirs
 installdirs:
 	- $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(man1dir)
 	- $(SHELL) $(SUPPORT_SRCDIR)/mkinstalldirs $(DESTDIR)$(infodir)
@@ -280,29 +294,35 @@ install: info installdirs
 	    $(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
 	  fi
 
+.PHONY: install_builtins
 install_builtins: installdirs
 	sed 's:bash\.1:man1/&:' $(srcdir)/builtins.1 > $${TMPDIR:-/var/tmp}/builtins.1
 	- $(INSTALL_DATA) $${TMPDIR:-/var/tmp}/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
 	- $(RM) $${TMPDIR:-/var/tmp}/builtins.1
 
+.PHONY: install_everything
 install_everything: install install_builtins
 
+.PHONY: install-html
 install-html: html
 	- if test -n "${htmldir}" ; then \
 	    $(INSTALL_DATA) $(srcdir)/bash.html $(DESTDIR)$(htmldir) ; \
 	    $(INSTALL_DATA) $(srcdir)/bashref.html $(DESTDIR)$(htmldir) ; \
 	  fi
 
+.PHONY: install-dvi install-pdf install-ps
 install-dvi:
 install-pdf:
 install-ps:
 
+.PHONY: uninstall-html
 uninstall-html:
 	- if test -n "$(htmldir)" ; then \
 	    $(RM) $(DESTDIR)$(htmldir)/bash.html ; \
 	    $(RM) $(DESTDIR)$(htmldir)/bashref.html ; \
 	  fi
 
+.PHONY: uninstall
 uninstall:
 	- $(RM) $(DESTDIR)$(man1dir)/bash${man1ext} $(DESTDIR)$(man1dir)/bashbug${man1ext}
 	- $(RM) $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
@@ -320,6 +340,7 @@ uninstall:
 # for use by chet
 CREATED_FAQ = faq.news faq.news2 faq.mail faq.version
 
+.PHONY: faq
 faq: ${CREATED_FAQ}
 
 faq.version: FAQ.version FAQ
