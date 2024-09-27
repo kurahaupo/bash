@@ -171,230 +171,649 @@ distclean maintainer-clean: clean
 	$(RM) Makefile
 	$(RM) TAGS tags
 
+#MKDEP-CUT-HERE
+
 # Dependencies
-bind.o: ansi_stdlib.h posixstat.h
-bind.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-bind.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-bind.o: history.h rlstdc.h
-callback.o: rlconf.h ansi_stdlib.h
-callback.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-callback.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-compat.o: ${BUILD_DIR}/config.h
-compat.o: rlstdc.h rltypedefs.h
-complete.o: ansi_stdlib.h posixdir.h posixstat.h
-complete.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-complete.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-complete.o: colors.h
-display.o: ansi_stdlib.h posixstat.h
-display.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-display.o: tcap.h
-display.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-display.o: history.h rlstdc.h
-funmap.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-funmap.o: rlconf.h ansi_stdlib.h rlstdc.h
-funmap.o: ${BUILD_DIR}/config.h
-histexpand.o: ansi_stdlib.h
-histexpand.o: history.h histlib.h rlstdc.h
-histexpand.o: ${BUILD_DIR}/config.h
-histfile.o: ansi_stdlib.h
-histfile.o: history.h histlib.h rlstdc.h
-histfile.o: ${BUILD_DIR}/config.h
-history.o: ansi_stdlib.h
-history.o: history.h histlib.h rlstdc.h
-history.o: ${BUILD_DIR}/config.h
-histsearch.o: ansi_stdlib.h
-histsearch.o: history.h histlib.h rlstdc.h
-histsearch.o: ${BUILD_DIR}/config.h
-input.o: ansi_stdlib.h
-input.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-input.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-isearch.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-isearch.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-isearch.o: ansi_stdlib.h history.h rlstdc.h
-keymaps.o: emacs_keymap.c vi_keymap.c
-keymaps.o: keymaps.h rltypedefs.h chardefs.h rlconf.h ansi_stdlib.h
-keymaps.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-keymaps.o: ${BUILD_DIR}/config.h rlstdc.h
-kill.o: ansi_stdlib.h
-kill.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-kill.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-kill.o: history.h rlstdc.h
-macro.o: ansi_stdlib.h
-macro.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-macro.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-macro.o: history.h rlstdc.h
-mbutil.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h rlmbutil.h
-mbutil.o: readline.h keymaps.h rltypedefs.h chardefs.h rlstdc.h
-misc.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-misc.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-misc.o: history.h rlstdc.h ansi_stdlib.h
-nls.o: ansi_stdlib.h
-nls.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-nls.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-nls.o: history.h rlstdc.h
-parens.o: rlconf.h
-parens.o: ${BUILD_DIR}/config.h
-parens.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-readline.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-readline.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-readline.o: history.h rlstdc.h
-readline.o: posixstat.h ansi_stdlib.h posixjmp.h
-rltty.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-rltty.o: rltty.h
-rltty.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-savestring.o: ${BUILD_DIR}/config.h
-search.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-search.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-search.o: ansi_stdlib.h history.h rlstdc.h
-shell.o: ${BUILD_DIR}/config.h ansi_stdlib.h
-signals.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-signals.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-signals.o: history.h rlstdc.h
-terminal.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-terminal.o: tcap.h
-terminal.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-terminal.o: history.h rlstdc.h
-text.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-text.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-text.o: history.h rlstdc.h ansi_stdlib.h
-rltty.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-tilde.o: ansi_stdlib.h
-tilde.o: ${BUILD_DIR}/config.h
-tilde.o: tilde.h
-undo.o: ansi_stdlib.h
-undo.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-undo.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-undo.o: history.h rlstdc.h xmalloc.h
-util.o: posixjmp.h ansi_stdlib.h
-util.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-util.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-vi_mode.o: rldefs.h ${BUILD_DIR}/config.h rlconf.h
-vi_mode.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h
-vi_mode.o: history.h ansi_stdlib.h rlstdc.h
-xmalloc.o: ${BUILD_DIR}/config.h ansi_stdlib.h
-xfree.o: ${BUILD_DIR}/config.h ansi_stdlib.h
 
-colors.o: ${BUILD_DIR}/config.h colors.h
-colors.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
-colors.o: rlconf.h
-colors.o: ansi_stdlib.h posixstat.h
-parse-colors.o: ${BUILD_DIR}/config.h colors.h parse-colors.h
-parse-colors.o: rldefs.h rlconf.h
-parse-colors.o: readline.h keymaps.h rltypedefs.h chardefs.h tilde.h rlstdc.h
+# C *.c source & *.h header dependencies (generated)
 
-input.o: posixselect.h posixtime.h
-parens.o: posixselect.h posixtime.h
+bind.o: $(BUILD_DIR)/config.h
+bind.o: $(srcdir)/bind.c
+bind.o: $(srcdir)/chardefs.h
+bind.o: $(srcdir)/history.h
+bind.o: $(srcdir)/keymaps.h
+bind.o: $(srcdir)/posixjmp.h
+bind.o: $(srcdir)/posixstat.h
+bind.o: $(srcdir)/readline.h
+bind.o: $(srcdir)/rlconf.h
+bind.o: $(srcdir)/rldefs.h
+bind.o: $(srcdir)/rlmbutil.h
+bind.o: $(srcdir)/rlprivate.h
+bind.o: $(srcdir)/rlshell.h
+bind.o: $(srcdir)/rlstdc.h
+bind.o: $(srcdir)/rltypedefs.h
+bind.o: $(srcdir)/tilde.h
+bind.o: $(srcdir)/xmalloc.h
+bind.o: $(topdir)/config-bot.h
+bind.o: $(topdir)/config-top.h
+callback.o: $(BUILD_DIR)/config.h
+callback.o: $(srcdir)/callback.c
+callback.o: $(srcdir)/chardefs.h
+callback.o: $(srcdir)/keymaps.h
+callback.o: $(srcdir)/posixjmp.h
+callback.o: $(srcdir)/readline.h
+callback.o: $(srcdir)/rlconf.h
+callback.o: $(srcdir)/rldefs.h
+callback.o: $(srcdir)/rlmbutil.h
+callback.o: $(srcdir)/rlprivate.h
+callback.o: $(srcdir)/rlstdc.h
+callback.o: $(srcdir)/rltypedefs.h
+callback.o: $(srcdir)/tilde.h
+callback.o: $(srcdir)/xmalloc.h
+callback.o: $(topdir)/config-bot.h
+callback.o: $(topdir)/config-top.h
+colors.o: $(BUILD_DIR)/config.h
+colors.o: $(srcdir)/chardefs.h
+colors.o: $(srcdir)/colors.c
+colors.o: $(srcdir)/colors.h
+colors.o: $(srcdir)/keymaps.h
+colors.o: $(srcdir)/posixstat.h
+colors.o: $(srcdir)/readline.h
+colors.o: $(srcdir)/rlconf.h
+colors.o: $(srcdir)/rldefs.h
+colors.o: $(srcdir)/rlstdc.h
+colors.o: $(srcdir)/rltypedefs.h
+colors.o: $(srcdir)/tilde.h
+colors.o: $(srcdir)/xmalloc.h
+colors.o: $(topdir)/config-bot.h
+colors.o: $(topdir)/config-top.h
+compat.o: $(BUILD_DIR)/config.h
+compat.o: $(srcdir)/compat.c
+compat.o: $(srcdir)/rlstdc.h
+compat.o: $(srcdir)/rltypedefs.h
+compat.o: $(topdir)/config-bot.h
+compat.o: $(topdir)/config-top.h
+complete.o: $(BUILD_DIR)/config.h
+complete.o: $(srcdir)/chardefs.h
+complete.o: $(srcdir)/colors.h
+complete.o: $(srcdir)/complete.c
+complete.o: $(srcdir)/keymaps.h
+complete.o: $(srcdir)/posixdir.h
+complete.o: $(srcdir)/posixjmp.h
+complete.o: $(srcdir)/posixstat.h
+complete.o: $(srcdir)/readline.h
+complete.o: $(srcdir)/rlconf.h
+complete.o: $(srcdir)/rldefs.h
+complete.o: $(srcdir)/rlmbutil.h
+complete.o: $(srcdir)/rlprivate.h
+complete.o: $(srcdir)/rlstdc.h
+complete.o: $(srcdir)/rltypedefs.h
+complete.o: $(srcdir)/tilde.h
+complete.o: $(srcdir)/xmalloc.h
+complete.o: $(topdir)/config-bot.h
+complete.o: $(topdir)/config-top.h
+display.o: $(BUILD_DIR)/config.h
+display.o: $(srcdir)/chardefs.h
+display.o: $(srcdir)/display.c
+display.o: $(srcdir)/history.h
+display.o: $(srcdir)/keymaps.h
+display.o: $(srcdir)/posixjmp.h
+display.o: $(srcdir)/posixstat.h
+display.o: $(srcdir)/readline.h
+display.o: $(srcdir)/rlconf.h
+display.o: $(srcdir)/rldefs.h
+display.o: $(srcdir)/rlmbutil.h
+display.o: $(srcdir)/rlprivate.h
+display.o: $(srcdir)/rlstdc.h
+display.o: $(srcdir)/rltty.h
+display.o: $(srcdir)/rltypedefs.h
+display.o: $(srcdir)/rlwinsize.h
+display.o: $(srcdir)/tcap.h
+display.o: $(srcdir)/tilde.h
+display.o: $(srcdir)/xmalloc.h
+display.o: $(topdir)/config-bot.h
+display.o: $(topdir)/config-top.h
+emacs_keymap.o: $(srcdir)/emacs_keymap.c
+emacs_keymap.o: $(srcdir)/readline.h
+emacs_keymap.o: $(topdir)/lib/readline/chardefs.h
+emacs_keymap.o: $(topdir)/lib/readline/keymaps.h
+emacs_keymap.o: $(topdir)/lib/readline/rlstdc.h
+emacs_keymap.o: $(topdir)/lib/readline/rltypedefs.h
+emacs_keymap.o: $(topdir)/lib/readline/tilde.h
+funmap.o: $(BUILD_DIR)/config.h
+funmap.o: $(srcdir)/chardefs.h
+funmap.o: $(srcdir)/funmap.c
+funmap.o: $(srcdir)/keymaps.h
+funmap.o: $(srcdir)/readline.h
+funmap.o: $(srcdir)/rlconf.h
+funmap.o: $(srcdir)/rlstdc.h
+funmap.o: $(srcdir)/rltypedefs.h
+funmap.o: $(srcdir)/tilde.h
+funmap.o: $(srcdir)/xmalloc.h
+funmap.o: $(topdir)/config-bot.h
+funmap.o: $(topdir)/config-top.h
+histexpand.o: $(BUILD_DIR)/config.h
+histexpand.o: $(srcdir)/chardefs.h
+histexpand.o: $(srcdir)/histexpand.c
+histexpand.o: $(srcdir)/histlib.h
+histexpand.o: $(srcdir)/history.h
+histexpand.o: $(srcdir)/rlmbutil.h
+histexpand.o: $(srcdir)/rlshell.h
+histexpand.o: $(srcdir)/rlstdc.h
+histexpand.o: $(srcdir)/rltypedefs.h
+histexpand.o: $(srcdir)/xmalloc.h
+histexpand.o: $(topdir)/config-bot.h
+histexpand.o: $(topdir)/config-top.h
+histfile.o: $(BUILD_DIR)/config.h
+histfile.o: $(srcdir)/histfile.c
+histfile.o: $(srcdir)/histlib.h
+histfile.o: $(srcdir)/history.h
+histfile.o: $(srcdir)/posixstat.h
+histfile.o: $(srcdir)/rlshell.h
+histfile.o: $(srcdir)/rlstdc.h
+histfile.o: $(srcdir)/rltypedefs.h
+histfile.o: $(srcdir)/xmalloc.h
+histfile.o: $(topdir)/config-bot.h
+histfile.o: $(topdir)/config-top.h
+history.o: $(BUILD_DIR)/config.h
+history.o: $(srcdir)/histlib.h
+history.o: $(srcdir)/history.c
+history.o: $(srcdir)/history.h
+history.o: $(srcdir)/posixtime.h
+history.o: $(srcdir)/rlstdc.h
+history.o: $(srcdir)/rltypedefs.h
+history.o: $(srcdir)/xmalloc.h
+history.o: $(topdir)/config-bot.h
+history.o: $(topdir)/config-top.h
+histsearch.o: $(BUILD_DIR)/config.h
+histsearch.o: $(srcdir)/histlib.h
+histsearch.o: $(srcdir)/history.h
+histsearch.o: $(srcdir)/histsearch.c
+histsearch.o: $(srcdir)/rlmbutil.h
+histsearch.o: $(srcdir)/rlstdc.h
+histsearch.o: $(srcdir)/rltypedefs.h
+histsearch.o: $(srcdir)/xmalloc.h
+histsearch.o: $(topdir)/config-bot.h
+histsearch.o: $(topdir)/config-top.h
+input.o: $(BUILD_DIR)/config.h
+input.o: $(srcdir)/chardefs.h
+input.o: $(srcdir)/input.c
+input.o: $(srcdir)/keymaps.h
+input.o: $(srcdir)/posixjmp.h
+input.o: $(srcdir)/posixselect.h
+input.o: $(srcdir)/posixtime.h
+input.o: $(srcdir)/readline.h
+input.o: $(srcdir)/rlconf.h
+input.o: $(srcdir)/rldefs.h
+input.o: $(srcdir)/rlmbutil.h
+input.o: $(srcdir)/rlprivate.h
+input.o: $(srcdir)/rlshell.h
+input.o: $(srcdir)/rlstdc.h
+input.o: $(srcdir)/rltypedefs.h
+input.o: $(srcdir)/tilde.h
+input.o: $(srcdir)/xmalloc.h
+input.o: $(topdir)/config-bot.h
+input.o: $(topdir)/config-top.h
+isearch.o: $(BUILD_DIR)/config.h
+isearch.o: $(srcdir)/chardefs.h
+isearch.o: $(srcdir)/history.h
+isearch.o: $(srcdir)/isearch.c
+isearch.o: $(srcdir)/keymaps.h
+isearch.o: $(srcdir)/posixjmp.h
+isearch.o: $(srcdir)/readline.h
+isearch.o: $(srcdir)/rlconf.h
+isearch.o: $(srcdir)/rldefs.h
+isearch.o: $(srcdir)/rlmbutil.h
+isearch.o: $(srcdir)/rlprivate.h
+isearch.o: $(srcdir)/rlstdc.h
+isearch.o: $(srcdir)/rltypedefs.h
+isearch.o: $(srcdir)/tilde.h
+isearch.o: $(srcdir)/xmalloc.h
+isearch.o: $(topdir)/config-bot.h
+isearch.o: $(topdir)/config-top.h
+keymaps.o: $(BUILD_DIR)/config.h
+keymaps.o: $(srcdir)/chardefs.h
+keymaps.o: $(srcdir)/emacs_keymap.c
+keymaps.o: $(srcdir)/keymaps.c
+keymaps.o: $(srcdir)/keymaps.h
+keymaps.o: $(srcdir)/readline.h
+keymaps.o: $(srcdir)/rlconf.h
+keymaps.o: $(srcdir)/rlstdc.h
+keymaps.o: $(srcdir)/rltypedefs.h
+keymaps.o: $(srcdir)/tilde.h
+keymaps.o: $(srcdir)/vi_keymap.c
+keymaps.o: $(srcdir)/xmalloc.h
+keymaps.o: $(topdir)/config-bot.h
+keymaps.o: $(topdir)/config-top.h
+kill.o: $(BUILD_DIR)/config.h
+kill.o: $(srcdir)/chardefs.h
+kill.o: $(srcdir)/history.h
+kill.o: $(srcdir)/keymaps.h
+kill.o: $(srcdir)/kill.c
+kill.o: $(srcdir)/posixjmp.h
+kill.o: $(srcdir)/readline.h
+kill.o: $(srcdir)/rlconf.h
+kill.o: $(srcdir)/rldefs.h
+kill.o: $(srcdir)/rlmbutil.h
+kill.o: $(srcdir)/rlprivate.h
+kill.o: $(srcdir)/rlstdc.h
+kill.o: $(srcdir)/rltypedefs.h
+kill.o: $(srcdir)/tilde.h
+kill.o: $(srcdir)/xmalloc.h
+kill.o: $(topdir)/config-bot.h
+kill.o: $(topdir)/config-top.h
+macro.o: $(BUILD_DIR)/config.h
+macro.o: $(srcdir)/chardefs.h
+macro.o: $(srcdir)/history.h
+macro.o: $(srcdir)/keymaps.h
+macro.o: $(srcdir)/macro.c
+macro.o: $(srcdir)/posixjmp.h
+macro.o: $(srcdir)/readline.h
+macro.o: $(srcdir)/rlconf.h
+macro.o: $(srcdir)/rldefs.h
+macro.o: $(srcdir)/rlmbutil.h
+macro.o: $(srcdir)/rlprivate.h
+macro.o: $(srcdir)/rlstdc.h
+macro.o: $(srcdir)/rltypedefs.h
+macro.o: $(srcdir)/tilde.h
+macro.o: $(srcdir)/xmalloc.h
+macro.o: $(topdir)/config-bot.h
+macro.o: $(topdir)/config-top.h
+mbutil.o: $(BUILD_DIR)/config.h
+mbutil.o: $(srcdir)/chardefs.h
+mbutil.o: $(srcdir)/keymaps.h
+mbutil.o: $(srcdir)/mbutil.c
+mbutil.o: $(srcdir)/posixjmp.h
+mbutil.o: $(srcdir)/readline.h
+mbutil.o: $(srcdir)/rlconf.h
+mbutil.o: $(srcdir)/rldefs.h
+mbutil.o: $(srcdir)/rlmbutil.h
+mbutil.o: $(srcdir)/rlprivate.h
+mbutil.o: $(srcdir)/rlstdc.h
+mbutil.o: $(srcdir)/rltypedefs.h
+mbutil.o: $(srcdir)/tilde.h
+mbutil.o: $(srcdir)/xmalloc.h
+mbutil.o: $(topdir)/config-bot.h
+mbutil.o: $(topdir)/config-top.h
+misc.o: $(BUILD_DIR)/config.h
+misc.o: $(srcdir)/chardefs.h
+misc.o: $(srcdir)/histlib.h
+misc.o: $(srcdir)/history.h
+misc.o: $(srcdir)/keymaps.h
+misc.o: $(srcdir)/misc.c
+misc.o: $(srcdir)/posixjmp.h
+misc.o: $(srcdir)/readline.h
+misc.o: $(srcdir)/rlconf.h
+misc.o: $(srcdir)/rldefs.h
+misc.o: $(srcdir)/rlmbutil.h
+misc.o: $(srcdir)/rlprivate.h
+misc.o: $(srcdir)/rlshell.h
+misc.o: $(srcdir)/rlstdc.h
+misc.o: $(srcdir)/rltypedefs.h
+misc.o: $(srcdir)/tilde.h
+misc.o: $(srcdir)/xmalloc.h
+misc.o: $(topdir)/config-bot.h
+misc.o: $(topdir)/config-top.h
+nls.o: $(BUILD_DIR)/config.h
+nls.o: $(srcdir)/chardefs.h
+nls.o: $(srcdir)/keymaps.h
+nls.o: $(srcdir)/nls.c
+nls.o: $(srcdir)/posixjmp.h
+nls.o: $(srcdir)/readline.h
+nls.o: $(srcdir)/rlconf.h
+nls.o: $(srcdir)/rldefs.h
+nls.o: $(srcdir)/rlmbutil.h
+nls.o: $(srcdir)/rlprivate.h
+nls.o: $(srcdir)/rlshell.h
+nls.o: $(srcdir)/rlstdc.h
+nls.o: $(srcdir)/rltypedefs.h
+nls.o: $(srcdir)/tilde.h
+nls.o: $(srcdir)/xmalloc.h
+nls.o: $(topdir)/config-bot.h
+nls.o: $(topdir)/config-top.h
+parens.o: $(BUILD_DIR)/config.h
+parens.o: $(srcdir)/chardefs.h
+parens.o: $(srcdir)/keymaps.h
+parens.o: $(srcdir)/parens.c
+parens.o: $(srcdir)/posixjmp.h
+parens.o: $(srcdir)/posixselect.h
+parens.o: $(srcdir)/posixtime.h
+parens.o: $(srcdir)/readline.h
+parens.o: $(srcdir)/rlconf.h
+parens.o: $(srcdir)/rlmbutil.h
+parens.o: $(srcdir)/rlprivate.h
+parens.o: $(srcdir)/rlstdc.h
+parens.o: $(srcdir)/rltypedefs.h
+parens.o: $(srcdir)/tilde.h
+parens.o: $(topdir)/config-bot.h
+parens.o: $(topdir)/config-top.h
+parse-colors.o: $(BUILD_DIR)/config.h
+parse-colors.o: $(srcdir)/chardefs.h
+parse-colors.o: $(srcdir)/colors.h
+parse-colors.o: $(srcdir)/keymaps.h
+parse-colors.o: $(srcdir)/parse-colors.c
+parse-colors.o: $(srcdir)/parse-colors.h
+parse-colors.o: $(srcdir)/posixjmp.h
+parse-colors.o: $(srcdir)/readline.h
+parse-colors.o: $(srcdir)/rlconf.h
+parse-colors.o: $(srcdir)/rldefs.h
+parse-colors.o: $(srcdir)/rlmbutil.h
+parse-colors.o: $(srcdir)/rlprivate.h
+parse-colors.o: $(srcdir)/rlshell.h
+parse-colors.o: $(srcdir)/rlstdc.h
+parse-colors.o: $(srcdir)/rltypedefs.h
+parse-colors.o: $(srcdir)/tilde.h
+parse-colors.o: $(srcdir)/xmalloc.h
+parse-colors.o: $(topdir)/config-bot.h
+parse-colors.o: $(topdir)/config-top.h
+readline.o: $(BUILD_DIR)/config.h
+readline.o: $(srcdir)/chardefs.h
+readline.o: $(srcdir)/history.h
+readline.o: $(srcdir)/keymaps.h
+readline.o: $(srcdir)/parse-colors.h
+readline.o: $(srcdir)/posixjmp.h
+readline.o: $(srcdir)/posixstat.h
+readline.o: $(srcdir)/readline.c
+readline.o: $(srcdir)/readline.h
+readline.o: $(srcdir)/rlconf.h
+readline.o: $(srcdir)/rldefs.h
+readline.o: $(srcdir)/rlmbutil.h
+readline.o: $(srcdir)/rlprivate.h
+readline.o: $(srcdir)/rlshell.h
+readline.o: $(srcdir)/rlstdc.h
+readline.o: $(srcdir)/rltypedefs.h
+readline.o: $(srcdir)/tilde.h
+readline.o: $(srcdir)/xmalloc.h
+readline.o: $(topdir)/config-bot.h
+readline.o: $(topdir)/config-top.h
+rltty.o: $(BUILD_DIR)/config.h
+rltty.o: $(srcdir)/chardefs.h
+rltty.o: $(srcdir)/keymaps.h
+rltty.o: $(srcdir)/posixjmp.h
+rltty.o: $(srcdir)/readline.h
+rltty.o: $(srcdir)/rlconf.h
+rltty.o: $(srcdir)/rldefs.h
+rltty.o: $(srcdir)/rlmbutil.h
+rltty.o: $(srcdir)/rlprivate.h
+rltty.o: $(srcdir)/rlstdc.h
+rltty.o: $(srcdir)/rltty.c
+rltty.o: $(srcdir)/rltty.h
+rltty.o: $(srcdir)/rltypedefs.h
+rltty.o: $(srcdir)/rlwinsize.h
+rltty.o: $(srcdir)/tilde.h
+rltty.o: $(topdir)/config-bot.h
+rltty.o: $(topdir)/config-top.h
+savestring.o: $(BUILD_DIR)/config.h
+savestring.o: $(srcdir)/rlstdc.h
+savestring.o: $(srcdir)/savestring.c
+savestring.o: $(srcdir)/xmalloc.h
+savestring.o: $(topdir)/config-bot.h
+savestring.o: $(topdir)/config-top.h
+search.o: $(BUILD_DIR)/config.h
+search.o: $(srcdir)/chardefs.h
+search.o: $(srcdir)/histlib.h
+search.o: $(srcdir)/history.h
+search.o: $(srcdir)/keymaps.h
+search.o: $(srcdir)/posixjmp.h
+search.o: $(srcdir)/readline.h
+search.o: $(srcdir)/rlconf.h
+search.o: $(srcdir)/rldefs.h
+search.o: $(srcdir)/rlmbutil.h
+search.o: $(srcdir)/rlprivate.h
+search.o: $(srcdir)/rlstdc.h
+search.o: $(srcdir)/rltypedefs.h
+search.o: $(srcdir)/search.c
+search.o: $(srcdir)/tilde.h
+search.o: $(srcdir)/xmalloc.h
+search.o: $(topdir)/config-bot.h
+search.o: $(topdir)/config-top.h
+shell.o: $(BUILD_DIR)/config.h
+shell.o: $(srcdir)/rlconf.h
+shell.o: $(srcdir)/rldefs.h
+shell.o: $(srcdir)/rlshell.h
+shell.o: $(srcdir)/rlstdc.h
+shell.o: $(srcdir)/shell.c
+shell.o: $(srcdir)/xmalloc.h
+shell.o: $(topdir)/config-bot.h
+shell.o: $(topdir)/config-top.h
+signals.o: $(BUILD_DIR)/config.h
+signals.o: $(srcdir)/chardefs.h
+signals.o: $(srcdir)/history.h
+signals.o: $(srcdir)/keymaps.h
+signals.o: $(srcdir)/posixjmp.h
+signals.o: $(srcdir)/readline.h
+signals.o: $(srcdir)/rlconf.h
+signals.o: $(srcdir)/rldefs.h
+signals.o: $(srcdir)/rlmbutil.h
+signals.o: $(srcdir)/rlprivate.h
+signals.o: $(srcdir)/rlstdc.h
+signals.o: $(srcdir)/rltypedefs.h
+signals.o: $(srcdir)/signals.c
+signals.o: $(srcdir)/tilde.h
+signals.o: $(topdir)/config-bot.h
+signals.o: $(topdir)/config-top.h
+terminal.o: $(BUILD_DIR)/config.h
+terminal.o: $(srcdir)/chardefs.h
+terminal.o: $(srcdir)/history.h
+terminal.o: $(srcdir)/keymaps.h
+terminal.o: $(srcdir)/posixjmp.h
+terminal.o: $(srcdir)/posixstat.h
+terminal.o: $(srcdir)/readline.h
+terminal.o: $(srcdir)/rlconf.h
+terminal.o: $(srcdir)/rldefs.h
+terminal.o: $(srcdir)/rlmbutil.h
+terminal.o: $(srcdir)/rlprivate.h
+terminal.o: $(srcdir)/rlshell.h
+terminal.o: $(srcdir)/rlstdc.h
+terminal.o: $(srcdir)/rltty.h
+terminal.o: $(srcdir)/rltypedefs.h
+terminal.o: $(srcdir)/rlwinsize.h
+terminal.o: $(srcdir)/tcap.h
+terminal.o: $(srcdir)/terminal.c
+terminal.o: $(srcdir)/tilde.h
+terminal.o: $(srcdir)/xmalloc.h
+terminal.o: $(topdir)/config-bot.h
+terminal.o: $(topdir)/config-top.h
+text.o: $(BUILD_DIR)/config.h
+text.o: $(srcdir)/chardefs.h
+text.o: $(srcdir)/history.h
+text.o: $(srcdir)/keymaps.h
+text.o: $(srcdir)/posixjmp.h
+text.o: $(srcdir)/readline.h
+text.o: $(srcdir)/rlconf.h
+text.o: $(srcdir)/rldefs.h
+text.o: $(srcdir)/rlmbutil.h
+text.o: $(srcdir)/rlprivate.h
+text.o: $(srcdir)/rlshell.h
+text.o: $(srcdir)/rlstdc.h
+text.o: $(srcdir)/rltypedefs.h
+text.o: $(srcdir)/text.c
+text.o: $(srcdir)/tilde.h
+text.o: $(srcdir)/xmalloc.h
+text.o: $(topdir)/config-bot.h
+text.o: $(topdir)/config-top.h
+tilde.o: $(BUILD_DIR)/config.h
+tilde.o: $(srcdir)/tilde.c
+tilde.o: $(srcdir)/tilde.h
+tilde.o: $(srcdir)/xmalloc.h
+tilde.o: $(topdir)/config-bot.h
+tilde.o: $(topdir)/config-top.h
+tilde.o: $(topdir)/lib/readline/rlstdc.h
+undo.o: $(BUILD_DIR)/config.h
+undo.o: $(srcdir)/chardefs.h
+undo.o: $(srcdir)/histlib.h
+undo.o: $(srcdir)/history.h
+undo.o: $(srcdir)/keymaps.h
+undo.o: $(srcdir)/posixjmp.h
+undo.o: $(srcdir)/readline.h
+undo.o: $(srcdir)/rlconf.h
+undo.o: $(srcdir)/rldefs.h
+undo.o: $(srcdir)/rlmbutil.h
+undo.o: $(srcdir)/rlprivate.h
+undo.o: $(srcdir)/rlstdc.h
+undo.o: $(srcdir)/rltypedefs.h
+undo.o: $(srcdir)/tilde.h
+undo.o: $(srcdir)/undo.c
+undo.o: $(srcdir)/xmalloc.h
+undo.o: $(topdir)/config-bot.h
+undo.o: $(topdir)/config-top.h
+util.o: $(BUILD_DIR)/config.h
+util.o: $(srcdir)/chardefs.h
+util.o: $(srcdir)/keymaps.h
+util.o: $(srcdir)/posixjmp.h
+util.o: $(srcdir)/readline.h
+util.o: $(srcdir)/rlconf.h
+util.o: $(srcdir)/rldefs.h
+util.o: $(srcdir)/rlmbutil.h
+util.o: $(srcdir)/rlprivate.h
+util.o: $(srcdir)/rlshell.h
+util.o: $(srcdir)/rlstdc.h
+util.o: $(srcdir)/rltypedefs.h
+util.o: $(srcdir)/tilde.h
+util.o: $(srcdir)/util.c
+util.o: $(srcdir)/xmalloc.h
+util.o: $(topdir)/config-bot.h
+util.o: $(topdir)/config-top.h
+vi_keymap.o: $(srcdir)/readline.h
+vi_keymap.o: $(srcdir)/vi_keymap.c
+vi_keymap.o: $(topdir)/lib/readline/chardefs.h
+vi_keymap.o: $(topdir)/lib/readline/keymaps.h
+vi_keymap.o: $(topdir)/lib/readline/rlstdc.h
+vi_keymap.o: $(topdir)/lib/readline/rltypedefs.h
+vi_keymap.o: $(topdir)/lib/readline/tilde.h
+vi_mode.o: $(BUILD_DIR)/config.h
+vi_mode.o: $(srcdir)/chardefs.h
+vi_mode.o: $(srcdir)/history.h
+vi_mode.o: $(srcdir)/keymaps.h
+vi_mode.o: $(srcdir)/posixjmp.h
+vi_mode.o: $(srcdir)/readline.h
+vi_mode.o: $(srcdir)/rlconf.h
+vi_mode.o: $(srcdir)/rldefs.h
+vi_mode.o: $(srcdir)/rlmbutil.h
+vi_mode.o: $(srcdir)/rlprivate.h
+vi_mode.o: $(srcdir)/rlstdc.h
+vi_mode.o: $(srcdir)/rltypedefs.h
+vi_mode.o: $(srcdir)/tilde.h
+vi_mode.o: $(srcdir)/vi_mode.c
+vi_mode.o: $(srcdir)/xmalloc.h
+vi_mode.o: $(topdir)/config-bot.h
+vi_mode.o: $(topdir)/config-top.h
+xfree.o: $(BUILD_DIR)/config.h
+xfree.o: $(srcdir)/rlstdc.h
+xfree.o: $(srcdir)/xfree.c
+xfree.o: $(srcdir)/xmalloc.h
+xfree.o: $(topdir)/config-bot.h
+xfree.o: $(topdir)/config-top.h
+xmalloc.o: $(BUILD_DIR)/config.h
+xmalloc.o: $(srcdir)/rlstdc.h
+xmalloc.o: $(srcdir)/xmalloc.c
+xmalloc.o: $(srcdir)/xmalloc.h
+xmalloc.o: $(topdir)/config-bot.h
+xmalloc.o: $(topdir)/config-top.h
 
-bind.o: rlshell.h
-histfile.o: rlshell.h
-nls.o: rlshell.h
-readline.o: rlshell.h
-shell.o: rlshell.h
-terminal.o: rlshell.h
-histexpand.o: rlshell.h
-
-bind.o: rlprivate.h
-callback.o: rlprivate.h
-complete.o: rlprivate.h
-display.o: rlprivate.h
-input.o: rlprivate.h
-isearch.o: rlprivate.h
-kill.o: rlprivate.h
-macro.o: rlprivate.h
-mbutil.o: rlprivate.h
-misc.o: rlprivate.h
-nls.o: rlprivate.h
-parens.o: rlprivate.h
-readline.o: rlprivate.h
-rltty.o: rlprivate.h
-search.o: rlprivate.h
-signals.o: rlprivate.h
-terminal.o: rlprivate.h
-text.o: rlprivate.h
-undo.o: rlprivate.h
-util.o: rlprivate.h
-vi_mode.o: rlprivate.h
-colors.o: rlprivate.h
-parse-colors.o: rlprivate.h
-
-bind.o: xmalloc.h
-complete.o: xmalloc.h  
-display.o: xmalloc.h
-funmap.o: xmalloc.h
-histexpand.o: xmalloc.h   
-histfile.o: xmalloc.h
-history.o: xmalloc.h
-input.o: xmalloc.h
-isearch.o: xmalloc.h
-keymaps.o: xmalloc.h
-kill.o: xmalloc.h
-macro.o: xmalloc.h
-mbutil.o: xmalloc.h
-misc.o: xmalloc.h  
-readline.o: xmalloc.h   
-savestring.o: xmalloc.h
-search.o: xmalloc.h
-shell.o: xmalloc.h   
-terminal.o: xmalloc.h  
-text.o: xmalloc.h
-tilde.o: xmalloc.h 
-undo.o: xmalloc.h
-util.o: xmalloc.h
-vi_mode.o: xmalloc.h 
-xfree.o: xmalloc.h
-xmalloc.o: xmalloc.h
-colors.o: xmalloc.h
-parse-colors.o: xmalloc.h
-
-complete.o: rlmbutil.h
-display.o: rlmbutil.h
-histexpand.o: rlmbutil.h
-input.o: rlmbutil.h
-isearch.o: rlmbutil.h
-mbutil.o: rlmbutil.h
-misc.o: rlmbutil.h
-readline.o: rlmbutil.h
-search.o: rlmbutil.h
-text.o: rlmbutil.h
-vi_mode.o: rlmbutil.h
-colors.o: rlmbutil.h
-parse-colors.o: rlmbutil.h
-
-# Rules for deficient makes, like SunOS and Solaris
-bind.o: bind.c
-callback.o: callback.c
-compat.o: compat.c
-complete.o: complete.c
-display.o: display.c
-funmap.o: funmap.c
-input.o: input.c
-isearch.o: isearch.c
-keymaps.o: keymaps.c emacs_keymap.c vi_keymap.c
-kill.o: kill.c
-macro.o: macro.c
-mbutil.o: mbutil.c
-misc.o: misc.c
-nls.o: nls.c
-parens.o: parens.c
-readline.o: readline.c
-rltty.o: rltty.c
-savestring.o: savestring.c
-search.o: search.c
-shell.o: shell.c
-signals.o: signals.c
-terminal.o: terminal.c
-text.o: text.c
-tilde.o: tilde.c
-undo.o: undo.c
-util.o: util.c
-vi_mode.o: vi_mode.c
-xfree.o: xfree.c
-xmalloc.o: xmalloc.c
-
-colors.o: colors.c
-parse-colors.o: parse-colors.c
-
-histexpand.o: histexpand.c
-histfile.o: histfile.c
-history.o: history.c
-histsearch.o: histsearch.c
+examples/excallback.o: $(BUILD_DIR)/config.h
+examples/excallback.o: $(srcdir)/examples/excallback.c
+examples/excallback.o: $(topdir)/config-bot.h
+examples/excallback.o: $(topdir)/config-top.h
+examples/excallback.o: $(topdir)/lib/readline/chardefs.h
+examples/excallback.o: $(topdir)/lib/readline/history.h
+examples/excallback.o: $(topdir)/lib/readline/keymaps.h
+examples/excallback.o: $(topdir)/lib/readline/readline.h
+examples/excallback.o: $(topdir)/lib/readline/rlstdc.h
+examples/excallback.o: $(topdir)/lib/readline/rltypedefs.h
+examples/excallback.o: $(topdir)/lib/readline/tilde.h
+examples/fileman.o: $(BUILD_DIR)/config.h
+examples/fileman.o: $(srcdir)/examples/fileman.c
+examples/fileman.o: $(topdir)/config-bot.h
+examples/fileman.o: $(topdir)/config-top.h
+examples/fileman.o: $(topdir)/lib/readline/chardefs.h
+examples/fileman.o: $(topdir)/lib/readline/history.h
+examples/fileman.o: $(topdir)/lib/readline/keymaps.h
+examples/fileman.o: $(topdir)/lib/readline/readline.h
+examples/fileman.o: $(topdir)/lib/readline/rlstdc.h
+examples/fileman.o: $(topdir)/lib/readline/rltypedefs.h
+examples/fileman.o: $(topdir)/lib/readline/tilde.h
+examples/histexamp.o: $(srcdir)/examples/histexamp.c
+examples/histexamp.o: $(topdir)/lib/readline/history.h
+examples/histexamp.o: $(topdir)/lib/readline/rlstdc.h
+examples/histexamp.o: $(topdir)/lib/readline/rltypedefs.h
+examples/manexamp.o: $(BUILD_DIR)/config.h
+examples/manexamp.o: $(srcdir)/examples/manexamp.c
+examples/manexamp.o: $(topdir)/config-bot.h
+examples/manexamp.o: $(topdir)/config-top.h
+examples/manexamp.o: $(topdir)/lib/readline/chardefs.h
+examples/manexamp.o: $(topdir)/lib/readline/history.h
+examples/manexamp.o: $(topdir)/lib/readline/keymaps.h
+examples/manexamp.o: $(topdir)/lib/readline/readline.h
+examples/manexamp.o: $(topdir)/lib/readline/rlstdc.h
+examples/manexamp.o: $(topdir)/lib/readline/rltypedefs.h
+examples/manexamp.o: $(topdir)/lib/readline/tilde.h
+examples/rl-callbacktest.o: $(srcdir)/examples/rl-callbacktest.c
+examples/rl-callbacktest.o: $(topdir)/lib/readline/chardefs.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/history.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/keymaps.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/readline.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/rlstdc.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rl-callbacktest.o: $(topdir)/lib/readline/tilde.h
+examples/rl-callbacktest2.o: $(srcdir)/examples/rl-callbacktest2.c
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/chardefs.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/history.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/keymaps.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/readline.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/rlstdc.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rl-callbacktest2.o: $(topdir)/lib/readline/tilde.h
+examples/rl-timeout.o: $(srcdir)/examples/rl-timeout.c
+examples/rl-timeout.o: $(topdir)/lib/readline/chardefs.h
+examples/rl-timeout.o: $(topdir)/lib/readline/history.h
+examples/rl-timeout.o: $(topdir)/lib/readline/keymaps.h
+examples/rl-timeout.o: $(topdir)/lib/readline/readline.h
+examples/rl-timeout.o: $(topdir)/lib/readline/rlstdc.h
+examples/rl-timeout.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rl-timeout.o: $(topdir)/lib/readline/tilde.h
+examples/rl.o: $(BUILD_DIR)/config.h
+examples/rl.o: $(srcdir)/examples/rl.c
+examples/rl.o: $(topdir)/config-bot.h
+examples/rl.o: $(topdir)/config-top.h
+examples/rl.o: $(topdir)/lib/readline/chardefs.h
+examples/rl.o: $(topdir)/lib/readline/history.h
+examples/rl.o: $(topdir)/lib/readline/keymaps.h
+examples/rl.o: $(topdir)/lib/readline/readline.h
+examples/rl.o: $(topdir)/lib/readline/rlstdc.h
+examples/rl.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rl.o: $(topdir)/lib/readline/tilde.h
+examples/rlcat.o: $(BUILD_DIR)/config.h
+examples/rlcat.o: $(srcdir)/examples/rlcat.c
+examples/rlcat.o: $(topdir)/config-bot.h
+examples/rlcat.o: $(topdir)/config-top.h
+examples/rlcat.o: $(topdir)/include/posixstat.h
+examples/rlcat.o: $(topdir)/lib/readline/chardefs.h
+examples/rlcat.o: $(topdir)/lib/readline/history.h
+examples/rlcat.o: $(topdir)/lib/readline/keymaps.h
+examples/rlcat.o: $(topdir)/lib/readline/readline.h
+examples/rlcat.o: $(topdir)/lib/readline/rlstdc.h
+examples/rlcat.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rlcat.o: $(topdir)/lib/readline/tilde.h
+examples/rlptytest.o: $(BUILD_DIR)/config.h
+examples/rlptytest.o: $(srcdir)/examples/rlptytest.c
+examples/rlptytest.o: $(topdir)/config-bot.h
+examples/rlptytest.o: $(topdir)/config-top.h
+examples/rlptytest.o: $(topdir)/lib/readline/chardefs.h
+examples/rlptytest.o: $(topdir)/lib/readline/history.h
+examples/rlptytest.o: $(topdir)/lib/readline/keymaps.h
+examples/rlptytest.o: $(topdir)/lib/readline/readline.h
+examples/rlptytest.o: $(topdir)/lib/readline/rlstdc.h
+examples/rlptytest.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rlptytest.o: $(topdir)/lib/readline/tilde.h
+examples/rltest.o: $(BUILD_DIR)/config.h
+examples/rltest.o: $(srcdir)/examples/rltest.c
+examples/rltest.o: $(topdir)/config-bot.h
+examples/rltest.o: $(topdir)/config-top.h
+examples/rltest.o: $(topdir)/lib/readline/chardefs.h
+examples/rltest.o: $(topdir)/lib/readline/history.h
+examples/rltest.o: $(topdir)/lib/readline/keymaps.h
+examples/rltest.o: $(topdir)/lib/readline/readline.h
+examples/rltest.o: $(topdir)/lib/readline/rlstdc.h
+examples/rltest.o: $(topdir)/lib/readline/rltypedefs.h
+examples/rltest.o: $(topdir)/lib/readline/tilde.h

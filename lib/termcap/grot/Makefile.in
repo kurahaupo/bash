@@ -136,3 +136,5 @@ dist: $(DISTFILES)
 	ln $(DISTFILES) `cat .fname`
 	tar chzf `cat .fname`.tar.gz `cat .fname`
 	rm -rf `cat .fname` .fname
+
+#MKDEP-CUT-HERE

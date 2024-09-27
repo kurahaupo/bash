@@ -114,14 +114,26 @@ realclean distclean maintainer-clean: clean
 mostlyclean: clean
 	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
+#MKDEP-CUT-HERE
+
 ######################################################################
 #								     #
 #  Dependencies for the object files which make up this library.     #
 #								     #
 ######################################################################
 
-tilde.o: tilde.h $(BASHINCDIR)/ansi_stdlib.h
-tilde.o: $(BUILD_DIR)/config.h
+# C *.c source & *.h header dependencies (generated)
 
-# Rules for deficient makes, like SunOS and Solaris
-tilde.o: tilde.c
+shell.o: $(BUILD_DIR)/config.h
+shell.o: $(srcdir)/shell.c
+shell.o: $(topdir)/config-bot.h
+shell.o: $(topdir)/config-top.h
+shell.o: $(topdir)/include/ansi_stdlib.h
+tilde.o: $(BUILD_DIR)/config.h
+tilde.o: $(srcdir)/tilde.c
+tilde.o: $(srcdir)/tilde.h
+tilde.o: $(topdir)/bashansi.h
+tilde.o: $(topdir)/config-bot.h
+tilde.o: $(topdir)/config-top.h
+tilde.o: $(topdir)/include/stdc.h
+tilde.o: $(topdir)/xmalloc.h
