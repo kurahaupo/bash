@@ -33,6 +33,7 @@ BUILD_DIR = @BUILD_DIR@
 LIBBUILD = ${BUILD_DIR}/lib
 
 BASHINCDIR = ${topdir}/include
+SUPPORT_SRC = $(topdir)/support/
 
 INTL_LIBSRC = ${topdir}/lib/intl
 INTL_BUILDDIR = ${LIBBUILD}/intl
@@ -52,6 +53,12 @@ ARFLAGS = @ARFLAGS@
 RM = rm -f
 CP = cp
 MV = mv
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 SHELL = @MAKE_SHELL@
 
@@ -145,6 +152,9 @@ ${BUILD_DIR}/version.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
 	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
 
+.PHONY: depends depend
+depends depend:
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 

@@ -97,6 +97,12 @@ INC = -I. -I.. -I$(topdir) -I$(topdir)/lib -I$(topdir)/builtins -I${srcdir} \
       -I$(BASHINCDIR) -I$(BUILD_DIR) -I$(LIBBUILD) \
       -I$(BUILD_DIR)/builtins $(INTL_INC)
 
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS) $(INC)
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
+
 .c.o:
 	$(SHOBJ_CC) $(SHOBJ_CFLAGS) $(CCFLAGS) $(INC) -c -o $@ $<
 
@@ -335,7 +341,7 @@ ${OBJS}:	${BUILD_DIR}/config.h
 
 .PHONY: depends depend
 depends depend:
-	sh $(MKDEP) -c "$(CC)" -P -S "$(srcdir)" -T "$(topdir)" -- $(CCFLAGS) $(INC) $(srcdir)/*.c
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)

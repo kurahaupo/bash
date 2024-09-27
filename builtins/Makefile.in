@@ -55,6 +55,7 @@ INSTALL_DATA = @INSTALL_DATA@
 BUILD_DIR = @BUILD_DIR@
 
 LIBBUILD = ${BUILD_DIR}/lib
+SUPPORT_SRC = $(topdir)/support/
 
 PROFILE_FLAGS = @PROFILE_FLAGS@
 CFLAGS = @CFLAGS@
@@ -89,11 +90,18 @@ INTL_DEP = @INTL_DEP@
 LIBINTL_H = @LIBINTL_H@
 
 HELPDIR = @HELPDIR@
+
 MKDIRS = ${topdir}/support/mkdirs
 
 HELPFILES_TARGET = @HELPFILES_TARGET@
 
 INCLUDES = -I. -I.. @RL_INCLUDE@ -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib -I$(srcdir) ${INTL_INC}
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS)
+MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
 BASE_CCFLAGS = ${PROFILE_FLAGS} $(DEFS) $(LOCAL_DEFS) $(SYSTEM_FLAGS) \
 	 ${INCLUDES} $(STYLE_CFLAGS) $(LOCAL_CFLAGS)
@@ -287,6 +295,11 @@ ${LIBINTL_H}:
 	@(cd ${INTL_BUILDDIR} && \
 		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
 
+.PHONY: depends depend
+depends depend: $(MKBUILTINS) tmpbuiltins.h
+	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
+	sh $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+
 ############################ DEPENDENCIES ###############################
 #MKDEP-CUT-HERE
 
@@ -340,15 +353,17 @@ bind.o: $(BASHINCDIR)/maxpath.h
 bind.o: $(BASHINCDIR)/memalloc.h
 bind.o: $(BUILD_DIR)/config.h
 bind.o: $(HIST_LIBSRC)/history.h
+bind.o: $(LIBINTL_H)
 bind.o: $(RL_LIBSRC)/chardefs.h
 bind.o: $(RL_LIBSRC)/keymaps.h
 bind.o: $(RL_LIBSRC)/readline.h
 bind.o: $(RL_LIBSRC)/rlconf.h
-bind.o: $(RL_LIBSRC)/rlstdc.h
+bind.o: $(RL_LIBSRC)/rlmbutil.h
 bind.o: $(RL_LIBSRC)/rlstdc.h
 bind.o: $(RL_LIBSRC)/rltypedefs.h
 bind.o: $(srcdir)/bashgetopt.h
 bind.o: $(srcdir)/bind.def
+bind.o: $(topdir)/bashintl.h
 bind.o: $(topdir)/bashline.h
 bind.o: $(topdir)/command.h
 bind.o: $(topdir)/conftypes.h
@@ -365,15 +380,14 @@ bind.o: $(topdir)/syntax.h
 bind.o: $(topdir)/unwind_prot.h
 bind.o: $(topdir)/variables.h
 bind.o: $(topdir)/xmalloc.h
-bind.o: ${LIBINTL_H}
-bind.o: ${RL_LIBSRC}/rlmbutil.h
-bind.o: ${topdir}/bashintl.h
 break.o: $(BASHINCDIR)/gettext.h
 break.o: $(BASHINCDIR)/maxpath.h
 break.o: $(BASHINCDIR)/memalloc.h
 break.o: $(BUILD_DIR)/config.h
 break.o: $(BUILD_DIR)/pathnames.h
+break.o: $(LIBINTL_H)
 break.o: $(srcdir)/break.def
+break.o: $(topdir)/bashintl.h
 break.o: $(topdir)/command.h
 break.o: $(topdir)/config-top.h
 break.o: $(topdir)/conftypes.h
@@ -391,8 +405,6 @@ break.o: $(topdir)/syntax.h
 break.o: $(topdir)/unwind_prot.h
 break.o: $(topdir)/variables.h
 break.o: $(topdir)/xmalloc.h
-break.o: ${LIBINTL_H}
-break.o: ${topdir}/bashintl.h
 builtin.o: $(BASHINCDIR)/maxpath.h
 builtin.o: $(BASHINCDIR)/memalloc.h
 builtin.o: $(BUILD_DIR)/config.h
@@ -417,13 +429,16 @@ builtin.o: $(topdir)/unwind_prot.h
 builtin.o: $(topdir)/variables.h
 builtin.o: $(topdir)/xmalloc.h
 builtins.o: $(srcdir)/builtins.c
+caller.o: $(BASHINCDIR)/chartypes.h
 caller.o: $(BASHINCDIR)/gettext.h
 caller.o: $(BASHINCDIR)/maxpath.h
 caller.o: $(BASHINCDIR)/memalloc.h
 caller.o: $(BUILD_DIR)/config.h
 caller.o: $(BUILD_DIR)/pathnames.h
+caller.o: $(LIBINTL_H)
 caller.o: $(srcdir)/caller.def
 caller.o: $(srcdir)/common.h
+caller.o: $(topdir)/bashintl.h
 caller.o: $(topdir)/bashtypes.h
 caller.o: $(topdir)/command.h
 caller.o: $(topdir)/conftypes.h
@@ -440,17 +455,16 @@ caller.o: $(topdir)/syntax.h
 caller.o: $(topdir)/unwind_prot.h
 caller.o: $(topdir)/variables.h
 caller.o: $(topdir)/xmalloc.h
-caller.o: ${BASHINCDIR}/chartypes.h
-caller.o: ${LIBINTL_H}
-caller.o: ${topdir}/bashintl.h
 caller.o: ./builtext.h
 cd.o: $(BASHINCDIR)/gettext.h
 cd.o: $(BASHINCDIR)/maxpath.h
 cd.o: $(BASHINCDIR)/memalloc.h
 cd.o: $(BUILD_DIR)/config.h
 cd.o: $(BUILD_DIR)/pathnames.h
+cd.o: $(LIBINTL_H)
 cd.o: $(srcdir)/cd.def
 cd.o: $(srcdir)/common.h
+cd.o: $(topdir)/bashintl.h
 cd.o: $(topdir)/command.h
 cd.o: $(topdir)/config-top.h
 cd.o: $(topdir)/conftypes.h
@@ -467,8 +481,6 @@ cd.o: $(topdir)/syntax.h
 cd.o: $(topdir)/unwind_prot.h
 cd.o: $(topdir)/variables.h
 cd.o: $(topdir)/xmalloc.h
-cd.o: ${LIBINTL_H}
-cd.o: ${topdir}/bashintl.h
 colon.o: $(BASHINCDIR)/maxpath.h
 colon.o: $(BASHINCDIR)/memalloc.h
 colon.o: $(BUILD_DIR)/config.h
@@ -513,8 +525,8 @@ command.o: $(topdir)/unwind_prot.h
 command.o: $(topdir)/variables.h
 command.o: $(topdir)/xmalloc.h
 common.c: $(BASHINCDIR)/gettext.h
-common.c: ${LIBINTL_H}
-common.c: ${topdir}/bashintl.h
+common.c: $(LIBINTL_H)
+common.c: $(topdir)/bashintl.h
 common.o: $(BASHINCDIR)/ansi_stdlib.h
 common.o: $(BASHINCDIR)/chartypes.h
 common.o: $(BASHINCDIR)/maxpath.h
@@ -555,49 +567,49 @@ common.o: $(topdir)/unwind_prot.h
 common.o: $(topdir)/variables.h
 common.o: $(topdir)/xmalloc.h
 common.o: ./builtext.h
+complete.o: $(BASHINCDIR)/ansi_stdlib.h
+complete.o: $(BASHINCDIR)/chartypes.h
 complete.o: $(BASHINCDIR)/gettext.h
+complete.o: $(BASHINCDIR)/posixjmp.h
 complete.o: $(BUILD_DIR)/config.h
 complete.o: $(BUILD_DIR)/pathnames.h
+complete.o: $(LIBINTL_H)
 complete.o: $(RL_LIBSRC)/chardefs.h
 complete.o: $(RL_LIBSRC)/keymaps.h
 complete.o: $(RL_LIBSRC)/readline.h
 complete.o: $(RL_LIBSRC)/rlconf.h
+complete.o: $(RL_LIBSRC)/rlmbutil.h
 complete.o: $(RL_LIBSRC)/rlstdc.h
 complete.o: $(RL_LIBSRC)/rltypedefs.h
+complete.o: $(srcdir)/bashgetopt.h
+complete.o: $(srcdir)/common.h
 complete.o: $(srcdir)/complete.def
+complete.o: $(topdir)/bashansi.h
+complete.o: $(topdir)/bashintl.h
+complete.o: $(topdir)/bashjmp.h
+complete.o: $(topdir)/bashtypes.h
+complete.o: $(topdir)/builtins.h
 complete.o: $(topdir)/dispose_cmd.h
+complete.o: $(topdir)/general.h
 complete.o: $(topdir)/make_cmd.h
+complete.o: $(topdir)/pcomplete.h
 complete.o: $(topdir)/quit.h
+complete.o: $(topdir)/shell.h
 complete.o: $(topdir)/sig.h
 complete.o: $(topdir)/syntax.h
-complete.o: ${BASHINCDIR}/ansi_stdlib.h
-complete.o: ${BASHINCDIR}/chartypes.h
-complete.o: ${BASHINCDIR}/posixjmp.h
-complete.o: ${LIBINTL_H}
-complete.o: ${RL_LIBSRC}/rlmbutil.h
-complete.o: ${srcdir}/bashgetopt.h
-complete.o: ${srcdir}/common.h
-complete.o: ${topdir}/bashansi.h
-complete.o: ${topdir}/bashintl.h
-complete.o: ${topdir}/bashjmp.h
-complete.o: ${topdir}/bashtypes.h
-complete.o: ${topdir}/bashtypes.h
-complete.o: ${topdir}/builtins.h
-complete.o: ${topdir}/general.h
-complete.o: ${topdir}/pcomplete.h
-complete.o: ${topdir}/shell.h
-complete.o: ${topdir}/sig.h
-complete.o: ${topdir}/unwind_prot.h
-complete.o: ${topdir}/variables.h
-complete.o: ${topdir}/xmalloc.h
+complete.o: $(topdir)/unwind_prot.h
+complete.o: $(topdir)/variables.h
+complete.o: $(topdir)/xmalloc.h
 declare.o: $(BASHINCDIR)/gettext.h
 declare.o: $(BASHINCDIR)/maxpath.h
 declare.o: $(BASHINCDIR)/memalloc.h
 declare.o: $(BUILD_DIR)/config.h
 declare.o: $(BUILD_DIR)/pathnames.h
+declare.o: $(LIBINTL_H)
 declare.o: $(srcdir)/bashgetopt.h
 declare.o: $(srcdir)/declare.def
 declare.o: $(topdir)/arrayfunc.h
+declare.o: $(topdir)/bashintl.h
 declare.o: $(topdir)/command.h
 declare.o: $(topdir)/config-top.h
 declare.o: $(topdir)/conftypes.h
@@ -615,8 +627,6 @@ declare.o: $(topdir)/syntax.h
 declare.o: $(topdir)/unwind_prot.h
 declare.o: $(topdir)/variables.h
 declare.o: $(topdir)/xmalloc.h
-declare.o: ${LIBINTL_H}
-declare.o: ${topdir}/bashintl.h
 declare.o: ./builtext.h
 echo.o: $(BASHINCDIR)/maxpath.h
 echo.o: $(BASHINCDIR)/memalloc.h
@@ -646,7 +656,9 @@ enable.o: $(BASHINCDIR)/maxpath.h
 enable.o: $(BASHINCDIR)/memalloc.h
 enable.o: $(BUILD_DIR)/config.h
 enable.o: $(BUILD_DIR)/pathnames.h
+enable.o: $(LIBINTL_H)
 enable.o: $(srcdir)/enable.def
+enable.o: $(topdir)/bashintl.h
 enable.o: $(topdir)/command.h
 enable.o: $(topdir)/conftypes.h
 enable.o: $(topdir)/dispose_cmd.h
@@ -663,8 +675,6 @@ enable.o: $(topdir)/syntax.h
 enable.o: $(topdir)/unwind_prot.h
 enable.o: $(topdir)/variables.h
 enable.o: $(topdir)/xmalloc.h
-enable.o: ${LIBINTL_H}
-enable.o: ${topdir}/bashintl.h
 eval.o: $(BASHINCDIR)/maxpath.h
 eval.o: $(BASHINCDIR)/memalloc.h
 eval.o: $(BUILD_DIR)/config.h
@@ -685,9 +695,10 @@ eval.o: $(topdir)/unwind_prot.h
 eval.o: $(topdir)/variables.h
 eval.o: $(topdir)/xmalloc.h
 evalfile.c: $(BASHINCDIR)/gettext.h
-evalfile.c: ${LIBINTL_H}
-evalfile.c: ${topdir}/bashintl.h
+evalfile.c: $(LIBINTL_H)
+evalfile.c: $(topdir)/bashintl.h
 evalfile.o: $(BASHINCDIR)/ansi_stdlib.h
+evalfile.o: $(BASHINCDIR)/filecntl.h
 evalfile.o: $(BASHINCDIR)/maxpath.h
 evalfile.o: $(BASHINCDIR)/posixstat.h
 evalfile.o: $(BUILD_DIR)/config.h
@@ -721,7 +732,6 @@ evalfile.o: $(topdir)/syntax.h
 evalfile.o: $(topdir)/unwind_prot.h
 evalfile.o: $(topdir)/variables.h
 evalfile.o: $(topdir)/xmalloc.h
-evalfile.o: ${BASHINCDIR}/filecntl.h
 evalstring.o: $(BASHINCDIR)/ansi_stdlib.h
 evalstring.o: $(BASHINCDIR)/maxpath.h
 evalstring.o: $(BASHINCDIR)/memalloc.h
@@ -736,7 +746,6 @@ evalstring.o: $(topdir)/bashansi.h
 evalstring.o: $(topdir)/bashhist.h
 evalstring.o: $(topdir)/bashjmp.h
 evalstring.o: $(topdir)/builtins.h
-evalstring.o: $(topdir)/builtins.h
 evalstring.o: $(topdir)/command.h
 evalstring.o: $(topdir)/config-top.h
 evalstring.o: $(topdir)/conftypes.h
@@ -745,8 +754,6 @@ evalstring.o: $(topdir)/execute_cmd.h
 evalstring.o: $(topdir)/externs.h
 evalstring.o: $(topdir)/flags.h
 evalstring.o: $(topdir)/input.h
-evalstring.o: $(topdir)/input.h
-evalstring.o: $(topdir)/jobs.h
 evalstring.o: $(topdir)/jobs.h
 evalstring.o: $(topdir)/make_cmd.h
 evalstring.o: $(topdir)/quit.h
@@ -765,8 +772,10 @@ exec.o: $(BASHINCDIR)/maxpath.h
 exec.o: $(BASHINCDIR)/memalloc.h
 exec.o: $(BUILD_DIR)/config.h
 exec.o: $(BUILD_DIR)/pathnames.h
+exec.o: $(LIBINTL_H)
 exec.o: $(srcdir)/common.h
 exec.o: $(srcdir)/exec.def
+exec.o: $(topdir)/bashintl.h
 exec.o: $(topdir)/bashtypes.h
 exec.o: $(topdir)/command.h
 exec.o: $(topdir)/conftypes.h
@@ -787,15 +796,15 @@ exec.o: $(topdir)/syntax.h
 exec.o: $(topdir)/unwind_prot.h
 exec.o: $(topdir)/variables.h
 exec.o: $(topdir)/xmalloc.h
-exec.o: ${LIBINTL_H}
-exec.o: ${topdir}/bashintl.h
 exit.o: $(BASHINCDIR)/gettext.h
 exit.o: $(BASHINCDIR)/maxpath.h
 exit.o: $(BASHINCDIR)/memalloc.h
 exit.o: $(BASHINCDIR)/unlocked-io.h
 exit.o: $(BUILD_DIR)/config.h
 exit.o: $(BUILD_DIR)/pathnames.h
+exit.o: $(LIBINTL_H)
 exit.o: $(srcdir)/exit.def
+exit.o: $(topdir)/bashintl.h
 exit.o: $(topdir)/bashtypes.h
 exit.o: $(topdir)/command.h
 exit.o: $(topdir)/config-top.h
@@ -814,8 +823,6 @@ exit.o: $(topdir)/syntax.h
 exit.o: $(topdir)/unwind_prot.h
 exit.o: $(topdir)/variables.h
 exit.o: $(topdir)/xmalloc.h
-exit.o: ${LIBINTL_H}
-exit.o: ${topdir}/bashintl.h
 exit.o: ./builtext.h
 fc.o: $(BASHINCDIR)/ansi_stdlib.h
 fc.o: $(BASHINCDIR)/chartypes.h
@@ -827,14 +834,15 @@ fc.o: $(BASHINCDIR)/unlocked-io.h
 fc.o: $(BUILD_DIR)/config.h
 fc.o: $(BUILD_DIR)/pathnames.h
 fc.o: $(HIST_LIBSRC)/history.h
+fc.o: $(LIBINTL_H)
 fc.o: $(RL_LIBSRC)/rlstdc.h
 fc.o: $(srcdir)/bashgetopt.h
 fc.o: $(srcdir)/fc.def
 fc.o: $(topdir)/bashansi.h
 fc.o: $(topdir)/bashhist.h
+fc.o: $(topdir)/bashintl.h
 fc.o: $(topdir)/bashtypes.h
 fc.o: $(topdir)/builtins.h
-fc.o: $(topdir)/command.h
 fc.o: $(topdir)/command.h
 fc.o: $(topdir)/conftypes.h
 fc.o: $(topdir)/dispose_cmd.h
@@ -852,15 +860,15 @@ fc.o: $(topdir)/syntax.h
 fc.o: $(topdir)/unwind_prot.h
 fc.o: $(topdir)/variables.h
 fc.o: $(topdir)/xmalloc.h
-fc.o: ${LIBINTL_H}
-fc.o: ${topdir}/bashintl.h
 fg_bg.o: $(BASHINCDIR)/gettext.h
 fg_bg.o: $(BASHINCDIR)/maxpath.h
 fg_bg.o: $(BASHINCDIR)/memalloc.h
 fg_bg.o: $(BUILD_DIR)/config.h
 fg_bg.o: $(BUILD_DIR)/pathnames.h
+fg_bg.o: $(LIBINTL_H)
 fg_bg.o: $(srcdir)/bashgetopt.h
 fg_bg.o: $(srcdir)/fg_bg.def
+fg_bg.o: $(topdir)/bashintl.h
 fg_bg.o: $(topdir)/bashtypes.h
 fg_bg.o: $(topdir)/command.h
 fg_bg.o: $(topdir)/conftypes.h
@@ -879,12 +887,10 @@ fg_bg.o: $(topdir)/syntax.h
 fg_bg.o: $(topdir)/unwind_prot.h
 fg_bg.o: $(topdir)/variables.h
 fg_bg.o: $(topdir)/xmalloc.h
-fg_bg.o: ${LIBINTL_H}
-fg_bg.o: ${topdir}/bashintl.h
 gen-helpfiles.o: $(srcdir)/gen-helpfiles.c
 getopt.c: $(BASHINCDIR)/gettext.h
-getopt.c: ${LIBINTL_H}
-getopt.c: ${topdir}/bashintl.h
+getopt.c: $(LIBINTL_H)
+getopt.c: $(topdir)/bashintl.h
 getopt.o: $(BASHINCDIR)/maxpath.h
 getopt.o: $(BASHINCDIR)/memalloc.h
 getopt.o: $(BUILD_DIR)/config.h
@@ -934,10 +940,11 @@ hash.o: $(BASHINCDIR)/memalloc.h
 hash.o: $(BASHINCDIR)/unlocked-io.h
 hash.o: $(BUILD_DIR)/config.h
 hash.o: $(BUILD_DIR)/pathnames.h
+hash.o: $(LIBINTL_H)
 hash.o: $(srcdir)/common.h
 hash.o: $(srcdir)/hash.def
+hash.o: $(topdir)/bashintl.h
 hash.o: $(topdir)/builtins.h
-hash.o: $(topdir)/command.h
 hash.o: $(topdir)/command.h
 hash.o: $(topdir)/conftypes.h
 hash.o: $(topdir)/error.h
@@ -952,15 +959,16 @@ hash.o: $(topdir)/syntax.h
 hash.o: $(topdir)/unwind_prot.h
 hash.o: $(topdir)/variables.h
 hash.o: $(topdir)/xmalloc.h
-hash.o: ${LIBINTL_H}
-hash.o: ${topdir}/bashintl.h
 help.o: $(BASHINCDIR)/gettext.h
 help.o: $(BASHINCDIR)/maxpath.h
 help.o: $(BASHINCDIR)/memalloc.h
 help.o: $(BASHINCDIR)/unlocked-io.h
 help.o: $(BUILD_DIR)/config.h
 help.o: $(BUILD_DIR)/pathnames.h
+help.o: $(LIBINTL_H)
+help.o: $(srcdir)/common.h
 help.o: $(srcdir)/help.def
+help.o: $(topdir)/bashintl.h
 help.o: $(topdir)/command.h
 help.o: $(topdir)/conftypes.h
 help.o: $(topdir)/dispose_cmd.h
@@ -977,9 +985,7 @@ help.o: $(topdir)/syntax.h
 help.o: $(topdir)/unwind_prot.h
 help.o: $(topdir)/variables.h
 help.o: $(topdir)/xmalloc.h
-help.o: ${LIBINTL_H}
-help.o: ${srcdir}/common.h
-help.o: ${topdir}/bashintl.h
+history.o: $(BASHINCDIR)/filecntl.h
 history.o: $(BASHINCDIR)/gettext.h
 history.o: $(BASHINCDIR)/maxpath.h
 history.o: $(BASHINCDIR)/memalloc.h
@@ -987,15 +993,17 @@ history.o: $(BASHINCDIR)/unlocked-io.h
 history.o: $(BUILD_DIR)/config.h
 history.o: $(BUILD_DIR)/pathnames.h
 history.o: $(HIST_LIBSRC)/history.h
+history.o: $(LIBINTL_H)
 history.o: $(RL_LIBSRC)/chardefs.h
 history.o: $(RL_LIBSRC)/keymaps.h
 history.o: $(RL_LIBSRC)/readline.h
 history.o: $(RL_LIBSRC)/rlconf.h
-history.o: $(RL_LIBSRC)/rlstdc.h
+history.o: $(RL_LIBSRC)/rlmbutil.h
 history.o: $(RL_LIBSRC)/rlstdc.h
 history.o: $(RL_LIBSRC)/rltypedefs.h
 history.o: $(srcdir)/history.def
 history.o: $(topdir)/bashhist.h
+history.o: $(topdir)/bashintl.h
 history.o: $(topdir)/bashtypes.h
 history.o: $(topdir)/command.h
 history.o: $(topdir)/conftypes.h
@@ -1012,15 +1020,13 @@ history.o: $(topdir)/syntax.h
 history.o: $(topdir)/unwind_prot.h
 history.o: $(topdir)/variables.h
 history.o: $(topdir)/xmalloc.h
-history.o: ${BASHINCDIR}/filecntl.h
-history.o: ${LIBINTL_H}
-history.o: ${RL_LIBSRC}/rlmbutil.h
-history.o: ${topdir}/bashintl.h
 inlib.o: $(BASHINCDIR)/gettext.h
 inlib.o: $(BASHINCDIR)/maxpath.h
 inlib.o: $(BASHINCDIR)/memalloc.h
 inlib.o: $(BUILD_DIR)/config.h
 inlib.o: $(BUILD_DIR)/pathnames.h
+inlib.o: $(LIBINTL_H)
+inlib.o: $(topdir)/bashintl.h
 inlib.o: $(topdir)/command.h
 inlib.o: $(topdir)/conftypes.h
 inlib.o: $(topdir)/dispose_cmd.h
@@ -1035,15 +1041,15 @@ inlib.o: $(topdir)/syntax.h
 inlib.o: $(topdir)/unwind_prot.h
 inlib.o: $(topdir)/variables.h
 inlib.o: $(topdir)/xmalloc.h
-inlib.o: ${LIBINTL_H}
-inlib.o: ${topdir}/bashintl.h
 jobs.o: $(BASHINCDIR)/gettext.h
 jobs.o: $(BASHINCDIR)/maxpath.h
 jobs.o: $(BASHINCDIR)/memalloc.h
 jobs.o: $(BUILD_DIR)/config.h
 jobs.o: $(BUILD_DIR)/pathnames.h
+jobs.o: $(LIBINTL_H)
 jobs.o: $(srcdir)/bashgetopt.h
 jobs.o: $(srcdir)/jobs.def
+jobs.o: $(topdir)/bashintl.h
 jobs.o: $(topdir)/command.h
 jobs.o: $(topdir)/conftypes.h
 jobs.o: $(topdir)/dispose_cmd.h
@@ -1060,14 +1066,14 @@ jobs.o: $(topdir)/syntax.h
 jobs.o: $(topdir)/unwind_prot.h
 jobs.o: $(topdir)/variables.h
 jobs.o: $(topdir)/xmalloc.h
-jobs.o: ${LIBINTL_H}
-jobs.o: ${topdir}/bashintl.h
 kill.o: $(BASHINCDIR)/gettext.h
 kill.o: $(BASHINCDIR)/maxpath.h
 kill.o: $(BASHINCDIR)/memalloc.h
 kill.o: $(BUILD_DIR)/config.h
 kill.o: $(BUILD_DIR)/pathnames.h
+kill.o: $(LIBINTL_H)
 kill.o: $(srcdir)/kill.def
+kill.o: $(topdir)/bashintl.h
 kill.o: $(topdir)/command.h
 kill.o: $(topdir)/config-top.h
 kill.o: $(topdir)/conftypes.h
@@ -1086,15 +1092,15 @@ kill.o: $(topdir)/trap.h
 kill.o: $(topdir)/unwind_prot.h
 kill.o: $(topdir)/variables.h
 kill.o: $(topdir)/xmalloc.h
-kill.o: ${LIBINTL_H}
-kill.o: ${topdir}/bashintl.h
 let.o: $(BASHINCDIR)/gettext.h
 let.o: $(BASHINCDIR)/maxpath.h
 let.o: $(BASHINCDIR)/memalloc.h
 let.o: $(BASHINCDIR)/unlocked-io.h
 let.o: $(BUILD_DIR)/config.h
 let.o: $(BUILD_DIR)/pathnames.h
+let.o: $(LIBINTL_H)
 let.o: $(srcdir)/let.def
+let.o: $(topdir)/bashintl.h
 let.o: $(topdir)/command.h
 let.o: $(topdir)/conftypes.h
 let.o: $(topdir)/dispose_cmd.h
@@ -1110,15 +1116,15 @@ let.o: $(topdir)/syntax.h
 let.o: $(topdir)/unwind_prot.h
 let.o: $(topdir)/variables.h
 let.o: $(topdir)/xmalloc.h
-let.o: ${LIBINTL_H}
-let.o: ${topdir}/bashintl.h
 mapfile.o: $(BASHINCDIR)/gettext.h
 mapfile.o: $(BASHINCDIR)/maxpath.h
 mapfile.o: $(BASHINCDIR)/memalloc.h
 mapfile.o: $(BUILD_DIR)/config.h
 mapfile.o: $(BUILD_DIR)/pathnames.h
+mapfile.o: $(LIBINTL_H)
 mapfile.o: $(srcdir)/mapfile.def
 mapfile.o: $(topdir)/arrayfunc.h
+mapfile.o: $(topdir)/bashintl.h
 mapfile.o: $(topdir)/command.h
 mapfile.o: $(topdir)/conftypes.h
 mapfile.o: $(topdir)/dispose_cmd.h
@@ -1133,28 +1139,30 @@ mapfile.o: $(topdir)/subst.h
 mapfile.o: $(topdir)/syntax.h
 mapfile.o: $(topdir)/variables.h
 mapfile.o: $(topdir)/xmalloc.h
-mapfile.o: ${LIBINTL_H}
-mapfile.o: ${topdir}/bashintl.h
 mkbuiltins.o: $(BASHINCDIR)/ansi_stdlib.h
+mkbuiltins.o: $(BASHINCDIR)/filecntl.h
 mkbuiltins.o: $(BASHINCDIR)/gettext.h
 mkbuiltins.o: $(BASHINCDIR)/posixstat.h
 mkbuiltins.o: $(BUILD_DIR)/config.h
+mkbuiltins.o: $(LIBINTL_H)
 mkbuiltins.o: $(srcdir)/mkbuiltins.c
 mkbuiltins.o: $(topdir)/bashansi.h
+mkbuiltins.o: $(topdir)/bashintl.h
 mkbuiltins.o: $(topdir)/bashtypes.h
-mkbuiltins.o: ${BASHINCDIR}/filecntl.h
-mkbuiltins.o: ${LIBINTL_H}
-mkbuiltins.o: ${topdir}/bashintl.h
 printf.o: $(BASHINCDIR)/chartypes.h
 printf.o: $(BASHINCDIR)/gettext.h
 printf.o: $(BASHINCDIR)/memalloc.h
+printf.o: $(BASHINCDIR)/shmbchar.h
+printf.o: $(BASHINCDIR)/shmbutil.h
 printf.o: $(BASHINCDIR)/stdc.h
 printf.o: $(BASHINCDIR)/unlocked-io.h
 printf.o: $(BUILD_DIR)/config.h
 printf.o: $(BUILD_DIR)/pathnames.h
-printf.o: $(BUILD_DIR)/pathnames.h
+printf.o: $(LIBINTL_H)
 printf.o: $(srcdir)/bashgetopt.h
+printf.o: $(srcdir)/common.h
 printf.o: $(srcdir)/printf.def
+printf.o: $(topdir)/bashintl.h
 printf.o: $(topdir)/bashjmp.h
 printf.o: $(topdir)/bashtypes.h
 printf.o: $(topdir)/command.h
@@ -1172,11 +1180,6 @@ printf.o: $(topdir)/syntax.h
 printf.o: $(topdir)/unwind_prot.h
 printf.o: $(topdir)/variables.h
 printf.o: $(topdir)/xmalloc.h
-printf.o: ${BASHINCDIR}/shmbchar.h
-printf.o: ${BASHINCDIR}/shmbutil.h
-printf.o: ${LIBINTL_H}
-printf.o: ${srcdir}/common.h
-printf.o: ${topdir}/bashintl.h
 psize-posix.o: $(srcdir)/psize-posix.c
 psize.o: $(srcdir)/psize.c
 pushd.o: $(BASHINCDIR)/gettext.h
@@ -1185,8 +1188,10 @@ pushd.o: $(BASHINCDIR)/memalloc.h
 pushd.o: $(BASHINCDIR)/unlocked-io.h
 pushd.o: $(BUILD_DIR)/config.h
 pushd.o: $(BUILD_DIR)/pathnames.h
+pushd.o: $(LIBINTL_H)
 pushd.o: $(srcdir)/common.h
 pushd.o: $(srcdir)/pushd.def
+pushd.o: $(topdir)/bashintl.h
 pushd.o: $(topdir)/command.h
 pushd.o: $(topdir)/conftypes.h
 pushd.o: $(topdir)/dispose_cmd.h
@@ -1202,24 +1207,27 @@ pushd.o: $(topdir)/syntax.h
 pushd.o: $(topdir)/unwind_prot.h
 pushd.o: $(topdir)/variables.h
 pushd.o: $(topdir)/xmalloc.h
-pushd.o: ${LIBINTL_H}
-pushd.o: ${topdir}/bashintl.h
 pushd.o: ./builtext.h
 read.o: $(BASHINCDIR)/gettext.h
 read.o: $(BASHINCDIR)/maxpath.h
 read.o: $(BASHINCDIR)/memalloc.h
+read.o: $(BASHINCDIR)/shmbchar.h
+read.o: $(BASHINCDIR)/shmbutil.h
 read.o: $(BASHINCDIR)/shtty.h
 read.o: $(BASHINCDIR)/unlocked-io.h
 read.o: $(BUILD_DIR)/config.h
 read.o: $(BUILD_DIR)/pathnames.h
+read.o: $(LIBINTL_H)
 read.o: $(RL_LIBSRC)/chardefs.h
 read.o: $(RL_LIBSRC)/keymaps.h
 read.o: $(RL_LIBSRC)/readline.h
 read.o: $(RL_LIBSRC)/rlconf.h
+read.o: $(RL_LIBSRC)/rlmbutil.h
 read.o: $(RL_LIBSRC)/rlstdc.h
 read.o: $(RL_LIBSRC)/rltypedefs.h
 read.o: $(srcdir)/read.def
 read.o: $(topdir)/arrayfunc.h
+read.o: $(topdir)/bashintl.h
 read.o: $(topdir)/command.h
 read.o: $(topdir)/conftypes.h
 read.o: $(topdir)/dispose_cmd.h
@@ -1235,17 +1243,14 @@ read.o: $(topdir)/syntax.h
 read.o: $(topdir)/unwind_prot.h
 read.o: $(topdir)/variables.h
 read.o: $(topdir)/xmalloc.h
-read.o: ${BASHINCDIR}/shmbchar.h
-read.o: ${BASHINCDIR}/shmbutil.h
-read.o: ${LIBINTL_H}
-read.o: ${RL_LIBSRC}/rlmbutil.h
-read.o: ${topdir}/bashintl.h
 return.o: $(BASHINCDIR)/gettext.h
 return.o: $(BASHINCDIR)/maxpath.h
 return.o: $(BASHINCDIR)/memalloc.h
 return.o: $(BUILD_DIR)/config.h
 return.o: $(BUILD_DIR)/pathnames.h
+return.o: $(LIBINTL_H)
 return.o: $(srcdir)/return.def
+return.o: $(topdir)/bashintl.h
 return.o: $(topdir)/command.h
 return.o: $(topdir)/conftypes.h
 return.o: $(topdir)/dispose_cmd.h
@@ -1262,21 +1267,22 @@ return.o: $(topdir)/syntax.h
 return.o: $(topdir)/unwind_prot.h
 return.o: $(topdir)/variables.h
 return.o: $(topdir)/xmalloc.h
-return.o: ${LIBINTL_H}
-return.o: ${topdir}/bashintl.h
 set.o: $(BASHINCDIR)/gettext.h
 set.o: $(BASHINCDIR)/maxpath.h
 set.o: $(BASHINCDIR)/memalloc.h
 set.o: $(BUILD_DIR)/config.h
 set.o: $(BUILD_DIR)/pathnames.h
+set.o: $(LIBINTL_H)
 set.o: $(RL_LIBSRC)/chardefs.h
 set.o: $(RL_LIBSRC)/keymaps.h
 set.o: $(RL_LIBSRC)/readline.h
 set.o: $(RL_LIBSRC)/rlconf.h
+set.o: $(RL_LIBSRC)/rlmbutil.h
 set.o: $(RL_LIBSRC)/rlstdc.h
 set.o: $(RL_LIBSRC)/rltypedefs.h
 set.o: $(srcdir)/set.def
 set.o: $(topdir)/arrayfunc.h
+set.o: $(topdir)/bashintl.h
 set.o: $(topdir)/command.h
 set.o: $(topdir)/conftypes.h
 set.o: $(topdir)/dispose_cmd.h
@@ -1293,18 +1299,17 @@ set.o: $(topdir)/syntax.h
 set.o: $(topdir)/unwind_prot.h
 set.o: $(topdir)/variables.h
 set.o: $(topdir)/xmalloc.h
-set.o: ${LIBINTL_H}
-set.o: ${RL_LIBSRC}/rlmbutil.h
-set.o: ${topdir}/bashintl.h
 setattr.o: $(BASHINCDIR)/gettext.h
 setattr.o: $(BASHINCDIR)/maxpath.h
 setattr.o: $(BASHINCDIR)/memalloc.h
 setattr.o: $(BUILD_DIR)/config.h
 setattr.o: $(BUILD_DIR)/pathnames.h
+setattr.o: $(LIBINTL_H)
 setattr.o: $(srcdir)/bashgetopt.h
 setattr.o: $(srcdir)/common.h
 setattr.o: $(srcdir)/setattr.def
 setattr.o: $(topdir)/arrayfunc.h
+setattr.o: $(topdir)/bashintl.h
 setattr.o: $(topdir)/command.h
 setattr.o: $(topdir)/conftypes.h
 setattr.o: $(topdir)/dispose_cmd.h
@@ -1322,14 +1327,14 @@ setattr.o: $(topdir)/syntax.h
 setattr.o: $(topdir)/unwind_prot.h
 setattr.o: $(topdir)/variables.h
 setattr.o: $(topdir)/xmalloc.h
-setattr.o: ${LIBINTL_H}
-setattr.o: ${topdir}/bashintl.h
 shift.o: $(BASHINCDIR)/gettext.h
 shift.o: $(BASHINCDIR)/maxpath.h
 shift.o: $(BASHINCDIR)/memalloc.h
 shift.o: $(BUILD_DIR)/config.h
 shift.o: $(BUILD_DIR)/pathnames.h
+shift.o: $(LIBINTL_H)
 shift.o: $(srcdir)/shift.def
+shift.o: $(topdir)/bashintl.h
 shift.o: $(topdir)/command.h
 shift.o: $(topdir)/conftypes.h
 shift.o: $(topdir)/dispose_cmd.h
@@ -1345,19 +1350,19 @@ shift.o: $(topdir)/syntax.h
 shift.o: $(topdir)/unwind_prot.h
 shift.o: $(topdir)/variables.h
 shift.o: $(topdir)/xmalloc.h
-shift.o: ${LIBINTL_H}
-shift.o: ${topdir}/bashintl.h
 shopt.o: $(BASHINCDIR)/gettext.h
 shopt.o: $(BASHINCDIR)/maxpath.h
 shopt.o: $(BASHINCDIR)/memalloc.h
 shopt.o: $(BUILD_DIR)/config.h
 shopt.o: $(BUILD_DIR)/pathnames.h
 shopt.o: $(HIST_LIBSRC)/history.h
+shopt.o: $(LIBINTL_H)
 shopt.o: $(RL_LIBSRC)/rlstdc.h
 shopt.o: $(srcdir)/bashgetopt.h
 shopt.o: $(srcdir)/common.h
 shopt.o: $(srcdir)/shopt.def
 shopt.o: $(topdir)/bashhist.h
+shopt.o: $(topdir)/bashintl.h
 shopt.o: $(topdir)/bashline.h
 shopt.o: $(topdir)/command.h
 shopt.o: $(topdir)/config-top.h
@@ -1375,15 +1380,15 @@ shopt.o: $(topdir)/syntax.h
 shopt.o: $(topdir)/unwind_prot.h
 shopt.o: $(topdir)/variables.h
 shopt.o: $(topdir)/xmalloc.h
-shopt.o: ${LIBINTL_H}
-shopt.o: ${topdir}/bashintl.h
 source.o: $(BASHINCDIR)/gettext.h
 source.o: $(BASHINCDIR)/maxpath.h
 source.o: $(BASHINCDIR)/memalloc.h
 source.o: $(BUILD_DIR)/config.h
 source.o: $(BUILD_DIR)/pathnames.h
+source.o: $(LIBINTL_H)
 source.o: $(srcdir)/bashgetopt.h
 source.o: $(srcdir)/source.def
+source.o: $(topdir)/bashintl.h
 source.o: $(topdir)/command.h
 source.o: $(topdir)/conftypes.h
 source.o: $(topdir)/dispose_cmd.h
@@ -1403,14 +1408,14 @@ source.o: $(topdir)/trap.h
 source.o: $(topdir)/unwind_prot.h
 source.o: $(topdir)/variables.h
 source.o: $(topdir)/xmalloc.h
-source.o: ${LIBINTL_H}
-source.o: ${topdir}/bashintl.h
 suspend.o: $(BASHINCDIR)/gettext.h
 suspend.o: $(BASHINCDIR)/maxpath.h
 suspend.o: $(BASHINCDIR)/memalloc.h
 suspend.o: $(BUILD_DIR)/config.h
 suspend.o: $(BUILD_DIR)/pathnames.h
+suspend.o: $(LIBINTL_H)
 suspend.o: $(srcdir)/suspend.def
+suspend.o: $(topdir)/bashintl.h
 suspend.o: $(topdir)/command.h
 suspend.o: $(topdir)/conftypes.h
 suspend.o: $(topdir)/dispose_cmd.h
@@ -1427,8 +1432,6 @@ suspend.o: $(topdir)/syntax.h
 suspend.o: $(topdir)/unwind_prot.h
 suspend.o: $(topdir)/variables.h
 suspend.o: $(topdir)/xmalloc.h
-suspend.o: ${LIBINTL_H}
-suspend.o: ${topdir}/bashintl.h
 test.o: $(BASHINCDIR)/maxpath.h
 test.o: $(BASHINCDIR)/memalloc.h
 test.o: $(BUILD_DIR)/config.h
@@ -1500,8 +1503,10 @@ type.o: $(BASHINCDIR)/maxpath.h
 type.o: $(BASHINCDIR)/memalloc.h
 type.o: $(BUILD_DIR)/config.h
 type.o: $(BUILD_DIR)/pathnames.h
+type.o: $(LIBINTL_H)
 type.o: $(srcdir)/common.h
 type.o: $(srcdir)/type.def
+type.o: $(topdir)/bashintl.h
 type.o: $(topdir)/command.h
 type.o: $(topdir)/conftypes.h
 type.o: $(topdir)/dispose_cmd.h
@@ -1520,14 +1525,14 @@ type.o: $(topdir)/syntax.h
 type.o: $(topdir)/unwind_prot.h
 type.o: $(topdir)/variables.h
 type.o: $(topdir)/xmalloc.h
-type.o: ${LIBINTL_H}
-type.o: ${topdir}/bashintl.h
 ulimit.o: $(BASHINCDIR)/gettext.h
 ulimit.o: $(BASHINCDIR)/maxpath.h
 ulimit.o: $(BASHINCDIR)/memalloc.h
 ulimit.o: $(BUILD_DIR)/config.h
 ulimit.o: $(BUILD_DIR)/pathnames.h
+ulimit.o: $(LIBINTL_H)
 ulimit.o: $(srcdir)/ulimit.def
+ulimit.o: $(topdir)/bashintl.h
 ulimit.o: $(topdir)/command.h
 ulimit.o: $(topdir)/conftypes.h
 ulimit.o: $(topdir)/dispose_cmd.h
@@ -1543,15 +1548,15 @@ ulimit.o: $(topdir)/syntax.h
 ulimit.o: $(topdir)/unwind_prot.h
 ulimit.o: $(topdir)/variables.h
 ulimit.o: $(topdir)/xmalloc.h
-ulimit.o: ${LIBINTL_H}
-ulimit.o: ${topdir}/bashintl.h
 umask.o: $(BASHINCDIR)/chartypes.h
 umask.o: $(BASHINCDIR)/gettext.h
 umask.o: $(BASHINCDIR)/maxpath.h
 umask.o: $(BASHINCDIR)/memalloc.h
 umask.o: $(BUILD_DIR)/config.h
 umask.o: $(BUILD_DIR)/pathnames.h
+umask.o: $(LIBINTL_H)
 umask.o: $(srcdir)/umask.def
+umask.o: $(topdir)/bashintl.h
 umask.o: $(topdir)/command.h
 umask.o: $(topdir)/conftypes.h
 umask.o: $(topdir)/dispose_cmd.h
@@ -1567,8 +1572,6 @@ umask.o: $(topdir)/syntax.h
 umask.o: $(topdir)/unwind_prot.h
 umask.o: $(topdir)/variables.h
 umask.o: $(topdir)/xmalloc.h
-umask.o: ${LIBINTL_H}
-umask.o: ${topdir}/bashintl.h
 wait.o: $(BASHINCDIR)/chartypes.h
 wait.o: $(BASHINCDIR)/maxpath.h
 wait.o: $(BASHINCDIR)/memalloc.h
