@@ -108,11 +108,14 @@ OTHERPROG = necho hello cat pushd asort
 
 SUBDIRS = perl
 
+.PHONY: all
 all:	$(SHOBJ_STATUS)
 
+.PHONY: supported others
 supported:	$(ALLPROG)
 others:		$(OTHERPROG)
 
+.PHONY: unsupported
 unsupported:
 	@echo "Your system (${host_os}) is not supported by the"
 	@echo "${topdir}/support/shobj-conf script."
@@ -122,6 +125,7 @@ unsupported:
 	@echo "Please send the changes you made to bash-maintainers@gnu.org"
 	@echo "for inclusion in future bash releases."
 
+.PHONY: everything
 everything: supported others
 
 print:	print.o
@@ -264,32 +268,38 @@ pushd.o:	pushd.c
 pushd:	pushd.o
 	$(SHOBJ_LD) $(SHOBJ_LDFLAGS) $(SHOBJ_XLDFLAGS) -o $@ pushd.o $(SHOBJ_LIBS)
 
+.PHONY: clean
 clean:
 	$(RM) $(ALLPROG) $(OTHERPROG) *.o
 	-for subdir in $(SUBDIRS); do \
 		( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	done
 
+.PHONY: mostlyclean
 mostlyclean:	clean
 	-for subdir in $(SUBDIRS); do \
 		( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	done
 
+.PHONY: distclean maintainer-clean
 distclean maintainer-clean: clean
 	$(RM) Makefile Makefile.inc Makefile.sample pushd.c
 	-for subdir in $(SUBDIRS); do \
 		( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	done
 
+.PHONY: installdirs
 installdirs:
 	@${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(loadablesdir)
 
+.PHONY: install-dev
 install-dev:	installdirs
 	@$(INSTALL_DATA) Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.inc
 	@$(INSTALL_DATA) Makefile.sample $(DESTDIR)$(loadablesdir)/Makefile.sample
 	@$(INSTALL_DATA) $(srcdir)/loadables.h $(DESTDIR)$(loadablesdir)/loadables.h
 	@( cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" install-headers)
 
+.PHONY: install-supported
 install-supported:	all installdirs install-dev
 	@echo installing example loadable builtins in $(DESTDIR)${loadablesdir}
 	@for prog in ${ALLPROG}; do \
@@ -297,17 +307,21 @@ install-supported:	all installdirs install-dev
 		$(INSTALL_PROGRAM) $(INSTALLMODE) $$prog $(DESTDIR)$(loadablesdir)/$$prog ;\
 	done
 
+.PHONY: uninstall-dev
 uninstall-dev:
 	-$(RM) $(DESTDIR)$(loadablesdir)/Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.sample
 	-$(RM) $(DESTDIR)$(loadablesdir)/loadables.h
 	-( cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers)
 
+.PHONY: uninstall-supported
 uninstall-supported:	uninstall-dev
 	-( cd $(DESTDIR)${loadablesdir} && $(RM) ${ALLPROG} )
 
+.PHONY: install-unsupported uninstall-unsupported
 install-unsupported:
 uninstall-unsupported:
 
+.PHONY: install uninstall
 install:	install-$(SHOBJ_STATUS)
 uninstall:	uninstall-$(SHOBJ_STATUS)
 
