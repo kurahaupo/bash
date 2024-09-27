@@ -77,11 +77,11 @@ CREATED_DOCS = $(DVIOBJ) $(INFOOBJ) $(PSOBJ) $(HTMLOBJ) $(PDFOBJ)
 
 .ps.pdf:
 	$(RM) $@
-	-${PSPDF} $<
+	- ${PSPDF} $<
 
 .dvi.pdf:
 	$(RM) $@
-	-${DVIPDF} $<
+	- ${DVIPDF} $<
 
 all: info dvi html ps
 nodvi: info html
@@ -160,7 +160,7 @@ maintainer-clean: clean
 	$(RM) Makefile
 
 install:
-	@echo "This documentation should not be installed."
+	@ echo "This documentation should not be installed."
 
 uninstall:
 

@@ -223,16 +223,16 @@ all: libreadline.a libhistory.a
 libreadline.a: $(OBJECTS)
 	$(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 libhistory.a: $(HISTOBJ) xmalloc.o xfree.o
 	$(RM) $@
 	$(AR) $(ARFLAGS) $@ $(HISTOBJ) xmalloc.o xfree.o
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 documentation: force
 	test -d doc || mkdir doc
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) )
 
 # Since tilde.c is shared between readline and bash, make sure we compile
 # it with the right flags when it's built as part of readline
@@ -243,10 +243,10 @@ tilde.o:	tilde.c
 force:
 
 install:
-	@echo "This version of the readline library should not be installed."
+	@ echo "This version of the readline library should not be installed."
 
 uninstall:
-	@echo "This version of the readline library should not be installed."
+	@ echo "This version of the readline library should not be installed."
 
 TAGS:	force
 	$(ETAGS) $(CSOURCES) $(HSOURCES)
@@ -256,13 +256,13 @@ tags:	force
 
 clean:	force
 	$(RM) $(OBJECTS) *.a
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
 mostlyclean: clean
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
 distclean maintainer-clean: clean
-	-( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 	$(RM) Makefile
 	$(RM) TAGS tags
 

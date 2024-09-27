@@ -452,8 +452,8 @@ distclean: clean
 	fi
 
 maintainer-clean: distclean
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
+	@ echo "This command is intended for maintainers to use;"
+	@ echo "it deletes files that may require special tools to rebuild."
 
 
 # GNU gettext needs not contain the file `VERSION' but contains some

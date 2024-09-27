@@ -265,7 +265,7 @@ targets: libbuiltins.a $(HELPFILES_TARGET)
 libbuiltins.a: $(MKBUILTINS) $(OFILES) builtins.o
 	$(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OFILES)
-	-$(RANLIB) $@
+	- $(RANLIB) $@
 
 tmpbuiltins.c tmpbuiltins.h :	$(MKBUILTINS) $(DEFSRC)
 	./$(MKBUILTINS) \
@@ -283,7 +283,7 @@ gen-helpfiles:	tmpbuiltins.o gen-helpfiles.o
 	$(CC_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ gen-helpfiles.o tmpbuiltins.o $(LIBS_FOR_BUILD)
 
 builtext.h builtins.c: $(MKBUILTINS) $(DEFSRC)
-	@RECPID=$$$$ ; \
+	@ RECPID=$$$$ ; \
 	NEW_BUILTEXT=builtext-$$RECPID.h NEW_BUILTINS=builtins-$$RECPID.c ; \
 	./$(MKBUILTINS) -externfile $$NEW_BUILTEXT \
 	    -includefile builtext.h \
@@ -306,13 +306,13 @@ helpdoc:	gen-helpfiles
 
 .PHONY: install-help
 install-help:	$(HELPFILES_TARGET)
-	@-if test -n "${HELPDIR}" && test -d helpfiles ; then \
+	@- if test -n "${HELPDIR}" && test -d helpfiles ; then \
 		test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
 		( for f in helpfiles/*; do \
 			echo installing $$f; \
 			${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR); \
 		  done; ) ; \
-	fi
+	  fi
 
 .PHONY: install
 install:	@HELPINSTALL@
@@ -343,7 +343,7 @@ builtins.texi: $(MKBUILTINS)
 clean:
 	$(RM) $(OFILES) $(CREATED_FILES) libbuiltins.a
 	$(RM) $(MKBUILTINS) gen-helpfiles $(CREATED_OBJECTS)
-	-test -d helpfiles && $(RM) -r helpfiles
+	- test -d helpfiles && $(RM) -r helpfiles
 
 .PHONY: mostlyclean
 mostlyclean:
@@ -356,7 +356,7 @@ distclean maintainer-clean: clean
 $(OFILES):	$(MKBUILTINS) ../config.h
 
 ../version.h: ../config.h ../Makefile Makefile
-	-( cd .. && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+	- ( cd .. && ${MAKE} ${BASH_MAKEFLAGS} version.h )
 
 # maintainer special - for now
 .PHONY: po
@@ -364,9 +364,9 @@ po:	builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
 ${LIBINTL_H}:
-	@echo making $@ in ${INTL_BUILDDIR}
-	@(cd ${INTL_BUILDDIR} && \
-		$(MAKE) $(BASH_MAKEFLAGS) libintl.h) || exit 1
+	@ echo making $@ in ${INTL_BUILDDIR}
+	@ (cd ${INTL_BUILDDIR} && \
+		$(MAKE) $(BASH_MAKEFLAGS) libintl.h)
 
 .PHONY: depends depend
 depends depend: $(MKBUILTINS) builtext.h pipesize.h tmpbuiltins.h

@@ -77,7 +77,7 @@ all: libtermcap.a
 libtermcap.a:	$(OBJECTS)
 	$(RM) -f $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
-	-test -n "$(RANLIB)" && $(RANLIB) $@
+	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 install:
 
@@ -91,7 +91,7 @@ distclean maintainer-clean: clean
 
 $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 	${INSTALL_DATA} -c -m 644 libtermcap.a $@
-	-test -n "$(RANLIB)" && $(RANLIB) -t $@
+	- test -n "$(RANLIB)" && $(RANLIB) -t $@
 
 .PHONY: depends depend
 depends depend:
