@@ -231,7 +231,7 @@ OTHER_DOCS = $(srcdir)/FAQ $(srcdir)/INTRO
 OTHER_INSTALLED_DOCS = FAQ INTRO
 
 $(MAN2HTML):	${topdir}/support/man2html.c
-	- ( cd ${BUILD_DIR}/support ; ${MAKE} ${BASH_MAKEFLAGS} man2html)
+	- ( cd ${BUILD_DIR}/support && ${MAKE} ${BASH_MAKEFLAGS} man2html)
 
 .PHONY: clean
 clean:

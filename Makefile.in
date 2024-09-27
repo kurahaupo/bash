@@ -1339,10 +1339,10 @@ loadables: .made
 #	$(MAKE) -f $(srcdir)/Makefile $(BASH_MAKEFLAGS) srcdir=$(srcdir)
 
 doc documentation:  force
-	@ (cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) )
+	@ (cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) )
 
 info dvi ps: force
-	@ (cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) CFLAGS='$(CCFLAGS)' $@ )
+	@ (cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) CFLAGS='$(CCFLAGS)' $@ )
 
 force:
 
@@ -1360,18 +1360,18 @@ installdirs:
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(man1dir)
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(infodir)
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(docdir)
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
 install: .made installdirs
 	$(INSTALL_PROGRAM) $(INSTALLMODE) $(Program) $(DESTDIR)$(bindir)/$(Program)
 	$(INSTALL_SCRIPT) $(INSTALLMODE2) bashbug $(DESTDIR)$(bindir)/bashbug
 	$(INSTALL_DATA) $(OTHER_DOCS) $(DESTDIR)$(docdir)
-	- ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
+	- ( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) \
 		man1dir=$(man1dir) man1ext=$(man1ext) \
 		man3dir=$(man3dir) man3ext=$(man3ext) \
 		infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(DEFDIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
 install-strip:
@@ -1414,11 +1414,11 @@ uninstall-headers:
 uninstall: .made
 	$(RM) $(DESTDIR)$(bindir)/$(Program) $(DESTDIR)$(bindir)/bashbug
 	- ( cd $(DESTDIR)$(docdir) && ${RM} ${OTHER_INSTALLED_DOCS} )
-	- ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
+	- ( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) \
 		man1dir=$(man1dir) man1ext=$(man1ext) \
 		man3dir=$(man3dir) man3ext=$(man3ext) \
 		infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
 LIB_SUBDIRS = ${RL_LIBDIR}  ${HIST_LIBDIR} ${TERM_LIBDIR} ${GLOB_LIBDIR} \
@@ -1437,7 +1437,7 @@ clean: basic-clean
 	- for libdir in ${LIB_SUBDIRS}; do \
 		(cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@) ;\
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	$(RM) $(CREATED_SUPPORT)
 	$(RM) -rf $(CREATED_MACOS)
@@ -1450,7 +1450,7 @@ mostlyclean: basic-clean
 	- for libdir in ${LIB_SUBDIRS}; do \
 		(cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@) ;\
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 
 .PHONY: distclean
@@ -1461,7 +1461,7 @@ distclean: basic-clean maybe-clean
 	- for libdir in ${LIB_SUBDIRS}; do \
 		(cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@) ;\
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	$(RM) $(CREATED_CONFIGURE) tags TAGS
 	$(RM) $(CREATED_SUPPORT) Makefile $(CREATED_MAKEFILES) $(CREATED_HEADERS)
@@ -1478,7 +1478,7 @@ maintainer-clean: basic-clean
 	- for libdir in ${LIB_SUBDIRS}; do \
 		(cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@) ;\
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
 	$(RM) $(CREATED_CONFIGURE) Makefile $(CREATED_MAKEFILES)
 	$(RM) $(CREATED_SUPPORT) $(CREATED_HEADERS)
