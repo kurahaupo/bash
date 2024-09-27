@@ -186,7 +186,13 @@ MKDEP_CC = ${CC}
 MKDEP_OPTS = -c ${MKDEP_CC}
 MKDEP_CCFLAGS = ${CCFLAGS}
 
-INCLUDES = -I. @RL_INCLUDE@ -I$(srcdir) -I$(BASHINCDIR) -I$(LIBSRC) $(INTL_INC)
+INCLUDES = -I. \
+	   @RL_INCLUDE@ \
+	   -I$(srcdir) \
+	   -I$(BASHINCDIR) \
+	   -I$(LIBSRC) \
+	   $(INTL_INC) \
+
 
 # Maybe add: -Wextra
 GCC_LINT_FLAGS = -O -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wno-parentheses \

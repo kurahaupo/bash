@@ -52,7 +52,12 @@ LOCAL_DEFS = @LOCAL_DEFS@
 
 BASHINCDIR = ${topdir}/include
 
-INCLUDES = -I. -I../.. -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib
+INCLUDES = -I. \
+	   -I../.. \
+	   -I$(topdir) \
+	   -I$(BASHINCDIR) \
+	   -I$(topdir)/lib \
+
 
 CCFLAGS = $(PROFILE_FLAGS) $(DEFS) $(LOCAL_DEFS) ${INCLUDES} $(CPPFLAGS) \
 	  $(STYLE_CFLAGS) $(LOCAL_CFLAGS) $(CFLAGS) ${ADDON_CFLAGS}
