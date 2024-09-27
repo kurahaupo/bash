@@ -87,35 +87,117 @@ LIBS = @LIBS@
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
-HEADERS = gmo.h gettextP.h hash-string.h loadinfo.h plural-exp.h \
-        eval-plural.h localcharset.h lock.h \
-        relocatable.h arg-nonnull.h attribute.h \
-        filename.h flexmember.h localename-table.in.h setlocale_null.h \
-        thread-optim.h tsearch.h verify.h xsize.h \
-        printf-args.h printf-parse.h wprintf-parse.h \
-	export.h os2compat.h plural-exp.h vasnprintf.h vasnwprintf.h \
-	libgnuintl.in.h
+HEADERS		= \
+		  arg-nonnull.h \
+		  attribute.h \
+		  eval-plural.h \
+		  export.h \
+		  filename.h \
+		  flexmember.h \
+		  gettextP.h \
+		  gmo.h \
+		  hash-string.h \
+		  libgnuintl.in.h \
+		  loadinfo.h \
+		  localcharset.h \
+		  localename-table.in.h \
+		  lock.h \
+		  os2compat.h \
+		  plural-exp.h \
+		  plural-exp.h \
+		  printf-args.h \
+		  printf-parse.h \
+		  relocatable.h \
+		  setlocale_null.h \
+		  thread-optim.h \
+		  tsearch.h \
+		  vasnprintf.h \
+		  vasnwprintf.h \
+		  verify.h \
+		  wprintf-parse.h \
+		  xsize.h \
 
-SOURCES = bindtextdom.c dcgettext.c dgettext.c gettext.c \
-        finddomain.c hash-string.c loadmsgcat.c localealias.c \
-        textdomain.c l10nflist.c explodename.c dcigettext.c \
-        dcngettext.c dngettext.c ngettext.c plural.y plural-exp.c \
-        localcharset.c threadlib.c lock.c relocatable.c langprefs.c \
-        localename.c localename-table.c log.c printf.c setlocale.c \
-        setlocale-lock.c setlocale_null.c version.c xsize.c osdep.c \
-        intl-compat.c
 
-EXTRASOURCES = tsearch.c printf-args.c printf-parse.c vasnprintf.c \
-	intl-exports.c os2compat.c
+SOURCES		= \
+		  bindtextdom.c \
+		  dcgettext.c \
+		  dcigettext.c \
+		  dcngettext.c \
+		  dgettext.c \
+		  dngettext.c \
+		  explodename.c \
+		  finddomain.c \
+		  gettext.c \
+		  hash-string.c \
+		  intl-compat.c \
+		  l10nflist.c \
+		  langprefs.c \
+		  loadmsgcat.c \
+		  localcharset.c \
+		  localealias.c \
+		  localename-table.c \
+		  localename.c \
+		  lock.c \
+		  log.c \
+		  ngettext.c \
+		  osdep.c \
+		  plural-exp.c \
+		  plural.y \
+		  printf.c \
+		  relocatable.c \
+		  setlocale-lock.c \
+		  setlocale.c \
+		  setlocale_null.c \
+		  textdomain.c \
+		  threadlib.c \
+		  version.c \
+		  xsize.c \
 
-OBJECTS = bindtextdom.o dcgettext.o dgettext.o gettext.o \
-        finddomain.o hash-string.o loadmsgcat.o localealias.o \
-        textdomain.o l10nflist.o explodename.o dcigettext.o \
-        dcngettext.o dngettext.o ngettext.o plural.o plural-exp.o \
-        localcharset.o threadlib.o lock.o relocatable.o langprefs.o \
-        localename.o localename-table.o log.o printf.o setlocale.o \
-        setlocale-lock.o setlocale_null.o version.o xsize.o osdep.o \
-        intl-compat.o
+
+EXTRASOURCES	= \
+		  intl-exports.c \
+		  os2compat.c \
+		  printf-args.c \
+		  printf-parse.c \
+		  tsearch.c \
+		  vasnprintf.c \
+
+
+OBJECTS		= \
+		  bindtextdom.o \
+		  dcgettext.o \
+		  dcigettext.o \
+		  dcngettext.o \
+		  dgettext.o \
+		  dngettext.o \
+		  explodename.o \
+		  finddomain.o \
+		  gettext.o \
+		  hash-string.o \
+		  intl-compat.o \
+		  l10nflist.o \
+		  langprefs.o \
+		  loadmsgcat.o \
+		  localcharset.o \
+		  localealias.o \
+		  localename-table.o \
+		  localename.o \
+		  lock.o \
+		  log.o \
+		  ngettext.o \
+		  osdep.o \
+		  plural-exp.o \
+		  plural.o \
+		  printf.o \
+		  relocatable.o \
+		  setlocale-lock.o \
+		  setlocale.o \
+		  setlocale_null.o \
+		  textdomain.o \
+		  threadlib.o \
+		  version.o \
+		  xsize.o \
+
 
 CREATED_HEADERS = libintl.h libgnuintl.h localename-table.h
 CREATED_SOURCES = plural.c plural.h
