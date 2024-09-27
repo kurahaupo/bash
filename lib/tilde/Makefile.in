@@ -99,7 +99,7 @@ $(LIBRARY_NAME): $(OBJECTS)
 	- test -n "$(RANLIB)" && $(RANLIB) $@
 
 documentation: force
-	- (cd doc && $(MAKE) $(BASH_MAKEFLAGS))
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS)
 
 force:
 
@@ -112,14 +112,14 @@ install:
 
 clean:
 	$(RM) -f $(OBJECTS) $(LIBRARY_NAME)
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 realclean distclean maintainer-clean: clean
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 	$(RM) -f Makefile
 
 mostlyclean: clean
-	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 .PHONY: depends depend
 depends depend:
