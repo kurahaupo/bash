@@ -222,9 +222,10 @@ LSAN_XCFLAGS	= \
 LSAN_XLDFLAGS	= -fsanitize=leak
 
 MKDEP = $(SUPPORT_SRC)mkdep
-MKDEP_CC = ${CC}
-MKDEP_OPTS = -c ${MKDEP_CC}
-MKDEP_CCFLAGS = ${CCFLAGS}
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c "$(MKDEP_CC)" -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS)
+MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
 INCLUDES = -I. \
 	   @RL_INCLUDE@ \
@@ -1599,10 +1600,13 @@ xdist: force
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	cd po && $(MAKE) $(BASH_MAKEFLAGS) $@
 
-depend: depends
-
-depends: force
-	$(Program) $(MKDEP) ${MKDEP_OPTS} -- ${MKDEP_CCFLAGS} ${CSOURCES}
+.PHONY: depends depend
+depends depend: force y.tab.c makefiles signames.h builtins/pipesize.h version.h
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+	# "shift" drops *this* Makefile from the list to be processed
+	@ set -- $(CREATED_MAKEFILES) ; shift ; for mf do \
+	    ( cd "$${mf%/*}" && $(MAKE) $(MAKEFLAGS) depends ) || exit 1 ; \
+	  done
 
 #### PRIVATE TARGETS ####
 hashtest: hashlib.c
