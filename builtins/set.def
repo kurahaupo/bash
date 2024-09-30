@@ -180,18 +180,68 @@ static const char * const off = "off";
 
 static int previous_option_value;
 
+/*
+ * Keep aach option's terms in this order:
+ *  Name, Letter
+ *  Store (pointer)
+ *  Init (pointer), Skip-reset
+ *  Getter & Setter functions, Reference value
+ *  Read-only, Forbid-change, Ignore-change
+ *  (everything else in alphabetical order)
+ *  Help
+ */
+
 static opt_def_t const xo_options[] = {
-  { "ignoreeof",		.hide_shopt = true,	.adjust_shellopts = true,	.store = &ignoreeof,		.set_func = set_ignoreeof },
-  { "interactive-comments",	.hide_shopt = true,	.adjust_shellopts = true,	.store = &interactive_comments },
-  { "pipefail",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &pipefail_opt },
-  { "posix",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &posixly_correct,	.set_func = set_posix_mode },
+  { "ignoreeof",
+    .store = &ignoreeof,
+    .set_func = set_ignoreeof,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
+  { "interactive-comments",
+    .store = &interactive_comments,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
+  { "pipefail",
+    .store = &pipefail_opt,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
+  { "posix",
+    .store = &posixly_correct,
+    .set_func = set_posix_mode,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
 #if defined (READLINE)
-  { "emacs",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode, 	.get_func = get_edit_mode,	.reference_value = EMACS_EDITING_MODE },
-  { "vi",			.hide_shopt = true,	.adjust_shellopts = true,					.set_func = set_edit_mode,	.get_func = get_edit_mode,	.reference_value = VI_EDITING_MODE },
+  { "emacs",
+    .hide_shopt = true,
+    .get_func = get_edit_mode,
+    .set_func = set_edit_mode,
+    .reference_value = EMACS_EDITING_MODE,
+    .adjust_shellopts = true,
+  },
+  { "vi",
+    .get_func = get_edit_mode,
+    .set_func = set_edit_mode,
+    .reference_value = VI_EDITING_MODE,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
 #endif
 #if defined (HISTORY)
-  { "history",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &enable_history_list,	.set_func = set_history_flag },
-  { "nolog",			.hide_shopt = true,	.adjust_shellopts = true,	.store = &dont_save_function_defs },
+  { "history",
+    .store = &enable_history_list,
+    .set_func = set_history_flag,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
+  { "nolog",
+    .store = &dont_save_function_defs,
+    .adjust_shellopts = true,
+    .hide_shopt = true,
+  },
 #endif
   //0
 };
