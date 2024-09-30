@@ -468,7 +468,8 @@ static opt_def_t const xo_options[] = {
     .hide_set_o = true,
     .help = N_(
       "Pathname expansion applied to patterns that fail to match any filenames\n"
-      "results in an expansion error."),
+      "results in an expansion error. (This may result in undesired behaviour in\n"
+      "commands like `ls` that interpret \"no arguments\" specially.)"),
   },
 #if defined (READLINE)
   { "force_fignore",
