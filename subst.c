@@ -6873,13 +6873,6 @@ uw_restore_pipeline (void *discard)
   restore_pipeline ((intptr_t) discard);
 }
 
-static void
-uw_restore_errexit (void *eflag)
-{
-  change_flag ('e', (intptr_t) eflag ? FLAG_ON : FLAG_OFF);
-  set_shellopts ();
-}
-
 /* Quote the output of nofork varsub command substitution in the way that the
    caller of function_substitute expects. The caller guarantees that STRING
    is non-null. This is equivalent to what read_comsub does to the output it
@@ -7014,7 +7007,7 @@ function_substitute (char *string, int quoted, int flags)
     {
       unwind_protect_int (builtin_ignoring_errexit);
       builtin_ignoring_errexit = 0;
-      add_unwind_protect (uw_restore_errexit, (void *) (intptr_t) errexit_flag);
+      add_unwind_protect_errexit_flag ();
       change_flag ('e', FLAG_OFF);
     }
   set_shellopts ();

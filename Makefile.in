@@ -2173,6 +2173,7 @@ execute_cmd.o: $(topdir)/jobs.h
 execute_cmd.o: $(topdir)/lib/glob/strmatch.h
 execute_cmd.o: $(topdir)/lib/tilde/tilde.h
 execute_cmd.o: $(topdir)/make_cmd.h
+execute_cmd.o: $(topdir)/options.h
 execute_cmd.o: $(topdir)/parser.h
 execute_cmd.o: $(topdir)/pathexp.h
 execute_cmd.o: $(topdir)/pathnames.h

@@ -81,6 +81,8 @@ extern int errno;
 #include "hashcmd.h"
 #include "options.h"
 
+#include "options.h"
+
 #if defined (COND_COMMAND)
 #  include "test.h"
 #endif
@@ -334,6 +336,59 @@ int sourcenest_max = SOURCENEST_MAX;
 volatile int from_return_trap = 0;
 
 int lastpipe_opt = 0;
+
+/* Non-zero means exit immediately if a command exits with a non-zero
+   exit status.  The first is what controls set -e; the second is what
+   bash uses internally. */
+static int errexit_flag = 0;
+int exit_immediately_on_error = 0;
+static opt_set_func_t optset_errexit_flag;
+static op_result_t
+optset_errexit_flag (opt_def_t const *d, accessor_t why, option_value_t new_value)
+{
+  errexit_flag = new_value;
+  if (builtin_ignoring_errexit == 0 || AccessorIs (why, reinit))
+    exit_immediately_on_error = errexit_flag;
+}
+static opt_def_t const OPTDEF_errexit_flag = {
+  .store = &errexit_flag,
+  .OPTRESET_false,
+  .set_func = optset_errexit_flag,
+  .letter = 'e',
+  .name = "errexit",
+  .adjust_shellopts = true,
+  .hide_shopt = true,
+  .help = N_(
+    "Exit immediately if an non-exempt command exits with a non-zero status.\n"
+    "\n"
+    "A command is exempt if it is:\n"
+    "  ‧ immediately preceded by '!';\n"
+    "  ‧ immediately followed by '&&' or '||';\n"
+    "  ‧ between 'if' and its corresponding 'then';\n"
+    "  ‧ between 'while' (or 'until') and its corresponding 'do';\n"
+    "  ‧ within a compound command whose context is in this list;\n"
+    "  ‧ within:\n"
+    "    ‧ a function called that is called from, or\n"
+    "    ‧ a trap that is triggered in,\n"
+    "    any context that is recursively in this list.\n"
+    "\n"
+    "This will normally cause a cascading exit, as each shell notices that\n"
+    "a subshell 'fails', however failures within command substitutions\n"
+    "$(...) and `...` are masked if they occur anywhere other than in\n"
+    "simple assignments."),
+};
+
+static void
+uw_restore_errexit (void *eflag)
+{
+  set_opt_value (&OPTDEF_errexit_flag, Accessor (unwind), (intptr_t) eflag);
+}
+
+void
+add_unwind_protect_errexit_flag (void)
+{
+  add_unwind_protect (uw_restore_errexit, (void *) (intptr_t) errexit_flag);
+}
 
 struct fd_bitmap *current_fds_to_close = (struct fd_bitmap *)NULL;
 
@@ -6358,4 +6413,5 @@ do_piping (int pipe_in, int pipe_out)
 void
 register_execute_cmd_opts (void)
 {
+  register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
 }
