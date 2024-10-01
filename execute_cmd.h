@@ -71,6 +71,8 @@ extern int sourcenest, sourcenest_max;
 extern int stdin_redir;
 extern int line_number_for_err_trap;
 
+extern int exit_immediately_on_error;
+
 extern char *the_printed_command_except_trap;
 extern COMMAND *currently_executing_command;
 
@@ -146,5 +148,7 @@ extern void uw_close (void *);
 extern void init_notfound_str (void);
 
 extern void register_execute_cmd_opts (void);
+
+extern void add_unwind_protect_errexit_flag (void);
 
 #endif /* _EXECUTE_CMD_H_ */
