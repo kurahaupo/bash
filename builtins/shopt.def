@@ -161,9 +161,6 @@ extern int syslog_history;
 
 static void shopt_error (char const*);
 
-#if 0
-static opt_set_func_t set_shellopts_after_change;
-#endif
 static opt_get_func_t get_compatibility_level;
 static opt_set_func_t set_compatibility_level;
 
@@ -481,9 +478,6 @@ static opt_def_t const xo_options[] = {
   },
   { "interactive_comments",
     .store = &interactive_comments,
-    #if 0
-    .set_func = set_shellopts_after_change,
-    #endif
     .adjust_bashopts = true,
     .adjust_shellopts = true,
     .hide_set_o = true,
@@ -853,20 +847,6 @@ shopt_error (char const*s)
 {
   builtin_error (_("%s: invalid shell option name"), s);
 }
-
-#if 0 /* already covered by set_opt_value when .adjust_shellopts is true */
-/* If we set or unset interactive_comments with shopt, make sure the
-   change is reflected in $SHELLOPTS. */
-/* Note that this is in addition to adjusting $BASHOPTS, which is triggered
-   by .adjust_bashopts. */
-static op_result_t
-set_shellopts_after_change (opt_def_t const *d, accessor_t why, int mode)
-{
-  d->store[0] = mode;
-  set_shellopts ();
-  return Result (OK);
-}
-#endif
 
 #if defined (DEBUGGER)
 static op_result_t
