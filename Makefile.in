@@ -1521,7 +1521,7 @@ xdist: force
 	cd po && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 .PHONY: depends depend
-depends depend: force y.tab.c makefiles signames.h
+depends depend: force y.tab.c makefiles signames.h builtins/pipesize.h version.h
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 	@ for mf in $(CREATED_CODE_MAKEFILES) ; do \
 	    ( cd "$${mf%/*}" && $(MAKE) $(MAKEFLAGS) depends ) || exit 1 ; \
