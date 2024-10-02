@@ -97,7 +97,6 @@ $END
 
 extern int allow_null_glob_expansion;
 extern int autocd;
-extern int bash_source_fullpath;
 extern int cdable_vars;
 extern int cdspelling;
 extern int check_hashed_filenames;
@@ -234,16 +233,6 @@ static opt_def_t const xo_options[] = {
       "Giving the name of a directory as a command causes cd to that directory.\n"
       "(Interactive only.)"),
   },
-#if defined (ARRAY_VARS)
-  { "bash_source_fullpath",
-    .store = &bash_source_fullpath,
-    .OPTRESET_false,
-    .adjust_bashopts = true,
-    .hide_set_o = true,
-    .help = N_(
-      "BASH_SOURCE contains full pathnames with symlinks resolved"),
-  },
-#endif
   { "cdable_vars",
     .store = &cdable_vars,
     .OPTRESET_false,

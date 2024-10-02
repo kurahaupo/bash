@@ -171,8 +171,20 @@ int array_needs_making = 1;
    by initialize_variables (). */
 int shell_level = 0;
 
+#if defined (ARRAY_VARS)
 /* If non-zero, each element of BASH_SOURCE contains a full pathnames */
-int bash_source_fullpath = 0;
+static int bash_source_fullpath = 0;
+
+static opt_def_t const OPTDEF_bash_source_fullpath = {
+  .store = &bash_source_fullpath,
+  .OPTRESET_false,
+  .name = "bash_source_fullpath",
+  .adjust_bashopts = true,
+  .hide_set_o = true,
+  .help = N_(
+    "BASH_SOURCE contains full pathnames with symlinks resolved"),
+};
+#endif
 
 /* An array which is passed to commands as their environment.  It is
    manufactured from the union of the initial environment and the
@@ -6515,4 +6527,7 @@ void
 register_variables_opts (void)
 {
   register_option (&OPTDEF_mark_modified_vars);		/* ±a, ±o allexport */
+#if defined (ARRAY_VARS)
+  register_option (&OPTDEF_bash_source_fullpath);	/*     ±o bash_source_fullpath */
+#endif
 }
