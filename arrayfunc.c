@@ -639,7 +639,7 @@ assign_assoc_from_kvlist (SHELL_VAR *var, WORD_LIST *nlist, HASH_TABLE *h, int f
       v = list->next ? list->next->word->word : 0;
 
       if (list->next)
-        list = list->next;
+	list = list->next;
 
       akey = split_kvpair_assignments ? savestring (k) : expand_subscript_string (k, 0);
       if (akey == 0 || *akey == 0)
@@ -758,7 +758,7 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
 	  len = skipsubscript (w, 0, 0);
 
 	  /* XXX - changes for `+=' */
- 	  if (w[len] != ']' || (w[len+1] != '=' && (w[len+1] != '+' || w[len+2] != '=')))
+	  if (w[len] != ']' || (w[len+1] != '=' && (w[len+1] != '+' || w[len+2] != '=')))
 	    {
 	      if (assoc_p (var) || last_ind < 0)
 		{
@@ -1404,7 +1404,7 @@ array_variable_name (const char *s, int flags, char **subp, int *lenp)
   if (t == 0)
     {
       if (subp)
-      	*subp = t;
+	*subp = t;
       if (lenp)
 	*lenp = 0;
       return ((char *)NULL);
@@ -1423,7 +1423,7 @@ array_variable_name (const char *s, int flags, char **subp, int *lenp)
     {
       err_badarraysub (s);
       if (subp)
-      	*subp = t;
+	*subp = t;
       if (lenp)
 	*lenp = 0;
       return ((char *)NULL);
@@ -1524,11 +1524,11 @@ array_value_internal (const char *s, int quoted, int flags, array_eltstate_t *es
       else if (invisible_p (var))
 	return ((char *)NULL);
       else if (array_p (var) == 0 && assoc_p (var) == 0)
-        {
-          if (estatep)
+	{
+	  if (estatep)
 	    estatep->type = ARRAY_SCALAR;
 	  l = add_string_to_list (value_cell (var), (WORD_LIST *)NULL);
-        }
+	}
       else if (assoc_p (var))
 	{
 	  if (estatep)
@@ -1547,7 +1547,7 @@ array_value_internal (const char *s, int quoted, int flags, array_eltstate_t *es
 	}
 
       /* Caller of array_value takes care of inspecting estatep->subtype and
-         duplicating retval if subtype == 0, so this is not a memory leak */
+	 duplicating retval if subtype == 0, so this is not a memory leak */
       if (t[0] == '*' && (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES)))
 	{
 	  temp = string_list_dollar_star (l, quoted, (flags & AV_ASSIGNRHS) ? PF_ASSIGNRHS : 0);
@@ -1622,7 +1622,7 @@ array_value_internal (const char *s, int quoted, int flags, array_eltstate_t *es
       if (array_p (var) == 0 && assoc_p (var) == 0)
 	retval = (ind == 0) ? value_cell (var) : (char *)NULL;
       else if (assoc_p (var))
-        {
+	{
 	  retval = assoc_reference (assoc_cell (var), akey);
 	  if (estatep && estatep->key && (flags & AV_USEIND))
 	    free (akey);		/* duplicated estatep->key */
@@ -1630,7 +1630,7 @@ array_value_internal (const char *s, int quoted, int flags, array_eltstate_t *es
 	    estatep->key = akey;	/* XXX - caller must manage */
 	  else				/* not saving it anywhere */
 	    free (akey);
-        }
+	}
       else
 	retval = array_reference (array_cell (var), ind);
 
