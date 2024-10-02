@@ -75,7 +75,7 @@ Options:
   -c COMPILER	change compiler (default: gcc)
 
   --exclude=PATH,
-  -e PATH	add to exclusion path list
+  -e PAT	add to exclusion path list
 
   --dep-file=FILE,
   -f FILE	use dependency file (default: .depend)
@@ -90,7 +90,7 @@ Options:
   -kp		keep PATH from environment
 
   -M		pass -M compiler (don't exclude system includes)
-  -m       	pass -MM to compiler (default with gcc or clang)
+  -m		pass -MM to compiler (default with gcc or clang)
 
   -p		shorthand for '-r %.o=%'
 
@@ -123,11 +123,11 @@ add_replacement ()
 
     *%*=*%*)
 	    # With a wildcard
-	    fr=${OPTARG%=*%*}  fp=${fr%'%'*} fs=${fr#"$fp%"}
-	    to=${OPTARG#"$fr="} tp=${to%'%'*} ts=${to#"$tp%"}
+	    fr=${OPTARG%=*%*}	fp=${fr%'%'*} fs=${fr#"$fp%"}
+	    to=${OPTARG#"$fr="}	tp=${to%'%'*} ts=${to#"$tp%"}
 	    case $2 in
-	      s*) fp=' '$fp tp=' '$tp fs=$fs'$' ;;
-	      t*) fp='^'$fp fs=$fs': '  ;;
+	      s*) fp=' '$fp tp=' '$tp fs=$fs'$'	;;
+	      t*) fp='^'$fp fs=$fs': '		;;
 	    esac
 	    rewrite_list="$rewrite_list$NL s#$fp\([^/: ]*\)$fs#$tp\1$ts# ;" ;;
 
@@ -137,14 +137,14 @@ add_replacement ()
 	    to=${OPTARG#"$fr="}
 	    case $2 in
 	      s*) fr=' '$fr'$' to=' '$to ;;
-	      t*) fr='^'$fr': '  ;;
+	      t*) fr='^'$fr': '	  ;;
 	    esac
 	    rewrite_list="$rewrite_list$NL s#$fr#$to# ;" ;;
 
     s#*#*#)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
     s@*@*@)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
     s%*%*%)	rewrite_list="$rewrite_list$NL $OPTARG ;" ;;
-    *)	die EX_USAGE "Invalid replacement pattern '$OPTARG'; type '$PROG --help' for more" ;;
+    *)		die EX_USAGE "Invalid replacement pattern '$OPTARG'; type '$PROG --help' for more" ;;
   esac
 }
 
@@ -161,7 +161,8 @@ do
       ;;
 
     D)
-      debug=true ;;
+      debug=true
+      ;;
 
     e)
       # add item to the exclusion list
@@ -212,6 +213,12 @@ do
       rewrite_list="$rewrite_list s#^\([^/]*\)\.o:#\1:# ;$NL"
       ;;
 
+    s)
+      # re-sort whole depfile, after normalisation and merging, to prevent
+      # creating duplicates
+      presort_depfile=false # no need for two sorts
+      sort_depfile=true ;;
+
     P)
       patch_makefile=Makefile ;;
 
@@ -248,7 +255,7 @@ do
 	ap*)	case append		in "$opt"*) append_depfile=true ; continue ; esac ;;
 	cc)					    compiler=$arg ; continue ;;
 	co*)	case compiler		in "$opt"*) compiler=$arg ; continue ; esac ;;
-	de*-f*)	case dependency		in "$hopt"*)
+	de*-f*) case dependency		in "$hopt"*)
 		  opt=${opt#*-}
 		  case file		in "$opt"*) depfile=$arg ; continue ; esac ;;
 		esac ;;
@@ -257,13 +264,13 @@ do
 	k*-*)	case keep		in "$hopt"*)
 		  opt=${opt#*-}
 		  case $opt in
-		    e*)	case errors	in "$opt"*) keep_temps=false keep_temps_on_error=true ; continue ; esac ;;
-		    p*)	case path	in "$opt"*) keep_path=true ; continue ; esac ;;
-		    t*)	case temps	in "$opt"*) keep_temps=true keep_temps_on_error=true ; continue ; esac ;;
+		    e*) case errors	in "$opt"*) keep_temps=false keep_temps_on_error=true ; continue ; esac ;;
+		    p*) case path	in "$opt"*) keep_path=true ; continue ; esac ;;
+		    t*) case temps	in "$opt"*) keep_temps=true keep_temps_on_error=true ; continue ; esac ;;
 		  esac
 		esac ;;
 	n*-*)
-		case no	in "$hopt"*)
+		case no in "$hopt"*)
 		  opt=${opt#*-}
 		  hopt=${opt%%-*}
 		  case $opt in
@@ -275,7 +282,7 @@ do
 			t*) case temps	in "$opt"*) keep_temps=true keep_temps_on_error=false ; continue ; esac ;;
 			esac
 		      esac ;;
-		    p*)	case patch	in "$opt"*) patch_makefile= ; continue ; esac
+		    p*) case patch	in "$opt"*) patch_makefile= ; continue ; esac
 		  esac
 		esac ;;
 	p*)	case patch-makefile	in "$opt"*) patch_makefile=${arg-Makefile} ; continue ; esac ;;
@@ -309,7 +316,7 @@ shift $(( $OPTIND - 1 ))
 
 case ${compiler##*/} in
  gcc* | clang*) _=${m_flag=-MM} ;;
-             *) _=${m_flag=-M} ;;
+	     *) _=${m_flag=-M} ;;
 esac
 
 exclusion_list=${exclusion_list#"$NL"}
@@ -317,23 +324,25 @@ exclusion_list=${exclusion_list#"$NL"}
 "$keep_path" ||
   export PATH=/bin:/usr/bin:/usr/local/bin:/opt/bin:$PATH
 
+exclusion_list=${exclusion_list#"$NL"}
+
 "$debug" && set -x
 
 #
 # There are 4 directories of interest
 # * supplied:
-#       $topdir - the top of the source tree
-#       $srcdir - the source directory (within the source tree) that corresponds to the target directory
+#	$topdir - the top of the source tree
+#	$srcdir - the source directory (within the source tree) that corresponds to the target directory
 # * calculated:
-#       $blddir - the top of the target tree; should always be '' or '../' or '../../' etc
-#       $tgtdir - the target directory (within the target tree); should always be '' ($PWD)
+#	$blddir - the top of the target tree; should always be '' or '../' or '../../' etc
+#	$tgtdir - the target directory (within the target tree); should always be '' ($PWD)
 # Which is to say, the relative paths from $topdir to $srcdir and from $blddir
 # to $tgtdir must be the same. Moreover, $tgtdir must be $PWD (or '.'), because
 # otherwise the paths produced by 'gcc -MM' will be wrong.
 
 # For each given path, make sure it ends with a slash (or is empty)
-srcdir=${srcdir:+${srcdir%/}/}  srcdir=${srcdir#./}
-topdir=${topdir:+${topdir%/}/}  topdir=${topdir#./}
+srcdir=${srcdir:+${srcdir%/}/}	srcdir=${srcdir#./}
+topdir=${topdir:+${topdir%/}/}	topdir=${topdir#./}
 
 # Minimize all paths:
 #   - where a path is relative, leave it as-is
@@ -345,26 +354,26 @@ topdir=${topdir:+${topdir%/}/}  topdir=${topdir#./}
 #
 # Various cases to cope with; given topdir & srcdir, set corresponding subdir,
 # tgtdir & blddir:
-#   topdir                  srcdir			subdir  blddir  tgtdir
-#   /abs/path/              /abs/path/                  [./]    [./]    [./]            when building at an independent path
-#   /abs/path/              /abs/path/s1/               s1/     ../     [./]
-#   /abs/path/              /abs/path/s1/s2/            s1/s2/  ../../  [./]
+#   topdir			srcdir				subdir	blddir	tgtdir
+#   /abs/path/			/abs/path/			[./]	[./]	[./]		when building at an independent path
+#   /abs/path/			/abs/path/s1/			s1/	../	[./]
+#   /abs/path/			/abs/path/s1/s2/		s1/s2/	../../	[./]
 #
-#   [./]                    [./]                        [./]    [./]    [./]            when building at the apex of the source tree
-#   ../                     [./]                        s1/     ../     [./]		  (infer s1/s2/ from $PWD)
-#   ../../                  [./]                        s1/s2/  ../../  [./]
+#   [./]			[./]				[./]	[./]	[./]		when building at the apex of the source tree
+#   ../				[./]				s1/	../	[./]		  (infer s1/s2/ from $PWD)
+#   ../../			[./]				s1/s2/	../../	[./]
 #
-#   (../)                   (../)                       [./]    [./]    [./]            when building in a subdir of the source tree
-#   ../(../)                ../(../)s1/                 s1/     ../     [./]
-#   ../../(../)             ../../(../)s1/s2/           s1/s2/  ../../  [./]
-#   ../                     s2/                         s1/s2/  ../../  [./]
+#   (../)			(../)				[./]	[./]	[./]		when building in a subdir of the source tree
+#   ../(../)			../(../)s1/			s1/	../	[./]
+#   ../../(../)			../../(../)s1/s2/		s1/s2/	../../	[./]
+#   ../				s2/				s1/s2/	../../	[./]
 #
-#   rel/path/               rel/path/                   [./]    [./]    [./]            when building in a parent directory of the source tree
-#   ../../rel/path/         ../../rel/path/s1/s2/       s1/s2/  ../../  [./]
+#   rel/path/			rel/path/			[./]	[./]	[./]		when building in a parent directory of the source tree
+#   ../../rel/path/		../../rel/path/s1/s2/		s1/s2/	../../	[./]
 #
-#   (../)rel/path/          (../)rel/path/              [./]    [./]    [./]            when building beside the source tree
-#   ../(../)rel/path/       ../(../)rel/path/s1/        s1/     ../     [./]
-#   ../../(../)rel/path/    ../../(../)rel/path/s1/s2/  s1/s2/  ../../  [./]
+#   (../)rel/path/		../)rel/path/			[./]	[./]	[./]		when building beside the source tree
+#   ../(../)rel/path/		../(../)rel/path/s1/		s1/	../	[./]
+#   ../../(../)rel/path/	../../(../)rel/path/s1/s2/	s1/s2/	../../	[./]
 
 # Get the relative path of the target dir within the build tree, or abort
 
@@ -421,7 +430,6 @@ case $srcdir in
     esac
 
     while
-      #echo >&2 "DEBUG                   topdir={$topdir}  up={$up}  subdir={$subdir}"
       ! case $topdir in $up../*) ! : ; esac
     do
       up=$up../
@@ -431,8 +439,6 @@ case $srcdir in
 
     ;;
 esac
-
-#echo >&2 "DEBUG srcdir={$srcdir}  topdir={$topdir}  subdir={$subdir}"
 
 # Make "blddir" the reverse relative path of "subdir", relative to tgtdir
 
@@ -445,8 +451,6 @@ do
   blddir=$blddir../
   t=${t%/*/}/
 done
-
-#echo >&2 "DEBUG tgtdir={$tgtdir}  blddir={$blddir}"
 
 #######
 
@@ -493,12 +497,6 @@ rewrite_path()
 
 rewrite()
 {
-# echo "# topdir=$topdir"
-# echo "# srcdir=$srcdir"
-# echo "# subdir=$subdir"
-# echo "# blddir=$blddir"
-# echo "# tgtdir=$tgtdir"
-# echo "# PWD=$PWD"
   while
     IFS= read -r line
   do
@@ -586,7 +584,7 @@ sed '
       tb
     }
   ' < "$output.1" > "$output.2" ||
-  die 'Unrolling failed'
+    die 'Unrolling failed'
 
 # Custom rewriting
 
@@ -601,7 +599,7 @@ sed < "$output.2" > "$output.3" "
 
 if test -n "$exclusion_list"
 then
-  grep -vF "$exclusion_list"  < "$output.3" > "$output.4"
+  grep -vF "$exclusion_list" < "$output.3" > "$output.4"
 else
   ln "$output.3" "$output.4"
 fi ||
@@ -609,7 +607,7 @@ fi ||
 
 # Canonicalize paths changing A/B/C/../../D to A/D
 
-sed < "$output.4" > "$output.5" '
+sed '
     :a
     s@^\./@@
     s@ \./@ @g
@@ -620,7 +618,7 @@ sed < "$output.4" > "$output.5" '
     s@ [^/. ][^/ ]*/\.\./@ @g
     s@/[^/. ][^/ ]*/\.\./@/@g
     tb
-' ||
+  ' < "$output.4" > "$output.5" ||
   die 'Path normalization failed'
 
 # Sort the generated dependency list to eliminate duplicates
