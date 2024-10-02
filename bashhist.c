@@ -106,8 +106,6 @@ int history_lines_in_file;
 /* Non-zero means do no history expansion on this line, regardless
    of what history_expansion says. */
 int history_expansion_inhibited;
-/* If non-zero, double quotes can quote the history expansion character. */
-int double_quotes_inhibit_history_expansion = 0;
 #endif
 
 void

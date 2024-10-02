@@ -62,7 +62,6 @@ extern int history_reediting;
 
 #  if defined (BANG_HISTORY)
 extern int history_expansion_inhibited;
-extern int double_quotes_inhibit_history_expansion;
 #  endif /* BANG_HISTORY */
 
 extern void bash_initialize_history (void);
