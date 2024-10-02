@@ -501,7 +501,8 @@ static show_func_t show_option_set_o;
 static void
 show_option_on_off (opt_def_t const *d, accessor_t why)
 {
-  printf (OPTFMT "\n", d->name, get_opt_value (d, why) ? "on" : "off");
+  printf (OPTFMT "\n", d->name, get_opt_value (d, why) ? dgettext ("option-state|", "on")
+						       : dgettext ("option-state|", "off"));
 }
 
 static void
@@ -529,12 +530,14 @@ show_option_help1 (opt_def_t const *d, accessor_t why)
     {
       if (d->letter)
 	printf (OPTFMT "\t%c%c\n",
-		d->name, get_opt_value (d, why) ? "on" : "off",
+		d->name, get_opt_value (d, why) ? dgettext ("option-state|", "on")
+						: dgettext ("option-state|", "off"),
 		bool_to_flag (get_opt_value (d, why)), d->letter
 	       );
       else
 	printf (OPTFMT "\n",
-		d->name, get_opt_value (d, why) ? "on" : "off"
+		d->name, get_opt_value (d, why) ? dgettext ("option-state|", "on")
+						: dgettext ("option-state|", "off")
 	       );
     }
   else if (d->letter)
@@ -575,11 +578,11 @@ show_option_help3 (opt_def_t const *d, accessor_t why)
 
   if (d->name)
     {
-      printf ("\n\t%s:\n", _("Display"));
+      printf ("\n\t%s:\n", dgettext ("shopt-help|", "Display"));
       printf("\t\tshopt -P %s\n", d->name);
     }
 
-  printf ("\n\t%s:\n", _("Query"));
+  printf ("\n\t%s:\n", dgettext ("shopt-help|", "Query"));
   if (d->name)
     {
       printf("\t\tshopt -q %s\n", d->name);
@@ -593,7 +596,7 @@ show_option_help3 (opt_def_t const *d, accessor_t why)
 
   if (!d->readonly)
     {
-      printf ("\n\t%s:\n", _("Turn on"));
+      printf ("\n\t%s:\n", dgettext ("shopt-help|", "Turn on"));
       if (d->name)
 	{
 	  printf ("\t\tshopt -s %s\n", d->name);
@@ -603,7 +606,7 @@ show_option_help3 (opt_def_t const *d, accessor_t why)
       if (d->letter)
 	printf ("\t\tset -%c\n", d->letter);
 
-      printf ("\n\t%s:\n", _("Turn off"));
+      printf ("\n\t%s:\n", dgettext ("shopt-help|", "Turn off"));
       if (d->name)
 	{
 	  printf ("\t\tshopt -u %s\n", d->name);
