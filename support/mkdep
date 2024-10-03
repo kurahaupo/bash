@@ -75,7 +75,7 @@ Options:
   -c COMPILER	change compiler (default: gcc)
 
   --exclude=PATH,
-  -e PAT	add to exclusion path list
+  -e PATH	add to exclusion path list
 
   --dep-file=FILE,
   -f FILE	use dependency file (default: .depend)
@@ -137,7 +137,7 @@ add_replacement ()
 	    to=${OPTARG#"$fr="}
 	    case $2 in
 	      s*) fr=' '$fr'$' to=' '$to ;;
-	      t*) fr='^'$fr': '	  ;;
+	      t*) fr='^'$fr': '	;;
 	    esac
 	    rewrite_list="$rewrite_list$NL s#$fr#$to# ;" ;;
 
@@ -213,12 +213,6 @@ do
       rewrite_list="$rewrite_list s#^\([^/]*\)\.o:#\1:# ;$NL"
       ;;
 
-    s)
-      # re-sort whole depfile, after normalisation and merging, to prevent
-      # creating duplicates
-      presort_depfile=false # no need for two sorts
-      sort_depfile=true ;;
-
     P)
       patch_makefile=Makefile ;;
 
@@ -255,7 +249,7 @@ do
 	ap*)	case append		in "$opt"*) append_depfile=true ; continue ; esac ;;
 	cc)					    compiler=$arg ; continue ;;
 	co*)	case compiler		in "$opt"*) compiler=$arg ; continue ; esac ;;
-	de*-f*) case dependency		in "$hopt"*)
+	de*-f*)	case dependency		in "$hopt"*)
 		  opt=${opt#*-}
 		  case file		in "$opt"*) depfile=$arg ; continue ; esac ;;
 		esac ;;
@@ -264,9 +258,9 @@ do
 	k*-*)	case keep		in "$hopt"*)
 		  opt=${opt#*-}
 		  case $opt in
-		    e*) case errors	in "$opt"*) keep_temps=false keep_temps_on_error=true ; continue ; esac ;;
-		    p*) case path	in "$opt"*) keep_path=true ; continue ; esac ;;
-		    t*) case temps	in "$opt"*) keep_temps=true keep_temps_on_error=true ; continue ; esac ;;
+		    e*)	case errors	in "$opt"*) keep_temps=false keep_temps_on_error=true ; continue ; esac ;;
+		    p*)	case path	in "$opt"*) keep_path=true ; continue ; esac ;;
+		    t*)	case temps	in "$opt"*) keep_temps=true keep_temps_on_error=true ; continue ; esac ;;
 		  esac
 		esac ;;
 	n*-*)
@@ -282,7 +276,7 @@ do
 			t*) case temps	in "$opt"*) keep_temps=true keep_temps_on_error=false ; continue ; esac ;;
 			esac
 		      esac ;;
-		    p*) case patch	in "$opt"*) patch_makefile= ; continue ; esac
+		    p*)	case patch	in "$opt"*) patch_makefile= ; continue ; esac
 		  esac
 		esac ;;
 	p*)	case patch-makefile	in "$opt"*) patch_makefile=${arg-Makefile} ; continue ; esac ;;
@@ -323,8 +317,6 @@ exclusion_list=${exclusion_list#"$NL"}
 
 "$keep_path" ||
   export PATH=/bin:/usr/bin:/usr/local/bin:/opt/bin:$PATH
-
-exclusion_list=${exclusion_list#"$NL"}
 
 "$debug" && set -x
 
@@ -607,7 +599,7 @@ fi ||
 
 # Canonicalize paths changing A/B/C/../../D to A/D
 
-sed '
+sed < "$output.4" > "$output.5" '
     :a
     s@^\./@@
     s@ \./@ @g
@@ -618,7 +610,7 @@ sed '
     s@ [^/. ][^/ ]*/\.\./@ @g
     s@/[^/. ][^/ ]*/\.\./@/@g
     tb
-  ' < "$output.4" > "$output.5" ||
+  ' ||
   die 'Path normalization failed'
 
 # Sort the generated dependency list to eliminate duplicates
