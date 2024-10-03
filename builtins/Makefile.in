@@ -96,7 +96,55 @@ INCLUDES = -I. -I.. @RL_INCLUDE@ -I$(topdir) -I$(BASHINCDIR) -I$(topdir)/lib -I$
 
 MKDEP = $(SUPPORT_SRC)mkdep
 MKDEP_CC = $(CC)
-MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)" \
+		-R "alias.c=$(srcdir)/alias.def" \
+		-R "bind.c=$(srcdir)/bind.def" \
+		-R "break.c=$(srcdir)/break.def" \
+		-R "builtin.c=$(srcdir)/builtin.def" \
+		-R "caller.c=$(srcdir)/caller.def" \
+		-R "cd.c=$(srcdir)/cd.def" \
+		-R "colon.c=$(srcdir)/colon.def" \
+		-R "command.c=$(srcdir)/command.def" \
+		-R "complete.c=$(srcdir)/complete.def" \
+		-R "declare.c=$(srcdir)/declare.def" \
+		-R "echo.c=$(srcdir)/echo.def" \
+		-R "enable.c=$(srcdir)/enable.def" \
+		-R "eval.c=$(srcdir)/eval.def" \
+		-R "exec.c=$(srcdir)/exec.def" \
+		-R "exit.c=$(srcdir)/exit.def" \
+		-R "fc.c=$(srcdir)/fc.def" \
+		-R "fg_bg.c=$(srcdir)/fg_bg.def" \
+		-R "getopts.c=$(srcdir)/getopts.def" \
+		-R "hash.c=$(srcdir)/hash.def" \
+		-R "help.c=$(srcdir)/help.def" \
+		-R "history.c=$(srcdir)/history.def" \
+		-R "jobs.c=$(srcdir)/jobs.def" \
+		-R "kill.c=$(srcdir)/kill.def" \
+		-R "let.c=$(srcdir)/let.def" \
+		-R "mapfile.c=$(srcdir)/mapfile.def" \
+		-R "printf.c=$(srcdir)/printf.def" \
+		-R "pushd.c=$(srcdir)/pushd.def" \
+		-R "read.c=$(srcdir)/read.def" \
+		-R "reserved.c=$(srcdir)/reserved.def" \
+		-R "return.c=$(srcdir)/return.def" \
+		-R "set.c=$(srcdir)/set.def" \
+		-R "setattr.c=$(srcdir)/setattr.def" \
+		-R "shift.c=$(srcdir)/shift.def" \
+		-R "shopt.c=$(srcdir)/shopt.def" \
+		-R "source.c=$(srcdir)/source.def" \
+		-R "suspend.c=$(srcdir)/suspend.def" \
+		-R "test.c=$(srcdir)/test.def" \
+		-R "times.c=$(srcdir)/times.def" \
+		-R "trap.c=$(srcdir)/trap.def" \
+		-R "type.c=$(srcdir)/type.def" \
+		-R "ulimit.c=$(srcdir)/ulimit.def" \
+		-R "umask.c=$(srcdir)/umask.def" \
+		-R "wait.c=$(srcdir)/wait.def" \
+
+# When $(srcdir) is NOT $(BUILDDIR)/builtins, the following can be used instead
+# of the list above:
+#		-R "%.c=$(srcdir)/%.def"
+
 MKDEP_CCFLAGS = $(CCFLAGS)
 MKDEP_CSOURCES = $(srcdir)/*.c *.c
 
