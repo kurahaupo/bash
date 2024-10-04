@@ -99,7 +99,6 @@ $END
 
 extern int allow_null_glob_expansion;
 extern int autocd;
-extern int cdable_vars;
 extern int cdspelling;
 extern int check_hashed_filenames;
 extern int check_jobs_at_exit;
@@ -241,15 +240,6 @@ static opt_def_t const xo_options[] = {
     .help = N_(
       "Giving the name of a directory as a command causes cd to that directory.\n"
       "(Interactive only.)"),
-  },
-  { "cdable_vars",
-    .store = &cdable_vars,
-    .OPTRESET_false,
-    .adjust_bashopts = true,
-    .hide_set_o = true,
-    .help = N_(
-      "An argument to the cd builtin command that is not a directory is assumed\n"
-      "to be the name of a variable whose value is the directory to change to."),
   },
   { "cdspell",
     .store = &cdspelling,
