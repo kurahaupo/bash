@@ -69,7 +69,17 @@ static void resetxattr (void);
 /* Change this to 1 to get cd spelling correction by default. */
 int cdspelling = 0;
 
-int cdable_vars;
+static int cdable_vars;
+static opt_def_t const OPTDEF_cdable_vars = {
+  .store = &cdable_vars,
+  .OPTRESET_false,
+  .name = "cdable_vars",
+  .adjust_bashopts = true,
+  .hide_set_o = true,
+  .help = N_(
+    "An argument to the cd builtin command that is not a directory is assumed\n"
+    "to be the name of a variable whose value is the directory to change to."),
+};
 
 /* By default, follow the symbolic links as if they were real directories
    while hacking the `cd' command.  This means that `cd ..' moves up in
@@ -96,6 +106,7 @@ static int xattrfd = -1;
 void
 register_cd_opts (void)
 {
+  register_option (&OPTDEF_cdable_vars);		/*     ±o cdable_vars */
   register_option (&OPTDEF_no_symbolic_links);		/* ±P, ±o physical */
 }
 
