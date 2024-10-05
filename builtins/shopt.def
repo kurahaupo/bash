@@ -938,17 +938,6 @@ static opt_def_t const xo_options[] = {
       "Use a vi-style line editing interface"),
   },
 #endif
-  { "xpg_echo",
-    .store = &xpg_echo,
-    .adjust_bashopts = true,
-    .hide_set_o = true,
-    .help = N_(
-      "The builtin 'echo' command will expand \\-sequences.\n"
-      "(Has no effect if an external version of echo is used.)\n"
-      "\n"
-      "In this mode, 'echo' recognizes the same \\-sequences as printf recognizes in its\n"
-      "FORMAT parameter, plus '\\c' to suppress the trailing newline.\n"),
-  },
 };
 
 /*
@@ -1143,12 +1132,6 @@ reset_shopt_options (void)
   progcomp_alias = 0;
 #  endif
 #endif
-
-#if defined (DEFAULT_ECHO_TO_XPG) || defined (STRICT_POSIX)
-  xpg_echo = 1;
-#else
-  xpg_echo = 0;
-#endif /* DEFAULT_ECHO_TO_XPG */
 }
 
 static void

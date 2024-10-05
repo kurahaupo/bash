@@ -931,6 +931,7 @@ echo.o: $(topdir)/array.h
 echo.o: $(topdir)/arrayfunc.h
 echo.o: $(topdir)/assoc.h
 echo.o: $(topdir)/bashansi.h
+echo.o: $(topdir)/bashintl.h
 echo.o: $(topdir)/bashjmp.h
 echo.o: $(topdir)/bashtypes.h
 echo.o: $(topdir)/command.h
