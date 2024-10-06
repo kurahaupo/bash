@@ -317,9 +317,6 @@ int hup_on_exit = 0;
 /* Non-zero means to list status of running and stopped jobs at shell exit */
 int check_jobs_at_exit = 0;
 
-/* Non-zero means to change to a directory name supplied as a command name */
-int autocd = 0;
-
 /* Tells what state the shell was in when it started:
 	0 = non-interactive shell script
 	1 = interactive
