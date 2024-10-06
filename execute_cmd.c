@@ -197,6 +197,19 @@ static int execute_connection (COMMAND *, int, int, int, struct fd_bitmap *);
 
 static int execute_intern_function (WORD_DESC *, FUNCTION_DEF *);
 
+/* Non-zero means to change to a directory name supplied as a command name */
+static int autocd = 0;
+static opt_def_t OPTDEF_autocd = {
+  .store = &autocd,
+  .OPTRESET_false,
+  .name = "autocd",
+  .adjust_bashopts = true,
+  .hide_set_o = true,
+  .help = N_(
+    "Giving the name of a directory as a command causes cd to that directory.\n"
+    "(Interactive only.)"),
+};
+
 /* Non-zero means type out the command definition after reading, but
    before executing. */
 int echo_command_at_execute = 0;
@@ -6469,6 +6482,7 @@ do_piping (int pipe_in, int pipe_out)
 void
 register_execute_cmd_opts (void)
 {
+  register_option (&OPTDEF_autocd);			/*     ±o autocd */
   register_option (&OPTDEF_echo_command_at_execute);	/* ±x, ±o xtrace */
   register_option (&OPTDEF_errexit_flag);		/* ±e, ±o errexit */
   register_option (&OPTDEF_error_trace_mode);		/* ±E, ±o errtrace */

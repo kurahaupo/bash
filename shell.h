@@ -137,7 +137,6 @@ extern int verbose_flag;
 /* variables managed using shopt */
 extern int hup_on_exit;
 extern int check_jobs_at_exit;
-extern int autocd;
 extern int check_window_size;
 
 /* from version.c */

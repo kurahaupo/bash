@@ -98,7 +98,6 @@ $END
 #endif
 
 extern int allow_null_glob_expansion;
-extern int autocd;
 extern int cdspelling;
 extern int check_hashed_filenames;
 extern int check_jobs_at_exit;
@@ -232,15 +231,6 @@ static opt_def_t const xo_options[] = {
       "(Obsolete synonym for array_expand_once)"),
   },
 #endif
-  { "autocd",
-    .store = &autocd,
-    .OPTRESET_false,
-    .adjust_bashopts = true,
-    .hide_set_o = true,
-    .help = N_(
-      "Giving the name of a directory as a command causes cd to that directory.\n"
-      "(Interactive only.)"),
-  },
   { "cdspell",
     .store = &cdspelling,
     .OPTRESET_false,
