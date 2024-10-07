@@ -170,7 +170,7 @@ id_pruser (int uid)
     {
       pwd = getpwuid (uid);
       if (pwd == NULL)
-        r = 1;
+	r = 1;
     }
   if (pwd)
     printf ("%s", pwd->pw_name);
