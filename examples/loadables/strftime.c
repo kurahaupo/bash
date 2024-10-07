@@ -74,7 +74,7 @@ strftime_builtin (WORD_LIST *list)
 	  return (EXECUTION_FAILURE);
 	}
       else
-        secs = i;
+	secs = i;
     }
   else
     secs = NOW;
@@ -98,7 +98,7 @@ strftime_builtin (WORD_LIST *list)
       tbuf = xrealloc (tbuf, tbsize * n);
       tsize = strftime (tbuf, tbsize * n, format, t);
       if (tsize)
-        break;
+	break;
     }
 
   if (tsize)
