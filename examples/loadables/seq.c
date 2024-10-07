@@ -147,22 +147,22 @@ long_double_format (char const *fmt)
   for (i++; ; i += (fmt[i] == '%') + 1)
     if (fmt[i] == '%' && fmt[i + 1] != '%')
       {
-        builtin_error ("format %s has too many %% directives", fmt);
-        return 0;
+	builtin_error ("format %s has too many %% directives", fmt);
+	return 0;
       }
     else if (fmt[i] == 0)
       {
-        size_t format_size = i + 1;
-        char *ldfmt = xmalloc (format_size + 1);
-        memcpy (ldfmt, fmt, length_modifier_offset);
+	size_t format_size = i + 1;
+	char *ldfmt = xmalloc (format_size + 1);
+	memcpy (ldfmt, fmt, length_modifier_offset);
 #ifdef USE_LONG_DOUBLE
-        ldfmt[length_modifier_offset] = 'L';
-        strcpy (ldfmt + length_modifier_offset + 1,
-                fmt + length_modifier_offset + has_L);
+	ldfmt[length_modifier_offset] = 'L';
+	strcpy (ldfmt + length_modifier_offset + 1,
+		fmt + length_modifier_offset + has_L);
 #else
-        strcpy (ldfmt + length_modifier_offset, fmt + length_modifier_offset);
+	strcpy (ldfmt + length_modifier_offset, fmt + length_modifier_offset);
 #endif
-        return ldfmt;
+	return ldfmt;
       }
 }
 
@@ -337,7 +337,7 @@ seq_builtin (WORD_LIST *list)
 	  break;	/* negative number */
 	}
       if ((opt = internal_getopt (list, "f:s:w")) == -1)
-        break;
+	break;
 
       switch (opt)
 	{
