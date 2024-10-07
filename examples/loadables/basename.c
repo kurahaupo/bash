@@ -99,32 +99,32 @@ basename_builtin (WORD_LIST *list)
       sufflen = strlen (suffix);
       slen = strlen (fn);
       if (sufflen < slen)
-        {
-          off = slen - sufflen;
-          if (strcmp (fn + off, suffix) == 0)
-            fn[off] = '\0';
-        }
+	{
+	  off = slen - sufflen;
+	  if (strcmp (fn + off, suffix) == 0)
+	    fn[off] = '\0';
+	}
     }
   printf ("%s\n", fn);
   return (EXECUTION_SUCCESS);
 }
 
 char *basename_doc[] = {
-	"Return non-directory portion of pathname.",
-	"",
-	"The STRING is converted to a filename corresponding to the last",
-	"pathname component in STRING.  If the suffix string SUFFIX is",
-	"supplied, it is removed.",
-	(char *)NULL
+  "Return non-directory portion of pathname.",
+  "",
+  "The STRING is converted to a filename corresponding to the last",
+  "pathname component in STRING.  If the suffix string SUFFIX is",
+  "supplied, it is removed.",
+  (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin basename_struct = {
-	"basename",		/* builtin name */
-	basename_builtin,	/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	basename_doc,		/* array of long documentation strings. */
-	"basename string [suffix]",	/* usage synopsis */
-	0			/* reserved for internal use */
+  "basename",			/* builtin name */
+  basename_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  basename_doc,			/* array of long documentation strings. */
+  "basename string [suffix]",	/* usage synopsis */
+  0				/* reserved for internal use */
 };
