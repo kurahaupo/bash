@@ -452,8 +452,8 @@ initialize_shell_variables (char **env, int privmode)
 #  if ARRAY_EXPORT
 	/* Array variables may not yet be exported. */
       if (STREQN (BASHARRAY_PREFIX, name, BASHARRAY_PREFLEN) &&
-	    STREQN (BASHARRAY_SUFFIX, name + char_index - BASHARRAY_SUFFLEN, BASHARRAY_SUFFLEN) &&
-	    *string == '(' && string[1] == '[' && string[strlen (string) - 1] == ')')
+	  STREQN (BASHARRAY_SUFFIX, name + char_index - BASHARRAY_SUFFLEN, BASHARRAY_SUFFLEN) &&
+	  *string == '(' && string[1] == '[' && string[strlen (string) - 1] == ')')
 	{
 	  size_t namelen;
 	  char *tname;		/* desired imported array variable name */
@@ -2654,7 +2654,7 @@ make_local_variable (const char *name, int flags)
      believe that this could be a security hole).  Readonly copies of calling
      function local variables are OK. */
   if (old_var && (noassign_p (old_var) ||
-      (readonly_p (old_var) && old_var->context == 0)))
+		  (readonly_p (old_var) && old_var->context == 0)))
     {
       if (readonly_p (old_var))
 	sh_readonly (name);
@@ -5055,7 +5055,7 @@ maybe_make_export_env (void)
 	 variables are not (yet) exported, this will always be big enough
 	 for the exported variables and functions. */
       new_size = n_shell_variables () + HASH_ENTRIES (shell_functions) + 1 +
-	HASH_ENTRIES (temporary_env) + HASH_ENTRIES (invalid_env);
+		 HASH_ENTRIES (temporary_env) + HASH_ENTRIES (invalid_env);
       if (new_size > export_env_size)
 	{
 	  export_env_size = new_size;
