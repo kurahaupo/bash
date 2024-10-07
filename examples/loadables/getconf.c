@@ -1054,7 +1054,7 @@ getconf_all (WORD_LIST *list)
       /* The output format for getconf -a is required by POSIX interp 1808 */
       printf("%s: ", c->name);
       if (getconf_print (c, path, 1) == EXECUTION_FAILURE)
-        r = EXECUTION_FAILURE;
+	r = EXECUTION_FAILURE;
     }
   return (r);
 }
@@ -1072,7 +1072,7 @@ getconf_one (WORD_LIST *list)
     {
       if (strcmp (c->name, vname) == 0 || (strncmp (c->name, "_POSIX_", 7) == 0 &&
 					  strcmp (c->name + 7, vname) == 0))
- 	break;
+	break;
     }
   if (c->name == NULL)
     {
@@ -1116,7 +1116,7 @@ getconf_print (const struct conf *c, const char *vpath, int all)
 	  return (EXECUTION_FAILURE);
 	}
       else
-        printf ("%ld\n", value);
+	printf ("%ld\n", value);
       return (EXECUTION_SUCCESS);
 
     case SYSCONF:
@@ -1138,10 +1138,10 @@ getconf_print (const struct conf *c, const char *vpath, int all)
       clen = confstr (cn, (char *) NULL, 0);
       cvalue = (char *) malloc (clen);
       if (cvalue == NULL)
-        {
-          builtin_error ("memory allocation failure");
-          return (EXECUTION_FAILURE);
-        }
+	{
+	  builtin_error ("memory allocation failure");
+	  return (EXECUTION_FAILURE);
+	}
       if (confstr (c->call_name, cvalue, clen) != clen)
 	{
 	  if (errno != 0)
