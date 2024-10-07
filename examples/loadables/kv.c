@@ -1,5 +1,5 @@
 /* kv - process a series of lines containing key-value pairs and assign them
-        to an associative array. */
+	to an associative array. */
 
 /*
    Copyright (C) 2023 Free Software Foundation, Inc.
