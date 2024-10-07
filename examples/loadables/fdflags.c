@@ -209,7 +209,7 @@ parseflags(char *s, int *p, int *n)
   for (s = strtok(s, ","); s; s = strtok(NULL, ","))
     {
       switch (*s)
-        {
+	{
 	case '+':
 	  v = p;
 	  s++;
@@ -380,10 +380,10 @@ char *fdflags_doc[] =
    of these structures.  The flags must include BUILTIN_ENABLED so the
    builtin can be used. */
 struct builtin fdflags_struct = {
-	"fdflags",		/* builtin name */
-	fdflags_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	fdflags_doc,		/* array of long documentation strings. */
-	"fdflags [-v] [-s flags_string] [fd ...]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "fdflags",			/* builtin name */
+  fdflags_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  fdflags_doc,			/* array of long documentation strings. */
+  "fdflags [-v] [-s flags_string] [fd ...]",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
