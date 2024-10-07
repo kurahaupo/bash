@@ -209,7 +209,7 @@ parseflags(char *s, int *p, int *n)
   for (s = strtok(s, ","); s; s = strtok(NULL, ","))
     {
       switch (*s)
-        {
+	{
 	case '+':
 	  v = p;
 	  s++;
