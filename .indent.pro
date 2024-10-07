@@ -1,0 +1,209 @@
+// Controls for GNU Indent
+
+// Preferred style for this project, based on GNU default style
+-brs
+-nbc
+-ncs
+-ppi 2
+-sar	/* comment this out if using indent before version 2.2.12 */
+
+-l 128
+
+// Project typenames
+-T __INT_LEAST16_TYPE__
+-T __INT_LEAST8_TYPE__
+-T __UINT_LEAST16_TYPE__
+-T __UINT_LEAST8_TYPE__
+-T __action_fn_t  // in lib/intl/tsearch.c
+-T __compar_fn_t  // in lib/intl/tsearch.c
+-T _hist_search_func_t
+-T _rl_arg_cxt
+-T _rl_bool_t
+-T _rl_callback_func_t
+-T _rl_callback_generic_arg
+-T _rl_parser_func_t
+-T _rl_sigcleanup_func_t
+-T _rl_sv_func_t
+-T accessor_t
+-T alias_t
+-T arrayind_t
+-T breadfunc_t
+-T chartype
+-T const_node
+-T creadfunc_t
+-T display_style_t
+-T dummy
+-T floatmax_t
+-T gl_lock_t
+-T gl_once_t
+-T gl_recursive_lock_t
+-T gl_rwlock_t
+-T glwthread_mutex_t
+-T glwthread_once_t
+-T glwthread_recmutex_t
+-T glwthread_rwlock_t
+-T hash_wfunc
+-T histdata_t
+-T mk_handler_func_t
+-T mp_limb_t
+-T mp_twolimb_t
+-T nls_uint32
+-T once_flag
+-T op_result_t
+-T opt_def_t
+-T opt_get_func_t
+-T opt_set_func_t
+-T opt_test_func_t
+-T option_value_t
+-T ps_index_t
+-T rl_command_func_t
+-T rl_compdisp_func_t
+-T rl_compentry_func_t
+-T rl_compignore_func_t
+-T rl_completion_func_t
+-T rl_cpcpfunc_t
+-T rl_cpcppfunc_t
+-T rl_cpifunc_t
+-T rl_cpvfunc_t
+-T rl_dequote_func_t
+-T rl_getc_func_t
+-T rl_hook_func_t
+-T rl_icpfunc_t
+-T rl_icppfunc_t
+-T rl_intfunc_t
+-T rl_linebuf_func_t
+-T rl_macro_print_func_t
+-T rl_quote_func_t
+-T rl_vcpfunc_t
+-T rl_vcppfunc_t
+-T rl_vintfunc_t
+-T rl_voidfunc_t
+-T sh_ae_map_func_t
+-T sh_alias_map_func_t
+-T sh_assign_func_t
+-T sh_builtin_func_t
+-T sh_cget_func_t
+-T sh_cunget_func_t
+-T sh_free_func_t
+-T sh_gcp_func_t
+-T sh_glist_func_t
+-T sh_icpfunc_t
+-T sh_icppfunc_t
+-T sh_ignore_func_t
+-T sh_intfunc_t
+-T sh_iptrfunc_t
+-T sh_iv_item_func_t
+-T sh_ivoidfunc_t
+-T sh_job_map_func_t
+-T sh_load_func_t
+-T sh_msg_func_t
+-T sh_resetsig_func_t
+-T sh_string_func_t
+-T sh_strlist_map_func_t
+-T sh_sv_func_t
+-T sh_unload_func_t
+-T sh_uwfunc_t
+-T sh_var_assign_func_t
+-T sh_var_map_func_t
+-T sh_var_value_func_t
+-T sh_vcpfunc_t
+-T sh_vcppfunc_t
+-T sh_vintfunc_t
+-T sh_vmsg_func_t
+-T sh_voidfunc_t
+-T sh_vptrfunc_t
+-T sh_wassign_func_t
+-T sh_wdesc_func_t
+-T sh_wlist_func_t
+-T show_func_t
+-T sighandler
+-T sighandler_cxt
+-T tilde_hook_func_t
+-T transmem_block_t
+-T unix_link_syscall_t
+
+-T ARRAY
+-T ARRAY_ELEMENT
+-T BUCKET_CONTENTS
+-T CPFunction
+-T CPPFunction
+-T EXPFUNC
+-T FILE
+-T Function
+-T GENERIC_LIST
+-T GetUserDefaultUILanguage_func
+-T GetUserPreferredUILanguages_func
+-T INTDEF
+-T JOB
+-T JOB_STATE
+-T KEYMAP_ENTRY
+-T KEYMAP_ENTRY_ARRAY
+-T Keymap
+-T LANGID
+-T PFUNC
+-T PTR_T
+-T PWSTR
+-T QSFUNC
+-T SHELL_VAR
+-T STRDEF
+-T SVFUNC
+-T SigHandler
+-T TABLEITEM
+-T TABLEROW
+-T VFunction
+-T VISIT
+-T WAIT
+-T WORD_DESC
+-T WORD_LIST
+-T DEF_FILE
+
+// Flex/Lex typenames
+-T yy_state_fast_t
+-T yy_state_t
+-T yysigned_char
+-T yysymbol_kind_t
+-T yytoken_kind_t
+-T yytype_int16
+-T yytype_int8
+-T yytype_uint16
+-T yytype_uint8
+-T YYSTYPE
+
+// POSIX typenames
+-T uid_t
+-T gid_t
+-T pid_t
+-T time_t
+-T ssize_t
+
+// Pthread typenames
+-T pthread_mutex_t
+-T pthread_once_t
+-T pthread_rwlock_t
+
+// MSVC typenames (only used in the platform files)
+-T DWORD
+-T PULONG
+-T ULONG
+-T WINAPI
+
+// ISO C standard typenames
+-T _Bool
+-T bool
+-T int128_t
+-T int16_t
+-T int32_t
+-T int64_t
+-T int8_t
+-T int_least16_t
+-T int_least8_t
+-T intmax_t
+-T size_t
+-T uint128_t
+-T uint16_t
+-T uint32_t
+-T uint64_t
+-T uint8_t
+-T uint_least16_t
+-T uint_least8_t
+-T uintmax_t
