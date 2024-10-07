@@ -121,10 +121,10 @@ mkdir_builtin (WORD_LIST *list)
 	  continue;
 	}
       else if (pflag == 0 && mkdir (l->word->word, nmode) < 0)
-        {
-          builtin_error ("cannot create directory `%s': %s", l->word->word, strerror (errno));
-          rval = EXECUTION_FAILURE;
-        }
+	{
+	  builtin_error ("cannot create directory `%s': %s", l->word->word, strerror (errno));
+	  rval = EXECUTION_FAILURE;
+	}
     }
   return rval;
 }
@@ -150,10 +150,10 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
 	}
 
       if (user_mode && chmod (path, nmode))
-        {
-          builtin_error ("%s: %s", path, strerror (errno));
-          return 1;
-        }
+	{
+	  builtin_error ("%s: %s", path, strerror (errno));
+	  return 1;
+	}
 
       return 0;
     }
