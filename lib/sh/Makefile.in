@@ -1311,6 +1311,7 @@ zmapfd.o: ../../config.h
 zread.o: $(srcdir)/zread.c
 zread.o: $(topdir)/config-bot.h
 zread.o: $(topdir)/config-top.h
+zread.o: $(topdir)/trap.h
 zread.o: ../../config.h
 zwrite.o: $(srcdir)/zwrite.c
 zwrite.o: $(topdir)/config-bot.h

@@ -662,8 +662,26 @@ clear_pending_traps (void)
     pending_traps[i] = 0;
 }
 
+#ifdef TRACE_SIGNAL_HANDLING
 void
-check_signals (void)
+check_signals_with_location (char const *filename, int lineno)
+{
+  /* Add any other shell timeouts here */
+  check_read_timeout_with_location (filename, lineno);	/* set by the read builtin */
+  QUIT;
+}
+
+/* Convenience functions the rest of the shell can use */
+void
+check_signals_and_traps_with_location (char const *filename, int lineno)
+{
+  check_signals_with_location (filename, lineno);
+
+  run_pending_traps ();
+}
+#else
+void
+check_signals_bare (void)
 {
   /* Add any other shell timeouts here */
   check_read_timeout ();	/* set by the read builtin */
@@ -672,12 +690,13 @@ check_signals (void)
 
 /* Convenience functions the rest of the shell can use */
 void
-check_signals_and_traps (void)
+check_signals_and_traps_bare (void)
 {
   check_signals ();
 
   run_pending_traps ();
 }
+#endif
 
 #if defined (JOB_CONTROL) && defined (SIGCHLD)
 

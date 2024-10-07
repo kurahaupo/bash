@@ -29,6 +29,8 @@
 #include <signal.h>
 #include <errno.h>
 
+#include "trap.h"
+
 #if !defined (errno)
 extern int errno;
 #endif
@@ -47,8 +49,6 @@ extern int errno;
 
 extern int executing_builtin, interrupt_state;
 
-extern void check_signals_and_traps (void);
-extern void check_signals (void);
 extern int signal_is_trapped (int);
 extern int read_builtin_timeout (int);
 

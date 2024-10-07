@@ -163,7 +163,6 @@ extern void read_tty_cleanup (void);
 extern int read_tty_modified (void);
 
 extern int read_builtin_timeout (int);
-extern void check_read_timeout (void);
 
 /* Functions from set.def */
 extern void list_minus_o_opts (int, int);

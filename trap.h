@@ -127,7 +127,22 @@ extern int next_pending_trap (int);
 extern int first_pending_trap (void);
 extern void clear_pending_traps (void);
 extern int any_signals_trapped (void);
-extern void check_signals (void);
-extern void check_signals_and_traps (void);
+
+#define TRACE_SIGNAL_HANDLING 1
+#ifdef TRACE_SIGNAL_HANDLING
+extern void check_signals_with_location (char const *filename, int lineno);
+extern void check_signals_and_traps_with_location (char const *filename, int lineno);
+extern void check_read_timeout_with_location (char const *filename, int lineno);
+#define check_signals()			check_signals_with_location (__FILE__,__LINE__)
+#define check_signals_and_traps()	check_signals_and_traps_with_location (__FILE__,__LINE__)
+#define check_read_timeout()		check_read_timeout_with_location (__FILE__,__LINE__)
+#else
+extern void check_signals_bare (void);
+extern void check_signals_and_traps_bare (void);
+extern void check_read_timeout_bare (void);
+#define check_signals()			check_signals_bare ()
+#define check_signals_and_traps()	check_signals_and_traps_bare ()
+#define check_read_timeout()		check_read_timeout_bare ()
+#endif
 
 #endif /* _TRAP_H_ */

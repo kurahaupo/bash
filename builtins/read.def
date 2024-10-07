@@ -178,12 +178,36 @@ uw_reset_timeout (void *ignore)
   reset_timeout ();
 }
 
+#ifdef TRACE_SIGNAL_HANDLING
+
+static char const * trace_alarm_filename;
+static int trace_alarm_lineno;
+
 void
-check_read_timeout (void)
+check_read_timeout_with_location (char const *filename, int lineno)
 {
   if (read_timeout && shtimer_chktimeout (read_timeout))
-    sh_longjmp (read_timeout->jmpenv, 1);
+    {
+      trace_alarm_filename = filename;
+      trace_alarm_lineno = lineno;
+      fprintf(stderr, "+# Hit read timeout SIGALRM, run from line %u in %s #+ ", lineno, filename);
+      fflush(stderr);
+      sh_longjmp (read_timeout->jmpenv, 1);
+    }
 }
+#else
+
+void
+check_read_timeout_bare (void)
+{
+  if (read_timeout && shtimer_chktimeout (read_timeout))
+    {
+      fprintf(stderr, "+# Hit read timeout SIGALRM, run from unknown #+ ");
+      fflush(stderr);
+      sh_longjmp (read_timeout->jmpenv, 1);
+    }
+}
+#endif
 
 int
 read_builtin_timeout (int fd)
@@ -225,7 +249,6 @@ uw_reset_rl_instream (void *fp)
 int
 read_builtin (WORD_LIST *list)
 {
-  char *varname;
   int nr, pass_next, saw_escape, eof, opt, retval, code, print_ps2, nflag;
   size_t size;
   volatile int i;
@@ -549,7 +572,7 @@ read_builtin (WORD_LIST *list)
 
 	  run_unwind_frame ("read_builtin");
 	  input_string = t;
-	  retval = 128+SIGALRM;
+	  retval = 128|SIGALRM;
 	  goto assign_vars;
 	}
       if (interactive_shell == 0)
@@ -714,67 +737,67 @@ read_builtin (WORD_LIST *list)
 	{
 #endif
 
-      if (print_ps2)
-	{
-	  if (ps2 == 0)
-	    ps2 = get_string_value ("PS2");
-	  fprintf (stderr, "%s", ps2 ? ps2 : "");
-	  fflush (stderr);
-	  print_ps2 = 0;
-	}
-
-      reading = 1;
-      check_read_timeout ();
-      errno = 0;
-
-#if defined (SIGCHLD)
-      if (tmsec > 0 || tmusec > 0)
-	sigprocmask (SIG_SETMASK, &chldset, &prevset);
-#endif
-      if (unbuffered_read == 2)
-	retval = posixly_correct ? zreadintr (fd, &c, 1) : zreadn (fd, &c, nchars - nr);
-      else if (unbuffered_read)
-	retval = posixly_correct ? zreadintr (fd, &c, 1) : zread (fd, &c, 1);
-      else
-	retval = posixly_correct ? zreadcintr (fd, &c) : zreadc (fd, &c);
-#if defined (SIGCHLD)
-      if (tmsec > 0 || tmusec > 0)
-	sigprocmask (SIG_SETMASK, &prevset, (sigset_t *)0);
-#endif
-
-      reading = 0;
-
-      if (retval <= 0)
-	{
-	  int x;
-
-	  x = errno;
-	  if (retval < 0 && errno == EINTR)
+	  if (print_ps2)
 	    {
-	      ZRESET ();
-	      check_signals ();		/* in case we didn't call zread via zreadc */
-	      lastsig = LASTSIG();
-	      if (lastsig == 0)
-		lastsig = trapped_signal_received;
-#if 0
-	      run_pending_traps ();	/* because interrupt_immediately is not set */
-#endif
+	      if (ps2 == 0)
+		ps2 = get_string_value ("PS2");
+	      fprintf (stderr, "%s", ps2 ? ps2 : "");
+	      fflush (stderr);
+	      print_ps2 = 0;
 	    }
+
+	  reading = 1;
+	  check_read_timeout ();
+	  errno = 0;
+
+#if defined (SIGCHLD)
+	  if (tmsec > 0 || tmusec > 0)
+	    sigprocmask (SIG_SETMASK, &chldset, &prevset);
+#endif
+	  if (unbuffered_read == 2)
+	    retval = posixly_correct ? zreadintr (fd, &c, 1) : zreadn (fd, &c, nchars - nr);
+	  else if (unbuffered_read)
+	    retval = posixly_correct ? zreadintr (fd, &c, 1) : zread (fd, &c, 1);
 	  else
-	    lastsig = 0;
-	  if (terminating_signal && tty_modified)
-	    ttyrestore (&termsave);	/* fix terminal before exiting */
-	  CHECK_TERMSIG;
-	  eof = 1;
-	  errno = x;	/* preserve it for the error message below */
-	  break;
-	}
+	    retval = posixly_correct ? zreadcintr (fd, &c) : zreadc (fd, &c);
+#if defined (SIGCHLD)
+	  if (tmsec > 0 || tmusec > 0)
+	    sigprocmask (SIG_SETMASK, &prevset, (sigset_t *)0);
+#endif
 
-      /* Even if read returns a partial buffer, if we got an interrupt we're
-	 going to throw it away. */
-      ZRESET();
+	  reading = 0;
 
-      QUIT;		/* in case we didn't call check_signals() */
+	  if (retval <= 0)
+	    {
+	      int x;
+
+	      x = errno;
+	      if (retval < 0 && errno == EINTR)
+		{
+		  ZRESET ();
+		  check_signals ();		/* in case we didn't call zread via zreadc */
+		  lastsig = LASTSIG();
+		  if (lastsig == 0)
+		    lastsig = trapped_signal_received;
+#if 0
+		  run_pending_traps ();	/* because interrupt_immediately is not set */
+#endif
+		}
+	      else
+		lastsig = 0;
+	      if (terminating_signal && tty_modified)
+		ttyrestore (&termsave);	/* fix terminal before exiting */
+	      CHECK_TERMSIG;
+	      eof = 1;
+	      errno = x;	/* preserve it for the error message below */
+	      break;
+	    }
+
+	  /* Even if read returns a partial buffer, if we got an interrupt we're
+	     going to throw it away. */
+	  ZRESET();
+
+	  QUIT;		/* in case we didn't call check_signals() */
 #if defined (READLINE)
 	}
 #endif
@@ -1029,7 +1052,7 @@ assign_vars:
   input_string = t;
   for (; list->next; list = list->next)
     {
-      varname = list->word->word;
+      char *varname = list->word->word;
 #if defined (ARRAY_VARS)
       SET_VFLAGS (list->word->flags, vflags, bindflags);
       if (valid_identifier (varname) == 0 && valid_array_reference (varname, vflags) == 0)
