@@ -61,29 +61,29 @@ _remove_directory(const char *dirname)
 #endif
 
 	  QUIT;
-          if (*dp->d_name == '.' && (dp->d_name[1] == 0 || (dp->d_name[1] == '.' && dp->d_name[2] == 0)))
-            continue;
+	  if (*dp->d_name == '.' && (dp->d_name[1] == 0 || (dp->d_name[1] == '.' && dp->d_name[2] == 0)))
+	    continue;
 
 #ifdef __GNUC__
 	  snprintf(fname, sizeof (fname), "%s/%s", dirname, dp->d_name);
 #else
 	  fnsize = dirlen + 1 + strlen (dp->d_name) + 1;
-          fname = xmalloc (fnsize);
+	  fname = xmalloc (fnsize);
 	  snprintf(fname, fnsize, "%s/%s", dirname, dp->d_name);
 #endif
 
-           if (rm_file (fname) && force == 0)
-             err = 1;
+	   if (rm_file (fname) && force == 0)
+	     err = 1;
 #ifndef __GNUC__
-           free (fname);
+	   free (fname);
 #endif
 	   QUIT;
-        }
+	}
 
       closedir(dir);
 
       if (err == 0 && rmdir (dirname) && force == 0)
-        err = 1;
+	err = 1;
     }
   else if (force == 0)
     err = 1;
@@ -149,8 +149,8 @@ rm_builtin (WORD_LIST *list)
     {
       if (force == 0)
 	{
-          builtin_usage ();
-          return (EXECUTION_FAILURE);
+	  builtin_usage ();
+	  return (EXECUTION_FAILURE);
 	}
       return (EXECUTION_SUCCESS);
     }
