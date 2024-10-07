@@ -205,14 +205,14 @@ strptime_builtin (WORD_LIST *list)
       inittime (&now, tm);
       t = *tm;
       for (i = 0; date_time_formats[i]; i++)
-        {
+	{
 	  s = strptime (datestr, date_time_formats[i], &t);
 	  if (s == 0)
 	    continue;
 	  /* skip extra characters at the end for now */
 	  secs = mktime (&t);
 	  break;
-        }
+	}
     }
 
   printf ("%ld\n", secs);
