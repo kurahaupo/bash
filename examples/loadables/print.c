@@ -182,9 +182,9 @@ printargs (WORD_LIST *list, FILE *ofp)
 	fprintf (ofp, "%s", ostr);
       free (ostr);
       if (sawc)
-        return (0);
+	return (0);
       if (l->next)
-        fprintf (ofp, " ");
+	fprintf (ofp, " ");
     }
   return (1);
 }
