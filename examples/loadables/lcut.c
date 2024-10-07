@@ -84,11 +84,11 @@ getlist (char *arg, struct cutpos **opp)
   while (ltok = strsep (&larg, ","))
     {
       if (*ltok == 0)
-        continue;
+	continue;
 
       ntok = strsep (&ltok, "-");
       if (*ntok == 0)
-        s = BOL;
+	s = BOL;
       else
 	{
 	  if (valid_number (ntok, &num) == 0 || (int)num != num || num <= 0)
@@ -158,11 +158,11 @@ cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
       s = ops->poslist[n].startpos;		/* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= llen)
 	e = llen - 1;
       /* even if a column is specified multiple times, it will only be printed
-         once */
+	 once */
       for (i = s; i <= e; i++)
 	bmap[i] = 1;
     }
@@ -220,11 +220,11 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
       s = ops->poslist[n].startpos;		/* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= wlen)
 	e = wlen - 1;
       /* even if a column is specified multiple times, it will only be printed
-         once */
+	 once */
       for (i = s; i <= e; i++)
 	bmap[i] = 1;
     }
@@ -315,11 +315,11 @@ cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
       s = ops->poslist[n].startpos;		/* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= nf)
 	e = nf - 1;
       /* even if a column is specified multiple times, it will only be printed
-         once */
+	 once */
       for (i = s; i <= e; i++)
 	bmap[i] = 1;
     }
@@ -500,10 +500,10 @@ lcut_builtin (WORD_LIST *list)
 char *lcut_doc[] = {
 	"Extract selected fields from a string.",
 	"",
-        "Select portions of LINE (as specified by LIST) and assign them to",
-        "elements of the indexed array ARRAY starting at index 0, or write",
-        "them to the standard output if -a is not specified.",
-        "",
+	"Select portions of LINE (as specified by LIST) and assign them to",
+	"elements of the indexed array ARRAY starting at index 0, or write",
+	"them to the standard output if -a is not specified.",
+	"",
 	"Items specified by LIST are either column positions or fields delimited",
 	"by a special character, and are described more completely in cut(1).",
 	"",
