@@ -120,7 +120,7 @@ dsvsplit (SHELL_VAR *dsv, char *line, char *dstring, int flags)
 	      if (qstate == SQUOTE && *field == '\'')
 		{
 		  qstate = NQUOTE;
-	  	  if (flags & F_PRESERVE)
+		  if (flags & F_PRESERVE)
 		    buf[b++] = *field;
 		}
 	      else if (qstate == NQUOTE && *field == *dstring)
