@@ -161,8 +161,7 @@ struct builtin pathchk_struct = {
 /* Each element is nonzero if the corresponding ASCII character is
    in the POSIX portable character set, and zero if it is not.
    In addition, the entry for `/' is nonzero to simplify checking. */
-static char const portable_chars[256] =
-{
+static char const portable_chars[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 0-15 */
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 16-31 */
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,	/* 32-47 */
@@ -338,8 +337,7 @@ validate_path (char *path, int portability)
 	name_max = _POSIX_NAME_MAX;
       if (length > name_max)
 	{
-	  builtin_error ("name `%s' has length %d; exceeds limit of %d",
-			 start, length, name_max);
+	  builtin_error ("name `%s' has length %d; exceeds limit of %d", start, length, name_max);
 	  free (parent);
 	  return 1;
 	}
@@ -364,8 +362,7 @@ validate_path (char *path, int portability)
   free (parent);
   if (strlen (path) > path_max)
     {
-      builtin_error ("path `%s' has length %lu; exceeds limit of %d",
-		     path, (unsigned long)strlen (path), path_max);
+      builtin_error ("path `%s' has length %lu; exceeds limit of %d", path, (unsigned long)strlen (path), path_max);
       return 1;
     }
 
