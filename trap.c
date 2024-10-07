@@ -614,7 +614,7 @@ trap_handler (int sig)
 	 finish executing, so if this interrupted character input we can get
 	 quick response. */
       if (RL_ISSTATE (RL_STATE_SIGHANDLER))
-        bashline_set_event_hook ();
+	bashline_set_event_hook ();
 #endif
 
       errno = oerrno;
@@ -854,7 +854,7 @@ set_signal (int sig, const char *string)
     {
       /* If we aren't sure of the original value, check it. */
       if (original_signals[sig] == IMPOSSIBLE_TRAP_HANDLER)
-        GETORIGSIG (sig);
+	GETORIGSIG (sig);
       if (original_signals[sig] == SIG_IGN && (sigmodes[sig] & SIG_ASYNCSIG) == 0)
 	return;			/* XXX */
     }
@@ -1070,7 +1070,7 @@ run_exit_trap (void)
       else if (code == EXITPROG || code == EXITBLTIN)
 	retval = last_command_exit_value;
       else if (function_code != 0)
-        retval = return_catch_value;
+	retval = return_catch_value;
       else
 	retval = trap_saved_exit_value;
 
@@ -1191,12 +1191,12 @@ _run_trap_internal (int sig, char *tag)
       if (sig != DEBUG_TRAP && sig != RETURN_TRAP && sig != ERROR_TRAP)
 	flags |= SEVAL_RESETLINE;
       if (function_code == 0)
-        {
+	{
 	  parse_and_execute (trap_command, tag, flags);
 	  trap_exit_value = last_command_exit_value;
-        }
+	}
       else
-        trap_exit_value = return_catch_value;
+	trap_exit_value = return_catch_value;
       evalnest--;
 
 #if defined (JOB_CONTROL)
@@ -1549,7 +1549,7 @@ restore_traps (void)
 	    set_signal_handler (i, SIG_IGN);
 	}
       else if (trapstr != (char *)DEFAULT_SIG)
-        /* set_signal duplicates the string argument before freeing it. */
+	/* set_signal duplicates the string argument before freeing it. */
 	set_signal (i, trapstr);
 
       pending_traps[i] = 0;	/* XXX */
