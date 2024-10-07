@@ -66,7 +66,7 @@ parse_gnutimefmt (char *string, long *sp, long *up)
 	mult = 1;
 
 	for (s = string; s && *s; s++) {
-	    	r = uconvert(s, &accumsec, &accumusec, &ep);
+		r = uconvert(s, &accumsec, &accumusec, &ep);
 		if (r == 0 && *ep == 0)
 			return r;
 		c = *ep;
@@ -141,7 +141,7 @@ sleep_builtin (WORD_LIST *list)
 		return (EX_USAGE);
 	}
 
-    	r = uconvert(list->word->word, &sec, &usec, &ep);
+	r = uconvert(list->word->word, &sec, &usec, &ep);
 	/*
 	 * Maybe postprocess conversion failures here based on EP
 	 *
