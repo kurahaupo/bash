@@ -56,7 +56,7 @@ munge_list (WORD_LIST *list)
     {
       arg = l->word->word;
       if (arg[0] != '-' || arg[1] == '-' || (DIGIT(arg[1]) == 0))
-        return;
+	return;
       /* We have -[0-9]* */
       wd = make_bare_word (arg+1);
       nl = make_word_list (wd, l->next);
