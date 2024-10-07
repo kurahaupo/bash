@@ -108,18 +108,18 @@ tee_builtin (WORD_LIST *list)
     {
       fd = open (list->word->word, fflags, 0666);
       if (fd < 0)
-        {
-          builtin_error ("%s: cannot open: %s", list->word->word, strerror (errno));
-          rval = EXECUTION_FAILURE;
-        }
+	{
+	  builtin_error ("%s: cannot open: %s", list->word->word, strerror (errno));
+	  rval = EXECUTION_FAILURE;
+	}
       else
-        {
-          fl->next = (FLIST *)xmalloc (sizeof(FLIST));
-          fl->next->fd = fd;
-          fl->next->fname = list->word->word;
-          fl = fl->next;
-          fl->next = (FLIST *)NULL;
-        }
+	{
+	  fl->next = (FLIST *)xmalloc (sizeof(FLIST));
+	  fl->next->fd = fd;
+	  fl->next->fname = list->word->word;
+	  fl = fl->next;
+	  fl->next = (FLIST *)NULL;
+	}
       QUIT;
     }
 
@@ -136,8 +136,8 @@ tee_builtin (WORD_LIST *list)
 		rval = EXECUTION_FAILURE;
 		break;
 	      }
-            bp += nw;
-            QUIT;
+	    bp += nw;
+	    QUIT;
 	  }
 	while (n -= nw);
       }
