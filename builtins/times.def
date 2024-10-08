@@ -64,13 +64,11 @@ $END
 int
 times_builtin (WORD_LIST *list)
 {
-#if defined (HAVE_GETRUSAGE) && defined (HAVE_TIMEVAL) && defined (RUSAGE_SELF)
-  struct rusage self, kids;
-
-  USE_VAR(list);
-
   if (no_options (list))
     return (EX_USAGE);
+
+#if defined (HAVE_GETRUSAGE) && defined (HAVE_TIMEVAL) && defined (RUSAGE_SELF)
+  struct rusage self, kids;
 
   getrusage (RUSAGE_SELF, &self);
   getrusage (RUSAGE_CHILDREN, &kids);	/* terminated child processes */
@@ -84,16 +82,10 @@ times_builtin (WORD_LIST *list)
   print_timeval (stdout, &kids.ru_stime);
   putchar ('\n');
 
-#else
-#  if defined (HAVE_TIMES)
+#elif defined (HAVE_TIMES)
   /* This uses the POSIX.1/XPG5 times(2) interface, which fills in a
      `struct tms' with values of type clock_t. */
   struct tms t;
-
-  USE_VAR(list);
-
-  if (no_options (list))
-    return (EX_USAGE);
 
   times (&t);
 
@@ -106,16 +98,10 @@ times_builtin (WORD_LIST *list)
   print_clock_t (stdout, t.tms_cstime);
   putchar ('\n');
 
-#  else /* !HAVE_TIMES */
-
-  USE_VAR(list);
-
-  if (no_options (list))
-    return (EX_USAGE);
+#else /* !( HAVE_GETRUSAGE && HAVE_TIMEVAL && RUSAGE_SELF) && !HAVE_TIMES */
   printf ("0.00 0.00\n0.00 0.00\n");
 
-#  endif /* HAVE_TIMES */
-#endif /* !HAVE_TIMES */
+#endif /* !(HAVE_GETRUSAGE && HAVE_TIMEVAL && RUSAGE_SELF) && !HAVE_TIMES */
 
   return (sh_chkwrite (EXECUTION_SUCCESS));
 }

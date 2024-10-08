@@ -169,11 +169,43 @@ struct user_info {
 
 extern struct user_info current_user;
 
-/* Force gcc to not clobber X on a longjmp().  Old versions of gcc mangle
-   this badly. */
-#if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 8)
+/* USE_VAR(X) forces GCC to not clobber X on a longjmp().
+   Old versions of GCC mangle this badly.
+   Do NOT use this macro just to suppress "unused" warnings. */
+
+#if __GNUC__ > 3
+  /* GCC version 4.0 and later: we don't actually need to DO anything, but we
+   * give a diagnostic if the variable was not declared "volatile", to avoid
+   * indeterminate values as per ISO-9899:2024 §7.13.2.1:
+   *
+   *   3. [after longjmp...] the values of objects of automatic storage
+   *   duration that are local to the function containing the invocation of the
+   *   corresponding setjmp macro that do not have volatile-qualified type and
+   *   have been changed between the setjmp invocation and longjmp call ARE
+   *   INDETERMINATE.
+   *
+   * The following USE_VAR macro will trigger a diagnostic if its parameter
+   * hasn't been declared 'volatile', because every sequence equivalent to
+   * «Type volatile *A; Type **B = &A;» is illegal, including when A & B are
+   * anonymous objects, except when «Type» already includes 'volatile'.
+   * (Repeating the «volatile» qualifier is permitted but has no effect.)
+   *
+   * This is gated on __GNUC__ > 3 because it uses GCC's __typeof__ extension
+   * and C99's compound literals.
+   */
+#  define XTO(Q,X,S,V) (Q __typeof__(X) S) {V}
+#  define USE_VAR(X)	((void) & XTO(,X,**, & /* X should've been declared "volatile" */ XTO(volatile,X,*, NULL)))
+
+/* Force these to be treated as fatal errors */
+#pragma GCC diagnostic error "-Wincompatible-pointer-types"
+
+#elif (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 8)
+/* GCC versions 2.8 to 3.9, force auto objects to be kept in the stack rather
+ * than registers, by the simple expedient of taking their addresses once. */
 #  define USE_VAR(x)	((void) &(x))
 #else
+/* GCC version 2.7 and earlier do nothing, since auto objects don't persist in
+ * registers around function calls. Also do nothing for other compilers. */
 #  define USE_VAR(x)
 #endif
 

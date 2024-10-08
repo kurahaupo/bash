@@ -911,37 +911,32 @@ cond_test (char *op, char *arg1, char *arg2, int flags)
 int
 test_command (int margc, char **margv)
 {
-  int value;
-  int code;
-
-  USE_VAR (margc);
-
-  code = setjmp_nosigs (test_exit_buf);
+  int code = setjmp_nosigs (test_exit_buf);
 
   if (code)
     return (test_error_return);
 
+  argc = margc;
   argv = margv;
 
   if (margv[0] && margv[0][0] == '[' && margv[0][1] == '\0')
     {
-      --margc;
+      --argc;
 
-      if (margv[margc] && (margv[margc][0] != ']' || margv[margc][1]))
+      if (margv[argc] && (margv[argc][0] != ']' || margv[argc][1]))
 	test_syntax_error (_("missing `]'"), (char *)NULL);
 
-      if (margc < 2)
+      if (argc < 2)
 	test_exit (SHELL_BOOLEAN (FALSE));
     }
 
-  argc = margc;
   pos = 1;
 
   if (pos >= argc)
     test_exit (SHELL_BOOLEAN (FALSE));
 
   noeval = 0;
-  value = posixtest (argc - 1);
+  int value = posixtest (argc - 1);
 
   if (pos != argc)
     {

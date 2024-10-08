@@ -96,7 +96,9 @@ evalfile_internal (const char *filename, int flags)
   char *t, tt[2];
 #endif
 
+  #if __GNUC__ <= 3 /* pflags isn't changed after setjmp */
   USE_VAR(pflags);
+  #endif
 
   errno = 0;
   do

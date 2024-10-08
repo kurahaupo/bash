@@ -529,23 +529,27 @@ _cygwin32_check_tmp (void)
 #endif /* __CYGWIN__ */
 
 int
-main (int argc, char **argv
+main (int argc_, char **argv_
 #if ! defined NO_MAIN_ENV_ARG
-      , char **env
-#endif	/* !NO_MAIN_ENV_ARG */
+      , char **env_
+#endif /* !NO_MAIN_ENV_ARG */
 )
 {
+  int volatile argc = argc_;	/* some compilers can't cope with volatile function arguments */
+  char **volatile argv = argv_;
+
   register int i;
-  int code, old_errexit_flag;
+  int volatile code;
+  int volatile old_errexit_flag;
 #if defined (RESTRICTED_SHELL)
-  int saverst;
+  int volatile saverst;
 #endif
   volatile int locally_skip_execution;
   volatile int arg_index, top_level_arg_index;
 #if defined (__OPENNT) || defined (__MVS__)
-  char **env;
-
-  env = environ;
+  char **volatile env = environ;
+#elif ! defined (NO_MAIN_ENV_ARG)
+  char **volatile env = env_;
 #endif /* __OPENNT || __MVS__ */
 
   USE_VAR (argc);

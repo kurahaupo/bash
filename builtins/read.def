@@ -247,24 +247,45 @@ uw_reset_rl_instream (void *fp)
    gets the remainder of the words on the line.  If no variables
    are mentioned in LIST, then the default variable is $REPLY. */
 int
-read_builtin (WORD_LIST *list)
+read_builtin (WORD_LIST *list_)
 {
-  int nr, pass_next, saw_escape, eof, opt, retval, code, print_ps2, nflag;
-  size_t size;
-  volatile int i;
-  int input_is_tty, input_is_pipe, unbuffered_read, skip_ctlesc, skip_ctlnul;
-  int edit, use_bash_completion;
-  int raw, nchars, silent, have_timeout, ignore_delim, fd;
+  WORD_LIST *volatile list = list_;	/* some compilers can't cope with volatile function arguments */
+
+  char *volatile arrayname;
+  char *volatile ifs_chars;
+  char *volatile prompt;
+  char *volatile ps2;
+  int volatile delim;
+  int volatile edit;
+  int volatile i;
+  int volatile input_is_pipe;
+  int volatile lastsig;
+  int volatile nchars;
+  int volatile pass_next;
+  int volatile print_ps2;
+  int volatile raw;
+  int volatile saw_escape;
+  int volatile silent;
+  int volatile use_bash_completion;
+  size_t volatile size;
+  unsigned int volatile tmsec;
+  unsigned int volatile tmusec;
+
+  int nr, eof, opt, retval, code, nflag;
+  int input_is_tty, unbuffered_read, skip_ctlesc, skip_ctlnul;
+  int have_timeout, ignore_delim, fd;
   int free_ifs;
-  int lastsig, t_errno;
+  int t_errno;
   int mb_cur_max;
-  unsigned int tmsec, tmusec;
   long ival, uval;
   intmax_t intval;
   char c;
-  int delim;
-  char *input_string, *orig_input_string, *ifs_chars, *prompt, *arrayname;
-  char *e, *t, *t1, *ps2, *tofree;
+  char *input_string;
+  char *orig_input_string;
+  char *e;
+  char *t;
+  char *t1;
+  char *tofree;
   struct stat tsb;
   SHELL_VAR *var;
   TTYSTRUCT ttattrs, ttset;
@@ -275,8 +296,9 @@ read_builtin (WORD_LIST *list)
 #endif
   int bindflags;
 #if defined (READLINE)
-  char *rlbuf, *itext;
-  int rlind;
+  char *volatile itext;
+  char *volatile rlbuf;
+  int volatile rlind;
   FILE *save_instream;
 #endif
 

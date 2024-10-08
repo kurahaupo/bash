@@ -109,8 +109,10 @@ static int check_nonjobs (WORD_LIST *, struct procstat *);
   while (0)
 
 int
-wait_builtin (WORD_LIST *list)
+wait_builtin (WORD_LIST *list_)
 {
+  WORD_LIST *volatile list = list_;	/* some compilers can't cope with volatile function arguments */
+
   int status, code, opt, nflag, vflags, bindflags;
   volatile int wflags;
   char *vname;

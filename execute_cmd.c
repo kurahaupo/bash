@@ -1692,11 +1692,12 @@ time_command (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, str
    called after make_child and we must be running in the child process.
    The caller will return or exit() immediately with the value this returns. */
 static int
-execute_in_subshell (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, struct fd_bitmap *fds_to_close)
+execute_in_subshell (COMMAND *command, int asynchronous_, int pipe_in, int pipe_out, struct fd_bitmap *fds_to_close)
 {
+  int volatile asynchronous = asynchronous_;	/* some compilers can't cope with volatile function arguments */
   volatile int user_subshell, user_coproc, invert;
   int return_code, function_value, should_redir_stdin, ois, result;
-  volatile COMMAND *tcom;
+  COMMAND *volatile tcom;
 
   USE_VAR (user_subshell);
   USE_VAR (user_coproc);
@@ -5296,7 +5297,8 @@ static int
 execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap *fds_to_close, int async, int subshell)
 {
   int return_val, result, lineno;
-  COMMAND *tc, *fc, *save_current;
+  COMMAND *tc, *save_current;
+  COMMAND *volatile fc;
   char *debug_trap, *error_trap, *return_trap;
 #if defined (ARRAY_VARS)
   SHELL_VAR *funcname_v, *bash_source_v, *bash_lineno_v;
