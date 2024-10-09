@@ -79,7 +79,7 @@ sh_builtin_func_t *this_shell_builtin = (sh_builtin_func_t *)NULL;
    instead of shell control structures, and it won't ever exit the
    shell. */
 
-static void
+void
 builtin_error_prolog (void)
 {
   char *name;
