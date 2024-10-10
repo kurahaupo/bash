@@ -97,13 +97,16 @@ extern int errno;
 #define OT	1
 #define EF	2
 
-/* The following few defines control the truth and false output of each stage.
-   TRUE and FALSE are what we use to compute the final output value.
-   SHELL_BOOLEAN is the form which returns truth or falseness in shell terms.
-   Default is TRUE = 1, FALSE = 0, SHELL_BOOLEAN = (!value). */
-#define TRUE 1
-#define FALSE 0
-#define SHELL_BOOLEAN(value) (!(value))
+/* Internally all logic follows normal C rules (non-zero is true), which is
+   then converted to a shell exit status (non-zero is failure or false), using
+   bool_to_status as the last step.
+*/
+
+static inline int
+bool_to_status(_Bool value)
+{
+  return ! value;
+}
 
 #define TEST_ERREXIT_STATUS	2
 
@@ -168,7 +171,7 @@ integer_expected_error (char *pch)
 
 /* Increment our position in the argument list.  Check that we're not
    past the end of the argument list.  This check is suppressed if the
-   argument is FALSE.  Made a macro for efficiency. */
+   argument is false.  Made a macro for efficiency. */
 #define advance(f) do { ++pos; if (f && pos >= argc) beyond (); } while (0)
 #define unary_advance() do { advance (1); ++pos; } while (0)
 
@@ -182,7 +185,7 @@ expr (void)
   if (pos >= argc)
     beyond ();
 
-  return (FALSE ^ or ());	/* Same with this. */
+  return (false ^ or ());
 }
 
 /*
@@ -338,12 +341,12 @@ filecomp (const char *s, const char *t, int op)
   if ((r1 = stat_mtime (s, &st1, &ts1)) < 0)
     {
       if (op == EF)
-	return (FALSE);
+	return (false);
     }
   if ((r2 = stat_mtime (t, &st2, &ts2)) < 0)
     {
       if (op == EF)
-	return (FALSE);
+	return (false);
     }
 
   switch (op)
@@ -352,7 +355,7 @@ filecomp (const char *s, const char *t, int op)
     case NT: return (r1 > r2 || (r1 == 0 && timespec_cmp (ts1, ts2) > 0));
     case EF: return (same_file (s, t, &st1, &st2));
     }
-  return (FALSE);
+  return (false);
 }
 
 static int
@@ -368,10 +371,10 @@ arithcomp (char *s, char *t, int op, int flags)
       eflag = (shell_compatibility_level > 51) ? 0 : EXP_EXPANDED;
       l = evalexp (s, eflag, &expok);
       if (expok == 0)
-	return (FALSE);		/* should probably longjmp here */
+	return (false);		/* should probably longjmp here */
       r = evalexp (t, eflag, &expok);
       if (expok == 0)
-	return (FALSE);		/* ditto */
+	return (false);		/* ditto */
     }
   else
     {
@@ -391,7 +394,7 @@ arithcomp (char *s, char *t, int op, int flags)
     case GE: return (l >= r);
     }
 
-  return (FALSE);
+  return (false);
 }
 
 static int
@@ -456,7 +459,7 @@ binary_test (char *op, char *arg1, char *arg2, int flags)
 	}
     }
 
-  return (FALSE);		/* should never get here */
+  return (false);		/* should never get here */
 }
 
 static int
@@ -489,7 +492,7 @@ binary_operator (void)
     {
       test_syntax_error (_("%s: binary operator expected"), w);
       /* NOTREACHED */
-      return (FALSE);
+      return (false);
     }
 
   value = binary_test (w, argv[pos], argv[pos + 2], 0);
@@ -505,7 +508,7 @@ unary_operator (void)
 
   op = argv[pos];
   if (test_unop (op) == 0)
-    return (FALSE);
+    return (false);
 
   /* the only tricky case is `-t', which may or may not take an argument. */
   if (posixly_correct == 0 && op[1] == 't')
@@ -570,14 +573,14 @@ unary_test (char *op, char *arg, int flags)
 
     case 'N':
       if (sh_stat (arg, &stat_buf) < 0)
-	return (FALSE);
+	return (false);
       atime = get_stat_atime (&stat_buf);
       mtime = get_stat_mtime (&stat_buf);
       return (timespec_cmp (mtime, atime) > 0);
 
     case 'f':			/* File is a file? */
       if (sh_stat (arg, &stat_buf) < 0)
-	return (FALSE);
+	return (false);
 
       /* -f is true if the given file exists and is a regular file. */
 #if defined (S_IFMT)
@@ -594,7 +597,7 @@ unary_test (char *op, char *arg, int flags)
 
     case 'S':			/* File is a socket? */
 #if !defined (S_ISSOCK)
-      return (FALSE);
+      return (false);
 #else
       return (sh_stat (arg, &stat_buf) == 0 && S_ISSOCK (stat_buf.st_mode));
 #endif /* S_ISSOCK */
@@ -607,7 +610,7 @@ unary_test (char *op, char *arg, int flags)
 
     case 'p':			/* File is a named pipe? */
 #ifndef S_ISFIFO
-      return (FALSE);
+      return (false);
 #else
       return (sh_stat (arg, &stat_buf) == 0 && S_ISFIFO (stat_buf.st_mode));
 #endif /* S_ISFIFO */
@@ -615,7 +618,7 @@ unary_test (char *op, char *arg, int flags)
     case 'L':			/* Same as -h  */
     case 'h':			/* File is a symbolic link? */
 #if !defined (S_ISLNK) || !defined (HAVE_LSTAT)
-      return (FALSE);
+      return (false);
 #else
       return ((arg[0] != '\0') &&
 	      (lstat (arg, &stat_buf) == 0) && S_ISLNK (stat_buf.st_mode));
@@ -630,7 +633,7 @@ unary_test (char *op, char *arg, int flags)
     case 'k':			/* File has sticky bit set? */
 #if !defined (S_ISVTX)
       /* This is not Posix, and is not defined on some Posix systems. */
-      return (FALSE);
+      return (false);
 #else
       return (sh_stat (arg, &stat_buf) == 0 && (stat_buf.st_mode & S_ISVTX) != 0);
 #endif
@@ -671,43 +674,43 @@ unary_test (char *op, char *arg, int flags)
 	    aflags |= AV_ATSTARKEYS;	/* XXX */
 	  init_eltstate (&es);
 	  t = get_array_value (arg, aflags | AV_ALLOWALL, &es);
-	  ret = t ? TRUE : FALSE;
+	  ret = t != NULL;
 	  if (es.subtype > 0)	/* subscript is * or @ */
 	    free (t);
 	  flush_eltstate (&es);
 	  return ret;
 	}
       else if (valid_number (arg, &r))	/* -v n == is $n set? */
-	return ((r >= 0 && r <= number_of_args ())? TRUE : FALSE);
+	return r >= 0 && r <= number_of_args ();
       v = find_variable (arg);
       if (v && invisible_p (v) == 0 && array_p (v))
 	{
 	  char *t;
 	  /* [[ -v foo ]] == [[ -v foo[0] ]] */
 	  t = array_reference (array_cell (v), 0);
-	  return (t ? TRUE : FALSE);
+	  return (t != 0);
 	}
       else if (v && invisible_p (v) == 0 && assoc_p (v))
 	{
 	  char *t;
 	  t = assoc_reference (assoc_cell (v), "0");
-	  return (t ? TRUE : FALSE);
+	  return (t != 0);
 	}
 #else
       v = find_variable (arg);
 #endif
-      return (v && invisible_p (v) == 0 && var_isset (v) ? TRUE : FALSE);
+      return (v && invisible_p (v) == 0 && var_isset (v));
 
     case 'R':
       v = find_variable_noref (arg);
-      return ((v && invisible_p (v) == 0 && var_isset (v) && nameref_p (v)) ? TRUE : FALSE);
+      return (v && invisible_p (v) == 0 && var_isset (v) && nameref_p (v));
     }
 
   /* We can't actually get here, but this shuts up gcc. */
-  return (FALSE);
+  return (false);
 }
 
-/* Return TRUE if OP is one of the test command's binary operators. */
+/* Return true if OP is one of the test command's binary operators. */
 int
 test_binop (char *op)
 {
@@ -847,7 +850,7 @@ posixtest (int nargs)
   switch (nargs)
     {
     case 0:
-      value = FALSE;
+      value = false;
       break;
 
     case 1:
@@ -927,13 +930,13 @@ test_command (int margc, char **margv)
 	test_syntax_error (_("missing `]'"), (char *)NULL);
 
       if (argc < 2)
-	test_exit (SHELL_BOOLEAN (FALSE));
+	test_exit (bool_to_status (false));
     }
 
   pos = 1;
 
   if (pos >= argc)
-    test_exit (SHELL_BOOLEAN (FALSE));
+    test_exit (bool_to_status (false));
 
   noeval = 0;
   int value = posixtest (argc - 1);
@@ -946,5 +949,5 @@ test_command (int margc, char **margv)
 	test_syntax_error (_("too many arguments"), (char *)NULL);
     }
 
-  test_exit (SHELL_BOOLEAN (value));
+  test_exit (bool_to_status (value));
 }
