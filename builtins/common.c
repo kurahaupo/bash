@@ -908,9 +908,9 @@ sh_builtin_func_t *
 find_special_builtin (const char *name)
 {
   current_builtin = builtin_address_internal (name, 0);
-  return ((current_builtin && (current_builtin->flags & SPECIAL_BUILTIN)) ?
-			current_builtin->function :
-			(sh_builtin_func_t *)NULL);
+  return ((current_builtin && (current_builtin->flags & SPECIAL_BUILTIN))
+	  ? current_builtin->function
+	  : (sh_builtin_func_t *)NULL);
 }
 
 static int
