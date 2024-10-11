@@ -84,6 +84,8 @@ do { \
 /* Functions from common.c */
 extern void builtin_error (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 extern void builtin_warning (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+extern void builtin_verror (const char *, va_list);
+extern void builtin_vwarning (const char *, va_list);
 extern void builtin_usage (void);
 extern void no_args (WORD_LIST *, int);
 extern int no_options (WORD_LIST *);

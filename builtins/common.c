@@ -95,32 +95,38 @@ builtin_error_prolog (void)
 }
 
 void
+builtin_verror (const char *format, va_list args)
+{
+  builtin_error_prolog ();
+  vfprintf (stderr, format, args);
+  fputs ("\n", stderr);
+}
+
+void
 builtin_error (const char *format, ...)
 {
   va_list args;
-
-  builtin_error_prolog ();
-
   va_start (args, format);
-
-  vfprintf (stderr, format, args);
+  builtin_verror (format, args);
   va_end (args);
-  fprintf (stderr, "\n");
+}
+
+void
+builtin_vwarning (const char *format, va_list args)
+{
+  builtin_error_prolog ();
+  fputs (_("warning: "), stderr);
+  vfprintf (stderr, format, args);
+  fputs ("\n", stderr);
 }
 
 void
 builtin_warning (const char *format, ...)
 {
   va_list args;
-
-  builtin_error_prolog ();
-  fprintf (stderr, _("warning: "));
-
   va_start (args, format);
-
-  vfprintf (stderr, format, args);
+  builtin_vwarning (format, args);
   va_end (args);
-  fprintf (stderr, "\n");
 }
 
 /* Print a usage summary for the currently-executing builtin command. */
