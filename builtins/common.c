@@ -607,7 +607,7 @@ get_working_directory (const char *for_whom)
       if (the_current_working_directory == 0)
 	{
 	  fprintf (stderr, "%s: %s: %s: %s\n",
-  	   (for_whom && *for_whom) ? for_whom : get_name_for_error (),
+	   (for_whom && *for_whom) ? for_whom : get_name_for_error (),
 	   _("error retrieving current directory"),
 	   _(bash_getcwd_errstr),
 	   strerror (errno));
@@ -647,11 +647,11 @@ get_job_by_name (const char *name, int flags)
     {
       j = get_job_by_jid (i);
       if (j == 0 || ((flags & JM_STOPPED) && J_JOBSTATE(j) != JSTOPPED))
-        continue;
+	continue;
 
       p = j->pipe;
       do
-        {
+	{
 	  if (flags & JM_EXACT)
 	    {
 	      cl = strlen (p->command);
@@ -672,14 +672,14 @@ get_job_by_name (const char *name, int flags)
 	  else if (job != NO_JOB)
 	    {
 	      if (this_shell_builtin)
-	        builtin_error (_("%s: ambiguous job spec"), name);
+		builtin_error (_("%s: ambiguous job spec"), name);
 	      else
-	        internal_error (_("%s: ambiguous job spec"), name);
+		internal_error (_("%s: ambiguous job spec"), name);
 	      return (DUP_JOB);
 	    }
 	  else
 	    job = i;
-        }
+	}
       while (p != j->pipe);
     }
 
@@ -906,8 +906,8 @@ find_special_builtin (const char *name)
 {
   current_builtin = builtin_address_internal (name, 0);
   return ((current_builtin && (current_builtin->flags & SPECIAL_BUILTIN)) ?
-  			current_builtin->function :
-  			(sh_builtin_func_t *)NULL);
+			current_builtin->function :
+			(sh_builtin_func_t *)NULL);
 }
 
 static int
