@@ -28,6 +28,7 @@
 #  include <config.h>
 #endif
 
+#include <stdarg.h>
 #include <stdio.h>
 
 #include "bashtypes.h"
@@ -121,8 +122,6 @@ bool_to_status(_Bool value)
 
 #define TEST_ERREXIT_STATUS	2
 
-static procenv_t test_exit_buf;
-
 extern int sh_stat (const char *, struct stat *);
 
 static int pos;			/* The offset of the current argument in ARGV. */
@@ -142,10 +141,15 @@ static _Bool three_arguments (void);
 static _Bool two_arguments (void);
 static _Bool unary_operator (void);
 
+static procenv_t test_exit_buf;
+
 static void __attribute__((__noreturn__))
-test_syntax_error (char const *format, char const *arg)
+test_syntax_error (char const *format, ...)
 {
-  builtin_error (format, arg);
+  va_list va;
+  va_start (va, format);
+  builtin_verror (format, va);
+  va_end (va);
   sh_longjmp (test_exit_buf, 1);
 }
 
@@ -156,7 +160,7 @@ test_syntax_error (char const *format, char const *arg)
 static void __attribute__((__noreturn__))
 beyond (void)
 {
-  test_syntax_error (_("argument expected"), (char *)NULL);
+  test_syntax_error (_("argument expected"));
 }
 
 /* Syntax error for when an integer argument was expected, but
@@ -311,10 +315,9 @@ term (void)
 	    break;
 	}
       /* only use posixtest if we have a valid parenthesized expression */
-      _Bool value = 0;
-	value = posixtest (nargs, false);
+      _Bool value = posixtest (nargs, false);
       if (argv[pos] == 0)	/* ( */
-	test_syntax_error (_("`)' expected"), (char *)NULL);
+	test_syntax_error (_("`)' expected"));
       else if (! ISTOKEN (argv[pos], ')'))	/* ( */
 	test_syntax_error (_("`)' expected, found %s"), argv[pos]);
       ++pos;
@@ -864,14 +867,11 @@ posixtest (int nargs, _Bool top)
 int
 cond_test (char const *op, char const *arg1, char const *arg2, int flags)
 {
-  int code, ret;
-
-  code = setjmp_nosigs (test_exit_buf);
-
-  if (code)
+  if (setjmp_nosigs (test_exit_buf))
     return TEST_ERREXIT_STATUS;
 
-  ret = arg2 ? binary_test (op, arg1, arg2, flags) : unary_test (op, arg1, flags);
+  int ret = arg2 ? binary_test (op, arg1, arg2, flags)
+		 : unary_test (op, arg1, flags);
 
   return bool_to_status (ret);
 }
@@ -886,9 +886,7 @@ cond_test (char const *op, char const *arg1, char const *arg2, int flags)
 int
 test_command (int margc, char const * const *margv)
 {
-  int code = setjmp_nosigs (test_exit_buf);
-
-  if (code)
+  if (setjmp_nosigs (test_exit_buf))
     return TEST_ERREXIT_STATUS;
 
   argc = margc;
@@ -900,7 +898,7 @@ test_command (int margc, char const * const *margv)
       --argc;
 
       if (margv[argc] && (margv[argc][0] != ']' || margv[argc][1]))
-	test_syntax_error (_("missing `]'"), (char *)NULL);
+	test_syntax_error (_("missing `]'"));
     }
 
   if (pos >= argc)
@@ -913,7 +911,7 @@ test_command (int margc, char const * const *margv)
       if (want_args (1) && argv[pos][0] == '-')
 	test_syntax_error (_("syntax error: `%s' unexpected"), argv[pos]);
       else
-	test_syntax_error (_("too many arguments"), (char *)NULL);
+	test_syntax_error (_("too many arguments"));
     }
 
   return bool_to_status (value);
