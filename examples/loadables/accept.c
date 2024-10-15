@@ -125,8 +125,8 @@ accept_builtin (WORD_LIST *list)
 
   memset ((char *)&server, 0, sizeof (server));
   server.sin_family = AF_INET;
-  server.sin_port = htons(uport);
-  server.sin_addr.s_addr = bindaddr ? inet_addr (bindaddr) : htonl(INADDR_ANY);
+  server.sin_port = htons (uport);
+  server.sin_addr.s_addr = bindaddr ? inet_addr (bindaddr) : htonl (INADDR_ANY);
 
   if (server.sin_addr.s_addr == INADDR_NONE)
     {
@@ -156,10 +156,10 @@ accept_builtin (WORD_LIST *list)
     {
       fd_set iofds;
 
-      FD_ZERO(&iofds);
-      FD_SET(servsock, &iofds);
+      FD_ZERO (&iofds);
+      FD_SET (servsock, &iofds);
 
-      opt = select (servsock+1, &iofds, 0, 0, &timeval);
+      opt = select (servsock + 1, &iofds, 0, 0, &timeval);
       if (opt < 0)
 	builtin_error ("select failure: %s", strerror (errno));
       if (opt <= 0)
@@ -198,44 +198,44 @@ accept_bind_variable (char *varname, int intval)
   char ibuf[INT_STRLEN_BOUND (int) + 1], *p;
 
   p = fmtulong (intval, 10, ibuf, sizeof (ibuf), 0);
-  v = builtin_bind_variable (varname, p, 0);		/* XXX */
+  v = builtin_bind_variable (varname, p, 0);	/* XXX */
   if (v == 0 || readonly_p (v) || noassign_p (v))
     builtin_error ("%s: cannot set variable", varname);
   return (v != 0);
 }
 
 char *accept_doc[] = {
-	"Accept a network connection on a specified port.",
-	""
-	"This builtin allows a bash script to act as a TCP/IP server.",
-	"",
-	"Options, if supplied, have the following meanings:",
-	"    -b address    use ADDRESS as the IP address to listen on; the",
-	"                  default is INADDR_ANY",
-	"    -t timeout    wait TIMEOUT seconds for a connection. TIMEOUT may",
-	"                  be a decimal number including a fractional portion",
-	"    -v varname    store the numeric file descriptor of the connected",
-	"                  socket into VARNAME. The default VARNAME is ACCEPT_FD",
-	"    -r rhost      store the IP address of the remote host into the shell",
-	"                  variable RHOST, in dotted-decimal notation",
-	"",
-	"If successful, the shell variable ACCEPT_FD, or the variable named by the",
-	"-v option, will be set to the fd of the connected socket, suitable for",
-	"use as 'read -u$ACCEPT_FD'. RHOST, if supplied, will hold the IP address",
-	"of the remote client. The return status is 0.",
-	"",
-	"On failure, the return status is 1 and ACCEPT_FD (or VARNAME) and RHOST,",
-	"if supplied, will be unset.",
-	"",
-	"The server socket fd will be closed before accept returns.",
-	(char *) NULL
+  "Accept a network connection on a specified port.",
+  ""
+  "This builtin allows a bash script to act as a TCP/IP server.",
+  "",
+  "Options, if supplied, have the following meanings:",
+  "    -b address    use ADDRESS as the IP address to listen on; the",
+  "                  default is INADDR_ANY",
+  "    -t timeout    wait TIMEOUT seconds for a connection. TIMEOUT may",
+  "                  be a decimal number including a fractional portion",
+  "    -v varname    store the numeric file descriptor of the connected",
+  "                  socket into VARNAME. The default VARNAME is ACCEPT_FD",
+  "    -r rhost      store the IP address of the remote host into the shell",
+  "                  variable RHOST, in dotted-decimal notation",
+  "",
+  "If successful, the shell variable ACCEPT_FD, or the variable named by the",
+  "-v option, will be set to the fd of the connected socket, suitable for",
+  "use as 'read -u$ACCEPT_FD'. RHOST, if supplied, will hold the IP address",
+  "of the remote client. The return status is 0.",
+  "",
+  "On failure, the return status is 1 and ACCEPT_FD (or VARNAME) and RHOST,",
+  "if supplied, will be unset.",
+  "",
+  "The server socket fd will be closed before accept returns.",
+  (char *)NULL
 };
 
 struct builtin accept_struct = {
-	"accept",		/* builtin name */
-	accept_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	accept_doc,		/* array of long documentation strings. */
-	"accept [-b address] [-t timeout] [-v varname] [-r addrvar ] port",		/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "accept",			/* builtin name */
+  accept_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  accept_doc,			/* array of long documentation strings. */
+  "accept [-b address] [-t timeout] [-v varname] [-r addrvar ] port",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
