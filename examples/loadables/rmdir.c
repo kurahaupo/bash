@@ -52,20 +52,20 @@ rmdir_builtin (WORD_LIST *list)
 }
 
 char *rmdir_doc[] = {
-	"Remove directory.",
-	"",
-	"rmdir removes the directory entry specified by each argument,",
-	"provided the directory is empty.",
-	(char *)NULL
+  "Remove directory.",
+  "",
+  "rmdir removes the directory entry specified by each argument,",
+  "provided the directory is empty.",
+  (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
-   of these structures. */
+of these structures. */
 struct builtin rmdir_struct = {
-	"rmdir",		/* builtin name */
-	rmdir_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	rmdir_doc,		/* array of long documentation strings. */
-	"rmdir directory ...",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "rmdir",			/* builtin name */
+  rmdir_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  rmdir_doc,			/* array of long documentation strings. */
+  "rmdir directory ...",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
