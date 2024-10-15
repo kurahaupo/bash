@@ -151,7 +151,7 @@ sleep_builtin (WORD_LIST *list)
 	 */
 	if (r == 0 && (strchr ("dhms", *ep) || strpbrk (list->word->word, "dhms")))
 		r = parse_gnutimefmt (list->word->word, &sec, &usec);
-    		
+
 	if (r) {
 		fsleep(sec, usec);
 		QUIT;

@@ -27,9 +27,9 @@ what you give them.   Help stamp out software-hoarding!  */
  *
  *	Nov 1983, Mike@BRL, Added support for 4.1C/4.2 BSD.
  *
- * This is a very fast storage allocator.  It allocates blocks of a small 
+ * This is a very fast storage allocator.  It allocates blocks of a small
  * number of different sizes, and keeps free lists of each size.  Blocks
- * that don't exactly fit are passed up to the next larger size.  In this 
+ * that don't exactly fit are passed up to the next larger size.  In this
  * implementation, the available sizes are (2^n)-4 (or -16) bytes long.
  * This is designed for use in a program that uses vast quantities of
  * memory, but bombs when it runs out.  To make it a little better, it
@@ -555,7 +555,7 @@ malloc (n)		/* get a block */
         }
       pagebucket = nunits;
     }
- 
+
   /* Figure out how many bytes are required, rounding up to the nearest
      multiple of 4, then figure out which nextf[] area to use.  Try to
      be smart about where to start searching -- if the number of bytes
@@ -800,7 +800,7 @@ calloc (n, s)
   result = malloc (total);
   if (result)
     zmemset (result, 0, total);
-  return result;  
+  return result;
 }
 
 void

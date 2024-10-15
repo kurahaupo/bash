@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ static void rl_maybe_restore_sighandler (int, sighandler_cxt *);
 
 static void rl_signal_handler (int);
 static void _rl_handle_signal (int);
-     
+
 /* Exported variables for use by applications. */
 
 /* If non-zero, readline will install its own signal handlers for
@@ -298,7 +298,7 @@ _rl_handle_signal (int sig)
       /* We don't need to modify the signal mask now that this is not run in
 	 a signal handler context. */
 
-      rl_reset_after_signal ();      
+      rl_reset_after_signal ();
     }
 
   RL_UNSETSTATE(RL_STATE_SIGHANDLER);
@@ -443,7 +443,7 @@ rl_set_signals (void)
       sigaddset (&bset, SIGTTOU);
 #endif
       sigmask_set = 1;
-    }      
+    }
 #endif /* HAVE_POSIX_SIGNALS */
 
   if (rl_catch_signals && signals_set_flag == 0)
@@ -601,7 +601,7 @@ _rl_state_sigcleanup (void)
 /* Free up the readline variable line state for the current line (undo list,
    any partial history entry, any keyboard macros in progress, and any
    numeric arguments in process) after catching a signal, before calling
-   rl_cleanup_after_signal(). */ 
+   rl_cleanup_after_signal(). */
 void
 rl_free_line_state (void)
 {

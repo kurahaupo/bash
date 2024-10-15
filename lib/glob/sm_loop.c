@@ -1,7 +1,7 @@
 /* Copyright (C) 1991-2023 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -313,7 +313,7 @@ fprintf(stderr, "gmatch: pattern = %s; pe = %s\n", pattern, pe);
 	    /* This is a clever idea from glibc, used to avoid backtracking
 	       to a `*' that appears earlier in the pattern.  We get away
 	       without saving se and pe because they are always the same,
-	       even in the recursive calls to gmatch */ 
+	       even in the recursive calls to gmatch */
 	    if (end.pattern != NULL)
 	      {
 		p = end.pattern;
@@ -369,7 +369,7 @@ fprintf(stderr, "gmatch: pattern = %s; pe = %s\n", pattern, pe);
   if ((flags & FNM_LEADING_DIR) && *n == L('/'))
     /* The FNM_LEADING_DIR flag says that "foo*" matches "foobar/frobozz".  */
     return 0;
-	  
+
   return (FNM_NOMATCH);
 }
 
@@ -511,7 +511,7 @@ BRACKMATCH (CHAR *p, U_CHAR test, int flags)
 	      continue;
 	    }
 	}
- 
+
       /* POSIX.2 collating symbols.  See POSIX.2 2.8.3.2.  Find the end of
 	 the symbol name, make sure it is terminated by `.]', translate
 	 the name to a character using the external table, and do the
@@ -769,7 +769,7 @@ STRCOMPARE (CHAR *p, CHAR *pe, CHAR *s, CHAR *se)
 
   if (l1 != l2)
     return (FNM_NOMATCH);	/* unequal lengths, can't be identical */
-  
+
   c1 = *pe;
   c2 = *se;
 
@@ -777,7 +777,7 @@ STRCOMPARE (CHAR *p, CHAR *pe, CHAR *s, CHAR *se)
     *pe = '\0';
   if (c2 != 0)
     *se = '\0';
-    
+
 #if HAVE_MULTIBYTE || defined (HAVE_STRCOLL)
   ret = STRCOLL ((XCHAR *)p, (XCHAR *)s);
 #else

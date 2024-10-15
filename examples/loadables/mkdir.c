@@ -148,7 +148,7 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
 	  builtin_error ("`%s': file exists but is not a directory", path);
 	  return 1;
 	}
-	
+
       if (user_mode && chmod (path, nmode))
         {
           builtin_error ("%s: %s", path, strerror (errno));
@@ -160,7 +160,7 @@ make_path (char *path, int user_mode, int nmode, int parent_mode)
 
   oumask = umask (0);
   npath = savestring (path);	/* So we can write to it. */
-    
+
   /* Check whether or not we need to do anything with intermediate dirs. */
 
   /* Skip leading slashes. */

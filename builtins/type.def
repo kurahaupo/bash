@@ -265,7 +265,7 @@ describe_command (char *command, int dflags)
   if (posixly_correct && (dflags & CDESC_FORCE_PATH) == 0 && find_shell_builtin (command) != 0 && (current_builtin->flags & SPECIAL_BUILTIN))
     {
       if (dflags & CDESC_TYPE)
-	puts ("builtin"); 
+	puts ("builtin");
       else if (dflags & CDESC_SHORTDESC)
 	printf (_("%s is a special shell builtin\n"), command);
       else if (dflags & CDESC_REUSABLE)

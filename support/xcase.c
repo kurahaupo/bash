@@ -88,6 +88,6 @@ main(int ac, char **av)
 		}
 		putchar(x);
 	}
-			
+
 	exit(0);
 }

@@ -120,7 +120,7 @@ sigint_handler (int s)
   rl_cleanup_after_signal ();
   rl_callback_handler_remove ();
   saw_signal = 0;
-  return s;  
+  return s;
 }
 
 int
