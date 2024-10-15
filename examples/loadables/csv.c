@@ -32,10 +32,10 @@
 
 #if defined (ARRAY_VARS)
 
-#define CSV_ARRAY_DEFAULT	"CSV"
+#  define CSV_ARRAY_DEFAULT	"CSV"
 
-#define NQUOTE	0
-#define DQUOTE	1
+#  define NQUOTE	0
+#  define DQUOTE	1
 
 /* Split LINE into comma-separated fields, storing each field into a separate
    element of array variable CSV, starting at index 0. The format of LINE is
