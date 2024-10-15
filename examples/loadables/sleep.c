@@ -65,13 +65,15 @@ parse_gnutimefmt (char *string, long *sp, long *up)
   accumsec = accumusec = 0;
   mult = 1;
 
-  for (s = string; s && *s; s++) {
-      r = uconvert(s, &accumsec, &accumusec, &ep);
+  for (s = string; s && *s; s++)
+    {
+      r = uconvert (s, &accumsec, &accumusec, &ep);
       if (r == 0 && *ep == 0)
 	return r;
       c = *ep;
       mult = 1;
-      switch (c) {
+      switch (c)
+	{
 	case '\0':
 	case 's':
 	  mult = S_SEC;
@@ -97,7 +99,8 @@ parse_gnutimefmt (char *string, long *sp, long *up)
       /* add to running total */
       tsec += accumsec;
       tusec += accumusec;
-      if (tusec >= 1000000) {
+      if (tusec >= 1000000)
+	{
 	  tsec++;
 	  tusec -= 1000000;
 	}
@@ -126,9 +129,10 @@ sleep_builtin (WORD_LIST *list)
   int r, mul;
   time_t t;
 
-  if (list == 0) {
-      builtin_usage();
-      return(EX_USAGE);
+  if (list == 0)
+    {
+      builtin_usage ();
+      return (EX_USAGE);
     }
 
   /* Skip over `--' */
@@ -136,7 +140,8 @@ sleep_builtin (WORD_LIST *list)
     list = list->next;
 
   /* Reject options and negative arguments */
-  if (*list->word->word == '-' || list->next) {
+  if (*list->word->word == '-' || list->next)
+    {
       builtin_usage ();
       return (EX_USAGE);
     }
@@ -152,7 +157,8 @@ sleep_builtin (WORD_LIST *list)
   if (r == 0 && (strchr ("dhms", *ep) || strpbrk (list->word->word, "dhms")))
     r = parse_gnutimefmt (list->word->word, &sec, &usec);
 
-  if (r) {
+  if (r)
+    {
       fsleep (sec, usec);
       QUIT;
       return (EXECUTION_SUCCESS);
@@ -163,8 +169,7 @@ sleep_builtin (WORD_LIST *list)
 
 static char *sleep_doc[] = {
   "Suspend execution for specified period.",
-  ""
-  "sleep suspends execution for a minimum of SECONDS[.FRACTION] seconds.",
+  "" "sleep suspends execution for a minimum of SECONDS[.FRACTION] seconds.",
   "As an extension, sleep accepts GNU-style time intervals (e.g., 2m30s).",
   (char *)NULL
 };
