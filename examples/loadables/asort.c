@@ -45,13 +45,15 @@ compare (const void *p1, const void *p2)
   const sort_element e1 = *(sort_element *) p1;
   const sort_element e2 = *(sort_element *) p2;
 
-  if (numeric_flag) {
+  if (numeric_flag)
+    {
       if (reverse_flag)
 	return (e2.num > e1.num) ? 1 : (e2.num < e1.num) ? -1 : 0;
       else
 	return (e1.num > e2.num) ? 1 : (e1.num < e2.num) ? -1 : 0;
     }
-  else {
+  else
+    {
       if (reverse_flag)
 	return strcoll (e2.value, e1.value);
       else
@@ -73,14 +75,17 @@ sort_index (SHELL_VAR *dest, SHELL_VAR *source)
 
   dest_array = array_cell (dest);
 
-  if (assoc_p (source)) {
+  if (assoc_p (source))
+    {
       hash = assoc_cell (source);
       n = hash->nentries;
       sa = n ? xmalloc (n * sizeof (sort_element)) : 0;
       i = 0;
-      for (j = 0; j < hash->nbuckets; ++j) {
+      for (j = 0; j < hash->nbuckets; ++j)
+	{
 	  bucket = hash->bucket_array[j];
-	  while (bucket) {
+	  while (bucket)
+	    {
 	      sa[i].v = NULL;
 	      sa[i].key = bucket->key;
 	      if (numeric_flag)
@@ -92,13 +97,15 @@ sort_index (SHELL_VAR *dest, SHELL_VAR *source)
 	    }
 	}
     }
-  else {
+  else
+    {
       array = array_cell (source);
       n = array_num_elements (array);
       sa = n ? xmalloc (n * sizeof (sort_element)) : 0;
       i = 0;
 
-      for (ae = element_forw (array->head); ae != array->head; ae = element_forw (ae)) {
+      for (ae = element_forw (array->head); ae != array->head; ae = element_forw (ae))
+	{
 	  sa[i].v = ae;
 	  if (numeric_flag)
 	    sa[i].num = strtod (element_value (ae), NULL);
@@ -109,7 +116,8 @@ sort_index (SHELL_VAR *dest, SHELL_VAR *source)
     }
 
   // sanity check
-  if (i != n) {
+  if (i != n)
+    {
       builtin_error ("%s: corrupt array", source->name);
       xfree (sa);
       return EXECUTION_FAILURE;
@@ -118,7 +126,8 @@ sort_index (SHELL_VAR *dest, SHELL_VAR *source)
   if (n)
     qsort (sa, n, sizeof (sort_element), compare);
 
-  for (i = 0; i < n; ++i) {
+  for (i = 0; i < n; ++i)
+    {
       if (assoc_p (source))
 	key = sa[i].key;
       else
@@ -148,7 +157,8 @@ sort_inplace (SHELL_VAR *var)
   sa = xmalloc (n * sizeof (sort_element));
 
   i = 0;
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       sa[i].v = ae;
       if (numeric_flag)
 	sa[i].num = strtod (element_value (ae), NULL);
@@ -158,7 +168,8 @@ sort_inplace (SHELL_VAR *var)
     }
 
   // sanity check
-  if (i != n) {
+  if (i != n)
+    {
       builtin_error ("%s: corrupt array", var->name);
       xfree (sa);
       return EXECUTION_FAILURE;
@@ -171,7 +182,8 @@ sort_inplace (SHELL_VAR *var)
   a->head->next = sa[0].v;
   a->head->prev = sa[n - 1].v;
   a->max_index = n - 1;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; i++)
+    {
       sa[i].v->ind = i;
       if (i > 0)
 	sa[i].v->prev = sa[i - 1].v;
@@ -194,8 +206,10 @@ asort_builtin (WORD_LIST *list)
   reverse_flag = 0;
 
   reset_internal_getopt ();
-  while ((opt = internal_getopt (list, "inr")) != -1) {
-      switch (opt) {
+  while ((opt = internal_getopt (list, "inr")) != -1)
+    {
+      switch (opt)
+	{
 	case 'i': index_flag = 1; break;
 	case 'n': numeric_flag = 1; break;
 	case 'r': reverse_flag = 1; break;
@@ -207,27 +221,33 @@ asort_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  if (list == 0) {
+  if (list == 0)
+    {
       builtin_usage ();
       return EX_USAGE;
     }
 
-  if (valid_identifier (list->word->word) == 0) {
+  if (valid_identifier (list->word->word) == 0)
+    {
       sh_invalidid (list->word->word);
       return EXECUTION_FAILURE;
     }
 
-  if (index_flag) {
-      if (list->next == 0 || list->next->next) {
+  if (index_flag)
+    {
+      if (list->next == 0 || list->next->next)
+	{
 	  builtin_usage ();
 	  return EX_USAGE;
 	}
-      if (valid_identifier (list->next->word->word) == 0) {
+      if (valid_identifier (list->next->word->word) == 0)
+	{
 	  sh_invalidid (list->next->word->word);
 	  return EXECUTION_FAILURE;
 	}
       var2 = find_variable (list->next->word->word);
-      if (!var2 || (!array_p (var2) && !assoc_p (var2))) {
+      if (!var2 || (!array_p (var2) && !assoc_p (var2)))
+	{
 	  builtin_error ("%s: Not an array", list->next->word->word);
 	  return EXECUTION_FAILURE;
 	}
@@ -237,16 +257,19 @@ asort_builtin (WORD_LIST *list)
       return sort_index (var, var2);
     }
 
-  while (list) {
+  while (list)
+    {
       word = list->word->word;
       var = find_variable (word);
       list = list->next;
 
-      if (var == 0 || array_p (var) == 0) {
+      if (var == 0 || array_p (var) == 0)
+	{
 	  builtin_error ("%s: Not an array", word);
 	  continue;
 	}
-      if (readonly_p (var) || noassign_p (var)) {
+      if (readonly_p (var) || noassign_p (var))
+	{
 	  if (readonly_p (var))
 	    err_readonly (word);
 	  continue;
