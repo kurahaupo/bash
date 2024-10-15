@@ -90,27 +90,27 @@ push_builtin (WORD_LIST *list)
     }
   else
     {
-      stop_pipeline (0, (COMMAND *)NULL);
+      stop_pipeline (0, (COMMAND *) NULL);
       xstatus = wait_for (pid, 0);
       return (xstatus);
     }
 }
 
 char *push_doc[] = {
-	"Create child shell.",
-	"",
-	"Create a child that is an exact duplicate of the running shell",
-	"and wait for it to exit.  The $SHLVL, $!, $$, and $PPID variables",
-	"are adjusted in the child.  The return value is the exit status",
-	"of the child.",
-	(char *)NULL
+  "Create child shell.",
+  "",
+  "Create a child that is an exact duplicate of the running shell",
+  "and wait for it to exit.  The $SHLVL, $!, $$, and $PPID variables",
+  "are adjusted in the child.  The return value is the exit status",
+  "of the child.",
+  (char *)NULL
 };
 
 struct builtin push_struct = {
-	"push",
-	push_builtin,
-	BUILTIN_ENABLED,
-	push_doc,
-	"push",
-	0
+  "push",
+  push_builtin,
+  BUILTIN_ENABLED,
+  push_doc,
+  "push",
+  0
 };
