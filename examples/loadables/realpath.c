@@ -61,10 +61,10 @@
 extern int errno;
 #endif
 
-extern char *sh_realpath(const char *, char *);
+extern char *sh_realpath (const char *, char *);
 
 int
-realpath_builtin(WORD_LIST *list)
+realpath_builtin (WORD_LIST *list)
 {
   int opt, cflag, vflag, qflag, sflag, aflag, es;
   char *r, realbuf[PATH_MAX], *p, *newpath;
@@ -75,8 +75,9 @@ realpath_builtin(WORD_LIST *list)
   SHELL_VAR *v;
 #endif
 
-  if (list == 0) {
-      builtin_usage();
+  if (list == 0)
+    {
+      builtin_usage ();
       return (EX_USAGE);
     }
 
@@ -86,9 +87,11 @@ realpath_builtin(WORD_LIST *list)
   v = NULL;
   ind = 0;
 #endif
-  reset_internal_getopt();
-  while ((opt = internal_getopt (list, "a:cqsv")) != -1) {
-      switch (opt) {
+  reset_internal_getopt ();
+  while ((opt = internal_getopt (list, "a:cqsv")) != -1)
+    {
+      switch (opt)
+	{
 #if defined (ARRAY_VARS)
 	case 'a':
 	  aflag = 1;
@@ -109,32 +112,38 @@ realpath_builtin(WORD_LIST *list)
 	  break;
 	CASE_HELPOPT;
 	default:
-	  builtin_usage();
+	  builtin_usage ();
 	  return (EX_USAGE);
 	}
     }
 
   list = loptend;
 
-  if (list == 0) {
-      builtin_usage();
+  if (list == 0)
+    {
+      builtin_usage ();
       return (EX_USAGE);
     }
 
 #if defined (ARRAY_VARS)
-  if (aflag && valid_identifier (aname) == 0) {
-      sh_invalidid(aname);
+  if (aflag && valid_identifier (aname) == 0)
+    {
+      sh_invalidid (aname);
       return (EXECUTION_FAILURE);
     }
   if (aname && builtin_unbind_variable (aname) == -2)
     return (EXECUTION_FAILURE);
-  if (aname) {
+  if (aname)
+    {
       v = find_or_make_array_variable (aname, 1);
-      if (v == 0 || readonly_p (v) || noassign_p (v)) {
+      if (v == 0 || readonly_p (v) || noassign_p (v))
+	{
 	  if (v && readonly_p (v))
 	    err_readonly (aname);
 	  return (EXECUTION_FAILURE);
-      } else if (array_p (v) == 0) {
+	}
+      else if (array_p (v) == 0)
+	{
 	  builtin_error ("%s: not an indexed array", aname);
 	  return (EXECUTION_FAILURE);
 	}
@@ -144,37 +153,44 @@ realpath_builtin(WORD_LIST *list)
     }
 #endif
 
-  for (es = EXECUTION_SUCCESS; list; list = list->next) {
+  for (es = EXECUTION_SUCCESS; list; list = list->next)
+    {
       p = list->word->word;
-      if (sflag) {
+      if (sflag)
+	{
 	  /* sh_canonpath doesn't convert to absolute pathnames */
-	  newpath = make_absolute(p, get_string_value("PWD"));
-	  r = sh_canonpath(newpath, PATH_CHECKDOTDOT|PATH_CHECKEXISTS);
-	  free(newpath);
-      } else
-	r = sh_realpath(p, realbuf);
-      if (r == 0) {
+	  newpath = make_absolute (p, get_string_value ("PWD"));
+	  r = sh_canonpath (newpath, PATH_CHECKDOTDOT | PATH_CHECKEXISTS);
+	  free (newpath);
+	}
+      else
+	r = sh_realpath (p, realbuf);
+      if (r == 0)
+	{
 	  es = EXECUTION_FAILURE;
 	  if (qflag == 0)
-	    builtin_error("%s: cannot resolve: %s", p, strerror(errno));
+	    builtin_error ("%s: cannot resolve: %s", p, strerror (errno));
 	  continue;
 	}
-      if (cflag && (stat(r, &sb) < 0)) {
+      if (cflag && (stat (r, &sb) < 0))
+	{
 	  es = EXECUTION_FAILURE;
 	  if (qflag == 0)
-	    builtin_error("%s: %s", p, strerror(errno));
+	    builtin_error ("%s: %s", p, strerror (errno));
 	  continue;
 	}
 #if defined (ARRAY_VARS)
-      if (aflag) {
+      if (aflag)
+	{
 	  bind_array_element (v, ind, r, 0);
 	  ind++;
 	}
 #endif
-      if (qflag == 0) {
+      if (qflag == 0)
+	{
 	  if (vflag)
 	    printf ("%s -> ", p);
-	  printf("%s\n", r);
+	  printf ("%s\n", r);
 	}
       if (sflag)
 	free (r);
