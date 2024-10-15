@@ -111,7 +111,7 @@ pathchk_builtin (WORD_LIST *list)
 	case 'p':
 	  pflag = 1;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -132,24 +132,24 @@ pathchk_builtin (WORD_LIST *list)
 }
 
 char *pathchk_doc[] = {
-	"Check pathnames for validity.",
-	"",
-	"Check each pathname argument for validity (i.e., it may be used to",
-	"create or access a file without causing syntax errors) and portability",
-	"(i.e., no filename truncation will result).  If the `-p' option is",
-	"supplied, more extensive portability checks are performed.",
-	(char *)NULL
+  "Check pathnames for validity.",
+  "",
+  "Check each pathname argument for validity (i.e., it may be used to",
+  "create or access a file without causing syntax errors) and portability",
+  "(i.e., no filename truncation will result).  If the `-p' option is",
+  "supplied, more extensive portability checks are performed.",
+  (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin pathchk_struct = {
-	"pathchk",		/* builtin name */
-	pathchk_builtin,	/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	pathchk_doc,		/* array of long documentation strings. */
-	"pathchk [-p] pathname ...",	/* usage synopsis */
-	0			/* reserved for internal use */
+  "pathchk",			/* builtin name */
+  pathchk_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  pathchk_doc,			/* array of long documentation strings. */
+  "pathchk [-p] pathname ...",	/* usage synopsis */
+  0				/* reserved for internal use */
 };
 
 /* The remainder of this file is stolen shamelessly from `pathchk.c' in
@@ -163,14 +163,14 @@ struct builtin pathchk_struct = {
    In addition, the entry for `/' is nonzero to simplify checking. */
 static char const portable_chars[256] =
 {
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 0-15 */
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, /* 16-31 */
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, /* 32-47 */
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, /* 48-63 */
-  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 64-79 */
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, /* 80-95 */
-  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, /* 96-111 */
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, /* 112-127 */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 0-15 */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 16-31 */
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,	/* 32-47 */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,	/* 48-63 */
+  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,	/* 64-79 */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,	/* 80-95 */
+  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,	/* 96-111 */
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,	/* 112-127 */
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -189,7 +189,7 @@ portable_chars_only (const char *path)
   const char *p;
 
   for (p = path; *p; ++p)
-    if (portable_chars[(const unsigned char) *p] == 0)
+    if (portable_chars[(const unsigned char)*p] == 0)
       {
 	builtin_error ("path `%s' contains nonportable character `%c'", path, *p);
 	return 0;
@@ -200,9 +200,9 @@ portable_chars_only (const char *path)
 /* On some systems, stat can return EINTR.  */
 
 #ifndef EINTR
-# define SAFE_STAT(name, buf) stat (name, buf)
+#  define SAFE_STAT(name, buf) stat (name, buf)
 #else
-# define SAFE_STAT(name, buf) safe_stat (name, buf)
+#  define SAFE_STAT(name, buf) safe_stat (name, buf)
 static inline int
 safe_stat (const char *name, struct stat *buf)
 {
@@ -339,7 +339,7 @@ validate_path (char *path, int portability)
       if (length > name_max)
 	{
 	  builtin_error ("name `%s' has length %d; exceeds limit of %d",
-		 start, length, name_max);
+			 start, length, name_max);
 	  free (parent);
 	  return 1;
 	}
@@ -365,7 +365,7 @@ validate_path (char *path, int portability)
   if (strlen (path) > path_max)
     {
       builtin_error ("path `%s' has length %lu; exceeds limit of %d",
-	     path, (unsigned long)strlen (path), path_max);
+		     path, (unsigned long)strlen (path), path_max);
       return 1;
     }
 
