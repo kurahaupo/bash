@@ -94,7 +94,7 @@ mktemp_builtin (WORD_LIST *list)
 
   if (prefix == 0)
     prefix = DEFAULT_PREFIX;
-  base_mflags = MT_USETMPDIR|MT_USERANDOM;	/* USERANDOM not strictly needed */
+  base_mflags = MT_USETMPDIR | MT_USERANDOM;	/* USERANDOM not strictly needed */
 
   while (list || onetime)
     {
@@ -137,7 +137,7 @@ mktemp_builtin (WORD_LIST *list)
 	      printf ("%s\n", filename);
 	    }
 	}
-      else		/* filename */
+      else			/* filename */
 	{
 	  fd = sh_mktmpfd (template, mflags, &filename);
 	  if (fd < 0)
@@ -169,43 +169,43 @@ mktemp_builtin (WORD_LIST *list)
       FREE (filename);
 
       if (list)
-        list = list->next;
+	list = list->next;
     }
 
   return (rval);
 }
 
 char *mktemp_doc[] = {
-	"Make unique temporary file name",
-	"",
-	"Take each supplied filename template and overwrite a portion of it",
-	"to create a filename, which is unique and may be used by the calling",
-	"script. TEMPLATE is a string ending in some number of 'X's. If",
-	"TEMPLATE is not supplied, shtmp.XXXXXX is used and $TMPDIR is used as",
-	"the name of the containing directory. Files are created u+rw; directories",
-	"are created u+rwx.",
-	"",
-	"Options, if supplied, have the following meanings:",
-	"",
-	"    -d    Create a directory instead of a file",
-	"    -q    Do not print error messages about file creation failure",
-	"    -t PREFIX Use PREFIX as the directory in which to create files",
-	"    -u    Do not create anything; simply print a name",
-	"    -v VAR    Store the generated name into shell variable VAR",
-	"",
-	"Any PREFIX supplied with -t is ignored if TEMPLATE is supplied.",
-	"",
-	"The return status is true if the file or directory was created successfully;",
-	"false if an error occurs or VAR is invalid or readonly.",
+  "Make unique temporary file name",
+  "",
+  "Take each supplied filename template and overwrite a portion of it",
+  "to create a filename, which is unique and may be used by the calling",
+  "script. TEMPLATE is a string ending in some number of 'X's. If",
+  "TEMPLATE is not supplied, shtmp.XXXXXX is used and $TMPDIR is used as",
+  "the name of the containing directory. Files are created u+rw; directories",
+  "are created u+rwx.",
+  "",
+  "Options, if supplied, have the following meanings:",
+  "",
+  "    -d    Create a directory instead of a file",
+  "    -q    Do not print error messages about file creation failure",
+  "    -t PREFIX Use PREFIX as the directory in which to create files",
+  "    -u    Do not create anything; simply print a name",
+  "    -v VAR    Store the generated name into shell variable VAR",
+  "",
+  "Any PREFIX supplied with -t is ignored if TEMPLATE is supplied.",
+  "",
+  "The return status is true if the file or directory was created successfully;",
+  "false if an error occurs or VAR is invalid or readonly.",
 
-	(char *)NULL
+  (char *)NULL
 };
 
 struct builtin mktemp_struct = {
-	"mktemp",		/* builtin name */
-	mktemp_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	mktemp_doc,		/* array of long documentation strings. */
-	"mktemp [-d] [-q] [-t prefix] [-u] [-v varname] [template] ...",
-	0			/* reserved for internal use */
+  "mktemp",			/* builtin name */
+  mktemp_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  mktemp_doc,			/* array of long documentation strings. */
+  "mktemp [-d] [-q] [-t prefix] [-u] [-v varname] [template] ...",
+  0				/* reserved for internal use */
 };
