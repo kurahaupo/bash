@@ -72,7 +72,7 @@ tee_builtin (WORD_LIST *list)
 
   reset_internal_getopt ();
   append = nointr = 0;
-  tee_flist = (FLIST *)NULL;
+  tee_flist = (FLIST *) NULL;
   while ((opt = internal_getopt (list, "ai")) != -1)
     {
       switch (opt)
@@ -97,13 +97,13 @@ tee_builtin (WORD_LIST *list)
   buf = xmalloc (TEE_BUFSIZE);
 
   /* Initialize output file list. */
-  fl = tee_flist = (FLIST *)xmalloc (sizeof(FLIST));
+  fl = tee_flist = (FLIST *) xmalloc (sizeof (FLIST));
   tee_flist->fd = 1;
   tee_flist->fname = "stdout";
-  tee_flist->next = (FLIST *)NULL;
+  tee_flist->next = (FLIST *) NULL;
 
   /* Add file arguments to list of output files. */
-  fflags = append ? O_WRONLY|O_CREAT|O_APPEND : O_WRONLY|O_CREAT|O_TRUNC;
+  fflags = append ? O_WRONLY | O_CREAT | O_APPEND : O_WRONLY | O_CREAT | O_TRUNC;
   for (rval = EXECUTION_SUCCESS; list; list = list->next)
     {
       fd = open (list->word->word, fflags, 0666);
@@ -114,16 +114,16 @@ tee_builtin (WORD_LIST *list)
 	}
       else
 	{
-	  fl->next = (FLIST *)xmalloc (sizeof(FLIST));
+	  fl->next = (FLIST *) xmalloc (sizeof (FLIST));
 	  fl->next->fd = fd;
 	  fl->next->fname = list->word->word;
 	  fl = fl->next;
-	  fl->next = (FLIST *)NULL;
+	  fl->next = (FLIST *) NULL;
 	}
       QUIT;
     }
 
-  while ((nr = read(0, buf, TEE_BUFSIZE)) > 0)
+  while ((nr = read (0, buf, TEE_BUFSIZE)) > 0)
     for (fl = tee_flist; fl; fl = fl->next)
       {
 	n = nr;
@@ -145,7 +145,7 @@ tee_builtin (WORD_LIST *list)
     builtin_error ("read error: %s", strerror (errno));
 
   /* Deallocate resources -- this is a builtin command. */
-  tee_flist = tee_flist->next;		/* skip bogus close of stdout */
+  tee_flist = tee_flist->next;	/* skip bogus close of stdout */
   while (tee_flist)
     {
       fl = tee_flist;
@@ -163,20 +163,20 @@ tee_builtin (WORD_LIST *list)
 }
 
 char *tee_doc[] = {
-	"Duplicate standard output.",
-	"",
-	"Copy standard input to standard output, making a copy in each",
-	"filename argument.  If the `-a' option is given, the specified",
-	"files are appended to, otherwise they are overwritten.  If the",
-	"`-i' option is supplied, tee ignores interrupts.",
-	(char *)NULL
+  "Duplicate standard output.",
+  "",
+  "Copy standard input to standard output, making a copy in each",
+  "filename argument.  If the `-a' option is given, the specified",
+  "files are appended to, otherwise they are overwritten.  If the",
+  "`-i' option is supplied, tee ignores interrupts.",
+  (char *)NULL
 };
 
 struct builtin tee_struct = {
-	"tee",			/* builtin name */
-	tee_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	tee_doc,		/* array of long documentation strings. */
-	"tee [-ai] [file ...]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "tee",			/* builtin name */
+  tee_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  tee_doc,			/* array of long documentation strings. */
+  "tee [-ai] [file ...]",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
