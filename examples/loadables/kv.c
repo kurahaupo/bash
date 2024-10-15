@@ -113,7 +113,7 @@ kvfile (SHELL_VAR *v, int fd, char *delims, char *rs)
     }
 
   QUIT;
-  return nr;  
+  return nr;
 }
 #endif
 
@@ -194,7 +194,7 @@ kv_builtin (WORD_LIST *list)
   rval = kvfile (v, 0, delims, rs);
 
   if (free_delims)
-    free (delims);	/* getifs returns allocated memory */  
+    free (delims);	/* getifs returns allocated memory */
   return (rval > 0 ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
 #else
   builtin_error ("arrays not available");

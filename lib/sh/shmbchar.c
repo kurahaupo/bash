@@ -42,7 +42,7 @@ const unsigned int is_basic_table [UCHAR_MAX / 32 + 1] =
   0x7fffffff            /* '`' 'a'...'z' '{' '|' '}' '~' */
   /* The remaining bits are 0.  */
 };
-	
+
 #endif /* IS_BASIC_ASCII */
 
 extern int locale_utf8locale;

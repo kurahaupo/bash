@@ -90,8 +90,8 @@ ln_builtin (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-    
-  linkfn = (flags & LN_SYMLINK) ? symlink : link;  
+
+  linkfn = (flags & LN_SYMLINK) ? symlink : link;
 
   if (list->next == 0)			/* ln target, equivalent to ln target . */
     return (dolink (list->word->word, ".", flags));
@@ -103,7 +103,7 @@ ln_builtin (WORD_LIST *list)
 
   /* find last argument: target directory, and make sure it's an existing
      directory. */
-  for (l = list; l->next; l = l->next)  
+  for (l = list; l->next; l = l->next)
     ;
   sdir = l->word->word;
 
@@ -121,7 +121,7 @@ ln_builtin (WORD_LIST *list)
 
   for (rval = EXECUTION_SUCCESS; list != l; list = list->next)
     rval += dolink (list->word->word, sdir, flags);
-  
+
   return rval;
 }
 
@@ -158,7 +158,7 @@ dolink (char *src, char *dst, int flags)
   int exists;
   char *dst_path, *p;
 
-  /* If we're not doing symlinks, the source must exist and not be a 
+  /* If we're not doing symlinks, the source must exist and not be a
      directory. */
   if ((flags & LN_SYMLINK) == 0)
     {

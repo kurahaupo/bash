@@ -103,7 +103,7 @@ nsleep (unsigned int sec, unsigned int usec)
       req = rem;
     }
   return r;
-}	
+}
 #endif
 
 #if defined (HAVE_TIMEVAL) && (defined (HAVE_SELECT) || defined (HAVE_PSELECT))

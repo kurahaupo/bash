@@ -470,7 +470,7 @@ ulimit_internal (int cmd, char *cmdarg, int mode, int multiple)
       printone (limind, (mode & LIMIT_SOFT) ? soft_limit : hard_limit, multiple);
       return (EXECUTION_SUCCESS);
     }
- 
+
   /* Setting the limit. */
   if (STREQ (cmdarg, "hard"))
     real_limit = hard_limit;
@@ -626,7 +626,7 @@ set_limit (int ind, RLIMTYPE newlim, int mode)
 	limit.rlim_cur = val;
       if (mode & LIMIT_HARD)
 	limit.rlim_max = val;
-	  
+
       return (setrlimit (limits[ind].parameter, &limit));
 #else
       errno = EINVAL;
@@ -691,7 +691,7 @@ pipesize (RLIMTYPE *valuep)
   return 0;
 #    else
   errno = EINVAL;
-  return -1;  
+  return -1;
 #    endif /* PIPESIZE */
 #  endif /* _POSIX_PIPE_BUF */
 #endif /* PIPE_BUF */
@@ -786,7 +786,7 @@ set_all_limits (int mode, RLIMTYPE newlim)
       errno = EINVAL;
       return -1;
     }
-  
+
   if (mode == 0)
     mode = LIMIT_SOFT|LIMIT_HARD;
 

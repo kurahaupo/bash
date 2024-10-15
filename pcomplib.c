@@ -131,7 +131,7 @@ free_progcomp (PTR_T data)
   cs = (COMPSPEC *)data;
   compspec_dispose (cs);
 }
-  
+
 void
 progcomp_flush (void)
 {

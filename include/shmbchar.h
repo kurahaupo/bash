@@ -36,11 +36,11 @@
    - in the ISO C "basic character set" or is one of '@', '$', and '`'
      which ISO C 23 § 5.2.1.1.(1) guarantees to be single-byte and in
      practice are safe to treat as basic in the execution character set,
-     or 
+     or
    - in the POSIX "portable character set", which
      <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap06.html>
      equally guarantees to be single-byte. */
-                               
+
 #if (' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
     && ('$' == 36) && ('%' == 37) && ('&' == 38) && ('\'' == 39) \
     && ('(' == 40) && (')' == 41) && ('*' == 42) && ('+' == 43) \

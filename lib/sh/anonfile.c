@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if defined (HAVE_UNISTD_H)
@@ -96,7 +96,7 @@ anonshmopen (const char *name, int flags, char **fn)
   else
     free (fname);
 
-  return fd;  
+  return fd;
 }
 #endif
 

@@ -34,7 +34,7 @@
 #  include <string.h>
 #else /* !HAVE_STRING_H */
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */  
+#endif /* !HAVE_STRING_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
@@ -229,7 +229,7 @@ tilde_expand (const char *string)
       if (expansion == 0)
 	expansion = tilde_word;
       else
-	xfree (tilde_word);	
+	xfree (tilde_word);
 
       len = strlen (expansion);
 #ifdef __CYGWIN__

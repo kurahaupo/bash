@@ -18,7 +18,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #include "bashansi.h"
@@ -39,6 +39,6 @@ reallocarray (void *ptr, size_t nmemb, size_t size)
       errno = ENOMEM;
       return NULL;
     }
-	        
+
   return realloc (ptr, nbytes);
 }
