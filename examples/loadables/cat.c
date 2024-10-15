@@ -40,31 +40,42 @@ extern char **make_builtin_argv (WORD_LIST *, int *);
 static int
 fcopy (int fd, char *fn)
 {
-  char buf[4096], *s;
-  int n, w, e;
+  char buf[4096];
+  char const *s;
+  ssize_t n, w;
 
   while (n = read (fd, buf, sizeof (buf)))
     {
       if (n < 0)
 	{
-	  e = errno;
+	  s = strerror (errno);
 	  write (2, "cat: read error: ", 18);
 	  write (2, fn, strlen (fn));
 	  write (2, ": ", 2);
-	  s = strerror (e);
 	  write (2, s, strlen (s));
 	  write (2, "\n", 1);
 	  return 1;
 	}
       QUIT;
       w = write (1, buf, n);
-      if (w != n)
+      if (w < 0)
 	{
-	  e = errno;
+	  s = strerror (errno);
 	  write (2, "cat: write error: ", 18);
-	  s = strerror (e);
 	  write (2, s, strlen (s));
 	  write (2, "\n", 1);
+	  return 1;
+	}
+      if (w != n)
+	{
+	  /* errno is not set in this case */
+	  write (2, "cat: write shortfall: ", 22);
+          write (2, fn, strlen (fn));
+	  write (2, ": only ", 7);
+	  write (2, "0", 1);    // w
+	  write (2, " of ", 4);
+	  write (2, "0", 1);    // n
+	  write (2, " bytes written\n", 15);
 	  return 1;
 	}
       QUIT;
