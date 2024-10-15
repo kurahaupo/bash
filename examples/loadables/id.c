@@ -51,11 +51,11 @@ extern struct group *getgrgid (gid_t);
 #include "common.h"
 #include "bashgetopt.h"
 
-#define ID_ALLGROUPS	0x001		/* -G */
-#define ID_GIDONLY	0x002		/* -g */
-#define ID_USENAME	0x004		/* -n */
-#define ID_USEREAL	0x008		/* -r */
-#define ID_USERONLY	0x010		/* -u */
+#define ID_ALLGROUPS	0x001	/* -G */
+#define ID_GIDONLY	0x002	/* -g */
+#define ID_USENAME	0x004	/* -n */
+#define ID_USEREAL	0x008	/* -r */
+#define ID_USERONLY	0x010	/* -u */
 
 #define ID_FLAGSET(s)	((id_flags & (s)) != 0)
 
@@ -102,7 +102,7 @@ id_builtin (WORD_LIST *list)
 
   /* Check for some invalid option combinations */
   opt = ID_FLAGSET (ID_ALLGROUPS) + ID_FLAGSET (ID_GIDONLY) + ID_FLAGSET (ID_USERONLY);
-  if (opt > 1 || (opt == 0 && ((id_flags & (ID_USEREAL|ID_USENAME)) != 0)))
+  if (opt > 1 || (opt == 0 && ((id_flags & (ID_USEREAL | ID_USENAME)) != 0)))
     {
       builtin_usage ();
       return (EX_USAGE);
@@ -175,7 +175,7 @@ id_pruser (int uid)
   if (pwd)
     printf ("%s", pwd->pw_name);
   else
-    printf ("%u", (unsigned) uid);
+    printf ("%u", (unsigned)uid);
 
   return r;
 }
@@ -199,7 +199,7 @@ id_prgrp (int gid)
   if (grp)
     printf ("%s", grp->gr_name);
   else
-    printf ("%u", (unsigned) gid);
+    printf ("%u", (unsigned)gid);
 
   return r;
 }
@@ -245,14 +245,14 @@ id_prall (char *uname)
   struct group *grp;
 
   r = 0;
-  printf ("uid=%u", (unsigned) ruid);
+  printf ("uid=%u", (unsigned)ruid);
   pwd = getpwuid (ruid);
   if (pwd == NULL)
     r = 1;
   else
     printf ("(%s)", pwd->pw_name);
 
-  printf (" gid=%u", (unsigned) rgid);
+  printf (" gid=%u", (unsigned)rgid);
   grp = getgrgid (rgid);
   if (grp == NULL)
     r = 1;
@@ -261,7 +261,7 @@ id_prall (char *uname)
 
   if (euid != ruid)
     {
-      printf (" euid=%u", (unsigned) euid);
+      printf (" euid=%u", (unsigned)euid);
       pwd = getpwuid (euid);
       if (pwd == NULL)
 	r = 1;
@@ -271,7 +271,7 @@ id_prall (char *uname)
 
   if (egid != rgid)
     {
-      printf (" egid=%u", (unsigned) egid);
+      printf (" egid=%u", (unsigned)egid);
       grp = getgrgid (egid);
       if (grp == NULL)
 	r = 1;
@@ -295,7 +295,7 @@ id_prall (char *uname)
     {
       if (i > 0)
 	printf (", ");
-      printf ("%u", (unsigned) glist[i]);
+      printf ("%u", (unsigned)glist[i]);
       grp = getgrgid (glist[i]);
       if (grp == NULL)
 	r = 1;
@@ -307,17 +307,17 @@ id_prall (char *uname)
 }
 
 char *id_doc[] = {
-	"Display information about user."
-	"",
-	"Return information about user identity",
-	(char *)NULL
+  "Display information about user."
+  "",
+  "Return information about user identity",
+  (char *)NULL
 };
 
 struct builtin id_struct = {
-	"id",
-	id_builtin,
-	BUILTIN_ENABLED,
-	id_doc,
-	"id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
-	0
+  "id",
+  id_builtin,
+  BUILTIN_ENABLED,
+  id_doc,
+  "id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
+  0
 };
