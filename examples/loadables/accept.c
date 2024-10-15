@@ -79,7 +79,7 @@ accept_builtin (WORD_LIST *list)
 	  return (EX_USAGE);
 	}
     }
-  
+
   list = loptend;
 
   /* Validate input and variables */
@@ -116,7 +116,7 @@ accept_builtin (WORD_LIST *list)
   unbind_variable (fdvar);
   if (rhostvar)
     unbind_variable (rhostvar);
-    
+
   if ((servsock = socket (AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)
     {
       builtin_error ("cannot create socket: %s", strerror (errno));
@@ -179,7 +179,7 @@ accept_builtin (WORD_LIST *list)
 
   close (servsock);
 
-  accept_bind_variable (fdvar, clisock);  
+  accept_bind_variable (fdvar, clisock);
   if (rhostvar)
     {
       rhost = inet_ntoa (client.sin_addr);

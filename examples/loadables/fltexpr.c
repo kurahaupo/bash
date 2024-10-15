@@ -344,7 +344,7 @@ fltexpr_strtod (const char *nptr, char **ep)
 
 /* Convert from internal format (double) to external format (char *).
    Code adapted from gnulib. */
-   
+
 static char *
 fltexpr_format (sh_float_t val)
 {
@@ -381,7 +381,7 @@ fltexpr_format (sh_float_t val)
 	  (n < retsize && SHFLOAT_STRTOD (ret, NULL) == val))
 	break;
     }
-    
+
   return savestring (ret);
 }
 
@@ -557,7 +557,7 @@ expcomma (void)
 
   return value;
 }
-  
+
 static sh_float_t
 expassign (void)
 {
@@ -1083,7 +1083,7 @@ fltexpr_streval (char *tok, int e, struct lvalue *lvalue)
   v = find_variable (tok);
 #endif
   if (v == 0 && e != ']')
-    v = find_variable_last_nameref (tok, 0);  
+    v = find_variable_last_nameref (tok, 0);
 
   if ((v == 0 || invisible_p (v)) && unbound_vars_is_error)
     {
@@ -1149,7 +1149,7 @@ fltexpr_streval (char *tok, int e, struct lvalue *lvalue)
       lvalue->ind = -1;
 #endif
     }
-	  
+
   return (tval);
 }
 
@@ -1446,7 +1446,7 @@ fltexpr_builtin (WORD_LIST *list)
       builtin_error (_("expression expected"));
       return (EXECUTION_FAILURE);
     }
-             	                
+
   ret = fltexpr_evalexp (list->word->word, EXP_EXPANDED, &expok);
 
   if (expok == 0)

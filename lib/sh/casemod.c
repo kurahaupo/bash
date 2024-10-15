@@ -79,7 +79,7 @@ cval (char *s, int i, int l)
 {
   size_t tmp;
   wchar_t wc;
-  mbstate_t mps;  
+  mbstate_t mps;
 
   if (MB_CUR_MAX == 1 || is_basic (s[i]))
     return ((wchar_t)s[i]);
@@ -89,7 +89,7 @@ cval (char *s, int i, int l)
   tmp = mbrtowc (&wc, s + i, l - i, &mps);
   if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))
     return ((wchar_t)s[i]);
-  return wc;  
+  return wc;
 }
 #endif
 
@@ -249,7 +249,7 @@ singlebyte:
 	    {
 	      mlen = wcrtomb (mb, nwc, &state);
 	      if (MB_INVALIDCH (mlen))
-		strncpy (mb, string + start, mlen = m);			
+		strncpy (mb, string + start, mlen = m);
 	      mb[mlen] = '\0';
 	      /* Don't assume the same width */
 	      strncpy (ret + retind, mb, mlen);

@@ -188,7 +188,7 @@ stripwhite (char *string)
 
   for (s = string; whitespace (*s); s++)
     ;
-    
+
   if (*s == 0)
     return (s);
 

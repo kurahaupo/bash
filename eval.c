@@ -248,7 +248,7 @@ pretty_print_loop (void)
       else
 	return (EXECUTION_FAILURE);
     }
-    
+
   return (EXECUTION_SUCCESS);
 }
 
@@ -301,7 +301,7 @@ execute_array_command (ARRAY *a, void *v)
   return 0;
 }
 #endif
-  
+
 static void
 execute_prompt_command (void)
 {
@@ -346,7 +346,7 @@ parse_command (void)
   /* Allow the execution of a random command just before the printing
      of each primary prompt.  If the shell variable PROMPT_COMMAND
      is set then its value (array or string) is the command(s) to execute. */
-  /* The tests are a combination of SHOULD_PROMPT() and prompt_again() 
+  /* The tests are a combination of SHOULD_PROMPT() and prompt_again()
      from parse.y, which are the conditions under which the prompt is
      actually printed. */
   if (interactive && bash_input.type != st_string && parser_expanding_alias() == 0)

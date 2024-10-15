@@ -82,7 +82,7 @@ main (int c, char **v)
   /* Handle window size changes when readline is not active and reading
      characters. */
   signal (SIGWINCH, sighandler);
-  
+
   /* Install the line handler. */
   rl_callback_handler_install (prompt, cb_linehandler);
 
@@ -94,7 +94,7 @@ main (int c, char **v)
   while (running)
     {
       FD_ZERO (&fds);
-      FD_SET (fileno (rl_instream), &fds);    
+      FD_SET (fileno (rl_instream), &fds);
 
       r = select (FD_SETSIZE, &fds, NULL, NULL, NULL);
       if (r < 0 && errno != EINTR)

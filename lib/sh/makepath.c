@@ -112,7 +112,7 @@ sh_makepath (const char *path, const char *dir, int flags)
   while (*s)
     *r++ = *s++;
   if (s > xpath && s[-1] != '/')
-    *r++ = '/';      
+    *r++ = '/';
   s = xdir;
   while (*r++ = *s++)
     ;

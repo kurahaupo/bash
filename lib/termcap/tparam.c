@@ -26,7 +26,7 @@
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_STDLIB_H 
+#ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
 #else
 extern char *getenv ();

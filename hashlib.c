@@ -116,7 +116,7 @@ copy_bucket_array (BUCKET_CONTENTS *ba, sh_string_func_t *cpdata)
       n->next = (BUCKET_CONTENTS *)NULL;
     }
 
-  return new_bucket;  
+  return new_bucket;
 }
 
 static void
@@ -276,7 +276,7 @@ hash_search (const char *string, HASH_TABLE *table, int flags)
       table->nentries++;
       return (list);
     }
-      
+
   return (BUCKET_CONTENTS *)NULL;
 }
 
