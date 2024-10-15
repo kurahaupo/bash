@@ -392,7 +392,7 @@ set_ignoreeof (int on_or_off, char *option_name)
   ignoreeof = on_or_off == FLAG_ON;
   unbind_variable_noref ("ignoreeof");
   if (ignoreeof)
-    bind_variable ("IGNOREEOF", "10", 0); 
+    bind_variable ("IGNOREEOF", "10", 0);
   else
     unbind_variable_noref ("IGNOREEOF");
   sv_ignoreeof ("IGNOREEOF");
@@ -689,7 +689,7 @@ set_builtin (WORD_LIST *list)
 	    break;
 	}
     }
-    
+
   /* Do the set command.  While the list consists of words starting with
      '-' or '+' treat them as flags, otherwise, start assigning them to
      $1 ... $n. */
@@ -947,7 +947,7 @@ unset_builtin (WORD_LIST *list)
 	     need to restore it here. We turned the original `[' and `]' into
 	     NULL, to isolate the array name and subscript. This only happens
 	     if tokenize_array_reference succeeds with a non-NULL subscript
-	     pointer, and UNSET_ARRAY is set to 1 only in this case. */ 
+	     pointer, and UNSET_ARRAY is set to 1 only in this case. */
 	  if (unset_array)
 	    {
 	      RESTORE_NAME();

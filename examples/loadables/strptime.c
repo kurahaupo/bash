@@ -135,7 +135,7 @@ static char * const date_time_formats[] =
   "%d-%m-%Y",			/* dd-mm-YYYY */
   "%d-%m-%Y %T",		/* dd-mm-YYYY HH:MM:SS */
   "%d-%m-%Y %R",		/* dd-mm-YYYY HH:MM */
-  "%d-%m-%Y %r",		/* dd-mm-YYYY HH:MM:SS a.m. */    
+  "%d-%m-%Y %r",		/* dd-mm-YYYY HH:MM:SS a.m. */
   "%d-%m-%Y %I:%M %p",		/* dd-mm-YYYY HH:MM p.m. */
   "%d/%m/%Y %T",		/* dd/mm/YYYY HH:MM:SS */
   "%d/%m/%Y %R",		/* dd/mm/YYYY HH:MM */
@@ -149,7 +149,7 @@ static char * const date_time_formats[] =
   "%d-%m-%Y %I:%M %p",		/* dd-mm-YYYY HH:MM p.m. */
   "%d.%m.%Y %T",		/* dd.mm.YYYY HH:MM:SS */
   "%d.%m.%Y %R",		/* dd.mm.YYYY HH:MM */
-  "%d.%m.%Y %r",		/* dd.mm.YYYY HH:MM:SS a.m. */    
+  "%d.%m.%Y %r",		/* dd.mm.YYYY HH:MM:SS a.m. */
   "%d.%m.%Y %I:%M %p",		/* dd.mm.YYYY HH:MM p.m. */
   0
 };
@@ -215,7 +215,7 @@ strptime_builtin (WORD_LIST *list)
         }
     }
 
-  printf ("%ld\n", secs);    
+  printf ("%ld\n", secs);
   return (EXECUTION_SUCCESS);
 }
 

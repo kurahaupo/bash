@@ -45,7 +45,7 @@ basename_builtin (WORD_LIST *list)
     {
       builtin_usage ();
       return (EX_USAGE);
-    }    
+    }
 
   string = list->word->word;
   suffix = (char *)NULL;

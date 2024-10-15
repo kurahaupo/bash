@@ -143,7 +143,7 @@ getopts_bind_variable (char *name, char *value)
                 OPTARG unset
                 diagnostic message
         fi
- 
+
   MISSING OPTION ARGUMENT;
         if (special_error) then
                 name -> ":"
@@ -254,7 +254,7 @@ dogetopts (int argc, char **argv)
       else if (sh_optarg[0] == '\0')
 	ret = G_ARG_MISSING;
     }
-	    
+
   if (ret == G_EOF)
     {
       getopts_unbind_variable ("OPTARG");
@@ -296,7 +296,7 @@ dogetopts (int argc, char **argv)
 	  getopts_unbind_variable ("OPTARG");
 	}
       return (ret);
-    }			
+    }
 
   bind_variable ("OPTARG", sh_optarg, 0);
 

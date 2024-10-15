@@ -4,7 +4,7 @@
 /* Copyright (C) 1987-2021,2023 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -320,7 +320,7 @@ rl_vi_undo (int count, int key)
 {
   return (rl_undo_command (count, key));
 }
-    
+
 /* Yank the nth arg from the previous line into this line at point. */
 int
 rl_vi_yank_arg (int count, int key)
@@ -576,7 +576,7 @@ rl_vi_bWord (int count, int ignore)
 	    _rl_vi_backup_point ();
 	  while (rl_point > 0 && !whitespace (rl_line_buffer[rl_point]));
 	  if (rl_point > 0)	/* hit whitespace */
-	    rl_point++;		
+	    rl_point++;
 
 	  if (rl_point < 0)
 	    rl_point = 0;
@@ -834,7 +834,7 @@ _rl_vi_save_replace (void)
       start = 0;
     }
 
-  vi_save_insert_buffer (start, len);  
+  vi_save_insert_buffer (start, len);
 }
 
 static void
@@ -855,7 +855,7 @@ _rl_vi_save_insert (UNDO_LIST *up)
 
   vi_save_insert_buffer (start, len);
 }
-    
+
 void
 _rl_vi_done_inserting (void)
 {
@@ -1346,7 +1346,7 @@ rl_domove_read_callback (_rl_vimotion_cxt *m)
 	  RL_UNSETSTATE (RL_STATE_VIMOTION);
 	  RL_UNSETSTATE (RL_STATE_NUMERICARG);
 	  return (1);
-	}  
+	}
       m->motion = c;
       return (rl_domove_motion_callback (m));
     }
@@ -1531,7 +1531,7 @@ rl_vi_change_to (int count, int key)
       /* are we being called recursively or by `y' or `d'? */
       savecxt = _rl_vimvcxt;
       _rl_vimvcxt = _rl_mvcxt_alloc (VIM_CHANGE, key);
-    }      
+    }
   else
     _rl_vimvcxt = _rl_mvcxt_alloc (VIM_CHANGE, key);
   _rl_vimvcxt->start = rl_point;
@@ -1614,7 +1614,7 @@ rl_vi_yank_to (int count, int key)
       /* are we being called recursively or by `c' or `d'? */
       savecxt = _rl_vimvcxt;
       _rl_vimvcxt = _rl_mvcxt_alloc (VIM_YANK, key);
-    }      
+    }
   else
     _rl_vimvcxt = _rl_mvcxt_alloc (VIM_YANK, key);
   _rl_vimvcxt->start = rl_point;
@@ -1712,7 +1712,7 @@ rl_vi_rubout (int count, int key)
     rl_point = 0;
 
   rl_kill_text (rl_point, opoint);
-  
+
   return (0);
 }
 
@@ -1739,7 +1739,7 @@ rl_vi_delete (int count, int key)
     end = rl_end;
 
   rl_kill_text (rl_point, end);
-  
+
   if (rl_point > 0 && rl_point == rl_end)
     rl_backward_char (1, key);
 
@@ -1849,7 +1849,7 @@ _rl_vi_callback_char_search (_rl_callback_generic_arg *data)
   return (_rl_char_search_internal (data->count, _rl_cs_dir, _rl_vi_last_search_mbchar, _rl_vi_last_search_mblen));
 #else
   return (_rl_char_search_internal (data->count, _rl_cs_dir, _rl_vi_last_search_char));
-#endif  
+#endif
 }
 #endif
 
@@ -2144,7 +2144,7 @@ rl_vi_change_char (int count, int key)
       else
 #endif
 	_rl_vi_last_replacement[0] = c;
-      _rl_vi_last_replacement[MB_LEN_MAX] = '\0';	/* just in case */      
+      _rl_vi_last_replacement[MB_LEN_MAX] = '\0';	/* just in case */
     }
 
   if (c < 0)

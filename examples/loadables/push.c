@@ -56,7 +56,7 @@ push_builtin (WORD_LIST *list)
 	  return (EX_USAGE);
 	}
     }
-  list = loptend;  
+  list = loptend;
 
   pid = make_child (savestring ("push"), 0);
   if (pid == -1)
@@ -93,7 +93,7 @@ push_builtin (WORD_LIST *list)
       stop_pipeline (0, (COMMAND *)NULL);
       xstatus = wait_for (pid, 0);
       return (xstatus);
-    }   
+    }
 }
 
 char *push_doc[] = {

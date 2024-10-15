@@ -33,9 +33,9 @@ extern "C" {
    for details.  */
 
 typedef enum
-{ 
+{
   preorder,
-  postorder, 
+  postorder,
   endorder,
   leaf
 }

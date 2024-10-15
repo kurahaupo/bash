@@ -128,7 +128,7 @@ sh_seedrand (void)
   if (seeded == 0)
     {
       struct timeval tv;
-  	      
+
       gettimeofday (&tv, NULL);
       srandom (tv.tv_sec ^ tv.tv_usec ^ (getpid () << 16) ^ (uintptr_t)&d);
       seeded = 1;
@@ -213,7 +213,7 @@ sh_mktmpfd (const char *nameroot, int flags, char **namep)
   char *filename, *tdir;
   const char *lroot;
   int fd, tdlen;
-  
+
   filename = (char *)xmalloc (PATH_MAX + 1);
   tdir = get_tmpdir (flags);
   tdlen = strlen (tdir);
@@ -314,7 +314,7 @@ sh_mktmpdir (const char *nameroot, int flags)
   char *tdir, *dirname;
   const char *lroot;
   int tdlen;
-  
+
   filename = (char *)xmalloc (PATH_MAX + 1);
   tdir = get_tmpdir (flags);
   tdlen = strlen (tdir);

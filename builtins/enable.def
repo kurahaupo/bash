@@ -1,7 +1,7 @@
 This file is enable.def, from which is created enable.c.
 It implements the builtin "enable" in Bash.
 
-Copyright (C) 1987-2024 Free Software Foundation, Inc. 
+Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -240,7 +240,7 @@ enable_builtin (WORD_LIST *list)
 #endif
 	    {
 	      int dflags, r;
-	      
+
 	      dflags = ENABLED|SILENT|((flags & SFLAG) ? SPECIAL : 0);
 
 	      list->next = 0;
@@ -336,7 +336,7 @@ dyn_load_builtin (WORD_LIST *list, int flags, char *filename)
 {
   WORD_LIST *l;
   void *handle;
-  
+
   int total, replaced, r;
   size_t size, new;
   char *struct_name, *name, *funcname;
@@ -540,7 +540,7 @@ local_dlclose (void *handle)
   return (dlclose (handle));
 #else /* __MACHTEN__ */
   dlclose (handle);
-  return ((dlerror () != NULL) ? -1 : 0);    
+  return ((dlerror () != NULL) ? -1 : 0);
 #endif /* __MACHTEN__ */
 }
 

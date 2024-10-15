@@ -39,7 +39,7 @@
    code path because of how assoc_insert works. */
 typedef struct element_state
 {
-  short type;			/* assoc or indexed, says which fields are valid */  
+  short type;			/* assoc or indexed, says which fields are valid */
   short subtype;		/* `*', `@', or something else */
   arrayind_t ind;
   char *key;			/* can be allocated memory */
@@ -161,7 +161,7 @@ convert_assign_flags_to_arrayval_flags (int aflags)
 static inline int
 convert_validarray_flags_to_arrayval_flags (int vflags)
 {
-  int avflags;  
+  int avflags;
 
   avflags = 0;
   if (vflags & VA_NOEXPAND)

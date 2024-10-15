@@ -111,7 +111,7 @@ find_entry (PTR_T mem, int flags)
       memset(tp, 0, sizeof (mr_table_t));	/* overwrite next existing entry */
       return tp;
     }
-    
+
   tp = endp = mem_table + table_bucket_index;
 
   /* search for last allocation corresponding to MEM, return entry pointer */
@@ -181,7 +181,7 @@ mregister_alloc (const char *tag, PTR_T mem, size_t size, const char *file, int 
 	_malloc_unblock_signals (&set, &oset);
       return;
     }
-  
+
   if (tentry->flags & MT_ALLOC)
     {
       /* oops.  bad bookkeeping. ignore for now */
@@ -236,7 +236,7 @@ mregister_free (PTR_T mem, int size, const char *file, int line)
       /* oops.  bad bookkeeping. ignore for now */
       fprintf (stderr, _("register_free: %p already in table as free?\n"), mem);
     }
-    	
+
   tentry->flags = MT_FREE;
   tentry->func = "free";
   tentry->file = file;
@@ -283,7 +283,7 @@ _register_dump_table(FILE *fp)
 						entry.nalloc, entry.nfree);
     }
 }
- 
+
 void
 mregister_dump_table(void)
 {

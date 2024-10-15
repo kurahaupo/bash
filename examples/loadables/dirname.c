@@ -101,7 +101,7 @@ dirname_builtin (WORD_LIST *list)
 char *dirname_doc[] = {
 	"Display directory portion of pathname.",
 	"",
-	"The STRING is converted to the name of the directory containing",	
+	"The STRING is converted to the name of the directory containing",
 	"the filename corresponding to the last pathname component in STRING.",
 	(char *)NULL
 };

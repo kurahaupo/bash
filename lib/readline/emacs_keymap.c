@@ -3,7 +3,7 @@
 /* Copyright (C) 1987-2017 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
-   for reading lines of text with interactive input and history editing.      
+   for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ KEYMAP_ENTRY_ARRAY emacs_standard_keymap = {
   { ISFUNC, rl_insert },		/* - */
   { ISFUNC, rl_insert },		/* . */
   { ISFUNC, rl_insert },		/* / */
-	
+
 	  /* Regular digits. */
   { ISFUNC, rl_insert },		/* 0 */
   { ISFUNC, rl_insert },		/* 1 */
