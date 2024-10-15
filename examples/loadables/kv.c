@@ -39,7 +39,7 @@ extern int errno;
 
 #if defined (ARRAY_VARS)
 
-#define KV_ARRAY_DEFAULT	"KV"
+#  define KV_ARRAY_DEFAULT	"KV"
 
 /* Split LINE into a key and value, with the delimiter between the key and
    value being a member of DSTRING. A sequence of one or more delimiters
@@ -86,16 +86,16 @@ kvfile (SHELL_VAR *v, int fd, char *delims, char *rs)
   struct stat sb;
 
   nr = 0;
-#ifndef __CYGWIN__
+#  ifndef __CYGWIN__
   /* We probably don't need to worry about setting this at all; we're not
      seeking back and forth yet. */
   if (*rs == '\n')
     unbuffered_read = (lseek (fd, 0L, SEEK_CUR) < 0) && (errno == ESPIPE);
   else
     unbuffered_read = (fstat (fd, &sb) != 0) || (S_ISREG (sb.st_mode) == 0);
-#else
+#  else
   unbuffered_read = 1;
-#endif
+#  endif
 
   line = 0;
   llen = 0;
@@ -143,7 +143,7 @@ kv_builtin (WORD_LIST *list)
 	case 'd':
 	  rs = list_optarg;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -194,7 +194,7 @@ kv_builtin (WORD_LIST *list)
   rval = kvfile (v, 0, delims, rs);
 
   if (free_delims)
-    free (delims);	/* getifs returns allocated memory */
+    free (delims);		/* getifs returns allocated memory */
   return (rval > 0 ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
 #else
   builtin_error ("arrays not available");
@@ -217,28 +217,28 @@ kv_builtin_unload (char *name)
 }
 
 char *kv_doc[] = {
-	"Read key-value pairs into an associative array.",
-	"",
-	"Read delimiter-terminated records composed of a single key-value pair",
-	"from the standard input and add the key and corresponding value",
-	"to the associative array ARRAYNAME. The key and value are separated",
-	"by a sequence of one or more characters in SEPARATORS. Records are",
-	"terminated by the first character of RS, similar to the read and",
-	"mapfile builtins.",
-	"",
-	"If SEPARATORS is not supplied, $IFS is used to separate the keys",
-	"and values. If RS is not supplied, newlines terminate records.",
-	"If ARRAYNAME is not supplied, \"KV\" is the default array name.",
-	"",
-	"Returns success if at least one key-value pair is stored in ARRAYNAME.",
-	(char *)NULL
+  "Read key-value pairs into an associative array.",
+  "",
+  "Read delimiter-terminated records composed of a single key-value pair",
+  "from the standard input and add the key and corresponding value",
+  "to the associative array ARRAYNAME. The key and value are separated",
+  "by a sequence of one or more characters in SEPARATORS. Records are",
+  "terminated by the first character of RS, similar to the read and",
+  "mapfile builtins.",
+  "",
+  "If SEPARATORS is not supplied, $IFS is used to separate the keys",
+  "and values. If RS is not supplied, newlines terminate records.",
+  "If ARRAYNAME is not supplied, \"KV\" is the default array name.",
+  "",
+  "Returns success if at least one key-value pair is stored in ARRAYNAME.",
+  (char *)NULL
 };
 
 struct builtin kv_struct = {
-	"kv",			/* builtin name */
-	kv_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	kv_doc,		/* array of long documentation strings. */
-	"kv [-A ARRAYNAME] [-s SEPARATORS] [-d RS]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "kv",				/* builtin name */
+  kv_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  kv_doc,			/* array of long documentation strings. */
+  "kv [-A ARRAYNAME] [-s SEPARATORS] [-d RS]",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
