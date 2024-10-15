@@ -37,7 +37,7 @@ wcsdup (const wchar_t *ws)
   ret = xmalloc ((len + 1) * sizeof (wchar_t));
   if (ret == 0)
     return ret;
-  
+
   return (wcscpy (ret, ws));
 }
 #endif /* !HAVE_WCSDUP && HANDLE_MULTIBYTE */

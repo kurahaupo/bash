@@ -816,7 +816,7 @@ wait_for (pid_t pid, int flags)
   if (interactive_shell == 0)
     old_sigint_handler = set_signal_handler (SIGINT, wait_sigint_handler);
 
-  waiting_for_child = 1;  
+  waiting_for_child = 1;
   CHECK_WAIT_INTR;
   while ((got_pid = WAITPID (-1, &status, 0)) != pid) /* XXX was pid now -1 */
     {

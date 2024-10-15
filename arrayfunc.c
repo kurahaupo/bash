@@ -189,7 +189,7 @@ make_array_variable_value (SHELL_VAR *entry, arrayind_t ind, const char *key, co
       dentry->attributes = entry->attributes & ~(att_array|att_assoc|att_exported);
       /* Leave the rest of the members uninitialized; the code doesn't look
 	 at them. */
-      newval = make_variable_value (dentry, value, flags);	 
+      newval = make_variable_value (dentry, value, flags);
       dispose_variable (dentry);
     }
   else
@@ -294,7 +294,7 @@ bind_array_element (SHELL_VAR *entry, arrayind_t ind, char *value, int flags)
 {
   return (bind_array_var_internal (entry, ind, 0, value, flags));
 }
-                    
+
 SHELL_VAR *
 bind_assoc_variable (SHELL_VAR *entry, const char *name, char *key, const char *value, int flags)
 {
@@ -500,7 +500,7 @@ find_or_make_array_variable (const char *name, int flags)
 
   return (var);
 }
-  
+
 /* Perform a compound assignment statement for array NAME, where VALUE is
    the text between the parens:  NAME=( VALUE ) */
 SHELL_VAR *
@@ -647,7 +647,7 @@ assign_assoc_from_kvlist (SHELL_VAR *var, WORD_LIST *nlist, HASH_TABLE *h, int f
 	  err_badarraysub (k);
 	  FREE (akey);
 	  continue;
-	}	      
+	}
 
       aval = split_kvpair_assignments ? savestring (v) : expand_assignment_string_to_string (v, 0);
       if (aval == 0)
@@ -666,7 +666,7 @@ assign_assoc_from_kvlist (SHELL_VAR *var, WORD_LIST *nlist, HASH_TABLE *h, int f
 }
 
 /* Return non-zero if L appears to be a key-value pair associative array
-   compound assignment. */ 
+   compound assignment. */
 int
 kvpair_assignment_p (WORD_LIST *l)
 {
@@ -687,7 +687,7 @@ expand_and_quote_kvpair_word (const char *w)
   return r;
 }
 #endif
-     
+
 /* Callers ensure that VAR is not NULL. Associative array assignments have not
    been expanded when this is called, or have been expanded once and single-
    quoted, so we don't have to scan through an unquoted expanded subscript to
@@ -833,7 +833,7 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
 	      val = w + len + 3;
 	    }
 	  else
-	    val = w + len + 2;	    
+	    val = w + len + 2;
 	}
       else if (assoc_p (var))
 	{
@@ -1095,7 +1095,7 @@ quote_compound_array_list (WORD_LIST *list, int type)
 	  if (s != l->word->word)
 	    free (s);
 	}
-      else 
+      else
 	t = quote_compound_array_word (l->word->word, type);
       free (l->word->word);
       l->word->word = t;
@@ -1298,7 +1298,7 @@ tokenize_array_reference (const char *name, int flags, char **subp)
       *t = '\0';
       r = valid_identifier (name);
       if (flags & VA_NOEXPAND)	/* Don't waste a lookup if we don't need one */
-	isassoc = (entry = find_variable (name)) && assoc_p (entry);      
+	isassoc = (entry = find_variable (name)) && assoc_p (entry);
       *t = '[';
       if (r == 0)
 	return 0;
@@ -1384,7 +1384,7 @@ array_expand_index (SHELL_VAR *var, const char *s, int len, int flags)
 
       if (no_longjmp_on_fatal_error)
 	return 0;
-      top_level_cleanup ();      
+      top_level_cleanup ();
       jump_to_top_level (DISCARD);
     }
   return val;

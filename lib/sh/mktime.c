@@ -82,7 +82,7 @@
   ((t) (! TYPE_SIGNED (t) \
 	? (t) -1 \
 	: ((((t) 1 << (sizeof (t) * CHAR_BIT - 2)) - 1) * 2 + 1)))
-                  
+
 #ifndef TIME_T_MIN
 # define TIME_T_MIN TYPE_MINIMUM (time_t)
 #endif
@@ -176,7 +176,7 @@ mktime (struct tm *tp)
    compared to what the result would be for UTC without leap seconds.
    If *OFFSET's guess is correct, only one CONVERT call is needed.  */
 time_t
-__mktime_internal (struct tm *tp, 
+__mktime_internal (struct tm *tp,
 		   struct tm *(*convert) (const time_t *, struct tm *),
 		   time_t *offset)
 {

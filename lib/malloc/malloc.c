@@ -3,7 +3,7 @@
 /*  Copyright (C) 1985-2022 Free Software Foundation, Inc.
 
     This file is part of GNU Bash, the Bourne-Again SHell.
-    
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -27,9 +27,9 @@
  *
  * [VERY] old explanation:
  *
- * This is a very fast storage allocator.  It allocates blocks of a small 
+ * This is a very fast storage allocator.  It allocates blocks of a small
  * number of different sizes, and keeps free lists of each size.  Blocks
- * that don't exactly fit are passed up to the next larger size.  In this 
+ * that don't exactly fit are passed up to the next larger size.  In this
  * implementation, the available sizes are (2^n)-4 (or -16) bytes long.
  * This is designed for use in a program that uses vast quantities of
  * memory, but bombs when it runs out.  To make it a little better, it
@@ -261,7 +261,7 @@ typedef union _malloc_guard {
 /* Future use. */
 #define ERR_DUPFREE		0x01
 #define ERR_UNALLOC		0x02
-#define ERR_UNDERFLOW		0x04	
+#define ERR_UNDERFLOW		0x04
 #define ERR_ASSERT_FAILED	0x08
 
 /* Evaluates to true if NB is appropriate for bucket NU.  NB is adjusted
@@ -384,7 +384,7 @@ xbotch (PTR_T mem, int e, const char *s, const char *file, int line)
 
 /* Coalesce two adjacent free blocks off the free list for size NU - 1,
    as long as we can find two adjacent free blocks.  nextf[NU -1] is
-   assumed to not be busy; the caller (morecore()) checks for this. 
+   assumed to not be busy; the caller (morecore()) checks for this.
    BUSY[NU] must be set to 1. */
 static void
 bcoalesce (int nu)
@@ -586,7 +586,7 @@ _malloc_unblock_signals (sigset_t *setp, sigset_t *osetp)
 #if defined (USE_LESSCORE)
 /* Return some memory to the system by reducing the break.  This is only
    called with NU > pagebucket, so we're always assured of giving back
-   more than one page of memory. NU is the size index we're discarding */ 
+   more than one page of memory. NU is the size index we're discarding */
 static void
 lesscore (int nu)
 {
@@ -605,7 +605,7 @@ lesscore (int nu)
 }
 #endif /* USE_LESSCORE */
 
-/* Ask system for more memory; add to NEXTF[NU].  BUSY[NU] must be set to 1. */  
+/* Ask system for more memory; add to NEXTF[NU].  BUSY[NU] must be set to 1. */
 static void
 morecore (int nu)
 {
@@ -696,7 +696,7 @@ morecore (int nu)
       goto morecore_done;
     }
 #endif
-	
+
 
 #ifdef MALLOC_STATS
   _mstats.nsbrk++;
@@ -808,7 +808,7 @@ pagealign (void)
   return 0;
 }
 
-/* allocate a block of memory */    
+/* allocate a block of memory */
 static PTR_T
 internal_malloc (size_t n, const char *file, int line, int flags)
 {
@@ -824,7 +824,7 @@ internal_malloc (size_t n, const char *file, int line, int flags)
   if (pagesz == 0)
     if (pagealign () < 0)
       return ((PTR_T)NULL);
- 
+
   /* Figure out how many bytes are required, rounding up to the nearest
      multiple of 8, then figure out which nextf[] area to use.  Try to
      be smart about where to start searching -- if the number of bytes
@@ -990,7 +990,7 @@ internal_free (PTR_T mem, const char *file, int line, int flags)
 
   ap += p->mh_nbytes;
   z = mg.s;
-  *z++ = *ap++, *z++ = *ap++, *z++ = *ap++, *z++ = *ap++;  
+  *z++ = *ap++, *z++ = *ap++, *z++ = *ap++, *z++ = *ap++;
   if (mg.i != p->mh_nbytes)
     xbotch (mem, ERR_ASSERT_FAILED, _("free: start and end chunk sizes differ"), file, line);
 
@@ -1212,7 +1212,7 @@ internal_realloc (PTR_T mem, size_t n, const char *file, int line, int flags)
 
       mg.i = n;
       z = mg.s;
-      *m++ = *z++, *m++ = *z++, *m++ = *z++, *m++ = *z++;      
+      *m++ = *z++, *m++ = *z++, *m++ = *z++, *m++ = *z++;
 
       return mem;
     }
@@ -1337,7 +1337,7 @@ malloc_usable_size (void *mem)
   /* return 0 if ISFREE */
   if (p->mh_alloc == ISFREE)
     return 0;
-  
+
   /* Since we use bounds checking, the usable size is the last requested size. */
   return (p->mh_nbytes);
 }
@@ -1363,7 +1363,7 @@ internal_calloc (size_t n, size_t s, const char *file, int line, int flags)
   result = internal_malloc (total, file, line, flags|MALLOC_INTERNAL);
   if (result)
     memset (result, 0, total);
-  return result;  
+  return result;
 }
 
 static void

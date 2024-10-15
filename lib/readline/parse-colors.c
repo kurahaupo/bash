@@ -310,7 +310,7 @@ free_color_ext_list (void)
       free (e2);
     }
 
-  _rl_color_ext_list = 0;  
+  _rl_color_ext_list = 0;
 }
 
 void _rl_parse_colors(void)
@@ -439,7 +439,7 @@ void _rl_parse_colors(void)
 
       _rl_errmsg ("unparsable value for LS_COLORS environment variable");
       free (color_buf);
-      free_color_ext_list ();      
+      free_color_ext_list ();
 
       _rl_colored_stats = 0;	/* can't have colored stats without colors */
       _rl_colored_completion_prefix = 0;	/* or colored prefixes */
