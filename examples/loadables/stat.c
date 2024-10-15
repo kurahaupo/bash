@@ -67,8 +67,7 @@ extern int errno;
 
 #  define ST_END		16
 
-static char *arraysubs[] =
-  {
+static char *arraysubs[] = {
   "name", "device", "inode", "type", "nlink", "uid", "gid", "rdev",
   "size", "atime", "mtime", "ctime", "blksize", "blocks", "link", "perms",
   0
