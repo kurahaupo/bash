@@ -69,7 +69,7 @@ static char *spacesep = " ";
 
 #define LASTREF_START(a, i) \
   (IS_LASTREF(a) && i >= element_index(a->lastref)) ? a->lastref \
-		      : element_forw(a->head)
+						    : element_forw(a->head)
 
 #define LASTREF(a)  (a->lastref ? a->lastref : element_forw(a->head))
 
@@ -496,7 +496,7 @@ ARRAY_ELEMENT *
 array_copy_element(ARRAY_ELEMENT *ae)
 {
   return(ae ? array_create_element(element_index(ae), element_value(ae))
-      : (ARRAY_ELEMENT *) NULL);
+	    : (ARRAY_ELEMENT *) NULL);
 }
 #endif
 
@@ -909,9 +909,9 @@ array_to_kvpair (ARRAY *a, int quoted)
   for (ae = element_forw(a->head); ae != a->head; ae = element_forw(ae)) {
     is = inttostr (element_index(ae), indstr, sizeof(indstr));
     valstr = element_value (ae) ?
-	(ansic_shouldquote (element_value (ae)) ?
-	   ansic_quote (element_value(ae), 0, (int *)0) :
-	   sh_double_quote (element_value (ae)))
+		(ansic_shouldquote (element_value (ae)) ?
+		   ansic_quote (element_value(ae), 0, (int *)0) :
+		   sh_double_quote (element_value (ae)))
 	      : (char *)NULL;
     elen = STRLEN (is) + 8 + STRLEN (valstr);
     RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
@@ -962,9 +962,9 @@ array_to_assign (ARRAY *a, int quoted)
   for (ae = element_forw(a->head); ae != a->head; ae = element_forw(ae)) {
     is = inttostr (element_index(ae), indstr, sizeof(indstr));
     valstr = element_value (ae) ?
-	(ansic_shouldquote (element_value (ae)) ?
-	   ansic_quote (element_value(ae), 0, (int *)0) :
-	   sh_double_quote (element_value (ae)))
+		(ansic_shouldquote (element_value (ae)) ?
+		   ansic_quote (element_value(ae), 0, (int *)0) :
+		   sh_double_quote (element_value (ae)))
 	      : (char *)NULL;
     elen = STRLEN (is) + 8 + STRLEN (valstr);
     RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
