@@ -58,17 +58,17 @@ whoami_builtin (WORD_LIST *list)
 }
 
 char *whoami_doc[] = {
-	"Print user name",
-	"",
-	"Display name of current user.",
-	(char *)NULL
+  "Print user name",
+  "",
+  "Display name of current user.",
+  (char *)NULL
 };
 
 struct builtin whoami_struct = {
-	"whoami",
-	whoami_builtin,
-	BUILTIN_ENABLED,
-	whoami_doc,
-	"whoami",
-	0
+  "whoami",
+  whoami_builtin,
+  BUILTIN_ENABLED,
+  whoami_doc,
+  "whoami",
+  0
 };
