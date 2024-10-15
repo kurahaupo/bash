@@ -32,11 +32,11 @@
 #  include <sys/utsname.h>
 #else
 struct utsname {
-	char	sysname[32];
-	char	nodename[32];
-	char	release[32];
-	char	version[32];
-	char	machine[32];
+  char sysname[32];
+  char nodename[32];
+  char release[32];
+  char version[32];
+  char machine[32];
 };
 #endif
 
@@ -59,7 +59,7 @@ struct utsname {
 extern int errno;
 #endif
 
-static void uprint(int, char *);
+static void uprint (int, char *);
 
 static int uname_flags;
 
@@ -143,17 +143,17 @@ uprint (int flag, char *info)
 }
 
 char *uname_doc[] = {
-	"Display system information.",
-	"",
-	"Display information about the system hardware and OS.",
-	(char *)NULL
+  "Display system information.",
+  "",
+  "Display information about the system hardware and OS.",
+  (char *)NULL
 };
 
 struct builtin uname_struct = {
-	"uname",
-	uname_builtin,
-	BUILTIN_ENABLED,
-	uname_doc,
-	"uname [-amnrsv]",
-	0
+  "uname",
+  uname_builtin,
+  BUILTIN_ENABLED,
+  uname_doc,
+  "uname [-amnrsv]",
+  0
 };
