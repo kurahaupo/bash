@@ -1356,7 +1356,7 @@ struct mstats
 mstats ()
 {
   struct mstats result;
-	  
+
   result.bytes_total = (char *) default_morecore (0) - _heapbase;
   result.chunks_used = chunks_used;
   result.bytes_used = bytes_used;

@@ -2,7 +2,7 @@
 
 /* Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
-   This file is part of the GNU Readline Library (Readline), a library    
+   This file is part of the GNU Readline Library (Readline), a library
    for reading lines of text with interactive input and history editing.
 
    Readline is free software: you can redistribute it and/or modify
@@ -133,7 +133,7 @@ static int _rl_col_width (const char *, int, int, int);
 #define FACE_NORMAL	'0'
 #define FACE_STANDOUT	'1'
 #define FACE_INVALID	((char)1)
-  
+
 /* **************************************************************** */
 /*								    */
 /*			Display stuff				    */
@@ -343,7 +343,7 @@ prompt_modestr (int *lenp)
 	\002 (^B) end non-visible characters
    all characters except \001 and \002 (following a \001) are copied to
    the returned string; all characters except those between \001 and
-   \002 are assumed to be `visible'. */	
+   \002 are assumed to be `visible'. */
 
 /* Possible values for FLAGS:
 	PMT_MULTILINE	caller indicates that this is part of a multiline prompt
@@ -529,7 +529,7 @@ expand_prompt (char *pmt, int flags, int *lp, int *lip, int *niflp, int *vlp)
 	     width would exceed it, but it needs to be checked against this
 	     code and local_prompt_newlines[]. */
 	  if (ignoring == 0)
-	    can_add_invis = (physchars == bound); 
+	    can_add_invis = (physchars == bound);
 	}
     }
 
@@ -685,7 +685,7 @@ realloc_line (int minsize)
   invisible_line = (char *)xrealloc (invisible_line, newsize);
   inv_face = (char *)xrealloc (inv_face, newsize);
 
-  delta = newsize - line_size;  
+  delta = newsize - line_size;
   memset (visible_line + line_size, 0, delta);
   memset (vis_face + line_size, FACE_NORMAL, delta);
   memset (invisible_line + line_size, 1, delta);
@@ -707,7 +707,7 @@ init_line_structures (int minsize)
       if (line_size > minsize)
 	minsize = line_size;
     }
-  realloc_line (minsize); 
+  realloc_line (minsize);
 
   if (vis_lbreaks == 0)
     {
@@ -779,7 +779,7 @@ _rl_optimize_redisplay (void)
 {
   if (_rl_vis_botlin == 0)
     _rl_quick_redisplay = 1;
-}  
+}
 
 /* Useful shorthand used by rl_redisplay, update_line, rl_move_cursor_relative */
 #define INVIS_FIRST()	(local_prompt_invis_chars[0])
@@ -828,7 +828,7 @@ rl_redisplay (void)
 
   /* Block keyboard interrupts because this function manipulates global
      data structures. */
-  _rl_block_sigint ();  
+  _rl_block_sigint ();
   RL_SETSTATE (RL_STATE_REDISPLAYING);
 
   cur_face = FACE_NORMAL;
@@ -954,7 +954,7 @@ rl_redisplay (void)
       } while (0)
 #endif /* !HANDLE_MULTIBYTE */
 
-#if defined (HANDLE_MULTIBYTE)	  
+#if defined (HANDLE_MULTIBYTE)
 #define CHECK_LPOS() \
       do { \
 	lpos++; \
@@ -1028,7 +1028,7 @@ rl_redisplay (void)
 	{
 	  temp = local_prompt_newlines[newlines+1];
 	  inv_lbreaks[++newlines] = temp;
-	}  
+	}
 
       /* Now set lpos from the last newline */
       /* XXX - change to use local_prompt_invis_chars[] */
@@ -1130,7 +1130,7 @@ rl_redisplay (void)
 #else
 	      olen = sprintf (obuf, "\\%o", c);
 #endif
-	  
+
 	      for (temp = 0; temp < olen; temp++)
 		{
 		  invis_addc (&out, obuf[temp], cur_face);
@@ -1340,7 +1340,7 @@ rl_redisplay (void)
 	      extra = inv_botlin - _rl_screenheight;	/* lines off the top */
 	      /* cursor in portion of line that would be off screen or in
 		 the lines that exceed the number of physical screen lines. */
-	      if (cursor_linenum <= extra || 
+	      if (cursor_linenum <= extra ||
 		   (cursor_linenum >= _rl_screenheight && _rl_vis_botlin <= _rl_screenheight))
 		{
 		  if (cursor_linenum <= extra)
@@ -1394,7 +1394,7 @@ rl_redisplay (void)
 			_rl_last_c_pos != o_cpos &&
 			_rl_last_c_pos > (prompt_last_invisible - _rl_screenwidth - prompt_invis_chars_first_line))	/* XXX - rethink this last one */
 		/* This assumes that all the invisible characters are split
-		   between the first and last lines of the prompt, if the 
+		   between the first and last lines of the prompt, if the
 		   prompt consumes more than two lines. It's usually right */
 		/* XXX - not sure this is ever executed */
 		/* XXX - use local_prompt_invis_chars[linenum] */
@@ -1999,7 +1999,7 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
 	  nfdf = new_face + temp;
 	}
       else
-	{      
+	{
 	  memset (&ps_new, 0, sizeof(mbstate_t));
 	  memset (&ps_old, 0, sizeof(mbstate_t));
 
@@ -2429,7 +2429,7 @@ dumb_update:
      a bitmap that indicates which characters are visible and which are
      invisible. We fix it up (imperfectly) in the caller and by trying to use
      the entire prompt string wherever we can. */
-     
+
   /* If we are changing the number of invisible characters in a line, and
      the spot of first difference is before the end of the invisible chars,
      lendiff needs to be adjusted. */
@@ -2688,7 +2688,7 @@ clear_rest_of_line:
 	     adjust col_lendiff based on the difference between _rl_last_c_pos
 	     and _rl_screenwidth */
 	  if (col_lendiff && ((mb_cur_max == 1 || rl_byte_oriented) || (_rl_last_c_pos < _rl_screenwidth)))
-	    {	  
+	    {
 	      if (_rl_term_autowrap && current_line < inv_botlin)
 		space_to_eol (col_lendiff);
 	      else
@@ -3250,7 +3250,7 @@ _rl_make_prompt_for_search (int pchar)
 	strcpy (pmt, p);
       pmt[len] = pchar;
       pmt[len+1] = '\0';
-    }  
+    }
 
   /* will be overwritten by expand_prompt, called from rl_message */
   prompt_physical_chars = saved_physical_chars + 1;
@@ -3465,7 +3465,7 @@ redraw_prompt (char *t)
   rl_display_prompt = oldp;
   rl_restore_prompt();
 }
-      
+
 /* Redisplay the current line after a SIGWINCH is received. */
 void
 _rl_redisplay_after_sigwinch (void)

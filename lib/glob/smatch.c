@@ -4,7 +4,7 @@
 /* Copyright (C) 1991-2023 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
-   
+
    Bash is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -22,7 +22,7 @@
 #include <config.h>
 
 #include <stdio.h>	/* for debugging */
-				
+
 #include "strmatch.h"
 #include <chartypes.h>
 
@@ -153,7 +153,7 @@ collseqcmp (int c, int equiv)
 #else
   return 0;
 #endif
-  
+
 }
 #else
 #  define collseqcmp(c, equiv)	((c) == (equiv))
@@ -238,7 +238,7 @@ cclass_test (int c, enum char_class char_class)
       case CC_ALPHA:
 	result = ISALPHA (c);
 	break;
-      case CC_BLANK:  
+      case CC_BLANK:
 	result = ISBLANK (c);
 	break;
       case CC_CNTRL:
@@ -253,7 +253,7 @@ cclass_test (int c, enum char_class char_class)
       case CC_LOWER:
 	result = ISLOWER (c);
 	break;
-      case CC_PRINT: 
+      case CC_PRINT:
 	result = ISPRINT (c);
 	break;
       case CC_PUNCT:
@@ -276,9 +276,9 @@ cclass_test (int c, enum char_class char_class)
 	break;
     }
 
-  return result;  
+  return result;
 }
-	
+
 static int
 is_cclass (int c, const char *name)
 {
@@ -354,7 +354,7 @@ extern char *mbsmbchar (const char *);
 /* Construct a string w1 = "c1" and a pattern w2 = "[[=c2=]]" and pass them
    to fnmatch to see if wide characters c1 and c2 collate as members of the
    same equivalence class. We can't really do this portably any other way
-   c1 == string char, c2 == patchar */   
+   c1 == string char, c2 == patchar */
 static int
 _fnmatch_fallback_wc (wchar_t c1, wchar_t c2)
 {
@@ -541,9 +541,9 @@ posix_cclass_only (char *pattern)
 
       p = p1 + 2;		/* found posix char class name */
     }
-    
+
   return 1;			/* no char class names or only posix */
-}      
+}
 
 /* Now include `sm_loop.c' for multibyte characters. */
 #define FOLD(c) ((flags & FNM_CASEFOLD) && iswupper (c) ? towlower (c) : (c))

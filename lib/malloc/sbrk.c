@@ -62,7 +62,7 @@ sbrk (intptr_t incr)
       return (void *)-1;
     }
 
-  newbrk = curbrk + incr;  
+  newbrk = curbrk + incr;
   if (newbrk < initialbrk)
     {
       errno = EINVAL;

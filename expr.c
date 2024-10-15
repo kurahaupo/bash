@@ -378,7 +378,7 @@ expr_bind_array_element (const char *tok, arrayind_t ind, const char *rhs)
   lhs = xmalloc (llen);
 
   sprintf (lhs, "%s[%s]", vname, istr);		/* XXX */
-  
+
 /*itrace("expr_bind_array_element: %s=%s", lhs, rhs);*/
   expr_bind_variable (lhs, rhs);
   free (vname);
@@ -492,7 +492,7 @@ expcomma (void)
 
   return value;
 }
-  
+
 static intmax_t
 expassign (void)
 {
@@ -1099,7 +1099,7 @@ exp0 (void)
 	      RESTORETOK (&ec);
  	    }
 	}
-	  
+
       readtok ();
     }
   else
@@ -1167,7 +1167,7 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
   v = find_variable (tok);
 #endif
   if (v == 0 && e != ']')
-    v = find_variable_last_nameref (tok, 0);  
+    v = find_variable_last_nameref (tok, 0);
 
   if ((v == 0 || invisible_p (v)) && unbound_vars_is_error)
     {
@@ -1233,7 +1233,7 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
       lvalue->ind = -1;
 #endif
     }
-	  
+
   return (tval);
 }
 
@@ -1557,7 +1557,7 @@ strlong (char *num)
 #if STRICT_ARITH_PARSING
 	  if (*s == 0)
 	    evalerror (_("invalid number"));
-#endif	    
+#endif
 	}
       else
 	base = 8;

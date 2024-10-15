@@ -85,7 +85,7 @@ strlist_flush (STRINGLIST *sl)
   strvec_flush (sl->list);
   sl->list_len = 0;
 }
-  
+
 void
 strlist_dispose (STRINGLIST *sl)
 {
@@ -207,9 +207,9 @@ strlist_prefix_suffix (STRINGLIST *sl, const char *prefix, const char *suffix)
       sl->list[i] = t;
     }
 
-  return (sl);	 
+  return (sl);
 }
-   
+
 void
 strlist_print (STRINGLIST *sl, const char *prefix)
 {
@@ -231,8 +231,8 @@ strlist_walk (STRINGLIST *sl, sh_strlist_map_func_t *func)
   for (i = 0; i < sl->list_len; i++)
     if ((*func)(sl->list[i]) < 0)
       break;
-} 
-     
+}
+
 void
 strlist_sort (STRINGLIST *sl)
 {

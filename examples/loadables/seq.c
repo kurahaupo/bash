@@ -198,7 +198,7 @@ genformat (floatmax_t first, floatmax_t incr, floatmax_t last)
 
   wfirst = snprintf (buf, sizeof (buf), FLOATMAX_FMT, first);
   fprec = getprec (buf);
-    
+
   prec = MAX (fprec, iprec);
 
   wlast = snprintf (buf, sizeof (buf), FLOATMAX_FMT, last);
@@ -418,7 +418,7 @@ seq_builtin (WORD_LIST *list)
       if (fmtstr == 0)
 	return (EXECUTION_FAILURE);
     }
-      
+
   if (fmtstr != NULL && equal_width)
     {
       builtin_warning ("-w ignored when the format string is specified");
@@ -470,7 +470,7 @@ char *seq_doc[] = {
 	"it defaults to %.PRECf if FIRST, INCREMENT, and LAST are all fixed point",
 	"decimal numbers with maximum precision PREC, and to %g otherwise.",
 	(char *)NULL
-};	
+};
 
 struct builtin seq_struct = {
 	"seq",
