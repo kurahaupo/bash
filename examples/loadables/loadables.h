@@ -20,15 +20,15 @@
 
 
 #ifndef __LOADABLES_H_
-#define __LOADABLES_H_
+#  define __LOADABLES_H_
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#  ifdef HAVE_CONFIG_H
+#    include "config.h"
+#  endif
 
-#include "builtins.h"
-#include "shell.h"
-#include "bashgetopt.h"
-#include "common.h"
+#  include "builtins.h"
+#  include "shell.h"
+#  include "bashgetopt.h"
+#  include "common.h"
 
 #endif
