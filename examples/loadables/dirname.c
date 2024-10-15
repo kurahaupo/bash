@@ -99,20 +99,20 @@ dirname_builtin (WORD_LIST *list)
 }
 
 char *dirname_doc[] = {
-	"Display directory portion of pathname.",
-	"",
-	"The STRING is converted to the name of the directory containing",
-	"the filename corresponding to the last pathname component in STRING.",
-	(char *)NULL
+  "Display directory portion of pathname.",
+  "",
+  "The STRING is converted to the name of the directory containing",
+  "the filename corresponding to the last pathname component in STRING.",
+  (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
-   of these structures. */
+of these structures. */
 struct builtin dirname_struct = {
-	"dirname",		/* builtin name */
-	dirname_builtin,	/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	dirname_doc,		/* array of long documentation strings. */
-	"dirname string",	/* usage synopsis */
-	0			/* reserved for internal use */
+  "dirname",			/* builtin name */
+  dirname_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  dirname_doc,			/* array of long documentation strings. */
+  "dirname string",		/* usage synopsis */
+  0				/* reserved for internal use */
 };
