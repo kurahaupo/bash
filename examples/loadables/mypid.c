@@ -43,7 +43,7 @@ get_mypid (SHELL_VAR *var)
   int rv;
   char *p;
 
-  rv = getpid();
+  rv = getpid ();
   p = itos (rv);
 
   FREE (value_cell (var));
@@ -54,7 +54,7 @@ get_mypid (SHELL_VAR *var)
 }
 
 int
-enable_mypid_builtin(WORD_LIST *list)
+enable_mypid_builtin (WORD_LIST *list)
 {
   INIT_DYNAMIC_VAR ("MYPID", (char *)NULL, get_mypid, assign_mypid);
 
@@ -79,7 +79,7 @@ struct builtin enable_mypid_struct = {
   "enable_mypid",
   enable_mypid_builtin,
   BUILTIN_ENABLED,
-  (char**)(void*)enable_mypid_doc,
+  (char **)(void *)enable_mypid_doc,
   "enable_mypid N",
   0
 };
