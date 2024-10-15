@@ -59,16 +59,16 @@ static char *print_doc[] = {
 };
 
 struct builtin print_struct = {
-	"print",
-	print_builtin,
-	BUILTIN_ENABLED,
-	print_doc,
-	"print [-Rnprs] [-u unit] [-f format] [arguments]",
-	(char *)0
+  "print",
+  print_builtin,
+  BUILTIN_ENABLED,
+  print_doc,
+  "print [-Rnprs] [-u unit] [-f format] [arguments]",
+  (char *)0
 };
 
 #ifndef ISOPTION
-#define ISOPTION(s, c)	(s[0] == '-' && s[2] == '\0' && s[1] == c)
+#  define ISOPTION(s, c)	(s[0] == '-' && s[2] == '\0' && s[1] == c)
 #endif
 
 int
@@ -107,7 +107,7 @@ print_builtin (WORD_LIST *list)
 	  sflag = 1;
 	  break;
 	case 'p':
-	  break;	/* NOP */
+	  break;		/* NOP */
 	case 'u':
 	  if (all_digits (list_optarg) && valid_number (list_optarg, &lfd) && lfd == (int)lfd)
 	    ofd = lfd;
