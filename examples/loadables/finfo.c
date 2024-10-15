@@ -53,16 +53,16 @@ extern int errno;
 
 extern char **make_builtin_argv (WORD_LIST *, int *);
 
-static struct stat *getstat(char *);
-static int printinfo(char *);
-static int getperm(int);
+static struct stat *getstat (char *);
+static int printinfo (char *);
+static int getperm (int);
 
-static void perms(int);
-static int printst(struct stat *);
-static int printsome(char *, int);
-static void printmode(int);
-static int printfinfo(char *);
-static int finfo_main(int, char **);
+static void perms (int);
+static int printst (struct stat *);
+static int printsome (char *, int);
+static void printmode (int);
+static int printfinfo (char *);
+static int finfo_main (int, char **);
 
 extern int sh_optind;
 extern char *sh_optarg;
@@ -95,110 +95,119 @@ static int pmask;
 #define OPTIONS		"acdgiflmnopsuACGMP:U"
 
 static int
-finfo_main(int argc, char **argv)
+finfo_main (int argc, char **argv)
 {
-  register int	i;
+  register int i;
   int mode, flags, opt;
 
-  sh_optind = 0;  /* XXX */
-  prog = base_pathname(argv[0]);
-  if (argc == 1) {
-    builtin_usage();
-    return(1);
-  }
+  sh_optind = 0;		/* XXX */
+  prog = base_pathname (argv[0]);
+  if (argc == 1)
+    {
+      builtin_usage ();
+      return (1);
+    }
   flags = 0;
-  while ((opt = sh_getopt(argc, argv, OPTIONS)) != EOF) {
-      switch(opt) {
+  while ((opt = sh_getopt (argc, argv, OPTIONS)) != EOF)
+    {
+      switch (opt)
+	{
 	case 'a': flags |= OPT_ATIME; break;
-	case 'A': flags |= OPT_ATIME|OPT_ASCII; break;
+	case 'A': flags |= OPT_ATIME | OPT_ASCII; break;
 	case 'c': flags |= OPT_CTIME; break;
-	case 'C': flags |= OPT_CTIME|OPT_ASCII; break;
+	case 'C': flags |= OPT_CTIME | OPT_ASCII; break;
 	case 'd': flags |= OPT_DEV; break;
 	case 'i': flags |= OPT_INO; break;
 	case 'f': flags |= OPT_FID; break;
 	case 'g': flags |= OPT_GID; break;
-	case 'G': flags |= OPT_GID|OPT_ASCII; break;
+	case 'G': flags |= OPT_GID | OPT_ASCII; break;
 	case 'l': flags |= OPT_LNKNAM; break;
 	case 'm': flags |= OPT_MTIME; break;
-	case 'M': flags |= OPT_MTIME|OPT_ASCII; break;
+	case 'M': flags |= OPT_MTIME | OPT_ASCII; break;
 	case 'n': flags |= OPT_NLINK; break;
 	case 'o': flags |= OPT_OPERM; break;
 	case 'p': flags |= OPT_PERM; break;
 	case 'P':
 	  flags |= OPT_PMASK;
-	  pmask = read_octal(sh_optarg);
-	  if (pmask < 0) {
+	  pmask = read_octal (sh_optarg);
+	  if (pmask < 0)
+	    {
 	      builtin_error ("invalid mode: %s", sh_optarg);
-	      return(1);
+	      return (1);
 	    }
 	  break;
 	case 's': flags |= OPT_SIZE; break;
 	case 'u': flags |= OPT_UID; break;
-	case 'U': flags |= OPT_UID|OPT_ASCII; break;
-	default: builtin_usage (); return(1);
+	case 'U': flags |= OPT_UID | OPT_ASCII; break;
+	default: builtin_usage (); return (1);
 	}
     }
 
   argc -= sh_optind;
   argv += sh_optind;
 
-  if (argc == 0) {
-    builtin_usage();
-    return(1);
-  }
+  if (argc == 0)
+    {
+      builtin_usage ();
+      return (1);
+    }
 
   for (i = 0; i < argc; i++)
-    opt = flags ? printsome (argv[i], flags) : printfinfo(argv[i]);
+    opt = flags ? printsome (argv[i], flags) : printfinfo (argv[i]);
 
-  return(opt);
+  return (opt);
 }
 
 static struct stat *
-getstat(char *f)
+getstat (char *f)
 {
   static struct stat st;
   int fd, r;
   intmax_t lfd;
 
-  if (strncmp(f, "/dev/fd/", 8) == 0) {
-      if ((valid_number(f + 8, &lfd) == 0) || (int)lfd != lfd) {
-	  builtin_error("%s: invalid fd", f + 8);
+  if (strncmp (f, "/dev/fd/", 8) == 0)
+    {
+      if ((valid_number (f + 8, &lfd) == 0) || (int)lfd != lfd)
+	{
+	  builtin_error ("%s: invalid fd", f + 8);
 	  return ((struct stat *)0);
 	}
       fd = lfd;
-      r = fstat(fd, &st);
-  } else
+      r = fstat (fd, &st);
+    }
+  else
 #ifdef HAVE_LSTAT
-    r = lstat(f, &st);
+    r = lstat (f, &st);
 #else
-    r = stat(f, &st);
+    r = stat (f, &st);
 #endif
-  if (r < 0) {
-      builtin_error("%s: cannot stat: %s", f, strerror(errno));
+  if (r < 0)
+    {
+      builtin_error ("%s: cannot stat: %s", f, strerror (errno));
       return ((struct stat *)0);
     }
   return (&st);
 }
 
 static int
-printfinfo(char *f)
+printfinfo (char *f)
 {
   struct stat *st;
 
-  st = getstat(f);
-  return (st ? printst(st) : 1);
+  st = getstat (f);
+  return (st ? printst (st) : 1);
 }
 
 static int
-getperm(int m)
+getperm (int m)
 {
-  return (m & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID));
+  return (m & (S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID));
 }
 
 static void
-perms(int m)
+perms (int m)
 {
-  char ubits[4], gbits[4], obits[4];  /* u=rwx,g=rwx,o=rwx */
+  char ubits[4], gbits[4], obits[4];	/* u=rwx,g=rwx,o=rwx */
   int i;
 
   i = 0;
@@ -239,36 +248,36 @@ perms(int m)
 }
 
 static void
-printmode(int mode)
+printmode (int mode)
 {
-  if (S_ISBLK(mode))
-    printf("S_IFBLK ");
-  if (S_ISCHR(mode))
-    printf("S_IFCHR ");
-  if (S_ISDIR(mode))
-    printf("S_IFDIR ");
-  if (S_ISREG(mode))
-    printf("S_IFREG ");
-  if (S_ISFIFO(mode))
-    printf("S_IFIFO ");
-  if (S_ISLNK(mode))
-    printf("S_IFLNK ");
-  if (S_ISSOCK(mode))
-    printf("S_IFSOCK ");
+  if (S_ISBLK (mode))
+    printf ("S_IFBLK ");
+  if (S_ISCHR (mode))
+    printf ("S_IFCHR ");
+  if (S_ISDIR (mode))
+    printf ("S_IFDIR ");
+  if (S_ISREG (mode))
+    printf ("S_IFREG ");
+  if (S_ISFIFO (mode))
+    printf ("S_IFIFO ");
+  if (S_ISLNK (mode))
+    printf ("S_IFLNK ");
+  if (S_ISSOCK (mode))
+    printf ("S_IFSOCK ");
 #ifdef S_ISWHT
-  if (S_ISWHT(mode))
-    printf("S_ISWHT ");
+  if (S_ISWHT (mode))
+    printf ("S_ISWHT ");
 #endif
-  perms(getperm(mode));
-  printf("\n");
+  perms (getperm (mode));
+  printf ("\n");
 }
 
 static int
-printst(struct stat *st)
+printst (struct stat *st)
 {
-  struct passwd	*pw;
-  struct group	*gr;
-  char	*owner;
+  struct passwd *pw;
+  struct group *gr;
+  char *owner;
   int ma, mi, d;
 
   ma = major (st->st_rdev);
@@ -278,113 +287,128 @@ printst(struct stat *st)
 #else
   d = st->st_rdev & 0xFF;
 #endif
-  printf("Device (major/minor): %d (%d/%d)\n", d, ma, mi);
+  printf ("Device (major/minor): %d (%d/%d)\n", d, ma, mi);
 
-  printf("Inode: %d\n", (int) st->st_ino);
-  printf("Mode: (%o) ", (int) st->st_mode);
-  printmode((int) st->st_mode);
-  printf("Link count: %d\n", (int) st->st_nlink);
-  pw = getpwuid(st->st_uid);
+  printf ("Inode: %d\n", (int)st->st_ino);
+  printf ("Mode: (%o) ", (int)st->st_mode);
+  printmode ((int)st->st_mode);
+  printf ("Link count: %d\n", (int)st->st_nlink);
+  pw = getpwuid (st->st_uid);
   owner = pw ? pw->pw_name : "unknown";
-  printf("Uid of owner: %d (%s)\n", (int) st->st_uid, owner);
-  gr = getgrgid(st->st_gid);
+  printf ("Uid of owner: %d (%s)\n", (int)st->st_uid, owner);
+  gr = getgrgid (st->st_gid);
   owner = gr ? gr->gr_name : "unknown";
-  printf("Gid of owner: %d (%s)\n", (int) st->st_gid, owner);
-  printf("Device type: %d\n", (int) st->st_rdev);
-  printf("File size: %ld\n", (long) st->st_size);
-  printf("File last access time: %s", ctime (&st->st_atime));
-  printf("File last modify time: %s", ctime (&st->st_mtime));
-  printf("File last status change time: %s", ctime (&st->st_ctime));
-  fflush(stdout);
-  return(0);
+  printf ("Gid of owner: %d (%s)\n", (int)st->st_gid, owner);
+  printf ("Device type: %d\n", (int)st->st_rdev);
+  printf ("File size: %ld\n", (long)st->st_size);
+  printf ("File last access time: %s", ctime (&st->st_atime));
+  printf ("File last modify time: %s", ctime (&st->st_mtime));
+  printf ("File last status change time: %s", ctime (&st->st_ctime));
+  fflush (stdout);
+  return (0);
 }
 
 static int
-printsome(char *f, int flags)
+printsome (char *f, int flags)
 {
   struct stat *st;
   struct passwd *pw;
   struct group *gr;
   int p;
-  char	*b;
+  char *b;
   intmax_t xtime;
 
-  st = getstat(f);
+  st = getstat (f);
   if (st == NULL)
     return (1);
 
   /* Print requested info */
-  if (flags & OPT_ATIME) {
+  if (flags & OPT_ATIME)
+    {
       xtime = st->st_atime;
       if (flags & OPT_ASCII)
-	printf("%s", ctime(&st->st_atime));
+	printf ("%s", ctime (&st->st_atime));
       else
-	printf("%jd\n", xtime);
-  } else if (flags & OPT_MTIME) {
+	printf ("%jd\n", xtime);
+    }
+  else if (flags & OPT_MTIME)
+    {
       xtime = st->st_mtime;
       if (flags & OPT_ASCII)
-	printf("%s", ctime(&st->st_mtime));
+	printf ("%s", ctime (&st->st_mtime));
       else
-	printf("%jd\n", xtime);
-  } else if (flags & OPT_CTIME) {
+	printf ("%jd\n", xtime);
+    }
+  else if (flags & OPT_CTIME)
+    {
       xtime = st->st_ctime;
       if (flags & OPT_ASCII)
-	printf("%s", ctime(&st->st_ctime));
+	printf ("%s", ctime (&st->st_ctime));
       else
-	printf("%jd\n", xtime);
-  } else if (flags & OPT_DEV)
-    printf("%lu\n", (unsigned long)st->st_dev);
+	printf ("%jd\n", xtime);
+    }
+  else if (flags & OPT_DEV)
+    printf ("%lu\n", (unsigned long)st->st_dev);
   else if (flags & OPT_INO)
-    printf("%lu\n", (unsigned long)st->st_ino);
+    printf ("%lu\n", (unsigned long)st->st_ino);
   else if (flags & OPT_FID)
-    printf("%lu:%lu\n", (unsigned long)st->st_dev, (unsigned long)st->st_ino);
+    printf ("%lu:%lu\n", (unsigned long)st->st_dev, (unsigned long)st->st_ino);
   else if (flags & OPT_NLINK)
-    printf("%lu\n", (unsigned long)st->st_nlink);
-  else if (flags & OPT_LNKNAM) {
+    printf ("%lu\n", (unsigned long)st->st_nlink);
+  else if (flags & OPT_LNKNAM)
+    {
 #ifdef S_ISLNK
-    b = xmalloc(4096);
-    p = readlink(f, b, 4096);
-    if (p >= 0 && p < 4096)
-      b[p] = '\0';
-    else {
-	p = errno;
-	strcpy(b, prog);
-	strcat(b, ": ");
-	strcat(b, strerror(p));
-      }
-    printf("%s\n", b);
-    free(b);
+      b = xmalloc (4096);
+      p = readlink (f, b, 4096);
+      if (p >= 0 && p < 4096)
+	b[p] = '\0';
+      else
+	{
+	  p = errno;
+	  strcpy (b, prog);
+	  strcat (b, ": ");
+	  strcat (b, strerror (p));
+	}
+      printf ("%s\n", b);
+      free (b);
 #else
-    printf("%s\n", f);
+      printf ("%s\n", f);
 #endif
-  } else if (flags & OPT_PERM) {
-      perms(st->st_mode);
-      printf("\n");
-  } else if (flags & OPT_OPERM)
-    printf("%o\n", getperm(st->st_mode));
+    }
+  else if (flags & OPT_PERM)
+    {
+      perms (st->st_mode);
+      printf ("\n");
+    }
+  else if (flags & OPT_OPERM)
+    printf ("%o\n", getperm (st->st_mode));
   else if (flags & OPT_PMASK)
-    printf("%o\n", getperm(st->st_mode) & pmask);
-  else if (flags & OPT_UID) {
-      pw = getpwuid(st->st_uid);
+    printf ("%o\n", getperm (st->st_mode) & pmask);
+  else if (flags & OPT_UID)
+    {
+      pw = getpwuid (st->st_uid);
       if (flags & OPT_ASCII)
-	printf("%s\n", pw ? pw->pw_name : "unknown");
+	printf ("%s\n", pw ? pw->pw_name : "unknown");
       else
-	printf("%d\n", st->st_uid);
-  } else if (flags & OPT_GID) {
-      gr = getgrgid(st->st_gid);
+	printf ("%d\n", st->st_uid);
+    }
+  else if (flags & OPT_GID)
+    {
+      gr = getgrgid (st->st_gid);
       if (flags & OPT_ASCII)
-	printf("%s\n", gr ? gr->gr_name : "unknown");
+	printf ("%s\n", gr ? gr->gr_name : "unknown");
       else
-	printf("%d\n", st->st_gid);
-  } else if (flags & OPT_SIZE)
-    printf("%ld\n", (long) st->st_size);
+	printf ("%d\n", st->st_gid);
+    }
+  else if (flags & OPT_SIZE)
+    printf ("%ld\n", (long)st->st_size);
 
   return (0);
 }
 
 #ifndef NOBUILTIN
 int
-finfo_builtin(WORD_LIST *list)
+finfo_builtin (WORD_LIST *list)
 {
   int c, r;
   char **v;
@@ -439,59 +463,60 @@ struct builtin finfo_struct = {
 #endif
 
 #ifdef NOBUILTIN
-#include <stdarg.h>
+#  include <stdarg.h>
 
 char *this_command_name;
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   this_command_name = argv[0];
-  exit(finfo_main(argc, argv));
+  exit (finfo_main (argc, argv));
 }
 
 void
-builtin_usage(void)
+builtin_usage (void)
 {
-  fprintf(stderr, "%s: usage: %s [-%s] [file ...]\n", prog, prog, OPTIONS);
+  fprintf (stderr, "%s: usage: %s [-%s] [file ...]\n", prog, prog, OPTIONS);
 }
 
-#ifndef HAVE_STRERROR
+#  ifndef HAVE_STRERROR
 char *
-strerror(int e)
+strerror (int e)
 {
   static char ebuf[40];
-  extern int  sys_nerr;
+  extern int sys_nerr;
   extern char *sys_errlist[];
 
-  if (e < 0 || e > sys_nerr) {
-      sprintf(ebuf,"Unknown error code %d", e);
+  if (e < 0 || e > sys_nerr)
+    {
+      sprintf (ebuf, "Unknown error code %d", e);
       return (&ebuf[0]);
     }
   return (sys_errlist[e]);
 }
-#endif
+#  endif
 
 PTR_T
-xmalloc(size_t s)
+xmalloc (size_t s)
 {
-  char	*ret;
+  char *ret;
 
-  ret = malloc(s);
+  ret = malloc (s);
   if (ret)
     return (ret);
-  fprintf(stderr, "%s: cannot malloc %zu bytes\n", prog, s);
-  exit(1);
+  fprintf (stderr, "%s: cannot malloc %zu bytes\n", prog, s);
+  exit (1);
 }
 
 char *
-base_pathname(char *p)
+base_pathname (char *p)
 {
-  char	*t;
+  char *t;
 
-  if (t = strrchr(p, '/'))
-    return(++t);
-  return(p);
+  if (t = strrchr (p, '/'))
+    return (++t);
+  return (p);
 }
 
 int
@@ -517,10 +542,10 @@ valid_number (char *string, long result)
   if (*string == '-' || *string == '+')
     {
       if (!digit (string[1]))
-        return (0);
+	return (0);
 
       if (*string == '-')
-        sign = -1;
+	sign = -1;
 
       string++;
     }
@@ -528,7 +553,7 @@ valid_number (char *string, long result)
   while (digit (*string))
     {
       if (result)
-        value = (value * 10) + digit_value (*string);
+	value = (value * 10) + digit_value (*string);
       string++;
     }
 
@@ -554,11 +579,11 @@ extern int optind;
 extern char *optarg;
 
 int
-sh_getopt(int c, char **v, char *o)
+sh_getopt (int c, char **v, char *o)
 {
   int r;
 
-  r = getopt(c, v, o);
+  r = getopt (c, v, o);
   sh_optind = optind;
   sh_optarg = optarg;
   return r;
