@@ -47,13 +47,11 @@
 #define FFLAG	(1 << 3)
 #define SFLAG	(1 << 4)
 
-struct cutpos
-{
+struct cutpos {
   int startpos, endpos;		/* zero-based, correction done in getlist() */
 };
 
-struct cutop
-{
+struct cutop {
   int flags;
   int delim;
   int npos;
