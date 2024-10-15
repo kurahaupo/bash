@@ -65,13 +65,15 @@ parse_gnutimefmt (char *string, long *sp, long *up)
   accumsec = accumusec = 0;
   mult = 1;
 
-  for (s = string; s && *s; s++) {
+  for (s = string; s && *s; s++)
+    {
       r = uconvert (s, &accumsec, &accumusec, &ep);
       if (r == 0 && *ep == 0)
 	return r;
       c = *ep;
       mult = 1;
-      switch (c) {
+      switch (c)
+	{
 	case '\0':
 	case 's':
 	  mult = S_SEC;
@@ -97,7 +99,8 @@ parse_gnutimefmt (char *string, long *sp, long *up)
       /* add to running total */
       tsec += accumsec;
       tusec += accumusec;
-      if (tusec >= 1000000) {
+      if (tusec >= 1000000)
+	{
 	  tsec++;
 	  tusec -= 1000000;
 	}
@@ -126,7 +129,8 @@ sleep_builtin (WORD_LIST *list)
   int r, mul;
   time_t t;
 
-  if (list == 0) {
+  if (list == 0)
+    {
       builtin_usage ();
       return (EX_USAGE);
     }
@@ -136,7 +140,8 @@ sleep_builtin (WORD_LIST *list)
     list = list->next;
 
   /* Reject options and negative arguments */
-  if (*list->word->word == '-' || list->next) {
+  if (*list->word->word == '-' || list->next)
+    {
       builtin_usage ();
       return (EX_USAGE);
     }
@@ -152,7 +157,8 @@ sleep_builtin (WORD_LIST *list)
   if (r == 0 && (strchr ("dhms", *ep) || strpbrk (list->word->word, "dhms")))
     r = parse_gnutimefmt (list->word->word, &sec, &usec);
 
-  if (r) {
+  if (r)
+    {
       fsleep (sec, usec);
       QUIT;
       return (EXECUTION_SUCCESS);
