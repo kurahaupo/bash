@@ -55,15 +55,15 @@ munge_list (WORD_LIST *list)
   for (l = list; l; l = l->next)
     {
       arg = l->word->word;
-      if (arg[0] != '-' || arg[1] == '-' || (DIGIT(arg[1]) == 0))
+      if (arg[0] != '-' || arg[1] == '-' || (DIGIT (arg[1]) == 0))
 	return;
       /* We have -[0-9]* */
-      wd = make_bare_word (arg+1);
+      wd = make_bare_word (arg + 1);
       nl = make_word_list (wd, l->next);
       l->word->word[1] = 'n';
       l->word->word[2] = '\0';
       l->next = nl;
-      l = nl;	/* skip over new argument */
+      l = nl;			/* skip over new argument */
     }
 }
 
@@ -99,7 +99,7 @@ head_builtin (WORD_LIST *list)
 
   char *t;
 
-  munge_list (list);	/* change -num into -n num */
+  munge_list (list);		/* change -num into -n num */
 
   reset_internal_getopt ();
   nline = 10;
@@ -134,7 +134,7 @@ head_builtin (WORD_LIST *list)
 	  builtin_error ("%s: %s", l->word->word, strerror (errno));
 	  continue;
 	}
-      if (list->next)	/* more than one file */
+      if (list->next)		/* more than one file */
 	{
 	  printf ("%s==> %s <==\n", opt ? "" : "\n", l->word->word);
 	  opt = 0;
@@ -148,19 +148,19 @@ head_builtin (WORD_LIST *list)
 }
 
 char *head_doc[] = {
-	"Display lines from beginning of file.",
-	"",
-	"Copy the first N lines from the input files to the standard output.",
-	"N is supplied as an argument to the `-n' option.  If N is not given,",
-	"the first ten lines are copied.",
-	(char *)NULL
+  "Display lines from beginning of file.",
+  "",
+  "Copy the first N lines from the input files to the standard output.",
+  "N is supplied as an argument to the `-n' option.  If N is not given,",
+  "the first ten lines are copied.",
+  (char *)NULL
 };
 
 struct builtin head_struct = {
-	"head",			/* builtin name */
-	head_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	head_doc,		/* array of long documentation strings. */
-	"head [-n num] [file ...]", /* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "head",			/* builtin name */
+  head_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  head_doc,			/* array of long documentation strings. */
+  "head [-n num] [file ...]",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
