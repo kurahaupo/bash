@@ -39,5 +39,3 @@ char	**v;
 		exit (1);
 	exit (0);
 }
-
-
