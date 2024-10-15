@@ -161,8 +161,7 @@ struct builtin pathchk_struct = {
 /* Each element is nonzero if the corresponding ASCII character is
    in the POSIX portable character set, and zero if it is not.
    In addition, the entry for `/' is nonzero to simplify checking. */
-static char const portable_chars[256] =
-{
+static char const portable_chars[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 0-15 */
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	/* 16-31 */
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,	/* 32-47 */
@@ -301,7 +300,7 @@ validate_path (char *path, int portability)
       char *start;		/* Start of path element being checked. */
 
       /* Find the end of this element of the path.
-	 Then chop off the rest of the path after this element. */
+         Then chop off the rest of the path after this element. */
       while (*slash == '/')
 	slash++;
       start = slash;
@@ -326,20 +325,19 @@ validate_path (char *path, int portability)
 
       length = slash - start;
       /* Since we know that `parent' is a directory, it's ok to call
-	 pathconf with it as the argument.  (If `parent' isn't a directory
-	 or doesn't exist, the behavior of pathconf is undefined.)
-	 But if `parent' is a directory and is on a remote file system,
-	 it's likely that pathconf can't give us a reasonable value
-	 and will return -1.  (NFS and tempfs are not POSIX . . .)
-	 In that case, we have no choice but to assume the pessimal
-	 POSIX minimums.  */
+         pathconf with it as the argument.  (If `parent' isn't a directory
+         or doesn't exist, the behavior of pathconf is undefined.)
+         But if `parent' is a directory and is on a remote file system,
+         it's likely that pathconf can't give us a reasonable value
+         and will return -1.  (NFS and tempfs are not POSIX . . .)
+         In that case, we have no choice but to assume the pessimal
+         POSIX minimums.  */
       name_max = portability ? _POSIX_NAME_MAX : NAME_MAX_FOR (parent);
       if (name_max < 0)
 	name_max = _POSIX_NAME_MAX;
       if (length > name_max)
 	{
-	  builtin_error ("name `%s' has length %d; exceeds limit of %d",
-			 start, length, name_max);
+	  builtin_error ("name `%s' has length %d; exceeds limit of %d", start, length, name_max);
 	  free (parent);
 	  return 1;
 	}
@@ -364,8 +362,7 @@ validate_path (char *path, int portability)
   free (parent);
   if (strlen (path) > path_max)
     {
-      builtin_error ("path `%s' has length %lu; exceeds limit of %d",
-		     path, (unsigned long)strlen (path), path_max);
+      builtin_error ("path `%s' has length %lu; exceeds limit of %d", path, (unsigned long)strlen (path), path_max);
       return 1;
     }
 
