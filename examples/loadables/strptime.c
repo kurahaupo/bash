@@ -44,19 +44,19 @@ struct date_modifier
 
 static struct date_modifier date_time_modifiers[] =
 {
-  { "now",	0 },
-  { "today",	0 },
-  { "tomorrow",	24*60*60 },
-  { "yesterday", -24*60*60 },
-  { "day after tomorrow", 48*60*60 },
-  { "two days ago", -48*60*60 },
-  { "next week", 7*24*60*60 },
-  { "last week", -7*24*60*60 },
-  { "the day after tomorrow", 48*60*60 },
+  { "now", 0 },
+  { "today", 0 },
+  { "tomorrow", 24 * 60 * 60 },
+  { "yesterday", -24 * 60 * 60 },
+  { "day after tomorrow", 48 * 60 * 60 },
+  { "two days ago", -48 * 60 * 60 },
+  { "next week", 7 * 24 * 60 * 60 },
+  { "last week", -7 * 24 * 60 * 60 },
+  { "the day after tomorrow", 48 * 60 * 60 },
   { 0, 0 }
 };
 
-static char * const date_time_formats[] =
+static char *const date_time_formats[] =
 {
   "%a %b %d %T %Z %Y",		/* Unix date */
   "%a %b %d %T %Y",		/* Wkd Mon DD HH:MM:SS YYYY */
@@ -157,7 +157,7 @@ static char * const date_time_formats[] =
 static void
 inittime (time_t *clock, struct tm *timeptr)
 {
-  timeptr = localtime (clock);		/* for now */
+  timeptr = localtime (clock);	/* for now */
 
   /* but default to midnight */
   timeptr->tm_hour = timeptr->tm_min = timeptr->tm_sec = 0;
@@ -181,7 +181,7 @@ strptime_builtin (WORD_LIST *list)
   if (list == 0)
     {
       builtin_usage ();
-     return (EX_USAGE);
+      return (EX_USAGE);
     }
 
   datestr = string_list (list);
@@ -220,22 +220,22 @@ strptime_builtin (WORD_LIST *list)
 }
 
 char *strptime_doc[] = {
-	"Convert a date-time string to seconds since the epoch.",
-	"",
-	"Take DATE-TIME, a date-time string, parse it against a set of common",
-	"date-time formats. If the string matches one of the formats, convert",
-	"it into seconds since the epoch and display the result.",
-	(char *)NULL
+  "Convert a date-time string to seconds since the epoch.",
+  "",
+  "Take DATE-TIME, a date-time string, parse it against a set of common",
+  "date-time formats. If the string matches one of the formats, convert",
+  "it into seconds since the epoch and display the result.",
+  (char *)NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures.  The flags must include BUILTIN_ENABLED so the
    builtin can be used. */
 struct builtin strptime_struct = {
-	"strptime",		/* builtin name */
-	strptime_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	strptime_doc,		/* array of long documentation strings. */
-	"strptime date-time",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "strptime",			/* builtin name */
+  strptime_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  strptime_doc,			/* array of long documentation strings. */
+  "strptime date-time",		/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
