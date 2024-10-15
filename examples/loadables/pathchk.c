@@ -337,8 +337,7 @@ validate_path (char *path, int portability)
 	name_max = _POSIX_NAME_MAX;
       if (length > name_max)
 	{
-	  builtin_error ("name `%s' has length %d; exceeds limit of %d",
-			 start, length, name_max);
+	  builtin_error ("name `%s' has length %d; exceeds limit of %d", start, length, name_max);
 	  free (parent);
 	  return 1;
 	}
@@ -363,8 +362,7 @@ validate_path (char *path, int portability)
   free (parent);
   if (strlen (path) > path_max)
     {
-      builtin_error ("path `%s' has length %lu; exceeds limit of %d",
-		     path, (unsigned long)strlen (path), path_max);
+      builtin_error ("path `%s' has length %lu; exceeds limit of %d", path, (unsigned long)strlen (path), path_max);
       return 1;
     }
 
