@@ -66,7 +66,7 @@ csvsplit (SHELL_VAR *csv, char *line, char *dstring)
 	      if (qstate == DQUOTE && *field == '"' && field[1] == '"')
 		buf[b++] = *field++;	/* skip double quote */
 	      else if (qstate == DQUOTE && *field == '"')
-	        qstate = NQUOTE;
+		qstate = NQUOTE;
 	      else if (qstate == NQUOTE && *field == *dstring)
 		break;
 	      else
@@ -99,7 +99,7 @@ csvsplit (SHELL_VAR *csv, char *line, char *dstring)
   if (xbuf)
     free (xbuf);
 
-  return (rval = ind);				/* number of fields */
+  return (rval = ind);		/* number of fields */
 }
 #endif
 
@@ -191,19 +191,19 @@ csv_builtin_unload (char *name)
 }
 
 char *csv_doc[] = {
-	"Read comma-separated fields from a string.",
-	"",
-	"Parse STRING, a line of comma-separated values, into individual fields,",
-	"and store them into the indexed array ARRAYNAME starting at index 0.",
-	"If ARRAYNAME is not supplied, \"CSV\" is the default array name.",
-	(char *)NULL
+  "Read comma-separated fields from a string.",
+  "",
+  "Parse STRING, a line of comma-separated values, into individual fields,",
+  "and store them into the indexed array ARRAYNAME starting at index 0.",
+  "If ARRAYNAME is not supplied, \"CSV\" is the default array name.",
+  (char *)NULL
 };
 
 struct builtin csv_struct = {
-	"csv",			/* builtin name */
-	csv_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	csv_doc,		/* array of long documentation strings. */
-	"csv [-a ARRAY] string",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "csv",			/* builtin name */
+  csv_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  csv_doc,			/* array of long documentation strings. */
+  "csv [-a ARRAY] string",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };
