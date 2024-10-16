@@ -65,14 +65,6 @@ static void *xrealloc (void *, size_t);
 static void xfree (void const *);
 
 #define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
-#define whitespace(c) (((c) == ' ') || ((c) == '\t'))
-
-/* Flag values that builtins can have. */
-#define BUILTIN_FLAG_SPECIAL	0x01
-#define BUILTIN_FLAG_ASSIGNMENT 0x02
-#define BUILTIN_FLAG_LOCALVAR	0x04
-#define BUILTIN_FLAG_POSIX_BUILTIN	0x08
-#define BUILTIN_FLAG_ARRAYREF_ARG	0x10
 
 #define BASE_INDENT	4
 
