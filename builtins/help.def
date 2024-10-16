@@ -142,7 +142,7 @@ help_builtin (WORD_LIST *list)
 
       for (pass = 1, this_found = 0; pass < 3; pass++)
 	{
-	  for (i = 0; name = shell_builtins[i].name; i++)
+	  for (i = 0; name = (char*) shell_builtins[i].name; i++)
 	    {
 	      QUIT;
 
@@ -227,7 +227,7 @@ show_longdoc (int i)
   char * const *doc;
   int fd;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   if (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL)
     {
@@ -249,7 +249,7 @@ show_desc (char *name, int i)
   char * const *doc, *line;
   int fd, usefile;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
   if (usefile)
@@ -285,7 +285,7 @@ show_manpage (char *name, int i)
   char *line;
   int fd, usefile;
 
-  doc = shell_builtins[i].long_doc;
+  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
 
   usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
   if (usefile)

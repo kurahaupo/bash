@@ -575,7 +575,7 @@ static char const *lcut_doc[] = {
   "Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
   "field delimiter is specified by -d (default TAB). Column numbering",
   "starts at 1.",
-  (char *)NULL
+  NULL
 };
 
 struct builtin lcut_struct = {
