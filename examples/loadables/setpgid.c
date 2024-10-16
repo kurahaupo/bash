@@ -116,7 +116,7 @@ struct builtin setpgid_struct = {
   "setpgid",
   setpgid_builtin,
   BUILTIN_ENABLED,
-  (char **)setpgid_doc,
+  setpgid_doc,
   "setpgid pid pgrpid",
   0
 };

@@ -79,7 +79,7 @@ struct builtin enable_mypid_struct = {
   "enable_mypid",
   enable_mypid_builtin,
   BUILTIN_ENABLED,
-  (char **)(void *)enable_mypid_doc,
+  enable_mypid_doc,
   "enable_mypid N",
   0
 };
