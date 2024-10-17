@@ -23,30 +23,30 @@
 
 #if defined (ALIAS)
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include <stdio.h>
-#include "chartypes.h"
-#include "bashansi.h"
-#include "command.h"
-#include "general.h"
-#include "externs.h"
-#include "alias.h"
+#  include <stdio.h>
+#  include "chartypes.h"
+#  include "bashansi.h"
+#  include "command.h"
+#  include "general.h"
+#  include "externs.h"
+#  include "alias.h"
 
-#if defined (PROGRAMMABLE_COMPLETION)
-#  include "pcomplete.h"
-#endif
+#  if defined (PROGRAMMABLE_COMPLETION)
+#    include "pcomplete.h"
+#  endif
 
-#if defined (HAVE_MBSTR_H) && defined (HAVE_MBSCHR)
-#  include <mbstr.h>		/* mbschr */
-#endif
+#  if defined (HAVE_MBSTR_H) && defined (HAVE_MBSCHR)
+#    include <mbstr.h>		/* mbschr */
+#  endif
 
-#define ALIAS_HASH_BUCKETS	64	/* must be power of two */
+#  define ALIAS_HASH_BUCKETS	64	/* must be power of two */
 
 typedef int sh_alias_map_func_t (alias_t *);
 
@@ -55,18 +55,18 @@ static alias_t **map_over_aliases (sh_alias_map_func_t *);
 static void sort_aliases (alias_t **);
 static int qsort_alias_compare (alias_t **, alias_t **);
 
-#if defined (READLINE)
+#  if defined (READLINE)
 static int skipquotes (char *, int);
 static int skipws (char *, int);
 static int rd_token (char *, int);
-#endif
+#  endif
 
 /* Non-zero means expand all words on the line.  Otherwise, expand
    after first expansion if the expansion ends in a space. */
 int alias_expand_all = 0;
 
 /* The list of aliases that we have. */
-HASH_TABLE *aliases = (HASH_TABLE *)NULL;
+HASH_TABLE *aliases = (HASH_TABLE *) NULL;
 
 void
 initialize_aliases (void)
@@ -147,9 +147,9 @@ add_alias (const char *name, const char *value)
 
       elt = hash_insert (savestring (name), aliases, HASH_NOSRCH);
       elt->data = temp;
-#if defined (PROGRAMMABLE_COMPLETION)
+#  if defined (PROGRAMMABLE_COMPLETION)
       set_itemlist_dirty (&it_aliases);
-#endif
+#  endif
     }
 }
 
@@ -186,9 +186,9 @@ remove_alias (const char *name)
       free_alias_data (elt->data);
       free (elt->key);		/* alias name */
       free (elt);		/* XXX */
-#if defined (PROGRAMMABLE_COMPLETION)
+#  if defined (PROGRAMMABLE_COMPLETION)
       set_itemlist_dirty (&it_aliases);
-#endif
+#  endif
       return (aliases->nentries);
     }
   return (-1);
@@ -203,10 +203,10 @@ delete_all_aliases (void)
 
   hash_flush (aliases, free_alias_data);
   hash_dispose (aliases);
-  aliases = (HASH_TABLE *)NULL;
-#if defined (PROGRAMMABLE_COMPLETION)
+  aliases = (HASH_TABLE *) NULL;
+#  if defined (PROGRAMMABLE_COMPLETION)
   set_itemlist_dirty (&it_aliases);
-#endif
+#  endif
 }
 
 /* Return an array of aliases that satisfy the conditions tested by FUNCTION.
@@ -283,23 +283,23 @@ alias_expand_word (const char *s)
 
 /* Readline support functions -- expand all aliases in a line. */
 
-#if defined (READLINE)
+#  if defined (READLINE)
 
 /* Return non-zero if CHARACTER is a member of the class of characters
    that are self-delimiting in the shell (this really means that these
    characters delimit tokens). */
-#define self_delimiting(character) (member ((character), " \t\n\r;|&()"))
+#    define self_delimiting(character) (member ((character), " \t\n\r;|&()"))
 
 /* Return non-zero if CHARACTER is a member of the class of characters
    that delimit commands in the shell. */
-#define command_separator(character) (member ((character), "\r\n;|&("))
+#    define command_separator(character) (member ((character), "\r\n;|&("))
 
 /* If this is 1, we are checking the next token read for alias expansion
    because it is the first word in a command. */
 static int command_word;
 
 /* This is for skipping quoted strings in alias expansions. */
-#define quote_char(c)  (((c) == '\'') || ((c) == '"'))
+#    define quote_char(c)  (((c) == '\'') || ((c) == '"'))
 
 /* Consume a quoted string from STRING, starting at string[START] (so
    string[START] is the opening quote character), and return the index
@@ -317,11 +317,11 @@ skipquotes (char *string, int start)
 
   /* i starts at START + 1 because string[START] is the opening quote
      character. */
-  for (i = start + 1 ; string[i] ; i++)
+  for (i = start + 1; string[i]; i++)
     {
       if (string[i] == '\\')
 	{
-	  i++;		/* skip backslash-quoted quote characters, too */
+	  i++;			/* skip backslash-quoted quote characters, too */
 	  if (string[i] == 0)
 	    break;
 	  continue;
@@ -360,13 +360,13 @@ skipws (char *string, int start)
 
       if (whitespace (string[i]))
 	{
-	  backslash_quoted_word = 0; /* we are no longer in a backslash-quoted word */
+	  backslash_quoted_word = 0;	/* we are no longer in a backslash-quoted word */
 	  continue;
 	}
 
       if (string[i] == '\\')
 	{
-	  peekc = string[i+1];
+	  peekc = string[i + 1];
 	  if (peekc == 0)
 	    break;
 	  if (ISLETTER (peekc))
@@ -377,10 +377,10 @@ skipws (char *string, int start)
 	}
 
       /* This only handles single pairs of non-escaped quotes.  This
-	 overloads backslash_quoted_word to also mean that a word like
-	 ""f is being scanned, so that the quotes will inhibit any expansion
-	 of the word. */
-      if (quote_char(string[i]))
+         overloads backslash_quoted_word to also mean that a word like
+         ""f is being scanned, so that the quotes will inhibit any expansion
+         of the word. */
+      if (quote_char (string[i]))
 	{
 	  i = skipquotes (string, i);
 	  /* This could be a line that contains a single quote character,
@@ -396,12 +396,12 @@ skipws (char *string, int start)
 	}
 
       /* If we're in the middle of some kind of quoted word, let it
-	 pass through. */
+         pass through. */
       if (backslash_quoted_word)
 	continue;
 
       /* If this character is a shell command separator, then set a hint for
-	 alias_expand that the next token is the first word in a command. */
+         alias_expand that the next token is the first word in a command. */
 
       if (command_separator (string[i]))
 	{
@@ -415,7 +415,7 @@ skipws (char *string, int start)
 
 /* Characters that may appear in a token.  Basically, anything except white
    space and a token separator. */
-#define token_char(c)	(!((whitespace (string[i]) || self_delimiting (string[i]))))
+#    define token_char(c)	(!((whitespace (string[i]) || self_delimiting (string[i]))))
 
 /* Read from START in STRING until the next separator character, and return
    the index of that separator.  Skip backslash-quoted characters.  Call
@@ -431,17 +431,17 @@ rd_token (char *string, int start)
     {
       if (string[i] == '\\')
 	{
-	  i++;	/* skip backslash-escaped character */
+	  i++;			/* skip backslash-escaped character */
 	  if (string[i] == 0)
 	    break;
 	  continue;
 	}
 
       /* If this character is a quote character, we want to call skipquotes
-	 to get the whole quoted portion as part of this word.  That word
-	 will not generally match an alias, even if te unquoted word would
-	 have.  The presence of the quotes in the token serves then to
-	 inhibit expansion. */
+         to get the whole quoted portion as part of this word.  That word
+         will not generally match an alias, even if te unquoted word would
+         have.  The presence of the quotes in the token serves then to
+         inhibit expansion. */
       if (quote_char (string[i]))
 	{
 	  i = skipquotes (string, i);
@@ -476,7 +476,7 @@ alias_expand (char *string)
 
   line[0] = i = 0;
   expand_next = 0;
-  command_word = 1; /* initialized to expand the first word on the line */
+  command_word = 1;		/* initialized to expand the first word on the line */
 
   /* Each time through the loop we find the next word in line.  If it
      has an alias, substitute the alias value.  If the value ends in ` ',
@@ -499,9 +499,9 @@ alias_expand (char *string)
 	}
 
       /* copy the just-skipped characters into the output string,
-	 expanding it if there is not enough room. */
+         expanding it if there is not enough room. */
       j = strlen (line);
-      tl = i - start;	/* number of characters just skipped */
+      tl = i - start;		/* number of characters just skipped */
       RESIZE_MALLOCED_BUFFER (line, j, (tl + 1), line_len, (tl + 50));
       strncpy (line + j, string + start, tl);
       line[j + tl] = '\0';
@@ -516,34 +516,34 @@ alias_expand (char *string)
       start = i;
       i = rd_token (string, start);
 
-      tl = i - start;	/* token length */
+      tl = i - start;		/* token length */
 
       /* If tl == 0, but we're not at the end of the string, then we have a
-	 single-character token, probably a delimiter */
+         single-character token, probably a delimiter */
       if (tl == 0 && string[i] != '\0')
 	{
 	  tl = 1;
-	  i++;		/* move past it */
+	  i++;			/* move past it */
 	}
 
       strncpy (token, string + start, tl);
-      token [tl] = '\0';
+      token[tl] = '\0';
 
       /* If there is a backslash-escaped character quoted in TOKEN,
-	 then we don't do alias expansion.  This should check for all
-	 other quoting characters, too. */
+         then we don't do alias expansion.  This should check for all
+         other quoting characters, too. */
       if (mbschr (token, '\\'))
 	expand_this_token = 0;
 
       /* If we should be expanding here, if we are expanding all words, or if
-	 we are in a location in the string where an expansion is supposed to
-	 take place, see if this word has a substitution.  If it does, then do
-	 the expansion.  Note that we defer the alias value lookup until we
-	 are sure we are expanding this token. */
+         we are in a location in the string where an expansion is supposed to
+         take place, see if this word has a substitution.  If it does, then do
+         the expansion.  Note that we defer the alias value lookup until we
+         are sure we are expanding this token. */
 
       if ((token[0]) &&
-	  (expand_this_token || alias_expand_all) &&
-	  (alias = find_alias (token)))
+          (expand_this_token || alias_expand_all) &&
+          (alias = find_alias (token)))
 	{
 	  char *v;
 	  size_t vlen, llen;
@@ -558,7 +558,7 @@ alias_expand (char *string)
 	  strcpy (line + llen, v);
 
 	  if ((expand_this_token && vlen && whitespace (v[vlen - 1])) ||
-	      alias_expand_all)
+              alias_expand_all)
 	    expand_next = 1;
 	}
       else
@@ -566,7 +566,7 @@ alias_expand (char *string)
 	  size_t llen, tlen;
 
 	  llen = strlen (line);
-	  tlen = i - real_start; /* tlen == strlen(token) */
+	  tlen = i - real_start;	/* tlen == strlen(token) */
 
 	  RESIZE_MALLOCED_BUFFER (line, llen, (tlen + 1), line_len, (llen + tlen + 50));
 
@@ -576,5 +576,5 @@ alias_expand (char *string)
       command_word = 0;
     }
 }
-#endif /* READLINE */
+#  endif /* READLINE */
 #endif /* ALIAS */
