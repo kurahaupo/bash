@@ -19,9 +19,9 @@
 */
 
 #if !defined (_BASHLINE_H_)
-#define _BASHLINE_H_
+#  define _BASHLINE_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
 extern int bash_readline_initialized;
 extern int hostname_list_initialized;
