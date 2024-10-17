@@ -350,10 +350,11 @@ assign_array_element (const char *name, const char *value, int flags, array_elts
      caller hasn't told us the subscript has already been expanded
      (ASS_NOEXPAND). If the caller has explicitly told us it's ok
      (ASS_ALLOWALLSUB) we allow it. */
-  if (((isassoc == 0 || (flags & (ASS_NOEXPAND | ASS_ALLOWALLSUB)) == 0) &&
-       (ALL_ELEMENT_SUB (sub[0]) && sub[1] == ']')) ||
-      (sublen <= 1) ||
-      (sub[sublen] != '\0'))	/* sanity check */
+  if (((isassoc == 0
+	|| (flags & (ASS_NOEXPAND | ASS_ALLOWALLSUB)) == 0)
+       && (ALL_ELEMENT_SUB (sub[0]) && sub[1] == ']'))
+      || (sublen <= 1)
+      || (sub[sublen] != '\0'))	/* sanity check */
     {
       free (vname);
       err_badarraysub (name);
