@@ -22,28 +22,28 @@
 
 #if defined (ARRAY_VARS)
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
-#include <stdio.h>
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
+#  include <stdio.h>
 
-#include "bashintl.h"
+#  include "bashintl.h"
 
-#include "shell.h"
-#include "execute_cmd.h"
-#include "pathexp.h"
+#  include "shell.h"
+#  include "execute_cmd.h"
+#  include "pathexp.h"
 
-#include "shmbutil.h"
-#if defined (HAVE_MBSTR_H) && defined (HAVE_MBSCHR)
-#  include <mbstr.h>		/* mbschr */
-#endif
+#  include "shmbutil.h"
+#  if defined (HAVE_MBSTR_H) && defined (HAVE_MBSCHR)
+#    include <mbstr.h>		/* mbschr */
+#  endif
 
-#include "builtins/common.h"
+#  include "builtins/common.h"
 
-#ifndef LBRACK
-#  define LBRACK '['
-#  define RBRACK ']'
-#endif
+#  ifndef LBRACK
+#    define LBRACK '['
+#    define RBRACK ']'
+#  endif
 
 /* This variable means to not expand associative or indexed array subscripts
    more than once, when performing variable expansion. */
@@ -362,13 +362,13 @@ assign_array_element (const char *name, const char *value, int flags, array_elts
 
   entry = assign_array_element_internal (entry, name, vname, sub, sublen, value, flags, estatep);
 
-#if ARRAY_EXPORT
+#  if ARRAY_EXPORT
   if (entry && exported_p (entry))
     {
       INVALIDATE_EXPORTSTR (entry);
       array_needs_making = 1;
     }
-#endif
+#  endif
 
   free (vname);
   return entry;
@@ -617,7 +617,7 @@ expand_compound_array_assignment (SHELL_VAR *var, char *value, int flags)
   return nlist;
 }
 
-#if ASSOC_KVPAIR_ASSIGNMENT
+#  if ASSOC_KVPAIR_ASSIGNMENT
 /* If non-zero, we split the words in kv-pair compound array assignments in
    addition to performing the other expansions. */
 int split_kvpair_assignments = 0;
@@ -686,7 +686,7 @@ expand_and_quote_kvpair_word (const char *w)
   free (t);
   return r;
 }
-#endif
+#  endif
 
 /* Callers ensure that VAR is not NULL. Associative array assignments have not
    been expanded when this is called, or have been expanded once and single-
@@ -725,7 +725,7 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
 	nhash = assoc_create (h->nbuckets);
     }
 
-#if ASSOC_KVPAIR_ASSIGNMENT
+#  if ASSOC_KVPAIR_ASSIGNMENT
   if (assoc_p (var) && kvpair_assignment_p (nlist))
     {
       iflags = flags & ~ASS_APPEND;
@@ -738,7 +738,7 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
 	}
       return 1;			/* XXX - check return value */
     }
-#endif
+#  endif
 
   last_ind = (a && (flags & ASS_APPEND)) ? array_max_index (a) + 1 : 0;
 
@@ -892,13 +892,13 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
       assoc_dispose (h);
     }
 
-#if ARRAY_EXPORT
+#  if ARRAY_EXPORT
   if (var && exported_p (var))
     {
       INVALIDATE_EXPORTSTR (var);
       array_needs_making = 1;
     }
-#endif
+#  endif
 
   return (any_failed ? 0 : 1);
 }
@@ -1319,7 +1319,7 @@ tokenize_array_reference (const char *name, int flags, char **subp)
       if (t[len] != ']' || len == 1 || t[len + 1] != '\0')
 	return 0;
 
-#if 0
+#  if 0
       /* Could check and allow subscripts consisting only of whitespace for
 	 existing associative arrays, using isassoc */
       for (r = 1; r < len; r++)
@@ -1327,7 +1327,7 @@ tokenize_array_reference (const char *name, int flags, char **subp)
 	  break;
       if (r == len)
 	return 0;		/* Fail if the subscript contains only whitespaces. */
-#endif
+#  endif
 
       if (subp)
 	{
@@ -1362,11 +1362,11 @@ array_expand_index (SHELL_VAR *var, const char *s, int len, int flags)
   exp = (char *)xmalloc (len);
   strncpy (exp, s, len - 1);
   exp[len - 1] = '\0';
-#if 0				/* XXX - not dependent on compatibility mode for now */
+#  if 0				/* XXX - not dependent on compatibility mode for now */
   if (shell_compatibility_level <= 52 || (flags & AV_NOEXPAND) == 0)
-#else
+#  else
   if ((flags & AV_NOEXPAND) == 0)
-#endif
+#  endif
     t = expand_arith_string (exp, Q_DOUBLE_QUOTES | Q_ARITH | Q_ARRAYSUB);	/* XXX - Q_ARRAYSUB for future use */
   else
     t = exp;
@@ -1459,7 +1459,7 @@ array_variable_part (const char *s, int flags, char **subp, int *lenp)
   return var;			/* now return invisible variables; caller must handle */
 }
 
-#define INDEX_ERROR() \
+#  define INDEX_ERROR() \
   do \
     { \
       if (var) \
@@ -1493,10 +1493,10 @@ array_value_internal (const char *s, int quoted, int flags, array_eltstate_t * e
 
   /* Expand the index, even if the variable doesn't exist, in case side
      effects are needed, like ${w[i++]} where w is unset. */
-#if 0
+#  if 0
   if (var == 0)
     return (char *)NULL;
-#endif
+#  endif
 
   if (len == 0)
     return ((char *)NULL);	/* error message already printed */
