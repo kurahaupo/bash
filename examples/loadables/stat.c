@@ -43,7 +43,7 @@
 #include "bashgetopt.h"
 
 #ifndef errno
-extern int	errno;
+extern int errno;
 #endif
 
 #if defined (ARRAY_VARS)
@@ -69,10 +69,10 @@ extern int	errno;
 
 static char *arraysubs[] =
   {
-    "name", "device", "inode", "type", "nlink", "uid", "gid", "rdev",
-    "size", "atime", "mtime", "ctime", "blksize", "blocks", "link", "perms",
-    0
-  };
+  "name", "device", "inode", "type", "nlink", "uid", "gid", "rdev",
+  "size", "atime", "mtime", "ctime", "blksize", "blocks", "link", "perms",
+  0
+};
 
 #  define DEFTIMEFMT	"%a %b %e %k:%M:%S %Z %Y"
 #  ifndef TIMELEN_MAX
@@ -89,20 +89,20 @@ getstat (const char *fname, int flags, struct stat *sp)
 
   if (strncmp (fname, "/dev/fd/", 8) == 0)
     {
-      if ((valid_number(fname + 8, &lfd) == 0) || (int)lfd != lfd)
+      if ((valid_number (fname + 8, &lfd) == 0) || (int)lfd != lfd)
 	{
 	  errno = EINVAL;
 	  return -1;
 	}
       fd = lfd;
-      r = fstat(fd, sp);
+      r = fstat (fd, sp);
     }
 #  ifdef HAVE_LSTAT
   else if (flags & 1)
     r = lstat (fname, sp);
 #  endif
   else
-    r = stat(fname, sp);
+    r = stat (fname, sp);
 
   return r;
 }
@@ -212,7 +212,7 @@ statperms (int m)
 }
 
 static char *
-statmode(int mode)
+statmode (int mode)
 {
   char *modestr, *m;
 
@@ -223,13 +223,13 @@ statmode(int mode)
     *m++ = 'c';
   if (S_ISDIR (mode))
     *m++ = 'd';
-  if (S_ISREG(mode))
+  if (S_ISREG (mode))
     *m++ = '-';
-  if (S_ISFIFO(mode))
+  if (S_ISFIFO (mode))
     *m++ = 'p';
-  if (S_ISLNK(mode))
+  if (S_ISLNK (mode))
     *m++ = 'l';
-  if (S_ISSOCK(mode))
+  if (S_ISSOCK (mode))
     *m++ = 's';
 
 #  ifdef S_ISDOOR
@@ -313,7 +313,7 @@ statval (int which, char *fname, int flags, char *fmt, struct stat *sp)
     case ST_CHASELINK:
       return (statlink (fname, sp));
     case ST_PERMS:
-      temp = sp->st_mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID);
+      temp = sp->st_mode & (S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID);
       return (flags & 2) ? statperms (temp) : octalperms (temp);
     default:
       return savestring ("42");
@@ -389,9 +389,9 @@ stat_builtin (WORD_LIST *list)
     }
 
 
-#if 0
+#  if 0
   unbind_variable (aname);
-#endif
+#  endif
   fname = list->word->word;
 
   if (getstat (fname, flags, &st) < 0)
