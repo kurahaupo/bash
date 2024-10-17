@@ -20,21 +20,21 @@
 */
 
 #ifndef _ASSOC_H_
-#define _ASSOC_H_
+#  define _ASSOC_H_
 
-#include "stdc.h"
-#include "hashlib.h"
+#  include "stdc.h"
+#  include "hashlib.h"
 
-#define ASSOC_HASH_BUCKETS	1024
+#  define ASSOC_HASH_BUCKETS	1024
 
-#define assoc_empty(h)		((h)->nentries == 0)
-#define assoc_num_elements(h)	((h)->nentries)
+#  define assoc_empty(h)		((h)->nentries == 0)
+#  define assoc_num_elements(h)	((h)->nentries)
 
-#define assoc_create(n)		(hash_create((n)))
+#  define assoc_create(n)		(hash_create((n)))
 
-#define assoc_copy(h)		(hash_copy((h), 0))
+#  define assoc_copy(h)		(hash_copy((h), 0))
 
-#define assoc_walk(h, f)	(hash_walk((h), (f))
+#  define assoc_walk(h, f)	(hash_walk((h), (f))
 
 extern void assoc_dispose (HASH_TABLE *);
 extern void assoc_flush (HASH_TABLE *);
