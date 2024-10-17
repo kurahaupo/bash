@@ -67,12 +67,12 @@ enable_mypid_builtin_unload (char *s)
   unbind_variable ("MYPID");
 }
 
-char const *enable_mypid_doc[] = {
+static char const *enable_mypid_doc[] = {
   "Enable $MYPID.",
   "",
   "Enables use of the ${MYPID} dynamic variable.  ",
   "It will yield the current pid of a subshell.",
-  (char *)0
+  NULL
 };
 
 struct builtin enable_mypid_struct = {
