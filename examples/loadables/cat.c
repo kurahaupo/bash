@@ -43,8 +43,10 @@ fcopy (int fd, char *fn)
   char buf[4096], *s;
   int n, w, e;
 
-  while (n = read (fd, buf, sizeof (buf))) {
-      if (n < 0) {
+  while (n = read (fd, buf, sizeof (buf)))
+    {
+      if (n < 0)
+	{
 	  e = errno;
 	  write (2, "cat: read error: ", 18);
 	  write (2, fn, strlen (fn));
@@ -56,7 +58,8 @@ fcopy (int fd, char *fn)
 	}
       QUIT;
       w = write (1, buf, n);
-      if (w != n) {
+      if (w != n)
+	{
 	  e = errno;
 	  write (2, "cat: write error: ", 18);
 	  s = strerror (e);
@@ -78,13 +81,16 @@ cat_main (int argc, char **argv)
   if (argc == 1)
     return (fcopy (0, "standard input"));
 
-  for (i = r = 1; i < argc; i++) {
+  for (i = r = 1; i < argc; i++)
+    {
       QUIT;
       if (argv[i][0] == '-' && argv[i][1] == '\0')
 	fd = 0;
-      else {
+      else
+	{
 	  fd = open (argv[i], O_RDONLY, 0666);
-	  if (fd < 0) {
+	  if (fd < 0)
+	    {
 	      s = strerror (errno);
 	      write (2, "cat: cannot open ", 17);
 	      write (2, argv[i], strlen (argv[i]));
