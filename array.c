@@ -31,21 +31,21 @@
 
 #if defined (ARRAY_VARS)
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include <stdio.h>
-#include "bashansi.h"
+#  include <stdio.h>
+#  include "bashansi.h"
 
-#include "shell.h"
-#include "array.h"
-#include "builtins/common.h"
+#  include "shell.h"
+#  include "array.h"
+#  include "builtins/common.h"
 
-#define ADD_BEFORE(ae, new) \
+#  define ADD_BEFORE(ae, new) \
   do { \
     ae->prev->next = new; \
     new->prev = ae->prev; \
@@ -53,7 +53,7 @@
     new->next = ae; \
   } while(0)
 
-#define ADD_AFTER(ae, new) \
+#  define ADD_AFTER(ae, new) \
   do { \
     ae->next->prev = new; \
     new->next = ae->next; \
@@ -65,17 +65,17 @@ static char *array_to_string_internal (ARRAY_ELEMENT *, ARRAY_ELEMENT *, char *,
 
 static char *spacesep = " ";
 
-#define IS_LASTREF(a) (a->lastref)
+#  define IS_LASTREF(a) (a->lastref)
 
-#define LASTREF_START(a, i) \
+#  define LASTREF_START(a, i) \
   (IS_LASTREF(a) && i >= element_index(a->lastref)) ? a->lastref \
 						    : element_forw(a->head)
 
-#define LASTREF(a)  (a->lastref ? a->lastref : element_forw(a->head))
+#  define LASTREF(a)  (a->lastref ? a->lastref : element_forw(a->head))
 
-#define INVALIDATE_LASTREF(a) a->lastref = 0
-#define SET_LASTREF(a, e) a->lastref = (e)
-#define UNSET_LASTREF(a)  a->lastref = 0;
+#  define INVALIDATE_LASTREF(a) a->lastref = 0
+#  define SET_LASTREF(a, e) a->lastref = (e)
+#  define UNSET_LASTREF(a)  a->lastref = 0;
 
 ARRAY *
 array_create (void)
@@ -506,14 +506,14 @@ array_create_element (arrayind_t indx, char *value)
   return (r);
 }
 
-#ifdef INCLUDE_UNUSED
+#  ifdef INCLUDE_UNUSED
 ARRAY_ELEMENT *
 array_copy_element (ARRAY_ELEMENT *ae)
 {
   return (ae ? array_create_element (element_index (ae), element_value (ae))
-	     : (ARRAY_ELEMENT *)NULL);
+             : (ARRAY_ELEMENT *)NULL);
 }
-#endif
+#  endif
 
 void
 array_dispose_element (ARRAY_ELEMENT *ae)
@@ -559,7 +559,7 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
       SET_LASTREF (a, new);
       return (0);
     }
-#if OPTIMIZE_SEQUENTIAL_ARRAY_ASSIGNMENT
+#  if OPTIMIZE_SEQUENTIAL_ARRAY_ASSIGNMENT
   /*
    * Otherwise we search for the spot to insert it.  The lastref
    * handle optimizes the case of sequential or almost-sequential
@@ -583,11 +583,11 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
     {
       direction = -1;
     }
-#else
+#  else
   start = element_forw (ae->head);
   startind = element_index (start);
   direction = 1;
-#endif
+#  endif
   for (ae = start; ae != a->head;)
     {
       if (element_index (ae) == i)
@@ -666,16 +666,16 @@ array_remove (ARRAY *a, arrayind_t i)
 	  a->num_elements--;
 	  if (i == array_max_index (a))
 	    a->max_index = element_index (ae->prev);
-#if 0
+#  if 0
 	  INVALIDATE_LASTREF (a);
-#else
+#  else
 	  if (ae->next != a->head)
 	    SET_LASTREF (a, ae->next);
 	  else if (ae->prev != a->head)
 	    SET_LASTREF (a, ae->prev);
 	  else
 	    INVALIDATE_LASTREF (a);
-#endif
+#  endif
 	  return (ae);
 	}
       ae = (direction == 1) ? element_forw (ae) : element_back (ae);
@@ -741,11 +741,11 @@ array_reference (ARRAY *a, arrayind_t i)
 	  break;
 	}
     }
-#if 0
+#  if 0
   UNSET_LASTREF (a);
-#else
+#  else
   SET_LASTREF (a, start);
-#endif
+#  endif
   return ((char *)NULL);
 }
 
@@ -1063,7 +1063,7 @@ array_to_string (ARRAY *a, char *sep, int quoted)
   return (array_to_string_internal (element_forw (a->head), a->head, sep, quoted));
 }
 
-#if defined (INCLUDE_UNUSED) || defined (TEST_ARRAY)
+#  if defined (INCLUDE_UNUSED) || defined (TEST_ARRAY)
 /*
  * Return an array consisting of elements in S, separated by SEP
  */
@@ -1081,9 +1081,9 @@ array_from_string (char *s, char *sep)
   a = array_from_word_list (w);
   return (a);
 }
-#endif
+#  endif
 
-#if defined (TEST_ARRAY)
+#  if defined (TEST_ARRAY)
 /*
  * To make a running version, compile -DTEST_ARRAY and link with:
  *  xmalloc.o syntax.o lib/malloc/libmalloc.a lib/sh/libsh.a
@@ -1285,6 +1285,6 @@ main (int c, char **v)
   array_dispose (new_a);
 }
 
-#endif
+#  endif
        /* TEST_ARRAY */
 #endif /* ARRAY_VARS */
