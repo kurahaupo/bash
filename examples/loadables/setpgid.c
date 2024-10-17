@@ -102,14 +102,14 @@ setpgid_builtin (WORD_LIST *list)
   return (EXECUTION_SUCCESS);
 }
 
-const char *setpgid_doc[] = {
+static char const *setpgid_doc[] = {
   "invoke the setpgid(2) system call",
   "",
   "Arguments:",
   "   pid : numeric process identifier, >= 0",
   "   pgrpid: numeric process group identifier, >=0",
   "See the setpgid(2) manual page.",
-  (const char *)NULL
+  NULL
 };
 
 struct builtin setpgid_struct = {
