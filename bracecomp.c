@@ -26,20 +26,20 @@
 
 #if defined (BRACE_EXPANSION) && defined (READLINE)
 
-#include <stdio.h>
+#  include <stdio.h>
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include "bashansi.h"
-#include "shmbutil.h"
+#  include "bashansi.h"
+#  include "shmbutil.h"
 
-#include "shell.h"
-#include <readline/readline.h>
+#  include "shell.h"
+#  include <readline/readline.h>
 
 static int _strcompare (const char **, const char **);
 
@@ -74,7 +74,7 @@ really_munge_braces (char **array, int real_start, int real_end, int gcd_zero)
   if (real_start == real_end)
     {
       x = array[real_start] ? sh_backslash_quote (array[real_start] + gcd_zero, 0, 0)
- 			    : sh_backslash_quote (array[0], 0, 0);
+			    : sh_backslash_quote (array[0], 0, 0);
       return x;
     }
 
@@ -167,7 +167,7 @@ hack_braces_completion (char **names)
 
   i = strvec_len (names);
   if (MB_CUR_MAX > 1 && i > 2)
-    qsort (names+1, i-1, sizeof (char *), (QSFUNC *)_strcompare);
+    qsort (names + 1, i - 1, sizeof (char *), (QSFUNC *)_strcompare);
 
   temp = really_munge_braces (names, 1, i, 0);
 
