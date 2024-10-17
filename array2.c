@@ -31,21 +31,21 @@
 
 #if defined (ARRAY_VARS)
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include <stdio.h>
-#include "bashansi.h"
+#  include <stdio.h>
+#  include "bashansi.h"
 
-#include "shell.h"
-#include "array.h"
-#include "builtins/common.h"
+#  include "shell.h"
+#  include "array.h"
+#  include "builtins/common.h"
 
-#define ARRAY_MAX_DOUBLE  16777216
+#  define ARRAY_MAX_DOUBLE  16777216
 
 static ARRAY_ELEMENT **array_copy_elements (ARRAY *);
 static char *array_to_string_internal (ARRAY *, arrayind_t, arrayind_t, char *, int);
@@ -305,10 +305,10 @@ array_shift (ARRAY *a, int n, int flags)
     }
   r[ri] = (ARRAY_ELEMENT *)NULL;
 
-#ifdef DEBUG
+#  ifdef DEBUG
   if (j < n)
     itrace ("array_shift: short count: j = %d n = %d", j, n);
-#endif
+#  endif
 
   /* Now shift everything else, modifying the index in each element */
   for (; i <= a->max_index; i++)
@@ -371,11 +371,11 @@ array_rshift (ARRAY *a, int n, char *s)
     }
   a->max_index += n;
 
-#if 0
+#  if 0
   /* Null out all the old indexes we just copied from */
   for (ni = a->first_index; ni >= 0 && ni < n; ni++)
     a->elements[ni] = (ARRAY_ELEMENT *)NULL;
-#endif
+#  endif
   a->first_index += n;
 
   if (s)
@@ -1112,7 +1112,7 @@ array_to_string (ARRAY *a, char *sep, int quoted)
   return (array_to_string_internal (a, array_first_index (a), array_max_index (a), sep, quoted));
 }
 
-#if defined (INCLUDE_UNUSED) || defined (TEST_ARRAY)
+#  if defined (INCLUDE_UNUSED) || defined (TEST_ARRAY)
 /*
  * Return an array consisting of elements in S, separated by SEP
  */
@@ -1130,9 +1130,9 @@ array_from_string (char *s, char *sep)
   a = array_from_word_list (w);
   return (a);
 }
-#endif
+#  endif
 
-#if defined (TEST_ARRAY)
+#  if defined (TEST_ARRAY)
 /*
  * To make a running version, compile -DTEST_ARRAY and link with:
  *  xmalloc.o syntax.o lib/malloc/libmalloc.a lib/sh/libsh.a
@@ -1334,5 +1334,5 @@ main (int c, char **v)
   array_dispose (new_a);
 }
 
-#endif /* TEST_ARRAY */
+#  endif /* TEST_ARRAY */
 #endif /* ARRAY_VARS */
