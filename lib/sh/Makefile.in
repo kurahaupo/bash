@@ -811,12 +811,12 @@ random.o: $(topdir)/unwind_prot.h
 random.o: $(topdir)/variables.h
 random.o: $(topdir)/xmalloc.h
 reallocarray.o: $(BUILD_DIR)/config.h
+reallocarray.o: $(BUILD_DIR)/stdckdint.h
 reallocarray.o: $(srcdir)/reallocarray.c
 reallocarray.o: $(topdir)/bashansi.h
 reallocarray.o: $(topdir)/config-bot.h
 reallocarray.o: $(topdir)/config-top.h
 reallocarray.o: $(topdir)/include/intprops-internal.h
-reallocarray.o: $(topdir)/stdckdint.h
 rename.o: $(BUILD_DIR)/config.h
 rename.o: $(srcdir)/rename.c
 rename.o: $(topdir)/config-bot.h
@@ -993,6 +993,7 @@ stringlist.o: $(topdir)/unwind_prot.h
 stringlist.o: $(topdir)/variables.h
 stringlist.o: $(topdir)/xmalloc.h
 stringvec.o: $(BUILD_DIR)/config.h
+stringvec.o: $(BUILD_DIR)/stdckdint.h
 stringvec.o: $(srcdir)/stringvec.c
 stringvec.o: $(topdir)/array.h
 stringvec.o: $(topdir)/arrayfunc.h
@@ -1021,7 +1022,6 @@ stringvec.o: $(topdir)/pathnames.h
 stringvec.o: $(topdir)/quit.h
 stringvec.o: $(topdir)/shell.h
 stringvec.o: $(topdir)/sig.h
-stringvec.o: $(topdir)/stdckdint.h
 stringvec.o: $(topdir)/subst.h
 stringvec.o: $(topdir)/syntax.h
 stringvec.o: $(topdir)/unwind_prot.h
