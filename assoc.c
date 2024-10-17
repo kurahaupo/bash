@@ -29,20 +29,20 @@
 
 #if defined (ARRAY_VARS)
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include <stdio.h>
-#include "bashansi.h"
+#  include <stdio.h>
+#  include "bashansi.h"
 
-#include "shell.h"
-#include "array.h"
-#include "assoc.h"
-#include "builtins/common.h"
+#  include "shell.h"
+#  include "array.h"
+#  include "assoc.h"
+#  include "builtins/common.h"
 
 static WORD_LIST *assoc_to_word_list_internal (HASH_TABLE *, int);
 
@@ -261,7 +261,7 @@ assoc_subrange (HASH_TABLE *hash, arrayind_t start, arrayind_t nelem, int starsu
       dispose_words (save);
       return ((char *)NULL);
     }
-  for (j = 0,h = t = l; l && j < nelem; j++)
+  for (j = 0, h = t = l; l && j < nelem; j++)
     {
       t = l;
       l = l->next;
@@ -283,7 +283,7 @@ assoc_subrange (HASH_TABLE *hash, arrayind_t start, arrayind_t nelem, int starsu
 char *
 assoc_patsub (HASH_TABLE *h, char *pat, char *rep, int mflags)
 {
-  char	*t;
+  char *t;
   int pchar, qflags, pflags;
   WORD_LIST *wl, *save;
 
@@ -314,7 +314,7 @@ assoc_patsub (HASH_TABLE *h, char *pat, char *rep, int mflags)
 char *
 assoc_modcase (HASH_TABLE *h, char *pat, int modop, int mflags)
 {
-  char	*t;
+  char *t;
   int pchar, qflags, pflags;
   WORD_LIST *wl, *save;
 
@@ -369,14 +369,14 @@ assoc_to_kvpair (HASH_TABLE *hash, int quoted)
 	  istr = tlist->key;
 
 	vstr = tlist->data ? (ansic_shouldquote ((char *)tlist->data) ?
-				ansic_quote ((char *)tlist->data, 0, (int *)0) :
-				sh_double_quote ((char *)tlist->data))
+			      ansic_quote ((char *)tlist->data, 0, (int *)0) :
+			      sh_double_quote ((char *)tlist->data))
 			   : (char *)0;
 
 	elen = STRLEN (istr) + 4 + STRLEN (vstr);
-	RESIZE_MALLOCED_BUFFER (ret, rlen, (elen+1), rsize, rsize);
+	RESIZE_MALLOCED_BUFFER (ret, rlen, (elen + 1), rsize, rsize);
 
-	strcpy (ret+rlen, istr);
+	strcpy (ret + rlen, istr);
 	rlen += STRLEN (istr);
 	ret[rlen++] = ' ';
 	if (vstr)
@@ -395,7 +395,7 @@ assoc_to_kvpair (HASH_TABLE *hash, int quoted)
 	  FREE (istr);
 
 	FREE (vstr);
-    }
+      }
 
   RESIZE_MALLOCED_BUFFER (ret, rlen, 1, rsize, 8);
   ret[rlen] = '\0';
@@ -438,15 +438,15 @@ assoc_to_assign (HASH_TABLE *hash, int quoted)
 	  istr = tlist->key;
 
 	vstr = tlist->data ? (ansic_shouldquote ((char *)tlist->data) ?
-				ansic_quote ((char *)tlist->data, 0, (int *)0) :
-				sh_double_quote ((char *)tlist->data))
+			      ansic_quote ((char *)tlist->data, 0, (int *)0) :
+			      sh_double_quote ((char *)tlist->data))
 			   : (char *)0;
 
 	elen = STRLEN (istr) + 8 + STRLEN (vstr);
-	RESIZE_MALLOCED_BUFFER (ret, rlen, (elen+1), rsize, rsize);
+	RESIZE_MALLOCED_BUFFER (ret, rlen, (elen + 1), rsize, rsize);
 
 	ret[rlen++] = '[';
-	strcpy (ret+rlen, istr);
+	strcpy (ret + rlen, istr);
 	rlen += STRLEN (istr);
 	ret[rlen++] = ']';
 	ret[rlen++] = '=';
@@ -461,7 +461,7 @@ assoc_to_assign (HASH_TABLE *hash, int quoted)
 	  FREE (istr);
 
 	FREE (vstr);
-    }
+      }
 
   RESIZE_MALLOCED_BUFFER (ret, rlen, 1, rsize, 8);
   ret[rlen++] = ')';
@@ -486,16 +486,16 @@ assoc_to_word_list_internal (HASH_TABLE *h, int t)
   char *w;
 
   if (h == 0 || assoc_empty (h))
-    return((WORD_LIST *)NULL);
+    return ((WORD_LIST *)NULL);
   list = (WORD_LIST *)NULL;
 
   for (i = 0; i < h->nbuckets; i++)
     for (tlist = hash_items (i, h); tlist; tlist = tlist->next)
       {
 	w = (t == 0) ? (char *)tlist->data : (char *)tlist->key;
-	list = make_word_list (make_bare_word(w), list);
+	list = make_word_list (make_bare_word (w), list);
       }
-  return (REVERSE_LIST(list, WORD_LIST *));
+  return (REVERSE_LIST (list, WORD_LIST *));
 }
 
 WORD_LIST *
@@ -519,18 +519,18 @@ assoc_to_kvpair_list (HASH_TABLE *h)
   char *k, *v;
 
   if (h == 0 || assoc_empty (h))
-    return((WORD_LIST *)NULL);
+    return ((WORD_LIST *)NULL);
   list = (WORD_LIST *)NULL;
 
   for (i = 0; i < h->nbuckets; i++)
     for (tlist = hash_items (i, h); tlist; tlist = tlist->next)
       {
-      	k = (char *)tlist->key;
-      	v = (char *)tlist->data;
+	k = (char *)tlist->key;
+	v = (char *)tlist->data;
 	list = make_word_list (make_bare_word (k), list);
 	list = make_word_list (make_bare_word (v), list);
       }
-  return (REVERSE_LIST(list, WORD_LIST *));
+  return (REVERSE_LIST (list, WORD_LIST *));
 }
 
 char *
@@ -558,11 +558,11 @@ assoc_to_string (HASH_TABLE *h, char *sep, int quoted)
 	if (w == 0)
 	  continue;
 	t = quoted ? quote_string (w) : savestring (w);
-	list = make_word_list (make_bare_word(t), list);
+	list = make_word_list (make_bare_word (t), list);
 	FREE (t);
       }
 
-  l = REVERSE_LIST(list, WORD_LIST *);
+  l = REVERSE_LIST (list, WORD_LIST *);
 
   result = l ? string_list_internal (l, sep) : savestring ("");
   dispose_words (l);
