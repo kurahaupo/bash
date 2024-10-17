@@ -66,7 +66,7 @@ parse_gnutimefmt (char *string, long *sp, long *up)
   mult = 1;
 
   for (s = string; s && *s; s++) {
-      r = uconvert (s, &accumsec, &accumusec, &ep);
+      r = uconvert(s, &accumsec, &accumusec, &ep);
       if (r == 0 && *ep == 0)
 	return r;
       c = *ep;
@@ -127,8 +127,8 @@ sleep_builtin (WORD_LIST *list)
   time_t t;
 
   if (list == 0) {
-      builtin_usage ();
-      return (EX_USAGE);
+      builtin_usage();
+      return(EX_USAGE);
     }
 
   /* Skip over `--' */
