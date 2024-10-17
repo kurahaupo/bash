@@ -100,7 +100,8 @@ array_flush (ARRAY *a)
 
   if (a == 0)
     return;
-  for (r = element_forw (a->head); r != a->head;) {
+  for (r = element_forw (a->head); r != a->head;)
+    {
       r1 = element_forw (r);
       array_dispose_element (r);
       r = r1;
@@ -132,7 +133,8 @@ array_copy (ARRAY *a)
   a1 = array_create ();
   a1->max_index = a->max_index;
   a1->num_elements = a->num_elements;
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       new = array_create_element (element_index (ae), element_value (ae));
       ADD_BEFORE (a1->head, new);
       if (ae == LASTREF (a))
@@ -155,7 +157,8 @@ array_slice (ARRAY *array, ARRAY_ELEMENT *s, ARRAY_ELEMENT *e)
 
   a = array_create ();
 
-  for (mi = 0, p = s, i = 0; p != e; p = element_forw (p), i++) {
+  for (mi = 0, p = s, i = 0; p != e; p = element_forw (p), i++)
+    {
       n = array_create_element (element_index (p), element_value (p));
       ADD_BEFORE (a->head, n);
       mi = element_index (n);
@@ -201,9 +204,11 @@ array_shift (ARRAY *a, int n, int flags)
   INVALIDATE_LASTREF (a);
   for (i = 0, ret = ae = element_forw (a->head); ae != a->head && i < n; ae = element_forw (ae), i++)
     ;
-  if (ae == a->head) {
+  if (ae == a->head)
+    {
       /* Easy case; shifting out all of the elements */
-      if (flags & AS_DISPOSE) {
+      if (flags & AS_DISPOSE)
+	{
 	  array_flush (a);
 	  return ((ARRAY_ELEMENT *)NULL);
 	}
@@ -230,8 +235,10 @@ array_shift (ARRAY *a, int n, int flags)
   a->num_elements -= n;		/* modify bookkeeping information */
   a->max_index = element_index (a->head->prev);
 
-  if (flags & AS_DISPOSE) {
-      for (ae = ret; ae;) {
+  if (flags & AS_DISPOSE)
+    {
+      for (ae = ret; ae;)
+	{
 	  ret = element_forw (ae);
 	  array_dispose_element (ae);
 	  ae = ret;
@@ -258,11 +265,13 @@ array_rshift (ARRAY *a, int n, char *s)
     return (a->num_elements);
 
   ae = element_forw (a->head);
-  if (s) {
+  if (s)
+    {
       new = array_create_element (0, s);
       ADD_BEFORE (ae, new);
       a->num_elements++;
-      if (array_num_elements (a) == 1) {	/* array was empty */
+      if (array_num_elements (a) == 1)
+	{			/* array was empty */
 	  a->max_index = 0;
 	  return 1;
 	}
@@ -300,7 +309,8 @@ array_quote (ARRAY *array)
 
   if (array == 0 || array_head (array) == 0 || array_empty (array))
     return (ARRAY *)NULL;
-  for (a = element_forw (array->head); a != array->head; a = element_forw (a)) {
+  for (a = element_forw (array->head); a != array->head; a = element_forw (a))
+    {
       t = quote_string (a->value);
       FREE (a->value);
       a->value = t;
@@ -316,7 +326,8 @@ array_quote_escapes (ARRAY *array)
 
   if (array == 0 || array_head (array) == 0 || array_empty (array))
     return (ARRAY *)NULL;
-  for (a = element_forw (array->head); a != array->head; a = element_forw (a)) {
+  for (a = element_forw (array->head); a != array->head; a = element_forw (a))
+    {
       t = quote_escapes (a->value);
       FREE (a->value);
       a->value = t;
@@ -332,7 +343,8 @@ array_dequote (ARRAY *array)
 
   if (array == 0 || array_head (array) == 0 || array_empty (array))
     return (ARRAY *)NULL;
-  for (a = element_forw (array->head); a != array->head; a = element_forw (a)) {
+  for (a = element_forw (array->head); a != array->head; a = element_forw (a))
+    {
       t = dequote_string (a->value);
       FREE (a->value);
       a->value = t;
@@ -348,7 +360,8 @@ array_dequote_escapes (ARRAY *array)
 
   if (array == 0 || array_head (array) == 0 || array_empty (array))
     return (ARRAY *)NULL;
-  for (a = element_forw (array->head); a != array->head; a = element_forw (a)) {
+  for (a = element_forw (array->head); a != array->head; a = element_forw (a))
+    {
       t = dequote_escapes (a->value);
       FREE (a->value);
       a->value = t;
@@ -429,7 +442,8 @@ array_patsub (ARRAY *a, char *pat, char *rep, int mflags)
   if (wl == 0)
     return (char *)NULL;
 
-  for (save = wl; wl; wl = wl->next) {
+  for (save = wl; wl; wl = wl->next)
+    {
       t = pat_subst (wl->word->word, pat, rep, mflags);
       FREE (wl->word->word);
       wl->word->word = t;
@@ -459,7 +473,8 @@ array_modcase (ARRAY *a, char *pat, int modop, int mflags)
   if (wl == 0)
     return ((char *)NULL);
 
-  for (save = wl; wl; wl = wl->next) {
+  for (save = wl; wl; wl = wl->next)
+    {
       t = sh_modcase (wl->word->word, pat, modop);
       FREE (wl->word->word);
       wl->word->word = t;
@@ -495,15 +510,17 @@ array_create_element (arrayind_t indx, char *value)
 ARRAY_ELEMENT *
 array_copy_element (ARRAY_ELEMENT *ae)
 {
-  return (ae ? array_create_element (element_index (ae), element_value (ae))
-             : (ARRAY_ELEMENT *)NULL);
+  if (!ae)
+    return NULL;
+  return array_create_element (element_index (ae), element_value (ae));
 }
 #  endif
 
 void
 array_dispose_element (ARRAY_ELEMENT *ae)
 {
-  if (ae) {
+  if (ae)
+    {
       FREE (ae->value);
       free (ae);
     }
@@ -522,7 +539,8 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
   if (a == 0)
     return (-1);
   new = array_create_element (i, v);
-  if (i > array_max_index (a)) {
+  if (i > array_max_index (a))
+    {
       /*
        * Hook onto the end.  This also works for an empty array.
        * Fast path for the common case of allocating arrays
@@ -533,7 +551,9 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
       a->num_elements++;
       SET_LASTREF (a, new);
       return (0);
-  } else if (i < array_first_index (a)) {
+    }
+  else if (i < array_first_index (a))
+    {
       /* Hook at the beginning */
       ADD_AFTER (a->head, new);
       a->num_elements++;
@@ -550,13 +570,18 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
   /* Use same strategy as array_reference to avoid paying large penalty
      for semi-random assignment pattern. */
   startind = element_index (start);
-  if (i < startind / 2) {
+  if (i < startind / 2)
+    {
       start = element_forw (a->head);
       startind = element_index (start);
       direction = 1;
-  } else if (i >= startind) {
+    }
+  else if (i >= startind)
+    {
       direction = 1;
-  } else {
+    }
+  else
+    {
       direction = -1;
     }
 #  else
@@ -564,8 +589,10 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
   startind = element_index (start);
   direction = 1;
 #  endif
-  for (ae = start; ae != a->head;) {
-      if (element_index (ae) == i) {
+  for (ae = start; ae != a->head;)
+    {
+      if (element_index (ae) == i)
+	{
 	  /*
 	   * Replacing an existing element.
 	   */
@@ -576,12 +603,16 @@ array_insert (ARRAY *a, arrayind_t i, char *v)
 	  array_dispose_element (new);
 	  SET_LASTREF (a, ae);
 	  return (0);
-      } else if (direction == 1 && element_index (ae) > i) {
+	}
+      else if (direction == 1 && element_index (ae) > i)
+	{
 	  ADD_BEFORE (ae, new);
 	  a->num_elements++;
 	  SET_LASTREF (a, new);
 	  return (0);
-      } else if (direction == -1 && element_index (ae) < i) {
+	}
+      else if (direction == -1 && element_index (ae) < i)
+	{
 	  ADD_AFTER (ae, new);
 	  a->num_elements++;
 	  SET_LASTREF (a, new);
@@ -613,17 +644,24 @@ array_remove (ARRAY *a, arrayind_t i)
   /* Use same strategy as array_reference to avoid paying large penalty
      for semi-random assignment pattern. */
   startind = element_index (start);
-  if (i < startind / 2) {
+  if (i < startind / 2)
+    {
       start = element_forw (a->head);
       startind = element_index (start);
       direction = 1;
-  } else if (i >= startind) {
+    }
+  else if (i >= startind)
+    {
       direction = 1;
-  } else {
+    }
+  else
+    {
       direction = -1;
     }
-  for (ae = start; ae != a->head;) {
-      if (element_index (ae) == i) {
+  for (ae = start; ae != a->head;)
+    {
+      if (element_index (ae) == i)
+	{
 	  ae->next->prev = ae->prev;
 	  ae->prev->next = ae->next;
 	  a->num_elements--;
@@ -666,17 +704,24 @@ array_reference (ARRAY *a, arrayind_t i)
     return ((char *)NULL);	/* Keep roving pointer into array to optimize sequential access */
   start = LASTREF (a);		/* lastref pointer */
   startind = element_index (start);
-  if (i < startind / 2) {	/* XXX - guess */
+  if (i < startind / 2)
+    {				/* XXX - guess */
       start = element_forw (a->head);
       startind = element_index (start);
       direction = 1;
-  } else if (i >= startind) {
+    }
+  else if (i >= startind)
+    {
       direction = 1;
-  } else {
+    }
+  else
+    {
       direction = -1;
     }
-  for (ae = start; ae != a->head;) {
-      if (element_index (ae) == i) {
+  for (ae = start; ae != a->head;)
+    {
+      if (element_index (ae) == i)
+	{
 	  SET_LASTREF (a, ae);
 	  return (element_value (ae));
 	}
@@ -686,10 +731,13 @@ array_reference (ARRAY *a, arrayind_t i)
          that's `closest', assuming that the unsuccessful reference
          will quickly be followed by an assignment.  No worse than
          not changing it from the previous value or resetting it. */
-      if (direction == 1 && element_index (ae) > i) {
+      if (direction == 1 && element_index (ae) > i)
+	{
 	  start = ae;		/* use for SET_LASTREF below */
 	  break;
-      } else if (direction == -1 && element_index (ae) < i) {
+	}
+      else if (direction == -1 && element_index (ae) < i)
+	{
 	  start = ae;		/* use for SET_LASTREF below */
 	  break;
 	}
@@ -740,7 +788,8 @@ array_keys_to_word_list (ARRAY *a)
   if (a == 0 || array_empty (a))
     return ((WORD_LIST *)NULL);
   list = (WORD_LIST *)NULL;
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       t = itos (element_index (ae));
       list = make_word_list (make_bare_word (t), list);
       free (t);
@@ -758,7 +807,8 @@ array_to_kvpair_list (ARRAY *a)
   if (a == 0 || array_empty (a))
     return ((WORD_LIST *)NULL);
   list = (WORD_LIST *)NULL;
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       k = itos (element_index (ae));
       v = element_value (ae);
       list = make_word_list (make_bare_word (k), list);
@@ -786,14 +836,16 @@ array_to_argv (ARRAY *a, int *countp)
   int i;
   ARRAY_ELEMENT *ae;
 
-  if (a == 0 || array_empty (a)) {
+  if (a == 0 || array_empty (a))
+    {
       if (countp)
 	*countp = 0;
       return ((char **)NULL);
     }
   ret = strvec_create (array_num_elements (a) + 1);
   i = 0;
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       t = element_value (ae);
       if (t)
 	ret[i++] = savestring (t);
@@ -866,14 +918,15 @@ array_to_string_internal (ARRAY_ELEMENT *start, ARRAY_ELEMENT *end, char *sep, i
 
   slen = strlen (sep);
   result = NULL;
-  for (rsize = rlen = 0, ae = start; ae != end; ae = element_forw (ae)) {
+  for (rsize = rlen = 0, ae = start; ae != end; ae = element_forw (ae))
+    {
       if (rsize == 0)
 	result = (char *)xmalloc (rsize = 64);
-      if (element_value (ae)) {
+      if (element_value (ae))
+	{
 	  t = quoted ? quote_string (element_value (ae)) : element_value (ae);
 	  reg = strlen (t);
-	  RESIZE_MALLOCED_BUFFER (result, rlen, (reg + slen + 2),
-				  rsize, rsize);
+	  RESIZE_MALLOCED_BUFFER (result, rlen, (reg + slen + 2), rsize, rsize);
 	  strcpy (result + rlen, t);
 	  rlen += reg;
 	  if (quoted)
@@ -881,7 +934,8 @@ array_to_string_internal (ARRAY_ELEMENT *start, ARRAY_ELEMENT *end, char *sep, i
 	  /*
 	   * Add a separator only after non-null elements.
 	   */
-	  if (element_forw (ae) != end) {
+	  if (element_forw (ae) != end)
+	    {
 	      strcpy (result + rlen, sep);
 	      rlen += slen;
 	    }
@@ -890,6 +944,18 @@ array_to_string_internal (ARRAY_ELEMENT *start, ARRAY_ELEMENT *end, char *sep, i
   if (result)
     result[rlen] = '\0';	/* XXX */
   return (result);
+}
+
+static inline char *
+quoted_element_value(ARRAY_ELEMENT *ae)
+{
+  char *val = element_value (ae);
+  if (!val)
+    return NULL;
+  if (ansic_shouldquote (val))
+    return ansic_quote (val, 0, NULL);
+  else
+    return sh_double_quote (val);
 }
 
 char *
@@ -906,23 +972,23 @@ array_to_kvpair (ARRAY *a, int quoted)
   result = (char *)xmalloc (rsize = 128);
   result[rlen = 0] = '\0';
 
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       is = inttostr (element_index (ae), indstr, sizeof (indstr));
-      valstr = element_value (ae) ?
-		  (ansic_shouldquote (element_value (ae)) ?
-		       ansic_quote (element_value (ae), 0, (int *)0) :
-		       sh_double_quote (element_value (ae)))
-		: (char *)NULL;
+      valstr = quoted_element_value (ae);
       elen = STRLEN (is) + 8 + STRLEN (valstr);
       RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
 
       strcpy (result + rlen, is);
       rlen += STRLEN (is);
       result[rlen++] = ' ';
-      if (valstr) {
+      if (valstr)
+	{
 	  strcpy (result + rlen, valstr);
 	  rlen += STRLEN (valstr);
-      } else {
+	}
+      else
+	{
 	  strcpy (result + rlen, "\"\"");
 	  rlen += 2;
 	}
@@ -935,7 +1001,8 @@ array_to_kvpair (ARRAY *a, int quoted)
   RESIZE_MALLOCED_BUFFER (result, rlen, 1, rsize, 8);
   result[rlen] = '\0';
 
-  if (quoted) {
+  if (quoted)
+    {
       /* This is not as efficient as it could be... */
       valstr = sh_single_quote (result);
       free (result);
@@ -959,13 +1026,10 @@ array_to_assign (ARRAY *a, int quoted)
   result[0] = '(';
   rlen = 1;
 
-  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae)) {
+  for (ae = element_forw (a->head); ae != a->head; ae = element_forw (ae))
+    {
       is = inttostr (element_index (ae), indstr, sizeof (indstr));
-      valstr = element_value (ae) ?
-		 (ansic_shouldquote (element_value (ae)) ?
-		  ansic_quote (element_value (ae), 0, (int *)0) :
-		  sh_double_quote (element_value (ae)))
-	       : (char *)NULL;
+      valstr = quoted_element_value (ae);
       elen = STRLEN (is) + 8 + STRLEN (valstr);
       RESIZE_MALLOCED_BUFFER (result, rlen, (elen + 1), rsize, rsize);
 
@@ -974,7 +1038,8 @@ array_to_assign (ARRAY *a, int quoted)
       rlen += STRLEN (is);
       result[rlen++] = ']';
       result[rlen++] = '=';
-      if (valstr) {
+      if (valstr)
+	{
 	  strcpy (result + rlen, valstr);
 	  rlen += STRLEN (valstr);
 	}
@@ -987,7 +1052,8 @@ array_to_assign (ARRAY *a, int quoted)
   RESIZE_MALLOCED_BUFFER (result, rlen, 1, rsize, 8);
   result[rlen++] = ')';
   result[rlen] = '\0';
-  if (quoted) {
+  if (quoted)
+    {
       /* This is not as efficient as it could be... */
       valstr = sh_single_quote (result);
       free (result);
@@ -1086,7 +1152,8 @@ list_string (char *s, char *t, int i)
   r = savestring (s);
   wl = (WORD_LIST *)NULL;
   a = strtok (r, t);
-  while (a) {
+  while (a)
+    {
       wl = make_word_list (make_bare_word (a), wl);
       a = strtok ((char *)NULL, t);
     }
@@ -1098,7 +1165,8 @@ list_reverse (GENERIC_LIST *list)
 {
   register GENERIC_LIST *next, *prev;
 
-  for (prev = 0; list;) {
+  for (prev = 0; list;)
+    {
       next = list->next;
       list->next = prev;
       prev = list;
@@ -1200,7 +1268,8 @@ main (int c, char **v)
   ae = array_shift (copy_of_a, 2, 0);
   printf ("copy_of_a shifted by two:");
   print_array (copy_of_a);
-  for (; ae;) {
+  for (; ae;)
+    {
       aew = element_forw (ae);
       array_dispose_element (ae);
       ae = aew;
@@ -1215,7 +1284,8 @@ main (int c, char **v)
   printf ("copy_of_a=%s\n", s);
   free (s);
   ae = array_shift (copy_of_a, array_num_elements (copy_of_a), 0);
-  for (; ae;) {
+  for (; ae;)
+    {
       aew = element_forw (ae);
       array_dispose_element (ae);
       ae = aew;
