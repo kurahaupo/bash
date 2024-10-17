@@ -204,20 +204,20 @@ accept_bind_variable (char *varname, int intval)
   return (v != 0);
 }
 
-char *accept_doc[] = {
+static char const *accept_doc[] = {
   "Accept a network connection on a specified port.",
-  ""
+  "",
   "This builtin allows a bash script to act as a TCP/IP server.",
   "",
   "Options, if supplied, have the following meanings:",
-  "    -b address    use ADDRESS as the IP address to listen on; the",
-  "                  default is INADDR_ANY",
-  "    -t timeout    wait TIMEOUT seconds for a connection. TIMEOUT may",
-  "                  be a decimal number including a fractional portion",
-  "    -v varname    store the numeric file descriptor of the connected",
-  "                  socket into VARNAME. The default VARNAME is ACCEPT_FD",
-  "    -r rhost      store the IP address of the remote host into the shell",
-  "                  variable RHOST, in dotted-decimal notation",
+  "	-b ADDRESS	use ADDRESS as the IP address to listen on; the",
+  "			default is INADDR_ANY",
+  "	-t TIMEOUT	wait TIMEOUT seconds for a connection. TIMEOUT may",
+  "			be a decimal number including a fractional portion",
+  "	-v VARNAME	store the numeric file descriptor of the connected",
+  "			socket into VARNAME. The default VARNAME is ACCEPT_FD",
+  "	-r RHOST	store the IP address of the remote host into the shell",
+  "			variable RHOST, in dotted-decimal notation",
   "",
   "If successful, the shell variable ACCEPT_FD, or the variable named by the",
   "-v option, will be set to the fd of the connected socket, suitable for",
@@ -228,7 +228,7 @@ char *accept_doc[] = {
   "if supplied, will be unset.",
   "",
   "The server socket fd will be closed before accept returns.",
-  (char *)NULL
+  NULL
 };
 
 struct builtin accept_struct = {
