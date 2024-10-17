@@ -21,34 +21,34 @@
 #if !defined (_BASHTYPES_H_)
 #  define _BASHTYPES_H_
 
-#if defined (CRAY)
-#  define word __word
-#endif
+#  if defined (CRAY)
+#    define word __word
+#  endif
 
-#include <sys/types.h>
+#  include <sys/types.h>
 
-#if defined (CRAY)
-#  undef word
-#endif
+#  if defined (CRAY)
+#    undef word
+#  endif
 
-#if defined (HAVE_INTTYPES_H)
-#  include <inttypes.h>
-#endif
+#  if defined (HAVE_INTTYPES_H)
+#    include <inttypes.h>
+#  endif
 
 /* Fix PRIdMAX on systems where it's broken. */
-#ifdef PRI_MACROS_BROKEN
-#  undef PRIdMAX
-#endif
-#ifndef PRIdMAX
-#  if HAVE_LONG_LONG
-#    define PRIdMAX	"lld"
-#  else
-#    define PRIdMAX	"ld"
+#  ifdef PRI_MACROS_BROKEN
+#    undef PRIdMAX
 #  endif
-#endif
+#  ifndef PRIdMAX
+#    if HAVE_LONG_LONG
+#      define PRIdMAX	"lld"
+#    else
+#      define PRIdMAX	"ld"
+#    endif
+#  endif
 
-#if HAVE_STDINT_H
-#  include <stdint.h>
-#endif
+#  if HAVE_STDINT_H
+#    include <stdint.h>
+#  endif
 
 #endif /* _BASHTYPES_H_ */
