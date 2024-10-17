@@ -356,7 +356,7 @@ fdflags_builtin (WORD_LIST *list)
   return (sh_chkwrite (opt));
 }
 
-char *fdflags_doc[] = {
+static char const *fdflags_doc[] = {
   "Display and modify file descriptor flags.",
   "",
   "Display or, if the -s option is supplied, set flags for each file",
@@ -370,7 +370,7 @@ char *fdflags_doc[] = {
   "",
   "If no file descriptor arguments are supplied, the displayed information",
   "consists of the status of flags for each of the shell's open files.",
-  (char *)NULL
+  NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
