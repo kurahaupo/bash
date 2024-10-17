@@ -21,83 +21,83 @@
 
 
 #ifndef _ARRAY_H_
-#define _ARRAY_H_
+#  define _ARRAY_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
-typedef intmax_t	arrayind_t;
+typedef intmax_t arrayind_t;
 
 typedef struct array {
-	arrayind_t	max_index;
-	arrayind_t	num_elements;
-#ifdef ALT_ARRAY_IMPLEMENTATION
-	arrayind_t	first_index;
-	arrayind_t	alloc_size;
-	struct array_element **elements;
-#else
-	struct array_element *head;
-	struct array_element *lastref;
-#endif
+  arrayind_t max_index;
+  arrayind_t num_elements;
+#  ifdef ALT_ARRAY_IMPLEMENTATION
+  arrayind_t first_index;
+  arrayind_t alloc_size;
+  struct array_element **elements;
+#  else
+  struct array_element *head;
+  struct array_element *lastref;
+#  endif
 } ARRAY;
 
 typedef struct array_element {
-	arrayind_t	ind;
-	char	*value;
-#ifndef ALT_ARRAY_IMPLEMENTATION
-	struct array_element *next, *prev;
-#endif
+  arrayind_t ind;
+  char *value;
+#  ifndef ALT_ARRAY_IMPLEMENTATION
+  struct array_element *next, *prev;
+#  endif
 } ARRAY_ELEMENT;
 
-#define ARRAY_DEFAULT_SIZE	1024
+#  define ARRAY_DEFAULT_SIZE	1024
 
 typedef int sh_ae_map_func_t (ARRAY_ELEMENT *, void *);
 
 /* Basic operations on entire arrays */
-#ifdef ALT_ARRAY_IMPLEMENTATION
-extern void   array_alloc (ARRAY *, arrayind_t);
-extern void   array_resize (ARRAY *, arrayind_t);
-extern void   array_expand (ARRAY *, arrayind_t);
-extern void   array_dispose_elements (ARRAY_ELEMENT **);
-#endif
-extern ARRAY	*array_create (void);
-extern void	array_flush (ARRAY *);
-extern void	array_dispose (ARRAY *);
-extern ARRAY	*array_copy (ARRAY *);
-#ifndef ALT_ARRAY_IMPLEMENTATION
-extern ARRAY	*array_slice (ARRAY *, ARRAY_ELEMENT *, ARRAY_ELEMENT *);
-#else
-extern ARRAY	*array_slice (ARRAY *, arrayind_t, arrayind_t);
-#endif
+#  ifdef ALT_ARRAY_IMPLEMENTATION
+extern void array_alloc (ARRAY *, arrayind_t);
+extern void array_resize (ARRAY *, arrayind_t);
+extern void array_expand (ARRAY *, arrayind_t);
+extern void array_dispose_elements (ARRAY_ELEMENT **);
+#  endif
+extern ARRAY *array_create (void);
+extern void array_flush (ARRAY *);
+extern void array_dispose (ARRAY *);
+extern ARRAY *array_copy (ARRAY *);
+#  ifndef ALT_ARRAY_IMPLEMENTATION
+extern ARRAY *array_slice (ARRAY *, ARRAY_ELEMENT *, ARRAY_ELEMENT *);
+#  else
+extern ARRAY *array_slice (ARRAY *, arrayind_t, arrayind_t);
+#  endif
 
-extern void	array_walk (ARRAY   *, sh_ae_map_func_t *, void *);
+extern void array_walk (ARRAY *, sh_ae_map_func_t *, void *);
 
-#ifndef ALT_ARRAY_IMPLEMENTATION
+#  ifndef ALT_ARRAY_IMPLEMENTATION
 extern ARRAY_ELEMENT *array_shift (ARRAY *, int, int);
-#else
+#  else
 extern ARRAY_ELEMENT **array_shift (ARRAY *, int, int);
-#endif
-extern int	array_rshift (ARRAY *, int, char *);
+#  endif
+extern int array_rshift (ARRAY *, int, char *);
 extern ARRAY_ELEMENT *array_unshift_element (ARRAY *);
-extern int	array_shift_element (ARRAY *, char *);
+extern int array_shift_element (ARRAY *, char *);
 
-extern ARRAY	*array_quote (ARRAY *);
-extern ARRAY	*array_quote_escapes (ARRAY *);
-extern ARRAY	*array_dequote (ARRAY *);
-extern ARRAY	*array_dequote_escapes (ARRAY *);
-extern ARRAY	*array_remove_quoted_nulls (ARRAY *);
+extern ARRAY *array_quote (ARRAY *);
+extern ARRAY *array_quote_escapes (ARRAY *);
+extern ARRAY *array_dequote (ARRAY *);
+extern ARRAY *array_dequote_escapes (ARRAY *);
+extern ARRAY *array_remove_quoted_nulls (ARRAY *);
 
-extern char	*array_subrange (ARRAY *, arrayind_t, arrayind_t, int, int, int);
-extern char	*array_patsub (ARRAY *, char *, char *, int);
-extern char	*array_modcase (ARRAY *, char *, int, int);
+extern char *array_subrange (ARRAY *, arrayind_t, arrayind_t, int, int, int);
+extern char *array_patsub (ARRAY *, char *, char *, int);
+extern char *array_modcase (ARRAY *, char *, int, int);
 
 /* Basic operations on array elements. */
 extern ARRAY_ELEMENT *array_create_element (arrayind_t, char *);
 extern ARRAY_ELEMENT *array_copy_element (ARRAY_ELEMENT *);
-extern void	array_dispose_element (ARRAY_ELEMENT *);
+extern void array_dispose_element (ARRAY_ELEMENT *);
 
-extern int	array_insert (ARRAY *, arrayind_t, char *);
+extern int array_insert (ARRAY *, arrayind_t, char *);
 extern ARRAY_ELEMENT *array_remove (ARRAY *, arrayind_t);
-extern char	*array_reference (ARRAY *, arrayind_t);
+extern char *array_reference (ARRAY *, arrayind_t);
 
 /* Converting to and from arrays */
 extern WORD_LIST *array_to_word_list (ARRAY *);
@@ -116,65 +116,65 @@ extern char *array_to_string (ARRAY *, char *, int);
 extern ARRAY *array_from_string (char *, char *);
 
 /* Flags for array_shift */
-#define AS_DISPOSE	0x01
+#  define AS_DISPOSE	0x01
 
-#define array_num_elements(a)	((a)->num_elements)
-#define array_max_index(a)	((a)->max_index)
-#ifndef ALT_ARRAY_IMPLEMENTATION
-#define array_first_index(a)	((a)->head->next->ind)
-#define array_head(a)		((a)->head)
-#define array_alloc_size(a)	((a)->alloc_size)
-#else
-#define array_first_index(a)	((a)->first_index)
-#define array_head(a)		((a)->elements)
-#endif
-#define array_empty(a)		((a)->num_elements == 0)
+#  define array_num_elements(a)	((a)->num_elements)
+#  define array_max_index(a)	((a)->max_index)
+#  ifndef ALT_ARRAY_IMPLEMENTATION
+#    define array_first_index(a)	((a)->head->next->ind)
+#    define array_head(a)		((a)->head)
+#    define array_alloc_size(a)	((a)->alloc_size)
+#  else
+#    define array_first_index(a)	((a)->first_index)
+#    define array_head(a)		((a)->elements)
+#  endif
+#  define array_empty(a)		((a)->num_elements == 0)
 
-#define element_value(ae)	((ae)->value)
-#define element_index(ae)	((ae)->ind)
+#  define element_value(ae)	((ae)->value)
+#  define element_index(ae)	((ae)->ind)
 
-#ifndef ALT_ARRAY_IMPLEMENTATION
-#define element_forw(ae)	((ae)->next)
-#define element_back(ae)	((ae)->prev)
-#else
+#  ifndef ALT_ARRAY_IMPLEMENTATION
+#    define element_forw(ae)	((ae)->next)
+#    define element_back(ae)	((ae)->prev)
+#  else
 extern arrayind_t element_forw (ARRAY *, arrayind_t);
 extern arrayind_t element_back (ARRAY *, arrayind_t);
-#endif
+#  endif
 
 
-#define set_element_value(ae, val)	((ae)->value = (val))
+#  define set_element_value(ae, val)	((ae)->value = (val))
 
-#ifdef ALT_ARRAY_IMPLEMENTATION
-#define set_first_index(a, i)	((a)->first_index = (i))
-#endif
+#  ifdef ALT_ARRAY_IMPLEMENTATION
+#    define set_first_index(a, i)	((a)->first_index = (i))
+#  endif
 
-#define set_max_index(a, i)	((a)->max_index = (i))
-#define set_num_elements(a, n)	((a)->num_elements = (n))
+#  define set_max_index(a, i)	((a)->max_index = (i))
+#  define set_num_elements(a, n)	((a)->num_elements = (n))
 
 /* Convenience */
-#define array_push(a,v)	\
+#  define array_push(a,v)	\
   do { array_rshift ((a), 1, (v)); } while (0)
-#define array_pop(a) \
+#  define array_pop(a) \
   do { array_shift ((a), 1, AS_DISPOSE); } while (0)
 
-#define GET_ARRAY_FROM_VAR(n, v, a) \
+#  define GET_ARRAY_FROM_VAR(n, v, a) \
   do { \
     (v) = find_variable (n); \
     (a) = ((v) && array_p ((v))) ? array_cell (v) : (ARRAY *)0; \
   } while (0)
 
-#define ARRAY_ELEMENT_REPLACE(ae, v) \
+#  define ARRAY_ELEMENT_REPLACE(ae, v) \
   do { \
     free ((ae)->value); \
     (ae)->value = (v); \
   } while (0)
 
-#ifdef ALT_ARRAY_IMPLEMENTATION
-#define ARRAY_VALUE_REPLACE(a, i, v) \
+#  ifdef ALT_ARRAY_IMPLEMENTATION
+#    define ARRAY_VALUE_REPLACE(a, i, v) \
    ARRAY_ELEMENT_REPLACE((a)->elements[(i)], (v))
-#endif
+#  endif
 
-#define ALL_ELEMENT_SUB(c)	((c) == '@' || (c) == '*')
+#  define ALL_ELEMENT_SUB(c)	((c) == '@' || (c) == '*')
 
 /* In eval.c, but uses ARRAY * */
 extern int execute_array_command (ARRAY *, void *);
