@@ -421,7 +421,7 @@ finfo_builtin (WORD_LIST *list)
   return r;
 }
 
-static char *finfo_doc[] = {
+static char const *finfo_doc[] = {
   "Display information about file attributes.",
   "",
   "Display information about each FILE.  Only single operators should",
@@ -430,26 +430,26 @@ static char *finfo_doc[] = {
   "/dev/fd/XX, file descriptor XX is described.  Operators, if supplied,",
   "have the following meanings:",
   "",
-  " -a	last file access time",
-  " -A	last file access time in ctime format",
-  " -c	last file status change time",
-  " -C	last file status change time in ctime format",
-  " -m	last file modification time",
-  " -M	last file modification time in ctime format",
-  " -d	device",
-  " -i	inode",
-  " -f	composite file identifier (device:inode)",
-  " -g	gid of owner",
-  " -G	group name of owner",
-  " -l	name of file pointed to by symlink",
-  " -n	link count",
-  " -o	permissions in octal",
-  " -p	permissions in ascii",
-  " -P mask permissions ANDed with MASK (like with umask)",
-  " -s	file size in bytes",
-  " -u	uid of owner",
-  " -U	user name of owner",
-  (char *)0
+  "	-a	last file access time",
+  "	-A	last file access time in ctime format",
+  "	-c	last file status change time",
+  "	-C	last file status change time in ctime format",
+  "	-m	last file modification time",
+  "	-M	last file modification time in ctime format",
+  "	-d	device",
+  "	-i	inode",
+  "	-f	composite file identifier (device:inode)",
+  "	-g	gid of owner",
+  "	-G	group name of owner",
+  "	-l	name of file pointed to by symlink",
+  "	-n	link count",
+  "	-o	permissions in octal",
+  "	-p	permissions in ascii",
+  "	-P MASK	permissions ANDed with MASK (like with umask)",
+  "	-s	file size in bytes",
+  "	-u	uid of owner",
+  "	-U	user name of owner",
+  NULL
 };
 
 struct builtin finfo_struct = {
