@@ -22,51 +22,51 @@
 
 #if defined (HISTORY)
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
- #    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include "bashtypes.h"
-#include <stdio.h>
-#include <errno.h>
-#include "bashansi.h"
-#include "posixstat.h"
-#include "filecntl.h"
+#  include "bashtypes.h"
+#  include <stdio.h>
+#  include <errno.h>
+#  include "bashansi.h"
+#  include "posixstat.h"
+#  include "filecntl.h"
 
-#include "bashintl.h"
+#  include "bashintl.h"
 
-#if defined (SYSLOG_HISTORY)
-#  include <syslog.h>
-#endif
+#  if defined (SYSLOG_HISTORY)
+#    include <syslog.h>
+#  endif
 
-#include "shell.h"
-#include "flags.h"
-#include "parser.h"
-#include "input.h"
-#include "parser.h"	/* for the struct dstack stuff. */
-#include "pathexp.h"	/* for the struct ignorevar stuff */
-#include "bashhist.h"	/* matching prototypes and declarations */
-#include "builtins/common.h"
+#  include "shell.h"
+#  include "flags.h"
+#  include "parser.h"
+#  include "input.h"
+#  include "parser.h"		/* for the struct dstack stuff. */
+#  include "pathexp.h"		/* for the struct ignorevar stuff */
+#  include "bashhist.h"		/* matching prototypes and declarations */
+#  include "builtins/common.h"
 
-#include <readline/history.h>
-#include <glob/glob.h>
-#include <glob/strmatch.h>
+#  include <readline/history.h>
+#  include <glob/glob.h>
+#  include <glob/strmatch.h>
 
-#if defined (READLINE)
-#  include "bashline.h"
+#  if defined (READLINE)
+#    include "bashline.h"
 extern int rl_done, rl_dispatching;	/* should really include readline.h */
-#endif
+#  endif
 
-#ifndef HISTSIZE_DEFAULT
-#  define HISTSIZE_DEFAULT "500"
-#endif
+#  ifndef HISTSIZE_DEFAULT
+#    define HISTSIZE_DEFAULT "500"
+#  endif
 
-#if !defined (errno)
+#  if !defined (errno)
 extern int errno;
-#endif
+#  endif
 
 static int histignore_item_func (struct ign *);
 static int check_history_control (char *);
@@ -82,7 +82,7 @@ static struct ignorevar histignore =
   (sh_iv_item_func_t *)histignore_item_func,
 };
 
-#define HIGN_EXPAND 0x01
+#  define HIGN_EXPAND 0x01
 
 /* Declarations of bash history variables. */
 /* Non-zero means to remember lines typed to the shell on the history
@@ -100,13 +100,13 @@ int history_lines_this_session;
 /* The number of lines that Bash has read from the history file. */
 int history_lines_in_file;
 
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
 /* Non-zero means do no history expansion on this line, regardless
    of what history_expansion says. */
 int history_expansion_inhibited;
 /* If non-zero, double quotes can quote the history expansion character. */
 int double_quotes_inhibit_history_expansion = 0;
-#endif
+#  endif
 
 /* With the old default, every line was saved in the history individually.
    I.e., if the user enters:
@@ -177,7 +177,7 @@ int hist_last_line_added;
    entry. */
 int hist_last_line_pushed;
 
-#if defined (READLINE)
+#  if defined (READLINE)
 /* If non-zero, and readline is being used, the user is offered the
    chance to re-edit a failed history expansion. */
 int history_reediting;
@@ -187,21 +187,21 @@ int history_reediting;
    instead and let the user further edit and confirm with a newline. */
 int hist_verify;
 
-#endif /* READLINE */
+#  endif /* READLINE */
 
 /* Non-zero means to not save function definitions in the history list. */
 int dont_save_function_defs;
 
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
 /* The usual history no-expand characters plus the shell metacharacters that
    would result in an empty history event. */
 static char *bash_history_no_expand_chars = " \t\n\r=;&|()<>";
 
 static int bash_history_inhibit_expansion (char *, int);
-#endif
-#if defined (READLINE)
+#  endif
+#  if defined (READLINE)
 static void re_edit (char *);
-#endif
+#  endif
 static int history_expansion_p (char *);
 static int shell_comment (char *);
 static int should_expand (char *);
@@ -209,7 +209,7 @@ static HIST_ENTRY *last_history_entry (void);
 static char *expand_histignore_pattern (char *);
 static int history_should_ignore (char *);
 
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
 /* Is the history expansion starting at string[i] one that should not
    be expanded? */
 static int
@@ -228,23 +228,23 @@ bash_history_inhibit_expansion (char *string, int i)
   /* The shell uses ! as the indirect expansion character, so let those
      expansions pass as well. */
   else if (i > 1 && string[i - 1] == '{' && string[i - 2] == '$' &&
-	     member ('}', string + i + 1))
+	   member ('}', string + i + 1))
     return (1);
   /* The shell uses $! as a defined parameter expansion. */
   else if (i > 1 && string[i - 1] == '$' && string[i] == '!')
     return (1);
-#if defined (EXTENDED_GLOB)
+#    if defined (EXTENDED_GLOB)
   /* This is on all the time now; see bash_history_no_expand_characters above */
-  else if (extended_glob && i > 1 && string[i+1] == '(' && member (')', string + i + 2))
+  else if (extended_glob && i > 1 && string[i + 1] == '(' && member (')', string + i + 2))
     return (1);
-#endif
+#    endif
 
   si = 0;
   /* If we're supposed to be in single-quoted string, skip over the
      single-quoted part and then look at what's left. */
   if (history_quoting_state == '\'')
     {
-      si = skip_to_delim (string, 0, "'", SD_NOJMP|SD_HISTEXP);
+      si = skip_to_delim (string, 0, "'", SD_NOJMP | SD_HISTEXP);
       if (string[si] == 0 || si >= i)
 	return (1);
       si++;
@@ -252,13 +252,13 @@ bash_history_inhibit_expansion (char *string, int i)
 
   /* Make sure the history expansion should not be skipped by quoting or
      command/process substitution. */
-  if ((t = skip_to_histexp (string, si, hx, SD_NOJMP|SD_HISTEXP)) > 0)
+  if ((t = skip_to_histexp (string, si, hx, SD_NOJMP | SD_HISTEXP)) > 0)
     {
       /* Skip instances of history expansion appearing on the line before
 	 this one. */
       while (t < i)
 	{
-	  t = skip_to_histexp (string, t+1, hx, SD_NOJMP|SD_HISTEXP);
+	  t = skip_to_histexp (string, t + 1, hx, SD_NOJMP | SD_HISTEXP);
 	  if (t <= 0)
 	    return 0;
 	}
@@ -267,29 +267,29 @@ bash_history_inhibit_expansion (char *string, int i)
   else
     return (0);
 }
-#endif
+#  endif
 
 void
 bash_initialize_history (void)
 {
   history_quotes_inhibit_expansion = 1;
   history_search_delimiter_chars = ";&()|<>";
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
   history_inhibit_expansion_function = bash_history_inhibit_expansion;
   history_no_expand_chars = bash_history_no_expand_chars;
   sv_histchars ("histchars");
-#endif
+#  endif
 }
 
 void
 bash_history_reinit (int interact)
 {
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
   history_expansion = (interact == 0) ? histexp_flag : HISTEXPAND_DEFAULT;
   history_expansion_inhibited = (interact == 0) ? 1 - histexp_flag : 0;	/* changed in bash_history_enable() */
   history_inhibit_expansion_function = bash_history_inhibit_expansion;
   history_no_expand_chars = bash_history_no_expand_chars;
-#endif
+#  endif
   remember_on_history = enable_history_list;
 }
 
@@ -297,20 +297,20 @@ void
 bash_history_disable (void)
 {
   remember_on_history = 0;
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
   history_expansion_inhibited = 1;
-#endif
+#  endif
 }
 
 void
 bash_history_enable (void)
 {
   remember_on_history = enable_history_list = 1;
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
   history_expansion_inhibited = 0;
   history_inhibit_expansion_function = bash_history_inhibit_expansion;
   history_no_expand_chars = bash_history_no_expand_chars;
-#endif
+#  endif
   sv_history_control ("HISTCONTROL");
   sv_histignore ("HISTIGNORE");
 }
@@ -422,7 +422,7 @@ bash_default_histfile (void)
   return (bash_tilde_expand (posixly_correct ? "~/.sh_history" : "~/.bash_history", 0));
 }
 
-#ifdef INCLUDE_UNUSED
+#  ifdef INCLUDE_UNUSED
 /* Write the existing history out to the history file. */
 void
 save_history (void)
@@ -444,7 +444,7 @@ save_history (void)
       sv_histsize ("HISTFILESIZE");
     }
 }
-#endif
+#  endif
 
 int
 maybe_append_history (char *filename)
@@ -458,7 +458,7 @@ maybe_append_history (char *filename)
       /* If the filename was supplied, then create it if necessary. */
       if (stat (filename, &buf) == -1 && errno == ENOENT)
 	{
-	  fd = open (filename, O_WRONLY|O_CREAT, 0600);
+	  fd = open (filename, O_WRONLY | O_CREAT, 0600);
 	  if (fd < 0)
 	    {
 	      builtin_error ("%s: %s: %s", filename, _("cannot create"), strerror (errno));
@@ -529,7 +529,7 @@ maybe_save_shell_history (void)
   return (result);
 }
 
-#if defined (READLINE)
+#  if defined (READLINE)
 /* Tell readline () that we have some text for it to edit. */
 static void
 re_edit (char *text)
@@ -537,7 +537,7 @@ re_edit (char *text)
   if (bash_input.type == st_stdin)
     bash_re_edit (text);
 }
-#endif /* READLINE */
+#  endif /* READLINE */
 
 /* Return 1 if this line needs history expansion. */
 static int
@@ -581,10 +581,10 @@ pre_process_line (char *line, int print_changes, int addit)
 	 current command. */
       old_len = history_length;
       if (history_length > 0 && command_oriented_history && current_command_first_line_saved && current_command_line_count > 1)
-        history_length--;
+	history_length--;
       expanded = history_expand (line, &history_value);
       if (history_length >= 0 && command_oriented_history && current_command_first_line_saved && current_command_line_count > 1)
-        history_length = old_len;
+	history_length = old_len;
 
       if (expanded)
 	{
@@ -592,11 +592,11 @@ pre_process_line (char *line, int print_changes, int addit)
 	    {
 	      if (expanded < 0)
 		internal_error ("%s", history_value);
-#if defined (READLINE)
+#    if defined (READLINE)
 	      else if (hist_verify == 0 || expanded == 2)
-#else
+#    else
 	      else
-#endif
+#    endif
 		fprintf (stderr, "%s\n", history_value);
 	    }
 
@@ -642,10 +642,10 @@ pre_process_line (char *line, int print_changes, int addit)
   if (addit && remember_on_history && *return_value)
     maybe_add_history (return_value);
 
-#if 0
+#  if 0
   if (expanded == 0)
     return_value = savestring (line);
-#endif
+#  endif
 
   return (return_value);
 }
@@ -668,11 +668,11 @@ shell_comment (char *line)
     ;
   if (p && *p == '#')
     return 1;
-  n = skip_to_delim (line, p - line, "#", SD_NOJMP|SD_GLOB|SD_EXTGLOB|SD_COMPLETE);
+  n = skip_to_delim (line, p - line, "#", SD_NOJMP | SD_GLOB | SD_EXTGLOB | SD_COMPLETE);
   return (line[n] == '#') ? 2 : 0;
 }
 
-#ifdef INCLUDE_UNUSED
+#  ifdef INCLUDE_UNUSED
 /* Remove shell comments from LINE.  A `#' and anything after it is a comment.
    This isn't really useful yet, since it doesn't handle quoting. */
 static char *
@@ -686,7 +686,7 @@ filter_comments (char *line)
     *p = '\0';
   return (line);
 }
-#endif
+#  endif
 
 /* Check LINE against what HISTCONTROL says to do.  Returns 1 if the line
    should be saved; 0 if it should be discarded. */
@@ -807,20 +807,20 @@ check_add_history (char *line, int force)
   return 0;
 }
 
-#if defined (SYSLOG_HISTORY)
-#define SYSLOG_MAXMSG	1024
-#define SYSLOG_MAXLEN	SYSLOG_MAXMSG
-#define SYSLOG_MAXHDR	256
+#  if defined (SYSLOG_HISTORY)
+#    define SYSLOG_MAXMSG	1024
+#    define SYSLOG_MAXLEN	SYSLOG_MAXMSG
+#    define SYSLOG_MAXHDR	256
 
-#ifndef OPENLOG_OPTS
-#define OPENLOG_OPTS 0
-#endif
+#    ifndef OPENLOG_OPTS
+#      define OPENLOG_OPTS 0
+#    endif
 
-#if defined (SYSLOG_SHOPT)
+#    if defined (SYSLOG_SHOPT)
 int syslog_history = SYSLOG_SHOPT;
-#else
+#    else
 int syslog_history = 1;
-#endif
+#    endif
 
 void
 bash_syslog_history (const char *line)
@@ -837,11 +837,11 @@ bash_syslog_history (const char *line)
       first = 0;
     }
 
-  hdrlen = snprintf (loghdr, sizeof(loghdr), "HISTORY: PID=%d UID=%d", getpid(), current_user.uid);
+  hdrlen = snprintf (loghdr, sizeof (loghdr), "HISTORY: PID=%d UID=%d", getpid (), current_user.uid);
   msglen = strlen (line);
 
   if ((msglen + hdrlen + 1) < SYSLOG_MAXLEN)
-    syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "%s %s", loghdr, line);
+    syslog (SYSLOG_FACILITY | SYSLOG_LEVEL, "%s %s", loghdr, line);
   else
     {
       chunks = ((msglen + hdrlen) / SYSLOG_MAXLEN) + 1;
@@ -853,12 +853,12 @@ bash_syslog_history (const char *line)
 	  /* 7 == "(seq=) " */
 	  strncpy (trunc, msg, SYSLOG_MAXLEN - hdrlen - seqlen - 7 - 1);
 	  trunc[SYSLOG_MAXLEN - 1] = '\0';
-	  syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "%s (seq=%s) %s", loghdr, seqnum, trunc);
+	  syslog (SYSLOG_FACILITY | SYSLOG_LEVEL, "%s (seq=%s) %s", loghdr, seqnum, trunc);
 	  msg += SYSLOG_MAXLEN - hdrlen - seqlen - 8;
 	}
     }
 }
-#endif
+#  endif
 
 /* Add a line to the history list.
    The variable COMMAND_ORIENTED_HISTORY controls the style of history
@@ -891,7 +891,7 @@ bash_add_history (char *line)
 	 case if the other conditions are met. */
       if ((parser_state & PST_HEREDOC) && here_doc_first_line == 0 && line[strlen (line) - 1] == '\n')
 	chars_to_add = "";
-      else if (current_command_line_count == current_command_line_comment+1)
+      else if (current_command_line_count == current_command_line_comment + 1)
 	chars_to_add = "\n";
       else if (literal_history)
 	chars_to_add = "\n";
@@ -941,16 +941,16 @@ bash_add_history (char *line)
 	}
     }
 
-  if (add_it && history_is_stifled() && history_length == 0 && history_length == history_max_entries)
+  if (add_it && history_is_stifled () && history_length == 0 && history_length == history_max_entries)
     add_it = 0;
 
   if (add_it)
     really_add_history (line);
 
-#if defined (SYSLOG_HISTORY)
+#  if defined (SYSLOG_HISTORY)
   if (syslog_history)
     bash_syslog_history (line);
-#endif
+#  endif
 
   using_history ();
 }
