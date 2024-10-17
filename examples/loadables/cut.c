@@ -562,7 +562,7 @@ cut_builtin (WORD_LIST *list)
   return (cut_internal (1, list));
 }
 
-char *lcut_doc[] = {
+static char const *lcut_doc[] = {
   "Extract selected fields from a string.",
   "",
   "Select portions of LINE (as specified by LIST) and assign them to",
@@ -587,7 +587,7 @@ struct builtin lcut_struct = {
   0				/* reserved for internal use */
 };
 
-char *cut_doc[] = {
+static char const *cut_doc[] = {
   "Extract selected fields from each line of a file.",
   "",
   "Select portions of each line (as specified by LIST) from each FILE",
@@ -601,7 +601,7 @@ char *cut_doc[] = {
   "Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
   "field delimiter is specified by -d (default TAB). Column numbering",
   "starts at 1.",
-  (char *)NULL
+  NULL
 };
 
 struct builtin cut_struct = {
