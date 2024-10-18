@@ -57,7 +57,7 @@
 
 /* The default value of the PATH variable. */
 #ifndef DEFAULT_PATH_VALUE
-#define DEFAULT_PATH_VALUE \
+#  define DEFAULT_PATH_VALUE \
   "/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:."
 #endif
 
@@ -68,13 +68,13 @@
 /* The value for PATH when invoking `command -p'.  This is only used when
    the Posix.2 confstr () function, or CS_PATH define are not present. */
 #ifndef STANDARD_UTILS_PATH
-#define STANDARD_UTILS_PATH \
+#  define STANDARD_UTILS_PATH \
   "/bin:/usr/bin:/sbin:/usr/sbin"
 #endif
 
 /* The default path for enable -f */
 #ifndef DEFAULT_LOADABLE_BUILTINS_PATH
-#define DEFAULT_LOADABLE_BUILTINS_PATH \
+#  define DEFAULT_LOADABLE_BUILTINS_PATH \
   "/usr/local/lib/bash:/usr/lib/bash:/opt/local/lib/bash:/usr/pkg/lib/bash:/opt/pkg/lib/bash:."
 #endif
 
@@ -204,5 +204,5 @@
 /* Define to 0 if you want the `patsub_replacement' shell option to be disabled
    by default. */
 #ifndef PATSUB_REPLACE_DEFAULT
-#define PATSUB_REPLACE_DEFAULT	1
+#  define PATSUB_REPLACE_DEFAULT	1
 #endif
