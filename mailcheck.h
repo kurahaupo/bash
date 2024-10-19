@@ -19,7 +19,7 @@
 */
 
 #if !defined (_MAILCHECK_H_)
-#define _MAILCHECK_H_
+#  define _MAILCHECK_H_
 
 /* Functions from mailcheck.c */
 extern int time_to_check_mail (void);
