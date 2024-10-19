@@ -19,9 +19,9 @@
 */
 
 #if !defined (_QUIT_H_)
-#define _QUIT_H_
+#  define _QUIT_H_
 
-#include "sig.h"	/* for sig_atomic_t */
+#  include "sig.h"		/* for sig_atomic_t */
 
 /* Non-zero means SIGINT has already occurred. */
 extern volatile sig_atomic_t interrupt_state;
@@ -32,49 +32,49 @@ extern volatile sig_atomic_t terminating_signal;
    place.  The same scheme is used for terminating signals (e.g., SIGHUP)
    and the terminating_signal variable.  That calls a function which will
    end up exiting the shell. */
-#define QUIT \
+#  define QUIT \
   do { \
     if (terminating_signal) termsig_handler (terminating_signal); \
     if (interrupt_state) throw_to_top_level (); \
   } while (0)
 
-#define SETINTERRUPT interrupt_state = 1
-#define CLRINTERRUPT interrupt_state = 0
+#  define SETINTERRUPT interrupt_state = 1
+#  define CLRINTERRUPT interrupt_state = 0
 
-#define ADDINTERRUPT interrupt_state++
-#define DELINTERRUPT interrupt_state--
+#  define ADDINTERRUPT interrupt_state++
+#  define DELINTERRUPT interrupt_state--
 
-#define ISINTERRUPT interrupt_state != 0
-#define ISTERMSIG   terminating_signal != 0
+#  define ISINTERRUPT interrupt_state != 0
+#  define ISTERMSIG   terminating_signal != 0
 
 /* The same sort of thing, this time just for signals that would ordinarily
    cause the shell to terminate. */
 
-#define CHECK_TERMSIG \
+#  define CHECK_TERMSIG \
   do { \
     if (terminating_signal) termsig_handler (terminating_signal); \
   } while (0)
 
-#define LASTSIG() \
+#  define LASTSIG() \
   (terminating_signal ? terminating_signal : (interrupt_state ? SIGINT : 0))
 
-#define CHECK_WAIT_INTR \
+#  define CHECK_WAIT_INTR \
   do { \
     if (wait_intr_flag && wait_signal_received && this_shell_builtin && (this_shell_builtin == wait_builtin)) \
       sh_longjmp (wait_intr_buf, 1); \
   } while (0)
 
-#define RESET_SIGTERM \
+#  define RESET_SIGTERM \
   do { \
     sigterm_received = 0; \
   } while (0)
 
-#define CHECK_SIGTERM \
+#  define CHECK_SIGTERM \
   do { \
     if (sigterm_received) termsig_handler (SIGTERM); \
   } while (0)
 
-#define CHECK_WINCH \
+#  define CHECK_WINCH \
 do { \
   if (sigwinch_received) \
     { \
@@ -83,7 +83,7 @@ do { \
     } \
 } while (0)
 
-#define ZRESET() \
+#  define ZRESET() \
   do { \
     if (interrupt_state) zreset (); \
   } while (0)
