@@ -54,7 +54,7 @@ dispose_command (COMMAND *command)
 	  c = (FOR_COM *)command->value.Select;
 	else
 #endif
-	c = command->value.For;
+	  c = command->value.For;
 	dispose_word (c->name);
 	dispose_words (c->map_list);
 	dispose_command (c->action);
@@ -107,7 +107,7 @@ dispose_command (COMMAND *command)
 	c = command->value.Case;
 	dispose_word (c->word);
 
-	for (p = c->clauses; p; )
+	for (p = c->clauses; p;)
 	  {
 	    dispose_words (p->patterns);
 	    dispose_command (p->action);
