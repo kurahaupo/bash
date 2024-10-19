@@ -9122,7 +9122,7 @@ include/shmbutil.h
 lib/glob/strmatch.h
 	- include config.h for definition of HANDLE_MULTIBYTE
 	- remove the HAVE_LIBC_FNM_EXTMATCH tests
-	- new extern declaration for wcsmatch(whchar_t *, wchar_t *, int)
+	- new extern declaration for wcsmatch(wchar_t *, wchar_t *, int)
 
 configure.in
 	- remove call to BASH_FUNC_FNMATCH_EXTMATCH; it's no longer used
