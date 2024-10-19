@@ -19,29 +19,29 @@
 */
 
 #if !defined (_EXECUTE_CMD_H_)
-#define _EXECUTE_CMD_H_
+#  define _EXECUTE_CMD_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
-#if defined (ARRAY_VARS)
+#  if defined (ARRAY_VARS)
 struct func_array_state
-  {
-    ARRAY *funcname_a;
-    SHELL_VAR *funcname_v;
-    ARRAY *source_a;
-    SHELL_VAR *source_v;
-    ARRAY *lineno_a;
-    SHELL_VAR *lineno_v;
-  };
-#endif
+{
+  ARRAY *funcname_a;
+  SHELL_VAR *funcname_v;
+  ARRAY *source_a;
+  SHELL_VAR *source_v;
+  ARRAY *lineno_a;
+  SHELL_VAR *lineno_v;
+};
+#  endif
 
 /* Placeholder for later expansion to include more execution state */
 /* XXX - watch out for pid_t */
 struct execstate
-  {
-    pid_t pid;
-    int subshell_env;
-  };
+{
+  pid_t pid;
+  int subshell_env;
+};
 
 /* Variables declared in execute_cmd.c, used by many other files */
 extern int return_catch_flag;
@@ -105,10 +105,10 @@ extern void coproc_fdclose (struct coproc *, int);
 extern void coproc_checkfd (struct coproc *, int);
 extern void coproc_fdchk (int);
 
-#if defined _POSIXWAIT_H_
+#  if defined _POSIXWAIT_H_
 extern void coproc_pidchk (pid_t, WAIT);
 extern void coproc_setstate (pid_t, WAIT);
-#endif
+#  endif
 
 extern void coproc_fdsave (struct coproc *);
 extern void coproc_fdrestore (struct coproc *);
@@ -116,14 +116,14 @@ extern void coproc_fdrestore (struct coproc *);
 extern void coproc_setvars (struct coproc *);
 extern void coproc_unsetvars (struct coproc *);
 
-#if defined (PROCESS_SUBSTITUTION)
+#  if defined (PROCESS_SUBSTITUTION)
 extern void close_all_files (void);
-#endif
+#  endif
 
-#if defined (ARRAY_VARS)
+#  if defined (ARRAY_VARS)
 extern void restore_funcarray_state (struct func_array_state *);
 extern void uw_restore_funcarray_state (void *);
-#endif
+#  endif
 
 extern void uw_maybe_restore_getopt_state (void *);
 extern void uw_lastpipe_cleanup (void *);
