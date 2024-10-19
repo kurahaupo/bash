@@ -19,21 +19,21 @@
 */
 
 #if !defined (_VARIABLES_H_)
-#define _VARIABLES_H_
+#  define _VARIABLES_H_
 
-#include "stdc.h"
-#include "array.h"
-#include "assoc.h"
+#  include "stdc.h"
+#  include "array.h"
+#  include "assoc.h"
 
 /* Shell variables and functions are stored in hash tables. */
-#include "hashlib.h"
+#  include "hashlib.h"
 
-#include "conftypes.h"
+#  include "conftypes.h"
 
 /* A variable context. */
 typedef struct var_context {
-  char *name;		/* empty or NULL means global context */
-  int scope;		/* 0 means global context */
+  char *name;			/* empty or NULL means global context */
+  int scope;			/* 0 means global context */
   int flags;
   struct var_context *up;	/* previous function calls */
   struct var_context *down;	/* down towards global context */
@@ -41,24 +41,24 @@ typedef struct var_context {
 } VAR_CONTEXT;
 
 /* Flags for var_context->flags */
-#define VC_HASLOCAL	0x01
-#define VC_HASTMPVAR	0x02
-#define VC_FUNCENV	0x04	/* also function if name != NULL */
-#define VC_BLTNENV	0x08	/* builtin_env */
-#define VC_TEMPENV	0x10	/* temporary_env */
-#define VC_SPECTEMPENV	0x20	/* temporary environment preceding a posix special builtin */
+#  define VC_HASLOCAL		0x01
+#  define VC_HASTMPVAR		0x02
+#  define VC_FUNCENV		0x04	/* also function if name != NULL */
+#  define VC_BLTNENV		0x08	/* builtin_env */
+#  define VC_TEMPENV		0x10	/* temporary_env */
+#  define VC_SPECTEMPENV	0x20	/* temporary environment preceding a posix special builtin */
 
-#define VC_TEMPFLAGS	(VC_FUNCENV|VC_BLTNENV|VC_TEMPENV)
+#  define VC_TEMPFLAGS		(VC_FUNCENV|VC_BLTNENV|VC_TEMPENV)
 
 /* Accessing macros */
-#define vc_isfuncenv(vc)	(((vc)->flags & VC_FUNCENV) != 0)
-#define vc_isbltnenv(vc)	(((vc)->flags & VC_BLTNENV) != 0)
-#define vc_istempenv(vc)	(((vc)->flags & (VC_TEMPFLAGS)) == VC_TEMPENV)
+#  define vc_isfuncenv(vc)	(((vc)->flags & VC_FUNCENV) != 0)
+#  define vc_isbltnenv(vc)	(((vc)->flags & VC_BLTNENV) != 0)
+#  define vc_istempenv(vc)	(((vc)->flags & (VC_TEMPFLAGS)) == VC_TEMPENV)
 
-#define vc_istempscope(vc)	(((vc)->flags & (VC_TEMPENV|VC_BLTNENV)) != 0)
+#  define vc_istempscope(vc)	(((vc)->flags & (VC_TEMPENV|VC_BLTNENV)) != 0)
 
-#define vc_haslocals(vc)	(((vc)->flags & VC_HASLOCAL) != 0)
-#define vc_hastmpvars(vc)	(((vc)->flags & VC_HASTMPVAR) != 0)
+#  define vc_haslocals(vc)	(((vc)->flags & VC_HASLOCAL) != 0)
+#  define vc_hastmpvars(vc)	(((vc)->flags & VC_HASTMPVAR) != 0)
 
 /* What a shell variable looks like. */
 
@@ -73,9 +73,9 @@ union _value {
   ARRAY *a;			/* array */
   HASH_TABLE *h;		/* associative array */
   double d;			/* floating point number */
-#if defined (HAVE_LONG_DOUBLE)
+#  if defined (HAVE_LONG_DOUBLE)
   long double ld;		/* long double */
-#endif
+#  endif
   struct variable *v;		/* possible indirect variable use */
   void *opaque;			/* opaque data for future use */
 };
@@ -85,141 +85,141 @@ typedef struct variable {
   char *value;			/* Value that is returned. */
   char *exportstr;		/* String for the environment. */
   sh_var_value_func_t *dynamic_value;	/* Function called to return a `dynamic'
-				   value for a variable, like $SECONDS
-				   or $RANDOM. */
-  sh_var_assign_func_t *assign_func; /* Function called when this `special
-				   variable' is assigned a value in
-				   bind_variable. */
+					   value for a variable, like $SECONDS
+					   or $RANDOM. */
+  sh_var_assign_func_t *assign_func;	/* Function called when this `special
+					   variable' is assigned a value in
+					   bind_variable. */
   int attributes;		/* export, readonly, array, invisible... */
   int context;			/* Which context this variable belongs to. */
 } SHELL_VAR;
 
 typedef struct _vlist {
   SHELL_VAR **list;
-  size_t list_size;	/* allocated size */
-  size_t list_len;	/* current number of entries */
+  size_t list_size;		/* allocated size */
+  size_t list_len;		/* current number of entries */
 } VARLIST;
 
 /* The various attributes that a given variable can have. */
 /* First, the user-visible attributes */
-#define att_exported	0x0000001	/* export to environment */
-#define att_readonly	0x0000002	/* cannot change */
-#define att_array	0x0000004	/* value is an array */
-#define att_function	0x0000008	/* value is a function */
-#define att_integer	0x0000010	/* internal representation is int */
-#define att_local	0x0000020	/* variable is local to a function */
-#define att_assoc	0x0000040	/* variable is an associative array */
-#define att_trace	0x0000080	/* function is traced with DEBUG trap */
-#define att_uppercase	0x0000100	/* word converted to uppercase on assignment */
-#define att_lowercase	0x0000200	/* word converted to lowercase on assignment */
-#define att_capcase	0x0000400	/* word capitalized on assignment */
-#define att_nameref	0x0000800	/* word is a name reference */
+#  define att_exported	0x0000001	/* export to environment */
+#  define att_readonly	0x0000002	/* cannot change */
+#  define att_array	0x0000004	/* value is an array */
+#  define att_function	0x0000008	/* value is a function */
+#  define att_integer	0x0000010	/* internal representation is int */
+#  define att_local	0x0000020	/* variable is local to a function */
+#  define att_assoc	0x0000040	/* variable is an associative array */
+#  define att_trace	0x0000080	/* function is traced with DEBUG trap */
+#  define att_uppercase	0x0000100	/* word converted to uppercase on assignment */
+#  define att_lowercase	0x0000200	/* word converted to lowercase on assignment */
+#  define att_capcase	0x0000400	/* word capitalized on assignment */
+#  define att_nameref	0x0000800	/* word is a name reference */
 
-#define attmask_user	0x0000fff
+#  define attmask_user	0x0000fff
 
-#define user_attrs	(att_exported|att_readonly|att_integer|att_local|att_trace|att_uppercase|att_lowercase|att_capcase|att_nameref)
+#  define user_attrs	(att_exported|att_readonly|att_integer|att_local|att_trace|att_uppercase|att_lowercase|att_capcase|att_nameref)
 
 /* These define attributes you can set on readonly variables using declare.
    You're allowed to set the readonly attribute on a readonly variable.
    declare checks whether it gets +r explicitly, before testing these.
    att_nameref is in there because declare performs its own validation due
    to some ksh93 quirks. */
-#define valid_readonly_attrs	(att_exported|att_local|att_nameref|att_trace|att_readonly)
-#define invalid_readonly_attrs	(~valid_readonly_attrs & attmask_user)
+#  define valid_readonly_attrs	(att_exported|att_local|att_nameref|att_trace|att_readonly)
+#  define invalid_readonly_attrs	(~valid_readonly_attrs & attmask_user)
 
 /* Internal attributes used for bookkeeping */
-#define att_invisible	0x0001000	/* cannot see */
-#define att_nounset	0x0002000	/* cannot unset */
-#define att_noassign	0x0004000	/* assignment not allowed */
-#define att_imported	0x0008000	/* came from environment */
-#define att_special	0x0010000	/* requires special handling */
-#define att_nofree	0x0020000	/* do not free value on unset */
-#define att_regenerate	0x0040000	/* regenerate when exported */
+#  define att_invisible		0x0001000	/* cannot see */
+#  define att_nounset		0x0002000	/* cannot unset */
+#  define att_noassign		0x0004000	/* assignment not allowed */
+#  define att_imported		0x0008000	/* came from environment */
+#  define att_special		0x0010000	/* requires special handling */
+#  define att_nofree		0x0020000	/* do not free value on unset */
+#  define att_regenerate	0x0040000	/* regenerate when exported */
 
-#define	attmask_int	0x00ff000
+#  define	attmask_int	0x00ff000
 
 /* Internal attributes used for variable scoping. */
-#define att_tempvar	0x0100000	/* variable came from the temp environment */
-#define att_propagate	0x0200000	/* propagate to previous scope */
+#  define att_tempvar		0x0100000	/* variable came from the temp environment */
+#  define att_propagate		0x0200000	/* propagate to previous scope */
 
-#define attmask_scope	0x0f00000
+#  define attmask_scope		0x0f00000
 
-#define exported_p(var)		((((var)->attributes) & (att_exported)))
-#define readonly_p(var)		((((var)->attributes) & (att_readonly)))
-#define array_p(var)		((((var)->attributes) & (att_array)))
-#define function_p(var)		((((var)->attributes) & (att_function)))
-#define integer_p(var)		((((var)->attributes) & (att_integer)))
-#define local_p(var)		((((var)->attributes) & (att_local)))
-#define assoc_p(var)		((((var)->attributes) & (att_assoc)))
-#define trace_p(var)		((((var)->attributes) & (att_trace)))
-#define uppercase_p(var)	((((var)->attributes) & (att_uppercase)))
-#define lowercase_p(var)	((((var)->attributes) & (att_lowercase)))
-#define capcase_p(var)		((((var)->attributes) & (att_capcase)))
-#define nameref_p(var)		((((var)->attributes) & (att_nameref)))
+#  define exported_p(var)		((((var)->attributes) & (att_exported)))
+#  define readonly_p(var)		((((var)->attributes) & (att_readonly)))
+#  define array_p(var)			((((var)->attributes) & (att_array)))
+#  define function_p(var)		((((var)->attributes) & (att_function)))
+#  define integer_p(var)		((((var)->attributes) & (att_integer)))
+#  define local_p(var)			((((var)->attributes) & (att_local)))
+#  define assoc_p(var)			((((var)->attributes) & (att_assoc)))
+#  define trace_p(var)			((((var)->attributes) & (att_trace)))
+#  define uppercase_p(var)		((((var)->attributes) & (att_uppercase)))
+#  define lowercase_p(var)		((((var)->attributes) & (att_lowercase)))
+#  define capcase_p(var)		((((var)->attributes) & (att_capcase)))
+#  define nameref_p(var)		((((var)->attributes) & (att_nameref)))
 
-#define invisible_p(var)	((((var)->attributes) & (att_invisible)))
-#define non_unsettable_p(var)	((((var)->attributes) & (att_nounset)))
-#define noassign_p(var)		((((var)->attributes) & (att_noassign)))
-#define imported_p(var)		((((var)->attributes) & (att_imported)))
-#define specialvar_p(var)	((((var)->attributes) & (att_special)))
-#define nofree_p(var)		((((var)->attributes) & (att_nofree)))
-#define regen_p(var)		((((var)->attributes) & (att_regenerate)))
+#  define invisible_p(var)		((((var)->attributes) & (att_invisible)))
+#  define non_unsettable_p(var)		((((var)->attributes) & (att_nounset)))
+#  define noassign_p(var)		((((var)->attributes) & (att_noassign)))
+#  define imported_p(var)		((((var)->attributes) & (att_imported)))
+#  define specialvar_p(var)		((((var)->attributes) & (att_special)))
+#  define nofree_p(var)			((((var)->attributes) & (att_nofree)))
+#  define regen_p(var)			((((var)->attributes) & (att_regenerate)))
 
-#define tempvar_p(var)		((((var)->attributes) & (att_tempvar)))
-#define propagate_p(var)	((((var)->attributes) & (att_propagate)))
+#  define tempvar_p(var)		((((var)->attributes) & (att_tempvar)))
+#  define propagate_p(var)		((((var)->attributes) & (att_propagate)))
 
 /* Variable names: lvalues */
-#define name_cell(var)		((var)->name)
+#  define name_cell(var)		((var)->name)
 
 /* Accessing variable values: rvalues */
-#define value_cell(var)		((var)->value)
-#define function_cell(var)	(COMMAND *)((var)->value)
-#define array_cell(var)		(ARRAY *)((var)->value)
-#define assoc_cell(var)		(HASH_TABLE *)((var)->value)
-#define nameref_cell(var)	((var)->value)		/* so it can change later */
+#  define value_cell(var)		((var)->value)
+#  define function_cell(var)		(COMMAND *)((var)->value)
+#  define array_cell(var)		(ARRAY *)((var)->value)
+#  define assoc_cell(var)		(HASH_TABLE *)((var)->value)
+#  define nameref_cell(var)		((var)->value)	/* so it can change later */
 
-#define NAMEREF_MAX	8	/* only 8 levels of nameref indirection */
+#  define NAMEREF_MAX			8	/* only 8 levels of nameref indirection */
 
-#define var_isset(var)		((var)->value != 0)
-#define var_isunset(var)	((var)->value == 0)
-#define var_isnull(var)		((var)->value && *(var)->value == 0)
+#  define var_isset(var)		((var)->value != 0)
+#  define var_isunset(var)		((var)->value == 0)
+#  define var_isnull(var)		((var)->value && *(var)->value == 0)
 
 /* Assigning variable values: lvalues */
-#define var_setvalue(var, str)	((var)->value = (str))
-#define var_setfunc(var, func)	((var)->value = (char *)(func))
-#define var_setarray(var, arr)	((var)->value = (char *)(arr))
-#define var_setassoc(var, arr)	((var)->value = (char *)(arr))
-#define var_setref(var, str)	((var)->value = (str))
+#  define var_setvalue(var, str)	((var)->value = (str))
+#  define var_setfunc(var, func)	((var)->value = (char *)(func))
+#  define var_setarray(var, arr)	((var)->value = (char *)(arr))
+#  define var_setassoc(var, arr)	((var)->value = (char *)(arr))
+#  define var_setref(var, str)		((var)->value = (str))
 
 /* Make VAR be auto-exported. */
-#define set_auto_export(var) \
+#  define set_auto_export(var) \
   do { (var)->attributes |= att_exported; array_needs_making = 1; } while (0)
 
-#define SETVARATTR(var, attr, undo) \
+#  define SETVARATTR(var, attr, undo) \
 	((undo == 0) ? ((var)->attributes |= (attr)) \
 		     : ((var)->attributes &= ~(attr)))
 
-#define VSETATTR(var, attr)	((var)->attributes |= (attr))
-#define VUNSETATTR(var, attr)	((var)->attributes &= ~(attr))
+#  define VSETATTR(var, attr)		((var)->attributes |= (attr))
+#  define VUNSETATTR(var, attr)		((var)->attributes &= ~(attr))
 
-#define VGETFLAGS(var)		((var)->attributes)
+#  define VGETFLAGS(var)		((var)->attributes)
 
-#define VSETFLAGS(var, flags)	((var)->attributes = (flags))
-#define VCLRFLAGS(var)		((var)->attributes = 0)
+#  define VSETFLAGS(var, flags)		((var)->attributes = (flags))
+#  define VCLRFLAGS(var)		((var)->attributes = 0)
 
 /* Macros to perform various operations on `exportstr' member of a SHELL_VAR. */
-#define CLEAR_EXPORTSTR(var)	(var)->exportstr = (char *)NULL
-#define COPY_EXPORTSTR(var)	((var)->exportstr) ? savestring ((var)->exportstr) : (char *)NULL
-#define SET_EXPORTSTR(var, value)  (var)->exportstr = (value)
-#define SAVE_EXPORTSTR(var, value) (var)->exportstr = (value) ? savestring (value) : (char *)NULL
+#  define CLEAR_EXPORTSTR(var)		(var)->exportstr = (char *)NULL
+#  define COPY_EXPORTSTR(var)		((var)->exportstr) ? savestring ((var)->exportstr) : (char *)NULL
+#  define SET_EXPORTSTR(var, value)	(var)->exportstr = (value)
+#  define SAVE_EXPORTSTR(var, value)	(var)->exportstr = (value) ? savestring (value) : (char *)NULL
 
-#define FREE_EXPORTSTR(var) \
+#  define FREE_EXPORTSTR(var) \
 	do { if ((var)->exportstr) free ((var)->exportstr); } while (0)
 
-#define CACHE_IMPORTSTR(var, value) \
+#  define CACHE_IMPORTSTR(var, value) \
 	(var)->exportstr = savestring (value)
 
-#define INVALIDATE_EXPORTSTR(var) \
+#  define INVALIDATE_EXPORTSTR(var) \
 	do { \
 	  if ((var)->exportstr) \
 	    { \
@@ -228,19 +228,19 @@ typedef struct _vlist {
 	    } \
 	} while (0)
 
-#define ifsname(s)	((s)[0] == 'I' && (s)[1] == 'F' && (s)[2] == 'S' && (s)[3] == '\0')
+#  define ifsname(s)			((s)[0] == 'I' && (s)[1] == 'F' && (s)[2] == 'S' && (s)[3] == '\0')
 
 /* Flag values for make_local_variable and its array counterparts */
-#define MKLOC_ASSOCOK		0x01
-#define MKLOC_ARRAYOK		0x02
-#define MKLOC_INHERIT		0x04
+#  define MKLOC_ASSOCOK		0x01
+#  define MKLOC_ARRAYOK		0x02
+#  define MKLOC_INHERIT		0x04
 
 /* Special value for nameref with invalid value for creation or assignment */
 extern SHELL_VAR nameref_invalid_value;
-#define INVALID_NAMEREF_VALUE	(void *)&nameref_invalid_value
+#  define INVALID_NAMEREF_VALUE	(void *)&nameref_invalid_value
 
 /* Assignment statements */
-#define ASSIGN_DISALLOWED(v, f) \
+#  define ASSIGN_DISALLOWED(v, f) \
   ((readonly_p (v) && (f&ASS_FORCE) == 0) || noassign_p (v))
 
 /* Stuff for hacking variables. */
@@ -266,7 +266,7 @@ extern WORD_LIST *rest_of_args;
 extern int posparam_count;
 extern pid_t dollar_dollar_pid;
 
-extern int localvar_inherit;		/* declared in variables.c */
+extern int localvar_inherit;	/* declared in variables.c */
 
 extern void initialize_shell_variables (char **, int);
 
@@ -318,9 +318,9 @@ extern SHELL_VAR **all_visible_functions (void);
 extern SHELL_VAR **all_exported_variables (void);
 extern SHELL_VAR **local_exported_variables (void);
 extern SHELL_VAR **all_local_variables (int);
-#if defined (ARRAY_VARS)
+#  if defined (ARRAY_VARS)
 extern SHELL_VAR **all_array_variables (void);
-#endif
+#  endif
 extern char **all_variables_matching_prefix (const char *);
 
 extern char **make_var_array (HASH_TABLE *);
@@ -359,7 +359,7 @@ extern void dispose_var_context (VAR_CONTEXT *);
 extern VAR_CONTEXT *push_var_context (char *, int, HASH_TABLE *);
 extern void pop_var_context (void);
 extern VAR_CONTEXT *push_scope (int, HASH_TABLE *);
-extern void pop_scope (void *);		/* XXX uw_ */
+extern void pop_scope (void *);	/* XXX uw_ */
 
 extern void clear_dollar_vars (void);
 
@@ -375,9 +375,9 @@ extern void push_args (WORD_LIST *);
 extern void pop_args (void);
 extern void uw_pop_args (void *);
 
-#if defined (ARRAY_VARS)
+#  if defined (ARRAY_VARS)
 extern void push_source (ARRAY *, char *);
-#endif
+#  endif
 
 extern void adjust_shell_level (int);
 extern void non_unsettable (char *);
@@ -410,7 +410,7 @@ extern void print_assignment (SHELL_VAR *);
 extern void print_var_value (SHELL_VAR *, int);
 extern void print_var_function (SHELL_VAR *);
 
-#if defined (ARRAY_VARS)
+#  if defined (ARRAY_VARS)
 extern SHELL_VAR *make_new_array_variable (const char *);
 extern SHELL_VAR *make_local_array_variable (const char *, int);
 
@@ -420,7 +420,7 @@ extern SHELL_VAR *make_local_assoc_variable (const char *, int);
 extern void set_pipestatus_array (int *, int);
 extern ARRAY *save_pipestatus_array (void);
 extern void restore_pipestatus_array (ARRAY *);
-#endif
+#  endif
 
 extern void set_pipestatus_from_exit (int);
 
@@ -451,33 +451,33 @@ extern void sv_xtracefd (const char *);
 extern void sv_shcompat (const char *);
 extern void sv_globsort (const char *);
 
-#if defined (READLINE)
+#  if defined (READLINE)
 extern void sv_comp_wordbreaks (const char *);
 extern void sv_terminal (const char *);
 extern void sv_hostfile (const char *);
 extern void sv_winsize (const char *);
-#endif
+#  endif
 
-#if defined (__CYGWIN__)
+#  if defined (__CYGWIN__)
 extern void sv_home (const char *);
-#endif
+#  endif
 
-#if defined (HISTORY)
+#  if defined (HISTORY)
 extern void sv_histsize (const char *);
 extern void sv_histignore (const char *);
 extern void sv_history_control (const char *);
-#  if defined (BANG_HISTORY)
+#    if defined (BANG_HISTORY)
 extern void sv_histchars (const char *);
-#  endif
+#    endif
 extern void sv_histtimefmt (const char *);
-#endif /* HISTORY */
+#  endif /* HISTORY */
 
-#if defined (HAVE_TZSET)
+#  if defined (HAVE_TZSET)
 extern void sv_tz (const char *);
-#endif
+#  endif
 
-#if defined (JOB_CONTROL)
+#  if defined (JOB_CONTROL)
 extern void sv_childmax (const char *);
-#endif
+#  endif
 
 #endif /* !_VARIABLES_H_ */
