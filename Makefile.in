@@ -2923,7 +2923,6 @@ redir.o: $(BASHINCDIR)/posixstat.h
 redir.o: $(BASHINCDIR)/stdc.h
 redir.o: $(BASHINCDIR)/unlocked-io.h
 redir.o: $(DEFDIR)/pipesize.h
-redir.o: $(DEFSRC)/pipesize.h
 redir.o: $(LIBINTL_H)
 redir.o: $(srcdir)/redir.c
 redir.o: $(topdir)/array.h
@@ -3744,7 +3743,6 @@ builtins/builtins.o: $(topdir)/config-top.h
 builtins/builtins.o: $(topdir)/general.h
 builtins/builtins.o: $(topdir)/hashlib.h
 builtins/builtins.o: $(topdir)/xmalloc.h
-builtins/builtins.o: builtins/builtins.c
 builtins/builtins.o: config.h
 builtins/caller.c: $(DEFSRC)/caller.def
 builtins/caller.o: $(BASHINCDIR)/chartypes.h
@@ -5460,6 +5458,7 @@ builtins/tmpbuiltins.o: $(BASHINCDIR)/chartypes.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/gettext.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/stdc.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/unlocked-io.h
+builtins/tmpbuiltins.o: $(DEFDIR)/tmpbuiltins.c
 builtins/tmpbuiltins.o: $(DEFSRC)/tmpbuiltins.c
 builtins/tmpbuiltins.o: $(DEFSRC)/tmpbuiltins.h
 builtins/tmpbuiltins.o: $(topdir)/alias.h
@@ -5473,7 +5472,6 @@ builtins/tmpbuiltins.o: $(topdir)/config-top.h
 builtins/tmpbuiltins.o: $(topdir)/general.h
 builtins/tmpbuiltins.o: $(topdir)/hashlib.h
 builtins/tmpbuiltins.o: $(topdir)/xmalloc.h
-builtins/tmpbuiltins.o: builtins/tmpbuiltins.c
 builtins/tmpbuiltins.o: config.h
 builtins/tmpbuiltins.o: tmpbuiltins.h
 builtins/trap.c: $(DEFSRC)/trap.def
@@ -5571,9 +5569,9 @@ builtins/ulimit.o: $(BASHINCDIR)/ocache.h
 builtins/ulimit.o: $(BASHINCDIR)/posixjmp.h
 builtins/ulimit.o: $(BASHINCDIR)/stdc.h
 builtins/ulimit.o: $(BASHINCDIR)/unlocked-io.h
+builtins/ulimit.o: $(DEFDIR)/pipesize.h
 builtins/ulimit.o: $(DEFSRC)/bashgetopt.h
 builtins/ulimit.o: $(DEFSRC)/common.h
-builtins/ulimit.o: $(DEFSRC)/pipesize.h
 builtins/ulimit.o: $(DEFSRC)/ulimit.def
 builtins/ulimit.o: $(LIBINTL_H)
 builtins/ulimit.o: $(topdir)/array.h
@@ -5601,7 +5599,6 @@ builtins/ulimit.o: $(topdir)/syntax.h
 builtins/ulimit.o: $(topdir)/unwind_prot.h
 builtins/ulimit.o: $(topdir)/variables.h
 builtins/ulimit.o: $(topdir)/xmalloc.h
-builtins/ulimit.o: builtins/pipesize.h
 builtins/ulimit.o: config.h
 builtins/ulimit.o: pathnames.h
 builtins/umask.c: $(DEFSRC)/umask.def
