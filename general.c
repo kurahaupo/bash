@@ -67,7 +67,7 @@ static int unquoted_tilde_word (const char *);
 static void initialize_group_array (void);
 
 /* A standard error message to use when getcwd() returns NULL. */
-const char * const bash_getcwd_errstr = N_("getcwd: cannot access parent directories");
+const char *const bash_getcwd_errstr = N_("getcwd: cannot access parent directories");
 
 /* Do whatever is necessary to initialize `Posix mode'.  This currently
    modifies the following variables which are controlled via shopt:
@@ -113,14 +113,14 @@ posix_initialize (int on)
     }
 
   /* Things that should be turned on when posix mode is disabled. */
-  else if (saved_posix_vars)		/* on == 0, restore saved settings */
+  else if (saved_posix_vars)	/* on == 0, restore saved settings */
     {
       set_posix_options (saved_posix_vars);
       expand_aliases = expaliases_flag;
       free (saved_posix_vars);
       saved_posix_vars = 0;
     }
-  else	/* on == 0, restore a default set of settings */
+  else				/* on == 0, restore a default set of settings */
     {
       source_searches_cwd = 1;
       expand_aliases = expaliases_flag = interactive_shell;	/* XXX */
@@ -188,7 +188,7 @@ string_to_rlimtype (const char *string, char **ep)
       neg = *s == '-';
       s++;
     }
-  for ( ; s && *s && DIGIT (*s); s++)
+  for (; s && *s && DIGIT (*s); s++)
     ret = (ret * 10) + TODIGIT (*s);
   if (ep)
     *ep = (char *)s;
@@ -200,7 +200,7 @@ print_rlimtype (RLIMTYPE n, int addnl)
 {
   char s[INT_STRLEN_BOUND (RLIMTYPE) + 1], *p;
 
-  p = s + sizeof(s);
+  p = s + sizeof (s);
   *--p = '\0';
 
   if (n < 0)
@@ -259,11 +259,11 @@ valid_number (const char *string, intmax_t *result)
   errno = 0;
   value = strtoimax (string, &ep, 10);
   if (errno || ep == string)
-    return 0;	/* errno is set on overflow or underflow */
+    return 0;			/* errno is set on overflow or underflow */
 
   /* Skip any trailing whitespace, since strtoimax does not, using the same
      test that strtoimax uses for leading whitespace. */
-  while (isspace ((unsigned char) *ep))
+  while (isspace ((unsigned char)*ep))
     ep++;
 
   /* If *string is not '\0' but *ep is '\0' on return, the entire string
@@ -344,7 +344,7 @@ check_selfref (const char *name, char *value, int flags)
     }
 #endif
 
-  return 0;	/* not a self reference */
+  return 0;			/* not a self reference */
 }
 
 /* Make sure that WORD is a valid shell identifier, i.e.
@@ -355,7 +355,7 @@ check_selfref (const char *name, char *value, int flags)
 int
 check_identifier (WORD_DESC *word, int check_word)
 {
-  if (word->flags & (W_HASDOLLAR|W_QUOTED))	/* XXX - HASDOLLAR? */
+  if (word->flags & (W_HASDOLLAR | W_QUOTED))	/* XXX - HASDOLLAR? */
     {
       err_invalidid (word->word);
       return (0);
@@ -379,9 +379,9 @@ importable_function_name (const char *string, size_t len)
 {
   if (absolute_program (string))	/* don't allow slash */
     return 0;
-  if (*string == '\n')			/* can't start with a newline */
+  if (*string == '\n')		/* can't start with a newline */
     return 0;
-  if (shellblank (*string) || shellblank(string[len-1]))
+  if (shellblank (*string) || shellblank (string[len - 1]))
     return 0;
   return (posixly_correct ? valid_identifier (string) : 1);
 }
@@ -446,7 +446,7 @@ valid_function_word (WORD_DESC *word, int flags)
   char *name;
 
   name = word->word;
-  if ((word->flags & W_HASDOLLAR))		/* allow quotes for now */
+  if ((word->flags & W_HASDOLLAR))	/* allow quotes for now */
     {
       err_invalidid (name);
       return (0);
@@ -459,7 +459,7 @@ valid_function_word (WORD_DESC *word, int flags)
       internal_error (_("`%s': is a special builtin"), name);
       return (0);
     }
-  if ((flags & 1) && valid_function_name (name, flags|2) == 0)
+  if ((flags & 1) && valid_function_name (name, flags | 2) == 0)
     {
       err_invalidid (name);
       return (0);
@@ -488,7 +488,7 @@ assignment (const char *string, int flags)
      the subscript is required to make the word an assignment statement. If
      we don't have a subscript, even if the word is a valid assignment
      statement otherwise, we don't want to treat it as one. */
-  if ((flags & 1) && c != '[')		/* ] */
+  if ((flags & 1) && c != '[')	/* ] */
     return (0);
   else if ((flags & 1) == 0 && legal_variable_starter (c) == 0)
 #else
@@ -511,14 +511,14 @@ assignment (const char *string, int flags)
 	     valid_array_reference? */
 	  if (string[newi++] != ']')
 	    return (0);
-	  if (string[newi] == '+' && string[newi+1] == '=')
+	  if (string[newi] == '+' && string[newi + 1] == '=')
 	    return (newi + 1);
 	  return ((string[newi] == '=') ? newi : 0);
 	}
 #endif /* ARRAY_VARS */
 
       /* Check for `+=' */
-      if (c == '+' && string[indx+1] == '=')
+      if (c == '+' && string[indx + 1] == '=')
 	return (indx + 1);
 
       /* Variable names in assignment statements may contain only letters,
@@ -537,7 +537,7 @@ line_isblank (const char *line)
   register int i;
 
   if (line == 0)
-    return 0;		/* XXX */
+    return 0;			/* XXX */
   for (i = 0; line[i]; i++)
     if (isblank ((unsigned char)line[i]) == 0)
       break;
@@ -627,14 +627,14 @@ check_dev_tty (void)
   int tty_fd;
   char *tty;
 
-  tty_fd = open ("/dev/tty", O_RDWR|O_NONBLOCK);
+  tty_fd = open ("/dev/tty", O_RDWR | O_NONBLOCK);
 
   if (tty_fd < 0)
     {
       tty = (char *)ttyname (fileno (stdin));
       if (tty == 0)
 	return;
-      tty_fd = open (tty, O_RDWR|O_NONBLOCK);
+      tty_fd = open (tty, O_RDWR | O_NONBLOCK);
     }
   if (tty_fd >= 0)
     close (tty_fd);
@@ -683,7 +683,7 @@ move_to_high_fd (int fd, int check_new, int maxfd)
       if (nfds <= 0)
 	nfds = 20;
       if (nfds > HIGH_FD_MAX)
-	nfds = HIGH_FD_MAX;		/* reasonable maximum */
+	nfds = HIGH_FD_MAX;	/* reasonable maximum */
     }
   else
     nfds = maxfd;
@@ -805,7 +805,7 @@ path_dot_or_dotdot (const char *string)
     return (0);
 
   /* string[0] == '.' */
-  if (PATHSEP(string[1]) || (string[1] == '.' && PATHSEP(string[2])))
+  if (PATHSEP (string[1]) || (string[1] == '.' && PATHSEP (string[2])))
     return (1);
 
   return (0);
@@ -819,13 +819,13 @@ absolute_pathname (const char *string)
   if (string == 0 || *string == '\0')
     return (0);
 
-  if (ABSPATH(string))
+  if (ABSPATH (string))
     return (1);
 
-  if (string[0] == '.' && PATHSEP(string[1]))	/* . and ./ */
+  if (string[0] == '.' && PATHSEP (string[1]))	/* . and ./ */
     return (1);
 
-  if (string[0] == '.' && string[1] == '.' && PATHSEP(string[2]))	/* .. and ../ */
+  if (string[0] == '.' && string[1] == '.' && PATHSEP (string[2]))	/* .. and ../ */
     return (1);
 
   return (0);
@@ -860,7 +860,7 @@ make_absolute (const char *string, const char *dot_path)
 {
   char *result;
 
-  if (dot_path == 0 || ABSPATH(string))
+  if (dot_path == 0 || ABSPATH (string))
 #ifdef __CYGWIN__
     {
       char pathbuf[PATH_MAX + 1];
@@ -908,10 +908,10 @@ full_pathname (char *file)
 
   file = (*file == '~') ? bash_tilde_expand (file, 0) : savestring (file);
 
-  if (ABSPATH(file))
+  if (ABSPATH (file))
     return (file);
 
-  ret = sh_makepath ((char *)NULL, file, (MP_DOCWD|MP_RMDOT));
+  ret = sh_makepath ((char *)NULL, file, (MP_DOCWD | MP_RMDOT));
   free (file);
 
   return (ret);
@@ -933,9 +933,9 @@ polite_directory_format (char *name)
   l = home ? strlen (home) : 0;
   if (l > 1 && strncmp (home, name, l) == 0 && (!name[l] || name[l] == '/'))
     {
-      strncpy (tdir + 1, name + l, sizeof(tdir) - 2);
+      strncpy (tdir + 1, name + l, sizeof (tdir) - 2);
       tdir[0] = '~';
-      tdir[sizeof(tdir) - 1] = '\0';
+      tdir[sizeof (tdir) - 1] = '\0';
       return (tdir);
     }
   else
@@ -1163,7 +1163,7 @@ unquoted_tilde_word (const char *s)
 {
   const char *r;
 
-  for (r = s; TILDE_END(*r) == 0; r++)
+  for (r = s; TILDE_END (*r) == 0; r++)
     {
       switch (*r)
 	{
@@ -1224,7 +1224,7 @@ bash_tilde_expand (const char *s, int assign_p)
   char *ret;
 
   tilde_additional_prefixes = assign_p == 0 ? (char **)0
-  					    : (assign_p == 2 ? bash_tilde_prefixes2 : bash_tilde_prefixes);
+					    : (assign_p == 2 ? bash_tilde_prefixes2 : bash_tilde_prefixes);
   if (assign_p == 2)
     tilde_additional_suffixes = bash_tilde_suffixes2;
 
@@ -1245,7 +1245,7 @@ bash_tilde_expand (const char *s, int assign_p)
 static int ngroups, maxgroups;
 
 /* The set of groups that this user is a member of. */
-static GETGROUPS_T *group_array = (GETGROUPS_T *)NULL;
+static GETGROUPS_T *group_array = (GETGROUPS_T *) NULL;
 
 #if !defined (NOGROUP)
 #  define NOGROUP (gid_t) -1
@@ -1260,7 +1260,7 @@ initialize_group_array (void)
     maxgroups = getmaxgroups ();
 
   ngroups = 0;
-  group_array = (GETGROUPS_T *)xrealloc (group_array, maxgroups * sizeof (GETGROUPS_T));
+  group_array = (GETGROUPS_T *) xrealloc (group_array, maxgroups * sizeof (GETGROUPS_T));
 
 #if defined (HAVE_GETGROUPS)
   ngroups = getgroups (maxgroups, group_array);
