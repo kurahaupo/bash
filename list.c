@@ -37,7 +37,7 @@ GENERIC_LIST global_error_list;
 void
 list_walk (GENERIC_LIST *list, sh_glist_func_t *function)
 {
-  for ( ; list; list = list->next)
+  for (; list; list = list->next)
     if ((*function) (list) < 0)
       return;
 }
@@ -46,7 +46,7 @@ list_walk (GENERIC_LIST *list, sh_glist_func_t *function)
 void
 wlist_walk (WORD_LIST *words, sh_icpfunc_t *function)
 {
-  for ( ; words; words = words->next)
+  for (; words; words = words->next)
     if ((*function) (words->word->word) < 0)
       return;
 }
@@ -60,7 +60,7 @@ list_reverse (GENERIC_LIST *list)
 {
   register GENERIC_LIST *next, *prev;
 
-  for (prev = (GENERIC_LIST *)NULL; list; )
+  for (prev = (GENERIC_LIST *)NULL; list;)
     {
       next = list->next;
       list->next = prev;
