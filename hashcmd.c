@@ -49,7 +49,7 @@ phash_create (void)
 static void
 phash_freedata (PTR_T data)
 {
-  free (((PATH_DATA *) data)->path);
+  free (((PATH_DATA *)data)->path);
   free (data);
 }
 
