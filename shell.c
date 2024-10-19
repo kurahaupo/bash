@@ -48,7 +48,7 @@
 
 #include "bashintl.h"
 
-#define NEED_SH_SETLINEBUF_DECL		/* used in externs.h */
+#define NEED_SH_SETLINEBUF_DECL	/* used in externs.h */
 
 #include "shell.h"
 #include "parser.h"
@@ -59,7 +59,7 @@
 #include "builtins/common.h"
 
 #if defined (JOB_CONTROL)
-#include "jobs.h"
+#  include "jobs.h"
 #else
 extern int running_in_background;
 extern int initialize_job_control (int);
@@ -102,7 +102,7 @@ extern int errno;
 #endif
 
 #if defined (NO_MAIN_ENV_ARG)
-extern char **environ;	/* used if no third argument to main() */
+extern char **environ;		/* used if no third argument to main() */
 #endif
 
 extern int gnu_error_format;
@@ -215,12 +215,12 @@ static int sourced_env;
 static int running_setuid;
 
 /* Values for the long-winded argument names. */
-static int debugging;			/* Do debugging things. */
-static int no_rc;			/* Don't execute ~/.bashrc */
-static int no_profile;			/* Don't execute .profile */
-static int do_version;			/* Display interesting version info. */
-static int make_login_shell;		/* Make this shell be a `-bash' shell. */
-static int want_initial_help;		/* --help option */
+static int debugging;		/* Do debugging things. */
+static int no_rc;		/* Don't execute ~/.bashrc */
+static int no_profile;		/* Don't execute .profile */
+static int do_version;		/* Display interesting version info. */
+static int make_login_shell;	/* Make this shell be a `-bash' shell. */
+static int want_initial_help;	/* --help option */
 
 int debugging_mode = 0;		/* In debugging mode with --debugger */
 #if defined (READLINE)
@@ -372,7 +372,7 @@ main (int argc, char **argv)
 #else /* !NO_MAIN_ENV_ARG */
 int
 main (int argc, char **argv, char **env)
-#endif /* !NO_MAIN_ENV_ARG */
+#endif				/* !NO_MAIN_ENV_ARG */
 {
   register int i;
   int code, old_errexit_flag;
@@ -387,13 +387,13 @@ main (int argc, char **argv, char **env)
   env = environ;
 #endif /* __OPENNT || __MVS__ */
 
-  USE_VAR(argc);
-  USE_VAR(argv);
-  USE_VAR(env);
-  USE_VAR(code);
-  USE_VAR(old_errexit_flag);
+  USE_VAR (argc);
+  USE_VAR (argv);
+  USE_VAR (env);
+  USE_VAR (code);
+  USE_VAR (old_errexit_flag);
 #if defined (RESTRICTED_SHELL)
-  USE_VAR(saverst);
+  USE_VAR (saverst);
 #endif
 
   /* Catch early SIGINTs. */
@@ -424,7 +424,7 @@ main (int argc, char **argv, char **env)
     posixly_correct = 1;
 
 #if defined (USE_GNU_MALLOC_LIBRARY)
-  mcheck (programming_error, (void (*) ())0);
+  mcheck (programming_error, (void (*)())0);
 #endif /* USE_GNU_MALLOC_LIBRARY */
 
   if (setjmp_sigs (subshell_top_level))
@@ -488,7 +488,7 @@ main (int argc, char **argv, char **env)
 
   echo_input_at_read = verbose_flag;	/* --verbose given */
 
-  /* All done with full word options; do standard shell option parsing.*/
+  /* All done with full word options; do standard shell option parsing. */
   this_command_name = shell_name;	/* for error reporting */
   arg_index = parse_shell_options (argv, arg_index, argc);
 
@@ -537,11 +537,11 @@ main (int argc, char **argv, char **env)
 	standard error is a terminal
      Refer to Posix.2, the description of the `sh' utility. */
 
-  if (forced_interactive ||		/* -i flag */
+  if (forced_interactive ||	/* -i flag */
       (!command_execution_string &&	/* No -c command and ... */
-       wordexp_only == 0 &&		/* No --wordexp and ... */
-       ((arg_index == argc) ||		/*   no remaining args or... */
-	read_from_stdin) &&		/*   -s flag with args, and */
+       wordexp_only == 0 &&	/* No --wordexp and ... */
+       ((arg_index == argc) ||	/*   no remaining args or... */
+	read_from_stdin) &&	/*   -s flag with args, and */
        isatty (fileno (stdin)) &&	/* Input is a terminal and */
        isatty (fileno (stderr))))	/* error output is a terminal. */
     init_interactive ();
@@ -692,7 +692,7 @@ main (int argc, char **argv, char **env)
      parameters, so any changes performed in the startup files won't affect
      later option processing. */
   if (wordexp_only)
-    ;			/* nothing yet */
+    ;				/* nothing yet */
   else if (command_execution_string)
     arg_index = bind_args (argv, arg_index, argc, 0);	/* $0 ... $n */
   else if (arg_index != argc && read_from_stdin == 0)
@@ -704,7 +704,7 @@ main (int argc, char **argv, char **env)
     arg_index = bind_args (argv, arg_index, argc, 1);	/* $1 ... $n */
 
   /* The startup files are run with `set -e' temporarily disabled. */
-  ssh_reading_startup_files = 0;		/* paranoia */
+  ssh_reading_startup_files = 0;	/* paranoia */
   if (locally_skip_execution == 0 && running_setuid == 0)
     {
       char *t;
@@ -753,7 +753,7 @@ main (int argc, char **argv, char **env)
     }
 #endif
 
-  cmd_init ();		/* initialize the command object caches */
+  cmd_init ();			/* initialize the command object caches */
   uwp_init ();
 
   if (command_execution_string)
@@ -784,7 +784,7 @@ main (int argc, char **argv, char **env)
       default_buffered_input = fileno (stdin);	/* == 0 */
       read_from_stdin = 1;
     }
-  else if (top_level_arg_index == argc)		/* arg index before startup files */
+  else if (top_level_arg_index == argc)	/* arg index before startup files */
     /* "If there are no operands and the -c option is not specified, the -s
        option shall be assumed." */
     read_from_stdin = 1;
@@ -817,7 +817,7 @@ main (int argc, char **argv, char **env)
     }
 
 #if !defined (ONESHOT)
- read_and_execute:
+read_and_execute:
 #endif /* !ONESHOT */
 
   shell_initialized = 1;
@@ -906,8 +906,8 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
 	 An option `--' means the same thing; this is the standard
 	 getopt(3) meaning. */
       if (arg_string[0] == '-' &&
-	   (arg_string[1] == '\0' ||
-	     (arg_string[1] == '-' && arg_string[2] == '\0')))
+	  (arg_string[1] == '\0' ||
+	   (arg_string[1] == '-' && arg_string[2] == '\0')))
 	return (next_arg);
 
       i = 1;
@@ -991,7 +991,7 @@ exit_shell (int s)
 #if defined (READLINE)
   if (bash_readline_initialized && RL_ISSTATE (RL_STATE_TERMPREPPED) && rl_deprep_term_function)
     {
-      itrace("exit_shell: calling rl_deprep_term_function");
+      itrace ("exit_shell: calling rl_deprep_term_function");
       (*rl_deprep_term_function) ();
     }
 #endif
@@ -1042,7 +1042,7 @@ void
 sh_exit (int s)
 {
 #if defined (MALLOC_DEBUG) && defined (USING_BASH_MALLOC)
-  if (malloc_trace_at_exit && (subshell_environment & (SUBSHELL_COMSUB|SUBSHELL_PROCSUB)) == 0)
+  if (malloc_trace_at_exit && (subshell_environment & (SUBSHELL_COMSUB | SUBSHELL_PROCSUB)) == 0)
     trace_malloc_stats (get_name_for_error (), NULL);
   /* mlocation_write_table (); */
 #endif
@@ -1122,7 +1122,7 @@ execute_profile_file (void)
 {
   maybe_execute_file (SYS_PROFILE, 1);
 
-  if (act_like_sh)	/* sh */
+  if (act_like_sh)		/* sh */
     maybe_execute_file ("~/.profile", 1);
   else if ((maybe_execute_file ("~/.bash_profile", 1) == 0) &&
 	   (maybe_execute_file ("~/.bash_login", 1) == 0))	/* bash */
@@ -1134,7 +1134,7 @@ execute_bashrc_file (void)
 {
 #ifdef SYS_BASHRC
 #  if defined (__OPENNT)
-  maybe_execute_file (_prefixInstallPath(SYS_BASHRC, NULL, 0), 1);
+  maybe_execute_file (_prefixInstallPath (SYS_BASHRC, NULL, 0), 1);
 #  else
   maybe_execute_file (SYS_BASHRC, 1);
 #  endif
@@ -1219,13 +1219,13 @@ run_startup_files (void)
   if (interactive_shell == 0 && !(su_shell && login_shell))
     {
       if (posixly_correct == 0 && act_like_sh == 0 && privileged_mode == 0 &&
-	    sourced_env++ == 0)
+	  sourced_env++ == 0)
 	execute_env_file (get_string_value ("BASH_ENV"));
       return;
     }
 
   /* Interactive shell or `-su' shell. */
-  if (posixly_correct == 0)		  /* bash, sh */
+  if (posixly_correct == 0)	/* bash, sh */
     {
       if (login_shell && sourced_login++ == 0)
 	{
@@ -1243,7 +1243,7 @@ run_startup_files (void)
       else if (act_like_sh && privileged_mode == 0 && sourced_env++ == 0)
 	execute_env_file (get_string_value ("ENV"));
     }
-  else		/* bash --posix, sh --posix */
+  else				/* bash --posix, sh --posix */
     {
       /* bash and sh */
       if (interactive_shell && privileged_mode == 0 && sourced_env++ == 0)
@@ -1289,10 +1289,10 @@ maybe_make_restricted (char *name)
     temp++;
   if (restricted || (STREQ (temp, RESTRICTED_SHELL_NAME)))
     {
-#if defined (RBASH_STATIC_PATH_VALUE)
+#  if defined (RBASH_STATIC_PATH_VALUE)
       bind_variable ("PATH", RBASH_STATIC_PATH_VALUE, 0);
-      stupidly_hack_special_variables ("PATH");		/* clear hash table */
-#endif
+      stupidly_hack_special_variables ("PATH");	/* clear hash table */
+#  endif
       set_var_read_only ("PATH");
       set_var_read_only ("SHELL");
       set_var_read_only ("ENV");
@@ -1314,14 +1314,14 @@ uidget (void)
   u = current_user.uid;
 
 #if HAVE_SETRESUID
-  (void) getresuid (&current_user.uid, &current_user.euid, &current_user.saveuid);
+  (void)getresuid (&current_user.uid, &current_user.euid, &current_user.saveuid);
 #else
   current_user.uid = getuid ();
   current_user.euid = geteuid ();
 #endif
 
 #if HAVE_SETRESGID
-  (void) getresgid (&current_user.gid, &current_user.egid, &current_user.savegid);
+  (void)getresgid (&current_user.gid, &current_user.egid, &current_user.savegid);
 #else
   current_user.gid = getgid ();
   current_user.egid = getegid ();
@@ -1337,7 +1337,7 @@ uidget (void)
 
   /* See whether or not we are running setuid or setgid. */
   return (current_user.uid != current_user.euid) ||
-	   (current_user.gid != current_user.egid);
+	 (current_user.gid != current_user.egid);
 }
 
 void
@@ -1348,7 +1348,7 @@ disable_priv_mode (void)
   r = 0;
 #if HAVE_SETRESUID
   if (current_user.euid != current_user.uid || current_user.saveuid != current_user.uid)
-    r = setresuid (current_user.uid, current_user.uid, current_user.uid) ;
+    r = setresuid (current_user.uid, current_user.uid, current_user.uid);
 #else
   if (current_user.euid != current_user.uid)
     r = setuid (current_user.uid);
@@ -1424,7 +1424,7 @@ run_wordexp (char *words)
       wl = global_command->value.Simple->words;
       if (protected_mode)
 	for (tl = wl; tl; tl = tl->next)
-	  tl->word->flags |= W_NOCOMSUB|W_NOPROCSUB;
+	  tl->word->flags |= W_NOCOMSUB | W_NOPROCSUB;
       result = wl ? expand_words_no_vars (wl) : (WORD_LIST *)0;
     }
   else
@@ -1467,9 +1467,9 @@ run_one_command (char *command)
 
   if (code != NOT_JUMPED)
     {
-#if defined (PROCESS_SUBSTITUTION)
+#  if defined (PROCESS_SUBSTITUTION)
       unlink_fifo_list ();
-#endif /* PROCESS_SUBSTITUTION */
+#  endif /* PROCESS_SUBSTITUTION */
       switch (code)
 	{
 	  /* Some kind of throw to top_level has occurred. */
@@ -1485,7 +1485,7 @@ run_one_command (char *command)
 	  command_error ("run_one_command", CMDERR_BADJUMP, code, 0);
 	}
     }
-   return (parse_and_execute (savestring (command), "-c", SEVAL_NOHIST|SEVAL_RESETLINE));
+  return (parse_and_execute (savestring (command), "-c", SEVAL_NOHIST | SEVAL_RESETLINE));
 }
 #endif /* ONESHOT */
 
@@ -1530,7 +1530,7 @@ bind_args (char **argv, int arg_start, int arg_end, int start_index)
 	     here. */
 	  if (debugging_mode)
 	    {
-	      push_args (args);		/* BASH_ARGV and BASH_ARGC */
+	      push_args (args);	/* BASH_ARGV and BASH_ARGC */
 	      bash_argv_initialized = 1;
 	    }
 	}
@@ -1545,7 +1545,7 @@ void
 unbind_args (void)
 {
   remember_args ((WORD_LIST *)NULL, 1);
-  pop_args ();				/* Reset BASH_ARGV and BASH_ARGC */
+  pop_args ();			/* Reset BASH_ARGV and BASH_ARGC */
 }
 
 static void
@@ -1760,7 +1760,7 @@ unset_bash_input (int check_zero)
     {
       close_buffered_fd (default_buffered_input);
       default_buffered_input = bash_input.location.buffered_fd = -1;
-      bash_input.type = st_none;		/* XXX */
+      bash_input.type = st_none;	/* XXX */
     }
 }
 
@@ -1793,7 +1793,7 @@ set_shell_name (char *argv0)
   dollar_vars[0] = savestring (shell_name);
 
   /* A program may start an interactive shell with
-	  "execl ("/bin/bash", "-", NULL)".
+     "execl ("/bin/bash", "-", NULL)".
      If so, default the name of this shell to our name. */
   if (!shell_name || !*shell_name || (shell_name[0] == '-' && !shell_name[1]))
     shell_name = PROGRAM;
@@ -1827,10 +1827,10 @@ init_interactive (void)
   interactive_shell = startup_state = interactive = 1;
 #if defined (HISTORY)
   if (enable_history_list == -1)
-    enable_history_list = 1;				/* set default  */
+    enable_history_list = 1;	/* set default  */
   remember_on_history = enable_history_list;
 #  if defined (BANG_HISTORY)
-  histexp_flag = history_expansion;			/* XXX */
+  histexp_flag = history_expansion;	/* XXX */
 #  endif
 #endif
 }
@@ -1839,7 +1839,7 @@ static void
 init_noninteractive (void)
 {
 #if defined (HISTORY)
-  if (enable_history_list == -1)			/* set default */
+  if (enable_history_list == -1)	/* set default */
     enable_history_list = 0;
   bash_history_reinit (0);
 #endif /* HISTORY */
@@ -1849,7 +1849,7 @@ init_noninteractive (void)
 #if defined (JOB_CONTROL)
   /* Even if the shell is not interactive, enable job control if the -i or
      -m option is supplied at startup. */
-  set_job_control (forced_interactive||jobs_m_flag);
+  set_job_control (forced_interactive || jobs_m_flag);
 #endif /* JOB_CONTROL */
 }
 
@@ -1884,8 +1884,8 @@ get_current_user_info (void)
 	{
 	  current_user.user_name = savestring (entry->pw_name);
 	  current_user.shell = (entry->pw_shell && entry->pw_shell[0])
-				? savestring (entry->pw_shell)
-				: savestring ("/bin/sh");
+				  ? savestring (entry->pw_shell)
+				  : savestring ("/bin/sh");
 	  current_user.home_dir = savestring (entry->pw_dir);
 	}
       else
@@ -1954,9 +1954,9 @@ shell_initialize (void)
      functions from the environment if we are running in privileged or
      restricted mode or if the shell is running setuid. */
 #if defined (RESTRICTED_SHELL)
-  initialize_shell_variables (shell_environment, privileged_mode||restricted||should_be_restricted||running_setuid);
+  initialize_shell_variables (shell_environment, privileged_mode || restricted || should_be_restricted || running_setuid);
 #else
-  initialize_shell_variables (shell_environment, privileged_mode||running_setuid);
+  initialize_shell_variables (shell_environment, privileged_mode || running_setuid);
 #endif
 
   /* Initialize the data structures for storing and running jobs. */
@@ -1972,11 +1972,11 @@ shell_initialize (void)
      running in privileged or restricted mode or if the shell is running
      setuid. */
 #if defined (RESTRICTED_SHELL)
-  initialize_shell_options (privileged_mode||restricted||should_be_restricted||running_setuid);
-  initialize_bashopts (privileged_mode||restricted||should_be_restricted||running_setuid);
+  initialize_shell_options (privileged_mode || restricted || should_be_restricted || running_setuid);
+  initialize_bashopts (privileged_mode || restricted || should_be_restricted || running_setuid);
 #else
-  initialize_shell_options (privileged_mode||running_setuid);
-  initialize_bashopts (privileged_mode||running_setuid);
+  initialize_shell_options (privileged_mode || running_setuid);
+  initialize_bashopts (privileged_mode || running_setuid);
 #endif
 }
 
@@ -2056,7 +2056,7 @@ show_shell_usage (FILE *fp, int extra)
   if (extra)
     fprintf (fp, _("GNU bash, version %s-(%s)\n"), shell_version_string (), MACHTYPE);
   fprintf (fp, _("Usage:\t%s [GNU long option] [option] ...\n\t%s [GNU long option] [option] script-file ...\n"),
-	     shell_name, shell_name);
+	   shell_name, shell_name);
   fputs (_("GNU long options:\n"), fp);
   for (i = 0; long_args[i].name; i++)
     fprintf (fp, "\t--%s\n", long_args[i].name);
@@ -2102,7 +2102,7 @@ add_shopt_to_alist (char *opt, int on_or_off)
   if (shopt_ind >= shopt_len)
     {
       shopt_len += 8;
-      shopt_alist = (STRING_INT_ALIST *)xrealloc (shopt_alist, shopt_len * sizeof (shopt_alist[0]));
+      shopt_alist = (STRING_INT_ALIST *) xrealloc (shopt_alist, shopt_len * sizeof (shopt_alist[0]));
     }
   shopt_alist[shopt_ind].word = opt;
   shopt_alist[shopt_ind].token = on_or_off;
