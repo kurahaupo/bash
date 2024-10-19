@@ -37,7 +37,7 @@
 #include <errno.h>
 
 #include "shell.h"
-#include "input.h"	/* For bash_input */
+#include "input.h"		/* For bash_input */
 
 #ifndef errno
 extern int errno;
@@ -52,7 +52,7 @@ extern void init_notfound_str (void);	/* from execute_cmd.c */
 extern int dump_translatable_strings, dump_po_strings;
 
 int locale_utf8locale;
-int locale_mb_cur_max;	/* value of MB_CUR_MAX for current locale (LC_CTYPE) */
+int locale_mb_cur_max;		/* value of MB_CUR_MAX for current locale (LC_CTYPE) */
 int locale_shiftstates = 0;
 
 int singlequote_translations = 0;	/* single-quote output of $"..." */
@@ -189,7 +189,7 @@ set_locale_var (const char *var, const char *value)
 
   x = "";
   errno = 0;
-  if (var[0] == 'T' && var[10] == 0)		/* TEXTDOMAIN */
+  if (var[0] == 'T' && var[10] == 0)	/* TEXTDOMAIN */
     {
       FREE (default_domain);
       default_domain = value ? savestring (value) : (char *)NULL;
@@ -197,7 +197,7 @@ set_locale_var (const char *var, const char *value)
 	bindtextdomain (default_domain, default_dir);
       return (1);
     }
-  else if (var[0] == 'T')			/* TEXTDOMAINDIR */
+  else if (var[0] == 'T')	/* TEXTDOMAINDIR */
     {
       FREE (default_dir);
       default_dir = value ? savestring (value) : (char *)NULL;
@@ -208,7 +208,7 @@ set_locale_var (const char *var, const char *value)
 
   /* var[0] == 'L' && var[1] == 'C' && var[2] == '_' */
 
-  else if (var[3] == 'A')			/* LC_ALL */
+  else if (var[3] == 'A')	/* LC_ALL */
     {
       FREE (lc_all);
       if (value)
@@ -256,11 +256,11 @@ set_locale_var (const char *var, const char *value)
 	  if (x)
 	    locale_utf8locale = locale_isutf8 (x);
 	  locale_setblanks ();
-#if defined (HANDLE_MULTIBYTE)
+#    if defined (HANDLE_MULTIBYTE)
 	  locale_shiftstates = mblen ((char *)NULL, 0);
-#else
+#    else
 	  locale_shiftstates = 0;
-#endif
+#    endif
 	  u32reset ();
 	}
 #  endif
@@ -298,9 +298,9 @@ set_locale_var (const char *var, const char *value)
   if (x == 0)
     {
       if (errno == 0)
-	internal_warning("setlocale: %s: %s (%s)", var, _("cannot change locale"), get_locale_var (var));
+	internal_warning ("setlocale: %s: %s (%s)", var, _("cannot change locale"), get_locale_var (var));
       else
-	internal_warning("setlocale: %s: %s (%s): %s", var, _("cannot change locale"), get_locale_var (var), strerror (errno));
+	internal_warning ("setlocale: %s: %s (%s): %s", var, _("cannot change locale"), get_locale_var (var), strerror (errno));
     }
 
   return (x != 0);
@@ -372,7 +372,7 @@ reset_locale_vars (void)
 
 #if defined (HAVE_SETLOCALE)
   if (lang == 0 || *lang == '\0')
-    maybe_make_export_env ();		/* trust that this will change environment for setlocale */
+    maybe_make_export_env ();	/* trust that this will change environment for setlocale */
   if (setlocale (LC_ALL, lang ? lang : "") == 0)
     return 0;
 
@@ -499,7 +499,7 @@ mk_msgstr (char *string, int *foundnlp)
 
   for (s = string; s && (c = *s); s++)
     {
-      if (c == '\n')	/* <NL> -> \n"<NL>" */
+      if (c == '\n')		/* <NL> -> \n"<NL>" */
 	{
 	  *r++ = '\\';
 	  *r++ = 'n';
@@ -536,7 +536,7 @@ locale_expand (const char *string, int start, int end, int lineno, size_t *lenp)
   size_t len;
 
   temp = (char *)xmalloc (end - start + 1);
-  for (tlen = 0, len = start; len < end; )
+  for (tlen = 0, len = start; len < end;)
     temp[tlen++] = string[len++];
   temp[tlen] = '\0';
 
@@ -556,7 +556,7 @@ locale_expand (const char *string, int start, int end, int lineno, size_t *lenp)
 	  t2 = foundnl ? "\"\"\n" : "";
 
 	  printf ("#: %s:%d\nmsgid %s%s\nmsgstr \"\"\n",
-			yy_input_name (), lineno, t2, t);
+		  yy_input_name (), lineno, t2, t);
 	  free (t);
 	}
       else
@@ -599,14 +599,14 @@ locale_setblanks (void)
   for (x = 0; x < sh_syntabsiz; x++)
     {
       if (locale_isblank (x))
-	sh_syntaxtab[x] |= CSHBRK|CBLANK;
+	sh_syntaxtab[x] |= CSHBRK | CBLANK;
       else if (member (x, shell_break_chars))
 	{
 	  sh_syntaxtab[x] |= CSHBRK;
 	  sh_syntaxtab[x] &= ~CBLANK;
 	}
       else
-	sh_syntaxtab[x] &= ~(CSHBRK|CBLANK);
+	sh_syntaxtab[x] &= ~(CSHBRK | CBLANK);
     }
 }
 
