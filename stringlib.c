@@ -48,7 +48,7 @@
 /* Find STRING in ALIST, a list of string key/int value pairs.  If FLAGS
    is 1, STRING is treated as a pattern and matched using strmatch. */
 int
-find_string_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
+find_string_in_alist (char *string, STRING_INT_ALIST * alist, int flags)
 {
   register int i;
   int r;
@@ -72,20 +72,20 @@ find_string_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
    corresponding string.  Allocates memory for the returned
    string.  FLAGS is currently ignored, but reserved. */
 char *
-find_token_in_alist (int token, STRING_INT_ALIST *alist, int flags)
+find_token_in_alist (int token, STRING_INT_ALIST * alist, int flags)
 {
   register int i;
 
   for (i = 0; alist[i].word; i++)
     {
       if (alist[i].token == token)
-        return (savestring (alist[i].word));
+	return (savestring (alist[i].word));
     }
   return (NULL);
 }
 
 int
-find_index_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
+find_index_in_alist (char *string, STRING_INT_ALIST * alist, int flags)
 {
   register int i;
   int r;
@@ -139,7 +139,7 @@ strsub (const char *string, const char *pat, const char *rep, int global)
 
   patlen = strlen (pat);
   replen = strlen (rep);
-  for (temp = NULL, i = templen = tempsize = 0, repl = 1; string[i]; )
+  for (temp = NULL, i = templen = tempsize = 0, repl = 1; string[i];)
     {
       if (repl && STREQN (string + i, pat, patlen))
 	{
@@ -147,7 +147,7 @@ strsub (const char *string, const char *pat, const char *rep, int global)
 	    RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
 
 #if 0
-	  for (r = (char *)rep; *r; )	/* can rep == "" */
+	  for (r = (char *)rep; *r;)	/* can rep == "" */
 	    temp[templen++] = *r++;
 #else
 	  memcpy (temp + templen, rep, replen);
@@ -189,7 +189,7 @@ strcreplace (const char *string, int c, const char *text, int flags)
   rlen = len + strlen (string) + 2;
   ret = (char *)xmalloc (rlen);
 
-  for (p = string, r = ret; p && *p; )
+  for (p = string, r = ret; p && *p;)
     {
       if (*p == c)
 	{
@@ -225,7 +225,7 @@ strcreplace (const char *string, int c, const char *text, int flags)
 
       ind = r - ret;
       RESIZE_MALLOCED_BUFFER (ret, ind, 2, rlen, rlen);
-      r = ret + ind;			/* in case reallocated */
+      r = ret + ind;		/* in case reallocated */
       *r++ = *p++;
     }
   *r = '\0';
@@ -295,7 +295,7 @@ str_lastsame (const char *old, const char *new)
   const char *o, *n;
 
   if (old == 0 || *old == '\0' || new == 0 || *new == '\0')
-    return 0;	/* XXX */
+    return 0;			/* XXX */
 
   o = old + STRLEN (old) - 1;
   n = new + STRLEN (new) - 1;
