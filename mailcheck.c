@@ -39,7 +39,7 @@
 #include <tilde/tilde.h>
 
 #if defined (READLINE)
-# include <readline/readline.h>
+#  include <readline/readline.h>
 #endif
 
 /* Values for flags word in struct _fileinfo */
@@ -92,7 +92,7 @@ time_to_check_mail (void)
   intmax_t seconds;
 
 #if defined (READLINE)
-  if (RL_ISSTATE (RL_STATE_COMPLETING|RL_STATE_DISPATCHING))
+  if (RL_ISSTATE (RL_STATE_COMPLETING | RL_STATE_DISPATCHING))
     return (0);
 #endif
 
@@ -193,7 +193,7 @@ add_mail_file (char *file, const char *msg)
 
   i = mailfiles_count++;
   mailfiles = (FILEINFO **)xrealloc
-		(mailfiles, mailfiles_count * sizeof (FILEINFO *));
+				    (mailfiles, mailfiles_count * sizeof (FILEINFO *));
 
   mailfiles[i] = alloc_mail_file (filename, msg);
   init_mail_file (i);
@@ -350,7 +350,7 @@ make_default_mailpath (void)
   get_current_user_info ();
   mp = (char *)xmalloc (2 + sizeof (DEFAULT_MAIL_DIRECTORY) + strlen (current_user.user_name));
   strcpy (mp, DEFAULT_MAIL_DIRECTORY);
-  mp[sizeof(DEFAULT_MAIL_DIRECTORY) - 1] = '/';
+  mp[sizeof (DEFAULT_MAIL_DIRECTORY) - 1] = '/';
   strcpy (mp + sizeof (DEFAULT_MAIL_DIRECTORY), current_user.user_name);
   return (mp);
 #else
