@@ -1143,6 +1143,16 @@ execute_bashrc_file (void)
     maybe_execute_file (DEFAULT_BASHRC, 1);
 }
 
+#if !defined (NON_INTERACTIVE_LOGIN_SHELLS)
+/* Normal case: read ~/.profile etc, when we have BOTH a leading '-' on argv[0]
+ * AND be interactive. */
+#  define NON_POSIX_LOGIN_SHELL()	(login_shell < 0 && posixly_correct == 0)
+#else
+/* Special case: read ~/.profile etc, when we have a leading '-' on argv[0],
+ * regardless of whether we're interactive */
+#  define NON_POSIX_LOGIN_SHELL()	(login_shell && posixly_correct == 0)
+#endif
+
 static void
 run_startup_files (void)
 {
@@ -1166,11 +1176,7 @@ run_startup_files (void)
       ssh_reading_startup_files = 0;
       /* If we were run by sshd or we think we were run by rshd, execute
 	 ~/.bashrc if we are a top-level shell. */
-#if 1	/* TAG:bash-5.3 */
       if ((run_by_ssh || isnetconn (fileno (stdin))) && shell_level < 2)
-#else
-      if (isnetconn (fileno (stdin) && shell_level < 2)
-#endif
 	{
 	  ssh_reading_startup_files = 1;
 	  execute_bashrc_file ();
@@ -1190,11 +1196,7 @@ run_startup_files (void)
      runs the login shell startup files, no matter whether or not it is
      interactive.  If NON_INTERACTIVE_LOGIN_SHELLS is defined, run the
      startup files if argv[0][0] == '-' as well. */
-#if defined (NON_INTERACTIVE_LOGIN_SHELLS)
-  if (login_shell && posixly_correct == 0)
-#else
-  if (login_shell < 0 && posixly_correct == 0)
-#endif
+  if (NON_POSIX_LOGIN_SHELL ())
     {
       /* We don't execute .bashrc for login shells. */
       no_rc++;
