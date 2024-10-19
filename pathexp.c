@@ -99,7 +99,7 @@ unquoted_glob_pattern_p (char *string)
 	case '+':
 	case '@':
 	case '!':
-	  if (extended_glob && *string == '(')	/*)*/
+	  if (extended_glob && *string == '(')	/*) */
 	    return (1);
 	  continue;
 
@@ -113,10 +113,10 @@ unquoted_glob_pattern_p (char *string)
 		string++;
 	    }
 	  else
-	  /*FALLTHROUGH*/
-   	case CTLESC:
-	  if (*string++ == '\0')
-	    return (0);
+	/*FALLTHROUGH*/
+	case CTLESC:
+	    if (*string++ == '\0')
+	      return (0);
 	}
 
       /* Advance one fewer byte than an entire multibyte character to
@@ -168,7 +168,7 @@ glob_char_p (const char *s)
 #if defined (EXTENDED_GLOB)
     case '+':
     case '@':
-      return (s[1] == '('); /*)*/
+      return (s[1] == '(');	/*) */
     case '(':
     case '|':
     case ')':
@@ -229,14 +229,14 @@ quote_string_for_globbing (const char *pathname, int qflags)
   for (i = j = 0; pathname[i]; i++)
     {
       /* Fix for CTLESC at the end of the string? */
-      if (pathname[i] == CTLESC && pathname[i+1] == '\0')
+      if (pathname[i] == CTLESC && pathname[i + 1] == '\0')
 	{
 	  temp[j++] = pathname[i++];
 	  break;
 	}
       /* If we are parsing regexp, turn CTLESC CTLESC into CTLESC. It's not an
 	 ERE special character, so we should just be able to pass it through. */
-      else if ((qflags & (QGLOB_REGEXP|QGLOB_CTLESC)) && pathname[i] == CTLESC && (pathname[i+1] == CTLESC || pathname[i+1] == CTLNUL))
+      else if ((qflags & (QGLOB_REGEXP | QGLOB_CTLESC)) && pathname[i] == CTLESC && (pathname[i + 1] == CTLESC || pathname[i + 1] == CTLNUL))
 	{
 	  i++;
 	  temp[j++] = pathname[i];
@@ -244,10 +244,10 @@ quote_string_for_globbing (const char *pathname, int qflags)
 	}
       else if (pathname[i] == CTLESC)
 	{
-convert_to_backslash:
-	  cc = pathname[i+1];
+	convert_to_backslash:
+	  cc = pathname[i + 1];
 
-	  if ((qflags & QGLOB_FILENAME) && pathname[i+1] == '/')
+	  if ((qflags & QGLOB_FILENAME) && pathname[i + 1] == '/')
 	    continue;
 
 	  /* What to do if preceding char is backslash? */
@@ -259,21 +259,21 @@ convert_to_backslash:
 
 	  /* We don't have to backslash-quote non-special BRE characters if
 	     we're quoting a glob pattern. */
-	  if (cc != CTLESC && (qflags & QGLOB_REGEXP) == 0 && glob_quote_char (pathname+i+1) == 0)
+	  if (cc != CTLESC && (qflags & QGLOB_REGEXP) == 0 && glob_quote_char (pathname + i + 1) == 0)
 	    continue;
 
 	  /* If we're in a multibyte locale, don't bother quoting multibyte
 	     characters. It matters if we're going to convert NFD to NFC on
 	     macOS, and doesn't make a difference on other systems. */
 	  if (cc != CTLESC && locale_utf8locale && UTF8_SINGLEBYTE (cc) == 0)
-	    continue;	/* probably don't need to check for UTF-8 locale */
+	    continue;		/* probably don't need to check for UTF-8 locale */
 
 	  temp[j++] = '\\';
 	  i++;
 	  if (pathname[i] == '\0')
 	    break;
 	}
-      else if ((qflags & QGLOB_REGEXP) && (i == 0 || pathname[i-1] != CTLESC) && pathname[i] == '[')	/*]*/
+      else if ((qflags & QGLOB_REGEXP) && (i == 0 || pathname[i - 1] != CTLESC) && pathname[i] == '[')	/*] */
 	{
 	  temp[j++] = pathname[i++];	/* open bracket */
 	  savej = j;
@@ -318,7 +318,7 @@ convert_to_backslash:
 		  temp[j++] = c;
 		  temp[j++] = pathname[i++];
 		  if (pathname[i] == ']')
-		    temp[j++] = pathname[i++];		/* right brack can be in equiv */
+		    temp[j++] = pathname[i++];	/* right brack can be in equiv */
 		  equiv = 1;
 		}
 	      else if (equiv && c == '=' && pathname[i] == ']')
@@ -332,7 +332,7 @@ convert_to_backslash:
 		  temp[j++] = c;
 		  temp[j++] = pathname[i++];
 		  if (pathname[i] == ']')
-		    temp[j++] = pathname[i++];		/* right brack can be in collsym */
+		    temp[j++] = pathname[i++];	/* right brack can be in collsym */
 		  collsym = 1;
 		}
 	      else if (collsym && c == '.' && pathname[i] == ']')
@@ -376,8 +376,8 @@ convert_to_backslash:
 	    break;
 	  /* If we are turning CTLESC CTLESC into CTLESC, we need to do that
 	     even when the first CTLESC is preceded by a backslash. */
-	  if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC && (pathname[i+1] == CTLESC || pathname[i+1] == CTLNUL))
-	    i++;	/* skip over the CTLESC */
+	  if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC && (pathname[i + 1] == CTLESC || pathname[i + 1] == CTLNUL))
+	    i++;		/* skip over the CTLESC */
 	  else if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC)
 	    /* A little more general: if there is an unquoted backslash in the
 	       pattern and we are handling quoted characters in the pattern,
@@ -390,7 +390,7 @@ convert_to_backslash:
 	    goto convert_to_backslash;
 	}
       else if (pathname[i] == '\\' && (qflags & QGLOB_REGEXP))
-        last_was_backslash = 1;
+	last_was_backslash = 1;
       temp[j++] = pathname[i];
     }
 endpat:
@@ -411,7 +411,7 @@ quote_globbing_chars (const char *string)
   send = string + slen;
 
   temp = (char *)xmalloc (slen * 2 + 1);
-  for (t = temp, s = string; *s; )
+  for (t = temp, s = string; *s;)
     {
       if (glob_char_p (s))
 	*t++ = '\\';
@@ -434,7 +434,7 @@ shell_glob_filename (const char *pathname, int qflags)
 
   noglob_dot_filenames = glob_dot_filenames == 0;
 
-  temp = quote_string_for_globbing (pathname, QGLOB_FILENAME|qflags);
+  temp = quote_string_for_globbing (pathname, QGLOB_FILENAME | qflags);
   gflags = glob_star ? GX_GLOBSTAR : 0;
   results = glob_filename (temp, gflags);
   free (temp);
@@ -444,7 +444,7 @@ shell_glob_filename (const char *pathname, int qflags)
       if (should_ignore_glob_matches ())
 	ignore_glob_matches (results);
       if (results && results[0])
-        sh_sortglob (results);
+	sh_sortglob (results);
       else
 	{
 	  FREE (results);
@@ -602,7 +602,7 @@ split_ignorespec (char *s, int *ip)
   if (s[i] == 0)
     return 0;
 
-  n = skip_to_delim (s, i, ":", SD_NOJMP|SD_EXTGLOB|SD_GLOB);
+  n = skip_to_delim (s, i, ":", SD_NOJMP | SD_EXTGLOB | SD_GLOB);
   t = substring (s, i, n);
 
   if (s[n] == ':')
@@ -631,7 +631,7 @@ setup_ignore_patterns (struct ignorevar *ivp)
   if (ivp->ignores)
     {
       for (p = ivp->ignores; p->val; p++)
-	free(p->val);
+	free (p->val);
       free (ivp->ignores);
       ivp->ignores = (struct ign *)NULL;
     }
@@ -673,15 +673,15 @@ setup_ignore_patterns (struct ignorevar *ivp)
 static int glob_sorttype = SORT_NONE;
 
 static STRING_INT_ALIST sorttypes[] = {
-  { "name",	SORT_NAME },
-  { "size",	SORT_SIZE },
-  { "mtime",	SORT_MTIME },
-  { "atime",	SORT_ATIME },
-  { "ctime",	SORT_CTIME },
-  { "blocks",	SORT_BLOCKS },
-  { "numeric",	SORT_NUMERIC },
-  { "nosort",	SORT_NOSORT },
-  { (char *)NULL,	-1 }
+  { "name", SORT_NAME },
+  { "size", SORT_SIZE },
+  { "mtime", SORT_MTIME },
+  { "atime", SORT_ATIME },
+  { "ctime", SORT_CTIME },
+  { "blocks", SORT_BLOCKS },
+  { "numeric", SORT_NUMERIC },
+  { "nosort", SORT_NOSORT },
+  { (char *)NULL, -1 }
 };
 
 /* A subset of the fields in the posix stat struct -- the ones we need --
@@ -735,7 +735,7 @@ setup_globsort (const char *varname)
   if (*val == 0)
     {
       /* A bare `+' means the default sort by name in ascending order; a bare
-         `-' means to sort by name in descending order. */
+	 `-' means to sort by name in descending order. */
       glob_sorttype = SORT_NAME | r;
       return;
     }
@@ -761,7 +761,7 @@ globsort_sizecmp (struct globsort_t *g1, struct globsort_t *g2)
 {
   int x;
 
-  x = (glob_sorttype < SORT_REVERSE) ? GENCMP(g1->st.size, g2->st.size) : GENCMP(g2->st.size, g1->st.size);
+  x = (glob_sorttype < SORT_REVERSE) ? GENCMP (g1->st.size, g2->st.size) : GENCMP (g2->st.size, g1->st.size);
   return (x == 0) ? (globsort_namecmp (&g1->name, &g2->name)) : x;
 }
 
@@ -797,7 +797,7 @@ globsort_blockscmp (struct globsort_t *g1, struct globsort_t *g2)
 {
   int x;
 
-  x = (glob_sorttype < SORT_REVERSE) ? GENCMP(g1->st.blocks, g2->st.blocks) : GENCMP(g2->st.blocks, g1->st.blocks);
+  x = (glob_sorttype < SORT_REVERSE) ? GENCMP (g1->st.blocks, g2->st.blocks) : GENCMP (g2->st.blocks, g1->st.blocks);
   return (x == 0) ? (globsort_namecmp (&g1->name, &g2->name)) : x;
 }
 
@@ -823,9 +823,9 @@ globsort_numericcmp (struct globsort_t *g1, struct globsort_t *g2)
   v1 = gs_checknum (g1->name, &i1);
   v2 = gs_checknum (g2->name, &i2);
 
-  if (v1 && v2)		/* both valid numbers */
+  if (v1 && v2)			/* both valid numbers */
     /* Don't need to fall back to name comparison here */
-    return (glob_sorttype < SORT_REVERSE) ? GENCMP(i1, i2) : GENCMP(i2, i1);
+    return (glob_sorttype < SORT_REVERSE) ? GENCMP (i1, i2) : GENCMP (i2, i1);
   else if (v1 == 0 && v2 == 0)	/* neither valid numbers */
     return (globsort_namecmp (&g1->name, &g2->name));
   else if (v1 != 0 && v2 == 0)
@@ -849,15 +849,15 @@ globsort_buildarray (char **array, size_t len)
     {
       ret[i].name = array[i];
       if (stat (array[i], &st) != 0)
-        ret[i].st = glob_nullstat;
+	  ret[i].st = glob_nullstat;
       else
-        {
-          ret[i].st.size = st.st_size;
-          ret[i].st.mtime = get_stat_mtime (&st);
-          ret[i].st.atime = get_stat_atime (&st);
-          ret[i].st.ctime = get_stat_ctime (&st);
-          ret[i].st.blocks = st.st_blocks;
-        }
+	{
+	  ret[i].st.size = st.st_size;
+	  ret[i].st.mtime = get_stat_mtime (&st);
+	  ret[i].st.atime = get_stat_atime (&st);
+	  ret[i].st.ctime = get_stat_ctime (&st);
+	  ret[i].st.blocks = st.st_blocks;
+	}
     }
 
   return ret;
@@ -907,12 +907,12 @@ sh_sortglob (char **results)
   size_t rlen;
   struct globsort_t *garray;
 
-  if (glob_sorttype == SORT_NOSORT || glob_sorttype == (SORT_NOSORT|SORT_REVERSE))
+  if (glob_sorttype == SORT_NOSORT || glob_sorttype == (SORT_NOSORT | SORT_REVERSE))
     return;
 
   if (glob_sorttype == SORT_NONE || glob_sorttype == SORT_NAME)
     globsort_sortbyname (results);	/* posix sort */
-  else if (glob_sorttype == (SORT_NAME|SORT_REVERSE))
+  else if (glob_sorttype == (SORT_NAME | SORT_REVERSE))
     globsort_sortbyname (results);	/* posix sort reverse order */
   else
     {
@@ -924,7 +924,7 @@ sh_sortglob (char **results)
       garray = globsort_buildarray (results, rlen);
       globsort_sortarray (garray, rlen);
       for (i = 0; i < rlen; i++)
-        results[i] = garray[i].name;
+	results[i] = garray[i].name;
       free (garray);
     }
 }
