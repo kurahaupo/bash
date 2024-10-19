@@ -20,16 +20,16 @@
 */
 
 #if !defined (_FLAGS_H_)
-#define _FLAGS_H_
+#  define _FLAGS_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
 /* Welcome to the world of Un*x, where everything is slightly backwards. */
-#define FLAG_ON '-'
-#define FLAG_OFF '+'
+#  define FLAG_ON	'-'
+#  define FLAG_OFF	'+'
 
-#define FLAG_ERROR -1
-#define FLAG_UNKNOWN (int *)0
+#  define FLAG_ERROR	-1
+#  define FLAG_UNKNOWN	(int *)0
 
 /* The thing that we build the array of flags out of. */
 struct flags_alist {
@@ -53,23 +53,23 @@ extern int
 /* -c, -s invocation options -- not really flags, but they show up in $- */
 extern int want_pending_command, read_from_stdin;
 
-#if 0
+#  if 0
 extern int lexical_scoping;
-#endif
+#  endif
 
-#if defined (BRACE_EXPANSION)
+#  if defined (BRACE_EXPANSION)
 extern int brace_expansion;
-#endif
+#  endif
 
-#if defined (BANG_HISTORY)
+#  if defined (BANG_HISTORY)
 extern int history_expansion;
 extern int histexp_flag;
-#endif /* BANG_HISTORY */
+#  endif /* BANG_HISTORY */
 
-#if defined (RESTRICTED_SHELL)
+#  if defined (RESTRICTED_SHELL)
 extern int restricted;
 extern int restricted_shell;
-#endif /* RESTRICTED_SHELL */
+#  endif /* RESTRICTED_SHELL */
 
 extern int *find_flag (int);
 extern int change_flag (int, int);
@@ -82,6 +82,6 @@ extern void set_current_flags (const char *);
 extern void initialize_flags (void);
 
 /* A macro for efficiency. */
-#define change_flag_char(flag, on_or_off)  change_flag (flag, on_or_off)
+#  define change_flag_char(flag, on_or_off)	change_flag (flag, on_or_off)
 
 #endif /* _FLAGS_H_ */
