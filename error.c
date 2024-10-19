@@ -55,7 +55,7 @@ extern int give_terminal_to (pid_t, int);
 #endif /* JOB_CONTROL */
 
 #if defined (ARRAY_VARS)
-extern const char * const bash_badsub_errmsg;
+extern const char *const bash_badsub_errmsg;
 #endif
 
 static void error_prolog (int);
@@ -63,10 +63,10 @@ static void error_prolog (int);
 /* The current maintainer of the shell.  You change this in the
    Makefile. */
 #if !defined (MAINTAINER)
-#define MAINTAINER "bash-maintainers@gnu.org"
+#  define MAINTAINER "bash-maintainers@gnu.org"
 #endif
 
-const char * const the_current_maintainer = MAINTAINER;
+const char *const the_current_maintainer = MAINTAINER;
 
 int gnu_error_format = 0;
 
@@ -340,14 +340,14 @@ strescape (const char *str)
       if (*s < ' ')
 	{
 	  *r++ = '^';
-	  *r++ = *s+64;
+	  *r++ = *s + 64;
 	}
       else if (*s == 127)
 	{
 	  *r++ = '^';
 	  *r++ = '?';
 	}
-     else
+      else
 	*r++ = *s;
     }
 
@@ -360,7 +360,7 @@ itrace (const char *format, ...)
 {
   va_list args;
 
-  fprintf(stderr, "TRACE: pid %ld: ", (long)getpid());
+  fprintf (stderr, "TRACE: pid %ld: ", (long)getpid ());
 
   va_start (args, format);
 
@@ -369,7 +369,7 @@ itrace (const char *format, ...)
 
   va_end (args);
 
-  fflush(stderr);
+  fflush (stderr);
 }
 
 /* A trace function for silent debugging -- doesn't require a control
@@ -381,14 +381,14 @@ trace (const char *format, ...)
   static FILE *tracefp = (FILE *)NULL;
 
   if (tracefp == NULL)
-    tracefp = fopen("/tmp/bash-trace.log", "a+");
+    tracefp = fopen ("/tmp/bash-trace.log", "a+");
 
   if (tracefp == NULL)
     tracefp = stderr;
   else
-    fcntl (fileno (tracefp), F_SETFD, 1);     /* close-on-exec */
+    fcntl (fileno (tracefp), F_SETFD, 1);	/* close-on-exec */
 
-  fprintf(tracefp, "TRACE: pid %ld: ", (long)getpid());
+  fprintf (tracefp, "TRACE: pid %ld: ", (long)getpid ());
 
   va_start (args, format);
 
@@ -397,7 +397,7 @@ trace (const char *format, ...)
 
   va_end (args);
 
-  fflush(tracefp);
+  fflush (tracefp);
 }
 
 #endif /* DEBUG */
@@ -409,12 +409,12 @@ trace (const char *format, ...)
 /* **************************************************************** */
 
 
-static const char * const cmd_error_table[] = {
-	N_("unknown command error"),	/* CMDERR_DEFAULT */
-	N_("bad command type"),		/* CMDERR_BADTYPE */
-	N_("bad connector"),		/* CMDERR_BADCONN */
-	N_("bad jump"),			/* CMDERR_BADJUMP */
-	0
+static const char *const cmd_error_table[] = {
+  N_("unknown command error"),	/* CMDERR_DEFAULT */
+  N_("bad command type"),	/* CMDERR_BADTYPE */
+  N_("bad connector"),		/* CMDERR_BADCONN */
+  N_("bad jump"),		/* CMDERR_BADJUMP */
+  0
 };
 
 void
