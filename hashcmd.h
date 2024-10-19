@@ -26,7 +26,7 @@
 extern HASH_TABLE *hashed_filenames;
 
 typedef struct _pathdata {
-  char *path;		/* The full pathname of the file. */
+  char *path;			/* The full pathname of the file. */
   int flags;
 } PATH_DATA;
 
