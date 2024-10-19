@@ -22,24 +22,24 @@
 
 #if defined (PROGRAMMABLE_COMPLETION)
 
-#include "bashansi.h"
-#include <stdio.h>
+#  include "bashansi.h"
+#  include <stdio.h>
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include "bashintl.h"
+#  include "bashintl.h"
 
-#include "shell.h"
-#include "pcomplete.h"
+#  include "shell.h"
+#  include "pcomplete.h"
 
-#define COMPLETE_HASH_BUCKETS	512	/* must be power of two */
+#  define COMPLETE_HASH_BUCKETS	512	/* must be power of two */
 
-#define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
+#  define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
 
 HASH_TABLE *prog_completes = (HASH_TABLE *)NULL;
 
@@ -94,7 +94,7 @@ compspec_copy (COMPSPEC *cs)
 
   new = (COMPSPEC *)xmalloc (sizeof (COMPSPEC));
 
-  new->refcount = 1; 	/* was cs->refcount, but this is a fresh copy */
+  new->refcount = 1;		/* was cs->refcount, but this is a fresh copy */
   new->actions = cs->actions;
   new->options = cs->options;
 
