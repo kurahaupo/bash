@@ -1238,7 +1238,7 @@ bash_tilde_expand (const char *s, int assign_p)
 static int ngroups, maxgroups;
 
 /* The set of groups that this user is a member of. */
-static GETGROUPS_T *group_array = (GETGROUPS_T *) NULL;
+static GETGROUPS_T *group_array = (GETGROUPS_T *)NULL;
 
 #if !defined (NOGROUP)
 #  define NOGROUP (gid_t) -1
@@ -1253,7 +1253,7 @@ initialize_group_array (void)
     maxgroups = getmaxgroups ();
 
   ngroups = 0;
-  group_array = (GETGROUPS_T *) xrealloc (group_array, maxgroups * sizeof (GETGROUPS_T));
+  group_array = (GETGROUPS_T *)xrealloc (group_array, maxgroups * sizeof (GETGROUPS_T));
 
 #if defined (HAVE_GETGROUPS)
   ngroups = getgroups (maxgroups, group_array);
