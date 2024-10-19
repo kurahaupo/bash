@@ -37,7 +37,7 @@
 #include "shell.h"
 #include "execute_cmd.h"
 #if defined (JOB_CONTROL)
-#include "jobs.h"
+#  include "jobs.h"
 #endif /* JOB_CONTROL */
 #include "siglist.h"
 #include "sig.h"
@@ -113,10 +113,10 @@ initialize_signals (int reinit)
    caught.  The orig_handler member is present so children can reset
    these signals back to their original handlers. */
 struct termsig {
-     int signum;
-     SigHandler *orig_handler;
-     int orig_flags;
-     int core_dump;
+  int signum;
+  SigHandler *orig_handler;
+  int orig_flags;
+  int core_dump;
 };
 
 #define NULL_HANDLER (SigHandler *)SIG_DFL
@@ -126,91 +126,91 @@ struct termsig {
    and so forth. */
 static struct termsig terminating_signals[] = {
 #ifdef SIGHUP
-{  SIGHUP, NULL_HANDLER, 0 },
+  { SIGHUP, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGINT
-{  SIGINT, NULL_HANDLER, 0 },
+  { SIGINT, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGILL
-{  SIGILL, NULL_HANDLER, 0, 1},
+  { SIGILL, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGTRAP
-{  SIGTRAP, NULL_HANDLER, 0, 1 },
+  { SIGTRAP, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGIOT
-{  SIGIOT, NULL_HANDLER, 0, 1 },
+  { SIGIOT, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGDANGER
-{  SIGDANGER, NULL_HANDLER, 0 },
+  { SIGDANGER, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGEMT
-{  SIGEMT, NULL_HANDLER, 0 },
+  { SIGEMT, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGFPE
-{  SIGFPE, NULL_HANDLER, 0, 1 },
+  { SIGFPE, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGBUS
-{  SIGBUS, NULL_HANDLER, 0, 1 },
+  { SIGBUS, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGSEGV
-{  SIGSEGV, NULL_HANDLER, 0, 1 },
+  { SIGSEGV, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGSYS
-{  SIGSYS, NULL_HANDLER, 0, 1 },
+  { SIGSYS, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGPIPE
-{  SIGPIPE, NULL_HANDLER, 0 },
+  { SIGPIPE, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGALRM
-{  SIGALRM, NULL_HANDLER, 0 },
+  { SIGALRM, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGTERM
-{  SIGTERM, NULL_HANDLER, 0 },
+  { SIGTERM, NULL_HANDLER, 0 },
 #endif
 
 /* These don't generate core dumps on anything but Linux, but we're doing
    this just for Linux anyway. */
 #ifdef SIGXCPU
-{  SIGXCPU, NULL_HANDLER, 0, 1 },
+  { SIGXCPU, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGXFSZ
-{  SIGXFSZ, NULL_HANDLER, 0, 1 },
+  { SIGXFSZ, NULL_HANDLER, 0, 1 },
 #endif
 
 #ifdef SIGVTALRM
-{  SIGVTALRM, NULL_HANDLER, 0 },
+  { SIGVTALRM, NULL_HANDLER, 0 },
 #endif
 
 #if 0
-#ifdef SIGPROF
-{  SIGPROF, NULL_HANDLER, 0 },
-#endif
+#  ifdef SIGPROF
+  { SIGPROF, NULL_HANDLER, 0 },
+#  endif
 #endif
 
 #ifdef SIGLOST
-{  SIGLOST, NULL_HANDLER, 0 },
+  { SIGLOST, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGUSR1
-{  SIGUSR1, NULL_HANDLER, 0 },
+  { SIGUSR1, NULL_HANDLER, 0 },
 #endif
 
 #ifdef SIGUSR2
-{  SIGUSR2, NULL_HANDLER, 0 },
+  { SIGUSR2, NULL_HANDLER, 0 },
 #endif
 };
 
@@ -258,14 +258,14 @@ initialize_terminating_signals (void)
 	continue;
 
       sigaction (XSIG (i), &act, &oact);
-      XHANDLER(i) = oact.sa_handler;
-      XSAFLAGS(i) = oact.sa_flags;
+      XHANDLER (i) = oact.sa_handler;
+      XSAFLAGS (i) = oact.sa_flags;
 
-#if 0
-      set_original_signal (XSIG(i), XHANDLER(i));	/* optimization */
-#else
-      set_original_signal (XSIG(i), act.sa_handler);	/* optimization */
-#endif
+#  if 0
+      set_original_signal (XSIG (i), XHANDLER (i));	/* optimization */
+#  else
+      set_original_signal (XSIG (i), act.sa_handler);	/* optimization */
+#  endif
 
       /* Don't do anything with signals that are ignored at shell entry
 	 if the shell is not interactive. */
@@ -275,10 +275,10 @@ initialize_terminating_signals (void)
 	  sigaction (XSIG (i), &oact, &act);
 	  set_signal_hard_ignored (XSIG (i));
 	}
-#if defined (SIGPROF) && !defined (_MINIX)
+#  if defined (SIGPROF) && !defined (_MINIX)
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
 	sigaction (XSIG (i), &oact, (struct sigaction *)NULL);
-#endif /* SIGPROF && !_MINIX */
+#  endif /* SIGPROF && !_MINIX */
     }
 #else /* !HAVE_POSIX_SIGNALS */
 
@@ -288,8 +288,8 @@ initialize_terminating_signals (void)
       if (signal_is_trapped (XSIG (i)))
 	continue;
 
-      XHANDLER(i) = signal (XSIG (i), termsig_sighandler);
-      XSAFLAGS(i) = 0;
+      XHANDLER (i) = signal (XSIG (i), termsig_sighandler);
+      XSAFLAGS (i) = 0;
       /* Don't do anything with signals that are ignored at shell entry
 	 if the shell is not interactive. */
       /* XXX - should we do this for interactive shells, too? */
@@ -298,10 +298,10 @@ initialize_terminating_signals (void)
 	  signal (XSIG (i), SIG_IGN);
 	  set_signal_hard_ignored (XSIG (i));
 	}
-#ifdef SIGPROF
+#  ifdef SIGPROF
       if (XSIG (i) == SIGPROF && XHANDLER (i) != SIG_DFL && XHANDLER (i) != SIG_IGN)
 	signal (XSIG (i), XHANDLER (i));
-#endif
+#  endif
     }
 
 #endif /* !HAVE_POSIX_SIGNALS */
@@ -364,7 +364,7 @@ reset_terminating_signals (void)
 
       act.sa_handler = XHANDLER (i);
       act.sa_flags = XSAFLAGS (i);
-      sigaction (XSIG (i), &act, (struct sigaction *) NULL);
+      sigaction (XSIG (i), &act, (struct sigaction *)NULL);
     }
 #else /* !HAVE_POSIX_SIGNALS */
   for (i = 0; i < TERMSIGS_LENGTH; i++)
@@ -509,42 +509,42 @@ termsig_sighandler (int sig)
      terminate right away. */
   if (
 #ifdef SIGHUP
-    sig != SIGHUP &&
+       sig != SIGHUP &&
 #endif
 #ifdef SIGINT
-    sig != SIGINT &&
+       sig != SIGINT &&
 #endif
 #ifdef SIGDANGER
-    sig != SIGDANGER &&
+       sig != SIGDANGER &&
 #endif
 #ifdef SIGPIPE
-    sig != SIGPIPE &&
+       sig != SIGPIPE &&
 #endif
 #ifdef SIGALRM
-    sig != SIGALRM &&
+       sig != SIGALRM &&
 #endif
 #ifdef SIGTERM
-    sig != SIGTERM &&
+       sig != SIGTERM &&
 #endif
 #ifdef SIGXCPU
-    sig != SIGXCPU &&
+       sig != SIGXCPU &&
 #endif
 #ifdef SIGXFSZ
-    sig != SIGXFSZ &&
+       sig != SIGXFSZ &&
 #endif
 #ifdef SIGVTALRM
-    sig != SIGVTALRM &&
+       sig != SIGVTALRM &&
 #endif
 #ifdef SIGLOST
-    sig != SIGLOST &&
+       sig != SIGLOST &&
 #endif
 #ifdef SIGUSR1
-    sig != SIGUSR1 &&
+       sig != SIGUSR1 &&
 #endif
 #ifdef SIGUSR2
-   sig != SIGUSR2 &&
+       sig != SIGUSR2 &&
 #endif
-   sig == terminating_signal)
+       sig == terminating_signal)
     terminate_immediately = 1;
 
   /* If we are currently handling a terminating signal, we have a couple of
@@ -564,7 +564,7 @@ termsig_sighandler (int sig)
 #  if defined (READLINE)
       if (interactive_shell == 0 || interactive == 0 || (sig != SIGHUP && sig != SIGTERM) || no_line_editing || (RL_ISSTATE (RL_STATE_READCMD) == 0))
 #  endif
-        history_lines_this_session = 0;
+	history_lines_this_session = 0;
 #endif
       terminate_immediately = 0;
       termsig_handler (sig);
@@ -578,7 +578,7 @@ termsig_sighandler (int sig)
      RL_STATE_TERMPREPPED is possibly redundant. */
   if (RL_ISSTATE (RL_STATE_SIGHANDLER) || RL_ISSTATE (RL_STATE_TERMPREPPED))
     bashline_set_event_hook ();
-  else if (RL_ISSTATE (RL_STATE_COMPLETING|RL_STATE_DISPATCHING))
+  else if (RL_ISSTATE (RL_STATE_COMPLETING | RL_STATE_DISPATCHING))
     bashline_set_event_hook ();
 #endif
 
@@ -617,11 +617,11 @@ termsig_handler (int sig)
     read_tty_cleanup ();
 
 #if defined (JOB_CONTROL)
-  if (sig == SIGHUP && (interactive || (subshell_environment & (SUBSHELL_COMSUB|SUBSHELL_PROCSUB))))
+  if (sig == SIGHUP && (interactive || (subshell_environment & (SUBSHELL_COMSUB | SUBSHELL_PROCSUB))))
     hangup_all_jobs ();
 
   /* XXX - should we also suppress this call if SUBSHELL_PIPE? */
-  if ((subshell_environment & (SUBSHELL_COMSUB|SUBSHELL_PROCSUB)) == 0)
+  if ((subshell_environment & (SUBSHELL_COMSUB | SUBSHELL_PROCSUB)) == 0)
     end_job_control ();
 #endif /* JOB_CONTROL */
 
@@ -637,7 +637,7 @@ termsig_handler (int sig)
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
 
-  run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
+  run_exit_trap ();		/* XXX - run exit trap possibly in signal context? */
 
   kill_shell (sig);
 }
@@ -660,7 +660,7 @@ kill_shell (int sig)
   kill (getpid (), sig);
 
   if (dollar_dollar_pid != 1)
-    exit (128+sig);		/* just in case the kill fails? */
+    exit (128 + sig);		/* just in case the kill fails? */
 
   /* We get here only under extraordinarily rare circumstances. */
 
@@ -681,9 +681,9 @@ kill_shell (int sig)
   sigprocmask (SIG_SETMASK, &mask, (sigset_t *)NULL);
 
   if (core)
-    *((volatile unsigned long *) NULL) = 0xdead0000 + sig;	/* SIGSEGV */
+    *((volatile unsigned long *)NULL) = 0xdead0000 + sig;	/* SIGSEGV */
 
-  exit (128+sig);
+  exit (128 + sig);
 }
 #undef XSIG
 
@@ -730,7 +730,7 @@ sigint_sighandler (int sig)
      quick response. */
   else if (RL_ISSTATE (RL_STATE_SIGHANDLER))
     bashline_set_event_hook ();
-  else if (RL_ISSTATE (RL_STATE_COMPLETING|RL_STATE_DISPATCHING))
+  else if (RL_ISSTATE (RL_STATE_COMPLETING | RL_STATE_DISPATCHING))
     bashline_set_event_hook ();
 #endif
 
@@ -741,9 +741,9 @@ sigint_sighandler (int sig)
 sighandler
 sigwinch_sighandler (int sig)
 {
-#if defined (MUST_REINSTALL_SIGHANDLERS)
+#  if defined (MUST_REINSTALL_SIGHANDLERS)
   set_signal_handler (SIGWINCH, sigwinch_sighandler);
-#endif /* MUST_REINSTALL_SIGHANDLERS */
+#  endif /* MUST_REINSTALL_SIGHANDLERS */
   sigwinch_received = 1;
   SIGRETURN (0);
 }
@@ -753,7 +753,7 @@ void
 set_sigwinch_handler (void)
 {
 #if defined (SIGWINCH)
- old_winch = set_signal_handler (SIGWINCH, sigwinch_sighandler);
+  old_winch = set_signal_handler (SIGWINCH, sigwinch_sighandler);
 #endif
 }
 
@@ -814,13 +814,13 @@ sigprocmask (int operation, int *newset, int *oldset)
 
 #else
 
-#if !defined (SA_INTERRUPT)
-#  define SA_INTERRUPT 0
-#endif
+#  if !defined (SA_INTERRUPT)
+#    define SA_INTERRUPT 0
+#  endif
 
-#if !defined (SA_RESTART)
-#  define SA_RESTART 0
-#endif
+#  if !defined (SA_RESTART)
+#    define SA_RESTART 0
+#  endif
 
 SigHandler *
 set_signal_handler (int sig, SigHandler *handler)
@@ -833,20 +833,20 @@ set_signal_handler (int sig, SigHandler *handler)
   /* XXX - bash-4.2 */
   /* We don't want a child death to interrupt interruptible system calls, even
      if we take the time to reap children */
-#if defined (SIGCHLD)
+#  if defined (SIGCHLD)
   if (sig == SIGCHLD)
-    act.sa_flags |= SA_RESTART;		/* XXX */
-#endif
+    act.sa_flags |= SA_RESTART;	/* XXX */
+#  endif
   /* Let's see if we can keep SIGWINCH from interrupting interruptible system
      calls, like open(2)/read(2)/write(2) */
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
   if (sig == SIGWINCH)
-    act.sa_flags |= SA_RESTART;		/* XXX */
-#endif
+    act.sa_flags |= SA_RESTART;	/* XXX */
+#  endif
   /* If we're installing a SIGTERM handler for interactive shells, we want
      it to be as close to SIG_IGN as possible. */
   if (sig == SIGTERM && handler == sigterm_sighandler)
-    act.sa_flags |= SA_RESTART;		/* XXX */
+    act.sa_flags |= SA_RESTART;	/* XXX */
 
   sigemptyset (&act.sa_mask);
   sigemptyset (&oact.sa_mask);
