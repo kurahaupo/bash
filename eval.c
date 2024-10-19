@@ -61,9 +61,9 @@ int
 reader_loop (void)
 {
   int our_indirection_level;
-  COMMAND * volatile current_command;
+  COMMAND *volatile current_command;
 
-  USE_VAR(current_command);
+  USE_VAR (current_command);
 
   current_command = (COMMAND *)NULL;
 
@@ -141,7 +141,7 @@ reader_loop (void)
 
 #if (defined (ultrix) && defined (mips)) || defined (C_ALLOCA)
       /* Attempt to reclaim memory allocated with alloca (). */
-      (void) alloca (0);
+      (void)alloca (0);
 #endif
 
       if (read_command () == 0)
@@ -226,12 +226,12 @@ pretty_print_loop (void)
     {
       code = setjmp_nosigs (top_level);
       if (code)
-        return (EXECUTION_FAILURE);
-      if (read_command() == 0)
+	return (EXECUTION_FAILURE);
+      if (read_command () == 0)
 	{
 	  current_command = global_command;
 	  global_command = 0;
-	  posixly_correct = 1;			/* print posix-conformant */
+	  posixly_correct = 1;	/* print posix-conformant */
 	  if (current_command && (command_to_print = make_command_string (current_command)))
 	    {
 	      printf ("%s\n", command_to_print);	/* for now */
@@ -239,8 +239,8 @@ pretty_print_loop (void)
 	    }
 	  else if (last_was_newline == 0)
 	    {
-	       printf ("\n");
-	       last_was_newline = 1;
+	      printf ("\n");
+	      last_was_newline = 1;
 	    }
 	  posixly_correct = global_posix_mode;
 	  dispose_command (current_command);
@@ -253,14 +253,14 @@ pretty_print_loop (void)
 }
 
 static sighandler
-alrm_catcher(int i)
+alrm_catcher (int i)
 {
   char *msg;
 
   msg = _("\007timed out waiting for input: auto-logout\n");
   write (1, msg, strlen (msg));
 
-  bash_logout ();	/* run ~/.bash_logout if this is a login shell */
+  bash_logout ();		/* run ~/.bash_logout if this is a login shell */
   jump_to_top_level (EXITPROG);
   SIGRETURN (0);
 }
@@ -312,7 +312,7 @@ execute_prompt_command (void)
 #endif
 
   pcv = find_variable ("PROMPT_COMMAND");
-  if (pcv  == 0 || var_isset (pcv) == 0 || invisible_p (pcv))
+  if (pcv == 0 || var_isset (pcv) == 0 || invisible_p (pcv))
     return;
 #if defined (ARRAY_VARS)
   if (array_p (pcv))
@@ -322,7 +322,7 @@ execute_prompt_command (void)
       return;
     }
   else if (assoc_p (pcv))
-    return;	/* currently don't allow associative arrays here */
+    return;			/* currently don't allow associative arrays here */
 #endif
 
   command_to_execute = value_cell (pcv);
@@ -340,7 +340,7 @@ parse_command (void)
   int r, old_parsing;
 
   need_here_doc = 0;
-  if ((parser_state & (PST_CMDSUBST|PST_FUNSUBST)) == 0)
+  if ((parser_state & (PST_CMDSUBST | PST_FUNSUBST)) == 0)
     run_pending_traps ();
 
   /* Allow the execution of a random command just before the printing
@@ -349,7 +349,7 @@ parse_command (void)
   /* The tests are a combination of SHOULD_PROMPT() and prompt_again()
      from parse.y, which are the conditions under which the prompt is
      actually printed. */
-  if (interactive && bash_input.type != st_string && parser_expanding_alias() == 0)
+  if (interactive && bash_input.type != st_string && parser_expanding_alias () == 0)
     {
 #if defined (JOB_CONTROL)
       notify_and_cleanup (-1);
@@ -357,7 +357,7 @@ parse_command (void)
 #if defined (READLINE)
       if (no_line_editing || (bash_input.type == st_stdin && parser_will_prompt ()))
 #endif
-        execute_prompt_command ();
+	execute_prompt_command ();
 
       if (running_under_emacs == 2)
 	send_pwd_to_eterm ();	/* Yuck */
@@ -415,7 +415,7 @@ read_command (void)
 
   if (interactive && tmout_var && (tmout_len > 0))
     {
-      alarm(0);
+      alarm (0);
       set_signal_handler (SIGALRM, old_alrm);
     }
 
