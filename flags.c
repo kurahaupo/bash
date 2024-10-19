@@ -200,12 +200,12 @@ const struct flags_alist shell_flags[] = {
 #endif /* BANG_HISTORY */
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
-  {0, (int *)NULL}
+  { 0, (int *)NULL }
 };
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist))
 
-char optflags[NUM_SHELL_FLAGS+4] = { '+' };
+char optflags[NUM_SHELL_FLAGS + 4] = { '+' };
 
 int *
 find_flag (int name)
@@ -374,8 +374,8 @@ initialize_flags (void)
   register int i;
 
   for (i = 0; shell_flags[i].name; i++)
-    optflags[i+1] = shell_flags[i].name;
+    optflags[i + 1] = shell_flags[i].name;
   optflags[++i] = 'o';
   optflags[++i] = ';';
-  optflags[i+1] = '\0';
+  optflags[i + 1] = '\0';
 }
