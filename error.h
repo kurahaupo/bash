@@ -19,9 +19,9 @@
 */
 
 #if !defined (_ERROR_H_)
-#define _ERROR_H_
+#  define _ERROR_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
 /* Get the name of the shell or shell script for an error message. */
 extern char *get_name_for_error (void);
@@ -33,7 +33,7 @@ extern void file_error (const char *);
 extern void programming_error (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
 /* General error reporting.  Pass FORMAT and ARG1 ... ARG5. */
-extern void report_error (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+extern void report_error (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
 /* Error messages for parts of the parser that don't call report_syntax_error */
 extern void parser_error (int, const char *, ...) __attribute__((__format__ (printf, 2, 3)));
@@ -48,7 +48,7 @@ extern void sys_error (const char *, ...) __attribute__((__format__ (printf, 1, 
 extern void internal_error (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
 /* Report an internal warning. */
-extern void internal_warning (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+extern void internal_warning (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
 /* Report an internal warning for debugging purposes. */
 extern void internal_debug (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
@@ -58,8 +58,8 @@ extern void internal_inform (const char *, ...) __attribute__((__format__ (print
 
 /* Debugging functions, not enabled in released version. */
 extern char *strescape (const char *);
-extern void itrace (const char *, ...) __attribute__ ((__format__ (printf, 1, 2)));
-extern void trace (const char *, ...) __attribute__ ((__format__ (printf, 1, 2)));
+extern void itrace (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
+extern void trace (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 
 /* Report an error having to do with command parsing or execution. */
 extern void command_error (const char *, int, int, int);
@@ -73,10 +73,10 @@ extern void err_badarraysub (const char *);
 extern void err_unboundvar (const char *);
 extern void err_readonly (const char *);
 
-#ifdef DEBUG
-#  define INTERNAL_DEBUG(x)	internal_debug x
-#else
-#  define INTERNAL_DEBUG(x)
-#endif
+#  ifdef DEBUG
+#    define INTERNAL_DEBUG(x)	internal_debug x
+#  else
+#    define INTERNAL_DEBUG(x)
+#  endif
 
 #endif /* !_ERROR_H_ */
