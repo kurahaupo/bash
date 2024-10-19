@@ -49,7 +49,7 @@ phash_create (void)
 static void
 phash_freedata (PTR_T data)
 {
-  free (((PATH_DATA *)data)->path);
+  free (((PATH_DATA *) data)->path);
   free (data);
 }
 
@@ -102,18 +102,18 @@ phash_insert (char *filename, char *full_path, int check_dot, int found)
 
   item = hash_insert (filename, hashed_filenames, 0);
   if (item->data)
-    free (pathdata(item)->path);
+    free (pathdata (item)->path);
   else
     {
       item->key = savestring (filename);
       item->data = xmalloc (sizeof (PATH_DATA));
     }
-  pathdata(item)->path = savestring (full_path);
-  pathdata(item)->flags = 0;
+  pathdata (item)->path = savestring (full_path);
+  pathdata (item)->flags = 0;
   if (check_dot)
-    pathdata(item)->flags |= HASH_CHKDOT;
+    pathdata (item)->flags |= HASH_CHKDOT;
   if (RELPATH (full_path))
-    pathdata(item)->flags |= HASH_RELPATH;
+    pathdata (item)->flags |= HASH_RELPATH;
   item->times_found = found;
 }
 
@@ -140,10 +140,10 @@ phash_search (const char *filename)
   /* If this filename is hashed, but `.' comes before it in the path,
      see if ./filename is executable.  If the hashed value is not an
      absolute pathname, see if ./`hashed-value' exists. */
-  path = pathdata(item)->path;
-  if (pathdata(item)->flags & (HASH_CHKDOT|HASH_RELPATH))
+  path = pathdata (item)->path;
+  if (pathdata (item)->flags & (HASH_CHKDOT | HASH_RELPATH))
     {
-      tail = (pathdata(item)->flags & HASH_RELPATH) ? path : (char *)filename;	/* XXX - fix const later */
+      tail = (pathdata (item)->flags & HASH_RELPATH) ? path : (char *)filename;	/* XXX - fix const later */
       /* If the pathname does not start with a `./', add a `./' to it. */
       if (tail[0] != '.' || tail[1] != '/')
 	{
@@ -160,7 +160,7 @@ phash_search (const char *filename)
       free (dotted_filename);
 
 #if 0
-      if (pathdata(item)->flags & HASH_RELPATH)
+      if (pathdata (item)->flags & HASH_RELPATH)
 	return ((char *)NULL);
 #endif
 
