@@ -43,7 +43,7 @@
 #include "hashlib.h"
 #include "pathexp.h"
 #include "hashcmd.h"
-#include "findcmd.h"	/* matching prototypes and declarations */
+#include "findcmd.h"		/* matching prototypes and declarations */
 
 #include <glob/strmatch.h>
 
@@ -100,7 +100,7 @@ exec_name_should_ignore (const char *name)
   struct ign *p;
 
   for (p = execignore.ignores; p && p->val; p++)
-    if (strmatch (p->val, (char *)name, FNMATCH_EXTFLAG|FNM_CASEFOLD) != FNM_NOMATCH)
+    if (strmatch (p->val, (char *)name, FNMATCH_EXTFLAG | FNM_CASEFOLD) != FNM_NOMATCH)
       return 1;
   return 0;
 }
@@ -121,9 +121,9 @@ file_status (const char *name)
     {
       /* Workaround for z/OS not supporting stat on external links */
       int old_errno = errno;
-      if (!(errno == ENOENT && lstat(name, &finfo) == 0 && S_ISEXTL(finfo.st_mode,finfo.st_genvalue)))
+      if (!(errno == ENOENT && lstat (name, &finfo) == 0 && S_ISEXTL (finfo.st_mode, finfo.st_genvalue)))
 	{
-	  errno = old_errno;	  /* lstat may reset errno */
+	  errno = old_errno;	/* lstat may reset errno */
 	  return (0);
 	}
     }
@@ -134,7 +134,7 @@ file_status (const char *name)
   /* If the file is a directory, then it is not "executable" in the
      sense of the shell. */
   if (S_ISDIR (finfo.st_mode))
-    return (FS_EXISTS|FS_DIRECTORY);
+    return (FS_EXISTS | FS_DIRECTORY);
 
   r = FS_EXISTS;
 
@@ -218,7 +218,7 @@ executable_file (const char *file)
   s = file_status (file);
 #if defined (EISDIR)
   if (s & FS_DIRECTORY)
-    errno = EISDIR;	/* let's see if we can improve error messages */
+    errno = EISDIR;		/* let's see if we can improve error messages */
 #endif
   return ((s & FS_EXECABLE) && ((s & FS_DIRECTORY) == 0));
 }
@@ -246,7 +246,7 @@ executable_or_directory (const char *file)
 char *
 find_user_command (const char *name)
 {
-  return (find_user_command_internal (name, FS_EXEC_PREFERRED|FS_NODIRS));
+  return (find_user_command_internal (name, FS_EXEC_PREFERRED | FS_NODIRS));
 }
 
 /* Locate the file referenced by NAME, searching along the contents
@@ -273,7 +273,7 @@ path_value (const char *pathvar, int use_tempenv)
 
   if (path == 0 || *path)
     return (path);
-  else		/* *path == '\0' */
+  else				/* *path == '\0' */
     return ".";
 }
 
@@ -371,7 +371,7 @@ search_for_command (const char *pathname, int flags)
   if (hashed_file && (posixly_correct || check_hashed_filenames))
     {
       st = file_status (hashed_file);
-      if ((st & (FS_EXISTS|FS_EXECABLE)) != (FS_EXISTS|FS_EXECABLE))
+      if ((st & (FS_EXISTS | FS_EXECABLE)) != (FS_EXISTS | FS_EXECABLE))
 	{
 	  phash_remove (pathname);
 	  free (hashed_file);
@@ -398,7 +398,7 @@ search_for_command (const char *pathname, int flags)
       else
 	path_list = 0;
 
-      command = find_user_command_in_path (pathname, path_list, FS_EXEC_PREFERRED|FS_NODIRS, &st);
+      command = find_user_command_in_path (pathname, path_list, FS_EXEC_PREFERRED | FS_NODIRS, &st);
 
       if (command && hashing_enabled && temp_path == 0 && (flags & CMDSRCH_HASH))
 	{
@@ -413,14 +413,14 @@ search_for_command (const char *pathname, int flags)
 		  st = file_status (pathname);
 		}
 	      if (st & FS_EXECABLE)
-	        phash_insert ((char *)pathname, command, dot_found_in_search, 1);
+		phash_insert ((char *)pathname, command, dot_found_in_search, 1);
 	    }
 	  /* If we're in posix mode, don't add files without the execute bit
 	     to the hash table. */
 	  else if (posixly_correct || check_hashed_filenames)
 	    {
 	      if (st & FS_EXECABLE)
-	        phash_insert ((char *)pathname, command, dot_found_in_search, 1);
+		phash_insert ((char *)pathname, command, dot_found_in_search, 1);
 	    }
 	  else
 	    phash_insert ((char *)pathname, command, dot_found_in_search, 1);
@@ -437,7 +437,7 @@ char *
 user_command_matches (const char *name, int flags, int state)
 {
   register int i;
-  int  path_index;
+  int path_index;
   size_t name_len;
   char *path_list, *path_element, *match;
   struct stat dotinfo;
@@ -576,8 +576,8 @@ find_in_path_element (const char *name, char *path, int flags, size_t name_len, 
     return (full_path);
 
   /* If the file is executable, then it satisfies the cases of
-      EXEC_ONLY and EXEC_PREFERRED.  Return this file unconditionally. */
-  if ((status & FS_EXECABLE) && (flags & (FS_EXEC_ONLY|FS_EXEC_PREFERRED)) &&
+     EXEC_ONLY and EXEC_PREFERRED.  Return this file unconditionally. */
+  if ((status & FS_EXECABLE) && (flags & (FS_EXEC_ONLY | FS_EXEC_PREFERRED)) &&
       (((flags & FS_NODIRS) == 0) || ((status & FS_DIRECTORY) == 0)))
     {
       FREE (file_to_lose_on);
@@ -594,7 +594,7 @@ find_in_path_element (const char *name, char *path, int flags, size_t name_len, 
   /* If we want only executable files, or we don't want directories and
      this file is a directory, or we want a readable file and this file
      isn't readable, fail. */
-  if ((flags & (FS_EXEC_ONLY|FS_EXEC_PREFERRED)) ||
+  if ((flags & (FS_EXEC_ONLY | FS_EXEC_PREFERRED)) ||
       ((flags & FS_NODIRS) && (status & FS_DIRECTORY)) ||
       ((flags & FS_READABLE) && (status & FS_READABLE) == 0))
     {
@@ -641,7 +641,7 @@ find_user_command_in_path (const char *name, char *path_list, int flags, int *rf
     }
 
   if (path_list == 0 || *path_list == '\0')
-    return (savestring (name));		/* XXX */
+    return (savestring (name));	/* XXX */
 
   file_to_lose_on = (char *)NULL;
   name_len = strlen (name);
@@ -659,12 +659,12 @@ find_user_command_in_path (const char *name, char *path_list, int flags, int *rf
 	break;
 
       /* Side effects: sets dot_found_in_search, possibly sets
-	 file_to_lose_on. */
+         file_to_lose_on. */
       full_path = find_in_path_element (name, path, flags, name_len, &dotinfo, &rflags);
       free (path);
 
       /* We use the file status flag bits to check whether full_path is a
-	 directory, which we reject here. */
+         directory, which we reject here. */
       if (full_path && (rflags & FS_DIRECTORY))
 	{
 	  free (full_path);
