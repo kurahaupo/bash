@@ -83,7 +83,7 @@ getc_with_restart (FILE *stream)
 	  QUIT;
 	  run_pending_traps ();
 
-	  local_bufused = read (fileno (stream), localbuf, sizeof(localbuf));
+	  local_bufused = read (fileno (stream), localbuf, sizeof (localbuf));
 	  if (local_bufused > 0)
 	    break;
 	  else if (local_bufused == 0)
@@ -167,7 +167,7 @@ allocate_buffers (int n)
   orig_nbuffers = nbuffers;
   nbuffers = n + 20;
   buffers = (BUFFERED_STREAM **)xrealloc
-    (buffers, nbuffers * sizeof (BUFFERED_STREAM *));
+					 (buffers, nbuffers * sizeof (BUFFERED_STREAM *));
 
   /* Zero out the new buffers. */
   for (i = orig_nbuffers; i < nbuffers; i++)
@@ -307,7 +307,7 @@ check_bash_input (int fd)
       if (fd > 0)
 	return ((save_bash_input (fd, -1) == -1) ? -1 : 0);
       else if (fd == 0)
-        return ((sync_buffered_stream (fd) == -1) ? -1 : 0);
+	return ((sync_buffered_stream (fd) == -1) ? -1 : 0);
     }
   return 0;
 }
@@ -527,12 +527,12 @@ b_fill_buffer (BUFFERED_STREAM *bp)
 /* Get a character from buffered stream BP. */
 #define bufstream_getc(bp) \
   (bp->b_inputp == bp->b_used || !bp->b_used) \
-  		? b_fill_buffer (bp) \
+		? b_fill_buffer (bp) \
 		: bp->b_buffer[bp->b_inputp++] & 0xFF
 
 /* Push C back onto buffered stream BP. */
 static int
-bufstream_ungetc(int c, BUFFERED_STREAM *bp)
+bufstream_ungetc (int c, BUFFERED_STREAM *bp)
 {
   if (c == EOF || bp == 0 || bp->b_inputp == 0)
     return (EOF);
