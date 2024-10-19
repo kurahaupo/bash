@@ -19,7 +19,7 @@
 */
 
 #if !defined (_UNWIND_PROT_H)
-#define _UNWIND_PROT_H
+#  define _UNWIND_PROT_H
 
 /* Generic function type void (*) (void *) for all unwind cleanups. A
    cleanup function does not return a value and takes a single generic
@@ -43,18 +43,18 @@ extern int have_unwind_protects (void);
 extern int unwind_protect_tag_on_stack (const char *);
 
 /* Define for people who like their code to look a certain way. */
-#define end_unwind_frame()
+#  define end_unwind_frame()
 
 /* How to protect a variable.  */
-#define unwind_protect_var(X) unwind_protect_mem ((char *)&(X), sizeof (X))
+#  define unwind_protect_var(X) 	unwind_protect_mem ((char *)&(X), sizeof (X))
 
 extern void unwind_protect_mem (char *, int);
 
 /* Backwards compatibility */
-#define unwind_protect_int	unwind_protect_var
-#define unwind_protect_short	unwind_protect_var
-#define unwind_protect_string	unwind_protect_var
-#define unwind_protect_pointer	unwind_protect_var
-#define unwind_protect_jmp_buf	unwind_protect_var
+#  define unwind_protect_int		unwind_protect_var
+#  define unwind_protect_short		unwind_protect_var
+#  define unwind_protect_string		unwind_protect_var
+#  define unwind_protect_pointer	unwind_protect_var
+#  define unwind_protect_jmp_buf	unwind_protect_var
 
 #endif /* _UNWIND_PROT_H */
