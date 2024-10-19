@@ -37,18 +37,18 @@
 extern char *shell_name;
 
 /* Defines from version.h */
-const char * const dist_version = DISTVERSION;
+const char *const dist_version = DISTVERSION;
 const int patch_level = PATCHLEVEL;
 const int build_version = BUILDVERSION;
 #ifdef RELSTATUS
-const char * const release_status = RELSTATUS;
+const char *const release_status = RELSTATUS;
 #else
-const char * const release_status = (char *)0;
+const char *const release_status = (char *)0;
 #endif
-const char * const sccs_version = SCCSVERSION;
+const char *const sccs_version = SCCSVERSION;
 
-const char * const bash_copyright = N_("Copyright (C) 2024 Free Software Foundation, Inc.");
-const char * const bash_license = N_("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n");
+const char *const bash_copyright = N_("Copyright (C) 2024 Free Software Foundation, Inc.");
+const char *const bash_license = N_("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n");
 
 /* If == 31, shell compatible with bash-3.1, == 32 with bash-3.2, and so on */
 int shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
