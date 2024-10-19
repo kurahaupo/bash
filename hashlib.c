@@ -82,7 +82,7 @@ hash_create (int buckets)
 int
 hash_size (HASH_TABLE *table)
 {
-  return (HASH_ENTRIES(table));
+  return (HASH_ENTRIES (table));
 }
 
 /* Copy a hash table bucket array. Call (*cpdata) to copy the data from
@@ -98,15 +98,15 @@ copy_bucket_array (BUCKET_CONTENTS *ba, sh_string_func_t *cpdata)
   for (n = (BUCKET_CONTENTS *)0, e = ba; e; e = e->next)
     {
       if (n == 0)
-        {
-          new_bucket = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
-          n = new_bucket;
-        }
+	{
+	  new_bucket = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
+	  n = new_bucket;
+	}
       else
-        {
-          n->next = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
-          n = n->next;
-        }
+	{
+	  n->next = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
+	  n = n->next;
+	}
 
       n->key = savestring (e->key);
       n->data = e->data ? (cpdata ? (*cpdata) (e->data) : savestring (e->data))
@@ -214,7 +214,7 @@ hash_string (const char *s)
       /* FNV-1a has the XOR first, traditional FNV-1 has the multiply first */
 
       /* was i *= FNV_PRIME */
-      i += (i<<1) + (i<<4) + (i<<7) + (i<<8) + (i<<24);
+      i += (i << 1) + (i << 4) + (i << 7) + (i << 8) + (i << 24);
       i ^= *s;
     }
 
@@ -309,7 +309,7 @@ hash_remove (const char *string, HASH_TABLE *table, int flags)
 	}
       prev = temp;
     }
-  return ((BUCKET_CONTENTS *) NULL);
+  return ((BUCKET_CONTENTS *)NULL);
 }
 
 /* Create an entry for STRING, in TABLE.  If the entry already
@@ -325,7 +325,7 @@ hash_insert (char *string, HASH_TABLE *table, int flags)
     table = hash_create (0);
 
   item = (flags & HASH_NOSRCH) ? (BUCKET_CONTENTS *)NULL
-  			       : hash_search (string, table, 0);
+			       : hash_search (string, table, 0);
 
   if (item == 0)
     {
@@ -440,12 +440,12 @@ hash_pstats (HASH_TABLE *table, char *name)
 #ifdef TEST_HASHING
 
 /* link with xmalloc.o and lib/malloc/libmalloc.a */
-#undef NULL
-#include <stdio.h>
+#  undef NULL
+#  include <stdio.h>
 
-#ifndef NULL
-#define NULL 0
-#endif
+#  ifndef NULL
+#    define NULL 0
+#  endif
 
 HASH_TABLE *table, *ntable;
 
@@ -461,13 +461,13 @@ signal_is_trapped (int s)
 void
 programming_error (const char *format, ...)
 {
-  abort();
+  abort ();
 }
 
 void
 fatal_error (const char *format, ...)
 {
-  abort();
+  abort ();
 }
 
 void
@@ -482,11 +482,11 @@ main (int c, char **v)
   int count = 0;
   BUCKET_CONTENTS *tt;
 
-#if defined (TEST_NBUCKETS)
+#  if defined (TEST_NBUCKETS)
   table = hash_create (TEST_NBUCKETS);
-#else
+#  else
   table = hash_create (0);
-#endif
+#  endif
 
   for (;;)
     {
