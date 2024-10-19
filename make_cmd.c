@@ -41,7 +41,7 @@
 #include "input.h"
 
 #if defined (JOB_CONTROL)
-#include "jobs.h"
+#  include "jobs.h"
 #endif
 
 #include "shmbutil.h"
@@ -49,8 +49,8 @@
 int here_doc_first_line = 0;
 
 /* Object caching */
-sh_obj_cache_t wdcache = {0, 0, 0};
-sh_obj_cache_t wlcache = {0, 0, 0};
+sh_obj_cache_t wdcache = { 0, 0, 0 };
+sh_obj_cache_t wlcache = { 0, 0, 0 };
 
 #define WDCACHESIZE	128
 #define WLCACHESIZE	128
@@ -114,7 +114,7 @@ make_word_flags (WORD_DESC *w, const char *string)
 	  w->flags |= W_HASDOLLAR;
 	  break;
 	case '\\':
-	  break;	/* continue the loop */
+	  break;		/* continue the loop */
 	case '\'':
 	case '`':
 	case '"':
@@ -226,7 +226,7 @@ make_arith_for_expr (char *s)
   if (s == 0 || *s == '\0')
     return ((WORD_LIST *)NULL);
   wd = make_word (s);
-  wd->flags |= W_NOGLOB|W_NOSPLIT|W_QUOTED|W_NOTILDE|W_NOPROCSUB;	/* no word splitting or globbing */
+  wd->flags |= W_NOGLOB | W_NOSPLIT | W_QUOTED | W_NOTILDE | W_NOPROCSUB;	/* no word splitting or globbing */
   result = make_word_list (wd, (WORD_LIST *)NULL);
   return result;
 }
@@ -248,14 +248,14 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
   init = test = step = (WORD_LIST *)NULL;
   /* Parse the string into the three component sub-expressions. */
   start = t = s = exprs->word->word;
-  for (nsemi = 0; ;)
+  for (nsemi = 0;;)
     {
       /* skip whitespace at the start of each sub-expression. */
       while (whitespace (*s))
 	s++;
       start = s;
       /* skip to the semicolon or EOS */
-      i = skip_to_delim (start, 0, ";", SD_NOJMP|SD_NOPROCSUB);
+      i = skip_to_delim (start, 0, ";", SD_NOJMP | SD_NOPROCSUB);
       s = start + i;
 
       t = (i > 0) ? substring (start, 0, i) : (char *)NULL;
@@ -277,7 +277,7 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
       FREE (t);
       if (*s == '\0')
 	break;
-      s++;	/* skip over semicolon */
+      s++;			/* skip over semicolon */
     }
 
   if (nsemi != 3)
@@ -603,7 +603,7 @@ make_here_document (REDIRECT *temp, int lineno)
 	break;
 
       /* Backwards compatibility here */
-      if (STREQN (line, redir_word, redir_len) && (parser_state & PST_EOFTOKEN) && shell_eof_token && strchr (line+redir_len, shell_eof_token))
+      if (STREQN (line, redir_word, redir_len) && (parser_state & PST_EOFTOKEN) && shell_eof_token && strchr (line + redir_len, shell_eof_token))
 	{
 	  shell_ungets (line + redir_len);
 	  full_line = 0;
@@ -663,49 +663,49 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
   switch (instruction)
     {
 
-    case r_output_direction:		/* >foo */
-    case r_output_force:		/* >| foo */
-    case r_err_and_out:			/* &>filename */
+    case r_output_direction:	/* >foo */
+    case r_output_force:	/* >| foo */
+    case r_err_and_out:	/* &>filename */
       temp->flags = O_TRUNC | O_WRONLY | O_CREAT;
       break;
 
-    case r_appending_to:		/* >>foo */
-    case r_append_err_and_out:		/* &>> filename */
+    case r_appending_to:	/* >>foo */
+    case r_append_err_and_out:	/* &>> filename */
       temp->flags = O_APPEND | O_WRONLY | O_CREAT;
       break;
 
-    case r_input_direction:		/* <foo */
-    case r_inputa_direction:		/* foo & makes this. */
+    case r_input_direction:	/* <foo */
+    case r_inputa_direction:	/* foo & makes this. */
       temp->flags = O_RDONLY;
       break;
 
-    case r_input_output:		/* <>foo */
+    case r_input_output:	/* <>foo */
       temp->flags = O_RDWR | O_CREAT;
       break;
 
-    case r_deblank_reading_until: 	/* <<-foo */
-    case r_reading_until:		/* << foo */
-    case r_reading_string:		/* <<< foo */
-    case r_close_this:			/* <&- */
-    case r_duplicating_input:		/* 1<&2 */
-    case r_duplicating_output:		/* 1>&2 */
+    case r_deblank_reading_until:	/* <<-foo */
+    case r_reading_until:	/* << foo */
+    case r_reading_string:	/* <<< foo */
+    case r_close_this:		/* <&- */
+    case r_duplicating_input:	/* 1<&2 */
+    case r_duplicating_output:	/* 1>&2 */
       break;
 
-    /* the parser doesn't pass these. */
-    case r_move_input:			/* 1<&2- */
-    case r_move_output:			/* 1>&2- */
-    case r_move_input_word:		/* 1<&$foo- */
-    case r_move_output_word:		/* 1>&$foo- */
+/* the parser doesn't pass these. */
+    case r_move_input:		/* 1<&2- */
+    case r_move_output:	/* 1>&2- */
+    case r_move_input_word:	/* 1<&$foo- */
+    case r_move_output_word:	/* 1>&$foo- */
       break;
 
-    /* The way the lexer works we have to do this here. */
+/* The way the lexer works we have to do this here. */
     case r_duplicating_input_word:	/* 1<&$foo */
     case r_duplicating_output_word:	/* 1>&$foo */
       w = dest_and_filename.filename;
       wlen = strlen (w->word) - 1;
-      if (w->word[wlen] == '-')		/* Yuck */
-        {
-          w->word[wlen] = '\0';
+      if (w->word[wlen] == '-')	/* Yuck */
+	{
+	  w->word[wlen] = '\0';
 	  if (all_digits (w->word) && valid_number (w->word, &lfd) && lfd == (int)lfd)
 	    {
 	      dispose_word (w);
@@ -714,7 +714,7 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
 	    }
 	  else
 	    temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
-        }
+	}
 
       break;
 
@@ -793,7 +793,7 @@ make_coproc_command (char *name, COMMAND *command)
   temp = (COPROC_COM *)xmalloc (sizeof (COPROC_COM));
   temp->name = savestring (name);
   temp->command = command;
-  temp->flags = CMD_WANT_SUBSHELL|CMD_COPROC_SUBSHELL;
+  temp->flags = CMD_WANT_SUBSHELL | CMD_COPROC_SUBSHELL;
   return (make_command (cm_coproc, (SIMPLE_COM *)temp));
 }
 
