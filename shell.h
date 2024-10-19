@@ -19,7 +19,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 #include "bashjmp.h"
@@ -154,7 +154,7 @@ struct user_info {
   uid_t uid, euid, saveuid;
   gid_t gid, egid, savegid;
   char *user_name;
-  char *shell;		/* shell from the password file */
+  char *shell;			/* shell from the password file */
   char *home_dir;
 };
 
