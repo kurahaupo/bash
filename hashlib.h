@@ -19,13 +19,13 @@
 */
 
 #if !defined (_HASHLIB_H_)
-#define _HASHLIB_H_
+#  define _HASHLIB_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
-#ifndef PTR_T
-#  define PTR_T void *
-#endif
+#  ifndef PTR_T
+#    define PTR_T void *
+#  endif
 
 typedef struct bucket_contents {
   struct bucket_contents *next;	/* Link to next hashed key in this bucket. */
@@ -63,18 +63,18 @@ extern BUCKET_CONTENTS *hash_remove (const char *, HASH_TABLE *, int);
 extern unsigned int hash_string (const char *);
 
 /* Redefine the function as a macro for speed. */
-#define hash_items(bucket, table) \
+#  define hash_items(bucket, table) \
 	((table && (bucket < table->nbuckets)) ?  \
 		table->bucket_array[bucket] : \
 		(BUCKET_CONTENTS *)NULL)
 
 /* Default number of buckets in the hash table. */
-#define DEFAULT_HASH_BUCKETS 128	/* must be power of two */
+#  define DEFAULT_HASH_BUCKETS 128	/* must be power of two */
 
-#define HASH_ENTRIES(ht)	((ht) ? (ht)->nentries : 0)
+#  define HASH_ENTRIES(ht)	((ht) ? (ht)->nentries : 0)
 
 /* flags for hash_search and hash_insert */
-#define HASH_NOSRCH	0x01
-#define HASH_CREATE	0x02
+#  define HASH_NOSRCH	0x01
+#  define HASH_CREATE	0x02
 
 #endif /* _HASHLIB_H */
