@@ -271,11 +271,14 @@ mostlyclean: clean
 
 # Dependencies
 
-${BUILD_DIR}/version.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-	- ( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+$(BUILD_DIR)/version.h:   $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
 
-${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-	- ( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
+$(BUILD_DIR)/pathnames.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
+
+$(BUILD_DIR)/pathnames.h \
+$(BUILD_DIR)/version.h \
+ :
+	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 .PHONY: depends depend
 depends depend:
@@ -286,6 +289,7 @@ depends depend:
 # C *.c source & *.h header dependencies (generated)
 
 anonfile.o: $(BUILD_DIR)/config.h
+anonfile.o: $(BUILD_DIR)/pathnames.h
 anonfile.o: $(srcdir)/anonfile.c
 anonfile.o: $(topdir)/array.h
 anonfile.o: $(topdir)/arrayfunc.h
@@ -310,7 +314,6 @@ anonfile.o: $(topdir)/include/posixjmp.h
 anonfile.o: $(topdir)/include/stdc.h
 anonfile.o: $(topdir)/include/unlocked-io.h
 anonfile.o: $(topdir)/make_cmd.h
-anonfile.o: $(topdir)/pathnames.h
 anonfile.o: $(topdir)/quit.h
 anonfile.o: $(topdir)/shell.h
 anonfile.o: $(topdir)/sig.h
@@ -350,6 +353,7 @@ clock.o: $(topdir)/include/posixtime.h
 clock.o: $(topdir)/include/stdc.h
 clock.o: $(topdir)/include/systimes.h
 compat.o: $(BUILD_DIR)/config.h
+compat.o: $(BUILD_DIR)/pathnames.h
 compat.o: $(srcdir)/compat.c
 compat.o: $(topdir)/array.h
 compat.o: $(topdir)/arrayfunc.h
@@ -373,7 +377,6 @@ compat.o: $(topdir)/include/posixjmp.h
 compat.o: $(topdir)/include/stdc.h
 compat.o: $(topdir)/include/unlocked-io.h
 compat.o: $(topdir)/make_cmd.h
-compat.o: $(topdir)/pathnames.h
 compat.o: $(topdir)/quit.h
 compat.o: $(topdir)/shell.h
 compat.o: $(topdir)/sig.h
@@ -388,6 +391,7 @@ dprintf.o: $(topdir)/config-bot.h
 dprintf.o: $(topdir)/config-top.h
 dprintf.o: $(topdir)/include/stdc.h
 eaccess.o: $(BUILD_DIR)/config.h
+eaccess.o: $(BUILD_DIR)/pathnames.h
 eaccess.o: $(srcdir)/eaccess.c
 eaccess.o: $(topdir)/array.h
 eaccess.o: $(topdir)/arrayfunc.h
@@ -414,7 +418,6 @@ eaccess.o: $(topdir)/include/posixstat.h
 eaccess.o: $(topdir)/include/stdc.h
 eaccess.o: $(topdir)/include/unlocked-io.h
 eaccess.o: $(topdir)/make_cmd.h
-eaccess.o: $(topdir)/pathnames.h
 eaccess.o: $(topdir)/quit.h
 eaccess.o: $(topdir)/shell.h
 eaccess.o: $(topdir)/sig.h
@@ -476,6 +479,7 @@ getcwd.o: $(srcdir)/getcwd.c
 getcwd.o: $(topdir)/config-bot.h
 getcwd.o: $(topdir)/config-top.h
 getenv.o: $(BUILD_DIR)/config.h
+getenv.o: $(BUILD_DIR)/pathnames.h
 getenv.o: $(srcdir)/getenv.c
 getenv.o: $(topdir)/array.h
 getenv.o: $(topdir)/arrayfunc.h
@@ -499,7 +503,6 @@ getenv.o: $(topdir)/include/posixjmp.h
 getenv.o: $(topdir)/include/stdc.h
 getenv.o: $(topdir)/include/unlocked-io.h
 getenv.o: $(topdir)/make_cmd.h
-getenv.o: $(topdir)/pathnames.h
 getenv.o: $(topdir)/quit.h
 getenv.o: $(topdir)/shell.h
 getenv.o: $(topdir)/sig.h
@@ -525,6 +528,7 @@ input_avail.o: $(topdir)/include/ansi_stdlib.h
 input_avail.o: $(topdir)/include/posixselect.h
 input_avail.o: $(topdir)/include/posixtime.h
 itos.o: $(BUILD_DIR)/config.h
+itos.o: $(BUILD_DIR)/pathnames.h
 itos.o: $(srcdir)/itos.c
 itos.o: $(topdir)/array.h
 itos.o: $(topdir)/arrayfunc.h
@@ -549,7 +553,6 @@ itos.o: $(topdir)/include/posixjmp.h
 itos.o: $(topdir)/include/stdc.h
 itos.o: $(topdir)/include/unlocked-io.h
 itos.o: $(topdir)/make_cmd.h
-itos.o: $(topdir)/pathnames.h
 itos.o: $(topdir)/quit.h
 itos.o: $(topdir)/shell.h
 itos.o: $(topdir)/sig.h
@@ -568,6 +571,7 @@ mailstat.o: $(topdir)/include/maxpath.h
 mailstat.o: $(topdir)/include/posixdir.h
 mailstat.o: $(topdir)/include/posixstat.h
 makepath.o: $(BUILD_DIR)/config.h
+makepath.o: $(BUILD_DIR)/pathnames.h
 makepath.o: $(srcdir)/../tilde/tilde.h
 makepath.o: $(srcdir)/makepath.c
 makepath.o: $(topdir)/array.h
@@ -593,7 +597,6 @@ makepath.o: $(topdir)/include/stdc.h
 makepath.o: $(topdir)/include/unlocked-io.h
 makepath.o: $(topdir)/lib/tilde/tilde.h
 makepath.o: $(topdir)/make_cmd.h
-makepath.o: $(topdir)/pathnames.h
 makepath.o: $(topdir)/quit.h
 makepath.o: $(topdir)/shell.h
 makepath.o: $(topdir)/sig.h
@@ -637,6 +640,7 @@ netconn.o: $(topdir)/config-top.h
 netconn.o: $(topdir)/include/filecntl.h
 netconn.o: $(topdir)/include/posixstat.h
 netopen.o: $(BUILD_DIR)/config.h
+netopen.o: $(BUILD_DIR)/pathnames.h
 netopen.o: $(srcdir)/netopen.c
 netopen.o: $(topdir)/array.h
 netopen.o: $(topdir)/arrayfunc.h
@@ -662,7 +666,6 @@ netopen.o: $(topdir)/include/posixjmp.h
 netopen.o: $(topdir)/include/stdc.h
 netopen.o: $(topdir)/include/unlocked-io.h
 netopen.o: $(topdir)/make_cmd.h
-netopen.o: $(topdir)/pathnames.h
 netopen.o: $(topdir)/quit.h
 netopen.o: $(topdir)/shell.h
 netopen.o: $(topdir)/sig.h
@@ -672,6 +675,7 @@ netopen.o: $(topdir)/unwind_prot.h
 netopen.o: $(topdir)/variables.h
 netopen.o: $(topdir)/xmalloc.h
 oslib.o: $(BUILD_DIR)/config.h
+oslib.o: $(BUILD_DIR)/pathnames.h
 oslib.o: $(srcdir)/oslib.c
 oslib.o: $(topdir)/array.h
 oslib.o: $(topdir)/arrayfunc.h
@@ -697,7 +701,6 @@ oslib.o: $(topdir)/include/posixstat.h
 oslib.o: $(topdir)/include/stdc.h
 oslib.o: $(topdir)/include/unlocked-io.h
 oslib.o: $(topdir)/make_cmd.h
-oslib.o: $(topdir)/pathnames.h
 oslib.o: $(topdir)/quit.h
 oslib.o: $(topdir)/shell.h
 oslib.o: $(topdir)/sig.h
@@ -707,6 +710,7 @@ oslib.o: $(topdir)/unwind_prot.h
 oslib.o: $(topdir)/variables.h
 oslib.o: $(topdir)/xmalloc.h
 pathcanon.o: $(BUILD_DIR)/config.h
+pathcanon.o: $(BUILD_DIR)/pathnames.h
 pathcanon.o: $(srcdir)/pathcanon.c
 pathcanon.o: $(topdir)/array.h
 pathcanon.o: $(topdir)/arrayfunc.h
@@ -732,7 +736,6 @@ pathcanon.o: $(topdir)/include/posixstat.h
 pathcanon.o: $(topdir)/include/stdc.h
 pathcanon.o: $(topdir)/include/unlocked-io.h
 pathcanon.o: $(topdir)/make_cmd.h
-pathcanon.o: $(topdir)/pathnames.h
 pathcanon.o: $(topdir)/quit.h
 pathcanon.o: $(topdir)/shell.h
 pathcanon.o: $(topdir)/sig.h
@@ -742,6 +745,7 @@ pathcanon.o: $(topdir)/unwind_prot.h
 pathcanon.o: $(topdir)/variables.h
 pathcanon.o: $(topdir)/xmalloc.h
 pathphys.o: $(BUILD_DIR)/config.h
+pathphys.o: $(BUILD_DIR)/pathnames.h
 pathphys.o: $(srcdir)/pathphys.c
 pathphys.o: $(topdir)/array.h
 pathphys.o: $(topdir)/arrayfunc.h
@@ -767,7 +771,6 @@ pathphys.o: $(topdir)/include/posixstat.h
 pathphys.o: $(topdir)/include/stdc.h
 pathphys.o: $(topdir)/include/unlocked-io.h
 pathphys.o: $(topdir)/make_cmd.h
-pathphys.o: $(topdir)/pathnames.h
 pathphys.o: $(topdir)/quit.h
 pathphys.o: $(topdir)/shell.h
 pathphys.o: $(topdir)/sig.h
@@ -777,6 +780,7 @@ pathphys.o: $(topdir)/unwind_prot.h
 pathphys.o: $(topdir)/variables.h
 pathphys.o: $(topdir)/xmalloc.h
 random.o: $(BUILD_DIR)/config.h
+random.o: $(BUILD_DIR)/pathnames.h
 random.o: $(srcdir)/random.c
 random.o: $(topdir)/array.h
 random.o: $(topdir)/arrayfunc.h
@@ -801,7 +805,6 @@ random.o: $(topdir)/include/posixjmp.h
 random.o: $(topdir)/include/stdc.h
 random.o: $(topdir)/include/unlocked-io.h
 random.o: $(topdir)/make_cmd.h
-random.o: $(topdir)/pathnames.h
 random.o: $(topdir)/quit.h
 random.o: $(topdir)/shell.h
 random.o: $(topdir)/sig.h
@@ -829,6 +832,7 @@ setlinebuf.o: $(topdir)/config-top.h
 setlinebuf.o: $(topdir)/include/stdc.h
 setlinebuf.o: $(topdir)/xmalloc.h
 shmatch.o: $(BUILD_DIR)/config.h
+shmatch.o: $(BUILD_DIR)/pathnames.h
 shmatch.o: $(srcdir)/shmatch.c
 shmatch.o: $(topdir)/array.h
 shmatch.o: $(topdir)/arrayfunc.h
@@ -852,7 +856,6 @@ shmatch.o: $(topdir)/include/posixjmp.h
 shmatch.o: $(topdir)/include/stdc.h
 shmatch.o: $(topdir)/include/unlocked-io.h
 shmatch.o: $(topdir)/make_cmd.h
-shmatch.o: $(topdir)/pathnames.h
 shmatch.o: $(topdir)/quit.h
 shmatch.o: $(topdir)/shell.h
 shmatch.o: $(topdir)/sig.h
@@ -885,6 +888,7 @@ shtty.o: $(topdir)/config-top.h
 shtty.o: $(topdir)/include/shtty.h
 shtty.o: $(topdir)/include/stdc.h
 snprintf.o: $(BUILD_DIR)/config.h
+snprintf.o: $(BUILD_DIR)/pathnames.h
 snprintf.o: $(srcdir)/snprintf.c
 snprintf.o: $(topdir)/array.h
 snprintf.o: $(topdir)/arrayfunc.h
@@ -912,7 +916,6 @@ snprintf.o: $(topdir)/include/stdc.h
 snprintf.o: $(topdir)/include/typemax.h
 snprintf.o: $(topdir)/include/unlocked-io.h
 snprintf.o: $(topdir)/make_cmd.h
-snprintf.o: $(topdir)/pathnames.h
 snprintf.o: $(topdir)/quit.h
 snprintf.o: $(topdir)/shell.h
 snprintf.o: $(topdir)/sig.h
@@ -960,6 +963,7 @@ strftime.o: $(topdir)/config-bot.h
 strftime.o: $(topdir)/config-top.h
 strftime.o: $(topdir)/include/posixtime.h
 stringlist.o: $(BUILD_DIR)/config.h
+stringlist.o: $(BUILD_DIR)/pathnames.h
 stringlist.o: $(srcdir)/stringlist.c
 stringlist.o: $(topdir)/array.h
 stringlist.o: $(topdir)/arrayfunc.h
@@ -983,7 +987,6 @@ stringlist.o: $(topdir)/include/posixjmp.h
 stringlist.o: $(topdir)/include/stdc.h
 stringlist.o: $(topdir)/include/unlocked-io.h
 stringlist.o: $(topdir)/make_cmd.h
-stringlist.o: $(topdir)/pathnames.h
 stringlist.o: $(topdir)/quit.h
 stringlist.o: $(topdir)/shell.h
 stringlist.o: $(topdir)/sig.h
@@ -993,6 +996,7 @@ stringlist.o: $(topdir)/unwind_prot.h
 stringlist.o: $(topdir)/variables.h
 stringlist.o: $(topdir)/xmalloc.h
 stringvec.o: $(BUILD_DIR)/config.h
+stringvec.o: $(BUILD_DIR)/pathnames.h
 stringvec.o: $(BUILD_DIR)/stdckdint.h
 stringvec.o: $(srcdir)/stringvec.c
 stringvec.o: $(topdir)/array.h
@@ -1018,7 +1022,6 @@ stringvec.o: $(topdir)/include/posixjmp.h
 stringvec.o: $(topdir)/include/stdc.h
 stringvec.o: $(topdir)/include/unlocked-io.h
 stringvec.o: $(topdir)/make_cmd.h
-stringvec.o: $(topdir)/pathnames.h
 stringvec.o: $(topdir)/quit.h
 stringvec.o: $(topdir)/shell.h
 stringvec.o: $(topdir)/sig.h
@@ -1085,6 +1088,7 @@ strtoumax.o: $(topdir)/config-bot.h
 strtoumax.o: $(topdir)/config-top.h
 strtoumax.o: $(topdir)/include/stdc.h
 strtrans.o: $(BUILD_DIR)/config.h
+strtrans.o: $(BUILD_DIR)/pathnames.h
 strtrans.o: $(srcdir)/strtrans.c
 strtrans.o: $(topdir)/array.h
 strtrans.o: $(topdir)/arrayfunc.h
@@ -1110,7 +1114,6 @@ strtrans.o: $(topdir)/include/shmbutil.h
 strtrans.o: $(topdir)/include/stdc.h
 strtrans.o: $(topdir)/include/unlocked-io.h
 strtrans.o: $(topdir)/make_cmd.h
-strtrans.o: $(topdir)/pathnames.h
 strtrans.o: $(topdir)/quit.h
 strtrans.o: $(topdir)/shell.h
 strtrans.o: $(topdir)/sig.h
@@ -1158,6 +1161,7 @@ timeval.o: $(topdir)/include/gettext.h
 timeval.o: $(topdir)/include/posixtime.h
 timeval.o: $(topdir)/include/stdc.h
 tmpfile.o: $(BUILD_DIR)/config.h
+tmpfile.o: $(BUILD_DIR)/pathnames.h
 tmpfile.o: $(srcdir)/tmpfile.c
 tmpfile.o: $(topdir)/array.h
 tmpfile.o: $(topdir)/arrayfunc.h
@@ -1184,7 +1188,6 @@ tmpfile.o: $(topdir)/include/posixtime.h
 tmpfile.o: $(topdir)/include/stdc.h
 tmpfile.o: $(topdir)/include/unlocked-io.h
 tmpfile.o: $(topdir)/make_cmd.h
-tmpfile.o: $(topdir)/pathnames.h
 tmpfile.o: $(topdir)/quit.h
 tmpfile.o: $(topdir)/shell.h
 tmpfile.o: $(topdir)/sig.h
@@ -1194,6 +1197,7 @@ tmpfile.o: $(topdir)/unwind_prot.h
 tmpfile.o: $(topdir)/variables.h
 tmpfile.o: $(topdir)/xmalloc.h
 uconvert.o: $(BUILD_DIR)/config.h
+uconvert.o: $(BUILD_DIR)/pathnames.h
 uconvert.o: $(srcdir)/uconvert.c
 uconvert.o: $(topdir)/alias.h
 uconvert.o: $(topdir)/array.h
@@ -1220,7 +1224,6 @@ uconvert.o: $(topdir)/include/posixtime.h
 uconvert.o: $(topdir)/include/stdc.h
 uconvert.o: $(topdir)/include/unlocked-io.h
 uconvert.o: $(topdir)/make_cmd.h
-uconvert.o: $(topdir)/pathnames.h
 uconvert.o: $(topdir)/quit.h
 uconvert.o: $(topdir)/shell.h
 uconvert.o: $(topdir)/sig.h

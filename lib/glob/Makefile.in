@@ -127,8 +127,12 @@ realclean distclean maintainer-clean: clean
 mostlyclean: clean
 	- ( cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@ )
 
-${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-	- ( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h )
+$(BUILD_DIR)/pathnames.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
+
+$(BUILD_DIR)/config.h \
+$(BUILD_DIR)/pathnames.h \
+ :
+	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 .PHONY: depends depend
 depends depend:

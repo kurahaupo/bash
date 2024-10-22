@@ -230,7 +230,7 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 # the library is a mix of functions that the C library does not provide on
 # some platforms and general shell utility functions
 SH_LIBSRC = $(LIBSRC)/sh
-SH_LIBDIR = $(dot)/${LIBSUBDIR}/sh
+SH_LIBDIR = ${LIBSUBDIR}/sh
 SH_ABSSRC = ${topdir}/${SH_LIBSRC}
 
 SHLIB_SOURCE	= \
@@ -455,7 +455,7 @@ HISTORY_OBJ	= \
 
 # You only need termcap (or curses) if you are linking with GNU Readline.
 TERM_LIBSRC = $(LIBSRC)/termcap
-TERM_LIBDIR = $(dot)/$(LIBSUBDIR)/termcap
+TERM_LIBDIR = $(LIBSUBDIR)/termcap
 TERM_ABSSRC = ${topdir}/$(TERM_LIBDIR)
 
 TERMCAP_LIB = @TERMCAP_LIB@
@@ -469,7 +469,7 @@ TERMCAP_OBJ	= $(TERM_LIBDIR)/termcap.o \
 		  $(TERM_LIBDIR)/tparam.o
 
 GLOB_LIBSRC = $(LIBSRC)/glob
-GLOB_LIBDIR = $(dot)/$(LIBSUBDIR)/glob
+GLOB_LIBDIR = $(LIBSUBDIR)/glob
 GLOB_ABSSRC = ${topdir}/$(GLOB_LIBDIR)
 
 GLOB_LIB     = -lglob
@@ -499,7 +499,7 @@ GLOB_OBJ	= \
 
 # The source, object and documentation for the GNU Tilde library.
 TILDE_LIBSRC = $(LIBSRC)/tilde
-TILDE_LIBDIR = $(dot)/$(LIBSUBDIR)/tilde
+TILDE_LIBDIR = $(LIBSUBDIR)/tilde
 TILDE_ABSSRC = ${topdir}/$(TILDE_LIBDIR)
 
 TILDE_LIB = @TILDE_LIB@
@@ -513,7 +513,7 @@ TILDE_OBJ	= $(TILDE_LIBDIR)/tilde.o
 
 # libintl
 INTL_LIBSRC = $(LIBSRC)/intl
-INTL_LIBDIR = $(dot)/$(LIBSUBDIR)/intl
+INTL_LIBDIR = $(LIBSUBDIR)/intl
 INTL_ABSSRC = ${topdir}/$(INTL_LIB)
 INTL_BUILDDIR = ${LIBBUILD}/intl
 
@@ -540,7 +540,7 @@ MALLOC_TARGET = @MALLOC_TARGET@
 ALLOCA = @ALLOCA@
 
 ALLOC_LIBSRC = $(LIBSRC)/malloc
-ALLOC_LIBDIR = $(dot)/$(LIBSUBDIR)/malloc
+ALLOC_LIBDIR = $(LIBSUBDIR)/malloc
 ALLOC_ABSSRC = ${topdir}/$(ALLOC_LIBDIR)
 
 MALLOC_SRC = @MALLOC_SRC@
@@ -569,9 +569,9 @@ ALLOC_HEADERS	= \
 
 
 $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
-	@ ( cd $(ALLOC_LIBDIR) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) \
-	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" ${MALLOC_TARGET} ) || exit 1
+	@ cd $(ALLOC_LIBDIR) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) \
+	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" ${MALLOC_TARGET}
 
 BASHINCDIR = ${srcdir}/include
 BASHINCFILES	= \
@@ -840,63 +840,63 @@ OBJECTS		= \
 
 # Where the source code of the shell builtins resides.
 BUILTIN_SRCDIR=$(srcdir)/builtins
-DEFSRC=$(BUILTIN_SRCDIR)
+#DEFSRC=$(BUILTIN_SRCDIR)   # does not match what's in builtins/Makefile
 BUILTIN_ABSSRC=${topdir}/builtins
-DEFDIR = $(dot)/builtins
-DEBUGGER_DIR = $(dot)/debugger
+DEFDIR = builtins
+DEBUGGER_DIR = debugger
 
 BUILTIN_DEFS	= \
-		  $(DEFSRC)/alias.def \
-		  $(DEFSRC)/bind.def \
-		  $(DEFSRC)/break.def \
-		  $(DEFSRC)/builtin.def \
-		  $(DEFSRC)/caller.def \
-		  $(DEFSRC)/cd.def \
-		  $(DEFSRC)/colon.def \
-		  $(DEFSRC)/command.def \
-		  $(DEFSRC)/declare.def \
-		  $(DEFSRC)/echo.def \
-		  $(DEFSRC)/enable.def \
-		  $(DEFSRC)/eval.def \
-		  $(DEFSRC)/exec.def \
-		  $(DEFSRC)/exit.def \
-		  $(DEFSRC)/fc.def \
-		  $(DEFSRC)/fg_bg.def \
-		  $(DEFSRC)/getopts.def \
-		  $(DEFSRC)/hash.def \
-		  $(DEFSRC)/help.def \
-		  $(DEFSRC)/history.def \
-		  $(DEFSRC)/jobs.def \
-		  $(DEFSRC)/kill.def \
-		  $(DEFSRC)/let.def \
-		  $(DEFSRC)/mapfile.def \
-		  $(DEFSRC)/printf.def \
-		  $(DEFSRC)/pushd.def \
-		  $(DEFSRC)/read.def \
-		  $(DEFSRC)/reserved.def \
-		  $(DEFSRC)/return.def \
-		  $(DEFSRC)/set.def \
-		  $(DEFSRC)/setattr.def \
-		  $(DEFSRC)/shift.def \
-		  $(DEFSRC)/shopt.def \
-		  $(DEFSRC)/source.def \
-		  $(DEFSRC)/suspend.def \
-		  $(DEFSRC)/test.def \
-		  $(DEFSRC)/times.def \
-		  $(DEFSRC)/trap.def \
-		  $(DEFSRC)/type.def \
-		  $(DEFSRC)/ulimit.def \
-		  $(DEFSRC)/umask.def \
-		  $(DEFSRC)/wait.def \
-		  ${DEFSRC}/complete.def \
+		  $(BUILTIN_SRCDIR)/alias.def \
+		  $(BUILTIN_SRCDIR)/bind.def \
+		  $(BUILTIN_SRCDIR)/break.def \
+		  $(BUILTIN_SRCDIR)/builtin.def \
+		  $(BUILTIN_SRCDIR)/caller.def \
+		  $(BUILTIN_SRCDIR)/cd.def \
+		  $(BUILTIN_SRCDIR)/colon.def \
+		  $(BUILTIN_SRCDIR)/command.def \
+		  $(BUILTIN_SRCDIR)/declare.def \
+		  $(BUILTIN_SRCDIR)/echo.def \
+		  $(BUILTIN_SRCDIR)/enable.def \
+		  $(BUILTIN_SRCDIR)/eval.def \
+		  $(BUILTIN_SRCDIR)/exec.def \
+		  $(BUILTIN_SRCDIR)/exit.def \
+		  $(BUILTIN_SRCDIR)/fc.def \
+		  $(BUILTIN_SRCDIR)/fg_bg.def \
+		  $(BUILTIN_SRCDIR)/getopts.def \
+		  $(BUILTIN_SRCDIR)/hash.def \
+		  $(BUILTIN_SRCDIR)/help.def \
+		  $(BUILTIN_SRCDIR)/history.def \
+		  $(BUILTIN_SRCDIR)/jobs.def \
+		  $(BUILTIN_SRCDIR)/kill.def \
+		  $(BUILTIN_SRCDIR)/let.def \
+		  $(BUILTIN_SRCDIR)/mapfile.def \
+		  $(BUILTIN_SRCDIR)/printf.def \
+		  $(BUILTIN_SRCDIR)/pushd.def \
+		  $(BUILTIN_SRCDIR)/read.def \
+		  $(BUILTIN_SRCDIR)/reserved.def \
+		  $(BUILTIN_SRCDIR)/return.def \
+		  $(BUILTIN_SRCDIR)/set.def \
+		  $(BUILTIN_SRCDIR)/setattr.def \
+		  $(BUILTIN_SRCDIR)/shift.def \
+		  $(BUILTIN_SRCDIR)/shopt.def \
+		  $(BUILTIN_SRCDIR)/source.def \
+		  $(BUILTIN_SRCDIR)/suspend.def \
+		  $(BUILTIN_SRCDIR)/test.def \
+		  $(BUILTIN_SRCDIR)/times.def \
+		  $(BUILTIN_SRCDIR)/trap.def \
+		  $(BUILTIN_SRCDIR)/type.def \
+		  $(BUILTIN_SRCDIR)/ulimit.def \
+		  $(BUILTIN_SRCDIR)/umask.def \
+		  $(BUILTIN_SRCDIR)/wait.def \
+		  ${BUILTIN_SRCDIR}/complete.def \
 
 
 BUILTIN_C_SRC	= \
-		  $(DEFSRC)/bashgetopt.c \
-		  $(DEFSRC)/common.c \
-		  $(DEFSRC)/evalfile.c \
-		  $(DEFSRC)/evalstring.c \
-		  $(DEFSRC)/mkbuiltins.c \
+		  $(BUILTIN_SRCDIR)/bashgetopt.c \
+		  $(BUILTIN_SRCDIR)/common.c \
+		  $(BUILTIN_SRCDIR)/evalfile.c \
+		  $(BUILTIN_SRCDIR)/evalstring.c \
+		  $(BUILTIN_SRCDIR)/mkbuiltins.c \
 		  $(GETOPT_SOURCE) \
 
 
@@ -953,13 +953,13 @@ BUILTIN_OBJS	= \
 
 
 GETOPT_SOURCE	= \
-		  $(DEFSRC)/getopt.c \
-		  $(DEFSRC)/getopt.h \
+		  $(BUILTIN_SRCDIR)/getopt.c \
+		  $(BUILTIN_SRCDIR)/getopt.h \
 
 
 PSIZE_SOURCE	= \
-		  $(DEFSRC)/psize.c \
-		  $(DEFSRC)/psize.sh \
+		  $(BUILTIN_SRCDIR)/psize.c \
+		  $(BUILTIN_SRCDIR)/psize.sh \
 
 
 BUILTINS_LIBRARY = $(DEFDIR)/libbuiltins.a
@@ -969,16 +969,16 @@ BUILTINS_DEP = $(BUILTINS_LIBRARY)
 
 # Documentation for the shell.
 DOCSRC = $(srcdir)/doc
-DOCDIR = $(dot)/doc
+DOCDIR = doc
 
 # Translations and other i18n support files
 PO_SRC = $(srcdir)/po/
-PO_DIR = $(dot)/po/
+PO_DIR = po/
 
 SIGNAMES_SUPPORT = $(SUPPORT_SRC)mksignames.c
 
 SUPPORT_SRC = $(srcdir)/support/
-SDIR = $(dot)/support
+SDIR = support
 
 TESTS_SUPPORT	= \
 		  printenv$(EXEEXT) \
@@ -1193,38 +1193,25 @@ $(LIBDEP): .build
 
 $(READLINE_LIBRARY): config.h $(READLINE_SOURCE)
 	@ echo making $@ in ${RL_LIBDIR}
-	@ ( { test "${RL_LIBDIR}" = "${libdir}" && exit 0; } || \
-	      cd ${RL_LIBDIR} && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libreadline.a ) || exit 1
+	@ test "$(@D)" = "${libdir}" || \
+	  { cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} $(@F) ; }
 
 $(HISTORY_LIBRARY): config.h $(HISTORY_SOURCE) $(READLINE_DEP)
 	@ echo making $@ in ${HIST_LIBDIR}
-	@ ( { test "${HIST_LIBDIR}" = "${libdir}" && exit 0; } || \
-	      cd ${HIST_LIBDIR} && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libhistory.a ) || exit 1
+	@ test "$(@D)" = "${libdir}" || \
+	  { cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} $(@F) ; }
 
 $(GLOB_LIBRARY): config.h $(GLOB_SOURCE)
-	@ echo making $@ in ${GLOB_LIBDIR}
-	@ ( cd ${GLOB_LIBDIR} && \
-		$(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libglob.a ) || exit 1
 
 $(TILDE_LIBRARY): config.h $(TILDE_SOURCE)
-	@ echo making $@ in ${TILDE_LIBDIR}
-	@ ( cd ${TILDE_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) libtilde.a ) || exit 1
 
 $(TERMCAP_LIBRARY): config.h ${TERMCAP_SOURCE}
-	@ echo making $@ in ${TERM_LIBDIR}
-	@ ( cd ${TERM_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) libtermcap.a ) || exit 1
 
 $(SHLIB_LIBRARY): config.h ${SHLIB_SOURCE}
-	@ echo making $@ in ${SH_LIBDIR}
-	@ ( cd ${SH_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} ${SHLIB_LIBNAME} ) || exit 1
 
 ${INTL_LIBRARY}: config.h ${INTL_LIBDIR}/Makefile
 	@ echo making $@ in ${INTL_LIBDIR}
-	@ ( cd ${INTL_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="${LOCAL_CFLAGS}" all ) || exit 1
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="${LOCAL_CFLAGS}" $(@F)
 
 ${LIBINTL_H}: ${INTL_DEP}
 
@@ -1260,33 +1247,41 @@ lsignames.h:   mksignames$(EXEEXT)
 
 # copy the correct signames header file to signames.h
 signames.h: $(SIGNAMES_H)
-	- if cmp -s $(SIGNAMES_H) $@ ; then :; else $(RM) $@ ; $(CP) $(SIGNAMES_H) $@ ; fi
+	cmp -s $(SIGNAMES_H) $@ || { $(RM) $@ ; $(CP) $(SIGNAMES_H) $@ ; }
 
 syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
 	@- $(RM) $@
 	./mksyntax$(EXEEXT) -o $@
 
+builtins::
+	$(MAKE) $(BUILTINS_LIBRARY)
+
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h  version.h
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} targets ) || exit 1
 
 # these require special rules to circumvent make builtin rules
 ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} common.o ) || exit 1
 
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} bashgetopt.o ) || exit 1
 
-${DEFDIR}/builtext.h \
-${DEFDIR}/pipesize.h \
+$(DEFDIR)/builtext.h: $(BUILTIN_DEFS)
+
+$(DEFDIR)/pipesize.h: $(BUILTINS_LIBRARY)
+
+
+$(BUILTIN_OBJS) \
+$(BUILTINS_LIBRARY) \
+$(DEFDIR)/builtext.h \
+$(DEFDIR)/pipesize.h \
+$(GLOB_LIBRARY) \
+$(SHLIB_LIBRARY) \
+$(TERMCAP_LIBRARY) \
+$(TILDE_LIBRARY) \
  :
-	cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
-
-${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-
-${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
+	@ echo Making $@ in $(@D)
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 $(SDIR)/man2html$(EXEEXT): ${SUPPORT_SRC}/man2html.c
-	@ ( cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) all ) || exit 1
+	@ (cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) all )
 
 # For the justification of the following Makefile rules, see node
 # `Automatic Remaking' in GNU Autoconf documentation.
@@ -1560,7 +1555,7 @@ array.o: $(BASHINCDIR)/ocache.h
 array.o: $(BASHINCDIR)/posixjmp.h
 array.o: $(BASHINCDIR)/stdc.h
 array.o: $(BASHINCDIR)/unlocked-io.h
-array.o: $(DEFSRC)/common.h
+array.o: $(BUILTIN_SRCDIR)/common.h
 array.o: $(srcdir)/array.c
 array.o: $(topdir)/array.h
 array.o: $(topdir)/arrayfunc.h
@@ -1595,7 +1590,7 @@ array2.o: $(BASHINCDIR)/ocache.h
 array2.o: $(BASHINCDIR)/posixjmp.h
 array2.o: $(BASHINCDIR)/stdc.h
 array2.o: $(BASHINCDIR)/unlocked-io.h
-array2.o: $(DEFSRC)/common.h
+array2.o: $(BUILTIN_SRCDIR)/common.h
 array2.o: $(srcdir)/array2.c
 array2.o: $(topdir)/array.h
 array2.o: $(topdir)/arrayfunc.h
@@ -1633,7 +1628,7 @@ arrayfunc.o: $(BASHINCDIR)/shmbchar.h
 arrayfunc.o: $(BASHINCDIR)/shmbutil.h
 arrayfunc.o: $(BASHINCDIR)/stdc.h
 arrayfunc.o: $(BASHINCDIR)/unlocked-io.h
-arrayfunc.o: $(DEFSRC)/common.h
+arrayfunc.o: $(BUILTIN_SRCDIR)/common.h
 arrayfunc.o: $(LIBINTL_H)
 arrayfunc.o: $(srcdir)/arrayfunc.c
 arrayfunc.o: $(topdir)/array.h
@@ -1672,7 +1667,7 @@ assoc.o: $(BASHINCDIR)/ocache.h
 assoc.o: $(BASHINCDIR)/posixjmp.h
 assoc.o: $(BASHINCDIR)/stdc.h
 assoc.o: $(BASHINCDIR)/unlocked-io.h
-assoc.o: $(DEFSRC)/common.h
+assoc.o: $(BUILTIN_SRCDIR)/common.h
 assoc.o: $(srcdir)/assoc.c
 assoc.o: $(topdir)/array.h
 assoc.o: $(topdir)/arrayfunc.h
@@ -1710,7 +1705,7 @@ bashhist.o: $(BASHINCDIR)/posixjmp.h
 bashhist.o: $(BASHINCDIR)/posixstat.h
 bashhist.o: $(BASHINCDIR)/stdc.h
 bashhist.o: $(BASHINCDIR)/unlocked-io.h
-bashhist.o: $(DEFSRC)/common.h
+bashhist.o: $(BUILTIN_SRCDIR)/common.h
 bashhist.o: $(GLOB_LIBSRC)/glob.h
 bashhist.o: $(GLOB_LIBSRC)/strmatch.h
 bashhist.o: $(HIST_LIBSRC)/history.h
@@ -1765,8 +1760,8 @@ bashline.o: $(BASHINCDIR)/shmbutil.h
 bashline.o: $(BASHINCDIR)/stdc.h
 bashline.o: $(BASHINCDIR)/timer.h
 bashline.o: $(BASHINCDIR)/unlocked-io.h
+bashline.o: $(BUILTIN_SRCDIR)/common.h
 bashline.o: $(DEFDIR)/builtext.h
-bashline.o: $(DEFSRC)/common.h
 bashline.o: $(GLOB_LIBSRC)/glob.h
 bashline.o: $(HIST_LIBSRC)/history.h
 bashline.o: $(HIST_LIBSRC)/rlstdc.h
@@ -1911,27 +1906,27 @@ braces.o: $(topdir)/xmalloc.h
 braces.o: config.h
 braces.o: pathnames.h
 braces.o: stdckdint.h
-builtins/break.o: $(DEFSRC)/break.def
+builtins/break.o: $(BUILTIN_SRCDIR)/break.def
 builtins/break.o: $(topdir)/config-top.h
-builtins/cd.o: $(DEFSRC)/cd.def
+builtins/cd.o: $(BUILTIN_SRCDIR)/cd.def
 builtins/cd.o: $(topdir)/config-top.h
-builtins/command.o: $(DEFSRC)/command.def
+builtins/command.o: $(BUILTIN_SRCDIR)/command.def
 builtins/command.o: $(topdir)/config-top.h
-builtins/common.o: $(DEFSRC)/common.c
+builtins/common.o: $(BUILTIN_SRCDIR)/common.c
 builtins/common.o: $(topdir)/config-top.h
-builtins/declare.o: $(DEFSRC)/declare.def
+builtins/declare.o: $(BUILTIN_SRCDIR)/declare.def
 builtins/declare.o: $(topdir)/config-top.h
-builtins/echo.o: $(DEFSRC)/echo.def
+builtins/echo.o: $(BUILTIN_SRCDIR)/echo.def
 builtins/echo.o: $(topdir)/config-top.h
-builtins/evalstring.o: $(DEFSRC)/evalstring.c
+builtins/evalstring.o: $(BUILTIN_SRCDIR)/evalstring.c
 builtins/evalstring.o: $(topdir)/config-top.h
-builtins/exit.o: $(DEFSRC)/exit.def
+builtins/exit.o: $(BUILTIN_SRCDIR)/exit.def
 builtins/exit.o: $(topdir)/config-top.h
 builtins/help.o: $(GLOB_LIBSRC)/glob.h
 builtins/help.o: $(GLOB_LIBSRC)/strmatch.h
-builtins/kill.o: $(DEFSRC)/kill.def
+builtins/kill.o: $(BUILTIN_SRCDIR)/kill.def
 builtins/kill.o: $(topdir)/config-top.h
-builtins/shopt.o: $(DEFSRC)/shopt.def
+builtins/shopt.o: $(BUILTIN_SRCDIR)/shopt.def
 builtins/shopt.o: $(topdir)/config-top.h
 copy_cmd.o: $(BASHINCDIR)/chartypes.h
 copy_cmd.o: $(BASHINCDIR)/maxpath.h
@@ -2052,7 +2047,7 @@ eval.o: $(BASHINCDIR)/posixjmp.h
 eval.o: $(BASHINCDIR)/posixwait.h
 eval.o: $(BASHINCDIR)/stdc.h
 eval.o: $(BASHINCDIR)/unlocked-io.h
-eval.o: $(DEFSRC)/common.h
+eval.o: $(BUILTIN_SRCDIR)/common.h
 eval.o: $(HIST_LIBSRC)/history.h
 eval.o: $(HIST_LIBSRC)/rlstdc.h
 eval.o: $(LIBINTL_H)
@@ -2105,9 +2100,9 @@ execute_cmd.o: $(BASHINCDIR)/posixtime.h
 execute_cmd.o: $(BASHINCDIR)/posixwait.h
 execute_cmd.o: $(BASHINCDIR)/stdc.h
 execute_cmd.o: $(BASHINCDIR)/unlocked-io.h
+execute_cmd.o: $(BUILTIN_SRCDIR)/common.h
+execute_cmd.o: $(BUILTIN_SRCDIR)/getopt.h
 execute_cmd.o: $(DEFDIR)/builtext.h
-execute_cmd.o: $(DEFSRC)/common.h
-execute_cmd.o: $(DEFSRC)/getopt.h
 execute_cmd.o: $(GLOB_LIBSRC)/strmatch.h
 execute_cmd.o: $(GRAM_H)
 execute_cmd.o: $(HIST_LIBSRC)/history.h
@@ -2247,7 +2242,7 @@ flags.o: $(BASHINCDIR)/ocache.h
 flags.o: $(BASHINCDIR)/posixjmp.h
 flags.o: $(BASHINCDIR)/stdc.h
 flags.o: $(BASHINCDIR)/unlocked-io.h
-flags.o: $(DEFSRC)/common.h
+flags.o: $(BUILTIN_SRCDIR)/common.h
 flags.o: $(HIST_LIBSRC)/history.h
 flags.o: $(HIST_LIBSRC)/rlstdc.h
 flags.o: $(srcdir)/flags.c
@@ -2291,7 +2286,7 @@ general.o: $(BASHINCDIR)/posixstat.h
 general.o: $(BASHINCDIR)/posixtime.h
 general.o: $(BASHINCDIR)/stdc.h
 general.o: $(BASHINCDIR)/unlocked-io.h
-general.o: $(DEFSRC)/common.h
+general.o: $(BUILTIN_SRCDIR)/common.h
 general.o: $(LIBINTL_H)
 general.o: $(TILDE_LIBSRC)/tilde.h
 general.o: $(srcdir)/general.c
@@ -2457,8 +2452,8 @@ jobs.o: $(BASHINCDIR)/stdc.h
 jobs.o: $(BASHINCDIR)/typemax.h
 jobs.o: $(BASHINCDIR)/unionwait.h
 jobs.o: $(BASHINCDIR)/unlocked-io.h
+jobs.o: $(BUILTIN_SRCDIR)/common.h
 jobs.o: $(DEFDIR)/builtext.h
-jobs.o: $(DEFSRC)/common.h
 jobs.o: $(LIBINTL_H)
 jobs.o: $(RL_LIBSRC)/chardefs.h
 jobs.o: $(RL_LIBSRC)/keymaps.h
@@ -2683,8 +2678,8 @@ nojobs.o: $(BASHINCDIR)/shtty.h
 nojobs.o: $(BASHINCDIR)/stdc.h
 nojobs.o: $(BASHINCDIR)/typemax.h
 nojobs.o: $(BASHINCDIR)/unlocked-io.h
+nojobs.o: $(BUILTIN_SRCDIR)/common.h
 nojobs.o: $(DEFDIR)/builtext.h
-nojobs.o: $(DEFSRC)/common.h
 nojobs.o: $(LIBINTL_H)
 nojobs.o: $(srcdir)/nojobs.c
 nojobs.o: $(topdir)/array.h
@@ -2779,8 +2774,8 @@ pcomplete.o: $(BASHINCDIR)/shmbutil.h
 pcomplete.o: $(BASHINCDIR)/stdc.h
 pcomplete.o: $(BASHINCDIR)/unionwait.h
 pcomplete.o: $(BASHINCDIR)/unlocked-io.h
+pcomplete.o: $(BUILTIN_SRCDIR)/common.h
 pcomplete.o: $(DEFDIR)/builtext.h
-pcomplete.o: $(DEFSRC)/common.h
 pcomplete.o: $(GLOB_LIBSRC)/glob.h
 pcomplete.o: $(GLOB_LIBSRC)/strmatch.h
 pcomplete.o: $(HIST_LIBSRC)/history.h
@@ -2880,7 +2875,7 @@ print_cmd.o: $(BASHINCDIR)/shmbchar.h
 print_cmd.o: $(BASHINCDIR)/shmbutil.h
 print_cmd.o: $(BASHINCDIR)/stdc.h
 print_cmd.o: $(BASHINCDIR)/unlocked-io.h
-print_cmd.o: $(DEFSRC)/common.h
+print_cmd.o: $(BUILTIN_SRCDIR)/common.h
 print_cmd.o: $(GRAM_H)
 print_cmd.o: $(LIBINTL_H)
 print_cmd.o: $(srcdir)/print_cmd.c
@@ -2972,7 +2967,7 @@ shell.o: $(BASHINCDIR)/posixtime.h
 shell.o: $(BASHINCDIR)/posixwait.h
 shell.o: $(BASHINCDIR)/stdc.h
 shell.o: $(BASHINCDIR)/unlocked-io.h
-shell.o: $(DEFSRC)/common.h
+shell.o: $(BUILTIN_SRCDIR)/common.h
 shell.o: $(GLOB_LIBSRC)/strmatch.h
 shell.o: $(HIST_LIBSRC)/history.h
 shell.o: $(HIST_LIBSRC)/rlstdc.h
@@ -3033,8 +3028,8 @@ sig.o: $(BASHINCDIR)/posixjmp.h
 sig.o: $(BASHINCDIR)/posixwait.h
 sig.o: $(BASHINCDIR)/stdc.h
 sig.o: $(BASHINCDIR)/unlocked-io.h
+sig.o: $(BUILTIN_SRCDIR)/common.h
 sig.o: $(DEFDIR)/builtext.h
-sig.o: $(DEFSRC)/common.h
 sig.o: $(LIBINTL_H)
 sig.o: $(RL_LIBSRC)/chardefs.h
 sig.o: $(RL_LIBSRC)/keymaps.h
@@ -3142,9 +3137,9 @@ subst.o: $(BASHINCDIR)/shmbutil.h
 subst.o: $(BASHINCDIR)/stdc.h
 subst.o: $(BASHINCDIR)/typemax.h
 subst.o: $(BASHINCDIR)/unlocked-io.h
+subst.o: $(BUILTIN_SRCDIR)/common.h
+subst.o: $(BUILTIN_SRCDIR)/getopt.h
 subst.o: $(DEFDIR)/builtext.h
-subst.o: $(DEFSRC)/common.h
-subst.o: $(DEFSRC)/getopt.h
 subst.o: $(GLOB_LIBSRC)/strmatch.h
 subst.o: $(HIST_LIBSRC)/history.h
 subst.o: $(HIST_LIBSRC)/rlstdc.h
@@ -3213,7 +3208,7 @@ test.o: $(BASHINCDIR)/posixstat.h
 test.o: $(BASHINCDIR)/stat-time.h
 test.o: $(BASHINCDIR)/stdc.h
 test.o: $(BASHINCDIR)/unlocked-io.h
-test.o: $(DEFSRC)/common.h
+test.o: $(BUILTIN_SRCDIR)/common.h
 test.o: $(GLOB_LIBSRC)/strmatch.h
 test.o: $(LIBINTL_H)
 test.o: $(srcdir)/test.c
@@ -3255,8 +3250,8 @@ trap.o: $(BASHINCDIR)/posixjmp.h
 trap.o: $(BASHINCDIR)/posixwait.h
 trap.o: $(BASHINCDIR)/stdc.h
 trap.o: $(BASHINCDIR)/unlocked-io.h
+trap.o: $(BUILTIN_SRCDIR)/common.h
 trap.o: $(DEFDIR)/builtext.h
-trap.o: $(DEFSRC)/common.h
 trap.o: $(LIBINTL_H)
 trap.o: $(RL_LIBSRC)/chardefs.h
 trap.o: $(RL_LIBSRC)/keymaps.h
@@ -3336,9 +3331,9 @@ variables.o: $(BASHINCDIR)/posixtime.h
 variables.o: $(BASHINCDIR)/posixwait.h
 variables.o: $(BASHINCDIR)/stdc.h
 variables.o: $(BASHINCDIR)/unlocked-io.h
+variables.o: $(BUILTIN_SRCDIR)/common.h
+variables.o: $(BUILTIN_SRCDIR)/getopt.h
 variables.o: $(DEFDIR)/builtext.h
-variables.o: $(DEFSRC)/common.h
-variables.o: $(DEFSRC)/getopt.h
 variables.o: $(HIST_LIBSRC)/history.h
 variables.o: $(HIST_LIBSRC)/rlstdc.h
 variables.o: $(LIBINTL_H)
@@ -3434,8 +3429,8 @@ y.tab.o: $(BASHINCDIR)/shmbutil.h
 y.tab.o: $(BASHINCDIR)/stdc.h
 y.tab.o: $(BASHINCDIR)/typemax.h
 y.tab.o: $(BASHINCDIR)/unlocked-io.h
+y.tab.o: $(BUILTIN_SRCDIR)/common.h
 y.tab.o: $(DEFDIR)/builtext.h
-y.tab.o: $(DEFSRC)/common.h
 y.tab.o: $(HIST_LIBSRC)/history.h
 y.tab.o: $(HIST_LIBSRC)/rlstdc.h
 y.tab.o: $(LIBINTL_H)
@@ -3525,7 +3520,7 @@ CWRU/old/pagesize.o: $(srcdir)/CWRU/old/pagesize.c
 
 CWRU/old-conf/support/getcppsyms.o: $(srcdir)/CWRU/old-conf/support/getcppsyms.c
 
-builtins/alias.c: $(DEFSRC)/alias.def
+builtins/alias.c: $(BUILTIN_SRCDIR)/alias.def
 builtins/alias.o: $(BASHINCDIR)/chartypes.h
 builtins/alias.o: $(BASHINCDIR)/gettext.h
 builtins/alias.o: $(BASHINCDIR)/maxpath.h
@@ -3534,9 +3529,9 @@ builtins/alias.o: $(BASHINCDIR)/ocache.h
 builtins/alias.o: $(BASHINCDIR)/posixjmp.h
 builtins/alias.o: $(BASHINCDIR)/stdc.h
 builtins/alias.o: $(BASHINCDIR)/unlocked-io.h
-builtins/alias.o: $(DEFSRC)/alias.def
-builtins/alias.o: $(DEFSRC)/bashgetopt.h
-builtins/alias.o: $(DEFSRC)/common.h
+builtins/alias.o: $(BUILTIN_SRCDIR)/alias.def
+builtins/alias.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/alias.o: $(BUILTIN_SRCDIR)/common.h
 builtins/alias.o: $(topdir)/alias.h
 builtins/alias.o: $(topdir)/array.h
 builtins/alias.o: $(topdir)/arrayfunc.h
@@ -3572,9 +3567,9 @@ builtins/bashgetopt.o: $(BASHINCDIR)/ocache.h
 builtins/bashgetopt.o: $(BASHINCDIR)/posixjmp.h
 builtins/bashgetopt.o: $(BASHINCDIR)/stdc.h
 builtins/bashgetopt.o: $(BASHINCDIR)/unlocked-io.h
-builtins/bashgetopt.o: $(DEFSRC)/bashgetopt.c
-builtins/bashgetopt.o: $(DEFSRC)/bashgetopt.h
-builtins/bashgetopt.o: $(DEFSRC)/common.h
+builtins/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
+builtins/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/bashgetopt.o: $(BUILTIN_SRCDIR)/common.h
 builtins/bashgetopt.o: $(topdir)/array.h
 builtins/bashgetopt.o: $(topdir)/arrayfunc.h
 builtins/bashgetopt.o: $(topdir)/assoc.h
@@ -3601,7 +3596,7 @@ builtins/bashgetopt.o: $(topdir)/variables.h
 builtins/bashgetopt.o: $(topdir)/xmalloc.h
 builtins/bashgetopt.o: config.h
 builtins/bashgetopt.o: pathnames.h
-builtins/bind.c: $(DEFSRC)/bind.def
+builtins/bind.c: $(BUILTIN_SRCDIR)/bind.def
 builtins/bind.o: $(BASHINCDIR)/chartypes.h
 builtins/bind.o: $(BASHINCDIR)/gettext.h
 builtins/bind.o: $(BASHINCDIR)/maxpath.h
@@ -3610,9 +3605,9 @@ builtins/bind.o: $(BASHINCDIR)/ocache.h
 builtins/bind.o: $(BASHINCDIR)/posixjmp.h
 builtins/bind.o: $(BASHINCDIR)/stdc.h
 builtins/bind.o: $(BASHINCDIR)/unlocked-io.h
-builtins/bind.o: $(DEFSRC)/bashgetopt.h
-builtins/bind.o: $(DEFSRC)/bind.def
-builtins/bind.o: $(DEFSRC)/common.h
+builtins/bind.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/bind.o: $(BUILTIN_SRCDIR)/bind.def
+builtins/bind.o: $(BUILTIN_SRCDIR)/common.h
 builtins/bind.o: $(HIST_LIBSRC)/history.h
 builtins/bind.o: $(LIBINTL_H)
 builtins/bind.o: $(RL_LIBSRC)/chardefs.h
@@ -3650,7 +3645,7 @@ builtins/bind.o: $(topdir)/variables.h
 builtins/bind.o: $(topdir)/xmalloc.h
 builtins/bind.o: config.h
 builtins/bind.o: pathnames.h
-builtins/break.c: $(DEFSRC)/break.def
+builtins/break.c: $(BUILTIN_SRCDIR)/break.def
 builtins/break.o: $(BASHINCDIR)/chartypes.h
 builtins/break.o: $(BASHINCDIR)/gettext.h
 builtins/break.o: $(BASHINCDIR)/maxpath.h
@@ -3659,8 +3654,8 @@ builtins/break.o: $(BASHINCDIR)/ocache.h
 builtins/break.o: $(BASHINCDIR)/posixjmp.h
 builtins/break.o: $(BASHINCDIR)/stdc.h
 builtins/break.o: $(BASHINCDIR)/unlocked-io.h
-builtins/break.o: $(DEFSRC)/break.def
-builtins/break.o: $(DEFSRC)/common.h
+builtins/break.o: $(BUILTIN_SRCDIR)/break.def
+builtins/break.o: $(BUILTIN_SRCDIR)/common.h
 builtins/break.o: $(LIBINTL_H)
 builtins/break.o: $(topdir)/array.h
 builtins/break.o: $(topdir)/arrayfunc.h
@@ -3690,7 +3685,7 @@ builtins/break.o: $(topdir)/variables.h
 builtins/break.o: $(topdir)/xmalloc.h
 builtins/break.o: config.h
 builtins/break.o: pathnames.h
-builtins/builtin.c: $(DEFSRC)/builtin.def
+builtins/builtin.c: $(BUILTIN_SRCDIR)/builtin.def
 builtins/builtin.o: $(BASHINCDIR)/chartypes.h
 builtins/builtin.o: $(BASHINCDIR)/maxpath.h
 builtins/builtin.o: $(BASHINCDIR)/memalloc.h
@@ -3698,9 +3693,9 @@ builtins/builtin.o: $(BASHINCDIR)/ocache.h
 builtins/builtin.o: $(BASHINCDIR)/posixjmp.h
 builtins/builtin.o: $(BASHINCDIR)/stdc.h
 builtins/builtin.o: $(BASHINCDIR)/unlocked-io.h
-builtins/builtin.o: $(DEFSRC)/bashgetopt.h
-builtins/builtin.o: $(DEFSRC)/builtin.def
-builtins/builtin.o: $(DEFSRC)/common.h
+builtins/builtin.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/builtin.o: $(BUILTIN_SRCDIR)/builtin.def
+builtins/builtin.o: $(BUILTIN_SRCDIR)/common.h
 builtins/builtin.o: $(topdir)/array.h
 builtins/builtin.o: $(topdir)/arrayfunc.h
 builtins/builtin.o: $(topdir)/assoc.h
@@ -3728,7 +3723,7 @@ builtins/builtin.o: $(topdir)/variables.h
 builtins/builtin.o: $(topdir)/xmalloc.h
 builtins/builtin.o: config.h
 builtins/builtin.o: pathnames.h
-builtins/builtins.c: $(DEFSRC)/builtins.def
+builtins/builtins.c: $(BUILTIN_SRCDIR)/builtins.def
 builtins/builtins.o: $(BASHINCDIR)/chartypes.h
 builtins/builtins.o: $(BASHINCDIR)/gettext.h
 builtins/builtins.o: $(BASHINCDIR)/stdc.h
@@ -3747,7 +3742,7 @@ builtins/builtins.o: $(topdir)/general.h
 builtins/builtins.o: $(topdir)/hashlib.h
 builtins/builtins.o: $(topdir)/xmalloc.h
 builtins/builtins.o: config.h
-builtins/caller.c: $(DEFSRC)/caller.def
+builtins/caller.c: $(BUILTIN_SRCDIR)/caller.def
 builtins/caller.o: $(BASHINCDIR)/chartypes.h
 builtins/caller.o: $(BASHINCDIR)/gettext.h
 builtins/caller.o: $(BASHINCDIR)/maxpath.h
@@ -3756,10 +3751,10 @@ builtins/caller.o: $(BASHINCDIR)/ocache.h
 builtins/caller.o: $(BASHINCDIR)/posixjmp.h
 builtins/caller.o: $(BASHINCDIR)/stdc.h
 builtins/caller.o: $(BASHINCDIR)/unlocked-io.h
+builtins/caller.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/caller.o: $(BUILTIN_SRCDIR)/caller.def
+builtins/caller.o: $(BUILTIN_SRCDIR)/common.h
 builtins/caller.o: $(DEFDIR)/builtext.h
-builtins/caller.o: $(DEFSRC)/bashgetopt.h
-builtins/caller.o: $(DEFSRC)/caller.def
-builtins/caller.o: $(DEFSRC)/common.h
 builtins/caller.o: $(LIBINTL_H)
 builtins/caller.o: $(topdir)/array.h
 builtins/caller.o: $(topdir)/arrayfunc.h
@@ -3788,7 +3783,7 @@ builtins/caller.o: $(topdir)/variables.h
 builtins/caller.o: $(topdir)/xmalloc.h
 builtins/caller.o: config.h
 builtins/caller.o: pathnames.h
-builtins/cd.c: $(DEFSRC)/cd.def
+builtins/cd.c: $(BUILTIN_SRCDIR)/cd.def
 builtins/cd.o: $(BASHINCDIR)/chartypes.h
 builtins/cd.o: $(BASHINCDIR)/gettext.h
 builtins/cd.o: $(BASHINCDIR)/maxpath.h
@@ -3799,9 +3794,9 @@ builtins/cd.o: $(BASHINCDIR)/posixjmp.h
 builtins/cd.o: $(BASHINCDIR)/posixstat.h
 builtins/cd.o: $(BASHINCDIR)/stdc.h
 builtins/cd.o: $(BASHINCDIR)/unlocked-io.h
-builtins/cd.o: $(DEFSRC)/bashgetopt.h
-builtins/cd.o: $(DEFSRC)/cd.def
-builtins/cd.o: $(DEFSRC)/common.h
+builtins/cd.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/cd.o: $(BUILTIN_SRCDIR)/cd.def
+builtins/cd.o: $(BUILTIN_SRCDIR)/common.h
 builtins/cd.o: $(LIBINTL_H)
 builtins/cd.o: $(TILDE_LIBSRC)/tilde.h
 builtins/cd.o: $(topdir)/array.h
@@ -3832,7 +3827,7 @@ builtins/cd.o: $(topdir)/variables.h
 builtins/cd.o: $(topdir)/xmalloc.h
 builtins/cd.o: config.h
 builtins/cd.o: pathnames.h
-builtins/colon.c: $(DEFSRC)/colon.def
+builtins/colon.c: $(BUILTIN_SRCDIR)/colon.def
 builtins/colon.o: $(BASHINCDIR)/chartypes.h
 builtins/colon.o: $(BASHINCDIR)/maxpath.h
 builtins/colon.o: $(BASHINCDIR)/memalloc.h
@@ -3840,7 +3835,7 @@ builtins/colon.o: $(BASHINCDIR)/ocache.h
 builtins/colon.o: $(BASHINCDIR)/posixjmp.h
 builtins/colon.o: $(BASHINCDIR)/stdc.h
 builtins/colon.o: $(BASHINCDIR)/unlocked-io.h
-builtins/colon.o: $(DEFSRC)/colon.def
+builtins/colon.o: $(BUILTIN_SRCDIR)/colon.def
 builtins/colon.o: $(topdir)/array.h
 builtins/colon.o: $(topdir)/arrayfunc.h
 builtins/colon.o: $(topdir)/assoc.h
@@ -3867,7 +3862,7 @@ builtins/colon.o: $(topdir)/variables.h
 builtins/colon.o: $(topdir)/xmalloc.h
 builtins/colon.o: config.h
 builtins/colon.o: pathnames.h
-builtins/command.c: $(DEFSRC)/command.def
+builtins/command.c: $(BUILTIN_SRCDIR)/command.def
 builtins/command.o: $(BASHINCDIR)/chartypes.h
 builtins/command.o: $(BASHINCDIR)/maxpath.h
 builtins/command.o: $(BASHINCDIR)/memalloc.h
@@ -3875,9 +3870,9 @@ builtins/command.o: $(BASHINCDIR)/ocache.h
 builtins/command.o: $(BASHINCDIR)/posixjmp.h
 builtins/command.o: $(BASHINCDIR)/stdc.h
 builtins/command.o: $(BASHINCDIR)/unlocked-io.h
-builtins/command.o: $(DEFSRC)/bashgetopt.h
-builtins/command.o: $(DEFSRC)/command.def
-builtins/command.o: $(DEFSRC)/common.h
+builtins/command.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/command.o: $(BUILTIN_SRCDIR)/command.def
+builtins/command.o: $(BUILTIN_SRCDIR)/common.h
 builtins/command.o: $(topdir)/array.h
 builtins/command.o: $(topdir)/arrayfunc.h
 builtins/command.o: $(topdir)/assoc.h
@@ -3908,11 +3903,9 @@ builtins/command.o: $(topdir)/variables.h
 builtins/command.o: $(topdir)/xmalloc.h
 builtins/command.o: config.h
 builtins/command.o: pathnames.h
-builtins/common.c: $(BASHINCDIR)/gettext.h
-builtins/common.c: $(LIBINTL_H)
-builtins/common.c: $(topdir)/bashintl.h
 builtins/common.o: $(BASHINCDIR)/ansi_stdlib.h
 builtins/common.o: $(BASHINCDIR)/chartypes.h
+builtins/common.o: $(BASHINCDIR)/gettext.h
 builtins/common.o: $(BASHINCDIR)/gettext.h
 builtins/common.o: $(BASHINCDIR)/maxpath.h
 builtins/common.o: $(BASHINCDIR)/memalloc.h
@@ -3922,11 +3915,12 @@ builtins/common.o: $(BASHINCDIR)/posixstat.h
 builtins/common.o: $(BASHINCDIR)/posixwait.h
 builtins/common.o: $(BASHINCDIR)/stdc.h
 builtins/common.o: $(BASHINCDIR)/unlocked-io.h
+builtins/common.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/common.o: $(BUILTIN_SRCDIR)/common.c
+builtins/common.o: $(BUILTIN_SRCDIR)/common.h
 builtins/common.o: $(DEFDIR)/builtext.h
-builtins/common.o: $(DEFSRC)/bashgetopt.h
-builtins/common.o: $(DEFSRC)/common.c
-builtins/common.o: $(DEFSRC)/common.h
 builtins/common.o: $(HIST_LIBSRC)/history.h
+builtins/common.o: $(LIBINTL_H)
 builtins/common.o: $(RL_LIBSRC)/rlstdc.h
 builtins/common.o: $(TILDE_LIBSRC)/tilde.h
 builtins/common.o: $(topdir)/alias.h
@@ -3935,6 +3929,7 @@ builtins/common.o: $(topdir)/arrayfunc.h
 builtins/common.o: $(topdir)/assoc.h
 builtins/common.o: $(topdir)/bashansi.h
 builtins/common.o: $(topdir)/bashhist.h
+builtins/common.o: $(topdir)/bashintl.h
 builtins/common.o: $(topdir)/bashintl.h
 builtins/common.o: $(topdir)/bashjmp.h
 builtins/common.o: $(topdir)/bashtypes.h
@@ -3966,7 +3961,7 @@ builtins/common.o: $(topdir)/variables.h
 builtins/common.o: $(topdir)/xmalloc.h
 builtins/common.o: config.h
 builtins/common.o: pathnames.h
-builtins/complete.c: $(DEFSRC)/complete.def
+builtins/complete.c: $(BUILTIN_SRCDIR)/complete.def
 builtins/complete.o: $(BASHINCDIR)/ansi_stdlib.h
 builtins/complete.o: $(BASHINCDIR)/chartypes.h
 builtins/complete.o: $(BASHINCDIR)/gettext.h
@@ -3975,9 +3970,9 @@ builtins/complete.o: $(BASHINCDIR)/ocache.h
 builtins/complete.o: $(BASHINCDIR)/posixjmp.h
 builtins/complete.o: $(BASHINCDIR)/stdc.h
 builtins/complete.o: $(BASHINCDIR)/unlocked-io.h
-builtins/complete.o: $(DEFSRC)/bashgetopt.h
-builtins/complete.o: $(DEFSRC)/common.h
-builtins/complete.o: $(DEFSRC)/complete.def
+builtins/complete.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/complete.o: $(BUILTIN_SRCDIR)/common.h
+builtins/complete.o: $(BUILTIN_SRCDIR)/complete.def
 builtins/complete.o: $(LIBINTL_H)
 builtins/complete.o: $(RL_LIBSRC)/chardefs.h
 builtins/complete.o: $(RL_LIBSRC)/keymaps.h
@@ -4016,7 +4011,7 @@ builtins/complete.o: $(topdir)/variables.h
 builtins/complete.o: $(topdir)/xmalloc.h
 builtins/complete.o: config.h
 builtins/complete.o: pathnames.h
-builtins/declare.c: $(DEFSRC)/declare.def
+builtins/declare.c: $(BUILTIN_SRCDIR)/declare.def
 builtins/declare.o: $(BASHINCDIR)/chartypes.h
 builtins/declare.o: $(BASHINCDIR)/gettext.h
 builtins/declare.o: $(BASHINCDIR)/maxpath.h
@@ -4025,10 +4020,10 @@ builtins/declare.o: $(BASHINCDIR)/ocache.h
 builtins/declare.o: $(BASHINCDIR)/posixjmp.h
 builtins/declare.o: $(BASHINCDIR)/stdc.h
 builtins/declare.o: $(BASHINCDIR)/unlocked-io.h
+builtins/declare.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/declare.o: $(BUILTIN_SRCDIR)/common.h
+builtins/declare.o: $(BUILTIN_SRCDIR)/declare.def
 builtins/declare.o: $(DEFDIR)/builtext.h
-builtins/declare.o: $(DEFSRC)/bashgetopt.h
-builtins/declare.o: $(DEFSRC)/common.h
-builtins/declare.o: $(DEFSRC)/declare.def
 builtins/declare.o: $(LIBINTL_H)
 builtins/declare.o: $(topdir)/array.h
 builtins/declare.o: $(topdir)/arrayfunc.h
@@ -4058,7 +4053,7 @@ builtins/declare.o: $(topdir)/variables.h
 builtins/declare.o: $(topdir)/xmalloc.h
 builtins/declare.o: config.h
 builtins/declare.o: pathnames.h
-builtins/echo.c: $(DEFSRC)/echo.def
+builtins/echo.c: $(BUILTIN_SRCDIR)/echo.def
 builtins/echo.o: $(BASHINCDIR)/chartypes.h
 builtins/echo.o: $(BASHINCDIR)/maxpath.h
 builtins/echo.o: $(BASHINCDIR)/memalloc.h
@@ -4066,8 +4061,8 @@ builtins/echo.o: $(BASHINCDIR)/ocache.h
 builtins/echo.o: $(BASHINCDIR)/posixjmp.h
 builtins/echo.o: $(BASHINCDIR)/stdc.h
 builtins/echo.o: $(BASHINCDIR)/unlocked-io.h
-builtins/echo.o: $(DEFSRC)/common.h
-builtins/echo.o: $(DEFSRC)/echo.def
+builtins/echo.o: $(BUILTIN_SRCDIR)/common.h
+builtins/echo.o: $(BUILTIN_SRCDIR)/echo.def
 builtins/echo.o: $(topdir)/array.h
 builtins/echo.o: $(topdir)/arrayfunc.h
 builtins/echo.o: $(topdir)/assoc.h
@@ -4094,7 +4089,7 @@ builtins/echo.o: $(topdir)/variables.h
 builtins/echo.o: $(topdir)/xmalloc.h
 builtins/echo.o: config.h
 builtins/echo.o: pathnames.h
-builtins/enable.c: $(DEFSRC)/enable.def
+builtins/enable.c: $(BUILTIN_SRCDIR)/enable.def
 builtins/enable.o: $(BASHINCDIR)/chartypes.h
 builtins/enable.o: $(BASHINCDIR)/gettext.h
 builtins/enable.o: $(BASHINCDIR)/maxpath.h
@@ -4103,9 +4098,9 @@ builtins/enable.o: $(BASHINCDIR)/ocache.h
 builtins/enable.o: $(BASHINCDIR)/posixjmp.h
 builtins/enable.o: $(BASHINCDIR)/stdc.h
 builtins/enable.o: $(BASHINCDIR)/unlocked-io.h
-builtins/enable.o: $(DEFSRC)/bashgetopt.h
-builtins/enable.o: $(DEFSRC)/common.h
-builtins/enable.o: $(DEFSRC)/enable.def
+builtins/enable.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/enable.o: $(BUILTIN_SRCDIR)/common.h
+builtins/enable.o: $(BUILTIN_SRCDIR)/enable.def
 builtins/enable.o: $(LIBINTL_H)
 builtins/enable.o: $(topdir)/alias.h
 builtins/enable.o: $(topdir)/array.h
@@ -4139,7 +4134,7 @@ builtins/enable.o: $(topdir)/variables.h
 builtins/enable.o: $(topdir)/xmalloc.h
 builtins/enable.o: config.h
 builtins/enable.o: pathnames.h
-builtins/eval.c: $(DEFSRC)/eval.def
+builtins/eval.c: $(BUILTIN_SRCDIR)/eval.def
 builtins/eval.o: $(BASHINCDIR)/chartypes.h
 builtins/eval.o: $(BASHINCDIR)/maxpath.h
 builtins/eval.o: $(BASHINCDIR)/memalloc.h
@@ -4147,9 +4142,9 @@ builtins/eval.o: $(BASHINCDIR)/ocache.h
 builtins/eval.o: $(BASHINCDIR)/posixjmp.h
 builtins/eval.o: $(BASHINCDIR)/stdc.h
 builtins/eval.o: $(BASHINCDIR)/unlocked-io.h
-builtins/eval.o: $(DEFSRC)/bashgetopt.h
-builtins/eval.o: $(DEFSRC)/common.h
-builtins/eval.o: $(DEFSRC)/eval.def
+builtins/eval.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/eval.o: $(BUILTIN_SRCDIR)/common.h
+builtins/eval.o: $(BUILTIN_SRCDIR)/eval.def
 builtins/eval.o: $(topdir)/array.h
 builtins/eval.o: $(topdir)/arrayfunc.h
 builtins/eval.o: $(topdir)/assoc.h
@@ -4176,12 +4171,10 @@ builtins/eval.o: $(topdir)/variables.h
 builtins/eval.o: $(topdir)/xmalloc.h
 builtins/eval.o: config.h
 builtins/eval.o: pathnames.h
-builtins/evalfile.c: $(BASHINCDIR)/gettext.h
-builtins/evalfile.c: $(LIBINTL_H)
-builtins/evalfile.c: $(topdir)/bashintl.h
 builtins/evalfile.o: $(BASHINCDIR)/ansi_stdlib.h
 builtins/evalfile.o: $(BASHINCDIR)/chartypes.h
 builtins/evalfile.o: $(BASHINCDIR)/filecntl.h
+builtins/evalfile.o: $(BASHINCDIR)/gettext.h
 builtins/evalfile.o: $(BASHINCDIR)/gettext.h
 builtins/evalfile.o: $(BASHINCDIR)/maxpath.h
 builtins/evalfile.o: $(BASHINCDIR)/ocache.h
@@ -4191,9 +4184,10 @@ builtins/evalfile.o: $(BASHINCDIR)/posixwait.h
 builtins/evalfile.o: $(BASHINCDIR)/stdc.h
 builtins/evalfile.o: $(BASHINCDIR)/typemax.h
 builtins/evalfile.o: $(BASHINCDIR)/unlocked-io.h
-builtins/evalfile.o: $(DEFSRC)/common.h
-builtins/evalfile.o: $(DEFSRC)/evalfile.c
+builtins/evalfile.o: $(BUILTIN_SRCDIR)/common.h
+builtins/evalfile.o: $(BUILTIN_SRCDIR)/evalfile.c
 builtins/evalfile.o: $(HIST_LIBSRC)/history.h
+builtins/evalfile.o: $(LIBINTL_H)
 builtins/evalfile.o: $(RL_LIBSRC)/rlstdc.h
 builtins/evalfile.o: $(topdir)/alias.h
 builtins/evalfile.o: $(topdir)/array.h
@@ -4201,6 +4195,7 @@ builtins/evalfile.o: $(topdir)/arrayfunc.h
 builtins/evalfile.o: $(topdir)/assoc.h
 builtins/evalfile.o: $(topdir)/bashansi.h
 builtins/evalfile.o: $(topdir)/bashhist.h
+builtins/evalfile.o: $(topdir)/bashintl.h
 builtins/evalfile.o: $(topdir)/bashintl.h
 builtins/evalfile.o: $(topdir)/bashjmp.h
 builtins/evalfile.o: $(topdir)/bashtypes.h
@@ -4244,9 +4239,9 @@ builtins/evalstring.o: $(BASHINCDIR)/posixjmp.h
 builtins/evalstring.o: $(BASHINCDIR)/posixwait.h
 builtins/evalstring.o: $(BASHINCDIR)/stdc.h
 builtins/evalstring.o: $(BASHINCDIR)/unlocked-io.h
+builtins/evalstring.o: $(BUILTIN_SRCDIR)/common.h
+builtins/evalstring.o: $(BUILTIN_SRCDIR)/evalstring.c
 builtins/evalstring.o: $(DEFDIR)/builtext.h
-builtins/evalstring.o: $(DEFSRC)/common.h
-builtins/evalstring.o: $(DEFSRC)/evalstring.c
 builtins/evalstring.o: $(HIST_LIBSRC)/history.h
 builtins/evalstring.o: $(RL_LIBSRC)/rlstdc.h
 builtins/evalstring.o: $(topdir)/alias.h
@@ -4288,7 +4283,7 @@ builtins/evalstring.o: $(topdir)/xmalloc.h
 builtins/evalstring.o: config.h
 builtins/evalstring.o: pathnames.h
 builtins/evalstring.o: y.tab.h
-builtins/exec.c: $(DEFSRC)/exec.def
+builtins/exec.c: $(BUILTIN_SRCDIR)/exec.def
 builtins/exec.o: $(BASHINCDIR)/chartypes.h
 builtins/exec.o: $(BASHINCDIR)/gettext.h
 builtins/exec.o: $(BASHINCDIR)/maxpath.h
@@ -4299,9 +4294,9 @@ builtins/exec.o: $(BASHINCDIR)/posixstat.h
 builtins/exec.o: $(BASHINCDIR)/posixwait.h
 builtins/exec.o: $(BASHINCDIR)/stdc.h
 builtins/exec.o: $(BASHINCDIR)/unlocked-io.h
-builtins/exec.o: $(DEFSRC)/bashgetopt.h
-builtins/exec.o: $(DEFSRC)/common.h
-builtins/exec.o: $(DEFSRC)/exec.def
+builtins/exec.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/exec.o: $(BUILTIN_SRCDIR)/common.h
+builtins/exec.o: $(BUILTIN_SRCDIR)/exec.def
 builtins/exec.o: $(LIBINTL_H)
 builtins/exec.o: $(topdir)/array.h
 builtins/exec.o: $(topdir)/arrayfunc.h
@@ -4338,7 +4333,7 @@ builtins/exec.o: $(topdir)/variables.h
 builtins/exec.o: $(topdir)/xmalloc.h
 builtins/exec.o: config.h
 builtins/exec.o: pathnames.h
-builtins/exit.c: $(DEFSRC)/exit.def
+builtins/exit.c: $(BUILTIN_SRCDIR)/exit.def
 builtins/exit.o: $(BASHINCDIR)/chartypes.h
 builtins/exit.o: $(BASHINCDIR)/gettext.h
 builtins/exit.o: $(BASHINCDIR)/maxpath.h
@@ -4348,9 +4343,9 @@ builtins/exit.o: $(BASHINCDIR)/posixjmp.h
 builtins/exit.o: $(BASHINCDIR)/posixwait.h
 builtins/exit.o: $(BASHINCDIR)/stdc.h
 builtins/exit.o: $(BASHINCDIR)/unlocked-io.h
+builtins/exit.o: $(BUILTIN_SRCDIR)/common.h
+builtins/exit.o: $(BUILTIN_SRCDIR)/exit.def
 builtins/exit.o: $(DEFDIR)/builtext.h
-builtins/exit.o: $(DEFSRC)/common.h
-builtins/exit.o: $(DEFSRC)/exit.def
 builtins/exit.o: $(LIBINTL_H)
 builtins/exit.o: $(topdir)/array.h
 builtins/exit.o: $(topdir)/arrayfunc.h
@@ -4383,7 +4378,7 @@ builtins/exit.o: $(topdir)/variables.h
 builtins/exit.o: $(topdir)/xmalloc.h
 builtins/exit.o: config.h
 builtins/exit.o: pathnames.h
-builtins/fc.c: $(DEFSRC)/fc.def
+builtins/fc.c: $(BUILTIN_SRCDIR)/fc.def
 builtins/fc.o: $(BASHINCDIR)/ansi_stdlib.h
 builtins/fc.o: $(BASHINCDIR)/chartypes.h
 builtins/fc.o: $(BASHINCDIR)/gettext.h
@@ -4394,9 +4389,9 @@ builtins/fc.o: $(BASHINCDIR)/posixjmp.h
 builtins/fc.o: $(BASHINCDIR)/posixstat.h
 builtins/fc.o: $(BASHINCDIR)/stdc.h
 builtins/fc.o: $(BASHINCDIR)/unlocked-io.h
-builtins/fc.o: $(DEFSRC)/bashgetopt.h
-builtins/fc.o: $(DEFSRC)/common.h
-builtins/fc.o: $(DEFSRC)/fc.def
+builtins/fc.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/fc.o: $(BUILTIN_SRCDIR)/common.h
+builtins/fc.o: $(BUILTIN_SRCDIR)/fc.def
 builtins/fc.o: $(HIST_LIBSRC)/history.h
 builtins/fc.o: $(LIBINTL_H)
 builtins/fc.o: $(RL_LIBSRC)/history.h
@@ -4435,7 +4430,7 @@ builtins/fc.o: $(topdir)/variables.h
 builtins/fc.o: $(topdir)/xmalloc.h
 builtins/fc.o: config.h
 builtins/fc.o: pathnames.h
-builtins/fg_bg.c: $(DEFSRC)/fg_bg.def
+builtins/fg_bg.c: $(BUILTIN_SRCDIR)/fg_bg.def
 builtins/fg_bg.o: $(BASHINCDIR)/chartypes.h
 builtins/fg_bg.o: $(BASHINCDIR)/gettext.h
 builtins/fg_bg.o: $(BASHINCDIR)/maxpath.h
@@ -4445,9 +4440,9 @@ builtins/fg_bg.o: $(BASHINCDIR)/posixjmp.h
 builtins/fg_bg.o: $(BASHINCDIR)/posixwait.h
 builtins/fg_bg.o: $(BASHINCDIR)/stdc.h
 builtins/fg_bg.o: $(BASHINCDIR)/unlocked-io.h
-builtins/fg_bg.o: $(DEFSRC)/bashgetopt.h
-builtins/fg_bg.o: $(DEFSRC)/common.h
-builtins/fg_bg.o: $(DEFSRC)/fg_bg.def
+builtins/fg_bg.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/fg_bg.o: $(BUILTIN_SRCDIR)/common.h
+builtins/fg_bg.o: $(BUILTIN_SRCDIR)/fg_bg.def
 builtins/fg_bg.o: $(LIBINTL_H)
 builtins/fg_bg.o: $(topdir)/array.h
 builtins/fg_bg.o: $(topdir)/arrayfunc.h
@@ -4484,11 +4479,11 @@ builtins/gen-helpfiles.o: $(BASHINCDIR)/filecntl.h
 builtins/gen-helpfiles.o: $(BASHINCDIR)/posixstat.h
 builtins/gen-helpfiles.o: $(BASHINCDIR)/stdc.h
 builtins/gen-helpfiles.o: $(BASHINCDIR)/unlocked-io.h
-builtins/gen-helpfiles.o: $(DEFSRC)/gen-helpfiles.c
-builtins/gen-helpfiles.o: $(DEFSRC)/tmpbuiltins.h
+builtins/gen-helpfiles.o: $(BUILTIN_SRCDIR)/gen-helpfiles.c
 builtins/gen-helpfiles.o: $(topdir)/alias.h
 builtins/gen-helpfiles.o: $(topdir)/bashansi.h
 builtins/gen-helpfiles.o: $(topdir)/bashtypes.h
+builtins/gen-helpfiles.o: $(topdir)/builtins.h
 builtins/gen-helpfiles.o: $(topdir)/builtins.h
 builtins/gen-helpfiles.o: $(topdir)/command.h
 builtins/gen-helpfiles.o: $(topdir)/config-bot.h
@@ -4497,10 +4492,8 @@ builtins/gen-helpfiles.o: $(topdir)/general.h
 builtins/gen-helpfiles.o: $(topdir)/hashlib.h
 builtins/gen-helpfiles.o: $(topdir)/xmalloc.h
 builtins/gen-helpfiles.o: config.h
-builtins/getopt.c: $(BASHINCDIR)/gettext.h
-builtins/getopt.c: $(LIBINTL_H)
-builtins/getopt.c: $(topdir)/bashintl.h
 builtins/getopt.o: $(BASHINCDIR)/chartypes.h
+builtins/getopt.o: $(BASHINCDIR)/gettext.h
 builtins/getopt.o: $(BASHINCDIR)/gettext.h
 builtins/getopt.o: $(BASHINCDIR)/maxpath.h
 builtins/getopt.o: $(BASHINCDIR)/memalloc.h
@@ -4508,12 +4501,14 @@ builtins/getopt.o: $(BASHINCDIR)/ocache.h
 builtins/getopt.o: $(BASHINCDIR)/posixjmp.h
 builtins/getopt.o: $(BASHINCDIR)/stdc.h
 builtins/getopt.o: $(BASHINCDIR)/unlocked-io.h
-builtins/getopt.o: $(DEFSRC)/getopt.c
-builtins/getopt.o: $(DEFSRC)/getopt.h
+builtins/getopt.o: $(BUILTIN_SRCDIR)/getopt.c
+builtins/getopt.o: $(BUILTIN_SRCDIR)/getopt.h
+builtins/getopt.o: $(LIBINTL_H)
 builtins/getopt.o: $(topdir)/array.h
 builtins/getopt.o: $(topdir)/arrayfunc.h
 builtins/getopt.o: $(topdir)/assoc.h
 builtins/getopt.o: $(topdir)/bashansi.h
+builtins/getopt.o: $(topdir)/bashintl.h
 builtins/getopt.o: $(topdir)/bashintl.h
 builtins/getopt.o: $(topdir)/bashjmp.h
 builtins/getopt.o: $(topdir)/bashtypes.h
@@ -4537,7 +4532,7 @@ builtins/getopt.o: $(topdir)/variables.h
 builtins/getopt.o: $(topdir)/xmalloc.h
 builtins/getopt.o: config.h
 builtins/getopt.o: pathnames.h
-builtins/getopts.c: $(DEFSRC)/getopts.def
+builtins/getopts.c: $(BUILTIN_SRCDIR)/getopts.def
 builtins/getopts.o: $(BASHINCDIR)/chartypes.h
 builtins/getopts.o: $(BASHINCDIR)/gettext.h
 builtins/getopts.o: $(BASHINCDIR)/maxpath.h
@@ -4546,10 +4541,10 @@ builtins/getopts.o: $(BASHINCDIR)/ocache.h
 builtins/getopts.o: $(BASHINCDIR)/posixjmp.h
 builtins/getopts.o: $(BASHINCDIR)/stdc.h
 builtins/getopts.o: $(BASHINCDIR)/unlocked-io.h
-builtins/getopts.o: $(DEFSRC)/bashgetopt.h
-builtins/getopts.o: $(DEFSRC)/common.h
-builtins/getopts.o: $(DEFSRC)/getopt.h
-builtins/getopts.o: $(DEFSRC)/getopts.def
+builtins/getopts.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/getopts.o: $(BUILTIN_SRCDIR)/common.h
+builtins/getopts.o: $(BUILTIN_SRCDIR)/getopt.h
+builtins/getopts.o: $(BUILTIN_SRCDIR)/getopts.def
 builtins/getopts.o: $(topdir)/array.h
 builtins/getopts.o: $(topdir)/arrayfunc.h
 builtins/getopts.o: $(topdir)/assoc.h
@@ -4578,7 +4573,7 @@ builtins/getopts.o: $(topdir)/variables.h
 builtins/getopts.o: $(topdir)/xmalloc.h
 builtins/getopts.o: config.h
 builtins/getopts.o: pathnames.h
-builtins/hash.c: $(DEFSRC)/hash.def
+builtins/hash.c: $(BUILTIN_SRCDIR)/hash.def
 builtins/hash.o: $(BASHINCDIR)/chartypes.h
 builtins/hash.o: $(BASHINCDIR)/gettext.h
 builtins/hash.o: $(BASHINCDIR)/maxpath.h
@@ -4587,9 +4582,9 @@ builtins/hash.o: $(BASHINCDIR)/ocache.h
 builtins/hash.o: $(BASHINCDIR)/posixjmp.h
 builtins/hash.o: $(BASHINCDIR)/stdc.h
 builtins/hash.o: $(BASHINCDIR)/unlocked-io.h
-builtins/hash.o: $(DEFSRC)/bashgetopt.h
-builtins/hash.o: $(DEFSRC)/common.h
-builtins/hash.o: $(DEFSRC)/hash.def
+builtins/hash.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/hash.o: $(BUILTIN_SRCDIR)/common.h
+builtins/hash.o: $(BUILTIN_SRCDIR)/hash.def
 builtins/hash.o: $(LIBINTL_H)
 builtins/hash.o: $(topdir)/alias.h
 builtins/hash.o: $(topdir)/array.h
@@ -4624,7 +4619,7 @@ builtins/hash.o: $(topdir)/variables.h
 builtins/hash.o: $(topdir)/xmalloc.h
 builtins/hash.o: config.h
 builtins/hash.o: pathnames.h
-builtins/help.c: $(DEFSRC)/help.def
+builtins/help.c: $(BUILTIN_SRCDIR)/help.def
 builtins/help.o: $(BASHINCDIR)/chartypes.h
 builtins/help.o: $(BASHINCDIR)/filecntl.h
 builtins/help.o: $(BASHINCDIR)/gettext.h
@@ -4634,9 +4629,9 @@ builtins/help.o: $(BASHINCDIR)/ocache.h
 builtins/help.o: $(BASHINCDIR)/posixjmp.h
 builtins/help.o: $(BASHINCDIR)/stdc.h
 builtins/help.o: $(BASHINCDIR)/unlocked-io.h
-builtins/help.o: $(DEFSRC)/bashgetopt.h
-builtins/help.o: $(DEFSRC)/common.h
-builtins/help.o: $(DEFSRC)/help.def
+builtins/help.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/help.o: $(BUILTIN_SRCDIR)/common.h
+builtins/help.o: $(BUILTIN_SRCDIR)/help.def
 builtins/help.o: $(GLOB_LIBSRC)/glob.h
 builtins/help.o: $(LIBINTL_H)
 builtins/help.o: $(topdir)/alias.h
@@ -4670,7 +4665,7 @@ builtins/help.o: $(topdir)/variables.h
 builtins/help.o: $(topdir)/xmalloc.h
 builtins/help.o: config.h
 builtins/help.o: pathnames.h
-builtins/history.c: $(DEFSRC)/history.def
+builtins/history.c: $(BUILTIN_SRCDIR)/history.def
 builtins/history.o: $(BASHINCDIR)/chartypes.h
 builtins/history.o: $(BASHINCDIR)/filecntl.h
 builtins/history.o: $(BASHINCDIR)/gettext.h
@@ -4681,9 +4676,9 @@ builtins/history.o: $(BASHINCDIR)/posixjmp.h
 builtins/history.o: $(BASHINCDIR)/posixstat.h
 builtins/history.o: $(BASHINCDIR)/stdc.h
 builtins/history.o: $(BASHINCDIR)/unlocked-io.h
-builtins/history.o: $(DEFSRC)/bashgetopt.h
-builtins/history.o: $(DEFSRC)/common.h
-builtins/history.o: $(DEFSRC)/history.def
+builtins/history.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/history.o: $(BUILTIN_SRCDIR)/common.h
+builtins/history.o: $(BUILTIN_SRCDIR)/history.def
 builtins/history.o: $(HIST_LIBSRC)/history.h
 builtins/history.o: $(LIBINTL_H)
 builtins/history.o: $(RL_LIBSRC)/history.h
@@ -4720,7 +4715,7 @@ builtins/history.o: $(topdir)/variables.h
 builtins/history.o: $(topdir)/xmalloc.h
 builtins/history.o: config.h
 builtins/history.o: pathnames.h
-builtins/jobs.c: $(DEFSRC)/jobs.def
+builtins/jobs.c: $(BUILTIN_SRCDIR)/jobs.def
 builtins/jobs.o: $(BASHINCDIR)/chartypes.h
 builtins/jobs.o: $(BASHINCDIR)/gettext.h
 builtins/jobs.o: $(BASHINCDIR)/maxpath.h
@@ -4730,9 +4725,9 @@ builtins/jobs.o: $(BASHINCDIR)/posixjmp.h
 builtins/jobs.o: $(BASHINCDIR)/posixwait.h
 builtins/jobs.o: $(BASHINCDIR)/stdc.h
 builtins/jobs.o: $(BASHINCDIR)/unlocked-io.h
-builtins/jobs.o: $(DEFSRC)/bashgetopt.h
-builtins/jobs.o: $(DEFSRC)/common.h
-builtins/jobs.o: $(DEFSRC)/jobs.def
+builtins/jobs.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/jobs.o: $(BUILTIN_SRCDIR)/common.h
+builtins/jobs.o: $(BUILTIN_SRCDIR)/jobs.def
 builtins/jobs.o: $(LIBINTL_H)
 builtins/jobs.o: $(topdir)/array.h
 builtins/jobs.o: $(topdir)/arrayfunc.h
@@ -4766,7 +4761,7 @@ builtins/jobs.o: $(topdir)/variables.h
 builtins/jobs.o: $(topdir)/xmalloc.h
 builtins/jobs.o: config.h
 builtins/jobs.o: pathnames.h
-builtins/kill.c: $(DEFSRC)/kill.def
+builtins/kill.c: $(BUILTIN_SRCDIR)/kill.def
 builtins/kill.o: $(BASHINCDIR)/chartypes.h
 builtins/kill.o: $(BASHINCDIR)/gettext.h
 builtins/kill.o: $(BASHINCDIR)/maxpath.h
@@ -4776,8 +4771,8 @@ builtins/kill.o: $(BASHINCDIR)/posixjmp.h
 builtins/kill.o: $(BASHINCDIR)/posixwait.h
 builtins/kill.o: $(BASHINCDIR)/stdc.h
 builtins/kill.o: $(BASHINCDIR)/unlocked-io.h
-builtins/kill.o: $(DEFSRC)/common.h
-builtins/kill.o: $(DEFSRC)/kill.def
+builtins/kill.o: $(BUILTIN_SRCDIR)/common.h
+builtins/kill.o: $(BUILTIN_SRCDIR)/kill.def
 builtins/kill.o: $(LIBINTL_H)
 builtins/kill.o: $(topdir)/array.h
 builtins/kill.o: $(topdir)/arrayfunc.h
@@ -4809,7 +4804,7 @@ builtins/kill.o: $(topdir)/variables.h
 builtins/kill.o: $(topdir)/xmalloc.h
 builtins/kill.o: config.h
 builtins/kill.o: pathnames.h
-builtins/let.c: $(DEFSRC)/let.def
+builtins/let.c: $(BUILTIN_SRCDIR)/let.def
 builtins/let.o: $(BASHINCDIR)/chartypes.h
 builtins/let.o: $(BASHINCDIR)/gettext.h
 builtins/let.o: $(BASHINCDIR)/maxpath.h
@@ -4818,8 +4813,8 @@ builtins/let.o: $(BASHINCDIR)/ocache.h
 builtins/let.o: $(BASHINCDIR)/posixjmp.h
 builtins/let.o: $(BASHINCDIR)/stdc.h
 builtins/let.o: $(BASHINCDIR)/unlocked-io.h
-builtins/let.o: $(DEFSRC)/common.h
-builtins/let.o: $(DEFSRC)/let.def
+builtins/let.o: $(BUILTIN_SRCDIR)/common.h
+builtins/let.o: $(BUILTIN_SRCDIR)/let.def
 builtins/let.o: $(LIBINTL_H)
 builtins/let.o: $(topdir)/array.h
 builtins/let.o: $(topdir)/arrayfunc.h
@@ -4848,7 +4843,7 @@ builtins/let.o: $(topdir)/variables.h
 builtins/let.o: $(topdir)/xmalloc.h
 builtins/let.o: config.h
 builtins/let.o: pathnames.h
-builtins/mapfile.c: $(DEFSRC)/mapfile.def
+builtins/mapfile.c: $(BUILTIN_SRCDIR)/mapfile.def
 builtins/mapfile.o: $(BASHINCDIR)/chartypes.h
 builtins/mapfile.o: $(BASHINCDIR)/gettext.h
 builtins/mapfile.o: $(BASHINCDIR)/maxpath.h
@@ -4858,9 +4853,9 @@ builtins/mapfile.o: $(BASHINCDIR)/posixjmp.h
 builtins/mapfile.o: $(BASHINCDIR)/posixstat.h
 builtins/mapfile.o: $(BASHINCDIR)/stdc.h
 builtins/mapfile.o: $(BASHINCDIR)/unlocked-io.h
-builtins/mapfile.o: $(DEFSRC)/bashgetopt.h
-builtins/mapfile.o: $(DEFSRC)/common.h
-builtins/mapfile.o: $(DEFSRC)/mapfile.def
+builtins/mapfile.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/mapfile.o: $(BUILTIN_SRCDIR)/common.h
+builtins/mapfile.o: $(BUILTIN_SRCDIR)/mapfile.def
 builtins/mapfile.o: $(LIBINTL_H)
 builtins/mapfile.o: $(topdir)/alias.h
 builtins/mapfile.o: $(topdir)/array.h
@@ -4896,7 +4891,7 @@ builtins/mkbuiltins.o: $(BASHINCDIR)/filecntl.h
 builtins/mkbuiltins.o: $(BASHINCDIR)/gettext.h
 builtins/mkbuiltins.o: $(BASHINCDIR)/posixstat.h
 builtins/mkbuiltins.o: $(BASHINCDIR)/stdc.h
-builtins/mkbuiltins.o: $(DEFSRC)/mkbuiltins.c
+builtins/mkbuiltins.o: $(BUILTIN_SRCDIR)/mkbuiltins.c
 builtins/mkbuiltins.o: $(LIBINTL_H)
 builtins/mkbuiltins.o: $(topdir)/bashansi.h
 builtins/mkbuiltins.o: $(topdir)/bashintl.h
@@ -4908,7 +4903,7 @@ builtins/mkbuiltins.o: $(topdir)/include/filecntl.h
 builtins/mkbuiltins.o: $(topdir)/include/posixstat.h
 builtins/mkbuiltins.o: $(topdir)/include/stdc.h
 builtins/mkbuiltins.o: config.h
-builtins/printf.c: $(DEFSRC)/printf.def
+builtins/printf.c: $(BUILTIN_SRCDIR)/printf.def
 builtins/printf.o: $(BASHINCDIR)/chartypes.h
 builtins/printf.o: $(BASHINCDIR)/gettext.h
 builtins/printf.o: $(BASHINCDIR)/intprops-internal.h
@@ -4921,9 +4916,9 @@ builtins/printf.o: $(BASHINCDIR)/shmbchar.h
 builtins/printf.o: $(BASHINCDIR)/shmbutil.h
 builtins/printf.o: $(BASHINCDIR)/stdc.h
 builtins/printf.o: $(BASHINCDIR)/unlocked-io.h
-builtins/printf.o: $(DEFSRC)/bashgetopt.h
-builtins/printf.o: $(DEFSRC)/common.h
-builtins/printf.o: $(DEFSRC)/printf.def
+builtins/printf.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/printf.o: $(BUILTIN_SRCDIR)/common.h
+builtins/printf.o: $(BUILTIN_SRCDIR)/printf.def
 builtins/printf.o: $(LIBINTL_H)
 builtins/printf.o: $(topdir)/array.h
 builtins/printf.o: $(topdir)/arrayfunc.h
@@ -4953,11 +4948,11 @@ builtins/printf.o: $(topdir)/xmalloc.h
 builtins/printf.o: config.h
 builtins/printf.o: pathnames.h
 builtins/printf.o: stdckdint.h
-builtins/psize-posix.o: $(DEFSRC)/psize-posix.c
+builtins/psize-posix.o: $(BUILTIN_SRCDIR)/psize-posix.c
 builtins/psize.o: $(BASHINCDIR)/chartypes.h
 builtins/psize.o: $(BASHINCDIR)/stdc.h
 builtins/psize.o: $(BASHINCDIR)/unlocked-io.h
-builtins/psize.o: $(DEFSRC)/psize.c
+builtins/psize.o: $(BUILTIN_SRCDIR)/psize.c
 builtins/psize.o: $(topdir)/bashansi.h
 builtins/psize.o: $(topdir)/bashtypes.h
 builtins/psize.o: $(topdir)/command.h
@@ -4967,7 +4962,7 @@ builtins/psize.o: $(topdir)/general.h
 builtins/psize.o: $(topdir)/sig.h
 builtins/psize.o: $(topdir)/xmalloc.h
 builtins/psize.o: config.h
-builtins/pushd.c: $(DEFSRC)/pushd.def
+builtins/pushd.c: $(BUILTIN_SRCDIR)/pushd.def
 builtins/pushd.o: $(BASHINCDIR)/chartypes.h
 builtins/pushd.o: $(BASHINCDIR)/gettext.h
 builtins/pushd.o: $(BASHINCDIR)/maxpath.h
@@ -4976,9 +4971,9 @@ builtins/pushd.o: $(BASHINCDIR)/ocache.h
 builtins/pushd.o: $(BASHINCDIR)/posixjmp.h
 builtins/pushd.o: $(BASHINCDIR)/stdc.h
 builtins/pushd.o: $(BASHINCDIR)/unlocked-io.h
+builtins/pushd.o: $(BUILTIN_SRCDIR)/common.h
+builtins/pushd.o: $(BUILTIN_SRCDIR)/pushd.def
 builtins/pushd.o: $(DEFDIR)/builtext.h
-builtins/pushd.o: $(DEFSRC)/common.h
-builtins/pushd.o: $(DEFSRC)/pushd.def
 builtins/pushd.o: $(LIBINTL_H)
 builtins/pushd.o: $(TILDE_LIBSRC)/tilde.h
 builtins/pushd.o: $(topdir)/array.h
@@ -5008,7 +5003,7 @@ builtins/pushd.o: $(topdir)/variables.h
 builtins/pushd.o: $(topdir)/xmalloc.h
 builtins/pushd.o: config.h
 builtins/pushd.o: pathnames.h
-builtins/read.c: $(DEFSRC)/read.def
+builtins/read.c: $(BUILTIN_SRCDIR)/read.def
 builtins/read.o: $(BASHINCDIR)/chartypes.h
 builtins/read.o: $(BASHINCDIR)/gettext.h
 builtins/read.o: $(BASHINCDIR)/maxpath.h
@@ -5022,9 +5017,9 @@ builtins/read.o: $(BASHINCDIR)/shtty.h
 builtins/read.o: $(BASHINCDIR)/stdc.h
 builtins/read.o: $(BASHINCDIR)/timer.h
 builtins/read.o: $(BASHINCDIR)/unlocked-io.h
-builtins/read.o: $(DEFSRC)/bashgetopt.h
-builtins/read.o: $(DEFSRC)/common.h
-builtins/read.o: $(DEFSRC)/read.def
+builtins/read.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/read.o: $(BUILTIN_SRCDIR)/common.h
+builtins/read.o: $(BUILTIN_SRCDIR)/read.def
 builtins/read.o: $(LIBINTL_H)
 builtins/read.o: $(RL_LIBSRC)/chardefs.h
 builtins/read.o: $(RL_LIBSRC)/keymaps.h
@@ -5062,7 +5057,7 @@ builtins/read.o: $(topdir)/variables.h
 builtins/read.o: $(topdir)/xmalloc.h
 builtins/read.o: config.h
 builtins/read.o: pathnames.h
-builtins/return.c: $(DEFSRC)/return.def
+builtins/return.c: $(BUILTIN_SRCDIR)/return.def
 builtins/return.o: $(BASHINCDIR)/chartypes.h
 builtins/return.o: $(BASHINCDIR)/gettext.h
 builtins/return.o: $(BASHINCDIR)/maxpath.h
@@ -5071,9 +5066,9 @@ builtins/return.o: $(BASHINCDIR)/ocache.h
 builtins/return.o: $(BASHINCDIR)/posixjmp.h
 builtins/return.o: $(BASHINCDIR)/stdc.h
 builtins/return.o: $(BASHINCDIR)/unlocked-io.h
-builtins/return.o: $(DEFSRC)/bashgetopt.h
-builtins/return.o: $(DEFSRC)/common.h
-builtins/return.o: $(DEFSRC)/return.def
+builtins/return.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/return.o: $(BUILTIN_SRCDIR)/common.h
+builtins/return.o: $(BUILTIN_SRCDIR)/return.def
 builtins/return.o: $(LIBINTL_H)
 builtins/return.o: $(topdir)/array.h
 builtins/return.o: $(topdir)/arrayfunc.h
@@ -5103,7 +5098,7 @@ builtins/return.o: $(topdir)/variables.h
 builtins/return.o: $(topdir)/xmalloc.h
 builtins/return.o: config.h
 builtins/return.o: pathnames.h
-builtins/set.c: $(DEFSRC)/set.def
+builtins/set.c: $(BUILTIN_SRCDIR)/set.def
 builtins/set.o: $(BASHINCDIR)/chartypes.h
 builtins/set.o: $(BASHINCDIR)/gettext.h
 builtins/set.o: $(BASHINCDIR)/maxpath.h
@@ -5112,9 +5107,9 @@ builtins/set.o: $(BASHINCDIR)/ocache.h
 builtins/set.o: $(BASHINCDIR)/posixjmp.h
 builtins/set.o: $(BASHINCDIR)/stdc.h
 builtins/set.o: $(BASHINCDIR)/unlocked-io.h
-builtins/set.o: $(DEFSRC)/bashgetopt.h
-builtins/set.o: $(DEFSRC)/common.h
-builtins/set.o: $(DEFSRC)/set.def
+builtins/set.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/set.o: $(BUILTIN_SRCDIR)/common.h
+builtins/set.o: $(BUILTIN_SRCDIR)/set.def
 builtins/set.o: $(LIBINTL_H)
 builtins/set.o: $(RL_LIBSRC)/chardefs.h
 builtins/set.o: $(RL_LIBSRC)/keymaps.h
@@ -5155,7 +5150,7 @@ builtins/set.o: $(topdir)/variables.h
 builtins/set.o: $(topdir)/xmalloc.h
 builtins/set.o: config.h
 builtins/set.o: pathnames.h
-builtins/setattr.c: $(DEFSRC)/setattr.def
+builtins/setattr.c: $(BUILTIN_SRCDIR)/setattr.def
 builtins/setattr.o: $(BASHINCDIR)/chartypes.h
 builtins/setattr.o: $(BASHINCDIR)/gettext.h
 builtins/setattr.o: $(BASHINCDIR)/maxpath.h
@@ -5164,10 +5159,10 @@ builtins/setattr.o: $(BASHINCDIR)/ocache.h
 builtins/setattr.o: $(BASHINCDIR)/posixjmp.h
 builtins/setattr.o: $(BASHINCDIR)/stdc.h
 builtins/setattr.o: $(BASHINCDIR)/unlocked-io.h
+builtins/setattr.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/setattr.o: $(BUILTIN_SRCDIR)/common.h
+builtins/setattr.o: $(BUILTIN_SRCDIR)/setattr.def
 builtins/setattr.o: $(DEFDIR)/builtext.h
-builtins/setattr.o: $(DEFSRC)/bashgetopt.h
-builtins/setattr.o: $(DEFSRC)/common.h
-builtins/setattr.o: $(DEFSRC)/setattr.def
 builtins/setattr.o: $(LIBINTL_H)
 builtins/setattr.o: $(topdir)/array.h
 builtins/setattr.o: $(topdir)/arrayfunc.h
@@ -5198,7 +5193,7 @@ builtins/setattr.o: $(topdir)/variables.h
 builtins/setattr.o: $(topdir)/xmalloc.h
 builtins/setattr.o: config.h
 builtins/setattr.o: pathnames.h
-builtins/shift.c: $(DEFSRC)/shift.def
+builtins/shift.c: $(BUILTIN_SRCDIR)/shift.def
 builtins/shift.o: $(BASHINCDIR)/chartypes.h
 builtins/shift.o: $(BASHINCDIR)/gettext.h
 builtins/shift.o: $(BASHINCDIR)/maxpath.h
@@ -5207,8 +5202,8 @@ builtins/shift.o: $(BASHINCDIR)/ocache.h
 builtins/shift.o: $(BASHINCDIR)/posixjmp.h
 builtins/shift.o: $(BASHINCDIR)/stdc.h
 builtins/shift.o: $(BASHINCDIR)/unlocked-io.h
-builtins/shift.o: $(DEFSRC)/common.h
-builtins/shift.o: $(DEFSRC)/shift.def
+builtins/shift.o: $(BUILTIN_SRCDIR)/common.h
+builtins/shift.o: $(BUILTIN_SRCDIR)/shift.def
 builtins/shift.o: $(LIBINTL_H)
 builtins/shift.o: $(topdir)/array.h
 builtins/shift.o: $(topdir)/arrayfunc.h
@@ -5237,7 +5232,7 @@ builtins/shift.o: $(topdir)/variables.h
 builtins/shift.o: $(topdir)/xmalloc.h
 builtins/shift.o: config.h
 builtins/shift.o: pathnames.h
-builtins/shopt.c: $(DEFSRC)/shopt.def
+builtins/shopt.c: $(BUILTIN_SRCDIR)/shopt.def
 builtins/shopt.o: $(BASHINCDIR)/chartypes.h
 builtins/shopt.o: $(BASHINCDIR)/gettext.h
 builtins/shopt.o: $(BASHINCDIR)/maxpath.h
@@ -5246,9 +5241,9 @@ builtins/shopt.o: $(BASHINCDIR)/ocache.h
 builtins/shopt.o: $(BASHINCDIR)/posixjmp.h
 builtins/shopt.o: $(BASHINCDIR)/stdc.h
 builtins/shopt.o: $(BASHINCDIR)/unlocked-io.h
-builtins/shopt.o: $(DEFSRC)/bashgetopt.h
-builtins/shopt.o: $(DEFSRC)/common.h
-builtins/shopt.o: $(DEFSRC)/shopt.def
+builtins/shopt.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/shopt.o: $(BUILTIN_SRCDIR)/common.h
+builtins/shopt.o: $(BUILTIN_SRCDIR)/shopt.def
 builtins/shopt.o: $(HIST_LIBSRC)/history.h
 builtins/shopt.o: $(LIBINTL_H)
 builtins/shopt.o: $(RL_LIBSRC)/chardefs.h
@@ -5291,7 +5286,7 @@ builtins/shopt.o: $(topdir)/xmalloc.h
 builtins/shopt.o: config.h
 builtins/shopt.o: pathnames.h
 builtins/shopt.o: version.h
-builtins/source.c: $(DEFSRC)/source.def
+builtins/source.c: $(BUILTIN_SRCDIR)/source.def
 builtins/source.o: $(BASHINCDIR)/chartypes.h
 builtins/source.o: $(BASHINCDIR)/filecntl.h
 builtins/source.o: $(BASHINCDIR)/gettext.h
@@ -5302,9 +5297,9 @@ builtins/source.o: $(BASHINCDIR)/posixjmp.h
 builtins/source.o: $(BASHINCDIR)/posixstat.h
 builtins/source.o: $(BASHINCDIR)/stdc.h
 builtins/source.o: $(BASHINCDIR)/unlocked-io.h
-builtins/source.o: $(DEFSRC)/bashgetopt.h
-builtins/source.o: $(DEFSRC)/common.h
-builtins/source.o: $(DEFSRC)/source.def
+builtins/source.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/source.o: $(BUILTIN_SRCDIR)/common.h
+builtins/source.o: $(BUILTIN_SRCDIR)/source.def
 builtins/source.o: $(LIBINTL_H)
 builtins/source.o: $(topdir)/array.h
 builtins/source.o: $(topdir)/arrayfunc.h
@@ -5337,7 +5332,7 @@ builtins/source.o: $(topdir)/variables.h
 builtins/source.o: $(topdir)/xmalloc.h
 builtins/source.o: config.h
 builtins/source.o: pathnames.h
-builtins/suspend.c: $(DEFSRC)/suspend.def
+builtins/suspend.c: $(BUILTIN_SRCDIR)/suspend.def
 builtins/suspend.o: $(BASHINCDIR)/chartypes.h
 builtins/suspend.o: $(BASHINCDIR)/gettext.h
 builtins/suspend.o: $(BASHINCDIR)/maxpath.h
@@ -5347,9 +5342,9 @@ builtins/suspend.o: $(BASHINCDIR)/posixjmp.h
 builtins/suspend.o: $(BASHINCDIR)/posixwait.h
 builtins/suspend.o: $(BASHINCDIR)/stdc.h
 builtins/suspend.o: $(BASHINCDIR)/unlocked-io.h
-builtins/suspend.o: $(DEFSRC)/bashgetopt.h
-builtins/suspend.o: $(DEFSRC)/common.h
-builtins/suspend.o: $(DEFSRC)/suspend.def
+builtins/suspend.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/suspend.o: $(BUILTIN_SRCDIR)/common.h
+builtins/suspend.o: $(BUILTIN_SRCDIR)/suspend.def
 builtins/suspend.o: $(LIBINTL_H)
 builtins/suspend.o: $(topdir)/array.h
 builtins/suspend.o: $(topdir)/arrayfunc.h
@@ -5380,7 +5375,7 @@ builtins/suspend.o: $(topdir)/variables.h
 builtins/suspend.o: $(topdir)/xmalloc.h
 builtins/suspend.o: config.h
 builtins/suspend.o: pathnames.h
-builtins/test.c: $(DEFSRC)/test.def
+builtins/test.c: $(BUILTIN_SRCDIR)/test.def
 builtins/test.o: $(BASHINCDIR)/chartypes.h
 builtins/test.o: $(BASHINCDIR)/gettext.h
 builtins/test.o: $(BASHINCDIR)/maxpath.h
@@ -5389,8 +5384,8 @@ builtins/test.o: $(BASHINCDIR)/ocache.h
 builtins/test.o: $(BASHINCDIR)/posixjmp.h
 builtins/test.o: $(BASHINCDIR)/stdc.h
 builtins/test.o: $(BASHINCDIR)/unlocked-io.h
-builtins/test.o: $(DEFSRC)/common.h
-builtins/test.o: $(DEFSRC)/test.def
+builtins/test.o: $(BUILTIN_SRCDIR)/common.h
+builtins/test.o: $(BUILTIN_SRCDIR)/test.def
 builtins/test.o: $(topdir)/array.h
 builtins/test.o: $(topdir)/arrayfunc.h
 builtins/test.o: $(topdir)/assoc.h
@@ -5420,7 +5415,7 @@ builtins/test.o: $(topdir)/variables.h
 builtins/test.o: $(topdir)/xmalloc.h
 builtins/test.o: config.h
 builtins/test.o: pathnames.h
-builtins/times.c: $(DEFSRC)/times.def
+builtins/times.c: $(BUILTIN_SRCDIR)/times.def
 builtins/times.o: $(BASHINCDIR)/chartypes.h
 builtins/times.o: $(BASHINCDIR)/maxpath.h
 builtins/times.o: $(BASHINCDIR)/memalloc.h
@@ -5429,8 +5424,8 @@ builtins/times.o: $(BASHINCDIR)/posixjmp.h
 builtins/times.o: $(BASHINCDIR)/posixtime.h
 builtins/times.o: $(BASHINCDIR)/stdc.h
 builtins/times.o: $(BASHINCDIR)/unlocked-io.h
-builtins/times.o: $(DEFSRC)/common.h
-builtins/times.o: $(DEFSRC)/times.def
+builtins/times.o: $(BUILTIN_SRCDIR)/common.h
+builtins/times.o: $(BUILTIN_SRCDIR)/times.def
 builtins/times.o: $(topdir)/array.h
 builtins/times.o: $(topdir)/arrayfunc.h
 builtins/times.o: $(topdir)/assoc.h
@@ -5461,13 +5456,14 @@ builtins/tmpbuiltins.o: $(BASHINCDIR)/chartypes.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/gettext.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/stdc.h
 builtins/tmpbuiltins.o: $(BASHINCDIR)/unlocked-io.h
+builtins/tmpbuiltins.o: $(BUILTIN_SRCDIR)/tmpbuiltins.c
 builtins/tmpbuiltins.o: $(DEFDIR)/tmpbuiltins.c
-builtins/tmpbuiltins.o: $(DEFSRC)/tmpbuiltins.c
-builtins/tmpbuiltins.o: $(DEFSRC)/tmpbuiltins.h
 builtins/tmpbuiltins.o: $(topdir)/alias.h
 builtins/tmpbuiltins.o: $(topdir)/bashansi.h
 builtins/tmpbuiltins.o: $(topdir)/bashintl.h
 builtins/tmpbuiltins.o: $(topdir)/bashtypes.h
+builtins/tmpbuiltins.o: $(topdir)/builtins.h
+builtins/tmpbuiltins.o: $(topdir)/builtins.h
 builtins/tmpbuiltins.o: $(topdir)/builtins.h
 builtins/tmpbuiltins.o: $(topdir)/command.h
 builtins/tmpbuiltins.o: $(topdir)/config-bot.h
@@ -5476,8 +5472,7 @@ builtins/tmpbuiltins.o: $(topdir)/general.h
 builtins/tmpbuiltins.o: $(topdir)/hashlib.h
 builtins/tmpbuiltins.o: $(topdir)/xmalloc.h
 builtins/tmpbuiltins.o: config.h
-builtins/tmpbuiltins.o: tmpbuiltins.h
-builtins/trap.c: $(DEFSRC)/trap.def
+builtins/trap.c: $(BUILTIN_SRCDIR)/trap.def
 builtins/trap.o: $(BASHINCDIR)/chartypes.h
 builtins/trap.o: $(BASHINCDIR)/maxpath.h
 builtins/trap.o: $(BASHINCDIR)/memalloc.h
@@ -5485,9 +5480,9 @@ builtins/trap.o: $(BASHINCDIR)/ocache.h
 builtins/trap.o: $(BASHINCDIR)/posixjmp.h
 builtins/trap.o: $(BASHINCDIR)/stdc.h
 builtins/trap.o: $(BASHINCDIR)/unlocked-io.h
-builtins/trap.o: $(DEFSRC)/bashgetopt.h
-builtins/trap.o: $(DEFSRC)/common.h
-builtins/trap.o: $(DEFSRC)/trap.def
+builtins/trap.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/trap.o: $(BUILTIN_SRCDIR)/common.h
+builtins/trap.o: $(BUILTIN_SRCDIR)/trap.def
 builtins/trap.o: $(topdir)/array.h
 builtins/trap.o: $(topdir)/arrayfunc.h
 builtins/trap.o: $(topdir)/assoc.h
@@ -5515,7 +5510,7 @@ builtins/trap.o: $(topdir)/variables.h
 builtins/trap.o: $(topdir)/xmalloc.h
 builtins/trap.o: config.h
 builtins/trap.o: pathnames.h
-builtins/type.c: $(DEFSRC)/type.def
+builtins/type.c: $(BUILTIN_SRCDIR)/type.def
 builtins/type.o: $(BASHINCDIR)/chartypes.h
 builtins/type.o: $(BASHINCDIR)/gettext.h
 builtins/type.o: $(BASHINCDIR)/maxpath.h
@@ -5525,9 +5520,9 @@ builtins/type.o: $(BASHINCDIR)/posixjmp.h
 builtins/type.o: $(BASHINCDIR)/posixstat.h
 builtins/type.o: $(BASHINCDIR)/stdc.h
 builtins/type.o: $(BASHINCDIR)/unlocked-io.h
-builtins/type.o: $(DEFSRC)/bashgetopt.h
-builtins/type.o: $(DEFSRC)/common.h
-builtins/type.o: $(DEFSRC)/type.def
+builtins/type.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/type.o: $(BUILTIN_SRCDIR)/common.h
+builtins/type.o: $(BUILTIN_SRCDIR)/type.def
 builtins/type.o: $(LIBINTL_H)
 builtins/type.o: $(topdir)/alias.h
 builtins/type.o: $(topdir)/array.h
@@ -5563,7 +5558,7 @@ builtins/type.o: $(topdir)/variables.h
 builtins/type.o: $(topdir)/xmalloc.h
 builtins/type.o: config.h
 builtins/type.o: pathnames.h
-builtins/ulimit.c: $(DEFSRC)/ulimit.def
+builtins/ulimit.c: $(BUILTIN_SRCDIR)/ulimit.def
 builtins/ulimit.o: $(BASHINCDIR)/chartypes.h
 builtins/ulimit.o: $(BASHINCDIR)/gettext.h
 builtins/ulimit.o: $(BASHINCDIR)/maxpath.h
@@ -5572,10 +5567,10 @@ builtins/ulimit.o: $(BASHINCDIR)/ocache.h
 builtins/ulimit.o: $(BASHINCDIR)/posixjmp.h
 builtins/ulimit.o: $(BASHINCDIR)/stdc.h
 builtins/ulimit.o: $(BASHINCDIR)/unlocked-io.h
+builtins/ulimit.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/ulimit.o: $(BUILTIN_SRCDIR)/common.h
+builtins/ulimit.o: $(BUILTIN_SRCDIR)/ulimit.def
 builtins/ulimit.o: $(DEFDIR)/pipesize.h
-builtins/ulimit.o: $(DEFSRC)/bashgetopt.h
-builtins/ulimit.o: $(DEFSRC)/common.h
-builtins/ulimit.o: $(DEFSRC)/ulimit.def
 builtins/ulimit.o: $(LIBINTL_H)
 builtins/ulimit.o: $(topdir)/array.h
 builtins/ulimit.o: $(topdir)/arrayfunc.h
@@ -5604,7 +5599,7 @@ builtins/ulimit.o: $(topdir)/variables.h
 builtins/ulimit.o: $(topdir)/xmalloc.h
 builtins/ulimit.o: config.h
 builtins/ulimit.o: pathnames.h
-builtins/umask.c: $(DEFSRC)/umask.def
+builtins/umask.c: $(BUILTIN_SRCDIR)/umask.def
 builtins/umask.o: $(BASHINCDIR)/chartypes.h
 builtins/umask.o: $(BASHINCDIR)/filecntl.h
 builtins/umask.o: $(BASHINCDIR)/gettext.h
@@ -5615,9 +5610,9 @@ builtins/umask.o: $(BASHINCDIR)/posixjmp.h
 builtins/umask.o: $(BASHINCDIR)/posixstat.h
 builtins/umask.o: $(BASHINCDIR)/stdc.h
 builtins/umask.o: $(BASHINCDIR)/unlocked-io.h
-builtins/umask.o: $(DEFSRC)/bashgetopt.h
-builtins/umask.o: $(DEFSRC)/common.h
-builtins/umask.o: $(DEFSRC)/umask.def
+builtins/umask.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/umask.o: $(BUILTIN_SRCDIR)/common.h
+builtins/umask.o: $(BUILTIN_SRCDIR)/umask.def
 builtins/umask.o: $(LIBINTL_H)
 builtins/umask.o: $(topdir)/array.h
 builtins/umask.o: $(topdir)/arrayfunc.h
@@ -5646,7 +5641,7 @@ builtins/umask.o: $(topdir)/variables.h
 builtins/umask.o: $(topdir)/xmalloc.h
 builtins/umask.o: config.h
 builtins/umask.o: pathnames.h
-builtins/wait.c: $(DEFSRC)/wait.def
+builtins/wait.c: $(BUILTIN_SRCDIR)/wait.def
 builtins/wait.o: $(BASHINCDIR)/chartypes.h
 builtins/wait.o: $(BASHINCDIR)/maxpath.h
 builtins/wait.o: $(BASHINCDIR)/memalloc.h
@@ -5655,9 +5650,9 @@ builtins/wait.o: $(BASHINCDIR)/posixjmp.h
 builtins/wait.o: $(BASHINCDIR)/posixwait.h
 builtins/wait.o: $(BASHINCDIR)/stdc.h
 builtins/wait.o: $(BASHINCDIR)/unlocked-io.h
-builtins/wait.o: $(DEFSRC)/bashgetopt.h
-builtins/wait.o: $(DEFSRC)/common.h
-builtins/wait.o: $(DEFSRC)/wait.def
+builtins/wait.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+builtins/wait.o: $(BUILTIN_SRCDIR)/common.h
+builtins/wait.o: $(BUILTIN_SRCDIR)/wait.def
 builtins/wait.o: $(topdir)/array.h
 builtins/wait.o: $(topdir)/arrayfunc.h
 builtins/wait.o: $(topdir)/assoc.h
@@ -5696,8 +5691,8 @@ examples/loadables/accept.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/accept.o: $(BASHINCDIR)/stdc.h
 examples/loadables/accept.o: $(BASHINCDIR)/typemax.h
 examples/loadables/accept.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/accept.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/accept.o: $(DEFSRC)/common.h
+examples/loadables/accept.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/accept.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/accept.o: $(srcdir)/examples/loadables/accept.c
 examples/loadables/accept.o: $(topdir)/alias.h
 examples/loadables/accept.o: $(topdir)/array.h
@@ -5734,8 +5729,8 @@ examples/loadables/asort.o: $(BASHINCDIR)/ocache.h
 examples/loadables/asort.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/asort.o: $(BASHINCDIR)/stdc.h
 examples/loadables/asort.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/asort.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/asort.o: $(DEFSRC)/common.h
+examples/loadables/asort.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/asort.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/asort.o: $(srcdir)/examples/loadables/asort.c
 examples/loadables/asort.o: $(topdir)/alias.h
 examples/loadables/asort.o: $(topdir)/array.h
@@ -5771,8 +5766,8 @@ examples/loadables/basename.o: $(BASHINCDIR)/ocache.h
 examples/loadables/basename.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/basename.o: $(BASHINCDIR)/stdc.h
 examples/loadables/basename.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/basename.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/basename.o: $(DEFSRC)/common.h
+examples/loadables/basename.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/basename.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/basename.o: $(srcdir)/examples/loadables/basename.c
 examples/loadables/basename.o: $(topdir)/alias.h
 examples/loadables/basename.o: $(topdir)/array.h
@@ -5878,8 +5873,8 @@ examples/loadables/csv.o: $(BASHINCDIR)/ocache.h
 examples/loadables/csv.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/csv.o: $(BASHINCDIR)/stdc.h
 examples/loadables/csv.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/csv.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/csv.o: $(DEFSRC)/common.h
+examples/loadables/csv.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/csv.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/csv.o: $(srcdir)/examples/loadables/csv.c
 examples/loadables/csv.o: $(topdir)/alias.h
 examples/loadables/csv.o: $(topdir)/array.h
@@ -5918,8 +5913,8 @@ examples/loadables/cut.o: $(BASHINCDIR)/shmbchar.h
 examples/loadables/cut.o: $(BASHINCDIR)/shmbutil.h
 examples/loadables/cut.o: $(BASHINCDIR)/stdc.h
 examples/loadables/cut.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/cut.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/cut.o: $(DEFSRC)/common.h
+examples/loadables/cut.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/cut.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/cut.o: $(srcdir)/examples/loadables/cut.c
 examples/loadables/cut.o: $(topdir)/alias.h
 examples/loadables/cut.o: $(topdir)/array.h
@@ -5956,8 +5951,8 @@ examples/loadables/dirname.o: $(BASHINCDIR)/ocache.h
 examples/loadables/dirname.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/dirname.o: $(BASHINCDIR)/stdc.h
 examples/loadables/dirname.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/dirname.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/dirname.o: $(DEFSRC)/common.h
+examples/loadables/dirname.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/dirname.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/dirname.o: $(srcdir)/examples/loadables/dirname.c
 examples/loadables/dirname.o: $(topdir)/alias.h
 examples/loadables/dirname.o: $(topdir)/array.h
@@ -5993,8 +5988,8 @@ examples/loadables/dsv.o: $(BASHINCDIR)/ocache.h
 examples/loadables/dsv.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/dsv.o: $(BASHINCDIR)/stdc.h
 examples/loadables/dsv.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/dsv.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/dsv.o: $(DEFSRC)/common.h
+examples/loadables/dsv.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/dsv.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/dsv.o: $(srcdir)/examples/loadables/dsv.c
 examples/loadables/dsv.o: $(topdir)/alias.h
 examples/loadables/dsv.o: $(topdir)/array.h
@@ -6031,8 +6026,8 @@ examples/loadables/fdflags.o: $(BASHINCDIR)/ocache.h
 examples/loadables/fdflags.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/fdflags.o: $(BASHINCDIR)/stdc.h
 examples/loadables/fdflags.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/fdflags.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/fdflags.o: $(DEFSRC)/common.h
+examples/loadables/fdflags.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/fdflags.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/fdflags.o: $(srcdir)/examples/loadables/fdflags.c
 examples/loadables/fdflags.o: $(topdir)/alias.h
 examples/loadables/fdflags.o: $(topdir)/array.h
@@ -6071,8 +6066,8 @@ examples/loadables/finfo.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/finfo.o: $(BASHINCDIR)/posixtime.h
 examples/loadables/finfo.o: $(BASHINCDIR)/stdc.h
 examples/loadables/finfo.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/finfo.o: $(DEFSRC)/common.h
-examples/loadables/finfo.o: $(DEFSRC)/getopt.h
+examples/loadables/finfo.o: $(BUILTIN_SRCDIR)/common.h
+examples/loadables/finfo.o: $(BUILTIN_SRCDIR)/getopt.h
 examples/loadables/finfo.o: $(srcdir)/examples/loadables/finfo.c
 examples/loadables/finfo.o: $(topdir)/alias.h
 examples/loadables/finfo.o: $(topdir)/array.h
@@ -6110,8 +6105,8 @@ examples/loadables/getconf.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/getconf.o: $(BASHINCDIR)/stdc.h
 examples/loadables/getconf.o: $(BASHINCDIR)/typemax.h
 examples/loadables/getconf.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/getconf.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/getconf.o: $(DEFSRC)/common.h
+examples/loadables/getconf.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/getconf.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/getconf.o: $(srcdir)/examples/loadables/getconf.c
 examples/loadables/getconf.o: $(topdir)/alias.h
 examples/loadables/getconf.o: $(topdir)/array.h
@@ -6151,8 +6146,8 @@ examples/loadables/head.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/head.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/head.o: $(BASHINCDIR)/stdc.h
 examples/loadables/head.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/head.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/head.o: $(DEFSRC)/common.h
+examples/loadables/head.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/head.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/head.o: $(srcdir)/examples/loadables/head.c
 examples/loadables/head.o: $(topdir)/alias.h
 examples/loadables/head.o: $(topdir)/array.h
@@ -6188,8 +6183,8 @@ examples/loadables/hello.o: $(BASHINCDIR)/ocache.h
 examples/loadables/hello.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/hello.o: $(BASHINCDIR)/stdc.h
 examples/loadables/hello.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/hello.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/hello.o: $(DEFSRC)/common.h
+examples/loadables/hello.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/hello.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/hello.o: $(srcdir)/examples/loadables/hello.c
 examples/loadables/hello.o: $(topdir)/alias.h
 examples/loadables/hello.o: $(topdir)/array.h
@@ -6226,8 +6221,8 @@ examples/loadables/id.o: $(BASHINCDIR)/ocache.h
 examples/loadables/id.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/id.o: $(BASHINCDIR)/stdc.h
 examples/loadables/id.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/id.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/id.o: $(DEFSRC)/common.h
+examples/loadables/id.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/id.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/id.o: $(srcdir)/examples/loadables/id.c
 examples/loadables/id.o: $(topdir)/alias.h
 examples/loadables/id.o: $(topdir)/array.h
@@ -6264,8 +6259,8 @@ examples/loadables/kv.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/kv.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/kv.o: $(BASHINCDIR)/stdc.h
 examples/loadables/kv.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/kv.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/kv.o: $(DEFSRC)/common.h
+examples/loadables/kv.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/kv.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/kv.o: $(srcdir)/examples/loadables/kv.c
 examples/loadables/kv.o: $(topdir)/alias.h
 examples/loadables/kv.o: $(topdir)/array.h
@@ -6304,8 +6299,8 @@ examples/loadables/lcut.o: $(BASHINCDIR)/shmbchar.h
 examples/loadables/lcut.o: $(BASHINCDIR)/shmbutil.h
 examples/loadables/lcut.o: $(BASHINCDIR)/stdc.h
 examples/loadables/lcut.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/lcut.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/lcut.o: $(DEFSRC)/common.h
+examples/loadables/lcut.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/lcut.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/lcut.o: $(srcdir)/examples/loadables/lcut.c
 examples/loadables/lcut.o: $(topdir)/alias.h
 examples/loadables/lcut.o: $(topdir)/array.h
@@ -6343,8 +6338,8 @@ examples/loadables/ln.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/ln.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/ln.o: $(BASHINCDIR)/stdc.h
 examples/loadables/ln.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/ln.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/ln.o: $(DEFSRC)/common.h
+examples/loadables/ln.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/ln.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/ln.o: $(srcdir)/examples/loadables/ln.c
 examples/loadables/ln.o: $(topdir)/alias.h
 examples/loadables/ln.o: $(topdir)/array.h
@@ -6380,7 +6375,7 @@ examples/loadables/logname.o: $(BASHINCDIR)/ocache.h
 examples/loadables/logname.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/logname.o: $(BASHINCDIR)/stdc.h
 examples/loadables/logname.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/logname.o: $(DEFSRC)/common.h
+examples/loadables/logname.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/logname.o: $(srcdir)/examples/loadables/logname.c
 examples/loadables/logname.o: $(topdir)/alias.h
 examples/loadables/logname.o: $(topdir)/array.h
@@ -6417,8 +6412,8 @@ examples/loadables/mkdir.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/mkdir.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/mkdir.o: $(BASHINCDIR)/stdc.h
 examples/loadables/mkdir.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/mkdir.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/mkdir.o: $(DEFSRC)/common.h
+examples/loadables/mkdir.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/mkdir.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/mkdir.o: $(srcdir)/examples/loadables/mkdir.c
 examples/loadables/mkdir.o: $(topdir)/alias.h
 examples/loadables/mkdir.o: $(topdir)/array.h
@@ -6455,8 +6450,8 @@ examples/loadables/mkfifo.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/mkfifo.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/mkfifo.o: $(BASHINCDIR)/stdc.h
 examples/loadables/mkfifo.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/mkfifo.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/mkfifo.o: $(DEFSRC)/common.h
+examples/loadables/mkfifo.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/mkfifo.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/mkfifo.o: $(srcdir)/examples/loadables/mkfifo.c
 examples/loadables/mkfifo.o: $(topdir)/alias.h
 examples/loadables/mkfifo.o: $(topdir)/array.h
@@ -6492,8 +6487,8 @@ examples/loadables/mktemp.o: $(BASHINCDIR)/ocache.h
 examples/loadables/mktemp.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/mktemp.o: $(BASHINCDIR)/stdc.h
 examples/loadables/mktemp.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/mktemp.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/mktemp.o: $(DEFSRC)/common.h
+examples/loadables/mktemp.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/mktemp.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/mktemp.o: $(srcdir)/examples/loadables/mktemp.c
 examples/loadables/mktemp.o: $(topdir)/alias.h
 examples/loadables/mktemp.o: $(topdir)/array.h
@@ -6601,8 +6596,8 @@ examples/loadables/pathchk.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/pathchk.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/pathchk.o: $(BASHINCDIR)/stdc.h
 examples/loadables/pathchk.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/pathchk.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/pathchk.o: $(DEFSRC)/common.h
+examples/loadables/pathchk.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/pathchk.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/pathchk.o: $(srcdir)/examples/loadables/pathchk.c
 examples/loadables/pathchk.o: $(topdir)/alias.h
 examples/loadables/pathchk.o: $(topdir)/array.h
@@ -6638,9 +6633,9 @@ examples/loadables/print.o: $(BASHINCDIR)/ocache.h
 examples/loadables/print.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/print.o: $(BASHINCDIR)/stdc.h
 examples/loadables/print.o: $(BASHINCDIR)/unlocked-io.h
+examples/loadables/print.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/print.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/print.o: $(DEFDIR)/builtext.h
-examples/loadables/print.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/print.o: $(DEFSRC)/common.h
 examples/loadables/print.o: $(srcdir)/examples/loadables/print.c
 examples/loadables/print.o: $(topdir)/alias.h
 examples/loadables/print.o: $(topdir)/array.h
@@ -6676,8 +6671,8 @@ examples/loadables/printenv.o: $(BASHINCDIR)/ocache.h
 examples/loadables/printenv.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/printenv.o: $(BASHINCDIR)/stdc.h
 examples/loadables/printenv.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/printenv.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/printenv.o: $(DEFSRC)/common.h
+examples/loadables/printenv.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/printenv.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/printenv.o: $(srcdir)/examples/loadables/printenv.c
 examples/loadables/printenv.o: $(topdir)/alias.h
 examples/loadables/printenv.o: $(topdir)/array.h
@@ -6714,8 +6709,8 @@ examples/loadables/push.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/push.o: $(BASHINCDIR)/posixwait.h
 examples/loadables/push.o: $(BASHINCDIR)/stdc.h
 examples/loadables/push.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/push.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/push.o: $(DEFSRC)/common.h
+examples/loadables/push.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/push.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/push.o: $(srcdir)/examples/loadables/push.c
 examples/loadables/push.o: $(topdir)/alias.h
 examples/loadables/push.o: $(topdir)/array.h
@@ -6754,8 +6749,8 @@ examples/loadables/pushd.o: $(BASHINCDIR)/ocache.h
 examples/loadables/pushd.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/pushd.o: $(BASHINCDIR)/stdc.h
 examples/loadables/pushd.o: $(BASHINCDIR)/unlocked-io.h
+examples/loadables/pushd.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/pushd.o: $(DEFDIR)/builtext.h
-examples/loadables/pushd.o: $(DEFSRC)/common.h
 examples/loadables/pushd.o: $(TILDE_LIBSRC)/tilde.h
 examples/loadables/pushd.o: $(srcdir)/examples/loadables/pushd.c
 examples/loadables/pushd.o: $(topdir)/array.h
@@ -6791,8 +6786,8 @@ examples/loadables/realpath.o: $(BASHINCDIR)/ocache.h
 examples/loadables/realpath.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/realpath.o: $(BASHINCDIR)/stdc.h
 examples/loadables/realpath.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/realpath.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/realpath.o: $(DEFSRC)/common.h
+examples/loadables/realpath.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/realpath.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/realpath.o: $(srcdir)/examples/loadables/realpath.c
 examples/loadables/realpath.o: $(topdir)/alias.h
 examples/loadables/realpath.o: $(topdir)/array.h
@@ -6828,8 +6823,8 @@ examples/loadables/rm.o: $(BASHINCDIR)/ocache.h
 examples/loadables/rm.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/rm.o: $(BASHINCDIR)/stdc.h
 examples/loadables/rm.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/rm.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/rm.o: $(DEFSRC)/common.h
+examples/loadables/rm.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/rm.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/rm.o: $(srcdir)/examples/loadables/rm.c
 examples/loadables/rm.o: $(topdir)/alias.h
 examples/loadables/rm.o: $(topdir)/array.h
@@ -6865,7 +6860,7 @@ examples/loadables/rmdir.o: $(BASHINCDIR)/ocache.h
 examples/loadables/rmdir.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/rmdir.o: $(BASHINCDIR)/stdc.h
 examples/loadables/rmdir.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/rmdir.o: $(DEFSRC)/common.h
+examples/loadables/rmdir.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/rmdir.o: $(srcdir)/examples/loadables/rmdir.c
 examples/loadables/rmdir.o: $(topdir)/alias.h
 examples/loadables/rmdir.o: $(topdir)/array.h
@@ -6902,8 +6897,8 @@ examples/loadables/seq.o: $(BASHINCDIR)/ocache.h
 examples/loadables/seq.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/seq.o: $(BASHINCDIR)/stdc.h
 examples/loadables/seq.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/seq.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/seq.o: $(DEFSRC)/common.h
+examples/loadables/seq.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/seq.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/seq.o: $(srcdir)/examples/loadables/seq.c
 examples/loadables/seq.o: $(topdir)/alias.h
 examples/loadables/seq.o: $(topdir)/array.h
@@ -6942,8 +6937,8 @@ examples/loadables/setpgid.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/setpgid.o: $(BASHINCDIR)/posixtime.h
 examples/loadables/setpgid.o: $(BASHINCDIR)/stdc.h
 examples/loadables/setpgid.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/setpgid.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/setpgid.o: $(DEFSRC)/common.h
+examples/loadables/setpgid.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/setpgid.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/setpgid.o: $(srcdir)/examples/loadables/setpgid.c
 examples/loadables/setpgid.o: $(topdir)/alias.h
 examples/loadables/setpgid.o: $(topdir)/array.h
@@ -6979,8 +6974,8 @@ examples/loadables/sleep.o: $(BASHINCDIR)/ocache.h
 examples/loadables/sleep.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/sleep.o: $(BASHINCDIR)/stdc.h
 examples/loadables/sleep.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/sleep.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/sleep.o: $(DEFSRC)/common.h
+examples/loadables/sleep.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/sleep.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/sleep.o: $(srcdir)/examples/loadables/sleep.c
 examples/loadables/sleep.o: $(topdir)/alias.h
 examples/loadables/sleep.o: $(topdir)/array.h
@@ -7019,8 +7014,8 @@ examples/loadables/stat.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/stat.o: $(BASHINCDIR)/posixtime.h
 examples/loadables/stat.o: $(BASHINCDIR)/stdc.h
 examples/loadables/stat.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/stat.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/stat.o: $(DEFSRC)/common.h
+examples/loadables/stat.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/stat.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/stat.o: $(srcdir)/examples/loadables/stat.c
 examples/loadables/stat.o: $(topdir)/alias.h
 examples/loadables/stat.o: $(topdir)/array.h
@@ -7057,8 +7052,8 @@ examples/loadables/strftime.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/strftime.o: $(BASHINCDIR)/posixtime.h
 examples/loadables/strftime.o: $(BASHINCDIR)/stdc.h
 examples/loadables/strftime.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/strftime.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/strftime.o: $(DEFSRC)/common.h
+examples/loadables/strftime.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/strftime.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/strftime.o: $(srcdir)/examples/loadables/strftime.c
 examples/loadables/strftime.o: $(topdir)/alias.h
 examples/loadables/strftime.o: $(topdir)/array.h
@@ -7095,8 +7090,8 @@ examples/loadables/strptime.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/strptime.o: $(BASHINCDIR)/posixtime.h
 examples/loadables/strptime.o: $(BASHINCDIR)/stdc.h
 examples/loadables/strptime.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/strptime.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/strptime.o: $(DEFSRC)/common.h
+examples/loadables/strptime.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/strptime.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/strptime.o: $(srcdir)/examples/loadables/strptime.c
 examples/loadables/strptime.o: $(topdir)/alias.h
 examples/loadables/strptime.o: $(topdir)/array.h
@@ -7132,8 +7127,8 @@ examples/loadables/sync.o: $(BASHINCDIR)/ocache.h
 examples/loadables/sync.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/sync.o: $(BASHINCDIR)/stdc.h
 examples/loadables/sync.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/sync.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/sync.o: $(DEFSRC)/common.h
+examples/loadables/sync.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/sync.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/sync.o: $(srcdir)/examples/loadables/sync.c
 examples/loadables/sync.o: $(topdir)/alias.h
 examples/loadables/sync.o: $(topdir)/array.h
@@ -7171,8 +7166,8 @@ examples/loadables/tee.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/tee.o: $(BASHINCDIR)/posixstat.h
 examples/loadables/tee.o: $(BASHINCDIR)/stdc.h
 examples/loadables/tee.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/tee.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/tee.o: $(DEFSRC)/common.h
+examples/loadables/tee.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/tee.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/tee.o: $(srcdir)/examples/loadables/tee.c
 examples/loadables/tee.o: $(topdir)/alias.h
 examples/loadables/tee.o: $(topdir)/array.h
@@ -7208,8 +7203,8 @@ examples/loadables/template.o: $(BASHINCDIR)/ocache.h
 examples/loadables/template.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/template.o: $(BASHINCDIR)/stdc.h
 examples/loadables/template.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/template.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/template.o: $(DEFSRC)/common.h
+examples/loadables/template.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/template.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/template.o: $(srcdir)/examples/loadables/template.c
 examples/loadables/template.o: $(topdir)/alias.h
 examples/loadables/template.o: $(topdir)/array.h
@@ -7246,7 +7241,7 @@ examples/loadables/truefalse.o: $(BASHINCDIR)/ocache.h
 examples/loadables/truefalse.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/truefalse.o: $(BASHINCDIR)/stdc.h
 examples/loadables/truefalse.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/truefalse.o: $(DEFSRC)/common.h
+examples/loadables/truefalse.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/truefalse.o: $(srcdir)/examples/loadables/truefalse.c
 examples/loadables/truefalse.o: $(topdir)/alias.h
 examples/loadables/truefalse.o: $(topdir)/array.h
@@ -7282,8 +7277,8 @@ examples/loadables/tty.o: $(BASHINCDIR)/ocache.h
 examples/loadables/tty.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/tty.o: $(BASHINCDIR)/stdc.h
 examples/loadables/tty.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/tty.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/tty.o: $(DEFSRC)/common.h
+examples/loadables/tty.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/tty.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/tty.o: $(srcdir)/examples/loadables/tty.c
 examples/loadables/tty.o: $(topdir)/alias.h
 examples/loadables/tty.o: $(topdir)/array.h
@@ -7319,8 +7314,8 @@ examples/loadables/uname.o: $(BASHINCDIR)/ocache.h
 examples/loadables/uname.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/uname.o: $(BASHINCDIR)/stdc.h
 examples/loadables/uname.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/uname.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/uname.o: $(DEFSRC)/common.h
+examples/loadables/uname.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/uname.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/uname.o: $(srcdir)/examples/loadables/uname.c
 examples/loadables/uname.o: $(topdir)/alias.h
 examples/loadables/uname.o: $(topdir)/array.h
@@ -7356,7 +7351,7 @@ examples/loadables/unlink.o: $(BASHINCDIR)/ocache.h
 examples/loadables/unlink.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/unlink.o: $(BASHINCDIR)/stdc.h
 examples/loadables/unlink.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/unlink.o: $(DEFSRC)/common.h
+examples/loadables/unlink.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/unlink.o: $(srcdir)/examples/loadables/unlink.c
 examples/loadables/unlink.o: $(topdir)/alias.h
 examples/loadables/unlink.o: $(topdir)/array.h
@@ -7392,8 +7387,8 @@ examples/loadables/whoami.o: $(BASHINCDIR)/ocache.h
 examples/loadables/whoami.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/whoami.o: $(BASHINCDIR)/stdc.h
 examples/loadables/whoami.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/whoami.o: $(DEFSRC)/bashgetopt.h
-examples/loadables/whoami.o: $(DEFSRC)/common.h
+examples/loadables/whoami.o: $(BUILTIN_SRCDIR)/bashgetopt.h
+examples/loadables/whoami.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/whoami.o: $(srcdir)/examples/loadables/whoami.c
 examples/loadables/whoami.o: $(topdir)/alias.h
 examples/loadables/whoami.o: $(topdir)/array.h
@@ -7430,7 +7425,7 @@ examples/loadables/perl/bperl.o: $(BASHINCDIR)/ocache.h
 examples/loadables/perl/bperl.o: $(BASHINCDIR)/posixjmp.h
 examples/loadables/perl/bperl.o: $(BASHINCDIR)/stdc.h
 examples/loadables/perl/bperl.o: $(BASHINCDIR)/unlocked-io.h
-examples/loadables/perl/bperl.o: $(DEFSRC)/common.h
+examples/loadables/perl/bperl.o: $(BUILTIN_SRCDIR)/common.h
 examples/loadables/perl/bperl.o: $(srcdir)/examples/loadables/perl/bperl.c
 examples/loadables/perl/bperl.o: $(topdir)/alias.h
 examples/loadables/perl/bperl.o: $(topdir)/array.h
@@ -9564,7 +9559,6 @@ $(SH_LIBDIR)/uconvert.o: $(topdir)/assoc.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/bashansi.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/bashjmp.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/bashtypes.h
-$(SH_LIBDIR)/uconvert.o: $(topdir)/builtins.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/command.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/config-bot.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/config-top.h
@@ -9583,6 +9577,7 @@ $(SH_LIBDIR)/uconvert.o: $(topdir)/syntax.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/unwind_prot.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/variables.h
 $(SH_LIBDIR)/uconvert.o: $(topdir)/xmalloc.h
+$(SH_LIBDIR)/uconvert.o: $(topdir)/builtins.h
 $(SH_LIBDIR)/uconvert.o: config.h
 $(SH_LIBDIR)/uconvert.o: pathnames.h
 $(SH_LIBDIR)/ufuncs.o: $(BASHINCDIR)/posixselect.h
