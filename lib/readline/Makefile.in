@@ -276,7 +276,6 @@ depends depend:
 
 # C *.c source & *.h header dependencies (generated)
 
-bind.o: $(BUILD_DIR)/config.h
 bind.o: $(srcdir)/bind.c
 bind.o: $(srcdir)/chardefs.h
 bind.o: $(srcdir)/history.h
@@ -295,7 +294,7 @@ bind.o: $(srcdir)/xmalloc.h
 bind.o: $(topdir)/config-bot.h
 bind.o: $(topdir)/config-top.h
 bind.o: $(topdir)/lib/tilde/tilde.h
-callback.o: $(BUILD_DIR)/config.h
+bind.o: ../../config.h
 callback.o: $(srcdir)/callback.c
 callback.o: $(srcdir)/chardefs.h
 callback.o: $(srcdir)/keymaps.h
@@ -311,7 +310,7 @@ callback.o: $(srcdir)/xmalloc.h
 callback.o: $(topdir)/config-bot.h
 callback.o: $(topdir)/config-top.h
 callback.o: $(topdir)/lib/tilde/tilde.h
-colors.o: $(BUILD_DIR)/config.h
+callback.o: ../../config.h
 colors.o: $(srcdir)/chardefs.h
 colors.o: $(srcdir)/colors.c
 colors.o: $(srcdir)/colors.h
@@ -326,13 +325,13 @@ colors.o: $(srcdir)/xmalloc.h
 colors.o: $(topdir)/config-bot.h
 colors.o: $(topdir)/config-top.h
 colors.o: $(topdir)/lib/tilde/tilde.h
-compat.o: $(BUILD_DIR)/config.h
+colors.o: ../../config.h
 compat.o: $(srcdir)/compat.c
 compat.o: $(srcdir)/rlstdc.h
 compat.o: $(srcdir)/rltypedefs.h
 compat.o: $(topdir)/config-bot.h
 compat.o: $(topdir)/config-top.h
-complete.o: $(BUILD_DIR)/config.h
+compat.o: ../../config.h
 complete.o: $(srcdir)/chardefs.h
 complete.o: $(srcdir)/colors.h
 complete.o: $(srcdir)/complete.c
@@ -351,7 +350,7 @@ complete.o: $(srcdir)/xmalloc.h
 complete.o: $(topdir)/config-bot.h
 complete.o: $(topdir)/config-top.h
 complete.o: $(topdir)/lib/tilde/tilde.h
-display.o: $(BUILD_DIR)/config.h
+complete.o: ../../config.h
 display.o: $(srcdir)/chardefs.h
 display.o: $(srcdir)/display.c
 display.o: $(srcdir)/history.h
@@ -372,6 +371,7 @@ display.o: $(srcdir)/xmalloc.h
 display.o: $(topdir)/config-bot.h
 display.o: $(topdir)/config-top.h
 display.o: $(topdir)/lib/tilde/tilde.h
+display.o: ../../config.h
 emacs_keymap.o: $(srcdir)/chardefs.h
 emacs_keymap.o: $(srcdir)/emacs_keymap.c
 emacs_keymap.o: $(srcdir)/keymaps.h
@@ -379,7 +379,6 @@ emacs_keymap.o: $(srcdir)/readline.h
 emacs_keymap.o: $(srcdir)/rlstdc.h
 emacs_keymap.o: $(srcdir)/rltypedefs.h
 emacs_keymap.o: $(topdir)/lib/tilde/tilde.h
-funmap.o: $(BUILD_DIR)/config.h
 funmap.o: $(srcdir)/chardefs.h
 funmap.o: $(srcdir)/funmap.c
 funmap.o: $(srcdir)/keymaps.h
@@ -391,7 +390,7 @@ funmap.o: $(srcdir)/xmalloc.h
 funmap.o: $(topdir)/config-bot.h
 funmap.o: $(topdir)/config-top.h
 funmap.o: $(topdir)/lib/tilde/tilde.h
-histexpand.o: $(BUILD_DIR)/config.h
+funmap.o: ../../config.h
 histexpand.o: $(srcdir)/chardefs.h
 histexpand.o: $(srcdir)/histexpand.c
 histexpand.o: $(srcdir)/histlib.h
@@ -403,7 +402,7 @@ histexpand.o: $(srcdir)/rltypedefs.h
 histexpand.o: $(srcdir)/xmalloc.h
 histexpand.o: $(topdir)/config-bot.h
 histexpand.o: $(topdir)/config-top.h
-histfile.o: $(BUILD_DIR)/config.h
+histexpand.o: ../../config.h
 histfile.o: $(srcdir)/histfile.c
 histfile.o: $(srcdir)/histlib.h
 histfile.o: $(srcdir)/history.h
@@ -414,7 +413,7 @@ histfile.o: $(srcdir)/rltypedefs.h
 histfile.o: $(srcdir)/xmalloc.h
 histfile.o: $(topdir)/config-bot.h
 histfile.o: $(topdir)/config-top.h
-history.o: $(BUILD_DIR)/config.h
+histfile.o: ../../config.h
 history.o: $(srcdir)/histlib.h
 history.o: $(srcdir)/history.c
 history.o: $(srcdir)/history.h
@@ -424,7 +423,7 @@ history.o: $(srcdir)/rltypedefs.h
 history.o: $(srcdir)/xmalloc.h
 history.o: $(topdir)/config-bot.h
 history.o: $(topdir)/config-top.h
-histsearch.o: $(BUILD_DIR)/config.h
+history.o: ../../config.h
 histsearch.o: $(srcdir)/histlib.h
 histsearch.o: $(srcdir)/history.h
 histsearch.o: $(srcdir)/histsearch.c
@@ -434,7 +433,7 @@ histsearch.o: $(srcdir)/rltypedefs.h
 histsearch.o: $(srcdir)/xmalloc.h
 histsearch.o: $(topdir)/config-bot.h
 histsearch.o: $(topdir)/config-top.h
-input.o: $(BUILD_DIR)/config.h
+histsearch.o: ../../config.h
 input.o: $(srcdir)/chardefs.h
 input.o: $(srcdir)/input.c
 input.o: $(srcdir)/keymaps.h
@@ -453,7 +452,7 @@ input.o: $(srcdir)/xmalloc.h
 input.o: $(topdir)/config-bot.h
 input.o: $(topdir)/config-top.h
 input.o: $(topdir)/lib/tilde/tilde.h
-isearch.o: $(BUILD_DIR)/config.h
+input.o: ../../config.h
 isearch.o: $(srcdir)/chardefs.h
 isearch.o: $(srcdir)/history.h
 isearch.o: $(srcdir)/isearch.c
@@ -470,7 +469,7 @@ isearch.o: $(srcdir)/xmalloc.h
 isearch.o: $(topdir)/config-bot.h
 isearch.o: $(topdir)/config-top.h
 isearch.o: $(topdir)/lib/tilde/tilde.h
-keymaps.o: $(BUILD_DIR)/config.h
+isearch.o: ../../config.h
 keymaps.o: $(srcdir)/chardefs.h
 keymaps.o: $(srcdir)/emacs_keymap.c
 keymaps.o: $(srcdir)/keymaps.c
@@ -484,7 +483,7 @@ keymaps.o: $(srcdir)/xmalloc.h
 keymaps.o: $(topdir)/config-bot.h
 keymaps.o: $(topdir)/config-top.h
 keymaps.o: $(topdir)/lib/tilde/tilde.h
-kill.o: $(BUILD_DIR)/config.h
+keymaps.o: ../../config.h
 kill.o: $(srcdir)/chardefs.h
 kill.o: $(srcdir)/history.h
 kill.o: $(srcdir)/keymaps.h
@@ -501,7 +500,7 @@ kill.o: $(srcdir)/xmalloc.h
 kill.o: $(topdir)/config-bot.h
 kill.o: $(topdir)/config-top.h
 kill.o: $(topdir)/lib/tilde/tilde.h
-macro.o: $(BUILD_DIR)/config.h
+kill.o: ../../config.h
 macro.o: $(srcdir)/chardefs.h
 macro.o: $(srcdir)/history.h
 macro.o: $(srcdir)/keymaps.h
@@ -518,7 +517,7 @@ macro.o: $(srcdir)/xmalloc.h
 macro.o: $(topdir)/config-bot.h
 macro.o: $(topdir)/config-top.h
 macro.o: $(topdir)/lib/tilde/tilde.h
-mbutil.o: $(BUILD_DIR)/config.h
+macro.o: ../../config.h
 mbutil.o: $(srcdir)/chardefs.h
 mbutil.o: $(srcdir)/keymaps.h
 mbutil.o: $(srcdir)/mbutil.c
@@ -534,7 +533,7 @@ mbutil.o: $(srcdir)/xmalloc.h
 mbutil.o: $(topdir)/config-bot.h
 mbutil.o: $(topdir)/config-top.h
 mbutil.o: $(topdir)/lib/tilde/tilde.h
-misc.o: $(BUILD_DIR)/config.h
+mbutil.o: ../../config.h
 misc.o: $(srcdir)/chardefs.h
 misc.o: $(srcdir)/histlib.h
 misc.o: $(srcdir)/history.h
@@ -553,7 +552,7 @@ misc.o: $(srcdir)/xmalloc.h
 misc.o: $(topdir)/config-bot.h
 misc.o: $(topdir)/config-top.h
 misc.o: $(topdir)/lib/tilde/tilde.h
-nls.o: $(BUILD_DIR)/config.h
+misc.o: ../../config.h
 nls.o: $(srcdir)/chardefs.h
 nls.o: $(srcdir)/keymaps.h
 nls.o: $(srcdir)/nls.c
@@ -570,7 +569,7 @@ nls.o: $(srcdir)/xmalloc.h
 nls.o: $(topdir)/config-bot.h
 nls.o: $(topdir)/config-top.h
 nls.o: $(topdir)/lib/tilde/tilde.h
-parens.o: $(BUILD_DIR)/config.h
+nls.o: ../../config.h
 parens.o: $(srcdir)/chardefs.h
 parens.o: $(srcdir)/keymaps.h
 parens.o: $(srcdir)/parens.c
@@ -586,7 +585,7 @@ parens.o: $(srcdir)/rltypedefs.h
 parens.o: $(topdir)/config-bot.h
 parens.o: $(topdir)/config-top.h
 parens.o: $(topdir)/lib/tilde/tilde.h
-parse-colors.o: $(BUILD_DIR)/config.h
+parens.o: ../../config.h
 parse-colors.o: $(srcdir)/chardefs.h
 parse-colors.o: $(srcdir)/colors.h
 parse-colors.o: $(srcdir)/keymaps.h
@@ -605,7 +604,7 @@ parse-colors.o: $(srcdir)/xmalloc.h
 parse-colors.o: $(topdir)/config-bot.h
 parse-colors.o: $(topdir)/config-top.h
 parse-colors.o: $(topdir)/lib/tilde/tilde.h
-readline.o: $(BUILD_DIR)/config.h
+parse-colors.o: ../../config.h
 readline.o: $(srcdir)/chardefs.h
 readline.o: $(srcdir)/history.h
 readline.o: $(srcdir)/keymaps.h
@@ -625,7 +624,7 @@ readline.o: $(srcdir)/xmalloc.h
 readline.o: $(topdir)/config-bot.h
 readline.o: $(topdir)/config-top.h
 readline.o: $(topdir)/lib/tilde/tilde.h
-rltty.o: $(BUILD_DIR)/config.h
+readline.o: ../../config.h
 rltty.o: $(srcdir)/chardefs.h
 rltty.o: $(srcdir)/keymaps.h
 rltty.o: $(srcdir)/posixjmp.h
@@ -642,13 +641,13 @@ rltty.o: $(srcdir)/rlwinsize.h
 rltty.o: $(topdir)/config-bot.h
 rltty.o: $(topdir)/config-top.h
 rltty.o: $(topdir)/lib/tilde/tilde.h
-savestring.o: $(BUILD_DIR)/config.h
+rltty.o: ../../config.h
 savestring.o: $(srcdir)/rlstdc.h
 savestring.o: $(srcdir)/savestring.c
 savestring.o: $(srcdir)/xmalloc.h
 savestring.o: $(topdir)/config-bot.h
 savestring.o: $(topdir)/config-top.h
-search.o: $(BUILD_DIR)/config.h
+savestring.o: ../../config.h
 search.o: $(srcdir)/chardefs.h
 search.o: $(srcdir)/histlib.h
 search.o: $(srcdir)/history.h
@@ -666,7 +665,7 @@ search.o: $(srcdir)/xmalloc.h
 search.o: $(topdir)/config-bot.h
 search.o: $(topdir)/config-top.h
 search.o: $(topdir)/lib/tilde/tilde.h
-shell.o: $(BUILD_DIR)/config.h
+search.o: ../../config.h
 shell.o: $(srcdir)/rlconf.h
 shell.o: $(srcdir)/rldefs.h
 shell.o: $(srcdir)/rlshell.h
@@ -675,7 +674,7 @@ shell.o: $(srcdir)/shell.c
 shell.o: $(srcdir)/xmalloc.h
 shell.o: $(topdir)/config-bot.h
 shell.o: $(topdir)/config-top.h
-signals.o: $(BUILD_DIR)/config.h
+shell.o: ../../config.h
 signals.o: $(srcdir)/chardefs.h
 signals.o: $(srcdir)/history.h
 signals.o: $(srcdir)/keymaps.h
@@ -691,7 +690,7 @@ signals.o: $(srcdir)/signals.c
 signals.o: $(topdir)/config-bot.h
 signals.o: $(topdir)/config-top.h
 signals.o: $(topdir)/lib/tilde/tilde.h
-terminal.o: $(BUILD_DIR)/config.h
+signals.o: ../../config.h
 terminal.o: $(srcdir)/chardefs.h
 terminal.o: $(srcdir)/history.h
 terminal.o: $(srcdir)/keymaps.h
@@ -713,7 +712,7 @@ terminal.o: $(srcdir)/xmalloc.h
 terminal.o: $(topdir)/config-bot.h
 terminal.o: $(topdir)/config-top.h
 terminal.o: $(topdir)/lib/tilde/tilde.h
-text.o: $(BUILD_DIR)/config.h
+terminal.o: ../../config.h
 text.o: $(srcdir)/chardefs.h
 text.o: $(srcdir)/history.h
 text.o: $(srcdir)/keymaps.h
@@ -731,14 +730,14 @@ text.o: $(srcdir)/xmalloc.h
 text.o: $(topdir)/config-bot.h
 text.o: $(topdir)/config-top.h
 text.o: $(topdir)/lib/tilde/tilde.h
-tilde.o: $(BUILD_DIR)/config.h
+text.o: ../../config.h
 tilde.o: $(srcdir)/rlstdc.h
 tilde.o: $(srcdir)/xmalloc.h
 tilde.o: $(topdir)/config-bot.h
 tilde.o: $(topdir)/config-top.h
 tilde.o: $(topdir)/lib/tilde/tilde.c
 tilde.o: $(topdir)/lib/tilde/tilde.h
-undo.o: $(BUILD_DIR)/config.h
+tilde.o: ../../config.h
 undo.o: $(srcdir)/chardefs.h
 undo.o: $(srcdir)/histlib.h
 undo.o: $(srcdir)/history.h
@@ -756,7 +755,7 @@ undo.o: $(srcdir)/xmalloc.h
 undo.o: $(topdir)/config-bot.h
 undo.o: $(topdir)/config-top.h
 undo.o: $(topdir)/lib/tilde/tilde.h
-util.o: $(BUILD_DIR)/config.h
+undo.o: ../../config.h
 util.o: $(srcdir)/chardefs.h
 util.o: $(srcdir)/keymaps.h
 util.o: $(srcdir)/posixjmp.h
@@ -773,6 +772,7 @@ util.o: $(srcdir)/xmalloc.h
 util.o: $(topdir)/config-bot.h
 util.o: $(topdir)/config-top.h
 util.o: $(topdir)/lib/tilde/tilde.h
+util.o: ../../config.h
 vi_keymap.o: $(srcdir)/chardefs.h
 vi_keymap.o: $(srcdir)/keymaps.h
 vi_keymap.o: $(srcdir)/readline.h
@@ -780,7 +780,6 @@ vi_keymap.o: $(srcdir)/rlstdc.h
 vi_keymap.o: $(srcdir)/rltypedefs.h
 vi_keymap.o: $(srcdir)/vi_keymap.c
 vi_keymap.o: $(topdir)/lib/tilde/tilde.h
-vi_mode.o: $(BUILD_DIR)/config.h
 vi_mode.o: $(srcdir)/chardefs.h
 vi_mode.o: $(srcdir)/history.h
 vi_mode.o: $(srcdir)/keymaps.h
@@ -797,20 +796,20 @@ vi_mode.o: $(srcdir)/xmalloc.h
 vi_mode.o: $(topdir)/config-bot.h
 vi_mode.o: $(topdir)/config-top.h
 vi_mode.o: $(topdir)/lib/tilde/tilde.h
-xfree.o: $(BUILD_DIR)/config.h
+vi_mode.o: ../../config.h
 xfree.o: $(srcdir)/rlstdc.h
 xfree.o: $(srcdir)/xfree.c
 xfree.o: $(srcdir)/xmalloc.h
 xfree.o: $(topdir)/config-bot.h
 xfree.o: $(topdir)/config-top.h
-xmalloc.o: $(BUILD_DIR)/config.h
+xfree.o: ../../config.h
 xmalloc.o: $(srcdir)/rlstdc.h
 xmalloc.o: $(srcdir)/xmalloc.c
 xmalloc.o: $(srcdir)/xmalloc.h
 xmalloc.o: $(topdir)/config-bot.h
 xmalloc.o: $(topdir)/config-top.h
+xmalloc.o: ../../config.h
 
-examples/excallback.o: $(BUILD_DIR)/config.h
 examples/excallback.o: $(srcdir)/chardefs.h
 examples/excallback.o: $(srcdir)/examples/excallback.c
 examples/excallback.o: $(srcdir)/history.h
@@ -821,7 +820,7 @@ examples/excallback.o: $(srcdir)/rltypedefs.h
 examples/excallback.o: $(topdir)/config-bot.h
 examples/excallback.o: $(topdir)/config-top.h
 examples/excallback.o: $(topdir)/lib/tilde/tilde.h
-examples/fileman.o: $(BUILD_DIR)/config.h
+examples/excallback.o: ../../config.h
 examples/fileman.o: $(srcdir)/chardefs.h
 examples/fileman.o: $(srcdir)/examples/fileman.c
 examples/fileman.o: $(srcdir)/history.h
@@ -832,11 +831,11 @@ examples/fileman.o: $(srcdir)/rltypedefs.h
 examples/fileman.o: $(topdir)/config-bot.h
 examples/fileman.o: $(topdir)/config-top.h
 examples/fileman.o: $(topdir)/lib/tilde/tilde.h
+examples/fileman.o: ../../config.h
 examples/histexamp.o: $(srcdir)/examples/histexamp.c
 examples/histexamp.o: $(srcdir)/history.h
 examples/histexamp.o: $(srcdir)/rlstdc.h
 examples/histexamp.o: $(srcdir)/rltypedefs.h
-examples/manexamp.o: $(BUILD_DIR)/config.h
 examples/manexamp.o: $(srcdir)/chardefs.h
 examples/manexamp.o: $(srcdir)/examples/manexamp.c
 examples/manexamp.o: $(srcdir)/history.h
@@ -847,6 +846,7 @@ examples/manexamp.o: $(srcdir)/rltypedefs.h
 examples/manexamp.o: $(topdir)/config-bot.h
 examples/manexamp.o: $(topdir)/config-top.h
 examples/manexamp.o: $(topdir)/lib/tilde/tilde.h
+examples/manexamp.o: ../../config.h
 examples/rl-callbacktest.o: $(srcdir)/chardefs.h
 examples/rl-callbacktest.o: $(srcdir)/examples/rl-callbacktest.c
 examples/rl-callbacktest.o: $(srcdir)/history.h
@@ -871,7 +871,6 @@ examples/rl-timeout.o: $(srcdir)/readline.h
 examples/rl-timeout.o: $(srcdir)/rlstdc.h
 examples/rl-timeout.o: $(srcdir)/rltypedefs.h
 examples/rl-timeout.o: $(topdir)/lib/tilde/tilde.h
-examples/rl.o: $(BUILD_DIR)/config.h
 examples/rl.o: $(srcdir)/chardefs.h
 examples/rl.o: $(srcdir)/examples/rl.c
 examples/rl.o: $(srcdir)/history.h
@@ -882,7 +881,7 @@ examples/rl.o: $(srcdir)/rltypedefs.h
 examples/rl.o: $(topdir)/config-bot.h
 examples/rl.o: $(topdir)/config-top.h
 examples/rl.o: $(topdir)/lib/tilde/tilde.h
-examples/rlcat.o: $(BUILD_DIR)/config.h
+examples/rl.o: ../../config.h
 examples/rlcat.o: $(srcdir)/chardefs.h
 examples/rlcat.o: $(srcdir)/examples/rlcat.c
 examples/rlcat.o: $(srcdir)/history.h
@@ -894,7 +893,7 @@ examples/rlcat.o: $(topdir)/config-bot.h
 examples/rlcat.o: $(topdir)/config-top.h
 examples/rlcat.o: $(topdir)/include/posixstat.h
 examples/rlcat.o: $(topdir)/lib/tilde/tilde.h
-examples/rlptytest.o: $(BUILD_DIR)/config.h
+examples/rlcat.o: ../../config.h
 examples/rlptytest.o: $(srcdir)/chardefs.h
 examples/rlptytest.o: $(srcdir)/examples/rlptytest.c
 examples/rlptytest.o: $(srcdir)/history.h
@@ -905,7 +904,7 @@ examples/rlptytest.o: $(srcdir)/rltypedefs.h
 examples/rlptytest.o: $(topdir)/config-bot.h
 examples/rlptytest.o: $(topdir)/config-top.h
 examples/rlptytest.o: $(topdir)/lib/tilde/tilde.h
-examples/rltest.o: $(BUILD_DIR)/config.h
+examples/rlptytest.o: ../../config.h
 examples/rltest.o: $(srcdir)/chardefs.h
 examples/rltest.o: $(srcdir)/examples/rltest.c
 examples/rltest.o: $(srcdir)/history.h
@@ -916,3 +915,4 @@ examples/rltest.o: $(srcdir)/rltypedefs.h
 examples/rltest.o: $(topdir)/config-bot.h
 examples/rltest.o: $(topdir)/config-top.h
 examples/rltest.o: $(topdir)/lib/tilde/tilde.h
+examples/rltest.o: ../../config.h

@@ -346,7 +346,6 @@ depends depend:
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)
 
-accept.o: $(BUILD_DIR)/config.h
 accept.o: $(srcdir)/accept.c
 accept.o: $(srcdir)/loadables.h
 accept.o: $(topdir)/alias.h
@@ -385,7 +384,7 @@ accept.o: $(topdir)/syntax.h
 accept.o: $(topdir)/unwind_prot.h
 accept.o: $(topdir)/variables.h
 accept.o: $(topdir)/xmalloc.h
-asort.o: $(BUILD_DIR)/config.h
+accept.o: ../../config.h
 asort.o: $(srcdir)/asort.c
 asort.o: $(topdir)/alias.h
 asort.o: $(topdir)/array.h
@@ -422,7 +421,7 @@ asort.o: $(topdir)/syntax.h
 asort.o: $(topdir)/unwind_prot.h
 asort.o: $(topdir)/variables.h
 asort.o: $(topdir)/xmalloc.h
-basename.o: $(BUILD_DIR)/config.h
+asort.o: ../../config.h
 basename.o: $(srcdir)/basename.c
 basename.o: $(topdir)/alias.h
 basename.o: $(topdir)/array.h
@@ -459,7 +458,7 @@ basename.o: $(topdir)/syntax.h
 basename.o: $(topdir)/unwind_prot.h
 basename.o: $(topdir)/variables.h
 basename.o: $(topdir)/xmalloc.h
-bcat.o: $(BUILD_DIR)/config.h
+basename.o: ../../config.h
 bcat.o: $(srcdir)/bcat.c
 bcat.o: $(topdir)/alias.h
 bcat.o: $(topdir)/array.h
@@ -494,7 +493,7 @@ bcat.o: $(topdir)/syntax.h
 bcat.o: $(topdir)/unwind_prot.h
 bcat.o: $(topdir)/variables.h
 bcat.o: $(topdir)/xmalloc.h
-cat.o: $(BUILD_DIR)/config.h
+bcat.o: ../../config.h
 cat.o: $(srcdir)/cat.c
 cat.o: $(topdir)/alias.h
 cat.o: $(topdir)/array.h
@@ -529,7 +528,7 @@ cat.o: $(topdir)/syntax.h
 cat.o: $(topdir)/unwind_prot.h
 cat.o: $(topdir)/variables.h
 cat.o: $(topdir)/xmalloc.h
-csv.o: $(BUILD_DIR)/config.h
+cat.o: ../../config.h
 csv.o: $(srcdir)/csv.c
 csv.o: $(srcdir)/loadables.h
 csv.o: $(topdir)/alias.h
@@ -567,7 +566,7 @@ csv.o: $(topdir)/syntax.h
 csv.o: $(topdir)/unwind_prot.h
 csv.o: $(topdir)/variables.h
 csv.o: $(topdir)/xmalloc.h
-cut.o: $(BUILD_DIR)/config.h
+csv.o: ../../config.h
 cut.o: $(srcdir)/cut.c
 cut.o: $(srcdir)/loadables.h
 cut.o: $(topdir)/alias.h
@@ -607,7 +606,7 @@ cut.o: $(topdir)/syntax.h
 cut.o: $(topdir)/unwind_prot.h
 cut.o: $(topdir)/variables.h
 cut.o: $(topdir)/xmalloc.h
-dirname.o: $(BUILD_DIR)/config.h
+cut.o: ../../config.h
 dirname.o: $(srcdir)/dirname.c
 dirname.o: $(topdir)/alias.h
 dirname.o: $(topdir)/array.h
@@ -644,7 +643,7 @@ dirname.o: $(topdir)/syntax.h
 dirname.o: $(topdir)/unwind_prot.h
 dirname.o: $(topdir)/variables.h
 dirname.o: $(topdir)/xmalloc.h
-dsv.o: $(BUILD_DIR)/config.h
+dirname.o: ../../config.h
 dsv.o: $(srcdir)/dsv.c
 dsv.o: $(srcdir)/loadables.h
 dsv.o: $(topdir)/alias.h
@@ -682,7 +681,7 @@ dsv.o: $(topdir)/syntax.h
 dsv.o: $(topdir)/unwind_prot.h
 dsv.o: $(topdir)/variables.h
 dsv.o: $(topdir)/xmalloc.h
-fdflags.o: $(BUILD_DIR)/config.h
+dsv.o: ../../config.h
 fdflags.o: $(srcdir)/fdflags.c
 fdflags.o: $(srcdir)/loadables.h
 fdflags.o: $(topdir)/alias.h
@@ -720,7 +719,7 @@ fdflags.o: $(topdir)/syntax.h
 fdflags.o: $(topdir)/unwind_prot.h
 fdflags.o: $(topdir)/variables.h
 fdflags.o: $(topdir)/xmalloc.h
-finfo.o: $(BUILD_DIR)/config.h
+fdflags.o: ../../config.h
 finfo.o: $(srcdir)/finfo.c
 finfo.o: $(topdir)/alias.h
 finfo.o: $(topdir)/array.h
@@ -760,7 +759,7 @@ finfo.o: $(topdir)/syntax.h
 finfo.o: $(topdir)/unwind_prot.h
 finfo.o: $(topdir)/variables.h
 finfo.o: $(topdir)/xmalloc.h
-getconf.o: $(BUILD_DIR)/config.h
+finfo.o: ../../config.h
 getconf.o: $(srcdir)/getconf.c
 getconf.o: $(srcdir)/getconf.h
 getconf.o: $(srcdir)/loadables.h
@@ -801,7 +800,7 @@ getconf.o: $(topdir)/syntax.h
 getconf.o: $(topdir)/unwind_prot.h
 getconf.o: $(topdir)/variables.h
 getconf.o: $(topdir)/xmalloc.h
-head.o: $(BUILD_DIR)/config.h
+getconf.o: ../../config.h
 head.o: $(srcdir)/head.c
 head.o: $(topdir)/alias.h
 head.o: $(topdir)/array.h
@@ -840,7 +839,7 @@ head.o: $(topdir)/syntax.h
 head.o: $(topdir)/unwind_prot.h
 head.o: $(topdir)/variables.h
 head.o: $(topdir)/xmalloc.h
-hello.o: $(BUILD_DIR)/config.h
+head.o: ../../config.h
 hello.o: $(srcdir)/hello.c
 hello.o: $(srcdir)/loadables.h
 hello.o: $(topdir)/alias.h
@@ -878,7 +877,7 @@ hello.o: $(topdir)/syntax.h
 hello.o: $(topdir)/unwind_prot.h
 hello.o: $(topdir)/variables.h
 hello.o: $(topdir)/xmalloc.h
-id.o: $(BUILD_DIR)/config.h
+hello.o: ../../config.h
 id.o: $(srcdir)/id.c
 id.o: $(topdir)/alias.h
 id.o: $(topdir)/array.h
@@ -915,7 +914,7 @@ id.o: $(topdir)/syntax.h
 id.o: $(topdir)/unwind_prot.h
 id.o: $(topdir)/variables.h
 id.o: $(topdir)/xmalloc.h
-kv.o: $(BUILD_DIR)/config.h
+id.o: ../../config.h
 kv.o: $(srcdir)/kv.c
 kv.o: $(srcdir)/loadables.h
 kv.o: $(topdir)/alias.h
@@ -954,7 +953,7 @@ kv.o: $(topdir)/syntax.h
 kv.o: $(topdir)/unwind_prot.h
 kv.o: $(topdir)/variables.h
 kv.o: $(topdir)/xmalloc.h
-lcut.o: $(BUILD_DIR)/config.h
+kv.o: ../../config.h
 lcut.o: $(srcdir)/lcut.c
 lcut.o: $(srcdir)/loadables.h
 lcut.o: $(topdir)/alias.h
@@ -994,7 +993,7 @@ lcut.o: $(topdir)/syntax.h
 lcut.o: $(topdir)/unwind_prot.h
 lcut.o: $(topdir)/variables.h
 lcut.o: $(topdir)/xmalloc.h
-ln.o: $(BUILD_DIR)/config.h
+lcut.o: ../../config.h
 ln.o: $(srcdir)/ln.c
 ln.o: $(topdir)/alias.h
 ln.o: $(topdir)/array.h
@@ -1032,7 +1031,7 @@ ln.o: $(topdir)/syntax.h
 ln.o: $(topdir)/unwind_prot.h
 ln.o: $(topdir)/variables.h
 ln.o: $(topdir)/xmalloc.h
-logname.o: $(BUILD_DIR)/config.h
+ln.o: ../../config.h
 logname.o: $(srcdir)/logname.c
 logname.o: $(topdir)/alias.h
 logname.o: $(topdir)/array.h
@@ -1068,7 +1067,7 @@ logname.o: $(topdir)/syntax.h
 logname.o: $(topdir)/unwind_prot.h
 logname.o: $(topdir)/variables.h
 logname.o: $(topdir)/xmalloc.h
-mkdir.o: $(BUILD_DIR)/config.h
+logname.o: ../../config.h
 mkdir.o: $(srcdir)/mkdir.c
 mkdir.o: $(topdir)/alias.h
 mkdir.o: $(topdir)/array.h
@@ -1106,7 +1105,7 @@ mkdir.o: $(topdir)/syntax.h
 mkdir.o: $(topdir)/unwind_prot.h
 mkdir.o: $(topdir)/variables.h
 mkdir.o: $(topdir)/xmalloc.h
-mkfifo.o: $(BUILD_DIR)/config.h
+mkdir.o: ../../config.h
 mkfifo.o: $(srcdir)/mkfifo.c
 mkfifo.o: $(topdir)/alias.h
 mkfifo.o: $(topdir)/array.h
@@ -1144,7 +1143,7 @@ mkfifo.o: $(topdir)/syntax.h
 mkfifo.o: $(topdir)/unwind_prot.h
 mkfifo.o: $(topdir)/variables.h
 mkfifo.o: $(topdir)/xmalloc.h
-mktemp.o: $(BUILD_DIR)/config.h
+mkfifo.o: ../../config.h
 mktemp.o: $(srcdir)/loadables.h
 mktemp.o: $(srcdir)/mktemp.c
 mktemp.o: $(topdir)/alias.h
@@ -1182,7 +1181,7 @@ mktemp.o: $(topdir)/syntax.h
 mktemp.o: $(topdir)/unwind_prot.h
 mktemp.o: $(topdir)/variables.h
 mktemp.o: $(topdir)/xmalloc.h
-mypid.o: $(BUILD_DIR)/config.h
+mktemp.o: ../../config.h
 mypid.o: $(srcdir)/mypid.c
 mypid.o: $(topdir)/alias.h
 mypid.o: $(topdir)/array.h
@@ -1217,7 +1216,7 @@ mypid.o: $(topdir)/syntax.h
 mypid.o: $(topdir)/unwind_prot.h
 mypid.o: $(topdir)/variables.h
 mypid.o: $(topdir)/xmalloc.h
-necho.o: $(BUILD_DIR)/config.h
+mypid.o: ../../config.h
 necho.o: $(srcdir)/necho.c
 necho.o: $(topdir)/alias.h
 necho.o: $(topdir)/array.h
@@ -1252,7 +1251,7 @@ necho.o: $(topdir)/syntax.h
 necho.o: $(topdir)/unwind_prot.h
 necho.o: $(topdir)/variables.h
 necho.o: $(topdir)/xmalloc.h
-pathchk.o: $(BUILD_DIR)/config.h
+necho.o: ../../config.h
 pathchk.o: $(srcdir)/pathchk.c
 pathchk.o: $(topdir)/alias.h
 pathchk.o: $(topdir)/array.h
@@ -1290,7 +1289,7 @@ pathchk.o: $(topdir)/syntax.h
 pathchk.o: $(topdir)/unwind_prot.h
 pathchk.o: $(topdir)/variables.h
 pathchk.o: $(topdir)/xmalloc.h
-print.o: $(BUILD_DIR)/config.h
+pathchk.o: ../../config.h
 print.o: $(srcdir)/print.c
 print.o: $(topdir)/alias.h
 print.o: $(topdir)/array.h
@@ -1329,7 +1328,7 @@ print.o: $(topdir)/syntax.h
 print.o: $(topdir)/unwind_prot.h
 print.o: $(topdir)/variables.h
 print.o: $(topdir)/xmalloc.h
-printenv.o: $(BUILD_DIR)/config.h
+print.o: ../../config.h
 printenv.o: $(srcdir)/printenv.c
 printenv.o: $(topdir)/alias.h
 printenv.o: $(topdir)/array.h
@@ -1366,7 +1365,7 @@ printenv.o: $(topdir)/syntax.h
 printenv.o: $(topdir)/unwind_prot.h
 printenv.o: $(topdir)/variables.h
 printenv.o: $(topdir)/xmalloc.h
-push.o: $(BUILD_DIR)/config.h
+printenv.o: ../../config.h
 push.o: $(srcdir)/push.c
 push.o: $(topdir)/alias.h
 push.o: $(topdir)/array.h
@@ -1406,7 +1405,7 @@ push.o: $(topdir)/syntax.h
 push.o: $(topdir)/unwind_prot.h
 push.o: $(topdir)/variables.h
 push.o: $(topdir)/xmalloc.h
-pushd.o: $(BUILD_DIR)/config.h
+push.o: ../../config.h
 pushd.o: $(srcdir)/pushd.c
 pushd.o: $(topdir)/array.h
 pushd.o: $(topdir)/arrayfunc.h
@@ -1444,7 +1443,7 @@ pushd.o: $(topdir)/syntax.h
 pushd.o: $(topdir)/unwind_prot.h
 pushd.o: $(topdir)/variables.h
 pushd.o: $(topdir)/xmalloc.h
-realpath.o: $(BUILD_DIR)/config.h
+pushd.o: ../../config.h
 realpath.o: $(srcdir)/realpath.c
 realpath.o: $(topdir)/alias.h
 realpath.o: $(topdir)/array.h
@@ -1481,7 +1480,7 @@ realpath.o: $(topdir)/syntax.h
 realpath.o: $(topdir)/unwind_prot.h
 realpath.o: $(topdir)/variables.h
 realpath.o: $(topdir)/xmalloc.h
-rm.o: $(BUILD_DIR)/config.h
+realpath.o: ../../config.h
 rm.o: $(srcdir)/rm.c
 rm.o: $(topdir)/alias.h
 rm.o: $(topdir)/array.h
@@ -1518,7 +1517,7 @@ rm.o: $(topdir)/syntax.h
 rm.o: $(topdir)/unwind_prot.h
 rm.o: $(topdir)/variables.h
 rm.o: $(topdir)/xmalloc.h
-rmdir.o: $(BUILD_DIR)/config.h
+rm.o: ../../config.h
 rmdir.o: $(srcdir)/rmdir.c
 rmdir.o: $(topdir)/alias.h
 rmdir.o: $(topdir)/array.h
@@ -1554,7 +1553,7 @@ rmdir.o: $(topdir)/syntax.h
 rmdir.o: $(topdir)/unwind_prot.h
 rmdir.o: $(topdir)/variables.h
 rmdir.o: $(topdir)/xmalloc.h
-seq.o: $(BUILD_DIR)/config.h
+rmdir.o: ../../config.h
 seq.o: $(srcdir)/loadables.h
 seq.o: $(srcdir)/seq.c
 seq.o: $(topdir)/alias.h
@@ -1594,7 +1593,7 @@ seq.o: $(topdir)/syntax.h
 seq.o: $(topdir)/unwind_prot.h
 seq.o: $(topdir)/variables.h
 seq.o: $(topdir)/xmalloc.h
-setpgid.o: $(BUILD_DIR)/config.h
+seq.o: ../../config.h
 setpgid.o: $(srcdir)/setpgid.c
 setpgid.o: $(topdir)/alias.h
 setpgid.o: $(topdir)/array.h
@@ -1632,7 +1631,7 @@ setpgid.o: $(topdir)/syntax.h
 setpgid.o: $(topdir)/unwind_prot.h
 setpgid.o: $(topdir)/variables.h
 setpgid.o: $(topdir)/xmalloc.h
-sleep.o: $(BUILD_DIR)/config.h
+setpgid.o: ../../config.h
 sleep.o: $(srcdir)/loadables.h
 sleep.o: $(srcdir)/sleep.c
 sleep.o: $(topdir)/alias.h
@@ -1670,7 +1669,7 @@ sleep.o: $(topdir)/syntax.h
 sleep.o: $(topdir)/unwind_prot.h
 sleep.o: $(topdir)/variables.h
 sleep.o: $(topdir)/xmalloc.h
-stat.o: $(BUILD_DIR)/config.h
+sleep.o: ../../config.h
 stat.o: $(srcdir)/stat.c
 stat.o: $(topdir)/alias.h
 stat.o: $(topdir)/array.h
@@ -1709,7 +1708,7 @@ stat.o: $(topdir)/syntax.h
 stat.o: $(topdir)/unwind_prot.h
 stat.o: $(topdir)/variables.h
 stat.o: $(topdir)/xmalloc.h
-strftime.o: $(BUILD_DIR)/config.h
+stat.o: ../../config.h
 strftime.o: $(srcdir)/strftime.c
 strftime.o: $(topdir)/alias.h
 strftime.o: $(topdir)/array.h
@@ -1747,7 +1746,7 @@ strftime.o: $(topdir)/syntax.h
 strftime.o: $(topdir)/unwind_prot.h
 strftime.o: $(topdir)/variables.h
 strftime.o: $(topdir)/xmalloc.h
-strptime.o: $(BUILD_DIR)/config.h
+strftime.o: ../../config.h
 strptime.o: $(srcdir)/strptime.c
 strptime.o: $(topdir)/alias.h
 strptime.o: $(topdir)/array.h
@@ -1785,7 +1784,7 @@ strptime.o: $(topdir)/syntax.h
 strptime.o: $(topdir)/unwind_prot.h
 strptime.o: $(topdir)/variables.h
 strptime.o: $(topdir)/xmalloc.h
-sync.o: $(BUILD_DIR)/config.h
+strptime.o: ../../config.h
 sync.o: $(srcdir)/sync.c
 sync.o: $(topdir)/alias.h
 sync.o: $(topdir)/array.h
@@ -1822,7 +1821,7 @@ sync.o: $(topdir)/syntax.h
 sync.o: $(topdir)/unwind_prot.h
 sync.o: $(topdir)/variables.h
 sync.o: $(topdir)/xmalloc.h
-tee.o: $(BUILD_DIR)/config.h
+sync.o: ../../config.h
 tee.o: $(srcdir)/tee.c
 tee.o: $(topdir)/alias.h
 tee.o: $(topdir)/array.h
@@ -1861,7 +1860,7 @@ tee.o: $(topdir)/syntax.h
 tee.o: $(topdir)/unwind_prot.h
 tee.o: $(topdir)/variables.h
 tee.o: $(topdir)/xmalloc.h
-template.o: $(BUILD_DIR)/config.h
+tee.o: ../../config.h
 template.o: $(srcdir)/loadables.h
 template.o: $(srcdir)/template.c
 template.o: $(topdir)/alias.h
@@ -1899,7 +1898,7 @@ template.o: $(topdir)/syntax.h
 template.o: $(topdir)/unwind_prot.h
 template.o: $(topdir)/variables.h
 template.o: $(topdir)/xmalloc.h
-truefalse.o: $(BUILD_DIR)/config.h
+template.o: ../../config.h
 truefalse.o: $(srcdir)/truefalse.c
 truefalse.o: $(topdir)/alias.h
 truefalse.o: $(topdir)/array.h
@@ -1935,7 +1934,7 @@ truefalse.o: $(topdir)/syntax.h
 truefalse.o: $(topdir)/unwind_prot.h
 truefalse.o: $(topdir)/variables.h
 truefalse.o: $(topdir)/xmalloc.h
-tty.o: $(BUILD_DIR)/config.h
+truefalse.o: ../../config.h
 tty.o: $(srcdir)/tty.c
 tty.o: $(topdir)/alias.h
 tty.o: $(topdir)/array.h
@@ -1972,7 +1971,7 @@ tty.o: $(topdir)/syntax.h
 tty.o: $(topdir)/unwind_prot.h
 tty.o: $(topdir)/variables.h
 tty.o: $(topdir)/xmalloc.h
-uname.o: $(BUILD_DIR)/config.h
+tty.o: ../../config.h
 uname.o: $(srcdir)/uname.c
 uname.o: $(topdir)/alias.h
 uname.o: $(topdir)/array.h
@@ -2009,7 +2008,7 @@ uname.o: $(topdir)/syntax.h
 uname.o: $(topdir)/unwind_prot.h
 uname.o: $(topdir)/variables.h
 uname.o: $(topdir)/xmalloc.h
-unlink.o: $(BUILD_DIR)/config.h
+uname.o: ../../config.h
 unlink.o: $(srcdir)/unlink.c
 unlink.o: $(topdir)/alias.h
 unlink.o: $(topdir)/array.h
@@ -2045,7 +2044,7 @@ unlink.o: $(topdir)/syntax.h
 unlink.o: $(topdir)/unwind_prot.h
 unlink.o: $(topdir)/variables.h
 unlink.o: $(topdir)/xmalloc.h
-whoami.o: $(BUILD_DIR)/config.h
+unlink.o: ../../config.h
 whoami.o: $(srcdir)/whoami.c
 whoami.o: $(topdir)/alias.h
 whoami.o: $(topdir)/array.h
@@ -2082,8 +2081,8 @@ whoami.o: $(topdir)/syntax.h
 whoami.o: $(topdir)/unwind_prot.h
 whoami.o: $(topdir)/variables.h
 whoami.o: $(topdir)/xmalloc.h
+whoami.o: ../../config.h
 
-perl/bperl.o: $(BUILD_DIR)/config.h
 perl/bperl.o: $(srcdir)/perl/bperl.c
 perl/bperl.o: $(topdir)/alias.h
 perl/bperl.o: $(topdir)/array.h
@@ -2119,4 +2118,5 @@ perl/bperl.o: $(topdir)/syntax.h
 perl/bperl.o: $(topdir)/unwind_prot.h
 perl/bperl.o: $(topdir)/variables.h
 perl/bperl.o: $(topdir)/xmalloc.h
+perl/bperl.o: ../../config.h
 perl/iperl.o: $(srcdir)/perl/iperl.c

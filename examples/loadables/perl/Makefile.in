@@ -116,7 +116,6 @@ $(topdir)/builtins.h:
 #MKDEP-CUT-HERE
 # C *.c source & *.h header dependencies (generated)
 
-bperl.o: $(BUILD_DIR)/config.h
 bperl.o: $(srcdir)/bperl.c
 bperl.o: $(topdir)/alias.h
 bperl.o: $(topdir)/array.h
@@ -152,4 +151,5 @@ bperl.o: $(topdir)/syntax.h
 bperl.o: $(topdir)/unwind_prot.h
 bperl.o: $(topdir)/variables.h
 bperl.o: $(topdir)/xmalloc.h
+bperl.o: ../../../config.h
 iperl.o: $(srcdir)/iperl.c

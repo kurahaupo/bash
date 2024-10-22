@@ -135,12 +135,11 @@ depends depend:
 
 # C *.c source & *.h header dependencies (generated)
 
-shell.o: $(BUILD_DIR)/config.h
 shell.o: $(srcdir)/shell.c
 shell.o: $(topdir)/config-bot.h
 shell.o: $(topdir)/config-top.h
 shell.o: $(topdir)/include/ansi_stdlib.h
-tilde.o: $(BUILD_DIR)/config.h
+shell.o: ../../config.h
 tilde.o: $(srcdir)/tilde.c
 tilde.o: $(srcdir)/tilde.h
 tilde.o: $(topdir)/bashansi.h
@@ -148,3 +147,4 @@ tilde.o: $(topdir)/config-bot.h
 tilde.o: $(topdir)/config-top.h
 tilde.o: $(topdir)/include/stdc.h
 tilde.o: $(topdir)/xmalloc.h
+tilde.o: ../../config.h

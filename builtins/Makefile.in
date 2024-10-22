@@ -54,7 +54,7 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 BUILD_DIR = @BUILD_DIR@
 
-LIBBUILD = ${BUILD_DIR}/lib
+LIBBUILD = ../lib
 SUPPORT_SRC = $(topdir)/support/
 
 PROFILE_FLAGS = @PROFILE_FLAGS@
@@ -341,14 +341,14 @@ builtext.h builtins.c: $(MKBUILTINS) $(DEFSRC)
 	    -structfile $$NEW_BUILTINS \
 	    -noproduction $(DIRECTDEFINE) $(HELPDIRDEFINE) $(HELPSTRINGS) $(DEFSRC) ; \
 	if cmp -s $$NEW_BUILTEXT builtext.h 2>/dev/null; then \
-		$(RM) $$NEW_BUILTEXT; \
+	  $(RM) $$NEW_BUILTEXT; \
 	else \
-		mv $$NEW_BUILTEXT builtext.h; \
+	  mv $$NEW_BUILTEXT builtext.h; \
 	fi ; \
 	if cmp -s $$NEW_BUILTINS builtins.c 2>/dev/null; then \
-		$(RM) $$NEW_BUILTINS ; \
+	  $(RM) $$NEW_BUILTINS ; \
 	else \
-		mv $$NEW_BUILTINS builtins.c; \
+	  mv $$NEW_BUILTINS builtins.c; \
 	fi
 
 .PHONY: helpdoc
@@ -395,8 +395,8 @@ pipesize.h:	psize.aux
 
 # Technically this is wrong; the pipe size should be for the target system,
 # not the build host.
-psize.aux:	psize.c
-	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) ${LDFLAGS_FOR_BUILD} -o $@ $(srcdir)/psize.c
+psize.aux:	psize.o
+	$(CC_FOR_BUILD) $(LDFLAGS_FOR_BUILD) -o $@ psize.o
 
 .PHONY: documentation
 documentation: builtins.texi
@@ -418,21 +418,21 @@ mostlyclean:
 distclean maintainer-clean: clean
 	$(RM) Makefile
 
-$(OFILES):	$(MKBUILTINS) $(BUILD_DIR)/config.h
+$(OFILES):	$(MKBUILTINS) ../config.h
 
-$(BUILD_DIR)/version.h: $(BUILD_DIR)/config.h $(BUILD_DIR)/Makefile Makefile
+../version.h: ../config.h ../Makefile Makefile
 
 # maintainer special - for now
 po:	builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
-$(BUILD_DIR)/version.h \
-$(BUILD_DIR)/y.tab.c \
-$(BUILD_DIR)/y.tab.h \
+../version.h \
+../y.tab.c \
+../y.tab.h \
 $(INTL_BUILDDIR)/libintl.h \
 $(LIBINTL_H) \
-:
-	@ echo making $(@F) in $(@D)
+ :
+	@ echo making $@ in $(@D)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 .PHONY: depends depend
@@ -2360,7 +2360,6 @@ test.o: $(topdir)/variables.h
 test.o: $(topdir)/xmalloc.h
 test.o: ../config.h
 test.o: ../pathnames.h
-test.o: ../test.h
 times.c: $(srcdir)/times.def
 times.o: $(BASHINCDIR)/chartypes.h
 times.o: $(BASHINCDIR)/maxpath.h
