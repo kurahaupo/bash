@@ -864,7 +864,7 @@ set_bashopts (void)
   free (value);
 }
 
-void
+static void
 parse_bashopts (char *value)
 {
   char *vname;
