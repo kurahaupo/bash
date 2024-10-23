@@ -163,7 +163,7 @@ sleep_builtin (WORD_LIST *list)
 
 static char *sleep_doc[] = {
   "Suspend execution for specified period.",
-  ""
+  "",
   "sleep suspends execution for a minimum of SECONDS[.FRACTION] seconds.",
   "As an extension, sleep accepts GNU-style time intervals (e.g., 2m30s).",
   (char *)NULL
