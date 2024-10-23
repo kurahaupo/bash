@@ -1463,9 +1463,9 @@ maintainer-clean: basic-clean
 	@ echo This command is intended for maintainers to use.
 	@ echo It deletes files that may require special tools to rebuild.
 	$(RM) y.tab.c y.tab.h parser-built tags TAGS
-	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS}; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
