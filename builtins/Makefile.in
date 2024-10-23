@@ -315,11 +315,11 @@ helpdoc: gen-helpfiles
 .PHONY: install-help
 install-help: $(HELPFILES_TARGET)
 	@- if test -n "${HELPDIR}" && test -d helpfiles ; then \
-	    test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
-	    ( for f in helpfiles/* ; do \
-		echo installing $$f ; \
-		${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR) ; \
-	      done ; ) ; \
+	    test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ; \
+	    for f in helpfiles/* ; do \
+	      echo installing $$f ; \
+	      ${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR) ; \
+	    done ; \
 	   fi
 
 .PHONY: install
@@ -380,7 +380,7 @@ $(OFILES): $(MKBUILTINS) ../config.h
 
 # sketchy rule here
 #../version.h: ../config.h ../Makefile Makefile
-#	-( cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h )
+#	- cd $(BUILD_DIR) && $(MAKE) $(BASH_MAKEFLAGS) version.h
 
 # maintainer special - for now
 po: builtins.c
@@ -388,8 +388,8 @@ po: builtins.c
 
 ${LIBINTL_H}:
 	@ echo making $@ in ${INTL_BUILDDIR}
-	@ ( cd ${INTL_BUILDDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) libintl.h ) || exit 1
+	@ cd ${INTL_BUILDDIR} && \
+	  $(MAKE) $(BASH_MAKEFLAGS) libintl.h
 
 # dependencies
 
