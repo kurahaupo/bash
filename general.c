@@ -1010,11 +1010,9 @@ trim_pathname (char *name, int maxlen)
    caller is responsible for freeing memory if this returns something other
    than its argument.  If FLAGS is non-zero, we are printing for portable
    re-input and should single-quote filenames appropriately. */
-char *
-printable_filename (char *fn, int flags)
+char const *
+printable_filename (char const *fn, int flags)
 {
-  char *newf;
-
   if (ansic_shouldquote (fn))
     newf = ansic_quote (fn, 0, NULL);
   else if (flags && sh_contains_shell_metas (fn))
@@ -1026,16 +1024,16 @@ printable_filename (char *fn, int flags)
 }
 
 /* Given a string containing units of information separated by colons,
-   return the next one pointed to by (P_INDEX), or NULL if there are no more.
+   return a copy of the next one pointed to by (P_INDEX), or NULL if there are no more.
    Advance (P_INDEX) to the character after the colon. */
 char *
-extract_colon_unit (char *string, int *p_index)
+extract_colon_unit (char const *string, int *p_index)
 {
   int i, start, len;
   char *value;
 
-  if (string == 0)
-    return (string);
+  if (string == NULL)
+    return NULL;
 
   len = strlen (string);
   if (*p_index >= len)
