@@ -1210,7 +1210,7 @@ $(TERMCAP_LIBRARY): config.h ${TERMCAP_SOURCE}
 $(SHLIB_LIBRARY): config.h ${SHLIB_SOURCE}
 
 ${INTL_LIBRARY}: config.h ${INTL_LIBDIR}/Makefile
-	@ echo making $@ in $(@D)
+	@ echo Making $@ in $(@D)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="${LOCAL_CFLAGS}" $(@F)
 
 ${LIBINTL_H}: ${INTL_DEP}
