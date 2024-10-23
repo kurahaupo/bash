@@ -618,9 +618,9 @@ ALLOC_HEADERS	= \
 
 
 $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
-	@ ( cd $(ALLOC_LIBDIR) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) \
-	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" ${MALLOC_TARGET} ) || exit 1
+	@ cd $(ALLOC_LIBDIR) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) \
+	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" $(MALLOC_TARGET)
 
 STDCKDINT_H = @STDCKDINT_H@
 
@@ -1174,15 +1174,15 @@ gcov:
 asan-tests: asan  $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ ( cd $(srcdir)/tests && \
-	    BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ cd $(srcdir)/tests && \
+	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
 
 # have to make this separate because making tests depend on $(PROGRAM)
 lsan-tests: lsan  $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ ( cd $(srcdir)/tests && \
-	    BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ cd $(srcdir)/tests && \
+	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
 
 profiling-tests: ${Program}
 	@ test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2 ; exit 1 ; }
@@ -1231,38 +1231,38 @@ $(LIBDEP): .build
 
 $(READLINE_LIBRARY): config.h $(READLINE_SOURCE)
 	@ echo making $@ in ${RL_LIBDIR}
-	@ ( { test "${RL_LIBDIR}" = "${libdir}" && exit 0 ; } || \
-	      cd ${RL_LIBDIR} && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libreadline.a ) || exit 1
+	@ { test "$(RL_LIBDIR)" = "$(libdir)" && exit 0 ; } || \
+	    cd $(RL_LIBDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libreadline.a
 
 $(HISTORY_LIBRARY): config.h $(HISTORY_SOURCE) $(READLINE_DEP)
 	@ echo making $@ in ${HIST_LIBDIR}
-	@ ( { test "${HIST_LIBDIR}" = "${libdir}" && exit 0 ; } || \
-	      cd ${HIST_LIBDIR} && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libhistory.a ) || exit 1
+	@ { test "$(HIST_LIBDIR)" = "$(libdir)" && exit 0 ; } || \
+	    cd $(HIST_LIBDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libhistory.a
 
 $(GLOB_LIBRARY): config.h $(GLOB_SOURCE)
 	@ echo making $@ in ${GLOB_LIBDIR}
-	@ ( cd ${GLOB_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} libglob.a ) || exit 1
+	@ cd $(GLOB_LIBDIR) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libglob.a
 
 $(TILDE_LIBRARY): config.h $(TILDE_SOURCE)
 	@ echo making $@ in ${TILDE_LIBDIR}
-	@ ( cd ${TILDE_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) libtilde.a ) || exit 1
+	@ cd $(TILDE_LIBDIR) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) libtilde.a
 
 $(TERMCAP_LIBRARY): config.h ${TERMCAP_SOURCE}
 	@ echo making $@ in ${TERM_LIBDIR}
-	@ ( cd ${TERM_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) libtermcap.a ) || exit 1
+	@ cd ${TERM_LIBDIR} && \
+	  $(MAKE) $(BASH_MAKEFLAGS) libtermcap.a
 
 $(SHLIB_LIBRARY): config.h ${SHLIB_SOURCE}
 	@ echo making $@ in ${SH_LIBDIR}
-	@ ( cd ${SH_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} ${SHLIB_LIBNAME} ) || exit 1
+	@ cd $(SH_LIBDIR) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(SHLIB_LIBNAME)
 
 ${INTL_LIBRARY}: config.h ${INTL_LIBDIR}/Makefile
 	@ echo making $@ in ${INTL_LIBDIR}
-	@ ( cd ${INTL_LIBDIR} && \
-	    $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="${LOCAL_CFLAGS}" all ) || exit 1
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="$(LOCAL_CFLAGS)" $(@F)
 
 ${LIBINTL_H}: ${INTL_DEP}
 
@@ -1305,23 +1305,23 @@ syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
 	./mksyntax$(EXEEXT) -o $@
 
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h pathnames.h
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} targets ) || exit 1
+	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) targets
 
 # these require special rules to circumvent make builtin rules
 ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} common.o ) || exit 1
+	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) common.o
 
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
-	@ ( cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=${DEBUG} bashgetopt.o ) || exit 1
+	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) bashgetopt.o
 
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h ) || exit 1
+	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h
 
 ${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
-	@(cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h ) || exit 1
+	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h
 
 $(SUPPORT_DIR)/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
-	@ ( cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all ) || exit 1
+	@ cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
 
 # For the justification of the following Makefile rules, see node
 # `Automatic Remaking' in GNU Autoconf documentation.
@@ -1376,19 +1376,19 @@ loadables: .made
 #	$(MAKE) -f $(srcdir)/Makefile $(BASH_MAKEFLAGS) srcdir=$(srcdir)
 
 doc documentation: force
-	@ ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) )
+	@ cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS)
 
 info dvi ps pdf html: force
-	@ ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) CFLAGS='$(CCFLAGS)' $@ )
+	@ cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) CFLAGS='$(CCFLAGS)' $@
 
 force:
 
 # unused
 TAGS: $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE)
-	( cd $(topdir) && $(ETAGS) $(ETAGSFLAGS) $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE) )
+	cd $(topdir) && $(ETAGS) $(ETAGSFLAGS) $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE)
 
 tags: $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE)
-	( cd $(topdir) && $(CTAGS) $(CTAGSFLAGS) $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE) )
+	cd $(topdir) && $(CTAGS) $(CTAGSFLAGS) $(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE)
 
 # Targets that actually do things not part of the build
 
@@ -1407,19 +1407,19 @@ installdirs:
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(man1dir)
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(infodir)
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(docdir)
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 
 install: .made installdirs
 	$(INSTALL_PROGRAM) $(INSTALLMODE) $(Program) $(DESTDIR)$(bindir)/$(Program)
 	$(INSTALL_SCRIPT) $(INSTALLMODE2) bashbug $(DESTDIR)$(bindir)/bashbug
 	$(INSTALL_DATA) $(OTHER_DOCS) $(DESTDIR)$(docdir)
-	- ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
-	      man1dir=$(man1dir) man1ext=$(man1ext) \
-	      man3dir=$(man3dir) man3ext=$(man3ext) \
-	      infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(DEFDIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
+	    man1dir=$(man1dir) man1ext=$(man1ext) \
+	    man3dir=$(man3dir) man3ext=$(man3ext) \
+	    infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@
+	- cd $(DEFDIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 
 install-strip:
 	$(MAKE) $(BASH_MAKEFLAGS) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
@@ -1469,28 +1469,28 @@ uninstall-headers-dirs:
 	-$(RMDIR) $(DESTDIR)$(headersdir)
 
 uninstall-headers:
-	- ( cd $(DESTDIR)$(headersdir) && $(RM) $(INSTALLED_HEADERS) )
-	- ( cd $(DESTDIR)$(headersdir)/include && $(RM) $(INSTALLED_INCLUDE_HEADERS) )
-	- ( cd $(DESTDIR)$(headersdir)/builtins && $(RM) $(INSTALLED_BUILTINS_HEADERS) )
-	- ( cd $(DESTDIR)$(headersdir) && $(RM) $(CREATED_HEADERS) $(HYBRID_HEADERS) )
+	- cd $(DESTDIR)$(headersdir) && $(RM) $(INSTALLED_HEADERS)
+	- cd $(DESTDIR)$(headersdir)/include && $(RM) $(INSTALLED_INCLUDE_HEADERS)
+	- cd $(DESTDIR)$(headersdir)/builtins && $(RM) $(INSTALLED_BUILTINS_HEADERS)
+	- cd $(DESTDIR)$(headersdir) && $(RM) $(CREATED_HEADERS) $(HYBRID_HEADERS)
 	- SDH=${CREATED_SUBDIR_HEADERS} ; \
-	for hf in $${SDH} ; do \
-	  ( cd $(DESTDIR)$(headersdir) && $(RM) $$(basename "$$hf") ) \
-	done
-	- ( $(RM) $(DESTDIR)$(pkgconfigdir)/bash.pc )
+	  for hf in $$(SDH) ; do \
+	    ( cd $(DESTDIR)$(headersdir) && $(RM) $$(basename "$$hf") ) \
+	  done
+	- $(RM) $(DESTDIR)$(pkgconfigdir)/bash.pc
 	# uninstall-headers-dirs
 	- $(RMDIR) $(DESTDIR)$(headersdir)/builtins $(DESTDIR)$(headersdir)/include
 	- $(RMDIR) $(DESTDIR)$(headersdir)
 
 uninstall: .made
 	$(RM) $(DESTDIR)$(bindir)/$(Program) $(DESTDIR)$(bindir)/bashbug
-	- ( cd $(DESTDIR)$(docdir) && ${RM} ${OTHER_INSTALLED_DOCS} )
-	- ( cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
-	      man1dir=$(man1dir) man1ext=$(man1ext) \
-	      man3dir=$(man3dir) man3ext=$(man3ext) \
-	      infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(DESTDIR)$(docdir) && ${RM} ${OTHER_INSTALLED_DOCS}
+	- cd $(DOCDIR) ; $(MAKE) $(BASH_MAKEFLAGS) \
+	    man1dir=$(man1dir) man1ext=$(man1ext) \
+	    man3dir=$(man3dir) man3ext=$(man3ext) \
+	    infodir=$(infodir) htmldir=$(htmldir) DESTDIR=$(DESTDIR) $@
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 	- $(RMDIR) $(DESTDIR)$(loadablesdir) $(DESTDIR)$(docdir)
 
 LIB_SUBDIRS = ${RL_LIBDIR}  ${HIST_LIBDIR} ${TERM_LIBDIR} ${GLOB_LIBDIR} \
@@ -1503,38 +1503,38 @@ basic-clean:
 
 .PHONY: clean
 clean: basic-clean
-	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	- ( cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 	$(RM) $(CREATED_SUPPORT)
 	$(RM) -rf $(CREATED_MACOS)
 
 .PHONY: mostlyclean
 mostlyclean: basic-clean
-	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	- ( cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 
 .PHONY: distclean
 distclean: basic-clean maybe-clean
-	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	- ( cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 	$(RM) $(CREATED_CONFIGURE) tags TAGS
 	$(RM) $(CREATED_SUPPORT) Makefile $(CREATED_MAKEFILES) $(CREATED_HEADERS)
 	$(RM) -rf $(CREATED_MACOS)
@@ -1544,14 +1544,14 @@ maintainer-clean: basic-clean
 	@ echo This command is intended for maintainers to use.
 	@ echo It deletes files that may require special tools to rebuild.
 	$(RM) y.tab.c y.tab.h parser-built tags TAGS
-	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
-	- ( cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) ; $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 	$(RM) $(CREATED_CONFIGURE) Makefile $(CREATED_MAKEFILES)
 	$(RM) $(CREATED_SUPPORT) $(CREATED_HEADERS)
 	$(RM) -rf $(CREATED_MACOS)
@@ -1579,8 +1579,8 @@ xcase$(EXEEXT): $(SUPPORT_SRC)xcase.c
 test tests check: force $(Program) $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ ( cd $(srcdir)/tests && \
-	    BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	@ cd $(srcdir)/tests && \
+	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
 
 symlinks:
 	$(SHELL) $(SUPPORT_SRC)fixlinks -s $(srcdir)
@@ -1591,8 +1591,8 @@ dist: force
 	@ echo $(Program) $(srcdir)/support/mkdist -m $(srcdir)/MANIFEST -s $(srcdir) -r ${PACKAGE} -t $(PACKAGE_VERSION)
 
 xdist: force
-	( cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@ )
-	( cd po && $(MAKE) $(BASH_MAKEFLAGS) $@ )
+	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd po && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 depend: depends
 
