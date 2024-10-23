@@ -1176,7 +1176,7 @@ GRAM_H = parser-built
 y.tab.o: y.tab.h y.tab.c ${GRAM_H} command.h ${BASHINCDIR}/stdc.h input.h
 ${GRAM_H}: y.tab.h
 	@- if test -f y.tab.h ; then \
-	     cmp -s $@ y.tab.h 2>/dev/null || cp -p y.tab.h $@; \
+	    cmp -s $@ y.tab.h 2>/dev/null || cp -p y.tab.h $@; \
 	   fi
 
 y.tab.c y.tab.h: $(srcdir)/parse.y
