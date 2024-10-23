@@ -277,20 +277,20 @@ pushd:	pushd.o
 .PHONY: clean
 clean:
 	$(RM) $(ALLPROG) $(OTHERPROG) *.o
-	- for subdir in $(SUBDIRS); do \
+	- for subdir in $(SUBDIRS) ; do \
 	    ( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	  done
 
 .PHONY: mostlyclean
 mostlyclean:	clean
-	- for subdir in $(SUBDIRS); do \
+	- for subdir in $(SUBDIRS) ; do \
 	    ( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	  done
 
 .PHONY: distclean maintainer-clean
 distclean maintainer-clean: clean
 	$(RM) Makefile Makefile.inc Makefile.sample pushd.c
-	- for subdir in $(SUBDIRS); do \
+	- for subdir in $(SUBDIRS) ; do \
 	    ( cd $$subdir && test -f Makefile && ${MAKE} ${MFLAGS} $@ ) ; \
 	  done
 
@@ -308,9 +308,9 @@ install-dev:	installdirs
 .PHONY: install-supported
 install-supported:	all installdirs install-dev
 	@ echo installing example loadable builtins in $(DESTDIR)${loadablesdir}
-	@ for prog in ${ALLPROG}; do \
+	@ for prog in ${ALLPROG} ; do \
 	    echo $$prog ; \
-	    $(INSTALL_PROGRAM) $(INSTALLMODE) $$prog $(DESTDIR)$(loadablesdir)/$$prog ;\
+	    $(INSTALL_PROGRAM) $(INSTALLMODE) $$prog $(DESTDIR)$(loadablesdir)/$$prog ; \
 	  done
 
 .PHONY: uninstall-dev
