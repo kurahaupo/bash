@@ -432,7 +432,7 @@ $(LIBINTL_H) \
 ../y.tab.c \
 ../y.tab.h \
  :
-	@ echo making $@ in $(@D)
+	@ echo Making $@ in $(@D)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 .PHONY: depends depend
