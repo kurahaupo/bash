@@ -1422,8 +1422,8 @@ basic-clean:
 
 .PHONY: clean
 clean: basic-clean
-	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS}; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
@@ -1435,8 +1435,8 @@ clean: basic-clean
 
 .PHONY: mostlyclean
 mostlyclean: basic-clean
-	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS}; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
@@ -1446,8 +1446,8 @@ mostlyclean: basic-clean
 
 .PHONY: distclean
 distclean: basic-clean maybe-clean
-	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- cd $(SDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS}; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
