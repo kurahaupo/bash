@@ -358,11 +358,11 @@ helpdoc:	gen-helpfiles
 .PHONY: install-help
 install-help:	$(HELPFILES_TARGET)
 	@- if test -n "${HELPDIR}" && test -d helpfiles ; then \
-	    test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ;\
-	    ( for f in helpfiles/*; do \
-	        echo installing $$f; \
-	        ${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR); \
-	      done; ) ; \
+	    test -d $(DESTDIR)${HELPDIR} || ${SHELL} ${MKDIRS} $(DESTDIR)$(HELPDIR) ; \
+	    for f in helpfiles/* ; do \
+	      echo installing $$f ; \
+	      ${INSTALL_DATA} $$f $(DESTDIR)$(HELPDIR) ; \
+	    done ; \
 	  fi
 
 .PHONY: install
