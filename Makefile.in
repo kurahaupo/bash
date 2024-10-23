@@ -1441,8 +1441,8 @@ mostlyclean: basic-clean
 	- for libdir in ${LIB_SUBDIRS}; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
-	- ( cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
-	- ( cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@ )
+	- cd $(PO_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
+	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 
 .PHONY: distclean
 distclean: basic-clean maybe-clean
