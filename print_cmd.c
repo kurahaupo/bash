@@ -45,10 +45,6 @@
 
 #include "builtins/common.h"
 
-#if !HAVE_DECL_PRINTF
-extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
-#endif
-
 static int indentation;
 static int indentation_amount = 4;
 
