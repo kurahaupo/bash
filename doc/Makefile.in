@@ -256,7 +256,7 @@ maintainer-clean:	clean
 .PHONY: maybe-clean
 maybe-clean:
 	- if test "X$(topdir)" != "X$(BUILD_DIR)"; then \
-	    $(RM) ${PSFILES} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES}; \
+	    $(RM) ${PSFILES} ${DVIFILES} ${INFOFILES} ${MAN0FILES} ${HTMLFILES} ; \
 	  fi
 
 .PHONY: installdirs
