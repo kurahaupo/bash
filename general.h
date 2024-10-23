@@ -228,7 +228,7 @@ typedef int sh_ignore_func_t (const char *);	/* sh_icpfunc_t */
 typedef int sh_assign_func_t (const char *);
 typedef int sh_wassign_func_t (const WORD_DESC *, int);
 
-typedef int sh_load_func_t (char *);
+typedef int sh_load_func_t (char const *);
 typedef void sh_unload_func_t (char *);
 
 typedef int sh_builtin_func_t (WORD_LIST *);	/* sh_wlist_func_t */
@@ -342,9 +342,9 @@ extern char *base_pathname (char *);
 extern char *full_pathname (char *);
 extern char *polite_directory_format (char *);
 extern char *trim_pathname (char *, int);
-extern char *printable_filename (char *, int);
+extern char const *printable_filename (char const *, int);
 
-extern char *extract_colon_unit (char *, int *);
+extern char *extract_colon_unit (char const *, int *);
 
 extern void tilde_initialize (void);
 extern char *bash_tilde_find_word (const char *, int, size_t *);
