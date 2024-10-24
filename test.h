@@ -29,11 +29,11 @@
 #define TEST_LOCALE	0x04
 #define TEST_ARRAYEXP	0x08		/* array subscript expansion */
 
-extern int test_unop (char *);
-extern int test_binop (char *);
+extern int test_unop (char const *);
+extern int test_binop (char const *);
 
-extern int cond_test (char *, char *, char *, int);
+extern int cond_test (char const *, char const *, char const *, int);
 
-extern int test_command (int, char **);
+extern int test_command (int, char const * const *);
 
 #endif /* _TEST_H_ */

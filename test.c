@@ -130,32 +130,20 @@ extern int sh_stat (const char *, struct stat *);
 
 static int pos;			/* The offset of the current argument in ARGV. */
 static int argc;		/* The number of arguments present in ARGV. */
-static char **argv;		/* The argument list. */
+static char const * const *argv;	/* The argument list. */
 
-static void test_syntax_error (char *, char *) __attribute__((__noreturn__));
-static void beyond (void) __attribute__((__noreturn__));
-static void integer_expected_error (char *) __attribute__((__noreturn__));
-
-static _Bool unary_test (char *, char *, int);
-static _Bool binary_test (char *, char *, char *, int);
+static _Bool unary_test (char const *, char const *, int);
+static _Bool binary_test (char const *, char const *, char const *, int);
 
 static _Bool unary_operator (void);
 static _Bool binary_operator (void);
 static _Bool two_arguments (void);
 static _Bool three_arguments (void);
 static _Bool posixtest (int nargs, _Bool top);
-
-static _Bool neg_term (void);
-static _Bool term (void);
-static _Bool conjunction (void);
 static _Bool disjunction (void);
 
-static int filecomp (const char *, const char *, int);
-static int arithcomp (char *, char *, int, int);
-static int patcomp (char *, char *, int);
-
 static void
-test_syntax_error (char *format, char *arg)
+test_syntax_error (char const *format, char const *arg)
 {
   builtin_error (format, arg);
   test_exit (TEST_ERREXIT_STATUS);
@@ -174,7 +162,7 @@ beyond (void)
 /* Syntax error for when an integer argument was expected, but
    something else was found. */
 static void
-integer_expected_error (char *pch)
+integer_expected_error (char const *pch)
 {
   test_syntax_error (_("%s: integer expected"), pch);
 }
@@ -392,7 +380,7 @@ filecomp (const char *s, const char *t, int op)
 }
 
 static int
-arithcomp (char *s, char *t, int op, int flags)
+arithcomp (char const *s, char const *t, int op, int flags)
 {
   intmax_t l, r;
   int expok;
@@ -431,14 +419,14 @@ arithcomp (char *s, char *t, int op, int flags)
 }
 
 static int
-patcomp (char *string, char *pat, int op)
+patcomp (char const *string, char const *pat, int op)
 {
   _Bool m = strmatch (pat, string, FNMATCH_EXTFLAG | FNMATCH_IGNCASE);
   return (op == EQ) != m;
 }
 
 static _Bool
-binary_test (char *op, char *arg1, char *arg2, int flags)
+binary_test (char const *op, char const *arg1, char const *arg2, int flags)
 {
   _Bool patmatch = flags & TEST_PATMATCH;
 
@@ -496,7 +484,7 @@ binary_test (char *op, char *arg1, char *arg2, int flags)
 static _Bool
 binary_operator (void)
 {
-  char *w = argv[pos + 1];
+  char const *w = argv[pos + 1];
   if (  ISTOKEN2 (w, '!', '=')
      || ISTOKEN  (w, '=')
      || ISTOKEN2 (w, '=', '=')
@@ -508,7 +496,7 @@ binary_operator (void)
     }
 
 #if defined (PATTERN_MATCHING)
-  if ((w[0] == '=' || w[0] == '!') && w[1] == '~' && w[2] == '\0')
+  if (ISTOKEN2 (w, '=', '~') || ISTOKEN2 (w, '!', '~'))
     return advance_after_by (3, patcomp (argv[pos], argv[pos + 2], w[0] == '=' ? EQ : NE));
 #endif
 
@@ -521,7 +509,7 @@ binary_operator (void)
 static _Bool
 unary_operator (void)
 {
-  char *op;
+  char const *op;
   intmax_t r;
 
   op = argv[pos];
@@ -558,7 +546,7 @@ unary_operator (void)
 }
 
 static _Bool
-unary_test (char *op, char *arg, int flags)
+unary_test (char const *op, char const *arg, int flags)
 {
   intmax_t r;
   struct stat stat_buf;
@@ -726,7 +714,7 @@ unary_test (char *op, char *arg, int flags)
 
 /* Return true if OP is one of the test command's binary operators. */
 int
-test_binop (char *op)
+test_binop (char const *op)
 {
   if (op[0] == '=' && op[1] == '\0')
     return (1);			/* '=' */
@@ -779,7 +767,7 @@ test_binop (char *op)
 
 /* Return non-zero if OP is one of the test command's unary operators. */
 int
-test_unop (char *op)
+test_unop (char const *op)
 {
   if (op[0] != '-' || (op[1] && op[2] != 0))
     return (0);
@@ -824,7 +812,7 @@ three_arguments (void)
 {
   need_args (3);
 
-  char *mid = argv[pos + 1];
+  char const *mid = argv[pos + 1];
 
   if (test_binop (mid))
     return binary_operator ();
@@ -885,7 +873,7 @@ posixtest (int nargs, _Bool top)
 
 #if defined (COND_COMMAND)
 int
-cond_test (char *op, char *arg1, char *arg2, int flags)
+cond_test (char const *op, char const *arg1, char const *arg2, int flags)
 {
   int code, ret;
 

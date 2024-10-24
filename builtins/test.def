@@ -151,8 +151,8 @@ test_builtin (WORD_LIST *list)
     }
 
   argv = make_builtin_argv  (list, &argc);
-  result = test_command (argc, argv);
-  free ((char *)argv);
+  result = test_command (argc, (char const * const *)argv);
+  free (argv);
 
   return (result);
 }
