@@ -154,7 +154,7 @@ typedef struct {
 #  endif /* !__GNUC__ */
 
 /* String comparisons that possibly save a function call each. */
-static inline int
+static inline _Bool
 STREQ (const char *a, const char *b)
 {
 #  if __GNUC__ > 1 || __CLANG__
@@ -163,11 +163,13 @@ STREQ (const char *a, const char *b)
      in constant hoisting. */
   return __builtin_strcmp (a, b) == 0;
 #  else
-  return *a == *b && strcmp (a, b) == 0;
+  return *a == *b
+	 && strcmp (a, b) == 0;
 #  endif
 }
+#define STREQ STREQ
 
-static inline int
+static inline _Bool
 STREQN (const char *a, const char *b, size_t n)
 {
 #  if __GNUC__ > 1 || __CLANG__
@@ -176,9 +178,13 @@ STREQN (const char *a, const char *b, size_t n)
      in constant hoisting. */
   return __builtin_strncmp (a, b, n) == 0;
 #  else
-  return n == 0 || *a == *b && ( n == 1 || strncmp (a, b, n) == 0 );
+  return n == 0
+	 || *a == *b
+	    && (n == 1
+		|| strncmp (a, b, n) == 0);
 #endif
 }
+#define STREQN STREQN
 
 /* More convenience definitions that possibly save system or libc calls. */
 static inline size_t
