@@ -283,7 +283,7 @@ extern char *mbscasecmp (const char *, const char *);
 
 /* declarations for functions defined in lib/sh/mbschr.c */
 #  if !defined (HAVE_MBSCHR)
-extern char *mbschr (const char *, int);
+extern char *mbschr (const char *, int);  /* also in general.h */
 #  endif
 
 /* declarations for functions defined in lib/sh/mbscmp.c */

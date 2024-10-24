@@ -59,6 +59,9 @@ extern char *strcpy (char *, const char *);
 
 #  ifndef member
 #    define member(c, s) ((c) ? ((char *)mbschr ((s), (c)) != (char *)NULL) : 0)
+#    if !defined (HAVE_MBSCHR)
+extern char *mbschr (const char *, int);  /* also in externs.h */
+#    endif
 #  endif
 
 #  ifndef whitespace
@@ -154,21 +157,61 @@ typedef struct {
 static inline int
 STREQ (const char *a, const char *b)
 {
-  return ((a)[0] == (b)[0] && strcmp (a, b) == 0);
+#  if __GNUC__ > 1 || __CLANG__
+  /* There's no point trying to second-guess modern compilers, when they
+     convert strlen to __builtin_strlen or equivalent, which then participates
+     in constant hoisting. */
+  return __builtin_strcmp (a, b) == 0;
+#  else
+  return *a == *b && strcmp (a, b) == 0;
+#  endif
 }
 
 static inline int
 STREQN (const char *a, const char *b, size_t n)
 {
-  return ((n == 0) ||
-	  (n == 1 && a[0] == b[0]) ||
-	  ((a)[0] == (b)[0] && strncmp (a, b, n) == 0));
+#  if __GNUC__ > 1 || __CLANG__
+  /* There's no point trying to second-guess modern compilers, when they
+     convert strlen to __builtin_strlen or equivalent, which then participates
+     in constant hoisting. */
+  return __builtin_strncmp (a, b, n) == 0;
+#  else
+  return n == 0 || *a == *b && ( n == 1 || strncmp (a, b, n) == 0 );
+#endif
 }
 
 /* More convenience definitions that possibly save system or libc calls. */
-#  define STRLEN(s) (((s) && (s)[0]) ? ((s)[1] ? ((s)[2] ? strlen(s) : 2) : 1) : 0)
-#  define FREE(s)  do { if (s) free (s); } while (0)
-#  define MEMBER(c, s) (((c) && c == (s)[0] && !(s)[1]) || (member(c, s)))
+static inline size_t
+STRLEN (char const *s)
+{
+  if (s == NULL)
+    return 0;
+#  if __GNUC__ > 1 || __CLANG__
+  /* There's no point trying to second-guess modern compilers, when they
+     convert strlen to __builtin_strlen or equivalent, which then participates
+     in constant hoisting. */
+  return __builtin_strlen (s);
+#  else
+  return ! s[0] ? 0 :
+	 ! s[1] ? 1 :
+	 ! s[2] ? 2 :
+	 strlen (s);
+#  endif
+}
+
+static inline void
+FREE (void const *s)
+{
+  if (s)
+    free (s);
+}
+
+static inline _Bool
+MEMBER (char c, char const *s)
+{
+  return c && c == s[0] && ! s[1]
+      || member (c, s);
+}
 
 /* A fairly hairy macro to check whether an allocated string has more room,
    and to resize it using xrealloc if it does not.
