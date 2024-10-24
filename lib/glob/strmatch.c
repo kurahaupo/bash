@@ -24,13 +24,13 @@
 #include "stdc.h"
 #include "strmatch.h"
 
-extern int xstrmatch (char *, char *, int);
+extern int xstrmatch (char const *, char const *, int);
 #if defined (HANDLE_MULTIBYTE)
-extern int internal_wstrmatch (wchar_t *, wchar_t *, int);
+extern int internal_wstrmatch (wchar_t const *, wchar_t const *, int);
 #endif
 
 int
-strmatch (char *pattern, char *string, int flags)
+strmatch (char const *pattern, char const *string, int flags)
 {
   if (string == 0 || pattern == 0)
     return FNM_NOMATCH;
@@ -40,7 +40,7 @@ strmatch (char *pattern, char *string, int flags)
 
 #if defined (HANDLE_MULTIBYTE)
 int
-wcsmatch (wchar_t *wpattern, wchar_t *wstring, int flags)
+wcsmatch (wchar_t const *wpattern, wchar_t const *wstring, int flags)
 {
   if (wstring == 0 || wpattern == 0)
     return (FNM_NOMATCH);

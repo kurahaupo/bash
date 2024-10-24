@@ -56,10 +56,10 @@
 
 /* Match STRING against the filename pattern PATTERN,
    returning zero if it matches, FNM_NOMATCH if not.  */
-extern int strmatch (char *, char *, int);
+extern int strmatch (char const *, char const *, int);
 
 #if HANDLE_MULTIBYTE
-extern int wcsmatch (wchar_t *, wchar_t *, int);
+extern int wcsmatch (wchar_t const *, wchar_t const *, int);
 #endif
 
 #endif /* _STRMATCH_H */
