@@ -2994,7 +2994,7 @@ string_list_dollar_star (WORD_LIST *list, int quoted, int flags)
   return ret;
 }
 
-/* Turn $@ into a string.  If (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES))
+/* Turn $@ into a string.  If (quoted & (Q_HERE_DOCUMENT | Q_DOUBLE_QUOTES))
    is non-zero, the $@ appears within double quotes, and we should quote
    the list before converting it into a string.  If IFS is unset, and the
    word is not quoted, we just need to quote CTLESC and CTLNUL characters
@@ -5268,7 +5268,7 @@ remove_wpattern (wchar_t *wparam, size_t wstrlen, wchar_t *wpattern, int op)
 	}
       break;
 
-    case RP_SHORT_LEFT:	/* remove shortest match at start */
+    case RP_SHORT_LEFT:		/* remove shortest match at start */
       for (n = 0; n <= wstrlen; n++)
 	{
 	  wc = wparam[n]; wparam[n] = L'\0';
@@ -5281,7 +5281,7 @@ remove_wpattern (wchar_t *wparam, size_t wstrlen, wchar_t *wpattern, int op)
 	}
       break;
 
-    case RP_LONG_RIGHT:	/* remove longest match at end */
+    case RP_LONG_RIGHT:		/* remove longest match at end */
       for (n = 0; n <= wstrlen; n++)
 	{
 	  if (wcsmatch (wpattern, wparam + n, FNMATCH_EXTFLAG) != FNM_NOMATCH)
@@ -8085,7 +8085,7 @@ parameter_brace_expand_rhs (char *name, char *value,
       /* If we have a quoted null result (QUOTED_NULL(temp)) and the word is
 	 a quoted null (l->next == 0 && QUOTED_NULL(l->word->word)), the
 	 flags indicate it (l->word->flags & W_HASQUOTEDNULL), and the
-	 expansion is quoted (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES))
+	 expansion is quoted (quoted & (Q_HERE_DOCUMENT | Q_DOUBLE_QUOTES))
 	 (which is more paranoia than anything else), we need to return the
 	 quoted null string and set the flags to indicate it. */
       if (l->next == 0 && (quoted & (Q_HERE_DOCUMENT | Q_DOUBLE_QUOTES)) && QUOTED_NULL (temp) && QUOTED_NULL (l->word->word) && (l->word->flags & W_HASQUOTEDNULL))
@@ -12573,16 +12573,16 @@ separate_out_assignments (WORD_LIST *tlist)
 
 /* All of the expansions, including variable assignments at the start of
    the list. */
-#define WEXP_ALL	(WEXP_VARASSIGN|WEXP_BRACEEXP|WEXP_TILDEEXP|WEXP_PARAMEXP|WEXP_PATHEXP)
+#define WEXP_ALL	(WEXP_VARASSIGN | WEXP_BRACEEXP | WEXP_TILDEEXP | WEXP_PARAMEXP | WEXP_PATHEXP)
 
 /* All of the expansions except variable assignments at the start of
    the list. */
-#define WEXP_NOVARS	(WEXP_BRACEEXP|WEXP_TILDEEXP|WEXP_PARAMEXP|WEXP_PATHEXP)
+#define WEXP_NOVARS	(WEXP_BRACEEXP | WEXP_TILDEEXP | WEXP_PARAMEXP | WEXP_PATHEXP)
 
 /* All of the `shell expansions': brace expansion, tilde expansion, parameter
    expansion, command substitution, arithmetic expansion, word splitting, and
    quote removal. */
-#define WEXP_SHELLEXP	(WEXP_BRACEEXP|WEXP_TILDEEXP|WEXP_PARAMEXP)
+#define WEXP_SHELLEXP	(WEXP_BRACEEXP | WEXP_TILDEEXP | WEXP_PARAMEXP)
 
 /* Take the list of words in LIST and do the various substitutions.  Return
    a new list of words which is the expanded list, and without things like
@@ -12736,7 +12736,7 @@ brace_expand_word_list (WORD_LIST *tlist, int eflags)
 
       if ((tlist->word->flags & (W_COMPASSIGN | W_ASSIGNARG)) == (W_COMPASSIGN | W_ASSIGNARG))
 	{
-/*itrace("brace_expand_word_list: %s: W_COMPASSIGN|W_ASSIGNARG", tlist->word->word);*/
+/*itrace("brace_expand_word_list: %s: W_COMPASSIGN | W_ASSIGNARG", tlist->word->word);*/
 	  PREPEND_LIST (tlist, output_list);
 	  continue;
 	}
