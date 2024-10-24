@@ -50,7 +50,7 @@ extern time_t shell_start_time;
 extern int mailstat (const char *, struct stat *);
 
 typedef struct _fileinfo {
-  char *name;
+  char const *name;
   char *msg;
   time_t access_time;
   time_t mod_time;
@@ -72,16 +72,14 @@ int mail_warning;
 static int find_mail_file (const char *);
 static void init_mail_file (int);
 static void update_mail_file (int);
-static int add_mail_file (char *, const char *);
+static int add_mail_file (char *, char const *);
 
-static FILEINFO *alloc_mail_file (char *, const char *);
+static FILEINFO *alloc_mail_file (char const *, char const *);
 static void dispose_mail_file (FILEINFO *);
 
 static int file_mod_date_changed (int);
 static int file_access_date_changed (int);
 static int file_has_grown (int);
-
-static char *parse_mailpath_spec (char *);
 
 /* Returns non-zero if it is time to check mail. */
 int
@@ -161,7 +159,7 @@ init_mail_file (int i)
 static void
 update_mail_file (int i)
 {
-  char *file;
+  char const *file;
   struct stat finfo;
 
   file = mailfiles[i]->name;
@@ -174,10 +172,10 @@ update_mail_file (int i)
 /* Add this file to the list of remembered files and return its index
    in the list of mail files. */
 static int
-add_mail_file (char *file, const char *msg)
+add_mail_file (char *file, char const *msg)
 {
   struct stat finfo;
-  char *filename;
+  char const *filename;
   int i;
 
   filename = full_pathname (file);
@@ -212,7 +210,7 @@ reset_mail_files (void)
 }
 
 static FILEINFO *
-alloc_mail_file (char *filename, const char *msg)
+alloc_mail_file (char const *filename, char const *msg)
 {
   FILEINFO *mf;
 
@@ -263,7 +261,7 @@ file_mod_date_changed (int i)
 {
   time_t mtime;
   struct stat finfo;
-  char *file;
+  char const *file;
 
   file = mailfiles[i]->name;
   mtime = mailfiles[i]->mod_time;
@@ -286,7 +284,7 @@ file_access_date_changed (int i)
 {
   time_t atime;
   struct stat finfo;
-  char *file;
+  char const *file;
 
   file = mailfiles[i]->name;
   atime = mailfiles[i]->access_time;
@@ -306,7 +304,7 @@ file_has_grown (int i)
 {
   off_t size;
   struct stat finfo;
-  char *file;
+  char const *file;
 
   file = mailfiles[i]->name;
   size = mailfiles[i]->file_size;
@@ -366,7 +364,8 @@ void
 remember_mail_dates (void)
 {
   char *mailpaths;
-  char *mailfile, *mp;
+  char *mailfile;
+  char *mp;
   int i = 0;
 
   mailpaths = get_string_value ("MAILPATH");
@@ -414,7 +413,8 @@ remember_mail_dates (void)
 void
 check_mail (void)
 {
-  char *current_mail_file, *message;
+  char const *current_mail_file;
+  char *message;
   int i, use_user_notification;
   char *dollar_underscore, *temp;
 
