@@ -68,22 +68,33 @@ extern int errno;
 #endif
 
 #if !defined (STREQ)
-#  define STREQ(a, b) ((a)[0] == (b)[0] && strcmp ((a), (b)) == 0)
+#  define STREQ(a, b)		(strcmp (a, b) == 0)
 #endif /* !STREQ */
-#define STRCOLLEQ(a, b) ((a)[0] == (b)[0] && strcoll ((a), (b)) == 0)
+#define STRCOLLEQ(a, b) 	(strcoll (a, b) == 0)
 
-/* Same as ISOPTION from builtins/common.h */
-#define ISPRIMARY(s, c)	(s[0] == '-' && s[1] == c && s[2] == '\0')
-#define ANDOR(s)  (s[0] == '-' && (s[1] == 'a' || s[1] == 'o') && s[2] == 0)
+/* single-character tokens like `!`, `(`, and `)` */
+#define ISTOKEN(s, c)		((s)[0] == (c) && (s)[1] == '\0')
 
-/* single-character tokens like `!', `(', and `)' */
-#define ISTOKEN(s, c)	(s[0] == (c) && s[1] == '\0')
+/* two-character tokens like `-z` and `!=` */
+#define ISTOKEN2(s, c1, c2)	((s)[0] == (c1) && (s)[1] == (c2) && (s)[2] == '\0')
+
+#ifndef ISOPTION	/* also in builtins/common.h */
+/* two-character tokens starting with '-' are very common ... */
+#  define ISOPTION(s, c)	ISTOKEN2 (s, '-', c)
+#endif /*ISOPTION*/
+
+#define ISANDOR(s)  		(ISOPTION(s, 'a') || ISOPTION(s, 'o'))
+
+#define ISEMPTY(s)		((s)[0] == 0)
 
 #if !defined (R_OK)
-#  define R_OK 4
-#  define W_OK 2
-#  define X_OK 1
-#  define F_OK 0
+/* These should be in fcntl.h and/or unistd.h.
+   On a POSIX system, these bits match `.st_mode & S_IRWXO` in `struct stat`.
+ */
+#  define R_OK 4		/* S_IROTH */
+#  define W_OK 2		/* S_IWOTH */
+#  define X_OK 1		/* S_IXOTH */
+#  define F_OK 0		/* (empty set) */
 #endif /* R_OK */
 
 #define EQ	0
@@ -120,25 +131,24 @@ extern int sh_stat (const char *, struct stat *);
 static int pos;			/* The offset of the current argument in ARGV. */
 static int argc;		/* The number of arguments present in ARGV. */
 static char **argv;		/* The argument list. */
-static int noeval;
 
 static void test_syntax_error (char *, char *) __attribute__((__noreturn__));
 static void beyond (void) __attribute__((__noreturn__));
 static void integer_expected_error (char *) __attribute__((__noreturn__));
 
-static int unary_test (char *, char *, int);
-static int binary_test (char *, char *, char *, int);
+static _Bool unary_test (char *, char *, int);
+static _Bool binary_test (char *, char *, char *, int);
 
-static int unary_operator (void);
-static int binary_operator (void);
-static int two_arguments (void);
-static int three_arguments (void);
-static int posixtest (int);
+static _Bool unary_operator (void);
+static _Bool binary_operator (void);
+static _Bool two_arguments (void);
+static _Bool three_arguments (void);
+static _Bool posixtest (int nargs, _Bool top);
 
-static int expr (void);
-static int term (void);
-static int and (void);
-static int or (void);
+static _Bool neg_term (void);
+static _Bool term (void);
+static _Bool conjunction (void);
+static _Bool disjunction (void);
 
 static int filecomp (const char *, const char *, int);
 static int arithcomp (char *, char *, int, int);
@@ -171,110 +181,138 @@ integer_expected_error (char *pch)
 
 /* Increment our position in the argument list.  Check that we're not
    past the end of the argument list.  This check is suppressed if the
-   argument is false.  Made a macro for efficiency. */
-#define advance(f) do { ++pos; if (f && pos >= argc) beyond (); } while (0)
-#define unary_advance() do { advance (1); ++pos; } while (0)
+   argument is false. */
+
+static inline _Bool
+want_args (int by)
+{
+  return pos + by <= argc;
+}
+
+static inline void
+need_args (int by)
+{
+  if (! want_args (by))
+    beyond ();
+}
+
+/* advance_and_need_1_more advances past the current token, and then also
+ * checks that there's at least one more arg after that. */
+static inline void
+advance_and_need_1_more (void)
+{
+  ++pos;
+  need_args (1);
+}
+
+static inline void
+advance_by (int by)
+{
+  if (pos + by > argc)
+    beyond ();
+  pos += by;
+}
+
+static inline _Bool
+advance_after_by (int by, _Bool exp_value)
+{
+  advance_by (by);
+  return exp_value;
+}
 
 /*
  * expr:
- *	or
+ *	disjunction
  */
-static int
+static _Bool
 expr (void)
+{
+  return disjunction ();
+}
+
+/*
+ * disjunction:
+ *	conjunction [ '-o' conjunction ]...
+ */
+static _Bool
+disjunction (void)
 {
   if (pos >= argc)
     beyond ();
 
-  return (false ^ or ());
-}
-
-/*
- * or:
- *	and
- *	and '-o' or
- */
-static int
-or (void)
-{
-  int value, v2;
-
-  value = and ();
-  if (pos < argc && ISPRIMARY (argv[pos], 'o'))
+  _Bool value = conjunction ();
+  while (want_args (2) && ISOPTION (argv[pos], 'o'))
     {
-      advance (0);
-      v2 = or ();
-      return (value || v2);
+      ++pos;
+      value |= conjunction ();
     }
 
-  return (value);
+  return value;
 }
 
 /*
- * and:
- *	term
- *	term '-a' and
+ * conjunction:
+ *	neg_term [ '-a' neg_term ] ...
  */
-static int
-and (void)
+static _Bool
+conjunction (void)
 {
-  int value, v2;
-
-  value = term ();
-  if (pos < argc && ISPRIMARY (argv[pos], 'a'))
+  _Bool value = neg_term ();
+  while (want_args (2) && ISOPTION (argv[pos], 'a'))
     {
-      advance (0);
-      v2 = and ();
-      return (value && v2);
+      ++pos;
+      value &= neg_term ();
     }
-  return (value);
+  return value;
 }
 
 /*
- * term - parse a term and return 1 or 0 depending on whether the term
- *	evaluates to true or false, respectively.
+ * neg_term - parse and evaluate a term preceded by any number of `!`; the
+ * return status is that of the term, inverted if the the number of `!` is odd.
+ */
+static _Bool
+neg_term (void)
+{
+  _Bool neg = 0;
+  /* Deal with leading `not's. */
+  while (want_args (2) && ISTOKEN (argv[pos], '!'))
+    {
+      ++pos;
+      --neg;			/* logical inversion */
+    }
+  return neg ^ term();
+}
+
+/*
+ * term - parse and evaluate a term
  *
  * term ::=
- *	'-'('a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'k'|'p'|'r'|'s'|'u'|'w'|'x') filename
- *	'-'('G'|'L'|'O'|'S'|'N') filename
+ *	'-'('a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'k'|'p'|'r'|'s'|'u'|'w'|'x'|'G'|'L'|'N'|'O'|'S') filename
  * 	'-t' [int]
- *	'-'('z'|'n') string
+ *	'-'('n'|'z') string
  *	'-'('v'|'R') varname
  *	'-o' option
  *	string
- *	string ('!='|'='|'==') string
+ *	string ('!='|'='|'=='|'<'|'>') string
  *	<int> '-'(eq|ne|le|lt|ge|gt) <int>
  *	file '-'(nt|ot|ef) file
- *	'(' <expr> ')'
+ *	'(' <posix_test> ')'  (only if there are fewer than 5 remaining args)
+ *	'(' <disjunction> ')'
  * int ::=
  *	positive and negative integers
  */
-static int
+static _Bool
 term (void)
 {
-  int value;
-
-  if (pos >= argc)
-    beyond ();
-
-  /* Deal with leading `not's. */
-  if (argv[pos][0] == '!' && argv[pos][1] == '\0')
-    {
-      value = 0;
-      while (pos < argc && argv[pos][0] == '!' && argv[pos][1] == '\0')
-	{
-	  advance (1);
-	  value = 1 - value;
-	}
-
-      return (value ? !term () : term ());
-    }
+  need_args (1);
 
   /* A paren-bracketed argument. */
-  if (argv[pos][0] == '(' && argv[pos][1] == '\0')	/* ) */
+  if (ISTOKEN (argv[pos], '('))	/* ) */
     {
       int nargs, count;
 
-      advance (1);
+      ++pos;
+      need_args (1);
       /* Steal an idea from coreutils and scan forward to check where the right
 	 paren appears to prevent some ambiguity. If we find a valid sub-
 	 expression that has 1-4 arguments, call posixtest on it. Handle
@@ -289,34 +327,29 @@ term (void)
 	    break;
 	}
       /* only use posixtest if we have a valid parenthesized expression */
-      if (shell_compatibility_level > 52 && pos + nargs < argc && nargs <= 4)
-	value = posixtest (nargs);
-      else
-	value = expr ();
+      _Bool value = 0;
+	value = posixtest (nargs, false);
       if (argv[pos] == 0)	/* ( */
 	test_syntax_error (_("`)' expected"), (char *)NULL);
-      else if (argv[pos][0] != ')' || argv[pos][1])	/* ( */
+      else if (! ISTOKEN (argv[pos], ')'))	/* ( */
 	test_syntax_error (_("`)' expected, found %s"), argv[pos]);
-      advance (0);
+      ++pos;
       return (value);
     }
 
   /* are there enough arguments left that this could be dyadic? */
-  if ((pos + 3 <= argc) && test_binop (argv[pos + 1]))
-    value = binary_operator ();
+  if (pos + 2 < argc && test_binop (argv[pos + 1]))
+    return binary_operator ();
 
   /* Might be a switch type argument -- make sure we have enough arguments for
      the unary operator and argument */
-  else if ((pos + 2) <= argc && test_unop (argv[pos]))
-    value = unary_operator ();
+  if (pos + 1 < argc && test_unop (argv[pos]))
+    return unary_operator ();
 
-  else
-    {
-      value = argv[pos][0] != '\0';
-      advance (0);
-    }
-
-  return (value);
+  /* test whether argument is non-empty */
+  _Bool value = ! ISEMPTY (argv[pos]);
+  ++pos;
+  return value;
 }
 
 static int
@@ -355,7 +388,7 @@ filecomp (const char *s, const char *t, int op)
     case NT: return (r1 > r2 || (r1 == 0 && timespec_cmp (ts1, ts2) > 0));
     case EF: return (same_file (s, t, &st1, &st2));
     }
-  return (false);
+  return false;
 }
 
 static int
@@ -371,10 +404,10 @@ arithcomp (char *s, char *t, int op, int flags)
       eflag = (shell_compatibility_level > 51) ? 0 : EXP_EXPANDED;
       l = evalexp (s, eflag, &expok);
       if (expok == 0)
-	return (false);		/* should probably longjmp here */
+	return false;		/* should probably longjmp here */
       r = evalexp (t, eflag, &expok);
       if (expok == 0)
-	return (false);		/* ditto */
+	return false;		/* ditto */
     }
   else
     {
@@ -386,35 +419,32 @@ arithcomp (char *s, char *t, int op, int flags)
 
   switch (op)
     {
-    case EQ: return (l == r);
-    case NE: return (l != r);
-    case LT: return (l < r);
-    case GT: return (l > r);
-    case LE: return (l <= r);
-    case GE: return (l >= r);
+    case EQ: return l == r;
+    case NE: return l != r;
+    case LT: return l < r;
+    case GT: return l > r;
+    case LE: return l <= r;
+    case GE: return l >= r;
     }
 
-  return (false);
+  return false;
 }
 
 static int
 patcomp (char *string, char *pat, int op)
 {
-  int m;
-
-  m = strmatch (pat, string, FNMATCH_EXTFLAG | FNMATCH_IGNCASE);
-  return ((op == EQ) ? (m == 0) : (m != 0));
+  _Bool m = strmatch (pat, string, FNMATCH_EXTFLAG | FNMATCH_IGNCASE);
+  return (op == EQ) != m;
 }
 
-static int
+static _Bool
 binary_test (char *op, char *arg1, char *arg2, int flags)
 {
-  int patmatch;
-
-  patmatch = (flags & TEST_PATMATCH);
+  _Bool patmatch = flags & TEST_PATMATCH;
 
   if (op[0] == '=' && (op[1] == '\0' || (op[1] == '=' && op[2] == '\0')))
-    return (patmatch ? patcomp (arg1, arg2, EQ) : STREQ (arg1, arg2));
+    return patmatch ? patcomp (arg1, arg2, EQ)
+		    : STREQ (arg1, arg2);
   else if ((op[0] == '>' || op[0] == '<') && op[1] == '\0')
     {
 #if defined (HAVE_STRCOLL)
@@ -428,79 +458,67 @@ binary_test (char *op, char *arg1, char *arg2, int flags)
 	return ((op[0] == '>') ? (strcmp (arg1, arg2) > 0) : (strcmp (arg1, arg2) < 0));
     }
   else if (op[0] == '!' && op[1] == '=' && op[2] == '\0')
-    return (patmatch ? patcomp (arg1, arg2, NE) : (STREQ (arg1, arg2) == 0));
+    return patmatch ? patcomp (arg1, arg2, NE)
+		    : ! STREQ (arg1, arg2);
 
 
   else if (op[2] == 't')
     {
       switch (op[1])
 	{
-	case 'n': return (filecomp (arg1, arg2, NT));	/* -nt */
-	case 'o': return (filecomp (arg1, arg2, OT));	/* -ot */
-	case 'l': return (arithcomp (arg1, arg2, LT, flags));	/* -lt */
-	case 'g': return (arithcomp (arg1, arg2, GT, flags));	/* -gt */
+	case 'n': return filecomp (arg1, arg2, NT);		/* -nt */
+	case 'o': return filecomp (arg1, arg2, OT);		/* -ot */
+	case 'l': return arithcomp (arg1, arg2, LT, flags);	/* -lt */
+	case 'g': return arithcomp (arg1, arg2, GT, flags);	/* -gt */
 	}
     }
   else if (op[1] == 'e')
     {
       switch (op[2])
 	{
-	case 'f': return (filecomp (arg1, arg2, EF));	/* -ef */
-	case 'q': return (arithcomp (arg1, arg2, EQ, flags));	/* -eq */
+	case 'f': return filecomp (arg1, arg2, EF);		/* -ef */
+	case 'q': return arithcomp (arg1, arg2, EQ, flags);	/* -eq */
 	}
     }
   else if (op[2] == 'e')
     {
       switch (op[1])
 	{
-	case 'n': return (arithcomp (arg1, arg2, NE, flags));	/* -ne */
-	case 'g': return (arithcomp (arg1, arg2, GE, flags));	/* -ge */
-	case 'l': return (arithcomp (arg1, arg2, LE, flags));	/* -le */
+	case 'n': return arithcomp (arg1, arg2, NE, flags);	/* -ne */
+	case 'g': return arithcomp (arg1, arg2, GE, flags);	/* -ge */
+	case 'l': return arithcomp (arg1, arg2, LE, flags);	/* -le */
 	}
     }
 
-  return (false);		/* should never get here */
+  return false;			/* should never get here */
 }
 
-static int
+static _Bool
 binary_operator (void)
 {
-  int value;
-  char *w;
-
-  w = argv[pos + 1];
-  if ((w[0] == '=' && (w[1] == '\0' || (w[1] == '=' && w[2] == '\0'))) ||	/* =, == */
-      ((w[0] == '>' || w[0] == '<') && w[1] == '\0') ||	/* <, > */
-      (w[0] == '!' && w[1] == '=' && w[2] == '\0'))	/* != */
+  char *w = argv[pos + 1];
+  if (  ISTOKEN2 (w, '!', '=')
+     || ISTOKEN  (w, '=')
+     || ISTOKEN2 (w, '=', '=')
+     || ISTOKEN  (w, '<')
+     || ISTOKEN  (w, '>'))
     {
       /* POSIX interp 375 11/9/2022 */
-      value = binary_test (w, argv[pos], argv[pos + 2], (posixly_correct ? TEST_LOCALE : 0));
-      pos += 3;
-      return (value);
+      return advance_after_by (3, binary_test (w, argv[pos], argv[pos + 2], (posixly_correct ? TEST_LOCALE : 0)));
     }
 
 #if defined (PATTERN_MATCHING)
   if ((w[0] == '=' || w[0] == '!') && w[1] == '~' && w[2] == '\0')
-    {
-      value = patcomp (argv[pos], argv[pos + 2], w[0] == '=' ? EQ : NE);
-      pos += 3;
-      return (value);
-    }
+    return advance_after_by (3, patcomp (argv[pos], argv[pos + 2], w[0] == '=' ? EQ : NE));
 #endif
 
   if ((w[0] != '-' || w[3] != '\0') || test_binop (w) == 0)
-    {
-      test_syntax_error (_("%s: binary operator expected"), w);
-      /* NOTREACHED */
-      return (false);
-    }
+    test_syntax_error (_("%s: binary operator expected"), w); /* NORETURN */
 
-  value = binary_test (w, argv[pos], argv[pos + 2], 0);
-  pos += 3;
-  return value;
+  return advance_after_by (3, binary_test (w, argv[pos], argv[pos + 2], 0));
 }
 
-static int
+static _Bool
 unary_operator (void)
 {
   char *op;
@@ -513,15 +531,15 @@ unary_operator (void)
   /* the only tricky case is `-t', which may or may not take an argument. */
   if (posixly_correct == 0 && op[1] == 't')
     {
-      advance (0);
-      if (pos < argc)
+      ++pos;
+      if (want_args (1))
 	{
 	  if (valid_number (argv[pos], &r))
 	    {
-	      advance (0);
+	      ++pos;
 	      return (unary_test (op, argv[pos - 1], 0));
 	    }
-	  else if (argc >= 5 && ANDOR (argv[pos]))
+	  else if (argc >= 5 && ISANDOR (argv[pos]))
 	    return (unary_test (op, "1", 0));
 	  else
 	    integer_expected_error (argv[pos]);
@@ -532,14 +550,14 @@ unary_operator (void)
     }
 
   /* All of the unary operators take an argument, so we first call
-     unary_advance (), which checks to make sure that there is an
+     advance_by (2), which checks to make sure that there is an
      argument, and then advances pos right past it.  This means that
      pos - 1 is the location of the argument. */
-  unary_advance ();
+  advance_by (2);
   return (unary_test (op, argv[pos - 1], 0));
 }
 
-static int
+static _Bool
 unary_test (char *op, char *arg, int flags)
 {
   intmax_t r;
@@ -682,24 +700,20 @@ unary_test (char *op, char *arg, int flags)
 	}
       else if (valid_number (arg, &r))	/* -v n == is $n set? */
 	return r >= 0 && r <= number_of_args ();
-      v = find_variable (arg);
-      if (v && invisible_p (v) == 0 && array_p (v))
-	{
-	  char *t;
-	  /* [[ -v foo ]] == [[ -v foo[0] ]] */
-	  t = array_reference (array_cell (v), 0);
-	  return (t != 0);
-	}
-      else if (v && invisible_p (v) == 0 && assoc_p (v))
-	{
-	  char *t;
-	  t = assoc_reference (assoc_cell (v), "0");
-	  return (t != 0);
-	}
-#else
-      v = find_variable (arg);
 #endif
-      return (v && invisible_p (v) == 0 && var_isset (v));
+      v = find_variable (arg);
+      if (v && ! invisible_p (v))
+	{
+#if defined (ARRAY_VARS)
+	  /* [[ -v foo ]] == [[ -v foo[0] ]] */
+	  if (array_p (v))
+	    return array_reference (array_cell (v), 0) != NULL;
+	  if (assoc_p (v))
+	    return assoc_reference (assoc_cell (v), "0") != NULL;
+#endif
+	  return var_isset (v);
+	}
+      return false;
 
     case 'R':
       v = find_variable_noref (arg);
@@ -784,13 +798,13 @@ test_unop (char *op)
   return (0);
 }
 
-static int
+static _Bool
 two_arguments (void)
 {
-  if (argv[pos][0] == '!' && argv[pos][1] == '\0')
+  if (ISTOKEN (argv[pos], '!'))
     {
-      advance (0);
-      return (argv[pos++][0] == '\0');
+      ++pos;
+      return ISEMPTY (argv[pos++]);
     }
   else if (argv[pos][0] == '-' && argv[pos][1] && argv[pos][2] == '\0')
     {
@@ -805,87 +819,68 @@ two_arguments (void)
   return (0);
 }
 
-/* This could be augmented to handle `-t' as equivalent to `-t 1', but
-   POSIX requires that `-t' be given an argument. */
-#define ONE_ARG_TEST(s)		((s)[0] != '\0')
-
-static int
+static _Bool
 three_arguments (void)
 {
-  int value;
+  need_args (3);
 
-  if (test_binop (argv[pos + 1]))
-    value = binary_operator ();
-  else if (ANDOR (argv[pos + 1]))
-    {
-      if (argv[pos + 1][1] == 'a')
-	value = ONE_ARG_TEST (argv[pos]) && ONE_ARG_TEST (argv[pos + 2]);
-      else
-	value = ONE_ARG_TEST (argv[pos]) || ONE_ARG_TEST (argv[pos + 2]);
-      pos += 3;
-    }
-  else if (argv[pos][0] == '!' && argv[pos][1] == '\0')
-    {
-      advance (1);
-      value = !two_arguments ();
-    }
-  else if (ISTOKEN (argv[pos], '(') && ISTOKEN (argv[pos + 2], ')'))
-    {
-      advance (0);
-      value = ONE_ARG_TEST (argv[pos]);
-      pos += 2;
-    }
-  else
-    test_syntax_error (_("%s: binary operator expected"), argv[pos + 1]);
+  char *mid = argv[pos + 1];
 
-  return (value);
+  if (test_binop (mid))
+    return binary_operator ();
+
+  if (ISOPTION (mid, 'a'))
+    return advance_after_by (3, ! ISEMPTY (argv[pos]) && ! ISEMPTY (argv[pos + 2]));
+
+  if (ISOPTION (mid, 'o'))
+    return advance_after_by (3, ! ISEMPTY (argv[pos]) || ! ISEMPTY (argv[pos + 2]));
+
+  if (ISTOKEN (argv[pos], '!'))
+    {
+      ++pos;
+      return advance_after_by (2, !two_arguments ());
+    }
+
+  if (ISTOKEN (argv[pos], '(') && ISTOKEN (argv[pos + 2], ')'))
+    {
+      return advance_after_by (2, ! ISEMPTY (argv[++pos]));
+    }
+
+  test_syntax_error (_("%s: binary operator expected"), argv[pos + 1]);
 }
 
 /* This is an implementation of a Posix.2 proposal by David Korn. */
-static int
-posixtest (int nargs)
+static _Bool
+posixtest (int nargs, _Bool top)
 {
-  int value;
+  if (top || shell_compatibility_level > 52 && pos + nargs < argc && nargs <= 4)
+    switch (nargs)
+      {
+      case 0:
+	return false;
 
-  switch (nargs)
-    {
-    case 0:
-      value = false;
-      break;
+      case 1:
+	return advance_after_by (1, ! ISEMPTY (argv[pos]));
 
-    case 1:
-      value = ONE_ARG_TEST (argv[1]);
-      advance (0);
-      break;
+      case 2:
+	return two_arguments ();
 
-    case 2:
-      value = two_arguments ();
-      break;
+      case 3:
+	return three_arguments ();
 
-    case 3:
-      value = three_arguments ();
-      break;
-
-    case 4:
-      if (argv[pos][0] == '!' && argv[pos][1] == '\0')
-	{
-	  advance (1);
-	  value = !three_arguments ();
-	  break;
-	}
-      else if (ISTOKEN (argv[pos], '(') && ISTOKEN (argv[pos + 3], ')'))
-	{
-	  advance (1);
-	  value = two_arguments ();
-	  advance (0);
-	  break;
-	}
-      /* FALLTHROUGH */
-    default:
-      value = expr ();
-    }
-
-  return (value);
+      case 4:
+	if (ISTOKEN (argv[pos], '!'))
+	  {
+	    ++pos;
+	    return ! three_arguments ();
+	  }
+	else if (ISTOKEN (argv[pos], '(') && ISTOKEN (argv[pos + 3], ')'))
+	  {
+	    ++pos;
+	    return advance_after_by (1, two_arguments ());
+	  }
+      }
+  return disjunction ();
 }
 
 #if defined (COND_COMMAND)
@@ -907,9 +902,9 @@ cond_test (char *op, char *arg1, char *arg2, int flags)
 
 /*
  * [:
- *	'[' expr ']'
+ *	'[' [ disjunction ] ']'
  * test:
- *	test expr
+ *	test [ disjunction ]
  */
 int
 test_command (int margc, char **margv)
@@ -921,6 +916,7 @@ test_command (int margc, char **margv)
 
   argc = margc;
   argv = margv;
+  pos = 1;
 
   if (margv[0] && margv[0][0] == '[' && margv[0][1] == '\0')
     {
@@ -928,22 +924,16 @@ test_command (int margc, char **margv)
 
       if (margv[argc] && (margv[argc][0] != ']' || margv[argc][1]))
 	test_syntax_error (_("missing `]'"), (char *)NULL);
-
-      if (argc < 2)
-	test_exit (bool_to_status (false));
     }
-
-  pos = 1;
 
   if (pos >= argc)
     test_exit (bool_to_status (false));
 
-  noeval = 0;
-  int value = posixtest (argc - 1);
+  _Bool value = posixtest (argc - 1, true);
 
   if (pos != argc)
     {
-      if (pos < argc && argv[pos][0] == '-')
+      if (want_args (1) && argv[pos][0] == '-')
 	test_syntax_error (_("syntax error: `%s' unexpected"), argv[pos]);
       else
 	test_syntax_error (_("too many arguments"), (char *)NULL);
