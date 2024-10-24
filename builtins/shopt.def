@@ -161,8 +161,6 @@ static opt_set_func_t shopt_set_expaliases;
 
 static opt_set_func_t shopt_set_debug_mode;
 
-static int shopt_login_shell;
-
 typedef int shopt_set_func_t (char *, int);
 
 /* If you add a new variable name here, make sure to set the default value
@@ -963,13 +961,6 @@ set_restricted_shell (opt_def_t const *d, accessor_t why, int mode)
   return Result (OK);
 }
 #endif /* RESTRICTED_SHELL */
-
-/* Not static so shell.c can call it */
-int
-set_login_shell (char *option_name, int mode)
-{
-  return (0);
-}
 
 char **
 get_shopt_options (void)
