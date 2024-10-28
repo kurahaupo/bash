@@ -68,8 +68,8 @@
 
 #include "config.h"
 
+#include <stdarg.h>
 #include <stdio.h>
-#include "bashansi.h"
 
 #if defined (HAVE_UNISTD_H)
 #  ifdef _MINIX
@@ -78,15 +78,16 @@
 #  include <unistd.h>
 #endif
 
-#include "chartypes.h"
-#include "bashintl.h"
-
 #include "shell.h"
-#include "arrayfunc.h"
+
+//#include "arrayfunc.h" // included in "shell.h"
+//#include "bashansi.h"
+#include "bashintl.h"
+//#include "chartypes.h"
 #include "execute_cmd.h"
-#include "flags.h"
-#include "subst.h"
-#include "typemax.h"		/* INTMAX_MAX, INTMAX_MIN */
+//#include "flags.h"
+//#include "subst.h"	// included in "shell.h"
+//#include "typemax.h"		/* INTMAX_MAX, INTMAX_MIN */
 
 /* Because of the $((...)) construct, expressions may include newlines.
    Here is a macro which accepts newlines, tabs and spaces as whitespace. */
@@ -1618,25 +1619,28 @@ strlong (char *num)
 }
 
 #if defined (EXPR_TEST)
+#undef xmalloc
 void *
 xmalloc (size_t n)
 {
   return (malloc (n));
 }
 
+#undef xrealloc
 void *
-xrealloc (void *s, size_t n)
+xrealloc (void const *s, size_t n)
 {
-  return (realloc (s, n));
+  return (realloc ((void*) s, n));
 }
 
-SHELL_VAR *find_variable () { return 0;}
-SHELL_VAR *bind_variable () { return 0; }
+SHELL_VAR *find_variable (char const *_UNUSED_) { return 0;}
+SHELL_VAR *bind_variable (char const *_UNUSED1_, char const *_UNUSED2_, int _UNUSED3_) { return 0; }
 
-char *get_string_value () { return 0; }
+char *get_string_value (char const *_UNUSED_) { return 0; }
 
 procenv_t top_level;
 
+int
 main (int argc, char **argv)
 {
   register int i;
@@ -1658,12 +1662,14 @@ main (int argc, char **argv)
 }
 
 int
-builtin_error (format, arg1, arg2, arg3, arg4, arg5)
-     char *format;
+builtin_error (char *format, ...)
 {
+  va_list va;
+  va_start(va, format);
   fprintf (stderr, "expr: ");
-  fprintf (stderr, format, arg1, arg2, arg3, arg4, arg5);
+  vfprintf (stderr, format, va);
   fprintf (stderr, "\n");
+  va_end(va);
   return 0;
 }
 

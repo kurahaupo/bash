@@ -64,29 +64,51 @@ extern int errno;
 
 #include <glob/strmatch.h>
 
-#if !defined (STRLEN)
-#  define STRLEN(s) ((s)[0] ? ((s)[1] ? ((s)[2] ? strlen(s) : 2) : 1) : 0)
-#endif
-
-#if !defined (STREQ)
-#  define STREQ(a, b)		(strcmp (a, b) == 0)
-#endif /* !STREQ */
-#define STRCOLLEQ(a, b) 	(strcoll (a, b) == 0)
-
 /* single-character tokens like `!`, `(`, and `)` */
-#define ISTOKEN(s, c)		((s)[0] == (c) && (s)[1] == '\0')
+
+static inline _Bool
+ISTOKEN(char const *s, char c)
+{
+  return s[0] == c
+      && s[1] == '\0';
+}
 
 /* two-character tokens like `-z` and `!=` */
-#define ISTOKEN2(s, c1, c2)	((s)[0] == (c1) && (s)[1] == (c2) && (s)[2] == '\0')
+static inline _Bool
+ISTOKEN2(char const *s, char c1, char c2)
+{
+  return s[0] == c1
+      && s[1] == c2
+      && s[2] == '\0';
+}
 
 #ifndef ISOPTION	/* also in builtins/common.h */
 /* two-character tokens starting with '-' are very common ... */
-#  define ISOPTION(s, c)	ISTOKEN2 (s, '-', c)
+/* Same as ISOPTION from builtins/common.h */
+static inline _Bool
+ISOPTION(char const*s, char c)
+{
+  return ISTOKEN2 (s, '-', c);
+}
+#define ISOPTION		ISOPTION
 #endif /*ISOPTION*/
 
-#define ISANDOR(s)  		(ISOPTION(s, 'a') || ISOPTION(s, 'o'))
+static inline _Bool
+ISEMPTY (char const *s)
+{
+  return ((s)[0] == 0);
+}
+#define ISEMPTY			ISEMPTY
 
-#define ISEMPTY(s)		((s)[0] == 0)
+static inline _Bool
+ISANDOR(char const *s)
+{
+  return ISOPTION(s, 'a')
+      || ISOPTION(s, 'o');
+
+  return s[0] == '-' && (s[1] == 'a'
+		      || s[1] == 'o') && s[2] == 0;
+}
 
 #if !defined (R_OK)
 /* These should be in fcntl.h and/or unistd.h.
@@ -158,18 +180,22 @@ test_syntax_error (char const *format, ...)
  *	error condition)
  */
 static void __attribute__((__noreturn__))
-beyond (void)
+beyond_ (char const*source, int lineno)
 {
+  fprintf (stderr, "%s:%d: ", source, lineno);
   test_syntax_error (_("argument expected"));
 }
+#define beyond() beyond_(__FILE__,__LINE__)
 
 /* Syntax error for when an integer argument was expected, but
    something else was found. */
 static void __attribute__((__noreturn__))
-integer_expected_error (char const *pch)
+integer_expected_error_ (char const *pch, char const *source, int lineno)
 {
+  fprintf (stderr, "%s:%d: ", source, lineno);
   test_syntax_error (_("%s: integer expected"), pch);
 }
+#define integer_expected_error(P) integer_expected_error_(P, __FILE__, __LINE__)
 
 /* Increment our position in the argument list.  Check that we're not
    past the end of the argument list.  This check is suppressed if the
@@ -213,16 +239,6 @@ advance_after_by (int by, _Bool exp_value)
 }
 
 /*
- * expr:
- *    disjunction
- */
-static _Bool
-expr (void)
-{
-  return disjunction ();
-}
-
-/*
  * disjunction:
  *	conjunction [ '-o' conjunction ]...
  */
@@ -235,12 +251,13 @@ disjunction (void)
       ++pos;
       value |= conjunction ();
     }
+
   return value;
 }
 
 /*
  * conjunction:
- *	neg_term [ '-a' neg_term ] ...
+ *	neg_term [ '-a' neg_term ]...
  */
 static _Bool
 conjunction (void)
@@ -369,8 +386,8 @@ filecomp (const char *s, const char *t, int op)
 
   switch (op)
     {
-    case OT: return r1 < r2 || (r2 == 0 && timespec_cmp (ts1, ts2) < 0);
-    case NT: return r1 > r2 || (r1 == 0 && timespec_cmp (ts1, ts2) > 0);
+    case OT: return r1 < r2 || r2 == 0 && timespec_cmp (ts1, ts2) < 0;
+    case NT: return r1 > r2 || r1 == 0 && timespec_cmp (ts1, ts2) > 0;
     case EF: return same_file (s, t, &st1, &st2);
     }
   return false;
@@ -428,22 +445,24 @@ binary_test (char const *op, char const *arg1, char const *arg2, int flags)
 
   if (op[0] == '=' && (op[1] == '\0' || (op[1] == '=' && op[2] == '\0')))
     return patmatch ? patcomp (arg1, arg2, EQ)
-		    : STREQ (arg1, arg2);
+		    : ! strcmp (arg1, arg2);
   else if ((op[0] == '>' || op[0] == '<') && op[1] == '\0')
     {
 #if defined (HAVE_STRCOLL)
       /* POSIX interp 375 */
       if (posixly_correct && (flags & TEST_LOCALE))
-	return op[0] == '>' ? strcoll (arg1, arg2) > 0 : strcoll (arg1, arg2) < 0;
+	return op[0] == '>' ? strcoll (arg1, arg2) > 0
+			    : strcoll (arg1, arg2) < 0;
       else if (shell_compatibility_level > 40 && (flags & TEST_LOCALE))
-	return op[0] == '>' ? strcoll (arg1, arg2) > 0 : strcoll (arg1, arg2) < 0;
+	return op[0] == '>' ? strcoll (arg1, arg2) > 0
+			    : strcoll (arg1, arg2) < 0;
       else
 #endif
 	return op[0] == '>' ? strcmp (arg1, arg2) > 0 : strcmp (arg1, arg2) < 0;
     }
   else if (op[0] == '!' && op[1] == '=' && op[2] == '\0')
     return patmatch ? patcomp (arg1, arg2, NE)
-		    : ! STREQ (arg1, arg2);
+		    : !! strcmp (arg1, arg2);
 
 
   else if (op[2] == 't')
@@ -482,8 +501,8 @@ binary_operator (void)
 {
   char const *w = argv[pos + 1];
   if (  ISTOKEN2 (w, '!', '=')
-     || ISTOKEN  (w, '=')
      || ISTOKEN2 (w, '=', '=')
+     || ISTOKEN  (w, '=')
      || ISTOKEN  (w, '<')
      || ISTOKEN  (w, '>'))
     {
@@ -804,27 +823,23 @@ three_arguments (void)
 {
   need_args (3);
 
-  char const *mid = argv[pos + 1];
-
-  if (test_binop (mid))
+  if (test_binop (argv[pos+1]))
     return binary_operator ();
 
-  if (ISOPTION (mid, 'a'))
+  if (ISOPTION (argv[pos+1], 'a'))
     return advance_after_by (3, ! ISEMPTY (argv[pos]) && ! ISEMPTY (argv[pos + 2]));
 
-  if (ISOPTION (mid, 'o'))
+  if (ISOPTION (argv[pos+1], 'o'))
     return advance_after_by (3, ! ISEMPTY (argv[pos]) || ! ISEMPTY (argv[pos + 2]));
 
   if (ISTOKEN (argv[pos], '!'))
     {
       ++pos;
-      return advance_after_by (2, !two_arguments ());
+      return advance_after_by (2, ! two_arguments ());
     }
 
   if (ISTOKEN (argv[pos], '(') && ISTOKEN (argv[pos + 2], ')'))
-    {
-      return advance_after_by (2, ! ISEMPTY (argv[++pos]));
-    }
+    return advance_after_by (2, ! ISEMPTY (argv[++pos]));
 
   test_syntax_error (_("%s: binary operator expected"), argv[pos + 1]);
 }
@@ -893,11 +908,11 @@ test_command (int margc, char const * const *margv)
   argv = margv;
   pos = 1;
 
-  if (margv[0] && margv[0][0] == '[' && margv[0][1] == '\0')
+  if (margv[0] && ISTOKEN (margv[0], '['))
     {
       --argc;
 
-      if (margv[argc] && (margv[argc][0] != ']' || margv[argc][1]))
+      if (margv[argc] && ! ISTOKEN (margv[argc], ']'))
 	test_syntax_error (_("missing `]'"));
     }
 

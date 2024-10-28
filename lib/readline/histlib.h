@@ -29,18 +29,50 @@
 #endif /* !HAVE_STRING_H */
 
 #if !defined (STREQ)
-#define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
-#define STREQN(a, b, n) (((n) == 0) ? (1) \
-				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+/* String comparisons that possibly save a function call each. */
+static inline _Bool
+STREQ (char const *a, char const *b)
+{
+  return a[0] == b[0] && strcmp (a, b) == 0;
+}
+#define STREQ STREQ
+#endif
+
+#if !defined (STREQN)
+static inline _Bool
+STREQN (char const *a, char const *b, size_t n)
+{
+  return n == 0 || a[0] == b[0] && (n == 1 || strncmp (a, b, n) == 0);
+}
+#define STREQN STREQN
 #endif
 
 #if !defined (HAVE_STRCASECMP)
-#define strcasecmp(a,b)	strcmp ((a), (b))
-#define strncasecmp(a, b, n)	strncmp ((a), (b), (n))
+static inline int
+strcasecmp(char const *a, char const *b)
+{
+  return strcmp (char const *a, char const *b);
+}
+#define strcasecmp strcasecmp
+static inline int
+strncasecmp(char const *a, char const *b, size_t n)
+{
+  return strncmp (a, b, n);
+}
+#define strncasecmp strncasecmp
 #endif
 
 #ifndef savestring
-#define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
+static inline char*
+savestring(char const *x)
+{
+#if defined (HAVE_STRDUP)
+  return strdup (x);
+#else
+  return strcpy (xmalloc (1 + strlen (x)), (x));
+#endif
+}
+#define savestring savestring
 #endif
 
 #ifndef whitespace
