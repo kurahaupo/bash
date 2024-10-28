@@ -181,8 +181,8 @@ extern void set_current_options (const char *);
 extern void reset_shopt_options (void);
 extern char **get_shopt_options (void);
 
-extern int shopt_setopt (char const*, int);
-extern int shopt_listopt (char const*, int);
+extern int shopt_setopt (char const *, int);
+extern int shopt_listopt (char const *, int);
 
 extern int set_login_shell (char *, int);
 
