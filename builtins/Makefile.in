@@ -78,8 +78,10 @@ BASHINCDIR = ${topdir}/include
 
 RL_INCLUDEDIR = @RL_INCLUDEDIR@
 
-HIST_LIBSRC = ${topdir}/lib/readline
-RL_LIBSRC = ${topdir}/lib/readline
+# xxx this is bad style
+HIST_LIBSRC = $(topdir)/lib/readline
+RL_LIBSRC = $(topdir)/lib/readline
+TILDE_LIBSRC = $(topdir)/lib/tilde
 
 INTL_LIBSRC = ${topdir}/lib/intl
 INTL_BUILDDIR = ${LIBBUILD}/intl
@@ -88,6 +90,8 @@ INTL_LIBRARY = ${INTL_BUILDDIR}/libintl.a
 INTL_INC = @INTL_INC@
 INTL_DEP = @INTL_DEP@
 LIBINTL_H = @LIBINTL_H@
+
+GLOB_LIBSRC = $(topdir)/lib/glob
 
 HELPDIR = @HELPDIR@
 
@@ -166,9 +170,6 @@ MKBUILTINS = mkbuiltins$(EXEEXT)
 DIRECTDEFINE = -D $(srcdir)
 HELPDIRDEFINE = @HELPDIRDEFINE@
 HELPSTRINGS = @HELPSTRINGS@
-
-# xxx this is bad style
-RL_LIBSRC = $(topdir)/lib/readline
 
 .SUFFIXES:
 .SUFFIXES: .def .c .o
@@ -443,6 +444,42 @@ depends depend: $(MKBUILTINS) builtext.h pipesize.h tmpbuiltins.h
 ############################ DEPENDENCIES ###############################
 #MKDEP-CUT-HERE
 
+bind.o: $(LIBINTL_H)
+break.o: $(LIBINTL_H)
+caller.o: $(LIBINTL_H)
+cd.o: $(LIBINTL_H)
+common.c: $(LIBINTL_H)
+complete.o: $(LIBINTL_H)
+declare.o: $(LIBINTL_H)
+enable.o: $(LIBINTL_H)
+evalfile.c: $(LIBINTL_H)
+exec.o: $(LIBINTL_H)
+exit.o: $(LIBINTL_H)
+fc.o: $(LIBINTL_H)
+fg_bg.o: $(LIBINTL_H)
+getopt.c: $(LIBINTL_H)
+hash.o: $(LIBINTL_H)
+help.o: $(LIBINTL_H)
+history.o: $(LIBINTL_H)
+jobs.o: $(LIBINTL_H)
+kill.o: $(LIBINTL_H)
+let.o: $(LIBINTL_H)
+mapfile.o: $(LIBINTL_H)
+mkbuiltins.o: $(LIBINTL_H)
+printf.o: $(LIBINTL_H)
+pushd.o: $(LIBINTL_H)
+read.o: $(LIBINTL_H)
+return.o: $(LIBINTL_H)
+set.o: $(LIBINTL_H)
+setattr.o: $(LIBINTL_H)
+shift.o: $(LIBINTL_H)
+shopt.o: $(LIBINTL_H)
+source.o: $(LIBINTL_H)
+suspend.o: $(LIBINTL_H)
+type.o: $(LIBINTL_H)
+ulimit.o: $(LIBINTL_H)
+umask.o: $(LIBINTL_H)
+
 alias.c: $(srcdir)/alias.def
 alias.o: $(BASHINCDIR)/chartypes.h
 alias.o: $(BASHINCDIR)/gettext.h
@@ -529,7 +566,6 @@ bind.o: $(BASHINCDIR)/posixjmp.h
 bind.o: $(BASHINCDIR)/stdc.h
 bind.o: $(BASHINCDIR)/unlocked-io.h
 bind.o: $(HIST_LIBSRC)/history.h
-bind.o: $(LIBINTL_H)
 bind.o: $(RL_LIBSRC)/chardefs.h
 bind.o: $(RL_LIBSRC)/keymaps.h
 bind.o: $(RL_LIBSRC)/readline.h
@@ -663,10 +699,6 @@ builtins.o: $(topdir)/config-bot.h
 builtins.o: $(topdir)/config-top.h
 builtins.o: $(topdir)/general.h
 builtins.o: $(topdir)/hashlib.h
-builtins.o: $(topdir)/include/chartypes.h
-builtins.o: $(topdir)/include/gettext.h
-builtins.o: $(topdir)/include/stdc.h
-builtins.o: $(topdir)/include/unlocked-io.h
 builtins.o: $(topdir)/xmalloc.h
 builtins.o: ../config.h
 builtins.o: builtext.h
@@ -837,7 +869,6 @@ command.o: $(topdir)/xmalloc.h
 command.o: ../config.h
 command.o: ../pathnames.h
 common.c: $(BASHINCDIR)/gettext.h
-common.c: $(LIBINTL_H)
 common.c: $(topdir)/bashintl.h
 common.o: $(BASHINCDIR)/ansi_stdlib.h
 common.o: $(BASHINCDIR)/chartypes.h
@@ -1110,7 +1141,6 @@ eval.o: $(topdir)/xmalloc.h
 eval.o: ../config.h
 eval.o: ../pathnames.h
 evalfile.c: $(BASHINCDIR)/gettext.h
-evalfile.c: $(LIBINTL_H)
 evalfile.c: $(topdir)/bashintl.h
 evalfile.o: $(BASHINCDIR)/ansi_stdlib.h
 evalfile.o: $(BASHINCDIR)/chartypes.h
@@ -1283,7 +1313,6 @@ exit.o: $(BASHINCDIR)/posixjmp.h
 exit.o: $(BASHINCDIR)/posixwait.h
 exit.o: $(BASHINCDIR)/stdc.h
 exit.o: $(BASHINCDIR)/unlocked-io.h
-exit.o: $(LIBINTL_H)
 exit.o: $(srcdir)/common.h
 exit.o: $(srcdir)/exit.def
 exit.o: $(topdir)/array.h
@@ -1330,7 +1359,6 @@ fc.o: $(BASHINCDIR)/posixstat.h
 fc.o: $(BASHINCDIR)/stdc.h
 fc.o: $(BASHINCDIR)/unlocked-io.h
 fc.o: $(HIST_LIBSRC)/history.h
-fc.o: $(LIBINTL_H)
 fc.o: $(RL_LIBSRC)/rlstdc.h
 fc.o: $(RL_LIBSRC)/rltypedefs.h
 fc.o: $(srcdir)/bashgetopt.h
@@ -1428,16 +1456,10 @@ gen-helpfiles.o: $(topdir)/config-bot.h
 gen-helpfiles.o: $(topdir)/config-top.h
 gen-helpfiles.o: $(topdir)/general.h
 gen-helpfiles.o: $(topdir)/hashlib.h
-gen-helpfiles.o: $(topdir)/include/chartypes.h
-gen-helpfiles.o: $(topdir)/include/filecntl.h
-gen-helpfiles.o: $(topdir)/include/posixstat.h
-gen-helpfiles.o: $(topdir)/include/stdc.h
-gen-helpfiles.o: $(topdir)/include/unlocked-io.h
 gen-helpfiles.o: $(topdir)/xmalloc.h
 gen-helpfiles.o: ../config.h
 gen-helpfiles.o: tmpbuiltins.h
 getopt.c: $(BASHINCDIR)/gettext.h
-getopt.c: $(LIBINTL_H)
 getopt.c: $(topdir)/bashintl.h
 getopt.o: $(BASHINCDIR)/chartypes.h
 getopt.o: $(BASHINCDIR)/gettext.h
@@ -1528,7 +1550,6 @@ hash.o: $(BASHINCDIR)/ocache.h
 hash.o: $(BASHINCDIR)/posixjmp.h
 hash.o: $(BASHINCDIR)/stdc.h
 hash.o: $(BASHINCDIR)/unlocked-io.h
-hash.o: $(LIBINTL_H)
 hash.o: $(srcdir)/bashgetopt.h
 hash.o: $(srcdir)/common.h
 hash.o: $(srcdir)/hash.def
@@ -1610,6 +1631,8 @@ help.o: $(topdir)/syntax.h
 help.o: $(topdir)/unwind_prot.h
 help.o: $(topdir)/variables.h
 help.o: $(topdir)/xmalloc.h
+help.o: $(GLOB_LIBSRC)/glob.h
+help.o: $(GLOB_LIBSRC)/strmatch.h
 help.o: ../config.h
 help.o: ../pathnames.h
 history.c: $(srcdir)/history.def
@@ -1624,7 +1647,6 @@ history.o: $(BASHINCDIR)/posixstat.h
 history.o: $(BASHINCDIR)/stdc.h
 history.o: $(BASHINCDIR)/unlocked-io.h
 history.o: $(HIST_LIBSRC)/history.h
-history.o: $(LIBINTL_H)
 history.o: $(RL_LIBSRC)/chardefs.h
 history.o: $(RL_LIBSRC)/keymaps.h
 history.o: $(RL_LIBSRC)/readline.h
@@ -1766,7 +1788,6 @@ let.o: $(BASHINCDIR)/ocache.h
 let.o: $(BASHINCDIR)/posixjmp.h
 let.o: $(BASHINCDIR)/stdc.h
 let.o: $(BASHINCDIR)/unlocked-io.h
-let.o: $(LIBINTL_H)
 let.o: $(srcdir)/common.h
 let.o: $(srcdir)/let.def
 let.o: $(topdir)/array.h
@@ -1844,7 +1865,6 @@ mkbuiltins.o: $(BASHINCDIR)/filecntl.h
 mkbuiltins.o: $(BASHINCDIR)/gettext.h
 mkbuiltins.o: $(BASHINCDIR)/posixstat.h
 mkbuiltins.o: $(BASHINCDIR)/stdc.h
-mkbuiltins.o: $(LIBINTL_H)
 mkbuiltins.o: $(srcdir)/mkbuiltins.c
 mkbuiltins.o: $(topdir)/bashansi.h
 mkbuiltins.o: $(topdir)/bashintl.h
@@ -1865,7 +1885,6 @@ printf.o: $(BASHINCDIR)/shmbchar.h
 printf.o: $(BASHINCDIR)/shmbutil.h
 printf.o: $(BASHINCDIR)/stdc.h
 printf.o: $(BASHINCDIR)/unlocked-io.h
-printf.o: $(LIBINTL_H)
 printf.o: $(srcdir)/bashgetopt.h
 printf.o: $(srcdir)/common.h
 printf.o: $(srcdir)/printf.def
@@ -1909,9 +1928,6 @@ psize.o: $(topdir)/command.h
 psize.o: $(topdir)/config-bot.h
 psize.o: $(topdir)/config-top.h
 psize.o: $(topdir)/general.h
-psize.o: $(topdir)/include/chartypes.h
-psize.o: $(topdir)/include/stdc.h
-psize.o: $(topdir)/include/unlocked-io.h
 psize.o: $(topdir)/sig.h
 psize.o: $(topdir)/xmalloc.h
 psize.o: ../config.h
@@ -1970,7 +1986,6 @@ read.o: $(BASHINCDIR)/shtty.h
 read.o: $(BASHINCDIR)/stdc.h
 read.o: $(BASHINCDIR)/timer.h
 read.o: $(BASHINCDIR)/unlocked-io.h
-read.o: $(LIBINTL_H)
 read.o: $(RL_LIBSRC)/chardefs.h
 read.o: $(RL_LIBSRC)/keymaps.h
 read.o: $(RL_LIBSRC)/readline.h
@@ -2426,10 +2441,6 @@ tmpbuiltins.o: $(topdir)/config-bot.h
 tmpbuiltins.o: $(topdir)/config-top.h
 tmpbuiltins.o: $(topdir)/general.h
 tmpbuiltins.o: $(topdir)/hashlib.h
-tmpbuiltins.o: $(topdir)/include/chartypes.h
-tmpbuiltins.o: $(topdir)/include/gettext.h
-tmpbuiltins.o: $(topdir)/include/stdc.h
-tmpbuiltins.o: $(topdir)/include/unlocked-io.h
 tmpbuiltins.o: $(topdir)/xmalloc.h
 tmpbuiltins.o: ../config.h
 tmpbuiltins.o: tmpbuiltins.c
