@@ -340,7 +340,8 @@ depends depend: $(MKBUILTINS) tmpbuiltins.h
 	./$(MKBUILTINS) $(DIRECTDEFINE) $(srcdir)/*.def
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
 
-# dependencies
+############################ DEPENDENCIES ###############################
+#MKDEP-CUT-HERE
 
 alias.o: alias.def
 bind.o: bind.def
