@@ -78,6 +78,7 @@ BASHINCDIR = ${topdir}/include
 
 RL_INCLUDEDIR = @RL_INCLUDEDIR@
 
+# xxx this is bad style
 GLOB_LIBSRC = ${topdir}/lib/glob
 HIST_LIBSRC = ${topdir}/lib/readline
 RL_LIBSRC = ${topdir}/lib/readline
@@ -176,9 +177,6 @@ HELPDIRDEFINE = @HELPDIRDEFINE@
 HELPSTRINGS = @HELPSTRINGS@
 
 STDCKDINT_H = @STDCKDINT_H@
-
-# xxx this is bad style
-RL_LIBSRC = $(topdir)/lib/readline
 
 .SUFFIXES:
 .SUFFIXES: .def .c .o
@@ -838,6 +836,7 @@ command.o: $(topdir)/variables.h
 command.o: $(topdir)/xmalloc.h
 command.o: ../config.h
 command.o: ../pathnames.h
+#common.c: $(LIBINTL_H)
 #common.o: $(BASHINCDIR)/ansi_stdlib.h
 common.o: $(BASHINCDIR)/chartypes.h
 #common.o: $(BASHINCDIR)/gettext.h
@@ -1096,7 +1095,9 @@ eval.o: $(topdir)/variables.h
 eval.o: $(topdir)/xmalloc.h
 eval.o: ../config.h
 eval.o: ../pathnames.h
+#evalfile.c: $(LIBINTL_H)
 #evalfile.o: $(BASHINCDIR)/ansi_stdlib.h
+#evalfile.o: $(BASHINCDIR)/chartypes.h
 evalfile.o: $(BASHINCDIR)/filecntl.h
 #evalfile.o: $(BASHINCDIR)/gettext.h
 #evalfile.o: $(BASHINCDIR)/maxpath.h
@@ -1107,6 +1108,7 @@ evalfile.o: $(BASHINCDIR)/typemax.h
 #evalfile.o: $(RL_LIBSRC)/rlstdc.h
 #evalfile.o: $(srcdir)/common.h
 evalfile.o: $(srcdir)/evalfile.c
+#evalfile.o: $(topdir)/arrayfunc.h
 #evalfile.o: $(topdir)/bashansi.h
 #evalfile.o: $(topdir)/bashhist.h
 #evalfile.o: $(topdir)/bashintl.h
@@ -1147,6 +1149,7 @@ evalstring.o: $(BASHINCDIR)/filecntl.h
 #evalstring.o: $(RL_LIBSRC)/rlstdc.h
 #evalstring.o: $(srcdir)/common.h
 evalstring.o: $(srcdir)/evalstring.c
+#evalstring.o: $(topdir)/arrayfunc.h
 #evalstring.o: $(topdir)/bashansi.h
 #evalstring.o: $(topdir)/bashhist.h
 #evalstring.o: $(topdir)/bashjmp.h
@@ -1177,8 +1180,6 @@ evalstring.o: ../config.h
 evalstring.o: ../y.tab.h
 evalstring.o: builtext.h
 exec.c: $(srcdir)/exec.def
-#evalfile.o: $(topdir)/arrayfunc.h
-#evalstring.o: $(topdir)/arrayfunc.h
 exec.o: $(BASHINCDIR)/chartypes.h
 exec.o: $(BASHINCDIR)/gettext.h
 exec.o: $(BASHINCDIR)/maxpath.h
@@ -1374,8 +1375,13 @@ gen-helpfiles.o: $(BASHINCDIR)/posixstat.h
 gen-helpfiles.o: $(srcdir)/gen-helpfiles.c
 gen-helpfiles.o: $(topdir)/config-bot.h
 gen-helpfiles.o: $(topdir)/config-top.h
+#gen-helpfiles.o: $(topdir)/general.h
+#gen-helpfiles.o: $(topdir)/hashlib.h
+#gen-helpfiles.o: $(topdir)/xmalloc.h
 gen-helpfiles.o: ../config.h
 gen-helpfiles.o: tmpbuiltins.h
+#getopt.c: $(LIBINTL_H)
+#getopt.o: $(BASHINCDIR)/chartypes.h
 #getopt.o: $(BASHINCDIR)/gettext.h
 #getopt.o: $(BASHINCDIR)/maxpath.h
 getopt.o: $(BASHINCDIR)/memalloc.h
@@ -1727,9 +1733,9 @@ mapfile.o: $(BASHINCDIR)/maxpath.h
 mapfile.o: $(BASHINCDIR)/ocache.h
 mapfile.o: $(BASHINCDIR)/posixjmp.h
 mapfile.o: $(BASHINCDIR)/posixstat.h
+#mapfile.o: $(BASHINCDIR)/stdc.h
 mapfile.o: $(BASHINCDIR)/unlocked-io.h
 #mapfile.o: $(LIBINTL_H)
-#mapfile.o: $(BASHINCDIR)/stdc.h
 mapfile.o: $(srcdir)/bashgetopt.h
 mapfile.o: $(srcdir)/common.h
 mapfile.o: $(srcdir)/mapfile.def
@@ -1779,7 +1785,6 @@ printf.c: $(srcdir)/printf.def
 printf.o: $(BASHINCDIR)/chartypes.h
 printf.o: $(BASHINCDIR)/gettext.h
 printf.o: $(BASHINCDIR)/intprops-internal.h
-printf.o: $(STDCKDINT_H)
 printf.o: $(BASHINCDIR)/maxpath.h
 #printf.o: $(BASHINCDIR)/memalloc.h
 printf.o: $(BASHINCDIR)/ocache.h
@@ -1790,6 +1795,7 @@ printf.o: $(BASHINCDIR)/shmbutil.h
 printf.o: $(BASHINCDIR)/stdc.h
 printf.o: $(BASHINCDIR)/unlocked-io.h
 #printf.o: $(LIBINTL_H)
+printf.o: $(STDCKDINT_H)
 printf.o: $(srcdir)/bashgetopt.h
 printf.o: $(srcdir)/common.h
 printf.o: $(srcdir)/printf.def
@@ -1825,6 +1831,9 @@ psize-posix.o: $(srcdir)/psize-posix.c
 psize.o: $(srcdir)/psize.c
 psize.o: $(topdir)/config-bot.h
 psize.o: $(topdir)/config-top.h
+#psize.o: $(topdir)/general.h
+#psize.o: $(topdir)/sig.h
+#psize.o: $(topdir)/xmalloc.h
 psize.o: ../config.h
 pushd.c: $(srcdir)/pushd.def
 pushd.o: $(BASHINCDIR)/chartypes.h
@@ -2136,8 +2145,8 @@ shopt.o: $(topdir)/flags.h
 shopt.o: $(topdir)/general.h
 shopt.o: $(topdir)/hashlib.h
 shopt.o: $(topdir)/make_cmd.h
-shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/options.h
+shopt.o: $(topdir)/parser.h
 shopt.o: $(topdir)/quit.h
 shopt.o: $(topdir)/shell.h
 shopt.o: $(topdir)/sig.h
@@ -2148,8 +2157,8 @@ shopt.o: $(topdir)/variables.h
 shopt.o: $(topdir)/xmalloc.h
 shopt.o: ../config.h
 shopt.o: ../pathnames.h
-source.c: $(srcdir)/source.def
 #shopt.o: ../version.h
+source.c: $(srcdir)/source.def
 source.o: $(BASHINCDIR)/chartypes.h
 source.o: $(BASHINCDIR)/filecntl.h
 source.o: $(BASHINCDIR)/gettext.h
