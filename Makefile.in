@@ -264,8 +264,6 @@ GCC_LINT_CFLAGS = $(BASE_CCFLAGS) $(CPPFLAGS) $(GCC_LINT_FLAGS)
 # Support libraries
 #
 
-dot = .
-
 LIBSUBDIR = lib
 LIBSRC = $(srcdir)/$(LIBSUBDIR)
 
@@ -280,7 +278,7 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 # the library is a mix of functions that the C library does not provide on
 # some platforms and general shell utility functions
 SH_LIBSRC = $(LIBSRC)/sh
-SH_LIBDIR = $(dot)/${LIBSUBDIR}/sh
+SH_LIBDIR = ${LIBSUBDIR}/sh
 SH_ABSSRC = ${topdir}/${SH_LIBSRC}
 
 SHLIB_SOURCE	= \
@@ -505,7 +503,7 @@ HISTORY_OBJ	= \
 
 # You only need termcap (or curses) if you are linking with GNU Readline.
 TERM_LIBSRC = $(LIBSRC)/termcap
-TERM_LIBDIR = $(dot)/$(LIBSUBDIR)/termcap
+TERM_LIBDIR = $(LIBSUBDIR)/termcap
 TERM_ABSSRC = ${topdir}/$(TERM_LIBDIR)
 
 TERMCAP_LIB = @TERMCAP_LIB@
@@ -519,7 +517,7 @@ TERMCAP_OBJ	= $(TERM_LIBDIR)/termcap.o \
 		  $(TERM_LIBDIR)/tparam.o
 
 GLOB_LIBSRC = $(LIBSRC)/glob
-GLOB_LIBDIR = $(dot)/$(LIBSUBDIR)/glob
+GLOB_LIBDIR = $(LIBSUBDIR)/glob
 GLOB_ABSSRC = ${topdir}/$(GLOB_LIBDIR)
 
 GLOB_LIB     = -lglob
@@ -549,7 +547,7 @@ GLOB_OBJ	= \
 
 # The source, object and documentation for the GNU Tilde library.
 TILDE_LIBSRC = $(LIBSRC)/tilde
-TILDE_LIBDIR = $(dot)/$(LIBSUBDIR)/tilde
+TILDE_LIBDIR = $(LIBSUBDIR)/tilde
 TILDE_ABSSRC = ${topdir}/$(TILDE_LIBDIR)
 
 TILDE_LIB = @TILDE_LIB@
@@ -563,7 +561,7 @@ TILDE_OBJ	= $(TILDE_LIBDIR)/tilde.o
 
 # libintl
 INTL_LIBSRC = $(LIBSRC)/intl
-INTL_LIBDIR = $(dot)/$(LIBSUBDIR)/intl
+INTL_LIBDIR = $(LIBSUBDIR)/intl
 INTL_ABSSRC = ${topdir}/$(INTL_LIB)
 INTL_BUILDDIR = ${LIBBUILD}/intl
 
@@ -589,7 +587,7 @@ MALLOC_TARGET = @MALLOC_TARGET@
 ALLOCA = @ALLOCA@
 
 ALLOC_LIBSRC = $(LIBSRC)/malloc
-ALLOC_LIBDIR = $(dot)/$(LIBSUBDIR)/malloc
+ALLOC_LIBDIR = $(LIBSUBDIR)/malloc
 ALLOC_ABSSRC = ${topdir}/$(ALLOC_LIBDIR)
 
 MALLOC_SRC = @MALLOC_SRC@
@@ -890,7 +888,7 @@ OBJECTS		= \
 BUILTIN_SRCDIR=$(srcdir)/builtins
 DEFSRC=$(BUILTIN_SRCDIR)
 BUILTIN_ABSSRC=${topdir}/builtins
-DEFDIR = $(dot)/builtins
+DEFDIR = builtins
 
 BUILTIN_DEFS	= \
 		  $(DEFSRC)/alias.def \
@@ -1016,15 +1014,15 @@ BUILTINS_DEP = $(BUILTINS_LIBRARY)
 
 # Documentation for the shell.
 DOCSRC = $(srcdir)/doc
-DOCDIR = $(dot)/doc
+DOCDIR = doc
 
 # Translations and other i18n support files
 PO_SRC = $(srcdir)/po/
-PO_DIR = $(dot)/po/
+PO_DIR = po/
 
 # Auxiliary support files
 SUPPORT_SRC = $(srcdir)/support/
-SUPPORT_DIR = $(dot)/support
+SUPPORT_DIR = support/
 
 TESTS_SUPPORT	= \
 		  printenv$(EXEEXT) \
