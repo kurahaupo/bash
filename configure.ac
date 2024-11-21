@@ -616,7 +616,7 @@ if test $opt_readline = yes; then
 		cygwin*|msys*)	TILDE_LIB= ;;
 		esac
 	else
-		RL_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
+		RL_LIBDIR='$(LIBSUBDIR)/readline'
 		READLINE_DEP='$(READLINE_LIBRARY)'
 		# for dependencies
 		RL_INCLUDEDIR='$(RL_LIBDIR)'
@@ -630,7 +630,7 @@ if test $opt_readline = yes; then
 		esac
 	fi
 else
-	RL_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
+	RL_LIBDIR='$(LIBSUBDIR)/readline'
 	READLINE_LIB= READLINE_DEP=
 	RL_INCLUDEDIR=
 fi
@@ -654,7 +654,7 @@ if test $opt_history = yes || test $opt_bang_history = yes; then
 			;;
 		esac
 	else
-		HIST_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
+		HIST_LIBDIR='$(LIBSUBDIR)/readline'
 		HISTORY_DEP='$(HISTORY_LIBRARY)'
 		# for dependencies
 		HIST_INCLUDEDIR='$(HIST_LIBDIR)'
@@ -668,7 +668,7 @@ if test $opt_history = yes || test $opt_bang_history = yes; then
 		esac
 	fi
 else
-	HIST_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
+	HIST_LIBDIR='$(LIBSUBDIR)/readline'
 	HISTORY_LIB= HISTORY_DEP=
 	HIST_INCLUDEDIR=
 fi
