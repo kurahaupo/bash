@@ -616,9 +616,9 @@ ALLOC_HEADERS	= \
 
 
 $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
-	@ cd $(ALLOC_LIBDIR) && \
+	@ cd $(@D) && \
 	  $(MAKE) $(BASH_MAKEFLAGS) \
-	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" $(MALLOC_TARGET)
+	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" $(@F)
 
 STDCKDINT_H = @STDCKDINT_H@
 
@@ -1228,41 +1228,41 @@ $(LIBDEP): .build
 #$(LIBDEP): version.h
 
 $(READLINE_LIBRARY): config.h $(READLINE_SOURCE)
-	@ echo making $@ in ${RL_LIBDIR}
-	@ test "$(RL_LIBDIR)" = "$(libdir)" || { \
-	    cd $(RL_LIBDIR) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libreadline.a ;\
+	@ echo making $(@F) in $(@D)
+	@ test "$(@D)" = "$(libdir)" || { \
+	    cd $(@D) && \
+	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F) ; \
 	  }
 
 $(HISTORY_LIBRARY): config.h $(HISTORY_SOURCE) $(READLINE_DEP)
-	@ echo making $@ in ${HIST_LIBDIR}
-	@ test "$(HIST_LIBDIR)" = "$(libdir)" || { \
-	    cd $(HIST_LIBDIR) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libhistory.a ;\
+	@ echo making $(@F) in $(@D)
+	@ test "$(@D)" = "$(libdir)" || { \
+	    cd $(@D) && \
+	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F) ; \
 	  }
 
 $(GLOB_LIBRARY): config.h $(GLOB_SOURCE)
-	@ echo making $@ in ${GLOB_LIBDIR}
-	@ cd $(GLOB_LIBDIR) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) libglob.a
+	@ echo making $(@F) in $(@D)
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 $(TILDE_LIBRARY): config.h $(TILDE_SOURCE)
-	@ echo making $@ in ${TILDE_LIBDIR}
-	@ cd $(TILDE_LIBDIR) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) libtilde.a
+	@ echo making $(@F) in $(@D)
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(TERMCAP_LIBRARY): config.h ${TERMCAP_SOURCE}
-	@ echo making $@ in ${TERM_LIBDIR}
-	@ cd ${TERM_LIBDIR} && \
-	  $(MAKE) $(BASH_MAKEFLAGS) libtermcap.a
+	@ echo making $(@F) in $(@D)
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(SHLIB_LIBRARY): config.h ${SHLIB_SOURCE}
-	@ echo making $@ in ${SH_LIBDIR}
-	@ cd $(SH_LIBDIR) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(SHLIB_LIBNAME)
+	@ echo making $(@F) in $(@D)
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${INTL_LIBRARY}: config.h ${INTL_LIBDIR}/Makefile
-	@ echo making $@ in ${INTL_LIBDIR}
+	@ echo making $(@F) in $(@D)
 	@ cd $(@D) && \
 	  $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="$(LOCAL_CFLAGS)" $(@F)
 
@@ -1307,23 +1307,23 @@ syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
 	./mksyntax$(EXEEXT) -o $@
 
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h pathnames.h
-	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) targets
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 # these require special rules to circumvent make builtin rules
 ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
-	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) common.o
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
-	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) bashgetopt.o
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) builtext.h
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 ${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
-	@ cd $(DEFDIR) && $(MAKE) $(BASH_MAKEFLAGS) pipesize.h
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(SUPPORT_DIR)/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
-	@ cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 # For the justification of the following Makefile rules, see node
 # ‘Automatic Remaking’ in GNU Autoconf documentation.
@@ -1361,7 +1361,7 @@ $(SUPPORT_DIR)/bashbug.sh: $(SUPPORT_DIR)/bashbug.sh.in
 
 # comment out for distribution
 $(srcdir)/configure: $(srcdir)/configure.ac $(srcdir)/aclocal.m4 $(srcdir)/config.h.in
-	cd $(srcdir) && autoconf
+	cd $(@D) && autoconf
 
 # for chet
 reconfig: force
