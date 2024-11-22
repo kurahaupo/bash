@@ -273,23 +273,23 @@ localename-table.h: $(srcdir)/localename-table.in.h $(srcdir)/export.h
 	sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/' \
 	    -e 's/extern,/extern LIBINTL_DLL_EXPORTED,/' \
 	    -e "/#if HAVE_WORKING_USELOCALE/r $(srcdir)/export.h" \
+	    -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
 	  < $(srcdir)/localename-table.in.h \
-	| sed -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
 	  > localename-table.h
 
 $(srcdir)/plural.c: $(srcdir)/plural.y
-	$(BISON) -d $(BISONFLAGS) $(srcdir)/plural.y \
-	&& test ':' = '$(BISON)' || { \
+	$(BISON) -d $(BISONFLAGS) $(srcdir)/plural.y && \
+	test ':' = '$(BISON)' || { \
 	  sed -e 's|".*/plural.y"|"plural.y"|' \
 	      -e 's|"plural\.tab\.c"|"plural.c"|' \
 	      -e 's|"plural\.tab\.h"|"plural.h"|' \
-	      < plural.tab.c > plural.c-tmp \
-	  && sed -e 's|".*/plural.y"|"plural.y"|' \
-	         -e 's|"plural\.tab\.h"|"plural.h"|' \
-	         < plural.tab.h > plural.h-tmp \
-	  && rm -f plural.tab.c plural.tab.h \
-	  && mv plural.c-tmp $(srcdir)/plural.c \
-	  && mv plural.h-tmp $(srcdir)/plural.h ; \
+	      < plural.tab.c > plural.c-tmp && \
+	  sed -e 's|".*/plural.y"|"plural.y"|' \
+	      -e 's|"plural\.tab\.h"|"plural.h"|' \
+	      < plural.tab.h > plural.h-tmp && \
+	  rm -f plural.tab.c plural.tab.h && \
+	  mv plural.c-tmp $(srcdir)/plural.c && \
+	  mv plural.h-tmp $(srcdir)/plural.h ; \
 	}
 
 check: all
