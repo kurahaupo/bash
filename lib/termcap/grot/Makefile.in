@@ -89,11 +89,13 @@ all: libtermcap.a info
 install: all installdirs @installdata@
 	$(INSTALL_DATA) libtermcap.a $(libdir)/libtermcap.a
 	- $(RANLIB) $(libdir)/libtermcap.a
-	cd $(srcdir) && $(INSTALL_DATA) termcap.h $(includedir)/termcap.h
-	- cd $(srcdir) && test -n "$(oldincludedir)" && \
+	cd $(srcdir) && \
+	$(INSTALL_DATA) termcap.h $(includedir)/termcap.h
+	- cd $(srcdir) && \
+	  test -n "$(oldincludedir)" && \
 	  $(INSTALL_DATA) termcap.h $(oldincludedir)/termcap.h
-	cd $(srcdir) ; for f in termcap.info* ; \
-	do $(INSTALL_DATA) $$f $(infodir)/$$f ; done
+	cd $(srcdir) && \
+	for f in termcap.info* ; do $(INSTALL_DATA) $$f $(infodir)/$$f ; done
 
 uninstall: @uninstalldata@
 	rm -f $(libdir)/libtermcap.a $(includedir)/termcap.h
