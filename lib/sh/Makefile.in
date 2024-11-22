@@ -279,11 +279,14 @@ clean: mostlyclean
 
 # Dependencies
 
-#${BUILD_DIR}/version.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-#	- cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} version.h
+../../version.h: ../../config.h ../../Makefile Makefile
 
-${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
-	- cd ${BUILD_DIR} && ${MAKE} ${BASH_MAKEFLAGS} pathnames.h
+../../pathnames.h: ../../config.h ../../Makefile Makefile
+
+../../pathnames.h \
+../../version.h \
+ :
+	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 # rules for losing makes, like SunOS
 anonfile.o: anonfile.c

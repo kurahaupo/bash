@@ -380,16 +380,16 @@ $(OFILES): $(MKBUILTINS) ../config.h
 
 # sketchy rule here
 #../version.h: ../config.h ../Makefile Makefile
-#	- cd $(BUILD_DIR) && $(MAKE) $(BASH_MAKEFLAGS) version.h
+#	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 # maintainer special - for now
 po: builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
 ${LIBINTL_H}:
-	@ echo making $@ in ${INTL_BUILDDIR}
-	@ cd ${INTL_BUILDDIR} && \
-	  $(MAKE) $(BASH_MAKEFLAGS) libintl.h
+	@ echo making $@ in $(@D)
+	@ cd $(@D) && \
+	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 # dependencies
 
