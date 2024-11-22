@@ -1296,7 +1296,7 @@ syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
 	$(RM) $@
 	./mksyntax$(EXEEXT) -o $@
 
-$(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h pathnames.h
+$(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h pathnames.h version.h
 
 ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
 
