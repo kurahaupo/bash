@@ -292,7 +292,7 @@ check: all
 # system which has the GNU gettext() function in its C library or in a
 # separate library.
 # If you want to use the one which comes with this version of the
-# package, you have to use `configure --with-included-gettext'.
+# package, you have to use ‘configure --with-included-gettext’.
 install: install-exec install-data
 install-exec: all
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools" ; } \
@@ -302,7 +302,7 @@ install-exec: all
 	  $(LIBTOOL) --mode=install \
 	    $(INSTALL_DATA) libintl.$la $(DESTDIR)$(libdir)/libintl.$la ; \
 	  if test "@RELOCATABLE@" = yes ; then \
-	    dependencies=`sed -n -e 's,^dependency_libs=\(.*\),\1,p' < $(DESTDIR)$(libdir)/libintl.la | sed -e "s,^',," -e "s,'\$$,,"` ; \
+	    dependencies=$$( sed -n -e 's,^dependency_libs=\(.*\),\1,p' < $(DESTDIR)$(libdir)/libintl.la | sed -e "s,^',," -e "s,'\$$,," ) ; \
 	    if test -n "$dependencies" ; then \
 	      rm -f $(DESTDIR)$(libdir)/libintl.la ; \
 	    fi ; \
@@ -453,17 +453,17 @@ localealias.$lo localcharset.$lo relocatable.$lo: $(srcdir)/relocatable.h
 tags: TAGS
 
 TAGS: $(HEADERS) $(SOURCES)
-	here=`pwd` ; cd $(srcdir) && etags -o $$here/TAGS $(HEADERS) $(SOURCES)
+	here=$$PWD ; cd $(srcdir) && etags -o $$here/TAGS $(HEADERS) $(SOURCES)
 
 ctags: CTAGS
 
 CTAGS: $(HEADERS) $(SOURCES)
-	here=`pwd` ; cd $(srcdir) && ctags -o $$here/CTAGS $(HEADERS) $(SOURCES)
+	here=$$PWD ; cd $(srcdir) && ctags -o $$here/CTAGS $(HEADERS) $(SOURCES)
 
 id: ID
 
 ID: $(HEADERS) $(SOURCES)
-	here=`pwd` ; cd $(srcdir) && mkid -f$$here/ID $(HEADERS) $(SOURCES)
+	here=$$PWD ; cd $(srcdir) && mkid -f$$here/ID $(HEADERS) $(SOURCES)
 
 
 mostlyclean:
@@ -486,7 +486,7 @@ maintainer-clean: distclean
 	@ echo "it deletes files that may require special tools to rebuild."
 
 
-# GNU gettext needs not contain the file `VERSION' but contains some
+# GNU gettext needs not contain the file ‘VERSION’ but contains some
 # other files which should not be distributed in other packages.
 distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
 dist distdir: Makefile

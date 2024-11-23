@@ -59,8 +59,8 @@ SHOBJ_LIBS = @SHOBJ_LIBS@
 SHOBJ_STATUS = @SHOBJ_STATUS@
 
 # Values used for compiling the perl files
-PERL_LDOPTS = `${PERL5} -MExtUtils::Embed -e ldopts`
-PERL_CFLAGS = ${CCFLAGS} `${PERL5} -MExtUtils::Embed -e ccopts`
+PERL_LDOPTS = $$( ${PERL5} -MExtUtils::Embed -e ldopts )
+PERL_CFLAGS = ${CCFLAGS} $$( ${PERL5} -MExtUtils::Embed -e ccopts )
 
 SRC = bperl.c iperl.c perlxsi.c
 OBJ = bperl.o iperl.o perlxsi.o

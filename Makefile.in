@@ -112,7 +112,7 @@ VERSOBJ = bashversion.$(OBJEXT)
 
 Program = bash$(EXEEXT)
 Version = @BASHVERS@
-PatchLevel = `$(BUILD_DIR)/$(VERSPROG) -p`
+PatchLevel = $$( $(BUILD_DIR)/$(VERSPROG) -p )
 RELSTATUS = @RELSTATUS@
 
 Machine = @host_cpu@
@@ -1134,7 +1134,7 @@ $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
 	@ echo
 	@ echo "	  ***********************************************************"
 	@ echo "	  *                                                         *"
-	@ echo "	  * `$(BUILD_DIR)/$(VERSPROG) -l`"
+	@ echo "	  * $$( ./$(VERSPROG) -l )"
 	@ echo "	  *                                                         *"
 	@ echo "	  ***********************************************************"
 	@ echo
@@ -1326,7 +1326,7 @@ $(SUPPORT_DIR)/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
 	@ cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
 
 # For the justification of the following Makefile rules, see node
-# `Automatic Remaking' in GNU Autoconf documentation.
+# ‘Automatic Remaking’ in GNU Autoconf documentation.
 
 Makefile makefile: config.status $(srcdir)/Makefile.in
 	CONFIG_FILES=Makefile CONFIG_HEADERS= $(SHELL) ./config.status

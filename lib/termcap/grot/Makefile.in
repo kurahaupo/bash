@@ -51,7 +51,7 @@ oldincludedir = /usr/include
 # Directory in which to install the documentation info files.
 infodir = $(prefix)/info
 
-# File to which `install-data' should install the data file
+# File to which ‘install-data’ should install the data file
 # if --enable-install-termcap was given.
 termcapfile = @termcapfile@
 
@@ -145,9 +145,9 @@ maintainer-clean: distclean
 	rm -f TAGS *.info*
 
 dist: $(DISTFILES)
-	echo termcap-`sed -e '/version_string/!d' -e 's/[^0-9]*\([0-9a-z.]*\).*/\1/' -e q version.c` > .fname
-	rm -rf `cat .fname`
-	mkdir `cat .fname`
-	ln $(DISTFILES) `cat .fname`
-	tar chzf `cat .fname`.tar.gz `cat .fname`
-	rm -rf `cat .fname` .fname
+	echo termcap-$$( sed -e '/version_string/!d' -e 's/[^0-9]*\([0-9a-z.]*\).*/\1/' -e q version.c ) > .fname
+	rm -rf $$( cat .fname )
+	mkdir $$( cat .fname )
+	ln $(DISTFILES) $$( cat .fname )
+	tar chzf $$( cat .fname ).tar.gz $$( cat .fname )
+	rm -rf $$( cat .fname ) .fname
