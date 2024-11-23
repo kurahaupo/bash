@@ -284,7 +284,7 @@ maintainer-clean: distclean
 	@echo "it deletes files that may require special tools to rebuild."
 	rm -f stamp-po $(GMOFILES)
 
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
 dist distdir:
 	$(MAKE) update-po
 	@$(MAKE) dist2
@@ -347,8 +347,8 @@ $(DUMMYPOFILES):
 update-gmo: Makefile $(GMOFILES)
 	@:
 
-Makefile: Makefile.in.in $(top_builddir)/config.status @POMAKEFILEDEPS@ $(srcdir)/Rules-builtins
-	cd $(top_builddir) \
+Makefile: Makefile.in.in ../config.status @POMAKEFILEDEPS@ $(srcdir)/Rules-builtins
+	cd .. \
 	  && CONFIG_FILES=$(subdir)/$@.in CONFIG_HEADERS= \
 	       $(SHELL) ./config.status
 
