@@ -62,7 +62,6 @@ htmldir = @htmldir@
 DESTDIR =
 
 topdir = @top_srcdir@
-top_builddir = @BUILD_DIR@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
@@ -1113,7 +1112,7 @@ OTHER_INSTALLED_DOCS = \
 		  README \
 
 
-LOADABLES_DIR = ${top_builddir}/examples/loadables
+LOADABLES_DIR = examples/loadables
 
 # Keep GNU Make from exporting the entire environment for small machines.
 .NOEXPORT:

@@ -22,7 +22,6 @@ SHELL = /bin/sh
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-top_builddir = @BUILD_DIR@
 VPATH = $(srcdir)
 
 prefix = @prefix@
@@ -236,7 +235,7 @@ ref-del.sed: $(srcdir)/ref-del.sin
 
 INCLUDES = -I. \
 	   -I$(srcdir) \
-	   -I$(top_builddir) \
+	   -I../.. \
 	   -I$(top_srcdir) \
 
 
@@ -304,7 +303,7 @@ info dvi ps pdf html:
 
 # update these someday
 
-$(OBJECTS): ${top_builddir}/config.h libgnuintl.h libintl.h
+$(OBJECTS): ../../config.h libgnuintl.h libintl.h
 bindtextdom.o dcgettext.o dcigettext.o dcngettext.o dgettext.o dngettext.o finddomain.o gettext.o intl-compat.o loadmsgcat.o localealias.o ngettext.o textdomain.o: $(srcdir)/gettextP.h $(srcdir)/gmo.h $(srcdir)/loadinfo.h
 dcigettext.o loadmsgcat.o: $(srcdir)/hash-string.h
 explodename.o l10nflist.o: $(srcdir)/loadinfo.h
