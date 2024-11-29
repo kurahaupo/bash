@@ -49,9 +49,9 @@ DEFS = @DEFS@
 
 INCLUDES = -I. \
 	   -I../.. \
+	   -I$(srcdir) \
 	   -I$(topdir) \
 	   -I$(topdir)/lib \
-	   -I$(srcdir) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep

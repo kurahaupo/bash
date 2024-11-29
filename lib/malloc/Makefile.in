@@ -50,16 +50,17 @@ BASHINCDIR = ${topdir}/include
 SUPPORT_SRC = $(topdir)/support/
 
 INTL_LIBSRC = ${topdir}/lib/intl
-INTL_BUILDDIR = ${LIBBUILD}/intl
+INTL_BUILDDIR = ../intl
 INTL_INC = @INTL_INC@
 LIBINTL_H = @LIBINTL_H@
 
 INCLUDES = -I. \
 	   -I../.. \
+	   -I$(srcdir) \
 	   -I$(topdir) \
 	   -I$(BASHINCDIR) \
-	   -I$(topdir)/lib \
 	   $(INTL_INC) \
+
 
 MKDEP = $(SUPPORT_SRC)mkdep
 MKDEP_CC = ${CC}
