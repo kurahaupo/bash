@@ -352,6 +352,8 @@ Makefile: Makefile.in.in ../config.status @POMAKEFILEDEPS@ $(srcdir)/Rules-built
 	  && CONFIG_FILES=po/$@.in CONFIG_HEADERS= \
 	       $(SHELL) ./config.status
 
+depend depends: Makefile
+
 force:
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.

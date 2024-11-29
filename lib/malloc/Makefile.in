@@ -47,6 +47,7 @@ LOCAL_DEFS = @LOCAL_DEFS@
 LIBBUILD = ..
 
 BASHINCDIR = ${topdir}/include
+SUPPORT_SRC = $(topdir)/support/
 
 INTL_LIBSRC = ${topdir}/lib/intl
 INTL_BUILDDIR = ${LIBBUILD}/intl
@@ -59,6 +60,12 @@ INCLUDES = -I. \
 	   -I$(BASHINCDIR) \
 	   -I$(topdir)/lib \
 	   $(INTL_INC) \
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 
 CCFLAGS = ${PROFILE_FLAGS} ${INCLUDES} $(DEFS) $(LOCAL_DEFS) $(LOCAL_CFLAGS) \
@@ -117,31 +124,87 @@ clean: mostlyclean
 distclean realclean maintainer-clean: clean
 	$(RM) Makefile
 
+.PHONY: depends depend
+depends depend Makefile:
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
+
+################################################################################
+#####   MKDEP-CUT-HERE  #####
+
+# This list was generated on Ubuntu GNU/Linux 1804, and should work on any
+# typical GNU/Linux distribution.
+#
+# On other platforms you may need to uncomment some of the lines below, or use
+# ‘support/mkdep’ to replace this entire list.
+
+alloca.o: $(srcdir)/alloca.c
+alloca.o: $(topdir)/config-bot.h
+alloca.o: $(topdir)/config-top.h
 alloca.o: ../../config.h
-malloc.o: ../../config.h $(topdir)/bashtypes.h getpagesize.h
-xmalloc.o: ../../config.h $(BASHINCDIR)/ansi_stdlib.h
-trace.o: ../../config.h
+malloc.o: $(BASHINCDIR)/gettext.h
+malloc.o: $(BASHINCDIR)/stdc.h
+#malloc.o: $(LIBINTL_H)
+malloc.o: $(srcdir)/imalloc.h
+malloc.o: $(srcdir)/malloc.c
+#malloc.o: $(srcdir)/mstats.h
+#malloc.o: $(srcdir)/table.h
+#malloc.o: $(srcdir)/watch.h
+malloc.o: $(topdir)/bashintl.h
+malloc.o: $(topdir)/bashtypes.h
+malloc.o: $(topdir)/config-bot.h
+malloc.o: $(topdir)/config-top.h
+malloc.o: ../../config.h
+#malloc.o: getpagesize.h
+#malloc.o: malloc.c
+memtest.o: $(BASHINCDIR)/ansi_stdlib.h
+memtest.o: $(BASHINCDIR)/stdc.h
+memtest.o: $(srcdir)/memtest.c
+memtest.o: $(topdir)/bashansi.h
+memtest.o: $(topdir)/xmalloc.h
+sbrk.o: $(srcdir)/sbrk.c
+sbrk.o: $(topdir)/config-bot.h
+sbrk.o: $(topdir)/config-top.h
+sbrk.o: ../../config.h
+stats.o: $(BASHINCDIR)/gettext.h
+#stats.o: $(LIBINTL_H)
+stats.o: $(srcdir)/imalloc.h
+#stats.o: $(srcdir)/mstats.h
+stats.o: $(srcdir)/stats.c
+stats.o: $(topdir)/bashintl.h
+stats.o: $(topdir)/config-bot.h
+stats.o: $(topdir)/config-top.h
 stats.o: ../../config.h
+#stats.o: stats.c
+stub.o: $(srcdir)/stub.c
+#stub.o: stub.c
+table.o: $(BASHINCDIR)/gettext.h
+#table.o: $(LIBINTL_H)
+table.o: $(srcdir)/imalloc.h
+table.o: $(srcdir)/table.c
+table.o: $(srcdir)/table.h
+table.o: $(topdir)/bashintl.h
+table.o: $(topdir)/config-bot.h
+table.o: $(topdir)/config-top.h
 table.o: ../../config.h
+trace.o: $(BASHINCDIR)/gettext.h
+#trace.o: $(LIBINTL_H)
+trace.o: $(srcdir)/imalloc.h
+trace.o: $(srcdir)/trace.c
+trace.o: $(topdir)/bashintl.h
+trace.o: $(topdir)/config-bot.h
+trace.o: $(topdir)/config-top.h
+trace.o: ../../config.h
+watch.o: $(BASHINCDIR)/gettext.h
+#watch.o: $(LIBINTL_H)
+watch.o: $(srcdir)/imalloc.h
+watch.o: $(srcdir)/watch.c
+#watch.o: $(srcdir)/watch.h
+watch.o: $(topdir)/bashintl.h
+watch.o: $(topdir)/config-bot.h
+watch.o: $(topdir)/config-top.h
 watch.o: ../../config.h
-
-malloc.o: ${srcdir}/imalloc.h ${srcdir}/mstats.h
-malloc.o: ${srcdir}/table.h ${srcdir}/watch.h
-stats.o: ${srcdir}/imalloc.h ${srcdir}/mstats.h
-trace.o: ${srcdir}/imalloc.h
-table.o: ${srcdir}/imalloc.h ${srcdir}/table.h
-watch.o: ${srcdir}/imalloc.h ${srcdir}/watch.h
-
-malloc.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-stats.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-trace.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-table.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-watch.o: ${topdir}/bashintl.h ${LIBINTL_H} ${BASHINCDIR}/gettext.h
-
-# Rules for deficient makes, like SunOS and Solaris
-stub.o: stub.c
-malloc.o: malloc.c
-table.o: table.c
-trace.o: trace.c
-stats.o: stats.c
-watch.o: watch.c
+#xmalloc.o: $(BASHINCDIR)/ansi_stdlib.h
+xmalloc.o: $(srcdir)/xmalloc.c
+xmalloc.o: $(topdir)/config-bot.h
+xmalloc.o: $(topdir)/config-top.h
+xmalloc.o: ../../config.h
