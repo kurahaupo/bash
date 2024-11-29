@@ -63,7 +63,6 @@ INCLUDES = -I. \
 	   -I../.. \
 	   -I$(topdir) \
 	   -I$(BASHINCDIR) \
-	   -I$(topdir)/lib \
 
 
 CCFLAGS = $(PROFILE_FLAGS) $(DEFS) $(LOCAL_DEFS) $(CPPFLAGS) \

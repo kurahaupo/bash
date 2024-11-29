@@ -61,8 +61,11 @@ LOCAL_LDFLAGS = @LOCAL_LDFLAGS@
 LDFLAGS = @LDFLAGS@ $(LOCAL_LDFLAGS)
 LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@ $(LOCAL_LDFLAGS) $(CFLAGS_FOR_BUILD)
 
-INCLUDES = -I.. \
+INCLUDES = -I. \
+	   -I.. \
+	   -I$(srcdir) \
 	   -I$(topdir) \
+	   -I$(topdir)/include \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep
