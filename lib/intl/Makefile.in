@@ -22,6 +22,7 @@ SHELL = /bin/sh
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+topdir = @top_srcdir@
 VPATH = $(srcdir)
 
 prefix = @prefix@
@@ -37,6 +38,8 @@ localedir = @localedir@
 
 gettextsrcdir = $(datadir)/gettext/intl
 aliaspath = $(localedir)
+
+SUPPORT_SRC = $(topdir)/support/
 
 @SET_MAKE@
 
@@ -59,6 +62,12 @@ YFLAGS = --name-prefix=__gettext
 ARFLAGS = @ARFLAGS@
 
 LOCAL_DEFS = @LOCAL_DEFS@
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = $(CCFLAGS) $(INCLUDES) -DIN_LIBINTL
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 DEFS		= \
 		  -DBUILDING_LIBINTL \
@@ -329,3 +338,311 @@ maintainer-clean: distclean
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
+
+.PHONY: depends depend
+depends depend: libgnuintl.h
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
+
+################################################################################
+#####   MKDEP-CUT-HERE  #####
+
+# This list was generated on Ubuntu GNU/Linux 1804, and should work on any
+# typical GNU/Linux distribution.
+#
+# On other platforms you may need to uncomment some of the lines below, or use
+# ‘support/mkdep’ to replace this entire list.
+
+bindtextdom.o: $(srcdir)/bindtextdom.c
+bindtextdom.o: $(srcdir)/gettextP.h
+bindtextdom.o: $(srcdir)/gmo.h
+bindtextdom.o: $(srcdir)/libgnuintl.h
+bindtextdom.o: $(srcdir)/loadinfo.h
+bindtextdom.o: $(srcdir)/lock.h
+bindtextdom.o: $(topdir)/config-bot.h
+bindtextdom.o: $(topdir)/config-top.h
+bindtextdom.o: ../../config.h
+bindtextdom.o: libgnuintl.h
+dcgettext.o: $(srcdir)/dcgettext.c
+dcgettext.o: $(srcdir)/gettextP.h
+dcgettext.o: $(srcdir)/gmo.h
+dcgettext.o: $(srcdir)/libgnuintl.h
+dcgettext.o: $(srcdir)/loadinfo.h
+dcgettext.o: $(srcdir)/lock.h
+dcgettext.o: $(topdir)/config-bot.h
+dcgettext.o: $(topdir)/config-top.h
+dcgettext.o: ../../config.h
+dcgettext.o: libgnuintl.h
+dcigettext.o: $(srcdir)/dcigettext.c
+dcigettext.o: $(srcdir)/eval-plural.h
+dcigettext.o: $(srcdir)/filename.h
+dcigettext.o: $(srcdir)/gettextP.h
+dcigettext.o: $(srcdir)/gmo.h
+dcigettext.o: $(srcdir)/hash-string.h
+dcigettext.o: $(srcdir)/libgnuintl.h
+dcigettext.o: $(srcdir)/loadinfo.h
+dcigettext.o: $(srcdir)/localcharset.h
+dcigettext.o: $(srcdir)/lock.h
+dcigettext.o: $(srcdir)/plural-exp.h
+dcigettext.o: $(srcdir)/tsearch.c
+dcigettext.o: $(srcdir)/tsearch.h
+dcigettext.o: $(topdir)/config-bot.h
+dcigettext.o: $(topdir)/config-top.h
+dcigettext.o: ../../config.h
+dcigettext.o: libgnuintl.h
+dcngettext.o: $(srcdir)/dcngettext.c
+dcngettext.o: $(srcdir)/gettextP.h
+dcngettext.o: $(srcdir)/gmo.h
+dcngettext.o: $(srcdir)/libgnuintl.h
+dcngettext.o: $(srcdir)/loadinfo.h
+dcngettext.o: $(srcdir)/lock.h
+dcngettext.o: $(topdir)/config-bot.h
+dcngettext.o: $(topdir)/config-top.h
+dcngettext.o: ../../config.h
+dcngettext.o: libgnuintl.h
+dgettext.o: $(srcdir)/dgettext.c
+dgettext.o: $(srcdir)/gettextP.h
+dgettext.o: $(srcdir)/gmo.h
+dgettext.o: $(srcdir)/libgnuintl.h
+dgettext.o: $(srcdir)/loadinfo.h
+dgettext.o: $(srcdir)/lock.h
+dgettext.o: $(topdir)/config-bot.h
+dgettext.o: $(topdir)/config-top.h
+dgettext.o: ../../config.h
+dgettext.o: libgnuintl.h
+dngettext.o: $(srcdir)/dngettext.c
+dngettext.o: $(srcdir)/gettextP.h
+dngettext.o: $(srcdir)/gmo.h
+dngettext.o: $(srcdir)/libgnuintl.h
+dngettext.o: $(srcdir)/loadinfo.h
+dngettext.o: $(srcdir)/lock.h
+dngettext.o: $(topdir)/config-bot.h
+dngettext.o: $(topdir)/config-top.h
+dngettext.o: ../../config.h
+dngettext.o: libgnuintl.h
+explodename.o: $(srcdir)/explodename.c
+explodename.o: $(srcdir)/loadinfo.h
+explodename.o: $(topdir)/config-bot.h
+explodename.o: $(topdir)/config-top.h
+explodename.o: ../../config.h
+finddomain.o: $(srcdir)/finddomain.c
+finddomain.o: $(srcdir)/gettextP.h
+finddomain.o: $(srcdir)/gmo.h
+finddomain.o: $(srcdir)/libgnuintl.h
+finddomain.o: $(srcdir)/loadinfo.h
+finddomain.o: $(srcdir)/lock.h
+finddomain.o: $(topdir)/config-bot.h
+finddomain.o: $(topdir)/config-top.h
+finddomain.o: ../../config.h
+finddomain.o: libgnuintl.h
+gettext.o: $(srcdir)/gettext.c
+gettext.o: $(srcdir)/gettextP.h
+gettext.o: $(srcdir)/gmo.h
+gettext.o: $(srcdir)/libgnuintl.h
+gettext.o: $(srcdir)/loadinfo.h
+gettext.o: $(srcdir)/lock.h
+gettext.o: $(topdir)/config-bot.h
+gettext.o: $(topdir)/config-top.h
+gettext.o: ../../config.h
+gettext.o: libgnuintl.h
+hash-string.o: $(srcdir)/hash-string.c
+hash-string.o: $(srcdir)/hash-string.h
+hash-string.o: $(topdir)/config-bot.h
+hash-string.o: $(topdir)/config-top.h
+hash-string.o: ../../config.h
+intl-compat.o: $(srcdir)/gettextP.h
+intl-compat.o: $(srcdir)/gmo.h
+intl-compat.o: $(srcdir)/intl-compat.c
+intl-compat.o: $(srcdir)/libgnuintl.h
+intl-compat.o: $(srcdir)/loadinfo.h
+intl-compat.o: $(srcdir)/lock.h
+intl-compat.o: $(topdir)/config-bot.h
+intl-compat.o: $(topdir)/config-top.h
+intl-compat.o: ../../config.h
+intl-compat.o: libgnuintl.h
+intl-exports.o: $(srcdir)/intl-exports.c
+l10nflist.o: $(srcdir)/filename.h
+l10nflist.o: $(srcdir)/l10nflist.c
+l10nflist.o: $(srcdir)/loadinfo.h
+l10nflist.o: $(topdir)/config-bot.h
+l10nflist.o: $(topdir)/config-top.h
+l10nflist.o: ../../config.h
+langprefs.o: $(srcdir)/langprefs.c
+langprefs.o: $(topdir)/config-bot.h
+langprefs.o: $(topdir)/config-top.h
+langprefs.o: ../../config.h
+loadmsgcat.o: $(srcdir)/gettextP.h
+loadmsgcat.o: $(srcdir)/gmo.h
+loadmsgcat.o: $(srcdir)/hash-string.h
+loadmsgcat.o: $(srcdir)/libgnuintl.h
+loadmsgcat.o: $(srcdir)/loadinfo.h
+loadmsgcat.o: $(srcdir)/loadmsgcat.c
+loadmsgcat.o: $(srcdir)/lock.h
+loadmsgcat.o: $(srcdir)/plural-exp.h
+loadmsgcat.o: $(topdir)/config-bot.h
+loadmsgcat.o: $(topdir)/config-top.h
+loadmsgcat.o: ../../config.h
+loadmsgcat.o: libgnuintl.h
+localcharset.o: $(srcdir)/localcharset.c
+localcharset.o: $(srcdir)/localcharset.h
+localcharset.o: $(topdir)/config-bot.h
+localcharset.o: $(topdir)/config-top.h
+localcharset.o: ../../config.h
+localealias.o: $(srcdir)/gettextP.h
+localealias.o: $(srcdir)/gmo.h
+localealias.o: $(srcdir)/libgnuintl.h
+localealias.o: $(srcdir)/loadinfo.h
+localealias.o: $(srcdir)/localealias.c
+localealias.o: $(srcdir)/lock.h
+localealias.o: $(topdir)/config-bot.h
+localealias.o: $(topdir)/config-top.h
+localealias.o: ../../config.h
+localealias.o: libgnuintl.h
+localename-table.o: $(srcdir)/localename-table.c
+localename-table.o: $(topdir)/config-bot.h
+localename-table.o: $(topdir)/config-top.h
+localename-table.o: ../../config.h
+localename.o: $(srcdir)/arg-nonnull.h
+localename.o: $(srcdir)/flexmember.h
+localename.o: $(srcdir)/gettextP.h
+localename.o: $(srcdir)/gmo.h
+localename.o: $(srcdir)/libgnuintl.h
+localename.o: $(srcdir)/loadinfo.h
+localename.o: $(srcdir)/localename.c
+localename.o: $(srcdir)/lock.h
+localename.o: $(srcdir)/setlocale_null.h
+localename.o: $(srcdir)/thread-optim.h
+localename.o: $(topdir)/config-bot.h
+localename.o: $(topdir)/config-top.h
+localename.o: ../../config.h
+localename.o: libgnuintl.h
+lock.o: $(srcdir)/lock.c
+lock.o: $(srcdir)/lock.h
+lock.o: $(topdir)/config-bot.h
+lock.o: $(topdir)/config-top.h
+lock.o: ../../config.h
+log.o: $(srcdir)/lock.h
+log.o: $(srcdir)/log.c
+log.o: $(topdir)/config-bot.h
+log.o: $(topdir)/config-top.h
+log.o: ../../config.h
+ngettext.o: $(srcdir)/gettextP.h
+ngettext.o: $(srcdir)/gmo.h
+ngettext.o: $(srcdir)/libgnuintl.h
+ngettext.o: $(srcdir)/loadinfo.h
+ngettext.o: $(srcdir)/lock.h
+ngettext.o: $(srcdir)/ngettext.c
+ngettext.o: $(topdir)/config-bot.h
+ngettext.o: $(topdir)/config-top.h
+ngettext.o: ../../config.h
+ngettext.o: libgnuintl.h
+os2compat.o: $(srcdir)/os2compat.c
+os2compat.o: $(topdir)/config-bot.h
+os2compat.o: $(topdir)/config-top.h
+os2compat.o: ../../config.h
+osdep.o: $(srcdir)/osdep.c
+plural-exp.o: $(srcdir)/plural-exp.c
+plural-exp.o: $(srcdir)/plural-exp.h
+plural-exp.o: $(topdir)/config-bot.h
+plural-exp.o: $(topdir)/config-top.h
+plural-exp.o: ../../config.h
+plural.o: $(srcdir)/attribute.h
+plural.o: $(srcdir)/plural-exp.h
+plural.o: $(srcdir)/plural.c
+plural.o: $(srcdir)/plural.h
+plural.o: $(topdir)/config-bot.h
+plural.o: $(topdir)/config-top.h
+plural.o: ../../config.h
+printf-args.o: $(srcdir)/printf-args.c
+printf-args.o: $(srcdir)/printf-args.h
+printf-args.o: $(topdir)/config-bot.h
+printf-args.o: $(topdir)/config-top.h
+printf-args.o: ../../config.h
+printf-parse.o: $(srcdir)/attribute.h
+printf-parse.o: $(srcdir)/printf-args.h
+printf-parse.o: $(srcdir)/printf-parse.c
+printf-parse.o: $(srcdir)/printf-parse.h
+printf-parse.o: $(srcdir)/xsize.h
+printf-parse.o: $(topdir)/config-bot.h
+printf-parse.o: $(topdir)/config-top.h
+printf-parse.o: ../../config.h
+printf.o: $(srcdir)/attribute.h
+printf.o: $(srcdir)/printf-args.c
+printf.o: $(srcdir)/printf-args.h
+printf.o: $(srcdir)/printf-parse.c
+printf.o: $(srcdir)/printf-parse.h
+printf.o: $(srcdir)/printf.c
+printf.o: $(srcdir)/vasnprintf.c
+printf.o: $(srcdir)/vasnprintf.h
+printf.o: $(srcdir)/vasnwprintf.h
+printf.o: $(srcdir)/verify.h
+printf.o: $(srcdir)/wprintf-parse.h
+printf.o: $(srcdir)/xsize.h
+printf.o: $(topdir)/config-bot.h
+printf.o: $(topdir)/config-top.h
+printf.o: ../../config.h
+relocatable.o: $(srcdir)/relocatable.c
+relocatable.o: $(srcdir)/relocatable.h
+relocatable.o: $(topdir)/config-bot.h
+relocatable.o: $(topdir)/config-top.h
+relocatable.o: ../../config.h
+setlocale-lock.o: $(srcdir)/setlocale-lock.c
+setlocale-lock.o: $(topdir)/config-bot.h
+setlocale-lock.o: $(topdir)/config-top.h
+setlocale-lock.o: ../../config.h
+setlocale.o: $(srcdir)/gettextP.h
+setlocale.o: $(srcdir)/gmo.h
+setlocale.o: $(srcdir)/libgnuintl.h
+setlocale.o: $(srcdir)/loadinfo.h
+setlocale.o: $(srcdir)/lock.h
+setlocale.o: $(srcdir)/setlocale.c
+setlocale.o: $(topdir)/config-bot.h
+setlocale.o: $(topdir)/config-top.h
+setlocale.o: ../../config.h
+setlocale.o: libgnuintl.h
+setlocale_null.o: $(srcdir)/arg-nonnull.h
+setlocale_null.o: $(srcdir)/setlocale_null.c
+setlocale_null.o: $(srcdir)/setlocale_null.h
+setlocale_null.o: $(topdir)/config-bot.h
+setlocale_null.o: $(topdir)/config-top.h
+setlocale_null.o: ../../config.h
+textdomain.o: $(srcdir)/gettextP.h
+textdomain.o: $(srcdir)/gmo.h
+textdomain.o: $(srcdir)/libgnuintl.h
+textdomain.o: $(srcdir)/loadinfo.h
+textdomain.o: $(srcdir)/lock.h
+textdomain.o: $(srcdir)/textdomain.c
+textdomain.o: $(topdir)/config-bot.h
+textdomain.o: $(topdir)/config-top.h
+textdomain.o: ../../config.h
+textdomain.o: libgnuintl.h
+threadlib.o: $(srcdir)/threadlib.c
+threadlib.o: $(topdir)/config-bot.h
+threadlib.o: $(topdir)/config-top.h
+threadlib.o: ../../config.h
+tsearch.o: $(srcdir)/tsearch.c
+tsearch.o: $(srcdir)/tsearch.h
+tsearch.o: $(topdir)/config-bot.h
+tsearch.o: $(topdir)/config-top.h
+tsearch.o: ../../config.h
+vasnprintf.o: $(srcdir)/attribute.h
+vasnprintf.o: $(srcdir)/printf-args.h
+vasnprintf.o: $(srcdir)/printf-parse.h
+vasnprintf.o: $(srcdir)/vasnprintf.c
+vasnprintf.o: $(srcdir)/vasnprintf.h
+vasnprintf.o: $(srcdir)/verify.h
+vasnprintf.o: $(srcdir)/xsize.h
+vasnprintf.o: $(topdir)/config-bot.h
+vasnprintf.o: $(topdir)/config-top.h
+vasnprintf.o: ../../config.h
+version.o: $(srcdir)/libgnuintl.h
+version.o: $(srcdir)/version.c
+version.o: $(topdir)/config-bot.h
+version.o: $(topdir)/config-top.h
+version.o: ../../config.h
+version.o: libgnuintl.h
+xsize.o: $(srcdir)/attribute.h
+xsize.o: $(srcdir)/xsize.c
+xsize.o: $(srcdir)/xsize.h
+xsize.o: $(topdir)/config-bot.h
+xsize.o: $(topdir)/config-top.h
+xsize.o: ../../config.h

@@ -196,3 +196,6 @@ install:
 	@ echo "This documentation should not be installed."
 
 uninstall:
+
+depends depend Makefile:
+	:
