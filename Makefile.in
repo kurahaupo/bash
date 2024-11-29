@@ -584,9 +584,6 @@ INTLLIBS = @INTLLIBS@
 # Our malloc.
 MALLOC_TARGET = @MALLOC_TARGET@
 
-# set to alloca.o if we are using the C alloca in lib/malloc
-ALLOCA = @ALLOCA@
-
 ALLOC_LIBSRC = $(LIBSRC)/malloc
 ALLOC_LIBDIR = $(LIBSUBDIR)/malloc
 ALLOC_ABSSRC = ${topdir}/$(ALLOC_LIBDIR)

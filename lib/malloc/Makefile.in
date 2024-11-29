@@ -54,6 +54,9 @@ INTL_BUILDDIR = ../intl
 INTL_INC = @INTL_INC@
 LIBINTL_H = @LIBINTL_H@
 
+# Which malloc implementation?
+MALLOC_TARGET = @MALLOC_TARGET@
+
 INCLUDES = -I. \
 	   -I$(srcdir) \
 	   -I../.. \
@@ -85,6 +88,8 @@ ALLOCA_SOURCE = alloca.c
 ALLOCA_OBJECT = alloca.o
 
 MALLOC_SRC = @MALLOC_SRC@
+
+# set to alloca.o if we are using the C alloca in lib/malloc
 ALLOCA = @ALLOCA@
 
 MALLOC_OBJS = malloc.o $(ALLOCA) trace.o stats.o table.o watch.o
@@ -92,7 +97,7 @@ STUB_OBJS = $(ALLOCA) stub.o
 
 .PHONY: malloc stubmalloc
 
-all libmalloc.a: malloc
+all libmalloc.a: $(MALLOC_TARGET)
 
 malloc: ${MALLOC_OBJS}
 	@- ${RM} libmalloc.a
