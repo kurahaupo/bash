@@ -51,6 +51,13 @@ DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
 BASHINCDIR = ${topdir}/include
+SUPPORT_SRC = $(topdir)/support/
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 INCLUDES = -I. \
 	   -I../.. \
@@ -123,14 +130,30 @@ realclean distclean maintainer-clean: clean
 clean: mostlyclean
 	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
-######################################################################
-#								     #
-#  Dependencies for the object files which make up this library.     #
-#								     #
-######################################################################
+.PHONY: depends depend
+depends depend Makefile:
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
 
-tilde.o: tilde.h $(BASHINCDIR)/ansi_stdlib.h
+################################################################################
+#####   MKDEP-CUT-HERE  #####
+
+# This list was generated on Ubuntu GNU/Linux 1804, and should work on any
+# typical GNU/Linux distribution.
+#
+# On other platforms you may need to uncomment some of the lines below, or use
+# ‘support/mkdep’ to replace this entire list.
+
+#shell.o: $(BASHINCDIR)/ansi_stdlib.h
+shell.o: $(srcdir)/shell.c
+shell.o: $(topdir)/config-bot.h
+shell.o: $(topdir)/config-top.h
+shell.o: ../../config.h
+#tilde.o: $(BASHINCDIR)/ansi_stdlib.h
+tilde.o: $(BASHINCDIR)/stdc.h
+tilde.o: $(srcdir)/tilde.c
+tilde.o: $(srcdir)/tilde.h
+tilde.o: $(topdir)/bashansi.h
+tilde.o: $(topdir)/config-bot.h
+tilde.o: $(topdir)/config-top.h
+tilde.o: $(topdir)/xmalloc.h
 tilde.o: ../../config.h
-
-# Rules for deficient makes, like SunOS and Solaris
-tilde.o: tilde.c

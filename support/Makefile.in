@@ -38,6 +38,8 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 
 EXEEXT = @EXEEXT@
 
+SUPPORT_SRC = $(topdir)/support/
+
 #
 # Compiler options:
 #
@@ -61,6 +63,13 @@ LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@ $(LOCAL_LDFLAGS) $(CFLAGS_FOR_BUILD)
 
 INCLUDES = -I.. \
 	   -I$(topdir) \
+
+
+MKDEP = $(SUPPORT_SRC)mkdep
+MKDEP_CC = ${CC}
+MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = ${CCFLAGS}
+MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 BASE_CCFLAGS = ${PROFILE_FLAGS} $(DEFS) $(LOCAL_DEFS) \
 	  ${INCLUDES} $(STYLE_CFLAGS) $(LOCAL_CFLAGS)
@@ -86,4 +95,52 @@ clean:
 distclean maintainer-clean mostlyclean: clean
 	$(RM) bash.pc bashbug.sh
 
-man2html.o: man2html.c
+.PHONY: depends depend
+depends depend Makefile:
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
+
+################################################################################
+#####   MKDEP-CUT-HERE  #####
+
+# This list was generated on Ubuntu GNU/Linux 1804, and should work on any
+# typical GNU/Linux distribution.
+#
+# On other platforms you may need to uncomment some of the lines below, or use
+# ‘support/mkdep’ to replace this entire list.
+
+bashversion.o: $(srcdir)/bashversion.c
+bashversion.o: $(topdir)/config-bot.h
+bashversion.o: $(topdir)/config-top.h
+bashversion.o: $(topdir)/conftypes.h
+bashversion.o: ../config.h
+bashversion.o: ../version.h
+endian.o: $(srcdir)/endian.c
+endian.o: $(topdir)/bashansi.h
+endian.o: $(topdir)/config-bot.h
+endian.o: $(topdir)/config-top.h
+endian.o: ../config.h
+man2html.o: $(srcdir)/man2html.c
+man2html.o: $(topdir)/config-bot.h
+man2html.o: $(topdir)/config-top.h
+man2html.o: ../config.h
+memtest.o: $(srcdir)/memtest.c
+memtest.o: $(topdir)/bashansi.h
+memtest.o: $(topdir)/include/ansi_stdlib.h
+memtest.o: $(topdir)/include/stdc.h
+memtest.o: $(topdir)/xmalloc.h
+mksignames.o: $(srcdir)/mksignames.c
+mksignames.o: $(topdir)/config-bot.h
+mksignames.o: $(topdir)/config-top.h
+mksignames.o: ../config.h
+printenv.o: $(srcdir)/printenv.c
+recho.o: $(srcdir)/recho.c
+siglen.o: $(srcdir)/siglen.c
+signames.o: $(srcdir)/signames.c
+signames.o: $(topdir)/config-bot.h
+signames.o: $(topdir)/config-top.h
+signames.o: ../config.h
+xcase.o: $(srcdir)/xcase.c
+xcase.o: $(topdir)/config-bot.h
+xcase.o: $(topdir)/config-top.h
+xcase.o: ../config.h
+zecho.o: $(srcdir)/zecho.c
