@@ -70,13 +70,15 @@ BUILTIN = bperl5
 
 INC = -I. \
       -I.. \
+      -I../../.. \
+      -I../../../lib \
+      -I../../../builtins \
+      -I$(srcdir) \
+      -I$(srcdir)/.. \
       -I$(topdir) \
       -I$(topdir)/lib \
       -I$(topdir)/builtins \
       -I$(topdir)/include \
-      -I../../.. \
-      -I../../../lib \
-      -I../../../builtins \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep

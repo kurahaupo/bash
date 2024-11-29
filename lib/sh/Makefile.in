@@ -72,11 +72,12 @@ DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
 INCLUDES = -I. \
+	   -I$(srcdir) \
+	   -I.. \
+	   -I$(topdir)/lib \
 	   -I../.. \
 	   -I$(topdir) \
-	   -I$(topdir)/lib \
 	   -I$(BASHINCDIR) \
-	   -I$(srcdir) \
 	   $(INTL_INC) \
 
 

@@ -93,15 +93,14 @@ SHOBJ_LIBS = @SHOBJ_LIBS@
 SHOBJ_STATUS = @SHOBJ_STATUS@
 
 INC = -I. \
-      -I.. \
+      -I../.. \
+      -I../../builtins \
+      -I../../lib \
+      -I$(srcdir) \
       -I$(topdir) \
       -I$(topdir)/lib \
       -I$(topdir)/builtins \
-      -I${srcdir} \
       -I$(BASHINCDIR) \
-      -I../.. \
-      -I$(LIBBUILD) \
-      -I../../builtins \
       $(INTL_INC) \
 
 
