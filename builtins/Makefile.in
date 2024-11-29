@@ -79,10 +79,6 @@ RL_INCLUDEDIR = @RL_INCLUDEDIR@
 HIST_LIBSRC = ${topdir}/lib/readline
 RL_LIBSRC = ${topdir}/lib/readline
 
-INTL_LIBSRC = ${topdir}/lib/intl
-INTL_BUILDDIR = ../lib/intl
-INTL_LIBDIR = ${INTL_BUILDDIR}
-INTL_LIBRARY = ${INTL_BUILDDIR}/libintl.a
 INTL_INC = @INTL_INC@
 INTL_DEP = @INTL_DEP@
 LIBINTL_H = @LIBINTL_H@
@@ -383,8 +379,9 @@ $(OFILES): $(MKBUILTINS) ../config.h
 po: builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
-${LIBINTL_H}:
-	@ echo making $@ in $(@D)
+../lib/intl/libintl.h \
+ :
+	@ echo making $(@F) in $(@D)
 	@ cd $(@D) && \
 	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
