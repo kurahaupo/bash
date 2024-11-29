@@ -37,7 +37,6 @@ localedir = @localedir@
 
 gettextsrcdir = $(datadir)/gettext/intl
 aliaspath = $(localedir)
-subdir = intl
 
 @SET_MAKE@
 
