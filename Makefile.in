@@ -616,6 +616,7 @@ ALLOC_HEADERS	= \
 
 
 $(MALLOC_LIBRARY): ${MALLOC_SOURCE} ${ALLOC_HEADERS} config.h
+	@ echo making $(@F) in $(@D) with MALLOC_CFLAGS="$(MALLOC_CFLAGS)"
 	@ cd $(@D) && \
 	  $(MAKE) $(BASH_MAKEFLAGS) \
 	    MALLOC_CFLAGS="$(MALLOC_CFLAGS)" $(@F)
@@ -1228,41 +1229,30 @@ $(LIBDEP): .build
 #$(LIBDEP): version.h
 
 $(READLINE_LIBRARY): config.h $(READLINE_SOURCE)
-	@ echo making $(@F) in $(@D)
-	@ test "$(@D)" = "$(libdir)" || { \
-	    cd $(@D) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F) ; \
-	  }
 
 $(HISTORY_LIBRARY): config.h $(HISTORY_SOURCE) $(READLINE_DEP)
-	@ echo making $(@F) in $(@D)
+
+$(HISTORY_LIBRARY) \
+$(READLINE_LIBRARY) \
+ :
+	@ echo making $(@F) in $(@D) with DEBUG=$(DEBUG)
 	@ test "$(@D)" = "$(libdir)" || { \
 	    cd $(@D) && \
 	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F) ; \
 	  }
 
 $(GLOB_LIBRARY): config.h $(GLOB_SOURCE)
-	@ echo making $(@F) in $(@D)
-	@ cd $(@D) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 $(TILDE_LIBRARY): config.h $(TILDE_SOURCE)
-	@ echo making $(@F) in $(@D)
-	@ cd $(@D) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(TERMCAP_LIBRARY): config.h ${TERMCAP_SOURCE}
-	@ echo making $(@F) in $(@D)
-	@ cd $(@D) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(SHLIB_LIBRARY): config.h ${SHLIB_SOURCE}
-	@ echo making $(@F) in $(@D)
-	@ cd $(@D) && \
-	  $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${INTL_LIBRARY}: config.h ${INTL_LIBDIR}/Makefile
-	@ echo making $(@F) in $(@D)
+
+$(INTL_LIBRARY):
+	@ echo making $(@F) in $(@D) with XCFLAGS="$(LOCAL_CFLAGS)"
 	@ cd $(@D) && \
 	  $(MAKE) $(BASH_MAKEFLAGS) XCFLAGS="$(LOCAL_CFLAGS)" $(@F)
 
@@ -1307,22 +1297,33 @@ syntax.c: mksyntax${EXEEXT} $(srcdir)/syntax.h
 	./mksyntax$(EXEEXT) -o $@
 
 $(BUILTINS_LIBRARY): $(DEFDIR)/builtext.h $(BUILTIN_DEFS) $(BUILTIN_C_SRC) config.h ${BASHINCDIR}/memalloc.h pathnames.h
-	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
-# these require special rules to circumvent make builtin rules
 ${DEFDIR}/common.o: $(BUILTIN_SRCDIR)/common.c
-	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${DEFDIR}/bashgetopt.o: $(BUILTIN_SRCDIR)/bashgetopt.c
+
+$(BUILTINS_LIBRARY) \
+$(GLOB_LIBRARY) \
+$(SHLIB_LIBRARY) \
+$(DEFDIR)/bashgetopt.o \
+$(DEFDIR)/common.o \
+ :
+	@ echo making $(@F) in $(@D) with DEBUG=$(DEBUG)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
 
 ${DEFDIR}/builtext.h: $(BUILTIN_DEFS)
-	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 ${DEFDIR}/pipesize.h: ${BUILTINS_LIBRARY}
-	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 $(SUPPORT_DIR)/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
+
+$(DEFDIR)/builtext.h \
+$(DEFDIR)/pipesize.h \
+$(SUPPORT_DIR)/man2html$(EXEEXT) \
+$(TERMCAP_LIBRARY) \
+$(TILDE_LIBRARY) \
+ :
+	@ echo making $(@F) in $(@D)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 # For the justification of the following Makefile rules, see node
@@ -1369,6 +1370,7 @@ reconfig: force
 
 # force loadables to wait until the shell is built
 loadables: .made
+	@ echo making all in $(LOADABLES_DIR)
 	cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) all
 
 #newversion: mkversion
