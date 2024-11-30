@@ -1123,10 +1123,10 @@ LOADABLES_DIR = ${top_builddir}/examples/loadables
 	@ echo "$(Program) last made for a $(Machine) running $(OS)" >.made
 
 $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
-	$(RM) $@
-	$(CC) $(BUILTINS_LDFLAGS) $(LIBRARY_LDFLAGS) $(LDFLAGS) -o $(Program) $(OBJECTS) $(LIBS)
-	ls -l $(Program)
-	- $(SIZE) $(Program)
+	@- $(RM) $@
+	$(CC) $(BUILTINS_LDFLAGS) $(LIBRARY_LDFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBS)
+	ls -l $@
+	- $(SIZE) $@
 
 .build: $(SOURCES) config.h Makefile builtins/builtext.h version.h $(VERSPROG)
 	@ echo
