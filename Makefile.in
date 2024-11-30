@@ -1262,7 +1262,7 @@ ${LIBINTL_H}: ${INTL_DEP}
 # of signal names at runtime
 signames.o: $(SUPPORT_SRC)signames.c
 	$(RM) $@
-	$(CC) $(CCFLAGS) -c $(SUPPORT_SRC)signames.c
+	$(CC) $(CCFLAGS) -o $@ -c $(SUPPORT_SRC)signames.c
 
 buildsignames.o: $(SUPPORT_SRC)signames.c
 	$(RM) $@
@@ -1270,7 +1270,7 @@ buildsignames.o: $(SUPPORT_SRC)signames.c
 
 mksignames.o: $(SUPPORT_SRC)mksignames.c
 	$(RM) $@
-	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -c $(SUPPORT_SRC)mksignames.c
+	$(CC_FOR_BUILD) $(CCFLAGS_FOR_BUILD) -DBUILDTOOL -o $@ -c $(SUPPORT_SRC)mksignames.c
 
 # If we are not cross-compiling, we write out a header file (lsignames.h) with
 # the signal name definitions at build time
