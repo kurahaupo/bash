@@ -105,12 +105,12 @@ EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 
 # The name of this program and some version information.
-VERSPROG = bashversion$(EXEEXT)
+VERSPROG = ./bashversion$(EXEEXT)
 VERSOBJ = bashversion.$(OBJEXT)
 
 Program = bash$(EXEEXT)
 Version = @BASHVERS@
-PatchLevel = $$( ./$(VERSPROG) -p )
+PatchLevel = $$( $(VERSPROG) -p )
 RELSTATUS = @RELSTATUS@
 
 Machine = @host_cpu@
@@ -1136,7 +1136,7 @@ $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
 	@ echo
 	@ echo "	  ***********************************************************"
 	@ echo "	  *                                                         *"
-	@ echo "	  * $$( ./$(VERSPROG) -l )"
+	@ echo "	  * $$( $(VERSPROG) -l )"
 	@ echo "	  *                                                         *"
 	@ echo "	  ***********************************************************"
 	@ echo
