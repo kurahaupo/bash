@@ -22,7 +22,6 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 
 libdir = @libdir@
 
@@ -90,6 +89,6 @@ $(DESTDIR)$(libdir)/libtermcap.a: libtermcap.a
 	${INSTALL_DATA} -c -m 644 libtermcap.a $@
 	- test -n "$(RANLIB)" && $(RANLIB) -t $@
 
-termcap.o: $(BUILD_DIR)/config.h
-tparam.o: $(BUILD_DIR)/config.h
-version.o: $(BUILD_DIR)/config.h
+termcap.o: ../../config.h
+tparam.o: ../../config.h
+version.o: ../../config.h

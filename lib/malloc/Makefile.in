@@ -18,7 +18,6 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -45,7 +44,7 @@ LDFLAGS = @LDFLAGS@
 DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
-LIBBUILD = ${BUILD_DIR}/lib
+LIBBUILD = ..
 
 BASHINCDIR = ${topdir}/include
 
@@ -85,7 +84,7 @@ STUB_OBJS = $(ALLOCA) stub.o
 
 .PHONY: malloc stubmalloc
 
-all: malloc
+all libmalloc.a: malloc
 
 malloc: ${MALLOC_OBJS}
 	${RM} libmalloc.a
@@ -118,13 +117,13 @@ clean: mostlyclean
 distclean realclean maintainer-clean: clean
 	$(RM) Makefile
 
-alloca.o: $(BUILD_DIR)/config.h
-malloc.o: $(BUILD_DIR)/config.h $(topdir)/bashtypes.h getpagesize.h
-xmalloc.o: $(BUILD_DIR)/config.h $(BASHINCDIR)/ansi_stdlib.h
-trace.o: ${BUILD_DIR}/config.h
-stats.o: ${BUILD_DIR}/config.h
-table.o: ${BUILD_DIR}/config.h
-watch.o: ${BUILD_DIR}/config.h
+alloca.o: ../../config.h
+malloc.o: ../../config.h $(topdir)/bashtypes.h getpagesize.h
+xmalloc.o: ../../config.h $(BASHINCDIR)/ansi_stdlib.h
+trace.o: ../../config.h
+stats.o: ../../config.h
+table.o: ../../config.h
+watch.o: ../../config.h
 
 malloc.o: ${srcdir}/imalloc.h ${srcdir}/mstats.h
 malloc.o: ${srcdir}/table.h ${srcdir}/watch.h

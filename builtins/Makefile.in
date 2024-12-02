@@ -52,9 +52,6 @@ DESTDIR =
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-BUILD_DIR = @BUILD_DIR@
-
-LIBBUILD = ${BUILD_DIR}/lib
 
 DEBUG = @DEBUG@
 
@@ -83,7 +80,7 @@ HIST_LIBSRC = ${topdir}/lib/readline
 RL_LIBSRC = ${topdir}/lib/readline
 
 INTL_LIBSRC = ${topdir}/lib/intl
-INTL_BUILDDIR = ${LIBBUILD}/intl
+INTL_BUILDDIR = ../lib/intl
 INTL_LIBDIR = ${INTL_BUILDDIR}
 INTL_LIBRARY = ${INTL_BUILDDIR}/libintl.a
 INTL_INC = @INTL_INC@
