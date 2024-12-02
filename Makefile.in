@@ -62,7 +62,6 @@ htmldir = @htmldir@
 DESTDIR =
 
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 top_builddir = @BUILD_DIR@
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -112,7 +111,7 @@ VERSOBJ = bashversion.$(OBJEXT)
 
 Program = bash$(EXEEXT)
 Version = @BASHVERS@
-PatchLevel = $$( $(BUILD_DIR)/$(VERSPROG) -p )
+PatchLevel = $$( ./$(VERSPROG) -p )
 RELSTATUS = @RELSTATUS@
 
 Machine = @host_cpu@
@@ -124,7 +123,8 @@ MACHTYPE = @host@
 DEBUG = @DEBUG@
 MALLOC_DEBUG = @MALLOC_DEBUG@
 
-THIS_SH = $(BUILD_DIR)/$(Program)
+# This has to be an absolute path, so that it still works after cd $(srcdir)/...
+THIS_SH = $$PWD/$(Program)
 
 # PROFILE_FLAGS is either -pg, to generate profiling info for use
 # with gprof, or nothing (the default).
@@ -267,7 +267,7 @@ GCC_LINT_CFLAGS = $(BASE_CCFLAGS) $(CPPFLAGS) $(GCC_LINT_FLAGS)
 LIBSUBDIR = lib
 LIBSRC = $(srcdir)/$(LIBSUBDIR)
 
-LIBBUILD = ${BUILD_DIR}/${LIBSUBDIR}
+LIBBUILD = $(LIBSUBDIR)
 
 SUBDIR_INCLUDES = -I. @RL_INCLUDE@ -I$(topdir) -I$(topdir)/$(LIBSUBDIR)
 
@@ -1169,15 +1169,17 @@ gcov:
 asan-tests: asan  $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ cd $(srcdir)/tests && \
-	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$$PWD/$(Program) ; \
+	  cd $(srcdir)/tests && \
+	  $(SHELL) $(TESTSCRIPT)
 
 # have to make this separate because making tests depend on $(PROGRAM)
 lsan-tests: lsan  $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ cd $(srcdir)/tests && \
-	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$$PWD/$(Program) ; \
+	  cd $(srcdir)/tests && \
+	  $(SHELL) $(TESTSCRIPT)
 
 profiling-tests: ${Program}
 	@ test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2 ; exit 1 ; }
@@ -1437,10 +1439,10 @@ install-headers-dirs:
 
 maybe-install-headers: install-headers-dirs
 	@ for hf in $(HYBRID_HEADERS) ; do \
-	    if test -f $(BUILD_DIR)/"$$hf" ; then \
-	      ${INSTALL_DATA} $(BUILD_DIR)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
+	    if test -f "$$hf" ; then \
+	      ${INSTALL_DATA}           "$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
 	    else \
-	      ${INSTALL_DATA} $(srcdir)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
+	      ${INSTALL_DATA} "$(srcdir)/$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
 	    fi ; \
 	  done
 	@ SDH=${CREATED_SUBDIR_HEADERS} ; \
@@ -1459,8 +1461,8 @@ install-headers: maybe-install-headers
 	    ${INSTALL_DATA} $(BUILTIN_SRCDIR)/"$$hf" $(DESTDIR)$(headersdir)/builtins/$$hf || exit 1 ; \
 	  done
 	@ for hf in $(CREATED_HEADERS) ; do \
-	    if test -f $(BUILD_DIR)/"$$hf" ; then \
-	      ${INSTALL_DATA} $(BUILD_DIR)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
+	    if test -f "$$hf" ; then \
+	      ${INSTALL_DATA} "$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
 	    else \
 	      ${INSTALL_DATA} $(srcdir)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
 	    fi ; \
@@ -1561,8 +1563,8 @@ maintainer-clean: basic-clean
 
 .PHONY: maybe-clean
 maybe-clean:
-	- TD=$$( cd $(topdir)    && pwd -P ) ; \
-	  BD=$$( cd $(BUILD_DIR) && pwd -P ) ; \
+	- TD=$$( cd $(topdir) && pwd -P ) ; \
+	  BD=$$( cd .         && pwd -P ) ; \
 	  if test X"$$TD" != X"$$BD" ; then \
 	    $(RM) parser-built y.tab.c y.tab.h ; \
 	  fi
@@ -1582,8 +1584,9 @@ xcase$(EXEEXT): $(SUPPORT_SRC)xcase.c
 test tests check: force $(Program) $(TESTS_SUPPORT)
 	@- test -d tests || mkdir tests
 	@ cp $(TESTS_SUPPORT) tests
-	@ cd $(srcdir)/tests && \
-	  BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
+	@ export BUILD_DIR=$$PWD PATH=$$PWD/tests:$$PATH THIS_SH=$$PWD/$(Program) ; \
+	  cd $(srcdir)/tests && \
+	  $(SHELL) $(TESTSCRIPT)
 
 symlinks:
 	$(SHELL) $(SUPPORT_SRC)fixlinks -s $(srcdir)

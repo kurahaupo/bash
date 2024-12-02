@@ -35,7 +35,6 @@ loadablesdir = @loadablesdir@
 headersdir = @headersdir@
 
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
@@ -70,7 +69,7 @@ BASHINCDIR = ${topdir}/include
 
 SUPPORT_SRC = $(topdir)/support/
 
-LIBBUILD = ${BUILD_DIR}/lib
+LIBBUILD = ../../lib
 
 INTL_LIBSRC = ${topdir}/lib/intl
 INTL_BUILDDIR = ${LIBBUILD}/intl
@@ -100,9 +99,9 @@ INC = -I. \
       -I$(topdir)/builtins \
       -I${srcdir} \
       -I$(BASHINCDIR) \
-      -I$(BUILD_DIR) \
+      -I../.. \
       -I$(LIBBUILD) \
-      -I$(BUILD_DIR)/builtins \
+      -I../../builtins \
       $(INTL_INC) \
 
 
@@ -272,7 +271,7 @@ fltexpr:	fltexpr.o
 #
 pushd.c: ${topdir}/builtins/pushd.def
 	$(RM) $@
-	${BUILD_DIR}/builtins/mkbuiltins -D ${topdir}/builtins ${topdir}/builtins/pushd.def
+	../../builtins/mkbuiltins -D ${topdir}/builtins ${topdir}/builtins/pushd.def
 
 pushd.o: pushd.c
 	$(RM) $@
@@ -310,7 +309,7 @@ install-dev: installdirs
 	@ $(INSTALL_DATA) Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.inc
 	@ $(INSTALL_DATA) Makefile.sample $(DESTDIR)$(loadablesdir)/Makefile.sample
 	@ $(INSTALL_DATA) $(srcdir)/loadables.h $(DESTDIR)$(loadablesdir)/loadables.h
-	@ cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" install-headers
+	@ cd ../.. && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" install-headers
 
 .PHONY: install-supported
 install-supported: all installdirs install-dev
@@ -324,7 +323,7 @@ install-supported: all installdirs install-dev
 uninstall-dev:
 	- $(RM) $(DESTDIR)$(loadablesdir)/Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.sample
 	- $(RM) $(DESTDIR)$(loadablesdir)/loadables.h
-	- cd $(BUILD_DIR) && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers
+	- cd ../.. && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers
 
 .PHONY: uninstall-supported
 uninstall-supported: uninstall-dev
@@ -344,7 +343,7 @@ OBJS = print.o truefalse.o accept.o sleep.o finfo.o getconf.o logname.o \
        sync.o push.o mkdir.o mktemp.o realpath.o strftime.o setpgid.o stat.o \
        fdflags.o seq.o asort.o strptime.o
 
-${OBJS}: ${BUILD_DIR}/config.h
+${OBJS}: ../../config.h
 
 print.o: print.c
 truefalse.o: truefalse.c
