@@ -1232,10 +1232,10 @@ $(HISTORY_LIBRARY): config.h $(HISTORY_SOURCE) $(READLINE_DEP)
 $(HISTORY_LIBRARY) \
 $(READLINE_LIBRARY) \
  :
-	@ echo making $(@F) in $(@D) with DEBUG=$(DEBUG)
+	@ echo making $(@F) in $(@D) with DEBUG="$(DEBUG)"
 	@ test "$(@D)" = "$(libdir)" || { \
 	    cd $(@D) && \
-	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F) ; \
+	    $(MAKE) $(BASH_MAKEFLAGS) DEBUG="$(DEBUG)" $(@F) ; \
 	  }
 
 $(GLOB_LIBRARY): config.h $(GLOB_SOURCE)
@@ -1308,8 +1308,8 @@ $(SHLIB_LIBRARY) \
 builtins/bashgetopt.o \
 builtins/common.o \
  :
-	@ echo making $(@F) in $(@D) with DEBUG=$(DEBUG)
-	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG=$(DEBUG) $(@F)
+	@ echo making $(@F) in $(@D) with DEBUG="$(DEBUG)"
+	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) DEBUG="$(DEBUG)" $(@F)
 
 builtins/builtext.h: $(BUILTIN_DEFS)
 
