@@ -22,7 +22,6 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -131,7 +130,7 @@ clean: mostlyclean
 ######################################################################
 
 tilde.o: tilde.h $(BASHINCDIR)/ansi_stdlib.h
-tilde.o: $(BUILD_DIR)/config.h
+tilde.o: ../../config.h
 
 # Rules for deficient makes, like SunOS and Solaris
 tilde.o: tilde.c

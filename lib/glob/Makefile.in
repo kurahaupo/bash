@@ -22,7 +22,6 @@
 srcdir = @srcdir@
 VPATH = @srcdir@
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -131,10 +130,10 @@ realclean distclean maintainer-clean: clean
 clean: mostlyclean
 	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
-${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
+../../pathnames.h: ../../config.h ../../Makefile Makefile
 
-$(BUILD_DIR)/config.h \
-$(BUILD_DIR)/pathnames.h \
+../../config.h \
+../../pathnames.h \
  :
 	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
@@ -145,29 +144,29 @@ $(BUILD_DIR)/pathnames.h \
 ######################################################################
 
 smatch.o: strmatch.h
-smatch.o: $(BUILD_DIR)/config.h
+smatch.o: ../../config.h
 smatch.o: $(BASHINCDIR)/chartypes.h
 smatch.o: $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
 smatch.o: $(BASHINCDIR)/shmbutil.h
 smatch.o: $(topdir)/xmalloc.h
 
 strmatch.o: strmatch.h
-strmatch.o: $(BUILD_DIR)/config.h
+strmatch.o: ../../config.h
 strmatch.o: $(BASHINCDIR)/stdc.h
 
-glob.o: $(BUILD_DIR)/config.h
-glob.o: $(topdir)/shell.h $(BUILD_DIR)/pathnames.h
+glob.o: ../../config.h
+glob.o: $(topdir)/shell.h ../../pathnames.h
 glob.o: $(topdir)/bashtypes.h $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
 glob.o: $(BASHINCDIR)/posixstat.h $(BASHINCDIR)/memalloc.h
 glob.o: strmatch.h glob.h
 glob.o: $(BASHINCDIR)/shmbutil.h
 glob.o: $(topdir)/xmalloc.h
 
-gmisc.o: $(BUILD_DIR)/config.h
+gmisc.o: ../../config.h
 gmisc.o: $(topdir)/bashtypes.h $(BASHINCDIR)/ansi_stdlib.h $(topdir)/bashansi.h
 gmisc.o: $(BASHINCDIR)/shmbutil.h
 
-xmbsrtowcs.o: ${BUILD_DIR}/config.h
+xmbsrtowcs.o: ../../config.h
 xmbsrtowcs.o: ${topdir}/bashansi.h ${BASHINCDIR}/ansi_stdlib.h
 xmbsrtowcs.o: ${BASHINCDIR}/shmbutil.h
 

@@ -30,7 +30,6 @@ includedir = @includedir@
 datarootdir = @datarootdir@
 
 topdir = @top_srcdir@
-BUILD_DIR = @BUILD_DIR@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
@@ -73,9 +72,9 @@ INC = -I. \
       -I$(topdir)/lib \
       -I$(topdir)/builtins \
       -I$(topdir)/include \
-      -I$(BUILD_DIR) \
-      -I$(BUILD_DIR)/lib \
-      -I$(BUILD_DIR)/builtins \
+      -I../../.. \
+      -I../../../lib \
+      -I../../../builtins \
 
 
 ${BUILTIN}: ${OBJ}
