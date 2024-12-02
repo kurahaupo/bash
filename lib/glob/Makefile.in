@@ -132,6 +132,10 @@ clean: mostlyclean
 	- cd doc && $(MAKE) $(BASH_MAKEFLAGS) $@
 
 ${BUILD_DIR}/pathnames.h: ${BUILD_DIR}/config.h ${BUILD_DIR}/Makefile Makefile
+
+$(BUILD_DIR)/config.h \
+$(BUILD_DIR)/pathnames.h \
+ :
 	- cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
 
 ######################################################################
