@@ -883,6 +883,7 @@ OBJECTS		= \
 		  xmalloc.o \
 		  y.tab.o \
 
+
 # Where the source code of the shell builtins resides.
 BUILTIN_SRCDIR=$(srcdir)/builtins
 
@@ -1017,7 +1018,7 @@ PO_SRC = $(srcdir)/po/
 PO_DIR = po/
 
 # Auxiliary support files
-SUPPORT_SRC = $(srcdir)/support/
+SUPPORT_SRC = $(topdir)/support/
 
 TESTS_SUPPORT	= \
 		  printenv$(EXEEXT) \
@@ -1358,7 +1359,7 @@ pathnames.h: Makefile $(srcdir)/pathnames.h.in
 buildconf.h: $(srcdir)/buildconf.h.in
 	CONFIG_FILES= CONFIG_HEADERS=buildconf.h $(SHELL) ./config.status
 
-support/bashbug.sh: $(SUPPORT_SRC)/bashbug.sh.in
+support/bashbug.sh: $(SUPPORT_SRC)bashbug.sh.in
 	CONFIG_FILES=support/bashbug.sh CONFIG_HEADERS= $(SHELL) ./config.status
 
 # comment out for distribution
@@ -1592,9 +1593,9 @@ symlinks:
 	$(SHELL) $(SUPPORT_SRC)fixlinks -s $(srcdir)
 
 dist: force
-	@ echo Bash distributions are created using $(srcdir)/support/mkdist.
+	@ echo Bash distributions are created using $(SUPPORT_SRC)mkdist.
 	@ echo Here is a sample of the necessary commands:
-	@ echo $(Program) $(srcdir)/support/mkdist -m $(srcdir)/MANIFEST -s $(srcdir) -r ${PACKAGE} -t $(PACKAGE_VERSION)
+	@ echo $(Program) $(SUPPORT_SRC)mkdist -m $(srcdir)/MANIFEST -s $(srcdir) -r ${PACKAGE} -t $(PACKAGE_VERSION)
 
 xdist: force
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
