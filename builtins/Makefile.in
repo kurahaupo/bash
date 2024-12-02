@@ -379,7 +379,11 @@ $(OFILES): $(MKBUILTINS) ../config.h
 po: builtins.c
 	xgettext -L C -o $(topdir)/po/builtins.pot --keyword='N_' builtins.c 2>/dev/null
 
+../config.h \
 ../lib/intl/libintl.h \
+../version.h \
+../y.tab.c \
+../y.tab.h \
  :
 	@ echo making $(@F) in $(@D)
 	@ cd $(@D) && \
