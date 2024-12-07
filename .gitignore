@@ -6,14 +6,19 @@
 .DS_Store?
 ._*
 .Spotlight-V100
+
+# editor temp files (also used for various purposes)
+*~      # generic backup
+.*.sw?  # vim buffer
+
 #
-# these files are all created by the build process; none are in the repository
+# files created by the build process (not in the repository)
 #
 *.o
 *.a
 *.dSYM
-.build
-.depend
+.build*
+.depend*
 .made
 .*~
 
@@ -22,7 +27,6 @@ buildconf.h
 config.status
 config.cache
 config.log
-configure~
 
 autom4te.cache
 
@@ -34,26 +38,15 @@ TAGS
 tags
 
 Makefile
-builtins/Makefile
+
 builtins/builtext.h
 builtins/builtins.c
 builtins/mkbuiltins
 builtins/pipesize.h
 builtins/psize.aux
 
-doc/Makefile
-examples/loadables/Makefile
 examples/loadables/Makefile.inc
 examples/loadables/Makefile.sample
-examples/loadables/perl/Makefile
-lib/glob/Makefile
-lib/intl/Makefile
-lib/malloc/Makefile
-lib/readline/Makefile
-lib/sh/Makefile
-lib/termcap/Makefile
-lib/tilde/Makefile
-support/Makefile
 
 lib/intl/charset.alias
 lib/intl/libgnuintl.h
@@ -61,7 +54,7 @@ lib/intl/libintl.h
 lib/intl/ref-add.sed
 lib/intl/ref-del.sed
 
-po/Makefile
+# po/Makefile.in is generated from po/Makefile.in.in, go figure...
 po/Makefile.in
 po/POTFILES
 
@@ -95,60 +88,22 @@ y.tab.h
 
 # doc files created as part of making dvi versions from texinfo source
 
-doc/bashref.aux
-doc/bashref.bt
+doc/*.aux
+doc/*.bt
 doc/bashref.bts
-doc/bashref.cp
-doc/bashref.cps
-doc/bashref.fn
-doc/bashref.fns
-doc/bashref.ky
-doc/bashref.pg
+doc/*.cp
+doc/*.cps
+doc/*.fn
+doc/*.fns
+doc/*.ky
+doc/*.log
+doc/*.pg
 doc/bashref.rw
 doc/bashref.rws
-doc/bashref.toc
-doc/bashref.tp
-doc/bashref.vr
-doc/bashref.vrs
-lib/readline/doc/history.aux
-lib/readline/doc/history.bt
-lib/readline/doc/history.cp
-lib/readline/doc/history.cps
-lib/readline/doc/history.fn
-lib/readline/doc/history.fns
-lib/readline/doc/history.ky
-lib/readline/doc/history.log
-lib/readline/doc/history.pg
-lib/readline/doc/history.toc
-lib/readline/doc/history.tp
-lib/readline/doc/history.vr
-lib/readline/doc/history.vrs
-lib/readline/doc/rlman.aux
-lib/readline/doc/rlman.bt
-lib/readline/doc/rlman.cp
-lib/readline/doc/rlman.cps
-lib/readline/doc/rlman.fn
-lib/readline/doc/rlman.fns
-lib/readline/doc/rlman.ky
-lib/readline/doc/rlman.log
-lib/readline/doc/rlman.pg
-lib/readline/doc/rlman.toc
-lib/readline/doc/rlman.tp
-lib/readline/doc/rlman.vr
-lib/readline/doc/rlman.vrs
-lib/readline/doc/rluserman.aux
-lib/readline/doc/rluserman.bt
-lib/readline/doc/rluserman.cp
-lib/readline/doc/rluserman.cps
-lib/readline/doc/rluserman.fn
-lib/readline/doc/rluserman.fns
-lib/readline/doc/rluserman.ky
-lib/readline/doc/rluserman.log
-lib/readline/doc/rluserman.pg
-lib/readline/doc/rluserman.toc
-lib/readline/doc/rluserman.tp
-lib/readline/doc/rluserman.vr
-lib/readline/doc/rluserman.vrs
+doc/*.toc
+doc/*.tp
+doc/*.vr
+doc/*.vrs
 
 doc/oldbash.texi
 doc/newbash.texi
