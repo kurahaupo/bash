@@ -113,8 +113,8 @@ int bufsize = 128;
 static void
 memory_out ()
 {
-  write (2, "virtual memory exhausted\n", 25);
-  exit (1);
+  _Bool ok = write (2, "virtual memory exhausted\n", 25) == 25;
+  exit (ok ? 1 : 2);
 }
 
 static char *
