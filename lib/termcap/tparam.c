@@ -22,6 +22,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #ifdef HAVE_STDLIB_H 
 #  include <stdlib.h>
 #else
@@ -64,8 +68,8 @@ char *realloc ();
 static void
 memory_out ()
 {
-  write (2, "virtual memory exhausted\n", 25);
-  exit (1);
+  _Bool ok = write (2, "virtual memory exhausted\n", 25) == 25;
+  exit (ok ? 1 : 2);
 }
 
 static char *
