@@ -3461,7 +3461,6 @@ version.o: $(BASHINCDIR)/gettext.h
 #version.o: $(LIBINTL_H)
 version.o: $(srcdir)/version.c
 version.o: $(topdir)/bashintl.h
-#version.o: $(topdir)/buildconf.h
 version.o: $(topdir)/config-bot.h
 version.o: $(topdir)/config-top.h
 version.o: $(topdir)/conftypes.h
@@ -4505,9 +4504,6 @@ builtins/gen-helpfiles.o: $(topdir)/config-bot.h
 builtins/gen-helpfiles.o: $(topdir)/config-top.h
 builtins/gen-helpfiles.o: builtins/tmpbuiltins.h
 builtins/gen-helpfiles.o: config.h
-#builtins/getopt.c: $(BASHINCDIR)/gettext.h
-#builtins/getopt.c: $(LIBINTL_H)
-#builtins/getopt.c: $(topdir)/bashintl.h
 #builtins/getopt.o: $(BASHINCDIR)/gettext.h
 #builtins/getopt.o: $(BASHINCDIR)/maxpath.h
 builtins/getopt.o: $(BASHINCDIR)/memalloc.h

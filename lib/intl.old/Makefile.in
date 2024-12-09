@@ -627,6 +627,7 @@ loadmsgcat.o: $(topdir)/config-top.h
 loadmsgcat.o: ../../config.h
 localcharset.o: $(srcdir)/localcharset.c
 localcharset.o: $(srcdir)/localcharset.h
+localcharset.o: $(srcdir)/relocatable.h
 localcharset.o: $(topdir)/config-bot.h
 localcharset.o: $(topdir)/config-top.h
 localcharset.o: ../../config.h
@@ -635,6 +636,7 @@ localealias.o: $(srcdir)/gmo.h
 localealias.o: $(srcdir)/libgnuintl.h
 localealias.o: $(srcdir)/loadinfo.h
 localealias.o: $(srcdir)/localealias.c
+localealias.o: $(srcdir)/relocatable.h
 localealias.o: $(topdir)/config-bot.h
 localealias.o: $(topdir)/config-top.h
 localealias.o: ../../config.h
