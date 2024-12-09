@@ -66,7 +66,7 @@ LOCAL_DEFS = @LOCAL_DEFS@
 MKDEP = $(SUPPORT_SRC)mkdep
 MKDEP_CC = $(CC)
 MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
-MKDEP_CFLAGS = $(CCFLAGS) $(INCLUDES) -DIN_LIBINTL
+MKDEP_CFLAGS = $(CFLAGS) -DIN_LIBINTL
 MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 DEFS		= \
@@ -89,12 +89,12 @@ RELOCATABLE_DEFS = \
 		  -Dset_relocation_prefix=libintl_set_relocation_prefix \
 
 
-CPPFLAGS = @CPPFLAGS@
-CFLAGS = @CFLAGS@ ${DEFS} @DEFS@ ${LOCAL_DEFS}
+CPPFLAGS = $(DEFS) $(INCLUDES) @CPPFLAGS@
+CFLAGS = @CFLAGS@ $(CPPFLAGS) $(XCFLAGS) $(LOCAL_DEFS)
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 
-COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
+COMPILE = $(CC) -c $(CFLAGS)
 
 HEADERS		= \
 		  arg-nonnull.h \

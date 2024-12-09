@@ -74,9 +74,9 @@ INCLUDES = -I. \
 SUPPORT_SRC = $(topdir)/support/
 
 MKDEP = $(SUPPORT_SRC)mkdep
-MKDEP_CC = ${CC}
-MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
-MKDEP_CFLAGS = ${CCFLAGS}
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = $(CCFLAGS) -DREADLINE_LIBRARY
 MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 CCFLAGS = $(DEFS) $(LOCAL_DEFS) $(APP_CFLAGS) $(CPPFLAGS) ${INCLUDES} \
