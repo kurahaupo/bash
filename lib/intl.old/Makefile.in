@@ -83,9 +83,9 @@ LIBS = @LIBS@
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
 MKDEP = $(SUPPORT_SRC)mkdep
-MKDEP_CC = ${CC}
-MKDEP_OPTS = -c ${MKDEP_CC} -P -S "$(srcdir)" -T "$(topdir)"
-MKDEP_CFLAGS = ${CCFLAGS}
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CFLAGS = $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 MKDEP_CSOURCES = $(srcdir)/*.c #*.c
 
 HEADERS		= \
@@ -93,7 +93,7 @@ HEADERS		= \
 		  gettextP.h \
 		  gmo.h \
 		  hash-string.h \
-		  libgnuintl.h.in \
+		  libgnuintl.h \
 		  loadinfo.h \
 		  localcharset.h \
 		  os2compat.h \
@@ -281,12 +281,8 @@ INCLUDES = -I. \
 	   -I../.. \
 	   -I$(topdir) \
 
-
-libgnuintl.h: $(srcdir)/libgnuintl.h.in
-	cp $(srcdir)/libgnuintl.h.in libgnuintl.h
-
-libintl.h: libgnuintl.h
-	cmp libgnuintl.h libintl.h || cp libgnuintl.h libintl.h
+libintl.h: $(srcdir)/libgnuintl.h
+	cmp $(srcdir)/libgnuintl.h $@ || cp $(srcdir)/libgnuintl.h $@
 
 charset.alias: $(srcdir)/config.charset
 	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
@@ -447,7 +443,7 @@ uninstall:
 
 info dvi ps pdf html:
 
-$(OBJECTS): ../../config.h libgnuintl.h
+$(OBJECTS): ../../config.h $(srcdir)/libgnuintl.h
 bindtextdom.$lo dcgettext.$lo dcigettext.$lo dcngettext.$lo dgettext.$lo dngettext.$lo finddomain.$lo gettext.$lo intl-compat.$lo loadmsgcat.$lo localealias.$lo ngettext.$lo textdomain.$lo: $(srcdir)/gettextP.h $(srcdir)/gmo.h $(srcdir)/loadinfo.h
 dcigettext.$lo loadmsgcat.$lo: $(srcdir)/hash-string.h
 explodename.$lo l10nflist.$lo: $(srcdir)/loadinfo.h
@@ -474,7 +470,7 @@ ID: $(HEADERS) $(SOURCES)
 
 mostlyclean:
 	rm -f *.a *.la *.o *.obj *.lo core core.*
-	rm -f libgnuintl.h libintl.h charset.alias ref-add.sed ref-del.sed
+	rm -f libintl.h charset.alias ref-add.sed ref-del.sed
 	rm -f -r .libs _libs
 
 clean: mostlyclean
@@ -537,54 +533,54 @@ depends depend Makefile:
 bindtextdom.o: $(srcdir)/bindtextdom.c
 bindtextdom.o: $(srcdir)/gettextP.h
 bindtextdom.o: $(srcdir)/gmo.h
+bindtextdom.o: $(srcdir)/libgnuintl.h
 bindtextdom.o: $(srcdir)/loadinfo.h
 bindtextdom.o: $(topdir)/config-bot.h
 bindtextdom.o: $(topdir)/config-top.h
 bindtextdom.o: ../../config.h
-bindtextdom.o: libgnuintl.h
 dcgettext.o: $(srcdir)/dcgettext.c
 dcgettext.o: $(srcdir)/gettextP.h
 dcgettext.o: $(srcdir)/gmo.h
+dcgettext.o: $(srcdir)/libgnuintl.h
 dcgettext.o: $(srcdir)/loadinfo.h
 dcgettext.o: $(topdir)/config-bot.h
 dcgettext.o: $(topdir)/config-top.h
 dcgettext.o: ../../config.h
-dcgettext.o: libgnuintl.h
 dcigettext.o: $(srcdir)/dcigettext.c
 dcigettext.o: $(srcdir)/eval-plural.h
 dcigettext.o: $(srcdir)/gettextP.h
 dcigettext.o: $(srcdir)/gmo.h
 dcigettext.o: $(srcdir)/hash-string.h
+dcigettext.o: $(srcdir)/libgnuintl.h
 dcigettext.o: $(srcdir)/loadinfo.h
 dcigettext.o: $(srcdir)/plural-exp.h
 dcigettext.o: $(topdir)/config-bot.h
 dcigettext.o: $(topdir)/config-top.h
 dcigettext.o: ../../config.h
-dcigettext.o: libgnuintl.h
 dcngettext.o: $(srcdir)/dcngettext.c
 dcngettext.o: $(srcdir)/gettextP.h
 dcngettext.o: $(srcdir)/gmo.h
+dcngettext.o: $(srcdir)/libgnuintl.h
 dcngettext.o: $(srcdir)/loadinfo.h
 dcngettext.o: $(topdir)/config-bot.h
 dcngettext.o: $(topdir)/config-top.h
 dcngettext.o: ../../config.h
-dcngettext.o: libgnuintl.h
 dgettext.o: $(srcdir)/dgettext.c
 dgettext.o: $(srcdir)/gettextP.h
 dgettext.o: $(srcdir)/gmo.h
+dgettext.o: $(srcdir)/libgnuintl.h
 dgettext.o: $(srcdir)/loadinfo.h
 dgettext.o: $(topdir)/config-bot.h
 dgettext.o: $(topdir)/config-top.h
 dgettext.o: ../../config.h
-dgettext.o: libgnuintl.h
 dngettext.o: $(srcdir)/dngettext.c
 dngettext.o: $(srcdir)/gettextP.h
 dngettext.o: $(srcdir)/gmo.h
+dngettext.o: $(srcdir)/libgnuintl.h
 dngettext.o: $(srcdir)/loadinfo.h
 dngettext.o: $(topdir)/config-bot.h
 dngettext.o: $(topdir)/config-top.h
 dngettext.o: ../../config.h
-dngettext.o: libgnuintl.h
 explodename.o: $(srcdir)/explodename.c
 explodename.o: $(srcdir)/loadinfo.h
 explodename.o: $(topdir)/config-bot.h
@@ -593,27 +589,27 @@ explodename.o: ../../config.h
 finddomain.o: $(srcdir)/finddomain.c
 finddomain.o: $(srcdir)/gettextP.h
 finddomain.o: $(srcdir)/gmo.h
+finddomain.o: $(srcdir)/libgnuintl.h
 finddomain.o: $(srcdir)/loadinfo.h
 finddomain.o: $(topdir)/config-bot.h
 finddomain.o: $(topdir)/config-top.h
 finddomain.o: ../../config.h
-finddomain.o: libgnuintl.h
 gettext.o: $(srcdir)/gettext.c
 gettext.o: $(srcdir)/gettextP.h
 gettext.o: $(srcdir)/gmo.h
+gettext.o: $(srcdir)/libgnuintl.h
 gettext.o: $(srcdir)/loadinfo.h
 gettext.o: $(topdir)/config-bot.h
 gettext.o: $(topdir)/config-top.h
 gettext.o: ../../config.h
-gettext.o: libgnuintl.h
 intl-compat.o: $(srcdir)/gettextP.h
 intl-compat.o: $(srcdir)/gmo.h
 intl-compat.o: $(srcdir)/intl-compat.c
+intl-compat.o: $(srcdir)/libgnuintl.h
 intl-compat.o: $(srcdir)/loadinfo.h
 intl-compat.o: $(topdir)/config-bot.h
 intl-compat.o: $(topdir)/config-top.h
 intl-compat.o: ../../config.h
-intl-compat.o: libgnuintl.h
 l10nflist.o: $(srcdir)/l10nflist.c
 l10nflist.o: $(srcdir)/loadinfo.h
 l10nflist.o: $(topdir)/config-bot.h
@@ -622,13 +618,13 @@ l10nflist.o: ../../config.h
 loadmsgcat.o: $(srcdir)/gettextP.h
 loadmsgcat.o: $(srcdir)/gmo.h
 loadmsgcat.o: $(srcdir)/hash-string.h
+loadmsgcat.o: $(srcdir)/libgnuintl.h
 loadmsgcat.o: $(srcdir)/loadinfo.h
 loadmsgcat.o: $(srcdir)/loadmsgcat.c
 loadmsgcat.o: $(srcdir)/plural-exp.h
 loadmsgcat.o: $(topdir)/config-bot.h
 loadmsgcat.o: $(topdir)/config-top.h
 loadmsgcat.o: ../../config.h
-loadmsgcat.o: libgnuintl.h
 localcharset.o: $(srcdir)/localcharset.c
 localcharset.o: $(srcdir)/localcharset.h
 localcharset.o: $(topdir)/config-bot.h
@@ -636,12 +632,12 @@ localcharset.o: $(topdir)/config-top.h
 localcharset.o: ../../config.h
 localealias.o: $(srcdir)/gettextP.h
 localealias.o: $(srcdir)/gmo.h
+localealias.o: $(srcdir)/libgnuintl.h
 localealias.o: $(srcdir)/loadinfo.h
 localealias.o: $(srcdir)/localealias.c
 localealias.o: $(topdir)/config-bot.h
 localealias.o: $(topdir)/config-top.h
 localealias.o: ../../config.h
-localealias.o: libgnuintl.h
 localename.o: $(srcdir)/localename.c
 localename.o: $(topdir)/config-bot.h
 localename.o: $(topdir)/config-top.h
@@ -652,12 +648,12 @@ log.o: $(topdir)/config-top.h
 log.o: ../../config.h
 ngettext.o: $(srcdir)/gettextP.h
 ngettext.o: $(srcdir)/gmo.h
+ngettext.o: $(srcdir)/libgnuintl.h
 ngettext.o: $(srcdir)/loadinfo.h
 ngettext.o: $(srcdir)/ngettext.c
 ngettext.o: $(topdir)/config-bot.h
 ngettext.o: $(topdir)/config-top.h
 ngettext.o: ../../config.h
-ngettext.o: libgnuintl.h
 os2compat.o: $(srcdir)/os2compat.c
 os2compat.o: $(topdir)/config-bot.h
 os2compat.o: $(topdir)/config-top.h
@@ -680,9 +676,9 @@ relocatable.o: $(topdir)/config-top.h
 relocatable.o: ../../config.h
 textdomain.o: $(srcdir)/gettextP.h
 textdomain.o: $(srcdir)/gmo.h
+textdomain.o: $(srcdir)/libgnuintl.h
 textdomain.o: $(srcdir)/loadinfo.h
 textdomain.o: $(srcdir)/textdomain.c
 textdomain.o: $(topdir)/config-bot.h
 textdomain.o: $(topdir)/config-top.h
 textdomain.o: ../../config.h
-textdomain.o: libgnuintl.h
