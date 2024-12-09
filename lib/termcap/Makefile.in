@@ -115,5 +115,9 @@ termcap.o: $(srcdir)/termcap.c
 termcap.o: $(topdir)/config-bot.h
 termcap.o: $(topdir)/config-top.h
 termcap.o: ../../config.h
+tparam.o: $(srcdir)/ltcap.h
+tparam.o: $(srcdir)/tparam.c
+tparam.o: $(topdir)/config-bot.h
+tparam.o: $(topdir)/config-top.h
 tparam.o: ../../config.h
-version.o: ../../config.h
+version.o: $(srcdir)/version.c
