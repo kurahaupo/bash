@@ -75,17 +75,17 @@ DEFS		= \
 		  @DEFS@ \
 		  $(LOCAL_DEFS) \
 
-CPPFLAGS = @CPPFLAGS@
-CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCLUDES)
+CFLAGS = $(CPPFLAGS) @CFLAGS@ $(XCFLAGS)
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 
-COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
+COMPILE = $(CC) -c $(CFLAGS)
 
 MKDEP = $(SUPPORT_SRC)mkdep
 MKDEP_CC = $(CC)
 MKDEP_OPTS = -c $(MKDEP_CC) -P -S "$(srcdir)" -T "$(topdir)"
-MKDEP_CFLAGS = $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
+MKDEP_CFLAGS = $(CFLAGS)
 MKDEP_CSOURCES = $(srcdir)/*.c #*.c
 
 HEADERS		= \
@@ -199,7 +199,7 @@ libintl.a libgnuintl.a: $(OBJECTS)
 
 libintl.la libgnuintl.la: $(OBJECTS)
 	$(LIBTOOL) --mode=link \
-	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
+	  $(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
 	  $(OBJECTS) @LTLIBICONV@ $(LIBS) \
 	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
 	  -rpath $(libdir) \
