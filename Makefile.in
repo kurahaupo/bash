@@ -139,7 +139,9 @@ STYLE_CFLAGS = @STYLE_CFLAGS@
 DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
-LOCALE_DEFS = -DLOCALEDIR='"$(localedir)"' -DPACKAGE='"$(PACKAGE)"'
+LOCALE_DEFS	= \
+		  -DLOCALEDIR='"$(localedir)"' \
+		  -DPACKAGE='"$(PACKAGE)"' \
 
 LOCAL_LIBS = @LOCAL_LIBS@
 LIBS = $(BUILTINS_LIB) $(LIBRARIES) @LIBS@
@@ -148,7 +150,13 @@ LIBS_FOR_BUILD =
 STATIC_LD = @STATIC_LD@
 LOCAL_LDFLAGS = @LOCAL_LDFLAGS@
 
-SYSTEM_FLAGS = -DPROGRAM='"$(Program)"' -DCONF_HOSTTYPE='"$(Machine)"' -DCONF_OSTYPE='"$(OS)"' -DCONF_MACHTYPE='"$(MACHTYPE)"' -DCONF_VENDOR='"$(VENDOR)"' $(LOCALE_DEFS)
+SYSTEM_FLAGS	= \
+		  -DCONF_HOSTTYPE='"$(Machine)"' \
+		  -DCONF_MACHTYPE='"$(MACHTYPE)"' \
+		  -DCONF_OSTYPE='"$(OS)"' \
+		  -DCONF_VENDOR='"$(VENDOR)"' \
+		  -DPROGRAM='"$(Program)"' \
+		  $(LOCALE_DEFS) \
 
 BASH_MAKEFLAGS =
 
@@ -156,30 +164,63 @@ BASH_MAKEFLAGS =
 ADDON_CFLAGS =
 ADDON_LDFLAGS =
 
-BASE_CCFLAGS	= $(SYSTEM_FLAGS) $(LOCAL_DEFS) \
-		  $(DEFS) $(LOCAL_CFLAGS) $(INCLUDES) $(STYLE_CFLAGS)
+BASE_CCFLAGS	= \
+		  $(SYSTEM_FLAGS) \
+		  $(LOCAL_DEFS) \
+		  $(DEFS) \
+		  $(LOCAL_CFLAGS) \
+		  $(INCLUDES) \
+		  $(STYLE_CFLAGS)
 
-CCFLAGS = $(ADDON_CFLAGS) $(BASE_CCFLAGS) ${PROFILE_FLAGS} $(CPPFLAGS) $(CFLAGS)
+CCFLAGS		= \
+		  $(ADDON_CFLAGS) \
+		  $(BASE_CCFLAGS) \
+		  ${PROFILE_FLAGS} \
+		  $(CPPFLAGS) \
+		  $(CFLAGS) \
 
-CCFLAGS_FOR_BUILD = $(BASE_CCFLAGS) $(CPPFLAGS_FOR_BUILD) $(CFLAGS_FOR_BUILD)
+CCFLAGS_FOR_BUILD = \
+		  $(BASE_CCFLAGS) \
+		  $(CPPFLAGS_FOR_BUILD) \
+		  $(CFLAGS_FOR_BUILD) \
 
 BASE_LDFLAGS = @LDFLAGS@ $(LOCAL_LDFLAGS) $(CFLAGS)
 LDFLAGS = ${ADDON_LDFLAGS} ${BASE_LDFLAGS} ${PROFILE_FLAGS} ${STATIC_LD}
 LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@ $(LOCAL_LDFLAGS) $(CFLAGS_FOR_BUILD)
 
-ASAN_XCFLAGS = -fsanitize=address -fno-omit-frame-pointer
-ASAN_XLDFLAGS = -fsanitize=address
+ASAN_XCFLAGS	= \
+		  -fsanitize=address \
+		  -fno-omit-frame-pointer \
 
-UBSAN_XCFLAGS = -fsanitize=undefined -fsanitize-recover -fstack-protector
-UBSAN_XLDFLAGS = -fsanitize=undefined
+ASAN_XLDFLAGS	= \
+		  -fsanitize=address \
 
-GCOV_XCFLAGS = -fprofile-arcs -ftest-coverage
-GCOV_XLDFLAGS = -fprofile-arcs -ftest-coverage
+
+UBSAN_XCFLAGS	= \
+		  -fsanitize=undefined \
+		  -fsanitize-recover \
+		  -fstack-protector \
+
+UBSAN_XLDFLAGS	= \
+		  -fsanitize=undefined
+
+GCOV_XCFLAGS	= \
+		  -fprofile-arcs \
+		  -ftest-coverage \
+
+GCOV_XLDFLAGS	= \
+		  -fprofile-arcs \
+		  -ftest-coverage \
 
 # these need CC=clang
-LSAN_CC = clang
-LSAN_XCFLAGS = -fsanitize=leak -fno-common -fno-omit-frame-pointer -fno-optimize-sibling-calls
-LSAN_XLDFLAGS = -fsanitize=leak
+LSAN_CC		= clang
+LSAN_XCFLAGS	= \
+		  -fsanitize=leak \
+		  -fno-common \
+		  -fno-omit-frame-pointer \
+		  -fno-optimize-sibling-calls \
+
+LSAN_XLDFLAGS	= -fsanitize=leak
 
 MKDEP = $(SUPPORT_SRC)mkdep
 MKDEP_CC = ${CC}
