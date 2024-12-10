@@ -270,11 +270,11 @@ fltexpr:	fltexpr.o
 # uses, with special compilation options.
 #
 pushd.c: ${topdir}/builtins/pushd.def
-	$(RM) $@
+	@- $(RM) $@
 	../../builtins/mkbuiltins -D ${topdir}/builtins ${topdir}/builtins/pushd.def
 
 pushd.o: pushd.c
-	$(RM) $@
+	@- $(RM) $@
 	$(SHOBJ_CC) -Wno-format-security -DHAVE_CONFIG_H -DPUSHD_AND_POPD -DLOADABLE_BUILTIN $(SHOBJ_CFLAGS) $(CFLAGS) $(CPPFLAGS) $(INC) -c -o $@ $<
 
 pushd: pushd.o

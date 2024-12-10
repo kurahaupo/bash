@@ -124,19 +124,19 @@ RL_LIBSRC = $(topdir)/lib/readline
 .SUFFIXES: .def .c .o
 # How to make a .o file from a .def file.
 .def.o:
-	$(RM) $@
+	@- $(RM) $@
 	./$(MKBUILTINS) $(DIRECTDEFINE) $<
 	$(CC) -c $(CCFLAGS) $*.c || ( $(RM) $*.c ; exit 1 )
 	$(RM) $*.c
 
 # How to make a .c file from a .def file.
 .def.c:
-	$(RM) $@
+	@- $(RM) $@
 	./$(MKBUILTINS) $(DIRECTDEFINE) $<
 
 # default rule for making a .o file from a .c file
 .c.o:
-	$(RM) $@
+	@- $(RM) $@
 	$(CC) -c $(CCFLAGS) $<
 
 DEFSRC		= \
@@ -264,7 +264,7 @@ all: $(MKBUILTINS) libbuiltins.a $(HELPFILES_TARGET)
 targets: libbuiltins.a $(HELPFILES_TARGET)
 
 libbuiltins.a: $(MKBUILTINS) $(OFILES) builtins.o
-	$(RM) $@
+	@- $(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OFILES)
 	- $(RANLIB) $@
 
@@ -277,7 +277,7 @@ tmpbuiltins.h: tmpbuiltins.c
 
 gen-helpfiles.o: ../config.h
 gen-helpfiles.o: gen-helpfiles.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC_FOR_BUILD) -c $(CCFLAGS_FOR_BUILD) $<
 
 gen-helpfiles: tmpbuiltins.o gen-helpfiles.o
@@ -320,7 +320,7 @@ install: @HELPINSTALL@
 
 mkbuiltins.o: ../config.h
 mkbuiltins.o: mkbuiltins.c
-	$(RM) $@
+	@- $(RM) $@
 	$(CC_FOR_BUILD) -c $(CCFLAGS_FOR_BUILD) $<
 
 mkbuiltins$(EXEEXT): mkbuiltins.o

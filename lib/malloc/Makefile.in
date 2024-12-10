@@ -87,17 +87,17 @@ STUB_OBJS = $(ALLOCA) stub.o
 all libmalloc.a: malloc
 
 malloc: ${MALLOC_OBJS}
-	${RM} libmalloc.a
+	@- ${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${MALLOC_OBJS}
 	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 
 stubmalloc: ${STUB_OBJS}
-	${RM} libmalloc.a
+	@- ${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${STUB_OBJS}
 	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 
 alloca: ${ALLOCA}
-	${RM} libmalloc.a
+	@- ${RM} libmalloc.a
 	${AR} ${ARFLAGS} libmalloc.a ${ALLOCA}
 	- test -n "$(RANLIB)" && $(RANLIB) libmalloc.a
 

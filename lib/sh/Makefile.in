@@ -255,7 +255,7 @@ SUPPORT = Makefile
 all: $(LIBRARY_NAME)
 
 $(LIBRARY_NAME): $(OBJECTS)
-	$(RM) $@
+	@- $(RM) $@
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
 	- test -n "$(RANLIB)" && $(RANLIB) $@
 
