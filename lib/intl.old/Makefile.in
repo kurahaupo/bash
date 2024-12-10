@@ -60,12 +60,21 @@ ARFLAGS = @ARFLAGS@
 
 LOCAL_DEFS = @LOCAL_DEFS@
 
-DEFS = -DLOCALEDIR=\"$(localedir)\" -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
--DLIBDIR=\"$(prefix)/libdata\" -DIN_LIBINTL \
--DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(libdir)\" -DNO_XMALLOC \
--Dset_relocation_prefix=libintl_set_relocation_prefix \
--Drelocate=libintl_relocate \
--DDEPENDS_ON_LIBICONV=1 @DEFS@ ${LOCAL_DEFS}
+DEFS		= \
+		  -DDEPENDS_ON_LIBICONV=1 \
+		  -DENABLE_RELOCATABLE=1 \
+		  -DINSTALLDIR=\"$(libdir)\" \
+		  -DIN_LIBINTL \
+		  -DIN_LIBRARY \
+		  -DLIBDIR=\"$(prefix)/libdata\" \
+		  -DLOCALEDIR=\"$(localedir)\" \
+		  -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
+		  -DNO_XMALLOC \
+		  -Drelocate=libintl_relocate \
+		  -Dset_relocation_prefix=libintl_set_relocation_prefix \
+		  @DEFS@ \
+		  $(LOCAL_DEFS) \
+
 CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@

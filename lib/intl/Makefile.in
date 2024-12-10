@@ -62,15 +62,25 @@ ARFLAGS = @ARFLAGS@
 
 LOCAL_DEFS = @LOCAL_DEFS@
 
-DEFS = -DLOCALEDIR=\"$(localedir)\" -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
-	-DLIBDIR=\"$(libdir)\" -DIN_LIBINTL -DBUILDING_LIBINTL @DEFS@
+DEFS		= \
+		  -DBUILDING_LIBINTL \
+		  -DIN_LIBINTL \
+		  -DLIBDIR=\"$(libdir)\" \
+		  -DLOCALEDIR=\"$(localedir)\" \
+		  -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
+		  @DEFS@ \
+
 
 # XXX - use this?
-RELOCATABLE_DEFS = -DENABLE_RELOCATABLE=1 -DIN_LIBRARY \
-	-DINSTALLDIR=\"$(libdir)\" -DNO_XMALLOC \
-	-Dset_relocation_prefix=libintl_set_relocation_prefix \
-	-Drelocate=libintl_relocate \
-	-DDEPENDS_ON_LIBICONV=1
+RELOCATABLE_DEFS = \
+		  -DDEPENDS_ON_LIBICONV=1 \
+		  -DENABLE_RELOCATABLE=1 \
+		  -DINSTALLDIR=\"$(libdir)\" \
+		  -DIN_LIBRARY \
+		  -DNO_XMALLOC \
+		  -Drelocate=libintl_relocate \
+		  -Dset_relocation_prefix=libintl_set_relocation_prefix \
+
 
 CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@ ${DEFS} @DEFS@ ${LOCAL_DEFS}
