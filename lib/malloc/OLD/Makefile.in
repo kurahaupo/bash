@@ -1,0 +1,36 @@
+topdir = @top_srcdir@
+srcdir = @srcdir@
+BASHINCDIR = $(topdir)/include
+
+MKDEP = $(topdir)/support/mkdep
+MKDEP_CC = $(CC)
+MKDEP_OPTS = -c "$(MKDEP_CC)" -P -S "$(srcdir)" -T "$(topdir)"
+MKDEP_CCFLAGS = $(CCFLAGS)
+MKDEP_CSOURCES = $(srcdir)/*.c *.c
+
+.PHONY: depends depend
+depends depend: force y.tab.c makefiles signames.h builtins/pipesize.h version.h
+	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CCFLAGS) $(MKDEP_CSOURCES)
+
+################################################################################
+#####   MKDEP-CUT-HERE  #####
+
+gmalloc.o: $(srcdir)/gmalloc.c
+gmalloc.o: $(topdir)/config-bot.h
+gmalloc.o: $(topdir)/config-top.h
+gmalloc.o: $(BASHINCDIR)/stdc.h
+gmalloc.o: ../../config.h
+ogmalloc.o: $(srcdir)/ogmalloc.c
+ogmalloc.o: $(topdir)/config-bot.h
+ogmalloc.o: $(topdir)/config-top.h
+ogmalloc.o: ../../config.h
+old-nmalloc.o: $(srcdir)/old-nmalloc.c
+old-nmalloc.o: $(topdir)/bashtypes.h
+old-nmalloc.o: $(topdir)/config-bot.h
+old-nmalloc.o: $(topdir)/config-top.h
+old-nmalloc.o: ../../config.h
+omalloc.o: $(srcdir)/omalloc.c
+omalloc.o: $(topdir)/bashtypes.h
+omalloc.o: $(topdir)/config-bot.h
+omalloc.o: $(topdir)/config-top.h
+omalloc.o: ../../config.h
