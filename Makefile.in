@@ -1020,7 +1020,6 @@ PO_DIR = po/
 
 # Auxiliary support files
 SUPPORT_SRC = $(srcdir)/support/
-SUPPORT_DIR = support/
 
 TESTS_SUPPORT	= \
 		  printenv$(EXEEXT) \
@@ -1119,7 +1118,7 @@ LOADABLES_DIR = ${top_builddir}/examples/loadables
 # Keep GNU Make from exporting the entire environment for small machines.
 .NOEXPORT:
 
-.made: $(Program) bashbug $(SUPPORT_DIR)/man2html$(EXEEXT)
+.made: $(Program) bashbug support/man2html$(EXEEXT)
 	@ echo "$(Program) last made for a $(Machine) running $(OS)" >.made
 
 $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
@@ -1137,9 +1136,9 @@ $(Program): $(OBJECTS) $(BUILTINS_DEP) $(LIBDEP) .build
 	@ echo "	  ***********************************************************"
 	@ echo
 
-bashbug: $(SUPPORT_DIR)/bashbug.sh $(VERSPROG)
+bashbug: support/bashbug.sh $(VERSPROG)
 	@ sed -e "s%!PATCHLEVEL!%$(PatchLevel)%" \
-	     $(SUPPORT_DIR)/bashbug.sh > $@
+	     support/bashbug.sh > $@
 	@ chmod a+rx bashbug
 
 strip: $(Program) .made
@@ -1315,11 +1314,11 @@ builtins/builtext.h: $(BUILTIN_DEFS)
 
 builtins/pipesize.h: ${BUILTINS_LIBRARY}
 
-$(SUPPORT_DIR)/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
+support/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
 
 builtins/builtext.h \
 builtins/pipesize.h \
-$(SUPPORT_DIR)/man2html$(EXEEXT) \
+support/man2html$(EXEEXT) \
 $(TERMCAP_LIBRARY) \
 $(TILDE_LIBRARY) \
  :
@@ -1357,8 +1356,8 @@ pathnames.h: Makefile $(srcdir)/pathnames.h.in
 buildconf.h: $(srcdir)/buildconf.h.in
 	CONFIG_FILES= CONFIG_HEADERS=buildconf.h $(SHELL) ./config.status
 
-$(SUPPORT_DIR)/bashbug.sh: $(SUPPORT_DIR)/bashbug.sh.in
-	CONFIG_FILES=$(SUPPORT_DIR)/bashbug.sh CONFIG_HEADERS= $(SHELL) ./config.status
+support/bashbug.sh: $(SUPPORT_SRC)/bashbug.sh.in
+	CONFIG_FILES=support/bashbug.sh CONFIG_HEADERS= $(SHELL) ./config.status
 
 # comment out for distribution
 $(srcdir)/configure: $(srcdir)/configure.ac $(srcdir)/aclocal.m4 $(srcdir)/config.h.in
@@ -1466,7 +1465,7 @@ install-headers: maybe-install-headers
 	      ${INSTALL_DATA} $(srcdir)/"$$hf" $(DESTDIR)$(headersdir)/$$hf || exit 1 ; \
 	    fi ; \
 	  done
-	- $(INSTALL_DATA) $(SUPPORT_DIR)/bash.pc $(DESTDIR)$(pkgconfigdir)/bash.pc
+	- $(INSTALL_DATA) support/bash.pc $(DESTDIR)$(pkgconfigdir)/bash.pc
 
 uninstall-headers-dirs:
 	-$(RMDIR) $(DESTDIR)$(headersdir)/builtins $(DESTDIR)$(headersdir)/include
@@ -1509,7 +1508,7 @@ basic-clean:
 clean: basic-clean
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
-	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd support && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
@@ -1522,7 +1521,7 @@ clean: basic-clean
 mostlyclean: basic-clean
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
-	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd support && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
@@ -1533,7 +1532,7 @@ mostlyclean: basic-clean
 distclean: basic-clean maybe-clean
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
-	- cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	- cd support && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
@@ -1550,7 +1549,7 @@ maintainer-clean: basic-clean
 	$(RM) y.tab.c y.tab.h parser-built tags TAGS
 	cd $(DOCDIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
 	cd builtins && $(MAKE) $(BASH_MAKEFLAGS) $@
-	cd $(SUPPORT_DIR) && $(MAKE) $(BASH_MAKEFLAGS) $@
+	cd support && $(MAKE) $(BASH_MAKEFLAGS) $@
 	- for libdir in ${LIB_SUBDIRS} ; do \
 	    ( cd $$libdir && test -f Makefile && $(MAKE) $(BASH_MAKEFLAGS) $@ ) ; \
 	  done
