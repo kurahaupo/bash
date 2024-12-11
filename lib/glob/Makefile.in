@@ -240,6 +240,7 @@ strmatch.o: $(srcdir)/strmatch.h
 strmatch.o: $(topdir)/config-bot.h
 strmatch.o: $(topdir)/config-top.h
 strmatch.o: ../../config.h
+#xmbsrtowcs.o: $(BASHINCDIR)/ansi_stdlib.h
 xmbsrtowcs.o: $(BASHINCDIR)/shmbchar.h
 xmbsrtowcs.o: $(BASHINCDIR)/shmbutil.h
 xmbsrtowcs.o: $(BASHINCDIR)/stdc.h

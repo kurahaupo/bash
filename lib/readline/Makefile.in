@@ -386,8 +386,13 @@ display.o: $(srcdir)/tcap.h
 display.o: $(srcdir)/tilde.h
 display.o: $(srcdir)/xmalloc.h
 #display.o: ../../config.h
+emacs_keymap.o: $(srcdir)/chardefs.h
 emacs_keymap.o: $(srcdir)/emacs_keymap.c
+emacs_keymap.o: $(srcdir)/keymaps.h
 emacs_keymap.o: $(srcdir)/readline.h
+emacs_keymap.o: $(srcdir)/rlstdc.h
+emacs_keymap.o: $(srcdir)/rltypedefs.h
+emacs_keymap.o: $(srcdir)/tilde.h
 funmap.o: $(srcdir)/ansi_stdlib.h
 funmap.o: $(srcdir)/chardefs.h
 funmap.o: $(srcdir)/funmap.c
@@ -715,6 +720,7 @@ text.o: $(srcdir)/tilde.h
 text.o: $(srcdir)/xmalloc.h
 #text.o: ../../config.h
 tilde.o: $(srcdir)/ansi_stdlib.h
+tilde.o: $(srcdir)/rlstdc.h
 tilde.o: $(srcdir)/tilde.c
 tilde.o: $(srcdir)/tilde.h
 tilde.o: $(srcdir)/xmalloc.h
@@ -752,7 +758,12 @@ util.o: $(srcdir)/tilde.h
 util.o: $(srcdir)/util.c
 util.o: $(srcdir)/xmalloc.h
 #util.o: ../../config.h
+vi_keymap.o: $(srcdir)/chardefs.h
+vi_keymap.o: $(srcdir)/keymaps.h
 vi_keymap.o: $(srcdir)/readline.h
+vi_keymap.o: $(srcdir)/rlstdc.h
+vi_keymap.o: $(srcdir)/rltypedefs.h
+vi_keymap.o: $(srcdir)/tilde.h
 vi_keymap.o: $(srcdir)/vi_keymap.c
 vi_mode.o: $(srcdir)/ansi_stdlib.h
 vi_mode.o: $(srcdir)/chardefs.h
