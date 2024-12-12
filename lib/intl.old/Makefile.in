@@ -277,8 +277,8 @@ ref-del.sed: $(srcdir)/ref-del.sin
 	mv t-ref-del.sed ref-del.sed
 
 INCLUDES = -I. \
-	   -I../.. \
 	   -I$(srcdir) \
+	   -I../.. \
 	   -I$(topdir) \
 
 libintl.h: $(srcdir)/libgnuintl.h

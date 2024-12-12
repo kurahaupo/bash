@@ -69,14 +69,14 @@ OBJ = bperl.o iperl.o perlxsi.o
 BUILTIN = bperl5
 
 INC = -I. \
-      -I.. \
-      -I../../.. \
-      -I../../../lib \
-      -I../../../builtins \
       -I$(srcdir) \
+      -I.. \
       -I$(srcdir)/.. \
+      -I../../.. \
       -I$(topdir) \
+      -I../../../lib \
       -I$(topdir)/lib \
+      -I../../../builtins \
       -I$(topdir)/builtins \
       -I$(topdir)/include \
 

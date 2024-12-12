@@ -48,8 +48,8 @@ LDFLAGS = @LDFLAGS@
 DEFS = @DEFS@
 
 INCLUDES = -I. \
-	   -I../.. \
 	   -I$(srcdir) \
+	   -I../.. \
 	   -I$(topdir) \
 	   -I$(topdir)/lib \
 

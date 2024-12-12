@@ -60,6 +60,7 @@ MKDEP_CFLAGS = ${CCFLAGS}
 MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 
 INCLUDES = -I. \
+	   -I$(srcdir) \
 	   -I../.. \
 	   -I$(topdir) \
 	   -I$(BASHINCDIR) \

@@ -73,12 +73,12 @@ LOCAL_DEFS = @LOCAL_DEFS@
 
 INCLUDES = -I. \
 	   -I$(srcdir) \
-	   -I.. \
-	   -I$(topdir)/lib \
 	   -I../.. \
 	   -I$(topdir) \
-	   -I$(BASHINCDIR) \
+	   -I.. \
+	   -I$(topdir)/lib \
 	   $(INTL_INC) \
+	   -I$(BASHINCDIR) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep
