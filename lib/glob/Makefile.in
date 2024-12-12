@@ -53,10 +53,12 @@ BASHINCDIR = ${topdir}/include
 SUPPORT_SRC = $(topdir)/support/
 
 INCLUDES = -I. \
+	   -I$(srcdir) \
 	   -I../.. \
 	   -I$(topdir) \
-	   -I$(BASHINCDIR) \
+	   -I.. \
 	   -I$(topdir)/lib \
+	   -I$(BASHINCDIR) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep
