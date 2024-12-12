@@ -94,13 +94,14 @@ MKDIRS = ${topdir}/support/mkdirs
 HELPFILES_TARGET = @HELPFILES_TARGET@
 
 INCLUDES = -I. \
-	   -I.. \
-	   @RL_INCLUDE@ \
 	   -I$(srcdir) \
+	   -I.. \
 	   -I$(topdir) \
+	   -I../lib \
 	   -I$(topdir)/lib \
-	   -I$(BASHINCDIR) \
+	   @RL_INCLUDE@ \
 	   $(INTL_INC) \
+	   -I$(BASHINCDIR) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep

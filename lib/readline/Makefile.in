@@ -65,6 +65,7 @@ DEFS = @DEFS@
 LOCAL_DEFS = @LOCAL_DEFS@
 
 INCLUDES = -I. \
+	   -I$(srcdir) \
 	   -I../.. \
 	   -I$(topdir) \
 	   -I$(topdir)/lib \

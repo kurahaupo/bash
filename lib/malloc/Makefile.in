@@ -55,11 +55,11 @@ INTL_INC = @INTL_INC@
 LIBINTL_H = @LIBINTL_H@
 
 INCLUDES = -I. \
-	   -I../.. \
 	   -I$(srcdir) \
+	   -I../.. \
 	   -I$(topdir) \
-	   -I$(BASHINCDIR) \
 	   $(INTL_INC) \
+	   -I$(BASHINCDIR) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep

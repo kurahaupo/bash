@@ -222,11 +222,12 @@ LSAN_XCFLAGS	= \
 LSAN_XLDFLAGS	= -fsanitize=leak
 
 INCLUDES = -I. \
-	   @RL_INCLUDE@ \
 	   -I$(srcdir) \
-	   -I$(BASHINCDIR) \
+	   -Ilib \
 	   -I$(LIBSRC) \
+	   @RL_INCLUDE@ \
 	   $(INTL_INC) \
+	   -I$(BASHINCDIR) \
 
 
 MKDEP = $(SUPPORT_SRC)mkdep
