@@ -359,9 +359,9 @@ A star (*) next to a name means that the command is disabled.
  cd [-L|[-P [-e]]] [-@] [dir]            readonly [-aAf] [name[=value] ...] o>
  command [-pVv] command [arg ...]        return [n]
  compgen [-V varname] [-abcdefgjksuv] >  select NAME [in WORDS ... ;] do COMM>
- complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o optio>
+ complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o OPTNA>
  compopt [-o|+o option] [-DEI] [name .>  shift [n]
- continue [n]                            shopt [-pqsu] [-o] [optname ...]
+ continue [n]                            shopt [-oOpP] [-q] [-su] [OPTNAME ..>
  coproc [NAME] command [redirections]    source [-p path] filename [argument>
  declare [-aAfFgiIlnrtux] [name[=value>  suspend [-f]
  dirs [-clpv] [+N] [-N]                  test [expr]
@@ -385,10 +385,10 @@ help: help [-dms] [pattern ...]
 shift - Shift positional parameters.
 shift: shift [n]
     Shift positional parameters.
-    
+
     Rename the positional parameters $N+1,$N+2 ... to $1,$2 ...  If N is
     not given, it is assumed to be 1.
-    
+
     Exit Status:
     Returns success unless N is negative or greater than $#.
 builtin: builtin [shell-builtin [arg ...]]
@@ -403,9 +403,9 @@ readarray: readarray [-d delim] [-n count] [-O origin] [-s count] [-t] [-u fd] [
 readonly: readonly [-aAf] [name[=value] ...] or readonly -p
 :: :
     Null command.
-    
+
     No effect; the command does nothing.
-    
+
     Exit Status:
     Always succeeds.
 NAME
@@ -416,9 +416,9 @@ SYNOPSIS
 
 DESCRIPTION
     Null command.
-    
+
     No effect; the command does nothing.
-    
+
     Exit Status:
     Always succeeds.
 
@@ -452,9 +452,9 @@ A star (*) next to a name means that the command is disabled.
  cd [-L|[-P [-e]]] [-@] [dir]            readonly [-aAf] [name[=value] ...] o>
  command [-pVv] command [arg ...]        return [n]
  compgen [-V varname] [-abcdefgjksuv] >  select NAME [in WORDS ... ;] do COMM>
- complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o optio>
+ complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o OPTNA>
  compopt [-o|+o option] [-DEI] [name .>  shift [n]
- continue [n]                            shopt [-pqsu] [-o] [optname ...]
+ continue [n]                            shopt [-oOpP] [-q] [-su] [OPTNAME ..>
  coproc [NAME] command [redirections]    source [-p path] filename [argument>
  declare [-aAfFgiIlnrtux] [name[=value>  suspend [-f]
  dirs [-clpv] [+N] [-N]                  test [expr]
