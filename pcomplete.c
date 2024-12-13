@@ -621,7 +621,7 @@ it_init_setopts (ITEMLIST *itp)
   STRINGLIST *sl;
 
   sl = strlist_create (0);
-  sl->list = (char **)get_minus_o_opts ();
+  sl->list = get_minus_o_opts ();
   sl->list_len = strvec_len (sl->list);
   itp->slist = sl;
   itp->flags |= LIST_DONTFREEMEMBERS;

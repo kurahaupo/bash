@@ -147,7 +147,7 @@ get_minus_o_opts (void)
   size_t i = 0;
   opt_def_t const *d;
   for_each_option_class (d, Accessor (set_o))
-    result[i++] = d->name;
+    result[i++] = (char *)d->name;	/* TODO: get rid of this cast */
   result[i++] = NULL;
   return xrealloc (result, i * sizeof *result);
 }
