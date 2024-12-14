@@ -54,7 +54,7 @@ hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]
 ./errors.tests: line 179: shift: -2: shift count out of range
 ./errors.tests: line 182: shopt: no_such_option: invalid shell option name
 ./errors.tests: line 183: shopt: no_such_option: invalid shell option name
-./errors.tests: line 184: shopt: no_such_option: invalid option name
+./errors.tests: line 184: shopt: no_such_option: invalid shell option name
 ./errors.tests: line 187: umask: 09: octal number out of range
 ./errors.tests: line 188: umask: `:': invalid symbolic mode character
 ./errors.tests: line 189: umask: `:': invalid symbolic mode operator
@@ -87,7 +87,7 @@ source: usage: source [-p path] filename [arguments]
 ./errors.tests: line 240: .: -i: invalid option
 .: usage: . [-p path] filename [arguments]
 ./errors.tests: line 243: set: -q: invalid option
-set: usage: set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
+set: usage: set [-abefhkmnptuvxBCEHPT] [-o OPTNAME]... [--] [-] [PARAM ...]
 ./errors.tests: line 246: enable: sh: not a shell builtin
 ./errors.tests: line 246: enable: bash: not a shell builtin
 ./errors.tests: line 249: shopt: cannot set and unset shell options simultaneously
@@ -135,9 +135,9 @@ kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill 
 ./errors.tests: line 339: unset: BASH_SOURCE: cannot unset
 ./errors.tests: line 342: set: trackall: invalid option name
 ./errors.tests: line 343: set: -q: invalid option
-set: usage: set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
+set: usage: set [-abefhkmnptuvxBCEHPT] [-o OPTNAME]... [--] [-] [PARAM ...]
 ./errors.tests: line 344: set: -i: invalid option
-set: usage: set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
+set: usage: set [-abefhkmnptuvxBCEHPT] [-o OPTNAME]... [--] [-] [PARAM ...]
 ./errors.tests: line 348: xx: readonly variable
 1
 ./errors1.sub: line 14: .: -i: invalid option
