@@ -56,6 +56,8 @@
 
 #  include "shmbutil.h"
 
+#  include "options.h"
+
 #  include "builtins.h"
 #  include "builtins/common.h"
 #  include "builtins/builtext.h"
@@ -616,29 +618,30 @@ it_init_variables (ITEMLIST *itp)
 }
 
 static int
-it_init_setopts (ITEMLIST *itp)
+it_init_options (ITEMLIST *itp, accessor_t which_class)
 {
-  STRINGLIST *sl;
-
-  sl = strlist_create (0);
-  sl->list = get_minus_o_opts ();
-  sl->list_len = strvec_len (sl->list);
+  STRINGLIST *sl = strlist_create (count_options_class (which_class));
+  char const**s = (char const**)sl->list;	/* TODO: get rid of this cast */
+  char const**p = s;
+  opt_def_t const *d;
+  for_each_option_class (d, which_class)
+    *p++ = d->name;
+  sl->list_len = p - s;
   itp->slist = sl;
   itp->flags |= LIST_DONTFREEMEMBERS;
   return 0;
 }
 
 static int
+it_init_setopts (ITEMLIST *itp)
+{
+  return it_init_options(itp, Accessor (set_o));
+}
+
+static int
 it_init_shopts (ITEMLIST *itp)
 {
-  STRINGLIST *sl;
-
-  sl = strlist_create (0);
-  sl->list = get_shopt_options ();
-  sl->list_len = strvec_len (sl->list);
-  itp->slist = sl;
-  itp->flags |= LIST_DONTFREEMEMBERS;
-  return 0;
+  return it_init_options(itp, Accessor (shopt));
 }
 
 /* Generate a list of all matches for TEXT using the STRINGLIST in itp->slist

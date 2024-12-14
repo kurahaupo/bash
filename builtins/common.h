@@ -167,7 +167,6 @@ extern void check_read_timeout (void);
 
 /* Functions from set.def */
 extern void list_minus_o_opts (int, int);
-extern char **get_minus_o_opts (void);
 
 extern void set_shellopts (void);
 extern void initialize_shell_options (_Bool);
@@ -178,8 +177,6 @@ extern char *get_current_options (void);
 extern void set_current_options (const char *);
 
 /* Functions from shopt.def */
-extern char **get_shopt_options (void);
-
 extern int shopt_setopt (char const *, int);
 extern void list_shopts (int);
 

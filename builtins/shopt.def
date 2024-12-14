@@ -1236,19 +1236,6 @@ set_restricted_shell (opt_def_t const *d, accessor_t why, int mode)
 }
 #endif /* RESTRICTED_SHELL */
 
-char **
-get_shopt_options (void)
-{
-  size_t n = count_options_class (Accessor (shopt));
-  char **ret = strvec_create (n + 1);
-  opt_def_t const *d;
-  size_t i = 0;
-  for_each_option_class (d, Accessor (shopt))
-    ret[i++] = savestring (d->name);
-  ret[i] = NULL;
-  return ret;
-}
-
 /*
  * External interface for other parts of the shell.  NAME is a string option;
  * MODE is 0 if we want to unset an option; 1 if we want to set an option.

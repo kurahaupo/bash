@@ -138,20 +138,6 @@ list_minus_o_opts (int mode, int reusable)
 			     : DisplayStyle (on_off));
 }
 
-char **
-get_minus_o_opts (void)
-{
-  size_t num_set_o_options = count_options_class (Accessor (set_o));
-  char **result = strvec_create (num_set_o_options + 1);
-
-  size_t i = 0;
-  opt_def_t const *d;
-  for_each_option_class (d, Accessor (set_o))
-    result[i++] = (char *)d->name;	/* TODO: get rid of this cast */
-  result[i++] = NULL;
-  return xrealloc (result, i * sizeof *result);
-}
-
 char *
 get_current_options (void)
 {
