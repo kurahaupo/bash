@@ -309,17 +309,10 @@ static opt_def_t const xo_options[] = {
     .reference_value = 33,
     .adjust_bashopts = true,
     .hide_set_o = true,
+    .hide_shopt = true,
     .help = N_(
       "Disable some changes made after Bash v3.3\n"
       "(See compat40 for subsequent changes; see compat31 for prior changes)"),
-  },
-  { "compat33",
-    .set_func = set_compatibility_level,
-    .get_func = get_compatibility_level,
-    .reference_value = 33,
-    .adjust_bashopts = true,
-    .hide_set_o = true,
-    .hide_shopt = true,
   },
   { "compat40",
     .set_func = set_compatibility_level,
