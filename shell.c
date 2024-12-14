@@ -129,11 +129,20 @@ static opt_def_t const OPTDEF_forced_interactive = {
   .name = "interactive",
   .adjust_shellopts = true,
   .hide_shopt = true,
-  .forbid_change = true,
+#ifdef FORBID_CHANGE_INTERACTIVE
+  .forbid_change = true,	// arguable; need a POSIX interpretation
+#endif
   .help = N_(
+#ifdef FORBID_CHANGE_INTERACTIVE
     "(This option is read-only)\n"
-    "Bash automatically enters interactive mode if it is started without\n"
-    "a script to read or can only be enabled or disabled at start-up.\n"),
+#endif
+    "Bash automatically enters interactive mode if it is started without the\n"
+    "name of a script to read; which causes it to read commands from the\n"
+    "terminal."
+#ifndef FORBID_CHANGE_INTERACTIVE
+    "\n(Changing this option at other times is permitted but has no effect.)"
+#endif
+    ),
 };
 
 /* Non-zero means read commands, but don't execute them.  This is useful
