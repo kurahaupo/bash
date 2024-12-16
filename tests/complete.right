@@ -173,7 +173,6 @@ verbose
 vi
 xtrace
 array_expand_once
-assoc_expand_once
 autocd
 bash_source_fullpath
 cdable_vars
