@@ -28,7 +28,7 @@ shopt -s execfail
 trap 'echo EXIT' EXIT 
 trap 'echo USR1' USR1
 trap '' TERM
-trap
+trap | sort
 
 kill -s USR1 $$		# should run the trap
 
@@ -92,7 +92,7 @@ case $string in
 esac
 rm -f x.sh x.output
 
-trap
+trap | sort
 kill -s USR1 $$		# should run the trap
 kill -s TERM $$		# should still be ignored
 
