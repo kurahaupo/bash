@@ -5,7 +5,8 @@ echo "warning: some of these tests will fail if extended pattern matching has no
 echo "         been compiled into the shell" >&2
 echo >&2
 echo "warning: the text of system error messages may vary between systems, causing" >&2
-echo "         ‘diff’ to produce output; please check for semantically equivalence." >&2
+echo "         ‘diff’ to produce output; this is not an error as long as they have" >&2
+echo "         the same meaning." >&2
 echo >&2
 
 ${THIS_SH} ./cond.tests > ${BASH_TSTOUT} 2>&1
