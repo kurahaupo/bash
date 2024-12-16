@@ -61,10 +61,13 @@ echo Any output from any test, unless otherwise noted, indicates a possible anom
 for x in run-*
 do
 	case $x in
-	$0|run-minimal|run-gprof)	;;
-	*.orig|*~) ;;
-	*)	echo $x ; sh $x ; rm -f ${BASH_TSTOUT} ;;
+	$0|run-minimal|run-gprof|\
+	*.orig|*~) continue ;;
 	esac
+	echo
+	echo RUNNING $x
+	sh $x
+	rm -f ${BASH_TSTOUT}
 done
 
 exit 0
