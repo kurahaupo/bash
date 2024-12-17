@@ -52,9 +52,9 @@ hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]
 ./errors.tests: line 177: shift: -2: shift count out of range
 ./errors.tests: line 178: shift: 5: shift count out of range
 ./errors.tests: line 179: shift: -2: shift count out of range
-./errors.tests: line 182: shopt: no_such_option: invalid shell option name
-./errors.tests: line 183: shopt: no_such_option: invalid shell option name
-./errors.tests: line 184: shopt: no_such_option: invalid shell option name
+./errors.tests: line 182: shopt: no_such_option: invalid option name
+./errors.tests: line 183: shopt: no_such_option: invalid option name
+./errors.tests: line 184: shopt: no_such_option: invalid option name
 ./errors.tests: line 187: umask: 09: octal number out of range
 ./errors.tests: line 188: umask: `:': invalid symbolic mode character
 ./errors.tests: line 189: umask: `:': invalid symbolic mode operator
