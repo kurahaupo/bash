@@ -31,7 +31,7 @@ ${THIS_SH} +o braceexpand -c 'echo $SHELLOPTS'
 if ${THIS_SH} -f -c 'echo $SHELLOPTS' | grep noglob 2>&1; then
 	:
 else
-	echo 'SHELLOPTS: noglob not inherited correctly'
+	echo 'SHELLOPTS: noglob not exported correctly'
 fi
 
 # in a different way
@@ -39,7 +39,7 @@ set -o noglob
 if ${THIS_SH} -c 'echo $SHELLOPTS' | grep noglob 2>&1; then
 	:
 else
-	echo 'SHELLOPTS: noglob not inherited correctly'
+	echo 'SHELLOPTS: noglob not inherited & re-exported correctly'
 fi
 
 # restore default state
