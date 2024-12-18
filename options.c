@@ -124,9 +124,9 @@ set_opt_value (opt_def_t const *d,
       return r;
     }
 
-  if (d->readonly && ! AccessorIsPrivileged (why))	/* on behalf of the user; not unwind or unload */
+  if (d->readonly && ! AccessorIsInternal (why))	/* on behalf of the user; not unwind or unload */
     return Result (ReadOnly);
-  if (d->forbid_change && ! AccessorIsStartup (why))	/* not argv or env; also not privileged */
+  if (d->forbid_change && ! AccessorIsInternal (why))	/* not argv or env; also not privileged */
     {
       option_value_t old_value = get_opt_value (d, why);
       if (new_value == old_value)

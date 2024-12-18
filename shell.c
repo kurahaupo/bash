@@ -232,7 +232,7 @@ set_restricted (struct opt_def_s const *d, accessor_t why, option_value_t new_va
 {
   /* Don't allow `set +r` or `set +o restrict` in a shell which is
    * "restricted", but do allow `local -` to unwind `set -r`. */
-  if (restricted && !new_value && ! AccessorIsPrivileged (why))
+  if (restricted && !new_value && ! AccessorIsInternal (why))
     return Result (Forbidden);
   restricted = new_value;
   if (new_value && shell_initialized)

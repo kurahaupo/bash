@@ -58,9 +58,10 @@ enum accessor_e {
   AC_short,		/* enumerate only set -X (a short single-letter option) */
   AC_set_o,		/* enumerate only set -o NAME */
   AC_shopt,		/* enumerate only shopt -s NAME */
+
+  AC_argv,		/* parsed from argv when Bash starts up */
   AC_env_shellopts,	/* read from the environment when Bash starts up */
   AC_env_bashopts,	/* read from the environment when Bash starts up */
-  AC_argv,		/* parsed from argv when Bash starts up */
   AC_unwind,		/* automatically being restored during unwinding */
   AC_reinit,		/* restoring to default value */
   AC_unload,		/* option being removed */
@@ -93,8 +94,7 @@ typedef struct accessor_s {
 #define AccessorIs(E, X)	(AccessorC (E) == AccessorV (X))
 #define AccessorIsNot(E, X)	(! AccessorIs (E, X))
 
-#define AccessorIsStartup(E)	(AccessorC (E) > AccessorV (argv))
-#define AccessorIsPrivileged(E)	(AccessorC (E) > AccessorV (unwind))
+#define AccessorIsInternal(E)	(AccessorC (E) > AccessorV (argv))
 
 /******************************************************************************/
 
