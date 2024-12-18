@@ -1125,7 +1125,7 @@ reset_shopt_options (void)
 static void
 shopt_error (char const *s)
 {
-  builtin_error (_("%s: invalid shell option name"), s);
+  builtin_error (_("%s: invalid option name"), s);
 }
 
 #if defined (DEBUGGER)

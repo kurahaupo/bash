@@ -71,7 +71,7 @@ Shell options:
 	-abefhkmnptuvxBCEHPT or -o option
 this-bash this-bash
 $- for -c includes c
-bash: line 0: badopt: invalid shell option name
+bash: line 0: badopt: invalid option name
 checkwinsize:cmdhist:complete_fullquote:extquote:force_fignore:globasciiranges:globskipdots:hostcomplete:interactive_comments:patsub_replacement:progcomp:promptvars:sourcepath
 checkhash:checkwinsize:cmdhist:complete_fullquote:extquote:force_fignore:globasciiranges:globskipdots:hostcomplete:interactive_comments:patsub_replacement:progcomp:promptvars:sourcepath
 cmdhist:complete_fullquote:extquote:force_fignore:globasciiranges:globskipdots:hostcomplete:interactive_comments:patsub_replacement:progcomp:promptvars:sourcepath
