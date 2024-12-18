@@ -128,6 +128,7 @@ static opt_def_t const OPTDEF_forced_interactive = {
   .letter = 'i',
   .name = "interactive",
   .adjust_shellopts = true,
+  .hide_set_o = true,
   .hide_shopt = true,
 #ifdef FORBID_CHANGE_INTERACTIVE
   .forbid_change = true,	// arguable; need a POSIX interpretation
@@ -246,6 +247,8 @@ static opt_def_t const OPTDEF_restricted = {
   .letter = 'r',
   .name = "restricted",
   .adjust_shellopts = true,
+  .hide_any = true,
+  .hide_set_o = true,
   .hide_shopt = true,
   .help = N_(
     "If bash is started with the name rbash, or the -r option is supplied at\n"
@@ -537,6 +540,49 @@ _cygwin32_check_tmp (void)
 }
 #endif /* __CYGWIN__ */
 
+#ifdef DEBUG
+_Bool DEBUG_TRACE;
+static void dump_env(char**env, FILE*fo)
+{
+  fprintf (fo, "SHELL MAIN - start env\n");
+  for (char **pp = env; *pp; ++pp)
+    {
+      unsigned char *p = (void*) *pp;
+      unsigned char *e = strchr (p, '=');
+      int l = e ? e - p : strlen (p);
+      if (!(l>=4 && !memcmp (e-4, "OPTS", 4)))
+	continue;
+      fprintf (fo, "\timport %.*s=", l, p);
+      if (e)
+	{
+	  e++; /* '=' */
+	  for (;*e;e++)
+	    switch (*e)
+	      {
+		default:
+		  if (isgraph (*e))
+		    fputc (*e, fo);
+		  else
+	 	case '=':
+	 	case '\"':
+	 	case '\'':
+	 	case '\\':
+		  fprintf (fo, "\\x%02hhx", *e);
+		  break;
+		case '\n': fputs ("\\n", fo); break;
+		case '\r': fputs ("\\r", fo); break;
+		case '\t': fputs ("\\t", fo); break;
+		case '\x1b': fputs ("\\e", fo); break;
+	      }
+	  fprintf (fo, "\n");
+	}
+      else
+	fprintf (fo, "\t(no value)\n");
+    }
+  fprintf (fo, "SHELL MAIN - end env\n");
+}
+#endif
+
 int
 main (int argc, char **argv
 #if ! defined NO_MAIN_ENV_ARG
@@ -544,6 +590,15 @@ main (int argc, char **argv
 #endif	/* !NO_MAIN_ENV_ARG */
 )
 {
+  #ifdef DEBUG
+  DEBUG_TRACE = !! getenv ("BASH_DEBUG_TRACE");
+  if (DEBUG_TRACE)
+    {
+      fprintf (stderr, "SHELL MAIN: PID=%u, PPID=%u\n", getpid (), getppid ());
+      dump_env (env, stderr);
+    }
+  #endif //DEBUG
+
   register int i;
   int code, old_errexit_flag;
 #if defined (RESTRICTED_SHELL)
@@ -571,13 +626,17 @@ main (int argc, char **argv
   if (code)
     exit (2);
 
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "SHELL MAIN: about to start initialize_option_framework\n");
+  #endif
+
   initialize_option_framework ();
   register_bashhist_opts ();
   register_cd_opts ();
   register_echo_opts ();
   register_eval_opts ();
   register_execute_cmd_opts ();
-  register_flags_opts ();
   register_hashcmd_opts ();
   register_jobs_opts ();
   register_redir_opts ();
@@ -586,6 +645,11 @@ main (int argc, char **argv
   register_shopt_opts ();
   register_subst_opts ();
   register_variables_opts ();
+
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "SHELL MAIN: completed initialize_option_framework\n");
+  #endif
 
   xtrace_init ();
 
@@ -1125,7 +1189,8 @@ parse_shell_options (char **argv, int arg_start, int arg_end)
 		      exit (EX_BADUSAGE);
 		    }
 
-		  op_result_t r = set_opt_value (d, Accessor (set_o), flag_to_bool (on_or_off));
+		  /* "Accessor (argv)" overrides read-only */
+		  op_result_t r = set_opt_value (d, Accessor (argv), flag_to_bool (on_or_off));
 
 		  if (BadResult (r))
 		    {
@@ -2164,20 +2229,17 @@ shell_initialize (void)
      restricted mode or if the shell is running setuid. */
   initialize_shell_variables (shell_environment, dont_import_settings);
 
-  /* Initialize the data structures for storing and running jobs. */
-  initialize_job_control (jobs_m_flag);
-
-  /* Initialize input streams to null. */
-  initialize_bash_input ();
-
-  initialize_flags ();
-
   /* Initialize the shell options.  Don't import the shell options
      from the environment variables $SHELLOPTS or $BASHOPTS if we are
      running in privileged or restricted mode or if the shell is running
      setuid. */
   initialize_shell_options (dont_import_settings);
-  initialize_bashopts (dont_import_settings);
+
+  /* Initialize the data structures for storing and running jobs. */
+  initialize_job_control (jobs_m_flag);
+
+  /* Initialize input streams to null. */
+  initialize_bash_input ();
 }
 
 /* Function called by main () after longjmp, when it appears that the shell has

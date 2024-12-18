@@ -141,14 +141,3 @@ FailedValidation (char const *file, unsigned int line,
   abort ();
 }
 #endif
-
-void
-initialize_flags (void)
-{
-}
-
-void
-register_flags_opts (void)
-{
-
-}

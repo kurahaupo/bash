@@ -200,106 +200,14 @@ print_all_shell_variables (void)
     }
 }
 
-void
-set_shellopts (void)
-{
-  size_t count = count_options ();
-  char *tflag = xmalloc (count + 1);
-
-  size_t vsize = 0;
-  {
-    size_t i = 0;
-    opt_def_t const *d;
-    for_each_option_class (d, Accessor (set_o))
-      {
-	int val = get_opt_value (d, Accessor (short));
-	tflag[i++] = val;
-	if (val)
-	  vsize += strlen (d->name) + 1;
-      }
-  }
-
-  char const *value;
-
-  {
-    char *vend = xmalloc (vsize + 1);
-    value = vend;
-    size_t i = 0;
-    opt_def_t const *d;
-    for_each_option_class (d, Accessor (set_o))
-      if (tflag[i++])
-	{
-	  vend = stpcpy (vend, d->name);
-	  *vend++ = ':';
-	}
-    if (vend > value)
-      vend--;			/* cut off trailing colon */
-    *vend = '\0';
-  }
-
-  xfree (tflag);
-
-  /* ASS_FORCE so we don't have to temporarily turn off readonly;
-     ASS_NOMARK so we ignore `set -a`. */
-  SHELL_VAR *var = bind_variable ("SHELLOPTS", value, ASS_FORCE | ASS_NOMARK);
-  free (value);
-
-  /* Turn the read-only attribute back on. */
-  VSETATTR (var, att_readonly);
-}
-
-static void
-get_shellopts (void)
-{
-  /* set up any shell options we may have inherited. */
-
-  SHELL_VAR *var = find_variable ("SHELLOPTS");
-
-  if (! var)
-    return;	/* var not set */
-
-  if (! imported_p (var))
-    return;	/* var wasn't imported */
-
-  if (array_p (var) || assoc_p (var))
-    return;
-
-  char *value = savestring (value_cell (var));
-
-  if (! value)
-    return;	/* var is empty or locally unset */
-
-  /* Treat each word from a colon-separated list */
-  char const *vname;
-  int vptr = 0;
-  while (vname = extract_colon_unit (value, &vptr))
-    {
-      opt_def_t const *d = find_option (vname);
-      free (vname);	/* needed by extract_colon_unit */
-      if (! d)
-	continue;	/* vname isn't the name of an option */
-      set_opt_value (d, Accessor (env_shellopts), true);
-    }
-  free (value);
-}
-
-void
-initialize_shell_options (_Bool no_shellopts)
-{
-  if (! no_shellopts)
-    get_shellopts ();
-
-  /* Set up the $SHELLOPTS variable. */
-  set_shellopts ();
-}
-
 /* Reset the values of the -o options that are not also shell flags.  This is
-   called from execute_cmd.c:initialize_subshell () when setting up a subshell
-   to run an executable shell script without a leading `#!'. */
+   called from reset_all_options() in options.c, which in turn is called at
+   startup (from shell_reinitialize() in shell.c) and from
+   initialize_subshell() in execute_cmd.c (when setting up a subshell to run
+   a shell script that lacks a leading `#!'). */
 void
 reset_shell_options (void)
 {
-
 #if defined (HISTORY)
   remember_on_history = 1;	/* XXX */
 #endif

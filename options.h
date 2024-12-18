@@ -213,6 +213,7 @@ struct opt_def_s {
   char  letter;
   _Bool hide_set_o:1,
 	hide_shopt:1,
+	hide_any:1,
 	adjust_bashopts:1,
 	adjust_shellopts:1,
 	readonly:1,		/* when attempting to set an option: error (Readonly) unconditionally */
@@ -268,12 +269,6 @@ extern op_result_t set_opt_value (opt_def_t const *d,
 typedef _Bool opt_test_func_t(opt_def_t const *d);
 
 extern opt_test_func_t *hidden_check_for (accessor_t why);
-
-extern opt_test_func_t hide_unless_env_bashopts;
-extern opt_test_func_t hide_unless_env_shellopts;
-extern opt_test_func_t hide_unless_set_o;
-extern opt_test_func_t hide_unless_shopt;
-extern opt_test_func_t hide_unless_short;
 
 /******************************************************************************/
 
@@ -341,10 +336,34 @@ extern void list_all_options (accessor_t why,
 
 /* manage SHELLOPTS and BASHOPTS */
 
-extern void set_shellopts (void);
-extern void initialize_shell_options (_Bool dont_import_environment);
+extern void get_options_from_env (char const *varname, accessor_t why, opt_test_func_t *filter, _Bool quiet);
+extern void set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filter);
 
-extern void set_bashopts (void);
+static inline void
+set_shellopts (void)
+{
+  set_env_from_options ("SHELLOPTS", Accessor (env_shellopts), NULL);
+}
+
+static inline void
+get_options_from_shellopts (_Bool quiet)
+{
+  get_options_from_env ("SHELLOPTS", Accessor (env_shellopts), NULL, quiet);
+}
+
+static inline void
+set_bashopts (void)
+{
+  set_env_from_options ("BASHOPTS", Accessor (env_bashopts), NULL);
+}
+
+static inline void
+get_options_from_bashopts (_Bool quiet)
+{
+  get_options_from_env ("BASHOPTS", Accessor (env_bashopts), NULL, quiet);
+}
+
+extern void initialize_shell_options (_Bool dont_import_environment);
 
 /* set all options to their default values */
 

@@ -308,6 +308,7 @@ static opt_def_t const xo_options[] = {
     .get_func = get_compatibility_level,
     .reference_value = 33,
     .adjust_bashopts = true,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -378,7 +379,8 @@ static opt_def_t const xo_options[] = {
     .set_func = set_compatibility_level,
     .get_func = get_compatibility_level,
     .reference_value = 50,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -390,7 +392,8 @@ static opt_def_t const xo_options[] = {
     .set_func = set_compatibility_level,
     .get_func = get_compatibility_level,
     .reference_value = 51,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -402,7 +405,8 @@ static opt_def_t const xo_options[] = {
     .set_func = set_compatibility_level,
     .get_func = get_compatibility_level,
     .reference_value = 52,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -414,7 +418,8 @@ static opt_def_t const xo_options[] = {
     .set_func = set_compatibility_level,
     .get_func = get_compatibility_level,
     .reference_value = 53,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -426,7 +431,8 @@ static opt_def_t const xo_options[] = {
     .get_func = get_compatibility_level,
     .reference_value = 54,
     .readonly = true,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
+    .hide_any = true,
     .hide_set_o = true,
     .hide_shopt = true,
     .help = N_(
@@ -673,8 +679,9 @@ static opt_def_t const xo_options[] = {
   },
   { "interactive-comments",
     .store = &interactive_comments,
-    .adjust_bashopts = true,
+    .adjust_bashopts = false,
     .adjust_shellopts = true,
+    .hide_any = true,
     .hide_shopt = true,
     .help = N_(
       "(see interactive_comments)"),
@@ -683,7 +690,7 @@ static opt_def_t const xo_options[] = {
     .store = &interactive_comments,
     .OPTRESET_REINIT_true,
     .adjust_bashopts = true,
-    .adjust_shellopts = true,
+    .adjust_shellopts = false,
     .hide_set_o = true,
     .help = N_(
       "Allow a word beginning with '#' to cause that word and all remaining\n"
@@ -1077,12 +1084,10 @@ shopt_builtin (WORD_LIST *list)
 }
 
 /* Reset the options managed by `shopt' to the values they would have at
-   shell startup.  Variables from xo_options. */
+   shell startup. */
 void
 reset_shopt_options (void)
 {
-
-
   glob_asciirange = GLOBASCII_DEFAULT;
   patsub_replacement = PATSUB_REPLACE_DEFAULT;
 
@@ -1253,90 +1258,6 @@ shopt_setopt (char const *name, int mode)
   if (find_variable ("BASHOPTS"))
     set_bashopts ();
   return rval;
-}
-
-void
-set_bashopts (void)
-{
-  size_t count = count_options ();
-  char *tflag = xmalloc (count + 1);
-
-  size_t vsize = 0;
-  {
-    size_t i = 0;
-    opt_def_t const *d;
-    for_each_option_class (d, Accessor (shopt))
-      {
-	int val = get_opt_value (d, Accessor (env_bashopts));
-	tflag[i++] = val;
-	if (val)
-	  vsize += strlen (d->name) + 1;
-      }
-  }
-
-  char const *value;
-
-  {
-    char *vend = xmalloc (vsize + 1);
-    value = vend;
-    size_t i = 0;
-    opt_def_t const *d;
-    for_each_option_class (d, Accessor (shopt))
-      if (tflag[i++])
-	{
-	  vend = stpcpy (vend, d->name);
-	  *vend++ = ':';
-	}
-    if (vend > value)
-      vend--;			/* cut off trailing colon */
-    *vend = '\0';
-  }
-
-  xfree (tflag);
-
-  /* ASS_FORCE so we don't have to temporarily turn off readonly;
-     ASS_NOMARK so we ignore `set -a`. */
-  SHELL_VAR *var = bind_variable ("BASHOPTS", value, ASS_FORCE | ASS_NOMARK);
-  free (value);
-
-  /* Turn the read-only attribute back on. */
-  VSETATTR (var, att_readonly);
-}
-
-static void
-parse_bashopts (char *value)
-{
-  char const *vname;
-  int vptr = 0;
-  while (vname = extract_colon_unit (value, &vptr))
-    {
-      opt_def_t const *d = find_option (vname);
-      if (d)
-	set_opt_value(d, Accessor (env_bashopts), true);
-      free (vname);
-    }
-}
-
-void
-initialize_bashopts (_Bool no_bashopts)
-{
-  if (!no_bashopts)
-    {
-      SHELL_VAR *var = find_variable ("BASHOPTS");
-      /* set up any shell options we may have inherited. */
-      if (var && imported_p (var) && !(array_p (var) || assoc_p (var)))
-	{
-	  char *temp = savestring (value_cell (var));
-	  if (temp)
-	    {
-	      parse_bashopts (temp);
-	      free (temp);
-	    }
-	}
-    }
-
-  /* Set up the $BASHOPTS variable. */
-  set_bashopts ();
 }
 
 static op_result_t

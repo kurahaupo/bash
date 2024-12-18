@@ -20,24 +20,27 @@ export TMPDIR
 # basic /bin/sh syntax
 SUFFIX=$( ${THIS_SH} -c 'echo $(( $RANDOM + $BASHPID ))' )
 
+# Some tests use ‘cd’, so make sure THIS_SH is an absolute path
+case $THIS_SH in
+  /*) ;;
+  *)  THIS_SH=$PWD/$THIS_SH
+esac
+
 BASH_TSTOUT=${TMPDIR}/bashtst-$SUFFIX	# for now
 export BASH_TSTOUT
 
 trap 'rm -f $BASH_TSTOUT ; exit' 1 2 3 15
 trap 'rm -f $BASH_TSTOUT' 0
 
-PATH=.:$PATH	# just to get recho/zecho/printenv if not run via `make tests'
-export PATH
-
 # unset BASH_ENV only if it is set
-[ "${BASH_ENV+set}" = "set" ] && unset BASH_ENV
+[ "${BASH_ENV+set}" = set ] && unset BASH_ENV
 # can't reliably do it for SHELLOPTS; SHELLOPTS is readonly in bash
-if [ "${BASH_VERSION+set}" = "set" ]; then
-	export -n SHELLOPTS	# just make sure its not exported
-	set +o posix
-	typeset -p SHELLOPTS
+if [ "${BASH_VERSION+set}" = set ]; then
+  export -n SHELLOPTS	# just make sure its not exported
+  set +o posix
+  typeset -p SHELLOPTS
 else
-	[ "${SHELLOPTS+set}" = "set" ] && unset SHELLOPTS 2>/dev/null
+  [ "${SHELLOPTS+set}" = set ] && unset SHELLOPTS 2>/dev/null
 fi
 # ditto for BASHOPTS, which is also readonly in bash
 if [ "${BASH_VERSION+set}" = "set" ]; then
@@ -46,11 +49,32 @@ else
 	[ "${BASHOPTS+set}" = "set" ] && unset BASHOPTS 2>/dev/null
 fi
 
-: ${THIS_SH:=../bash}
+for BUILD_DIR in \
+    "${BUILD_DIR:-..}" \
+    .. \
+    ../.. \
+    ../.build \
+    .build/.. \
+    ../../BUILD/bash \
+    ../BUILD \
+    $TMPDIR/bash-build
+;do
+  [ -f "$BUILD_DIR/config.status" ] &&
+  [ -d "$BUILD_DIR/tests" ] &&
+  [ -f "$BUILD_DIR/bash" ] &&
+  break
+done || {
+    echo >&2 'Cannot guess BUILD_DIR; please set and export it before calling this script'
+    exit 2
+}
+
+export BUILD_DIR
+
+: ${THIS_SH:=$BUILD_DIR/bash}
 export THIS_SH
 
-: ${BUILD_DIR:=..}
-export BUILD_DIR
+PATH=$BUILD_DIR:$PWD:$PATH	# just to get recho/zecho/printenv if not run via `make tests'
+export PATH
 
 ${THIS_SH} ./version
 
@@ -58,16 +82,25 @@ rm -f ${BASH_TSTOUT}
 
 echo Any output from any test, unless otherwise noted, indicates a possible anomaly
 
-for x in run-*
-do
-	case $x in
-	$0|run-minimal|run-gprof|\
-	*.orig|*~) continue ;;
-	esac
-	echo
-	echo RUNNING $x
-	sh $x
-	rm -f ${BASH_TSTOUT}
+# One or more tests may be specified on the command line, or run all of them if
+# none are specified.
+
+[ $# = 0 ] && set run-*
+
+for x do
+  case $x in
+    run-all|\
+    run-gprof|\
+    run-minimal|\
+    ${0##*/}|\
+    *.orig|\
+    *~) continue ;;
+  esac
+
+  echo
+  echo RUNNING $x
+  sh $x
+  rm -f ${BASH_TSTOUT}
 done
 
 exit 0

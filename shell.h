@@ -259,3 +259,7 @@ extern void uw_restore_parser_state (void *);
 
 extern sh_input_line_state_t *save_input_line_state (sh_input_line_state_t *);
 extern void restore_input_line_state (sh_input_line_state_t *);
+
+#ifdef DEBUG
+extern _Bool DEBUG_TRACE;
+#endif

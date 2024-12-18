@@ -13,8 +13,9 @@
 ./rsh.tests: line 34: /tmp/restricted: restricted: cannot redirect output
 ./rsh.tests: line 38: /tmp/restricted: restricted: cannot redirect output
 ./rsh.tests: line 43: command: -p: restricted
-./rsh.tests: line 45: set: +r: invalid option
-set: usage: set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
-./rsh.tests: line 46: set: restricted: invalid option name
+./rsh.tests: line 45: set: Cannot change +r; not allowed to change setting
+
+./rsh.tests: line 46: set: Cannot change +o restricted; not allowed to change setting
+
 ./rsh.tests: line 48: exec: restricted
 ./rsh.tests: after exec

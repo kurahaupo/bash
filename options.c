@@ -227,22 +227,18 @@ find_option (char const *name)
 
 /*************************************/
 
-#define MAX_SHORT_NAMES	(1+CHAR_MAX)
+/* When short option names are single ASCII symbols, a sparse array isn't TOO
+ * sparse. If/when we support arbitrary Unicode symbols, this will likely need
+ * to change */
+
+#define MAX_SHORT_NAMES	(1+UCHAR_MAX)
 static struct {
-  size_t count;
-  char min;
-  char max;
-  char const *enumeration;	/* doubles as a "been init" flag */
+  _Bool valid;
+  unsigned char min;
+  unsigned char max;
+  char const *enumeration;
   const opt_def_t *map[MAX_SHORT_NAMES];
 } ShortOpts = {0};
-
-static void
-invalidate_short_opt_names (void)
-{
-    if (ShortOpts.enumeration)
-      xfree (ShortOpts.enumeration);	/* avoid leak if we're called more than once */
-    ShortOpts.enumeration = NULL;
-}
 
 opt_def_t const *
 find_short_option (char letter)
@@ -253,28 +249,64 @@ find_short_option (char letter)
 const char *
 get_short_opt_names (void)
 {
-  if (ShortOpts.enumeration)
+  if (ShortOpts.valid)
     return ShortOpts.enumeration;
-  for (ShortOpts.max = 0, ShortOpts.min = 1
+  /* code 0 cannot be registered so skip it */
+  for (ShortOpts.min = 1
       ; ShortOpts.min < MAX_SHORT_NAMES && ShortOpts.map[ShortOpts.min] == 0
       ; ++ShortOpts.min) {}
   /* list is empty */
   if (ShortOpts.min == MAX_SHORT_NAMES)
     return "";
-  /* make it big enough ... */
-  char *ep = xmalloc (MAX_SHORT_NAMES + 1 - ShortOpts.min);
-  char const *p = ep;
-  for (size_t c = ShortOpts.max; c<MAX_SHORT_NAMES ; ++c)
+
+  size_t count = 1; /* allow for eventual null terminator */
+  ShortOpts.max = 0;
+  for (size_t c = ShortOpts.min; c<MAX_SHORT_NAMES ; ++c)
+    if (ShortOpts.map[c])
+      {
+	ShortOpts.max = c;
+	count++;
+      }
+
+  char *ep = xrealloc (ShortOpts.enumeration, count);	/* works for NULL */
+  ShortOpts.enumeration = ep;
+
+  /* First get all lower-case letter options */
+  if (ShortOpts.max >= 'a' && ShortOpts.min <= 'z')
+    for (size_t c = 'a'; c <= 'z' ; ++c)
+      if ('z'-'a' == 25 || islower (c))
+	if (ShortOpts.map[c])
+	  *ep++ = c;
+  /* Then get all other options, including upper-case letter options */
+  for (size_t c = ShortOpts.min; c<MAX_SHORT_NAMES ; ++c)
     {
-      if (! ShortOpts.map[c])
-	continue;
-      ShortOpts.max = c;
-      *ep++ = c;
+      #ifndef ASCII_COLLATED_OPTIONS
+      /* for compatibilty with older versions of Bash, present options as
+       * lower-case THEN upper-case */
+      if ('z'-'a' == 25) /* bool constant */
+	{
+	  /* The lower-case letters have compact collation (e.g. ASCII &
+	   * Unicode), so skip directly to the end of the lower-case alphabet
+	   * */
+	  if (c >= 'a' && c <= 'z')
+	    {
+	      c = 'z';
+	      continue;
+	    }
+	}
+      else
+	{
+	  /* The lower-case letters have sparse collation (e.g. EBCDIC), so
+	   * just skip this letter if it's lower-case */
+	  if (islower (c))
+	    continue;
+	}
+      #endif
+      if (ShortOpts.map[c])
+	*ep++ = c;
     }
   *ep = 0;
-  /* ... and then make is small again */
-  ShortOpts.count = ep - p;
-  ShortOpts.enumeration = xrealloc (p, ShortOpts.count + 1);
+  ShortOpts.valid = true;
   return ShortOpts.enumeration;
 }
 
@@ -342,7 +374,6 @@ register_option (opt_def_t const *def)
 	  if (S.index > 0 &&
 	      strcmp (OrderedOpts.defs[S.index-1]->name, def->name) >= 0)
 	    {
-	      fprintf (stderr, "");
 	      fprintf (stderr,
 		       "Out-of-order insertion, placed \"%s\" at %zu after \"%s\"\n",
 		       def->name,
@@ -368,11 +399,8 @@ register_option (opt_def_t const *def)
 
   if (c)
     {
-      ++ShortOpts.count;
       ShortOpts.map[c] = def;
-      if (ShortOpts.enumeration)
-	xfree (ShortOpts.enumeration);	/* avoid leak if we're called more than once */
-      ShortOpts.enumeration = NULL;
+      ShortOpts.valid = false;
     }
   return Result (OK);
 }
@@ -387,8 +415,8 @@ deregister_letter (opt_def_t const *def)
       opt_def_t const **dd = &ShortOpts.map[c];
       if (*dd == def)
 	{
-	  --ShortOpts.count;
 	  *dd == NULL;
+	  ShortOpts.valid = false;
 	  return Result (OK);
 	}
       return Result (BadValue);
@@ -402,8 +430,8 @@ deregister_letter (opt_def_t const *def)
       opt_def_t const **dd = &ShortOpts.map[c];
       if (*dd == def)
 	{
-	  --ShortOpts.count;
 	  *dd == NULL;
+	  ShortOpts.valid = false;
 	  ++count;
 	}
     }
@@ -468,30 +496,45 @@ deregister_option (opt_def_t const *def)
 
 /******************************************************************************/
 
+/* Filter to select options to display for ‘set -o’ when no option names are
+ * given. */
 _Bool
 hide_unless_set_o (opt_def_t const *d)
 {
   return d->hide_set_o;
 }
 
+/* Filter to select options that have short (single-letter) names */
 _Bool
 hide_unless_short (opt_def_t const *d)
 {
   return d->letter == 0;
 }
 
+/* Filter to select options to display for ‘shopt -O’ when no option names are
+ * given, mimicking old-style shopt output. */
 _Bool
 hide_unless_shopt (opt_def_t const *d)
 {
   return d->hide_shopt;
 }
 
+/* Filter to select all options except hyphenated duplicates; used by ‘shopt’
+ * when no option names or selector options are given. */
+_Bool
+hide_dups (opt_def_t const *d)
+{
+  return d->hide_any;
+}
+
+/* Filter to select options that are read from and saved to $SHELLOPTS */
 _Bool
 hide_unless_env_shellopts (opt_def_t const *d)
 {
   return !d->adjust_shellopts;
 }
 
+/* Filter to select options that are read from and saved to $BASHOPTS */
 _Bool
 hide_unless_env_bashopts (opt_def_t const *d)
 {
@@ -499,6 +542,7 @@ hide_unless_env_bashopts (opt_def_t const *d)
 }
 
 static opt_test_func_t *const hide_unless_map[] = {
+  [AC_any] = hide_dups,
   [AC_set_o] = hide_unless_set_o,
   [AC_shopt] = hide_unless_shopt,
   [AC_short] = hide_unless_short,
@@ -721,8 +765,7 @@ begin_iter_opts (opt_test_func_t *hide_if)
     };
 }
 
-extern opt_def_t const * get_iter_opts (iter_opt_def_t *it);	/* returns NULL to signal end of iteration */
-
+/* get_iter_opts -- returns NULL to signal end of iteration */
 opt_def_t const *
 get_iter_opts (iter_opt_def_t *it)
 {
@@ -771,18 +814,91 @@ count_options_class (accessor_t why)
 
 #include "variables.h"
 
+#ifdef DEBUG
+static char const *
+ac_to_desc (accessor_t why)
+{
+  static char const * const acnames[] = {
+    [AC_any] = "any",
+    [AC_short] = "short",
+    [AC_set_o] = "set_o",
+    [AC_shopt] = "shopt",
+    [AC_argv] = "argv",
+    [AC_env_shellopts] = "env_shellopts",
+    [AC_env_bashopts] = "env_bashopts",
+    [AC_unwind] = "unwind",
+    [AC_reinit] = "reinit",
+    [AC_unload] = "unload",
+  };
+  int w = AccessorC(why);
+  if (w < 0 || w >= sizeof acnames / sizeof *acnames)
+    return "out-of-range";
+  char const *acname = acnames[w];
+  if (acname)
+    return acname;
+  return "unknown";
+}
+#endif
+
 void
 get_options_from_env (char const *varname, accessor_t why, opt_test_func_t *filter, _Bool quiet)
 {
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    {
+      quiet = false;
+
+      fprintf (stderr, "get_options_from_env (varname=%s, accessor=%s(%#x), filter=%p, verbosity=%s) ... ",
+	       varname,
+	       ac_to_desc(why), AccessorC(why),
+	       (void*) filter,
+	       quiet ? "QUIET" : "REPORT_ERRORS");
+    }
+  #endif
+
   /* set up any shell options we may have inherited. */
   SHELL_VAR *var = find_variable (varname);
-  if (var == NULL) return;
+  if (var == NULL)
+    {
+      #ifdef DEBUG
+      if (DEBUG_TRACE)
+	fprintf (stderr, "\tNOT FOUND\n");
+      #endif
+      return;
+    }
 
-  if (! imported_p (var)) return;
-  if (! array_p (var) && ! assoc_p (var)) return;
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "\n\tvar-attributes=%#x (%s%s%s)\n",
+	     var->attributes,
+	     imported_p (var) ? "imported," : "",
+	     array_p (var) ? "array," : "",
+	     assoc_p (var) ? "assoc," : "");
+  #endif
+
+  /* Skip this var if it wasn't imported */
+  if (! imported_p (var))
+    return;
+
+  /* Skip this var if it's not a scalar */
+  if (array_p (var) || assoc_p (var))
+    return;
 
   char *shellopts_env = savestring (value_cell (var));
-  if (shellopts_env == NULL) return;
+
+  if (shellopts_env == NULL)
+    {
+      #ifdef DEBUG
+      if (DEBUG_TRACE)
+	fprintf (stderr, "\tNULL value\n");
+      #endif
+      return;
+    }
+
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "\tvalue=%s\n", shellopts_env);
+  #endif
 
   opt_test_func_t *hidden =  hidden_check_for (why);
 
@@ -791,11 +907,49 @@ get_options_from_env (char const *varname, accessor_t why, opt_test_func_t *filt
 
   for (; vname = extract_colon_unit (shellopts_env, &vptr); xfree (vname))
     {
+      #ifdef DEBUG
+      if (DEBUG_TRACE)
+	fprintf (stderr, "\telement=%s\n", vname);
+      #endif
+
       opt_def_t const *d = find_option (vname);
-      if (!d) continue;
-      if (filter && filter (d)) continue;
-      if (hidden && hidden (d)) continue;
+      if (!d)
+	{
+	  #ifdef DEBUG
+	  if (DEBUG_TRACE)
+	    fprintf (stderr, "\t\tskipping because not found\n");
+	  #endif
+	  continue;
+	}
+
+      #ifdef DEBUG
+      if (DEBUG_TRACE)
+	fprintf (stderr, "\td=%p, d->name=%s\n", d, d->name);
+      #endif
+
+      if (filter && filter (d))
+	{
+	  #ifdef DEBUG
+	  if (DEBUG_TRACE)
+	    fprintf (stderr, "\t\tskipping because filtered\n");
+	  #endif
+	  continue;
+	}
+      if (hidden && hidden (d))
+	{
+	  #ifdef DEBUG
+	  if (DEBUG_TRACE)
+	    fprintf (stderr, "\t\tskipping because hidden\n");
+	  #endif
+	  continue;
+	}
+
       op_result_t r = set_opt_value (d, why, true);
+
+      #ifdef DEBUG
+      if (DEBUG_TRACE)
+	fprintf (stderr, "\tdone; result=%s\n", res_to_desc (r));
+      #endif
       if (BadResult (r) && !quiet)
 	warn_invalidopt (vname);
     }
@@ -805,6 +959,13 @@ get_options_from_env (char const *varname, accessor_t why, opt_test_func_t *filt
 void
 set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filter)
 {
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "set_env_from_options (varname=%s, accessor=%s(%#x), filter=%p)\n",
+	     varname,
+	     ac_to_desc(why), AccessorC(why),
+	     (void*) filter);
+  #endif
   char *tflag = xmalloc (count_options ());	/* over-estimate is OK */
   size_t vsize = 0;
   opt_test_func_t *hidden =  hidden_check_for (why);
@@ -817,7 +978,11 @@ set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filt
 	continue;
       if (hidden && hidden (d))
 	continue;
-      option_value_t v = get_opt_value (d, Accessor (set_o));
+      option_value_t v = get_opt_value (d, why);
+      #ifdef DEBUG
+      if (DEBUG_TRACE && v)
+	fprintf (stderr, "\topt=%p, name=%s, value=%d\n", d, d->name, v);
+      #endif
       if (v <= 0)
 	continue;
       vsize += strlen (d->name) + 1;
@@ -841,6 +1006,13 @@ set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filt
     vend--;			/* cut off trailing colon */
   *vend = '\0';
 
+  #ifdef DEBUG
+  if (DEBUG_TRACE)
+    fprintf (stderr, "\tsetting varname=%s, value=%s\n",
+	     varname,
+	     value);
+  #endif
+
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
    * ASS_NOMARK so we don't tickle `set -a`. */
   SHELL_VAR *var = bind_variable (varname, value, ASS_FORCE | ASS_NOMARK);
@@ -852,23 +1024,19 @@ set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filt
 
 /******************************************************************************/
 
-#if 0
-
 void
 initialize_shell_options (_Bool dont_import_environment)
 {
   if (! dont_import_environment)
     {
-      get_options_from_env ("SHELLOPTS", Accessor (env_shellopts), true);
-      get_options_from_env ("BASHOPTS", Accessor (env_bashopts), true);
+      get_options_from_shellopts (true);
+      get_options_from_bashopts (true);
     }
 
-  /* Set up the $SHELLOPTS variable. */
-  set_env_from_options ("SHELLOPTS", Accessor (env_shellopts), NULL);
-  set_env_from_options ("BASHOPTS", Accessor (env_bashopts), NULL);
+  /* Set the $SHELLOPTS and $BASHTOPS variables. */
+  set_shellopts ();
+  set_bashopts ();
 }
-
-#endif
 
 static inline void
 selective_reset_options (_Bool skip_reinit)
@@ -893,15 +1061,18 @@ reinit_all_options (void)
   selective_reset_options (true);
 }
 
-/* Reset the values of all boolean options.
- * Called from initialize_subshell() in execute_cmd.c when setting up a
- * subshell to run an executable shell script without a leading `#!'. */
+/*
+ * reset_all_options -- reset the values of all boolean options.
+ * Called from shell_reinitialize() in shell.c (at startup, and for some
+ * subshells), and from initialize_subshell() in execute_cmd.c (when setting up
+ * to run an executable shell script without a leading ‘#!’).
+ */
 
-extern void reset_shell_options (void);	/* from set.def */
-extern void reset_shopt_options (void);	/* from shopt.def */
 void
 reset_all_options (void)
 {
+  extern void reset_shell_options (void);	/* from set.def */
+  extern void reset_shopt_options (void);	/* from shopt.def */
   reset_shell_options ();	/* from set.def: reset the values of the -o
 				 * options that are not also shell flags.
 				 * This is called from

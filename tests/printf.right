@@ -406,6 +406,7 @@ VAR=[X]
 VAR=[]
 ./printf7.sub: line 62: printf: 9223372036854775825: Numerical result out of range
 VAR=[X]
-XY
+./printf7.sub: line 70: printf: Value too large for defined data type
+
 ./printf7.sub: line 72: printf: 9223372036854775825: Numerical result out of range
 XY
