@@ -1,10 +1,12 @@
 ./shopt.tests: line 15: shopt: -z: invalid option
 shopt: usage: shopt [-oOpP] [-q] [-su] [OPTNAME ...]
 --
+shopt -u allexport
 shopt -u array_expand_once
 shopt -u assoc_expand_once
 shopt -u autocd
 shopt -u bash_source_fullpath
+shopt -s braceexpand
 shopt -u cdable_vars
 shopt -s cdspell
 shopt -u checkhash
@@ -22,6 +24,9 @@ shopt -s complete_fullquote
 shopt -u direxpand
 shopt -u dirspell
 shopt -u dotglob
+shopt -u emacs
+shopt -u errexit
+shopt -u errtrace
 shopt -u execfail
 shopt -s expand_aliases
 shopt -u extdebug
@@ -29,29 +34,48 @@ shopt -u extglob
 shopt -s extquote
 shopt -u failglob
 shopt -s force_fignore
+shopt -u functrace
 shopt -s globasciiranges
 shopt -s globskipdots
 shopt -u globstar
 shopt -u gnu_errfmt
+shopt -s hashall
 shopt -u histappend
+shopt -u histexpand
+shopt -u history
 shopt -u histreedit
 shopt -u histverify
 shopt -s hostcomplete
 shopt -u huponexit
+shopt -u ignoreeof
 shopt -u inherit_errexit
+shopt -u interactive
 shopt -s interactive_comments
+shopt -u keyword
 shopt -u lastpipe
 shopt -u lithist
 shopt -u localvar_inherit
 shopt -u localvar_unset
 shopt -u login_shell
 shopt -u mailwarn
+shopt -u monitor
 shopt -u no_empty_cmd_completion
 shopt -u nocaseglob
 shopt -u nocasematch
+shopt -u noclobber
+shopt -u noexec
 shopt -u noexpand_translation
+shopt -u noglob
+shopt -u nolog
+shopt -u notify
+shopt -u nounset
 shopt -u nullglob
+shopt -u onecmd
 shopt -s patsub_replacement
+shopt -u physical
+shopt -u pipefail
+shopt -u posix
+shopt -u privileged
 shopt -s progcomp
 shopt -u progcomp_alias
 shopt -s promptvars
@@ -59,12 +83,16 @@ shopt -u restricted_shell
 shopt -u shift_verbose
 shopt -s sourcepath
 shopt -u varredir_close
+shopt -u verbose
+shopt -u vi
 shopt -u xpg_echo
+shopt -u xtrace
 --
 shopt -u huponexit
 shopt -u checkwinsize
 shopt -s sourcepath
 --
+shopt -s braceexpand
 shopt -s cdspell
 shopt -s cmdhist
 shopt -s complete_fullquote
@@ -73,6 +101,7 @@ shopt -s extquote
 shopt -s force_fignore
 shopt -s globasciiranges
 shopt -s globskipdots
+shopt -s hashall
 shopt -s hostcomplete
 shopt -s interactive_comments
 shopt -s patsub_replacement
@@ -80,6 +109,7 @@ shopt -s progcomp
 shopt -s promptvars
 shopt -s sourcepath
 --
+shopt -u allexport
 shopt -u array_expand_once
 shopt -u assoc_expand_once
 shopt -u autocd
@@ -98,34 +128,59 @@ shopt -u compat44
 shopt -u direxpand
 shopt -u dirspell
 shopt -u dotglob
+shopt -u emacs
+shopt -u errexit
+shopt -u errtrace
 shopt -u execfail
 shopt -u extdebug
 shopt -u extglob
 shopt -u failglob
+shopt -u functrace
 shopt -u globstar
 shopt -u gnu_errfmt
 shopt -u histappend
+shopt -u histexpand
+shopt -u history
 shopt -u histreedit
 shopt -u histverify
 shopt -u huponexit
+shopt -u ignoreeof
 shopt -u inherit_errexit
+shopt -u interactive
+shopt -u keyword
 shopt -u lastpipe
 shopt -u lithist
 shopt -u localvar_inherit
 shopt -u localvar_unset
 shopt -u login_shell
 shopt -u mailwarn
+shopt -u monitor
 shopt -u no_empty_cmd_completion
 shopt -u nocaseglob
 shopt -u nocasematch
+shopt -u noclobber
+shopt -u noexec
 shopt -u noexpand_translation
+shopt -u noglob
+shopt -u nolog
+shopt -u notify
+shopt -u nounset
 shopt -u nullglob
+shopt -u onecmd
+shopt -u physical
+shopt -u pipefail
+shopt -u posix
+shopt -u privileged
 shopt -u progcomp_alias
 shopt -u restricted_shell
 shopt -u shift_verbose
 shopt -u varredir_close
+shopt -u verbose
+shopt -u vi
 shopt -u xpg_echo
+shopt -u xtrace
 --
+allexport              	off
 array_expand_once      	off
 assoc_expand_once      	off
 autocd                 	off
@@ -144,33 +199,57 @@ compat44               	off
 direxpand              	off
 dirspell               	off
 dotglob                	off
+emacs                  	off
+errexit                	off
+errtrace               	off
 execfail               	off
 extdebug               	off
 extglob                	off
 failglob               	off
+functrace              	off
 globstar               	off
 gnu_errfmt             	off
 histappend             	off
+histexpand             	off
+history                	off
 histreedit             	off
 histverify             	off
 huponexit              	off
+ignoreeof              	off
 inherit_errexit        	off
+interactive            	off
+keyword                	off
 lastpipe               	off
 lithist                	off
 localvar_inherit       	off
 localvar_unset         	off
 login_shell            	off
 mailwarn               	off
+monitor                	off
 no_empty_cmd_completion	off
 nocaseglob             	off
 nocasematch            	off
+noclobber              	off
+noexec                 	off
 noexpand_translation   	off
+noglob                 	off
+nolog                  	off
+notify                 	off
+nounset                	off
 nullglob               	off
+onecmd                 	off
+physical               	off
+pipefail               	off
+posix                  	off
+privileged             	off
 progcomp_alias         	off
 restricted_shell       	off
 shift_verbose          	off
 varredir_close         	off
+verbose                	off
+vi                     	off
 xpg_echo               	off
+xtrace                 	off
 --
 set +o allexport
 set -o braceexpand
