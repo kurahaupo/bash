@@ -15,10 +15,28 @@
 #
 
 : ${TMPDIR:=/tmp}
-export TMPDIR
 
-# basic /bin/sh syntax
-SUFFIX=$( ${THIS_SH} -c 'echo $(( $RANDOM + $BASHPID ))' )
+for BUILD_DIR in \
+    "${BUILD_DIR:-..}" \
+    .. \
+    /usr/local/build/bash/bash-current \
+    ../.. \
+    ../.build \
+    .build/.. \
+    ../../BUILD/bash \
+    ../BUILD \
+    $TMPDIR/bash-build \
+;do
+  [ -f "$BUILD_DIR/config.status" ] &&
+  [ -d "$BUILD_DIR/tests" ] &&
+  [ -f "$BUILD_DIR/bash" ] &&
+  break
+done || {
+  echo >&2 'Cannot guess BUILD_DIR; please set and export it before calling this script'
+  exit 2
+}
+
+: ${THIS_SH:=$BUILD_DIR/bash}
 
 # Some tests use ‘cd’, so make sure THIS_SH is an absolute path
 case $THIS_SH in
@@ -26,8 +44,14 @@ case $THIS_SH in
   *)  THIS_SH=$PWD/$THIS_SH
 esac
 
+PATH=$BUILD_DIR:$PWD:$PATH	# just to get recho/zecho/printenv if not run via `make tests'
+
+# basic /bin/sh syntax
+SUFFIX=$( ${THIS_SH} -c 'echo $(( $RANDOM + $BASHPID ))' )
+
 BASH_TSTOUT=${TMPDIR}/bashtst-$SUFFIX	# for now
-export BASH_TSTOUT
+
+export BASH_TSTOUT BUILD_DIR PATH THIS_SH TMPDIR
 
 trap 'rm -f $BASH_TSTOUT ; exit' 1 2 3 15
 trap 'rm -f $BASH_TSTOUT' 0
@@ -42,39 +66,13 @@ if [ "${BASH_VERSION+set}" = set ]; then
 else
   [ "${SHELLOPTS+set}" = set ] && unset SHELLOPTS 2>/dev/null
 fi
+
 # ditto for BASHOPTS, which is also readonly in bash
 if [ "${BASH_VERSION+set}" = "set" ]; then
-	export -n BASHOPTS	# just make sure its not exported
+  export -n BASHOPTS	# just make sure its not exported
 else
-	[ "${BASHOPTS+set}" = "set" ] && unset BASHOPTS 2>/dev/null
+  [ "${BASHOPTS+set}" = "set" ] && unset BASHOPTS 2>/dev/null
 fi
-
-for BUILD_DIR in \
-    "${BUILD_DIR:-..}" \
-    .. \
-    ../.. \
-    ../.build \
-    .build/.. \
-    ../../BUILD/bash \
-    ../BUILD \
-    $TMPDIR/bash-build
-;do
-  [ -f "$BUILD_DIR/config.status" ] &&
-  [ -d "$BUILD_DIR/tests" ] &&
-  [ -f "$BUILD_DIR/bash" ] &&
-  break
-done || {
-    echo >&2 'Cannot guess BUILD_DIR; please set and export it before calling this script'
-    exit 2
-}
-
-export BUILD_DIR
-
-: ${THIS_SH:=$BUILD_DIR/bash}
-export THIS_SH
-
-PATH=$BUILD_DIR:$PWD:$PATH	# just to get recho/zecho/printenv if not run via `make tests'
-export PATH
 
 ${THIS_SH} ./version
 
