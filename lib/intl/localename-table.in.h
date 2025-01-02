@@ -18,6 +18,8 @@
 
 #if HAVE_WORKING_USELOCALE && HAVE_NAMELESS_LOCALES
 
+#include "dllexported.h"
+
 # include <stddef.h>
 # include <locale.h>
 

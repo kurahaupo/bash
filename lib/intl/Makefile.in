@@ -100,7 +100,6 @@ HEADERS		= \
 		  arg-nonnull.h \
 		  attribute.h \
 		  eval-plural.h \
-		  export.h \
 		  filename.h \
 		  flexmember.h \
 		  gettextP.h \
@@ -208,7 +207,12 @@ OBJECTS		= \
 		  xsize.o \
 
 
-CREATED_HEADERS = libintl.h libgnuintl.h localename-table.h
+CREATED_HEADERS = \
+		  dllexported.h \
+		  libgnuintl.h \
+		  libintl.h \
+		  localename-table.h \
+
 CREATED_SOURCES = plural.c plural.h
 
 OTHERS = Makefile.in locale.alias ref-add.sin ref-del.sin
@@ -247,24 +251,20 @@ INCLUDES = -I. \
 	   -I$(top_srcdir) \
 
 
-libgnuintl.h: $(srcdir)/libgnuintl.in.h $(srcdir)/export.h
-	sed -e '/IN_LIBGLOCALE/d' \
-	    -e 's,@''HAVE_POSIX_PRINTF''@,@HAVE_POSIX_PRINTF@,g' \
-	    -e 's,@''HAVE_ASPRINTF''@,@HAVE_ASPRINTF@,g' \
-	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
-	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
-	    -e 's,@''HAVE_NEWLOCALE''@,@HAVE_NEWLOCALE@,g' \
-	    -e 's,@''ENHANCE_LOCALE_FUNCS''@,@ENHANCE_LOCALE_FUNCS@,g' \
-	  < $(srcdir)/libgnuintl.in.h \
-	| if test '@WOE32DLL@' = yes ; then \
-	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/' ; \
-	  else \
-	    cat ; \
-	  fi \
-	| sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/' \
-	      -e "/#define _LIBINTL_H/r $(srcdir)/export.h" \
-	| sed -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
-	  > libgnuintl.h
+libgnuintl.h: libintl.h
+	if test '@WOE32DLL@' = yes ; then \
+	  sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/' \
+	      -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/'; \
+	else \
+	  sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/'; \
+	fi \
+	  < libintl.h \
+	  > $@
+
+dllexported.h: $(srcdir)/dllexported.in.h
+	sed -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
+	  < $(srcdir)/dllexported.in.h \
+	  > $@
 
 libintl.h: $(srcdir)/libgnuintl.in.h
 	sed -e '/IN_LIBGLOCALE/d' \
@@ -274,15 +274,14 @@ libintl.h: $(srcdir)/libgnuintl.in.h
 	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
 	    -e 's,@''HAVE_NEWLOCALE''@,@HAVE_NEWLOCALE@,g' \
 	    -e 's,@''ENHANCE_LOCALE_FUNCS''@,@ENHANCE_LOCALE_FUNCS@,g' \
-	  < $(srcdir)/libgnuintl.in.h > libintl.h
+	  < $(srcdir)/libgnuintl.in.h > $@
 
-localename-table.h: $(srcdir)/localename-table.in.h $(srcdir)/export.h
+localename-table.h: $(srcdir)/localename-table.in.h
 	sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/' \
 	    -e 's/extern,/extern LIBINTL_DLL_EXPORTED,/' \
-	    -e "/#if HAVE_WORKING_USELOCALE/r $(srcdir)/export.h" \
 	    -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
 	  < $(srcdir)/localename-table.in.h \
-	  > localename-table.h
+	  > @$
 
 $(srcdir)/plural.c: $(srcdir)/plural.y
 	$(BISON) -d $(BISONFLAGS) $(srcdir)/plural.y && \
@@ -328,7 +327,7 @@ maintainer-clean: distclean
 .NOEXPORT:
 
 .PHONY: depends depend
-depends depend: libgnuintl.h
+depends depend: libgnuintl.h dllexported.h
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
 
 ################################################################################

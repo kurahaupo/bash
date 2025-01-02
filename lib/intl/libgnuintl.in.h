@@ -17,6 +17,8 @@
 #ifndef _LIBINTL_H
 #define _LIBINTL_H 1
 
+#include "dllexported.h"
+
 #include <locale.h>
 #if (defined __APPLE__ && defined __MACH__) && @HAVE_NEWLOCALE@
 # include <xlocale.h>
