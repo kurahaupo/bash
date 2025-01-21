@@ -473,7 +473,7 @@ if it exists.
 When an interactive shell that is not a login shell is started,
 <B>bash</B>
 
-reads and executes commands from 
+reads and executes commands from
 
 <A HREF="file:~/.bashrc"><I>~/.bashrc</I></A>,
 
@@ -1237,7 +1237,7 @@ is the exit status of the last command executed in
 <I>list</I>,
 
 or zero if no commands were executed.
-<DT><B>case</B> <I>word</I> <B>in</B> [ [(] <I>pattern</I> [ <B>|</B> <I>pattern</I> ] 
+<DT><B>case</B> <I>word</I> <B>in</B> [ [(] <I>pattern</I> [ <B>|</B> <I>pattern</I> ]
 .. ) <I>list</I> ;; ] ... <B>esac</B><DD>
 A <B>case</B> command first expands <I>word</I>, and tries to match
 it against each <I>pattern</I> in turn,
@@ -3797,7 +3797,7 @@ the number of fractional digits after a decimal point.
 A value of 0 causes no decimal point or fraction to be output.
 <B>time</B> prints at most six digits after the decimal point;
 values of <I>p</I> greater than 6 are changed to 6.
-If <I>p</I> is not specified, 
+If <I>p</I> is not specified,
 <B>time</B> prints three digits after the decimal point.
 <DT><DD>
 The optional <B>l</B> specifies a longer format, including
@@ -4064,7 +4064,7 @@ If the double-quoted expansion occurs within a word, the expansion of
 the first parameter is joined with the beginning part of the
 expansion of the original word,
 and the expansion of the last parameter is joined with the last
-part of the 
+part of the
 expansion of the original word.
 This is analogous to the expansion
 of the special parameters <B>*</B> and <B>@</B> (see
@@ -5182,7 +5182,7 @@ If
 is invalid,
 <B>bash</B>
 
-prints a message to standard error indicating failure, 
+prints a message to standard error indicating failure,
 does not perform the substitution,
 and does not execute the command associated with the expansion.
 <A NAME="lbBF">&nbsp;</A>
@@ -8267,7 +8267,7 @@ When a command is described as <I>killing</I> text, the text
 deleted is saved for possible future retrieval
 (<I>yanking</I>).
 The killed text is saved in a <I>kill ring</I>.
-Consecutive kills accumulate the deleted text 
+Consecutive kills accumulate the deleted text
 into one unit, which can be yanked all at once.
 Commands which do not kill text separate the chunks of text
 on the kill ring.
@@ -10328,7 +10328,7 @@ or if there is no compspec for the command word,
 the <B>-D</B> option to <B>complete</B> as the default.
 If there is no default compspec, <B>bash</B> performs alias expansion
 on the command word as a final resort,
-and attempts to find a compspec for the command word 
+and attempts to find a compspec for the command word
 resulting from any successful expansion.
 <P>
 
@@ -10489,7 +10489,7 @@ to <B>readline</B> as the list of possible completions.
 
 If the previously-applied actions do not generate any matches, and the
 <B>-o dirnames</B> option was supplied to <B>complete</B> when the
-compspec was defined, <B>bash</B> attempts directory name completion. 
+compspec was defined, <B>bash</B> attempts directory name completion.
 <P>
 
 If the <B>-o plusdirs</B> option was supplied to <B>complete</B> when the
@@ -10554,7 +10554,7 @@ _completion_loader()
 {
   . &quot;
 /etc/bash_completion.d/$1.sh&quot;
- 
+
 \
 <BR>
 
@@ -10562,7 +10562,7 @@ _completion_loader()
 &nbsp;&nbsp;&nbsp;&nbsp;
 &gt;/dev/null 2&gt;&amp;1 &amp;&amp; return 124
 }
-complete -D -F _completion_loader 
+complete -D -F _completion_loader
 \
 <BR>
 
@@ -11642,7 +11642,7 @@ If the
 option is supplied with
 <B>-P</B>,
 
-and <B>cd</B> cannot successfully determine the current working directory 
+and <B>cd</B> cannot successfully determine the current working directory
 after a successful directory change, it returns a non-zero status.
 <DT><DD>
 On systems that support it, the <B>-@</B> option presents the extended
@@ -14001,7 +14001,7 @@ The
 option displays output in a format that may be reused as input.
 <DT><DD>
 <B>readonly</B> allows the value of a variable to be set at the same time
-the readonly attribute is changed by following the variable name with      
+the readonly attribute is changed by following the variable name with
 =<I>value</I>.
 This sets the value of the variable is to <I>value</I> while modifying
 the readonly attribute.
@@ -15592,7 +15592,7 @@ in a shell function (see
 </FONT>
 
 above).
-Refer to the description of the <B>extdebug</B> shell option 
+Refer to the description of the <B>extdebug</B> shell option
 (see
 <B>shopt</B>
 
@@ -15713,7 +15713,7 @@ either returns the pathname of the executable file
 that would be found by searching
 <B>$PATH</B>
 
-for 
+for
 <I>name</I>
 
 or nothing if
