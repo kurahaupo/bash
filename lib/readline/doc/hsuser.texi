@@ -127,9 +127,9 @@ The @code{history} builtin can display or
 modify the history list and manipulate the history file.
 When using command-line editing, search commands
 are available in each editing mode that provide access to the
-history list (@pxref{Commands For History}). 
+history list (@pxref{Commands For History}).
 
-The shell allows control over which commands are saved on the history list. 
+The shell allows control over which commands are saved on the history list.
 The @env{HISTCONTROL} and @env{HISTIGNORE}
 variables are used to save only a subset of the commands entered.
 If the @code{cmdhist} shell option is
@@ -289,7 +289,7 @@ If @env{HISTFILE} is unset or null, these options have no effect.
 
 If the @env{HISTTIMEFORMAT}
 variable is set, @code{history} writes the time stamp information
-associated with each history entry to the history file,  
+associated with each history entry to the history file,
 marked with the history comment character as described above.
 When the history file is read, lines beginning with the history
 comment character followed immediately by a digit are interpreted
@@ -374,7 +374,7 @@ double quotes.
 When using the shell, only @samp{\} and @samp{'} may be used to escape the
 history expansion character, but the history expansion character is
 also treated as quoted if it immediately precedes the closing double quote
-in a double-quoted string. 
+in a double-quoted string.
 
 Several characters inhibit history expansion if found immediately
 following the history expansion character, even if it is unquoted:
@@ -569,7 +569,7 @@ If @samp{x} is missing, it defaults to 0.
 @end table
 
 If a word designator is supplied without an event specification, the
-previous command is used as the event, equivalent to @code{!!}. 
+previous command is used as the event, equivalent to @code{!!}.
 
 @node Modifiers
 @subsection Modifiers

@@ -46,7 +46,7 @@ For information on the interactive use of @sc{gnu} History,
 Many programs read input from the user a line at a time.
 The @sc{gnu} History library is able to keep track of those lines,
 associate arbitrary data with each line, and utilize information from
-previous lines when composing new ones. 
+previous lines when composing new ones.
 
 A programmer using the History library can use functions
 to save commands on a history list,
@@ -323,8 +323,8 @@ The search is anchored: matching history entries must begin with @var{string}.
 If @var{direction} is less than 0, then the search is
 through previous entries, otherwise through subsequent entries.
 If @var{string} is found, then the current history index is set to
-that entry, and the return value is 0. 
-Otherwise, nothing is changed, and this returns -1. 
+that entry, and the return value is 0.
+Otherwise, nothing is changed, and this returns -1.
 @end deftypefun
 
 @deftypefun int history_search_pos (const char *string, int direction, int pos)

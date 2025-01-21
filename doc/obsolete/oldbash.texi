@@ -28,7 +28,7 @@ JEFF KELLEM'S MISC. COMMENTS
 * add a glossary
 * below are some additions/changes that are being considered for final
   1.06 release -- there are probably others; these are off the top of my
-  head 
+  head
   * check on `-' arg to cd to swap $PWD and $OLDPWD
   * `+' option to `set' to list all var names w/o their values (`set +')
   * `set --' will unset the positional params if no other args are given ?
@@ -124,7 +124,7 @@ handy reference.
 * Line::             Command line syntax.
 
 * File Names::   How the shell interprets your input before
-                     it arrives at other commands.  Wildcard 
+                     it arrives at other commands.  Wildcard
                      characters.
 
 * Job Control::      Controlling when commands are run.
@@ -179,7 +179,7 @@ manual.  Brian and Diane would like to thank Chet Ramey for his
 production of the BASH man page.  It made the job of writing this
 manual infinitely easier.
 
-Robert Chassell gave helpful comments on the drafts of this manual. 
+Robert Chassell gave helpful comments on the drafts of this manual.
 Allan Painter contributed beginning-user examples.  Bennett Todd
 and Bill Trost contributed very useful samples of shell scripts.  Many
 thanks to all those who submitted scripts for consideration.  It
@@ -198,7 +198,7 @@ Some topics:
 @end ignore
 
 The shell is a program that the operating system automatically starts
-up when you log in, so that the system can understand your commands. 
+up when you log in, so that the system can understand your commands.
 @cindex shell, what is a
 @cindex BASH, what is
 @cindex Bourne Again SHell, what is
@@ -240,7 +240,7 @@ completion of file names, user names, and variable names
 @node Interpretation, Language, Introduction, Introduction
 @section The Shell as a Command Interpreter
 
-When you log on to your system a shell is automatically started for you. 
+When you log on to your system a shell is automatically started for you.
 Think of the shell as a layer of software between you and the operating
 system's internal workings, as shown below:
 @cindex command interpreter
@@ -1105,7 +1105,7 @@ zvona    ttyq5   Apr 15 14:13   (nico)
 bash$
 @end example
 
-@heading Viewing Output by the Screenful 
+@heading Viewing Output by the Screenful
 
 @cindex @code{more}, with pipes
 @cindex pipe, used to view output by the screenful
@@ -1845,7 +1845,7 @@ input to complete a command.
 @c the closing 'fi'
 @c Also, the secondary prompt is printed after some errors. (which?)
 
-By default it is @samp{bash>}. 
+By default it is @samp{bash>}.
 For example, we can change the secondary prompt string to @samp{more>}:
 
 @example
@@ -1946,7 +1946,7 @@ jems       pty/ttyu0    Feb  9 11:38
 gjs        pty/ttyu1    Feb  8 15:16
 Sat Feb  9 14:04:01
 jems@@zohar
-~/gnu 4$ 
+~/gnu 4$
 @end example
 
 @c following needs explaining -- is this about what happens
@@ -1955,7 +1955,7 @@ jems@@zohar
 Note for advanced users:
 
 After the prompt string is decoded, it is expanded via parameter expansion
-and command substitution unless the variable @code{NO_PROMPT_VARS} is set, 
+and command substitution unless the variable @code{NO_PROMPT_VARS} is set,
 
 @node set
 @section The @code{set} Command
@@ -2123,7 +2123,7 @@ When a background job is finished, BASH reports its job number, the word
 @samp{Done}, and the command line itself:
 
 @example
-[1]+  Done              ls -l | wc >count-file 
+[1]+  Done              ls -l | wc >count-file
 @end example
 
 @noindent
@@ -2137,7 +2137,7 @@ immediately (not just when you get the next shell prompt), set the
 @example
 bash$ notify=
 @end example
-@c create a var = set a var;  how uncreate it if change your mind?  
+@c create a var = set a var;  how uncreate it if change your mind?
 
 @node wait
 @subsection Waiting for Background Jobs to Terminate
@@ -2162,7 +2162,7 @@ process is specified, @code{wait} waits for all currently active jobs to
 finish.
 @c presumably wait finishes immediately if the job is suspended
 
-@var{job_spec} is any job specification 
+@var{job_spec} is any job specification
 and @var{pid} is a @sc{pid} (@pxref{Numbers}).
 
 Let's assume that you want to start three lengthy jobs running concurrently
@@ -2213,7 +2213,7 @@ BASH to continue.
 * nice::       Running processes at a low priority
                using the @code{nice} command.
 
-* nohup::      Preventing jobs from stopping using 
+* nohup::      Preventing jobs from stopping using
                the @code{nohup} command.
 @end menu
 
@@ -2324,8 +2324,8 @@ Use the @code{-l} flag with @code{jobs} to see the jobs' processes as well:
 @example
 bash$ jobs -l
 [1]+ 18448 Done         ls -l
-     18449              | wc >count-file 
-bash$ 
+     18449              | wc >count-file
+bash$
 @end example
 
 @cindex @code{ps} command
@@ -2482,7 +2482,7 @@ We are just covering the most common keyboard methods of stopping jobs.
 Your operating system manual will tell you about other
 keyboard interrupts and how to remap your keyboard.
 
-No matter which method you use (except @kbd{C-c}), the shell tells you 
+No matter which method you use (except @kbd{C-c}), the shell tells you
 when your program, or job, has been ``Stopped'', and prints another prompt.
 @c really does it for C-\ but not C-c ?
 @c be clearer what shell tells you
@@ -2573,7 +2573,7 @@ after itself before dying.
 @c  prog might die from hup but not c-c
 
 @item SIGQUIT
-This is the signal generated (normally) by @kbd{C-\} on the keyboard. 
+This is the signal generated (normally) by @kbd{C-\} on the keyboard.
 @c normally = if not remapped
 @code{SIGQUIT} is identical to @code{SIGINT} except that it requests that the
 operating system produce a diagnostics file called a @dfn{core dump},
@@ -2714,7 +2714,7 @@ it had been started with @samp{&}.  If @var{job_spec} is omitted,
 @code{bg} acts on the current job (@code{%}).@refill
 
 @example
-bash$ find / -name resume -print >& resume_list 
+bash$ find / -name resume -print >& resume_list
 C-z
 [1]+  Stopped   find / -name resume -print >& resume_list
 bash$ bg
@@ -2812,10 +2812,10 @@ in the foreground (@pxref{Resuming}).
 @cindex @code{nice} command, for lower priority
 @cindex jobs, running at low priority
 @cindex background, running processes at a low priority
-The @code{nice} command causes a background process to be run at a 
+The @code{nice} command causes a background process to be run at a
 low priority.  The operating system runs any commands specified by
-@code{nice} when the machine has nothing else to do (it runs those 
-commands less often than normal).  This way, commands that normally 
+@code{nice} when the machine has nothing else to do (it runs those
+commands less often than normal).  This way, commands that normally
 consume large amounts of system resources, slowing the system
 considerably, are run in stages that don't slow the system down quite
 as much.  Of course, a program that is run at a lower priority takes
@@ -2833,7 +2833,7 @@ where @var{command-line} is the command line you want to place at a
 lower priority.
 If present, the @samp{@var{number}} option causes @code{nice} to
 increment the priority by the amount given, up to a limit of 20.  The
-higher the value given, the lower the command's scheduled priority. 
+higher the value given, the lower the command's scheduled priority.
 The default value for @var{number} is 10.@refill
 
 @c need example: maybe 'nice make -k hairy-program >& log' (rms)
@@ -3081,7 +3081,7 @@ than assume you know how the command will be interpreted.
                       key bindings.  Includes a complete list of
                       all commands used in editing.
 
-* vi mode::     Editing using other modes, including a 
+* vi mode::     Editing using other modes, including a
                       @code{vi} editing mode.
 @end menu
 
@@ -3226,7 +3226,7 @@ negative argument, the previous word is changed to lowercase, but the
 cursor point is not moved.
 
 @item capitalize-word (@kbd{M-c})
-Capitalize the current (or following) word and put the cursor 
+Capitalize the current (or following) word and put the cursor
 after the word.  When given with a negative
 argument, the previous word is capitalized, but the cursor point is not
 moved.
@@ -3245,7 +3245,7 @@ Here are the @code{readline} commands involved in deleting text and
 restoring previously deleted text.
 
 In the following table, the term @dfn{kill} means to delete text from a
-line, but save that text in a buffer for later retrieval. 
+line, but save that text in a buffer for later retrieval.
 Usually you retrieve killed text by @dfn{yanking} it back into the
 line.  The term @dfn{yank} means to retrieve text from a buffer and
 insert it at the cursor in the current line.
@@ -3521,7 +3521,7 @@ and other parameters to your liking.
 You can also force the initialization file to be reread
 (for example, if you modify it and want to use your modifications
 in BASH without logging out and logging in again)
-by typing @kbd{C-x C-r} (the default key binding for 
+by typing @kbd{C-x C-r} (the default key binding for
 @code{readline}'s @samp{re-read-init-file} function.
 @c ?? re-read-init-file not documented above
 @cindex @file{.inputrc} file, re-reading the
@@ -3566,7 +3566,7 @@ or
 @end example
 
 @noindent
-in the @file{~/.inputrc} file.  
+in the @file{~/.inputrc} file.
 @xref{Readline Commands}, for the function names and their default key bindings.
 Any text after the @var{readline-function} is considered to be a
 comment and is ignored.
@@ -3590,7 +3590,7 @@ binds @kbd{C-u} (which is initially bound to @code{unix-line-discard})
 to @code{universal-argument} (which is not bound to any key by default).
 
 
-@heading Key Names 
+@heading Key Names
 
 @c needs rewriting
 For the key name, you can use the name of the key combination,
@@ -3676,7 +3676,7 @@ The @code{readline} library does not have a full set of @code{vi}
 editing functions, but it does contain enough to allow simple editing of
 a line.
 
-To switch interactively between Emacs and @code{vi} 
+To switch interactively between Emacs and @code{vi}
 editing modes, use the command @kbd{M-C-j} (toggle-editing-mode).
 @c why not listed in fns above? -- add it there
 @c bfox: vi: start in insert mode
@@ -3817,7 +3817,7 @@ M-C-k:		transpose-chars
 
 # This line is bad syntax. It should have the M- before the C-.
 # But it works.
-"\C-\M-f":	forward-word		
+"\C-\M-f":	forward-word
 
 # Here is a macro definition.  You can tell because the right-hand
 # side is in quotes.
@@ -3919,7 +3919,7 @@ bash$ history
      5   mail bob
      6   rm tobob.doc
      7   ls
-     8   cat memo 
+     8   cat memo
      9   history
 @end example
 
@@ -3998,7 +3998,7 @@ refers to the previous command.
 
 @item !@var{n}
 refers to an event by its absolute position in the history
-list.  It refers to command line number @var{n}, where 
+list.  It refers to command line number @var{n}, where
 @var{n} is the line number shown by the @code{history} command.
 
 @item !-@var{n}
@@ -4403,7 +4403,7 @@ Exception: A
 backslash followed by a newline character signifies a continuation of
 a shell command line onto the following line (@pxref{Continuation}).
 @c newline=RET ?
-  
+
 Note that the backslash protects a single character, not a string
 of characters.
 
@@ -4463,7 +4463,7 @@ meanings when inside double quotes (@pxref{Predefined}).
 
 @c following par: need examples of why/when need such chars quoted
 You should quote any special character if you
-do not want the shell to use that character's special meaning. 
+do not want the shell to use that character's special meaning.
 Therefore quote all redirection operators, wildcard characters,
 command-line characters, quote characters, and grouping characters if
 they are to represent themselves.  In particular, the following
@@ -4622,7 +4622,7 @@ example, directories it does not have permission to read) it prints an
 error message on standard error.  The above redirection @samp{2>
 /dev/null} forces all these error messages to be written to the special
 file @file{/dev/null}, which simply discards these messages so that
-only the requested @file{resume} files are printed on standard output. 
+only the requested @file{resume} files are printed on standard output.
 This saves you from wading through pages of uninteresting error messages
 from @code{find}.
 @c rewrite in terms of utility for redirecting just error w/o output
@@ -4677,7 +4677,7 @@ The first redirection operator on the line says to send output for
 the standard output into a file called @file{make.log}.
 The second redirection causes
 output to file descriptor 2 (the standard error) to be output wherever
-the output from file descriptor 1 is going (the standard output).  
+the output from file descriptor 1 is going (the standard output).
 Thus, both the standard error and standard output are written to
 @file{make.log}.  (There is a shorthand for
 redirecting both the standard output and the standard error to a single file.
@@ -4863,7 +4863,7 @@ in effect after the command finishes.
 The fact that commands within parentheses are executed within a
 subshell means that the parent shell is unaffected by shell
 side-effects of those commands.  Changes in shell state caused by
-commands executed in a @emph{subshell} do not affect the parent shell. 
+commands executed in a @emph{subshell} do not affect the parent shell.
 
 
 Let's illustrate:
@@ -4878,7 +4878,7 @@ bash$ pwd
 bash$ cd ..
 bash$ pwd
 /home/alan
-bash$ 
+bash$
 @end example
 
 @noindent
@@ -4920,7 +4920,7 @@ alias more=less
 
 @noindent
 causes the program @code{less} to be substituted for the operating
-system's @code{more} program every time the word @samp{more} is typed. 
+system's @code{more} program every time the word @samp{more} is typed.
 @c next sec says: any time typed as command part (1st part) of cmd
 
 @c ? I don't understand this text & example
@@ -4940,7 +4940,7 @@ allows you to time a command for which you have defined an alias. With
 this alias you can time what you would be running if you typed the
 expanded version as a command.
 
-For example, let's say you defined an alias @samp{alias more=less}. 
+For example, let's say you defined an alias @samp{alias more=less}.
 Normally, if you type @samp{time more}, @file{more} is
 timed.  However, if the @samp{time} alias has been previously defined,
 typing @samp{time more} times @file{less}, which is
@@ -4989,8 +4989,8 @@ Aliases are local to the shell in which they were declared.  This means
 that aliases can't be used within shell scripts @emph{unless those
 aliases were declared in that script}.  This means that the alias
 command has to be executed in the shell script before the command which
-references that alias is read.  
-It also means that aliases disappear when their shell is terminated. 
+references that alias is read.
+It also means that aliases disappear when their shell is terminated.
 @emph{BASH aliases cannot be exported to another shell.}  To get BASH
 to remember an alias permanently, you have to enter that alias in your
 login file (@pxref{Start-up}).
@@ -5110,7 +5110,7 @@ removes the @code{m-use} alias, if present.
 
 @c bfox: home etc.: bash tries to get from env, if not there, creates
 @c  * etc. are really predefined
-@c 5 kinds of vars: 
+@c 5 kinds of vars:
 @c  inherit or create (e.g. home)
 @c  predefined (*, @, ...)
 @c  magic vars -- auto_resume, noclobber -- control shell's internal operation
@@ -5299,7 +5299,7 @@ bash$ args hi there
 hi there
 bash$ args hi there everybody
 hi there
-bash$ 
+bash$
 @end example
 
 @xref{Predefined}, for information about the parameter @code{0},
@@ -5317,7 +5317,7 @@ set @var{values}
 @end example
 
 @noindent
-assigns the given @var{values} to consecutive positional parameters 
+assigns the given @var{values} to consecutive positional parameters
 starting with @code{1}.  For example, if we augment the above
 @code{args} script to be
 
@@ -5394,7 +5394,7 @@ bash$ args hi you
 hi you
 bash$ echo $1 $2
 one two
-bash$ 
+bash$
 @end example
 
 The @code{set} command is the easiest way to break a multi-word string
@@ -5419,7 +5419,7 @@ Fri Feb 22 18:13:14 EST 1991
 @cindex variables, predefined shell
 The predefined shell variables are set by the shell.
 You cannot assign them values, but
-you can reference their values by prefacing their names by @samp{$}. 
+you can reference their values by prefacing their names by @samp{$}.
 The predefined shell variables are:
 
 @table @code
@@ -5482,7 +5482,7 @@ This example shows the use of two scripts: @code{c1}, which tries to execute
 @file{/bin/cat} on the expansion of @samp{$*}, and @code{c2}, which executes
 @file{/bin/cat} on the expansion of @samp{$@@}.  When invoked with more
 than one argument, @code{c1} attempts to run @code{cat} on the file whose name
-is the concatenation all its arguments -- not what you would expect.  
+is the concatenation all its arguments -- not what you would expect.
 On the other hand, @code{c2} uses @samp{$@@} and behaves correctly.
 @end table
 
@@ -5530,11 +5530,11 @@ if the named variable is unset or if its value is null.
 @cindex substitution, of parameter values
 BASH's parameter substitution facility lets you test and conditionally set the
 value of parameters and shell variables.
-@c what's param vs. shell var 
+@c what's param vs. shell var
 Braces allow a variable to be
 tested to see if it is defined and is not the null string.  This is
 important as sometimes the value of an expression depends on whether or
-not a variable has been defined.  If the colon in the following 
+not a variable has been defined.  If the colon in the following
 expansions is omitted, BASH only tests that the parameter is
 unset; it does not test to see that it's unset or null.
 
@@ -5552,7 +5552,7 @@ its name.
 
 @item $@{@var{variable}:-@var{string}@}
 If the named @var{variable} exists, then the expression has
-the value of the variable, otherwise it has the value @var{string}. 
+the value of the variable, otherwise it has the value @var{string}.
 For example:
 
 @example
@@ -5560,7 +5560,7 @@ echo $@{timenow-$(date)@}
 @end example
 
 @noindent
-This echoes the current time, as stored in the variable @code{timenow}. 
+This echoes the current time, as stored in the variable @code{timenow}.
 If @code{timenow} isn't set, the @code{date} command is run to generate
 it.
 @c clarify -- date generates time, doesn't set timenow var
@@ -5611,7 +5611,7 @@ value @code{set}, and you can test on that fact.
 
 @item $@{@var{variable}:?@var{text}@}
 If the named @var{variable} exists, then the expression has
-the value of the variable, otherwise the message @var{text} is printed. 
+the value of the variable, otherwise the message @var{text} is printed.
 For example:
 
 @example
@@ -5620,7 +5620,7 @@ For example:
 @c example messed up?  colon in wrong place?
 
 @noindent
-This statement echoes @samp{REQUIRED must be set} if @code{REQUIRED} is not set. 
+This statement echoes @samp{REQUIRED must be set} if @code{REQUIRED} is not set.
 This can be used to inform the user that further execution of the
 current script is not possible.  If you don't make this part of an
 interactive script, the shell exits after printing the
@@ -5630,7 +5630,7 @@ If there is no @var{text} following the @samp{?}, BASH prints a standard
 message.
 
 @item $@{#@var{variable}@}
-The length in characters of the value of @var{variable} is substituted. 
+The length in characters of the value of @var{variable} is substituted.
 @c next sentence ???
 If @var{variable} is @samp{*} or @samp{@@}, the length substituted is
 the length of @samp{*} expanded within double quotes.
@@ -5776,14 +5776,14 @@ to interpret the function, like it would with a script.
 @cindex @code{local} command
 @cindex functions, local variables and
 @cindex functions, @code{local} command and
-Bash supports the use of local variables within a function. 
+Bash supports the use of local variables within a function.
 A local variable shadows the value of a previously defined variable
 (local or not) with the same name.
 
 Local variables differ from other variables in only one way: when the
 function that defined the variable exits, the local variable goes away,
 and any previously defined variable with the same name becomes visible
-again.  
+again.
 
 There is no way to have changes made to a local variable affect the
 value of any previous variable with the same name.  Local variables
@@ -5799,11 +5799,11 @@ commands (@pxref{Built-in}):
 @item declare @r{[}-+frxi@r{]} @r{[}@var{name}@r{[}=@var{value}@r{]}@r{]}
 This command declares variables and gives them attributes.  If no
 @var{name} is given, then a listing of the values of variables is
-displayed, instead.  
+displayed, instead.
 
-The @samp{-f} option causes @code{declare} to use function names only. 
+The @samp{-f} option causes @code{declare} to use function names only.
 @c ? only as opposed to what?
-The @samp{-r} option causes @code{declare} to make @var{name} readonly. 
+The @samp{-r} option causes @code{declare} to make @var{name} readonly.
 @c ? what's readonly?
 The @samp{-x} option causes @code{declare} to make @var{name} export
 only.
@@ -5923,7 +5923,7 @@ false()
 
 @noindent
 These are replacements for the commands of the same name, and will
-execute much faster. 
+execute much faster.
 @c ? what true/false cmds?  documented?  what are they for? Why is this faster?
 
 @node Calling, Export, Listing, Functions
@@ -6178,7 +6178,7 @@ remains untouched.
 @cindex functions, @code{export} command and
 Normally, functions are unset
 @c ? unset?
-when the shell executes a shell script. 
+when the shell executes a shell script.
 You can get around this problem by exporting your functions to the
 environment (@pxref{Environment}).  Exported functions are available to
 any invocation of the shell, including any shell scripts.  There are
@@ -6280,7 +6280,7 @@ You can also perform command substitution using the
 This is the preferred syntax for command substitution.
 When this form of command substitution
 is used, none of the characters between the parentheses are treated
-specially; all characters are considered to make up the command. 
+specially; all characters are considered to make up the command.
 Here's an example:@refill
 
 @c candidate for world's worst example?
@@ -6486,7 +6486,7 @@ rather than be treated like a data file.  For example, @code{chmod +rx
 @samp{+rx} option allows all users to read and execute this file.
 @c ? why do all users?  for just me, do +x ?
 
-@item 
+@item
 Type the name of the file to execute the commands in the shell script.
 @end enumerate
 
@@ -6508,7 +6508,7 @@ directory for the user who invokes it.  The first line of this script
 is a comment, identified by the pound sign @samp{#} that begins it.
 Comment statements don't get executed; use them to
 document your shell script.
-Notice that comments don't have to be placed on a line by themselves. 
+Notice that comments don't have to be placed on a line by themselves.
 When a word begins with a @samp{#} sign, it causes the rest of that
 line to be interpreted as a comment, and not executed.
 Note: @samp{#} works only in a noninteractive shell.
@@ -6548,7 +6548,7 @@ the @code{cat} command.  If the specified file cannot be found, it
 certainly can't be looked at and the attempt to execute @code{cat} is
 looked upon as unsuccessful by the shell.  Therefore the exit status is
 returned as ``unsuccessful''.
- 
+
 This status can be tested by the shell and used to make decisions about
 what actions to take next.  An exit status of zero means that the
 command was executed successfully.  An exit status of non-zero means
@@ -6576,13 +6576,13 @@ The syntax of the @code{if} statement is:
 
 @example
 if @var{condition}
-then 
+then
     @var{commands}
 @r{[}elif @var{condition}
-then 
+then
     @var{commands}@r{]}
 @dots{}
-@r{[}else 
+@r{[}else
     @var{commands}@r{]}
 fi
 @end example
@@ -6670,7 +6670,7 @@ fi@refill
 @end example
 
 @noindent
-This echoes ``interactive shell'' if BASH is executing interactively. 
+This echoes ``interactive shell'' if BASH is executing interactively.
 The variable @code{PS1} is set only if the shell is interactive.
 
 
@@ -6696,7 +6696,7 @@ This statement tries to match a string, @var{string}, to various
 executes the corresponding pattern's commands.  When execution is
 complete, control is transferred to the statement following the
 @code{esac}.
- 
+
 Each pattern in a list is separated
 from the next by @samp{|}.  Patterns can contain the
 file-matching wildcards @samp{*}, @samp{?}, or @samp{[ @dots{} ]}
@@ -6745,7 +6745,7 @@ This sets your prompt to contain the name of the current directory,
 with all path information stripped.
 @c example to explain above sentence
 This can be used as a
-way to reset your primary prompt when you change directories.  If you 
+way to reset your primary prompt when you change directories.  If you
 are in your home directory, via a @code{cd} with no arguments,
 @code{PS1} will contain no directory information at all.
 @c need example of behavior after doing it:
@@ -6769,7 +6769,7 @@ done
 @end example
 
 For each element in @var{list}, @var{name} is set to that
-element and the @var{commands} are executed. 
+element and the @var{commands} are executed.
 When you omit the optional @samp{in @var{list}}, it
 defaults to @samp{in "$@@"}, so that the loop is executed once for
 each of the command line parameters.
@@ -6850,7 +6850,7 @@ In an @code{until} loop, the @var{commands} are
 repeatedly executed as long as the @var{condition} fails
 execution (returns an exit status of non-zero).
 Before each pass through the loop, @var{condition} is executed.
-If @var{condition} returns non-zero, @var{commands} is executed. 
+If @var{condition} returns non-zero, @var{commands} is executed.
 Usually @var{commands} affects the @var{condition} execution in some
 way so that it will eventually return zero.  Otherwise you end up with
 an infinite loop.
@@ -6969,7 +6969,7 @@ create, and creates each one if it does not already exist.
 @appendix Built-in Shell Commands
 
 @cindex built-in commands, list of
-Some of the commands you may want to run are already part of the shell. 
+Some of the commands you may want to run are already part of the shell.
 Because of this, no new processes are started in order to run these
 built-in commands.  Therefore, these built-in commands use less time
 than those that aren't built-in.
@@ -6991,7 +6991,7 @@ parse the line that follows the colon, this command can be adapted for
 many uses.
 
 It can be used as a valid option for a program's conditional statement,
-or it can be used to create an infinite (until interrupted) loop. 
+or it can be used to create an infinite (until interrupted) loop.
 Here's an example:
 
 @example
@@ -7035,7 +7035,7 @@ bash$
 @noindent
 First we create the file called @file{junk}, entering a simple message
 into that file.  Then we create a comment about our file using the
-@samp{:} statement and insert a redirection operator into the sentence. 
+@samp{:} statement and insert a redirection operator into the sentence.
 Normally we'd expect the shell to ignore anything that follows a
 comment character.  However, the shell is able to parse and interpret
 the contents of the line following a colon.
@@ -7068,7 +7068,7 @@ bash$ :'This is bad.'
 @itemx source @var{file}
 Both commands are used to execute shell programs, without creating a
 separate child process.  The named file is read and executed in the
-current shell environment and control is returned to the current shell. 
+current shell environment and control is returned to the current shell.
 Since these commands do not create a subshell they can be used to
 change the value of a shell variable in the current shell.
 
@@ -7081,14 +7081,14 @@ Redirection of input and output and other command line arguments are
 not permitted when using these commands.
 
 @item alias @r{[}@var{name}@r{[}=@var{value}@r{]} @dots{}@r{]}
-An alias is defined for each @var{name} whose @var{value} is given. 
+An alias is defined for each @var{name} whose @var{value} is given.
 @xref{Aliases}, for more information.  A trailing space in @var{value}
 causes the next word to be checked for alias substitution.  If a
 @var{name} (without the @samp{=@var{value}} part) is given for which no alias has been defined an error
 message is printed.
 
-The @code{alias} command, with no arguments, prints the 
-list of aliases in the form @samp{@var{name}=@var{value}} 
+The @code{alias} command, with no arguments, prints the
+list of aliases in the form @samp{@var{name}=@var{value}}
 on the standard output.
 
 @item bg @r{[}@var{job_spec}@r{]}
@@ -7108,7 +7108,7 @@ number of the enclosing loops, all enclosing loops are exited.
 This is used to execute a built-in shell command, passing it
 @var{arguments}.  This is useful when you wish to rename a
 built-in shell command to be a function, but need the functionality of
-the built-in command within the function itself.  (The built-in @code{cd} 
+the built-in command within the function itself.  (The built-in @code{cd}
 command is commonly redefined this way.)
 
 @item cd @r{[}@var{dir}@r{]}
@@ -7117,7 +7117,7 @@ specified by @var{dir}.  The variable @code{HOME} contains the default
 value of @var{dir}.
 
 The variable @code{CDPATH} defines the search path for the directory
-containing @var{dir}.  @xref{Predefined}, for more information. 
+containing @var{dir}.  @xref{Predefined}, for more information.
 Alternative directory names are separated by a colon, @samp{:}.
 
 A null directory name is considered to be the same as the current
@@ -7166,13 +7166,13 @@ Treat @var{name} as an integer; arithmetic evaluation
 assigned a value.
 @end table
 
-Using @samp{+} instead of @samp{-} turns off the attribute.  
+Using @samp{+} instead of @samp{-} turns off the attribute.
 
 When @code{declare} is used in a function, it makes @var{name} local,
 the same as the @code{local} command (@pxref{Functions}).
 
 @item dirs
-This displays the list of currently remembered directories. 
+This displays the list of currently remembered directories.
 Directories are added to the list with the @code{pushd} command; you
 can get back up through the list with the @code{popd} command.
 
@@ -7189,7 +7189,7 @@ backslash-escaped characters is turned on:
 @c   \a is a ksh-88 thing and should be included in 1.06 as far as I know
 @item \a
 Alert/bell.
- 
+
 @item \b
 Backspace.
 
@@ -7302,13 +7302,13 @@ produce help on the @code{pwd} command.
 @itemx history -s @var{arguments}
 The first command displays the history list with line numbers.  Lines listed
 with a @samp{*} have been modified.  If a number @var{n} is specified, only
-the last @var{n} lines of the history list are displayed.  
+the last @var{n} lines of the history list are displayed.
 
 The @samp{-w} option means causes the current history file to be
 written out.  The @samp{-r} option causes the current history file to
 be read, instead.  If a file name, @var{file}, is given, then that file
 is used as a history list.  If no file name is given, BASH checks to see
-if the variable @code{HISTFILE} is set.  The file @file{~/.bash_history} 
+if the variable @code{HISTFILE} is set.  The file @file{~/.bash_history}
 is used as the history file if the variable @code{HISTFILE} is not set.
 @xref{History}, for more information.
 
@@ -7325,7 +7325,7 @@ information.  @xref{Job Control}, for more information.
 @itemx kill -l
 This sends the processes named by @var{pid} or @var{job_spec} the
 terminate signal, or the signal specified by @var{sigspec}, if
-present.  Signals are specified either by number or by name. 
+present.  Signals are specified either by number or by name.
 @c where are the numbers defined? documented?
 
 The @samp{-l} option lists the signal names that can be sent.  Typing
@@ -7344,7 +7344,7 @@ This creates a local variable called @var{name}, and gives it a value
 of @var{value}.
 
 When the @code{local} command is used within a function it causes the
-variable @var{name} to be restricted to that function and its children. 
+variable @var{name} to be restricted to that function and its children.
 Otherwise it is equivalent to creating normal variables, as if the
 @code{local} command had been omitted.
 
@@ -7377,7 +7377,7 @@ command	was successful, a @code{dirs} will be performed too.
 @item pushd @r{[}@var{dir}@r{]}
 @itemx pushd @r{[}+-@var{n}@r{]}
 This adds a directory to the top of the directory stack, or rotates the
-stack, making the new top of the stack the current working directory. 
+stack, making the new top of the stack the current working directory.
 With no arguments, it exchanges the top two directories.
 
 The @samp{+@var{n}} option rotates the stack so that the @var{n}th
@@ -7409,7 +7409,7 @@ Only the characters in @code{IFS} are recognized as word delimiters
 
 @item readonly @r{[}-f@r{]}@r{[}@var{names}@r{]}
 The given @var{names} are marked readonly and the values of these
-various @var{names} may not be changed by subsequent assignments.  
+various @var{names} may not be changed by subsequent assignments.
 If the @samp{-f} option is given, the functions corresponding to the
 @var{names} are marked instead.  If no arguments are given, a list of
 all read-only names is printed.
@@ -7446,7 +7446,7 @@ name are placed in the environment for a command.
 
 @item n
 This tells the shell to read commands but not execute them.  This
-may be used to check a shell script for syntax errors, for example. 
+may be used to check a shell script for syntax errors, for example.
 This option is ignored in interactive shells.
 
 @item t
@@ -7470,7 +7470,7 @@ This saves and restores the bindings of the @var{name} in a @code{for}
 command (@pxref{for}).
 
 @item d
-This disables the hashing of commands that are looked up for execution. 
+This disables the hashing of commands that are looked up for execution.
 Normally, commands are remembered in a hash table and, once found, do
 not have to be looked up again.
 
@@ -7549,12 +7549,12 @@ set test junk
 @end example
 
 @noindent
-sets the positional parameter @samp{$1} to test and @samp{$2} to junk. 
+sets the positional parameter @samp{$1} to test and @samp{$2} to junk.
 The @var{arguments} are passed as positional parameters @samp{$1} to
 @samp{$N}.
 
 If you type the @code{set} command alone, with no arguments, you get a
-list of all the currently defined shell variables (@pxref{Variables}).  
+list of all the currently defined shell variables (@pxref{Variables}).
 
 @item shift @r{[}@var{n}@r{]}
 This causes the positional parameters from @samp{$@var{n}+1} on up to
@@ -7661,7 +7661,7 @@ String operators:
 This tests that @var{string} exists and is empty (of zero length).
 
 @item -l @var{string}
-When this is used as an operand to any of the binary arithmetic 
+When this is used as an operand to any of the binary arithmetic
 operators it returns the length of @var{string}.
 
 @item -n @var{string}
@@ -7702,12 +7702,12 @@ than or equal to, greater than, or greater than or equal to
 @end table
 
 @item times
-This prints the accumulated user and system times for the shell and 
+This prints the accumulated user and system times for the shell and
 for processes started from the shell.
 
 @item trap @r{[}-l@r{]} @r{[}@var{arguments}@r{]} @r{[}@var{sigspec}@r{]}
 The command named by @var{arguments} is to be read and executed when
-the shell receives the signal(s) specified by @var{sigspec}.  
+the shell receives the signal(s) specified by @var{sigspec}.
 @var{sigspec} is either a signal name in <signal.h>, or a signal
 number.  The @code{trap} command with no arguments prints the list of
 commands associated with each signal number.  The @samp{-l} option
@@ -7716,7 +7716,7 @@ corresponding numbers.
 
 If @var{arguments} is absent, all specified signals are reset to
 their original values.  If @var{arguments} is the null string, the
-signal is ignored by the shell and by the commands it invokes.  
+signal is ignored by the shell and by the commands it invokes.
 
 If @var{sigspec} is @code{EXIT} (0), the command @var{arguments} is
 executed upon exit from the shell.
@@ -7774,7 +7774,7 @@ If no options are given, the @samp{-f} is assumed to be active.  Values
 are in 1k increments, except for @samp{-t}, which is in seconds.
 
 @item umask @r{[}@var{nnn}@r{]}
-This sets the user file-creation mask to the octal number @var{nnn}. 
+This sets the user file-creation mask to the octal number @var{nnn}.
 If @var{nnn} is omitted, the current value of the mask is printed.
 
 @item unalias @r{[}@var{names}@r{]}
@@ -7786,7 +7786,7 @@ This removes the corresponding variable or function specified by
 @var{names}.  If the @samp{-f} option is given, then functions are
 removed.
 
-The predefined variables @code{PATH}, @code{IFS}, @code{PPID}, 
+The predefined variables @code{PATH}, @code{IFS}, @code{PPID},
 @code{PS1}, @code{PS2}, @code{UID}, and @code{EUID} cannot
 be unset (@pxref{Shell Vars}).
 
@@ -8011,7 +8011,7 @@ This sets the primary prompt string to be the login name of the current
 user, followed by the name of the computer, followed by a dollar sign.
 
 @item PS2
-This is the secondary prompt string.  By default it is @samp{bash>}. 
+This is the secondary prompt string.  By default it is @samp{bash>}.
 For example,
 
 @example
@@ -8134,7 +8134,7 @@ Such an attempt to overwrite a file will generate an error message.
 You can override this via the @samp{>|} redirection operator.  The @samp{>>}
 (append) redirection operator will still work on existing files because
 it only appends to the file and doesn't erase the file's current contents.
-  
+
 @item auto_resume
 This variable determines whether a command may restart a suspended job
 rather than starting a new one.
@@ -8183,7 +8183,7 @@ Type @kbd{make}.
 @item
 Wait for the compilation to finish.
 
-@item 
+@item
 Type @kbd{./bash} to see if the compile worked.
 @c how can you tell if it worked?
 
@@ -8290,11 +8290,11 @@ Look for something of the form @code{-D}@var{machine} in the output of
 your machine's C preprocessor doesn't have a unique identifier, you will
 have to define the identifier in @file{Makefile} manually.
 
-Let's say you have a machine from Yoyodyne Industries, called the YoYo. 
+Let's say you have a machine from Yoyodyne Industries, called the YoYo.
 It runs a version of @sc{bsd}, so it is reasonably compatible.
 @c compatible with what?
 However, the
-@file{cpp} file on this YoYo machine doesn't define any unique identifiers. 
+@file{cpp} file on this YoYo machine doesn't define any unique identifiers.
 You should change the @file{Makefile} line for @code{CPPFLAGS} to:
 
 @example
@@ -8371,7 +8371,7 @@ debug BASH.  Usually, without this information, the bug won't manifest
 itself!
 
 Discussion and questions about BASH in general (including questions
-about this documentation) can be sent to bug-maintainers@@ai.mit.edu. 
+about this documentation) can be sent to bug-maintainers@@ai.mit.edu.
 
 @node Invoke, Start-up, Install, Top
 @appendix Invoking BASH
@@ -8380,7 +8380,7 @@ about this documentation) can be sent to bug-maintainers@@ai.mit.edu.
 @cindex invoking BASH
 @cindex BASH, invoking
 @c intro material might be useful elsewhere
-The operating system starts a shell for you when you log in. 
+The operating system starts a shell for you when you log in.
 
 This shell operates interactively; that is, it prompts you for commands
 and processes those commands.  Logging off the system ends this login
@@ -8440,7 +8440,7 @@ interactive ones.
 Upon starting a login shell, the system
 @c ? the system? or bash?
 looks for a file containing
-system-wide start-up instructions for BASH and reads and executes it. 
+system-wide start-up instructions for BASH and reads and executes it.
 Usually these instructions are in a file called @file{/etc/profile}.
 
 Next the system looks for start-up instructions for your account and
@@ -8458,7 +8458,7 @@ and reads and executes the first one it finds:
 
 @noindent
 Since the chosen file contains start-up instructions for @emph{your}
-account, you can modify and ``personalize'' this file if you want. 
+account, you can modify and ``personalize'' this file if you want.
 @xref{Start-up}, for an example of this type of file
 (@file{~/.bash_profile}).  If BASH can't find any of these files,
 BASH starts with a default environment; no error message is given.
@@ -8599,9 +8599,9 @@ and neither the
 @samp{-c} nor the @samp{-s} option has been supplied,
 @c s not explained well -- didn't show use of an arg
 then the first
-argument is assumed to be the name of a file containing shell commands. 
+argument is assumed to be the name of a file containing shell commands.
 If BASH is invoked in this fashion, the variable @code{0} is set to the name of the
-file, and the positional parameters are set to the remaining arguments. 
+file, and the positional parameters are set to the remaining arguments.
 BASH reads and executes commands from this file, then exits.
 
 @node Signals, Prompt, Invoke Options, Invoke
@@ -8623,7 +8623,7 @@ In all cases, BASH ignores @code{SIGQUIT}.
 
 If job control is in effect, bash ignores @code{SIGTTIN},
 @code{SIGTTOU}, and @code{SIGTSTP}.  Synchronous jobs started by BASH
-have signals set to the values inherited by the shell from its parent. 
+have signals set to the values inherited by the shell from its parent.
 Background jobs (jobs started with @samp{&}) ignore @code{SIGINT} and
 @code{SIGQUIT}.
 
@@ -8635,13 +8635,13 @@ Here's a description of the signals listed above:
 
 @table @code
 @item SIGINT
-This is the signal generated (normally) by @kbd{C-c} on the keyboard. 
+This is the signal generated (normally) by @kbd{C-c} on the keyboard.
 This signal will kill most processes, although a program may choose to
 ignore @code{SIGINT}.  @code{SIGINT} also allows a process to clean up after itself
 before dying.
 
 @item SIGQUIT
-This is the signal generated (normally) by @kbd{C-\} on the keyboard. 
+This is the signal generated (normally) by @kbd{C-\} on the keyboard.
 @code{SIGQUIT} is identical to @code{SIGINT} except that it requests that the
 operating system produce a diagnostics file (called a @dfn{core dump}
 which is placed into a file named @file{core}).
@@ -8702,7 +8702,7 @@ If @code{IFS} is unset or null, no splitting is done.  Otherwise, each occurrenc
 of an @code{IFS} character is treated as a delimiter.
 
 Explicit null arguments (@samp{""} or @samp{''} -- i.e., single or
-double quotes with nothing between them) are retained. 
+double quotes with nothing between them) are retained.
 Implicit null arguments, resulting from the expansion of parameters
 that have no values,
 @c no value -- unset?  null value?
@@ -8737,7 +8737,7 @@ treated specially.
 When you first log in, a shell process is started that establishes the
 environment for your session (@pxref{Invoke Order}).  A system-wide
 login script assigns default values to environment variables creating a
-basic, default environment (@pxref{Environment}). 
+basic, default environment (@pxref{Environment}).
 (A login script is simply a file that contains commands that customize
 the environment.)
 
@@ -8764,7 +8764,7 @@ customizing your environment for you.
 @c some redundancy between invocation appendix and this one re login files
 @cindex login script
 A local login script allows you to change the default environment to
-fit your needs.  If you have one it resides in your home directory. 
+fit your needs.  If you have one it resides in your home directory.
 Note that names for this script begin with a dot (@samp{.}), so the
 file remains hidden when performing a standard directory listing
 (@code{ls}).  You have to type @code{ls -a} to see if you have any
@@ -8829,7 +8829,7 @@ automatically when you log out.
 The logout script can contain any commands that you might type at the
 shell prompt.  However, a logout script is most useful when used to
 display information about the session just ending and to run background
-commands after you log out. 
+commands after you log out.
 
 Here's an example of a simple BASH logout file, @file{~/.bash_logout}:
 
@@ -8988,7 +8988,7 @@ This is useful for
 finding syntax errors.  You can use this option in conjunction with
 the @samp{-n} option,
 @c substitute new 'set -o ...' version of above
-which prevents the execution of commands. 
+which prevents the execution of commands.
 However, note that saying @code{set -n} makes a terminal useless until
 an end-of-file is typed.
 @c ? how do you type eof?
@@ -9004,7 +9004,7 @@ a result of all the substitutions that took place.  This is useful to
 see if your command lines do what you wanted them to do.
 
 In long shell scripts you can get lots of unwanted and unnecessary
-debugging information from the shell when the 
+debugging information from the shell when the
 @samp{-x} option is used.  You can reduce the amount of output by
 turning this option on (@code{set -x})
 @c substitute new 'set -o ...' version of above
@@ -9014,7 +9014,7 @@ where you need it and turning it off (@code{set +x}) when you don't.@refill
 Adding @code{echo} statements to the shell script also helps when
 debugging.  It's like having @code{print} statments in a program.
 
-You can even check for unset shell variables with the @samp{-u} option. 
+You can even check for unset shell variables with the @samp{-u} option.
 When you use this option, attempts to substitute variables that have not
 been set causes an error message and execution is stopped.
 
@@ -9130,8 +9130,8 @@ directory stack to the first directory whose final component is
 
 # This is a complete rewrite of a similar function posted to
 # gnu.bash.bug by Martin Tomes <mt00@@eurotherm.co.uk>.  I've done
-# a little benchmarking, and this version's pushd appears to be 
-# gobs faster; this is probably due to my use of the case 
+# a little benchmarking, and this version's pushd appears to be
+# gobs faster; this is probably due to my use of the case
 # construct instead of if/elif/fi.  The if construct (at least in
 # Bourne shell) has historically been very slow.  Then again,
 # popd was just as fast...?
