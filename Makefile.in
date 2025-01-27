@@ -2243,6 +2243,7 @@ expr.o: $(BASHINCDIR)/posixjmp.h
 expr.o: $(BASHINCDIR)/stdc.h
 expr.o: $(BASHINCDIR)/typemax.h
 expr.o: $(BASHINCDIR)/unlocked-io.h
+expr.o: $(BUILTIN_SRCDIR)/common.h
 #expr.o: $(LIBINTL_H)
 expr.o: $(srcdir)/expr.c
 expr.o: $(topdir)/array.h
@@ -2272,6 +2273,7 @@ expr.o: $(topdir)/syntax.h
 expr.o: $(topdir)/unwind_prot.h
 expr.o: $(topdir)/variables.h
 expr.o: $(topdir)/xmalloc.h
+expr.o: builtins/builtext.h
 expr.o: config.h
 expr.o: pathnames.h
 #findcmd.o: $(BASHINCDIR)/ansi_stdlib.h
