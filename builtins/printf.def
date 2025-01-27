@@ -1463,7 +1463,7 @@ getuintmax (void)
   errno = 0;
   ret = strtoumax (arg, &ep, 0);
 
-  chk_converror (arg, ep);  
+  chk_converror (arg, ep);
 
   advancearg ();
   return (ret);
