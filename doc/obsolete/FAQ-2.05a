@@ -174,7 +174,7 @@ Configuration specifics for Unix-like systems such as QNX and
 LynxOS are included in the distribution.  Bash-2.05 and later
 versions should compile and run on Minix 2.0 (patches were
 contributed), but I don't believe anyone has built bash-2.x on
-earlier Minix versions yet. 
+earlier Minix versions yet.
 
 Bash has been ported to versions of Windows implementing the Win32
 programming interface.  This includes Windows 95 and Windows NT.
@@ -225,7 +225,7 @@ I have received word that Bash (I'm not sure which version, but I
 believe that it's at least bash-2.02.1) is the standard shell on
 BeOS.
 
-A6) How can I build bash with gcc? 
+A6) How can I build bash with gcc?
 
 Bash configures to use gcc by default if it is available.  Read the
 file INSTALL in the distribution for more information.
@@ -237,7 +237,7 @@ systems use `passwd -s' or `passwd -e'.  If one of these works for
 you, that's all you need.  Note that many systems require the full
 pathname to a shell to appear in /etc/shells before you can make it
 your login shell.  For this, you may need the assistance of your
-friendly local system administrator. 
+friendly local system administrator.
 
 If you cannot do this, you can still use bash as your login shell, but
 you need to perform some tricks.  The basic idea is to add a command
@@ -319,10 +319,10 @@ A8) I just changed my login shell to bash, and now I can't FTP into my
 
 You must add the full pathname to bash to the file /etc/shells.  As
 noted in the answer to the previous question, many systems require
-this before you can make bash your login shell. 
+this before you can make bash your login shell.
 
 Most versions of ftpd use this file to prohibit `special' users
-such as `uucp' and `news' from using FTP. 
+such as `uucp' and `news' from using FTP.
 
 A9)  What's the `POSIX 1003.2 standard'?
 
@@ -332,27 +332,27 @@ number of aspects of UNIX under consideration for
 standardization, from the basic system services at the system
 call and C library level to applications and tools to system
 administration and management.  Each area of standardization is
-assigned to a working group in the 1003 series. 
+assigned to a working group in the 1003 series.
 
 The POSIX Shell and Utilities standard has been developed by IEEE
 Working Group 1003.2 (POSIX.2).  It concentrates on the command
 interpreter interface and utility programs commonly executed from
 the command line or by other programs.  An initial version of the
 standard has been approved and published by the IEEE, and work is
-currently underway to update it. 
+currently underway to update it.
 
 Bash is concerned with the aspects of the shell's behavior
 defined by POSIX.2.  The shell command language has of course
 been standardized, including the basic flow control and program
 execution constructs, I/O redirection and pipelining, argument
-handling, variable expansion, and quoting. 
+handling, variable expansion, and quoting.
 
 The `special' builtins, which must be implemented as part of the
 shell to provide the desired functionality, are specified as
 being part of the shell; examples of these are `eval' and
 `export'.  Other utilities appear in the sections of POSIX.2 not
 devoted to the shell which are commonly (and in some cases must
-be) implemented as builtin commands, such as `read' and `test'. 
+be) implemented as builtin commands, such as `read' and `test'.
 POSIX.2 also specifies aspects of the shell's interactive
 behavior as part of the UPE, including job control and command
 line editing.  Only vi-style line editing commands have been
@@ -370,7 +370,7 @@ A10)  What is the bash `posix mode'?
 Although bash is an implementation of the POSIX.2 shell
 specification, there are areas where the bash default behavior
 differs from that spec.  The bash `posix mode' changes the bash
-behavior in these areas so that it obeys the spec more closely. 
+behavior in these areas so that it obeys the spec more closely.
 
 Posix mode is entered by starting bash with the --posix option or
 executing `set -o posix' after bash is running.
@@ -425,7 +425,7 @@ A short feature history dating from bash-2.0:
 Bash-2.05 introduced the following new features:
 
 o This version has once again reverted to using locales and strcoll(3) when
-  processing pattern matching bracket expressions, as POSIX requires. 
+  processing pattern matching bracket expressions, as POSIX requires.
 o Added a new `--init-file' invocation argument as a synonym for `--rcfile',
   per the new GNU coding standards.
 o The /dev/tcp and /dev/udp redirections now accept service names as well as
@@ -443,7 +443,7 @@ o `complete' and `compgen' now take a `-o value' option, which controls some
 o A new loadable builtin, realpath, which canonicalizes and expands symlinks
   in pathname arguments.
 o When `set' is called without options, it prints function defintions in a
-  way that allows them to be reused as input.  This affects `declare' and 
+  way that allows them to be reused as input.  This affects `declare' and
   `declare -p' as well.  This only happens when the shell is not in POSIX
    mode, since POSIX.2 forbids this behavior.
 
@@ -562,7 +562,7 @@ updated and extended builtins
 new DEBUG trap
 expanded (and now documented) restricted shell mode
 
-implementation stuff:	
+implementation stuff:
 autoconf-based configuration
 nearly all of the bugs reported since version 1.14 have been fixed
 most builtins converted to use builtin `getopt' for consistency
@@ -849,9 +849,9 @@ bash requires a brace expression to contain at least one unquoted
 comma if it is to be expanded.  Any brace-surrounded word not
 containing an unquoted comma is left unchanged by the brace
 expansion code.  This affords the greatest degree of sh
-compatibility. 
+compatibility.
 
-Bash, ksh, zsh, and pd-ksh all implement brace expansion this way. 
+Bash, ksh, zsh, and pd-ksh all implement brace expansion this way.
 
 D3) Why doesn't bash have csh variable modifiers?
 
@@ -910,19 +910,19 @@ Given
 
 D4) How can I make my csh aliases work when I convert to bash?
 
-Bash uses a different syntax to support aliases than csh does. 
+Bash uses a different syntax to support aliases than csh does.
 The details can be found in the documentation.  We have provided
 a shell script which does most of the work of conversion for you;
 this script can be found in ./examples/misc/aliasconv.sh.  Here is
 how you use it:
-  
+
 Start csh in the normal way for you.  (e.g., `csh')
-  
+
 Pipe the output of `alias' through `aliasconv.sh', saving the
 results into `bash_aliases':
-  
+
 	alias | bash aliasconv.sh >bash_aliases
-  
+
 Edit `bash_aliases', carefully reading through any created
 functions.  You will need to change the names of some csh specific
 variables to the bash equivalents.  The script converts $cwd to
@@ -931,17 +931,17 @@ to $PS1.  You may also have to add quotes to avoid unwanted
 expansion.
 
 For example, the csh alias:
-  
+
 	alias cd 'cd \!*; echo $cwd'
-  
+
 is converted to the bash function:
 
 	cd () { command cd "$@"; echo $PWD ; }
 
 The only thing that needs to be done is to quote $PWD:
-  
+
 	cd () { command cd "$@"; echo "$PWD" ; }
-  
+
 Merge the edited file into your ~/.bashrc.
 
 There is an additional, more ambitious, script in
@@ -949,7 +949,7 @@ examples/misc/cshtobash that attempts to convert your entire csh
 environment to its bash equivalent.  This script can be run as
 simply `cshtobash' to convert your normal interactive
 environment, or as `cshtobash ~/.login' to convert your login
-environment. 
+environment.
 
 D5) How can I pipe standard output and standard error from one command to
     another, like csh does with `|&'?
@@ -994,9 +994,9 @@ The specific example used here is [ ! x -o x ], which is false.
 
 Bash's builtin `test' implements the Posix.2 spec, which can be
 summarized as follows (the wording is due to David Korn):
-   
+
 Here is the set of rules for processing test arguments.
-  
+
     0 Args: False
     1 Arg:  True iff argument is not null.
     2 Args: If first arg is !, True iff second argument is null.
@@ -1011,10 +1011,10 @@ Here is the set of rules for processing test arguments.
 	    Otherwise unspecified
     5 or more Args: unspecified.  (Historical shells would use their
     current algorithm).
-   
+
 The operators -a and -o are considered binary operators for the purpose
 of the 3 Arg case.
-   
+
 As you can see, the test becomes (not (x or x)), which is false.
 
 E2) Why does bash sometimes say `Broken pipe'?
@@ -1022,15 +1022,15 @@ E2) Why does bash sometimes say `Broken pipe'?
 If a sequence of commands appears in a pipeline, and one of the
 reading commands finishes before the writer has finished, the
 writer receives a SIGPIPE signal.  Many other shells special-case
-SIGPIPE as an exit status in the pipeline and do not report it. 
+SIGPIPE as an exit status in the pipeline and do not report it.
 For example, in:
-  
+
       ps -aux | head
-  
+
 `head' can finish before `ps' writes all of its output, and ps
 will try to write on a pipe without a reader.  In that case, bash
 will print `Broken pipe' to stderr when ps is killed by a
-SIGPIPE. 
+SIGPIPE.
 
 You can build a version of bash that will not report SIGPIPE errors
 by uncommenting the definition of DONT_REPORT_SIGPIPE in the file
@@ -1043,14 +1043,14 @@ Readline, the line editing library that bash uses, does not know
 that the terminal escape sequences do not take up space on the
 screen.  The redisplay code assumes, unless told otherwise, that
 each character in the prompt is a `printable' character that
-takes up one character position on the screen. 
+takes up one character position on the screen.
 
 You can use the bash prompt expansion facility (see the PROMPTING
 section in the manual page) to tell readline that sequences of
-characters in the prompt strings take up no screen space. 
+characters in the prompt strings take up no screen space.
 
 Use the \[ escape to begin a sequence of non-printing characters,
-and the \] escape to signal the end of such a sequence. 
+and the \] escape to signal the end of such a sequence.
 
 E4) If I pipe the output of a command into `read variable', why doesn't
     the output show up in $variable when the read command finishes?
@@ -1066,7 +1066,7 @@ the shell running the pipeline.  A subprocess cannot affect its
 parent's environment.  When the `read' command sets the variable
 to the input, that variable is set only in the subshell, not the
 parent shell.  When the subshell exits, the value of the variable
-is lost. 
+is lost.
 
 Many pipelines that end with `read variable' can be converted
 into command substitutions, which will capture the output of
@@ -1133,7 +1133,7 @@ backslash-escaped characters in its argument strings by default;
 it requires the use of the -e option to enable the
 interpretation.  The System V echo provides no way to disable the
 special characters; the bash echo has a -E option to disable
-them. 
+them.
 
 There is a configuration option that will make bash behave like
 the System V echo and interpret things like `\t' by default.  Run
@@ -1220,7 +1220,7 @@ E9) Why does the pattern matching expression [A-Z]* match files beginning
 Bash-2.05 and later versions have reverted to the bash-2.03 behavior of
 honoring the current locale setting when processing ranges within pattern
 matching bracket expressions ([A-Z]).  This is what POSIX.2 and SUSv3/XPG6
-specify. 
+specify.
 
 The behavior of the matcher in bash-2.05 and later versions depends on the
 current LC_COLLATE setting.  Setting this variable to `C' or `POSIX' will
@@ -1282,7 +1282,7 @@ getting enough of it to be useful.
 This mode also causes cmdtool to not implement many of the
 terminal functions and control sequences appearing in the
 `sun-cmd' termcap entry.  For a more complete explanation, see
-that file examples/suncmd.termcap in the bash distribution. 
+that file examples/suncmd.termcap in the bash distribution.
 
 `xterm' is a better choice, and gets along with bash much more
 smoothly.
@@ -1303,16 +1303,16 @@ F2) I built bash on Solaris 2.  Why do globbing expansions and filename
 
 This is the consequence of building bash on SunOS 5 and linking
 with the libraries in /usr/ucblib, but using the definitions
-and structures from files in /usr/include. 
+and structures from files in /usr/include.
 
 The actual conflict is between the dirent structure in
 /usr/include/dirent.h and the struct returned by the version of
-`readdir' in libucb.a (a 4.3-BSD style `struct direct'). 
+`readdir' in libucb.a (a 4.3-BSD style `struct direct').
 
 Make sure you've got /usr/ccs/bin ahead of /usr/ucb in your $PATH
 when configuring and building bash.  This will ensure that you
 use /usr/ccs/bin/cc or acc instead of /usr/ucb/cc and that you
-link with libc before libucb. 
+link with libc before libucb.
 
 If you have installed the Sun C compiler, you may also need to
 put /usr/ccs/bin and /opt/SUNWspro/bin into your $PATH before
@@ -1326,15 +1326,15 @@ client library, which is part of libc.
 
 The YP library code keeps static state -- a pointer into the data
 returned from the server.  When YP initializes itself (setpwent),
-it looks at this pointer and calls free on it if it's non-null. 
-So far, so good. 
+it looks at this pointer and calls free on it if it's non-null.
+So far, so good.
 
 If one of the YP functions is interrupted during getpwent (the
 exact function is interpretwithsave()), and returns NULL, the
 pointer is freed without being reset to NULL, and the function
 returns.  The next time getpwent is called, it sees that this
 pointer is non-null, calls free, and the bash free() blows up
-because it's being asked to free freed memory. 
+because it's being asked to free freed memory.
 
 The traditional Unix mallocs allow memory to be freed multiple
 times; that's probably why this has never been fixed.  You can
@@ -1378,7 +1378,7 @@ The file CWRU/sh-redir-hack in the bash-2.05a distribution is an
 support this construct.  It will not apply with `patch'; you must
 modify parse.y by hand.  Note that if you apply this, you must
 recompile with -DREDIRECTION_HACK.  This introduces a large
-number of reduce/reduce conflicts into the shell grammar. 
+number of reduce/reduce conflicts into the shell grammar.
 
 F6) Why can't I use vi-mode editing on Red Hat Linux 6.1?
 
@@ -1459,7 +1459,7 @@ This is why the `command' and `builtin' builtins exist.  The
 `command' builtin executes the command supplied as its first
 argument, skipping over any function defined with that name.  The
 `builtin' builtin executes the builtin command given as its first
-argument directly. 
+argument directly.
 
 For example, to write a function to replace `cd' that writes the
 hostname and current directory to an xterm title bar, use
@@ -1471,12 +1471,12 @@ something like the following:
 	}
 
 This could also be written using `command' instead of `builtin';
-the version above is marginally more efficient. 
+the version above is marginally more efficient.
 
 G3) How can I find the value of a shell variable whose name is the value
     of another shell variable?
 
-Versions of Bash newer than Bash-2.0 support this directly.  You can use 
+Versions of Bash newer than Bash-2.0 support this directly.  You can use
 
 	${!var}
 
@@ -1489,7 +1489,7 @@ For example, the following sequence of commands will echo `z':
 For sh compatibility, use the `eval' builtin.  The important
 thing to remember is that `eval' expands the arguments you give
 it again, so you need to quote the parts of the arguments that
-you want `eval' to act on. 
+you want `eval' to act on.
 
 For example, this expression prints the value of the last positional
 parameter:
@@ -1591,10 +1591,10 @@ H1) How do I report bugs in bash, and where should I look for fixes and
 Use the `bashbug' script to report bugs.  It is built and
 installed at the same time as bash.  It provides a standard
 template for reporting a problem and automatically includes
-information about your configuration and build environment. 
+information about your configuration and build environment.
 
 `bashbug' sends its reports to bug-bash@gnu.org, which
-is a large mailing list gatewayed to the usenet newsgroup gnu.bash.bug. 
+is a large mailing list gatewayed to the usenet newsgroup gnu.bash.bug.
 
 Bug fixes, answers to questions, and announcements of new releases
 are all posted to gnu.bash.bug.  Discussions concerning bash features
@@ -1627,7 +1627,7 @@ by O'Reilly and Associates.  The book is based on Bill Rosenblatt's Korn
 Shell book.  The title is ``Learning the Bash Shell'', and the ISBN number
 is 1-56592-147-X.  Look for it in fine bookstores near you.  This book
 covers bash-1.14, but has an appendix describing some of the new features
-in bash-2.0.  
+in bash-2.0.
 
 A second edition of this book is available, published in January, 1998.
 The ISBN number is 1-56592-347-2.  Look for it in the same fine bookstores
@@ -1664,7 +1664,7 @@ Some of the new ksh93 pattern matching operators, like backreferencing
 
 H5) When will the next release appear?
 
-The next version will appear sometime in 2002.  Never make predictions. 
+The next version will appear sometime in 2002.  Never make predictions.
 
 
 This document is Copyright 1995-2001 by Chester Ramey.

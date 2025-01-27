@@ -376,7 +376,7 @@ if it exists.
 .PP
 When an interactive shell that is not a login shell is started,
 .B bash
-reads and executes commands from 
+reads and executes commands from
 .FN \*~/.bashrc ,
 if that file exists.
 The
@@ -930,7 +930,7 @@ that is executed, or non-zero if any of the expressions is invalid.
 .IP
 Use the \fBbreak\fP and \fPcontinue\fP builtins
 (see
-.SM   
+.SM
 .B "SHELL BUILTIN COMMANDS"
 below)
 to control loop execution.
@@ -3017,7 +3017,7 @@ the number of fractional digits after a decimal point.
 A value of 0 causes no decimal point or fraction to be output.
 \fBtime\fP prints at most six digits after the decimal point;
 values of \fIp\fP greater than 6 are changed to 6.
-If \fIp\fP is not specified, 
+If \fIp\fP is not specified,
 \fBtime\fP prints three digits after the decimal point.
 .IP
 The optional \fBl\fP specifies a longer format, including
@@ -3240,7 +3240,7 @@ If the double-quoted expansion occurs within a word, the expansion of
 the first parameter is joined with the beginning part of the
 expansion of the original word,
 and the expansion of the last parameter is joined with the last
-part of the 
+part of the
 expansion of the original word.
 This is analogous to the expansion
 of the special parameters \fB*\fP and \fB@\fP (see
@@ -4168,7 +4168,7 @@ If
 .I expression
 is invalid,
 .B bash
-prints a message to standard error indicating failure, 
+prints a message to standard error indicating failure,
 does not perform the substitution,
 and does not execute the command associated with the expansion.
 .SS Process Substitution
@@ -5956,7 +5956,7 @@ The shell sends
 .B SIGCONT
 to stopped jobs to ensure that they receive the
 .SM
-.B SIGHUP 
+.B SIGHUP
 (see
 .SM
 .B "JOB CONTROL"
@@ -6559,7 +6559,7 @@ When a command is described as \fIkilling\fP text, the text
 deleted is saved for possible future retrieval
 (\fIyanking\fP).
 The killed text is saved in a \fIkill ring\fP.
-Consecutive kills accumulate the deleted text 
+Consecutive kills accumulate the deleted text
 into one unit, which can be yanked all at once.
 Commands which do not kill text separate the chunks of text
 on the kill ring.
@@ -7133,7 +7133,7 @@ names begin with a
 .Q .
 (hidden files) when performing filename completion.
 If set to \fBOff\fP, the user must include the leading
-.Q . 
+.Q .
 in the filename to be completed.
 .TP
 .B menu\-complete\-display\-prefix (Off)
@@ -8197,7 +8197,7 @@ or if there is no compspec for the command word,
 the \fB\-D\fP option to \fBcomplete\fP as the default.
 If there is no default compspec, \fBbash\fP performs alias expansion
 on the command word as a final resort,
-and attempts to find a compspec for the command word 
+and attempts to find a compspec for the command word
 resulting from any successful expansion.
 .PP
 If a compspec is not found, \fBbash\fP performs its default completion as
@@ -8332,7 +8332,7 @@ to \fBreadline\fP as the list of possible completions.
 .PP
 If the previously-applied actions do not generate any matches, and the
 \fB\-o dirnames\fP option was supplied to \fBcomplete\fP when the
-compspec was defined, \fBbash\fP attempts directory name completion. 
+compspec was defined, \fBbash\fP attempts directory name completion.
 .PP
 If the \fB\-o plusdirs\fP option was supplied to \fBcomplete\fP when the
 compspec was defined, \fBbash\fP attempts directory name completion and
@@ -9259,7 +9259,7 @@ If the
 .B \-e
 option is supplied with
 .BR \-P ,
-and \fBcd\fP cannot successfully determine the current working directory 
+and \fBcd\fP cannot successfully determine the current working directory
 after a successful directory change, it returns a non-zero status.
 .IP
 On systems that support it, the \fB\-@\fP option presents the extended
@@ -11233,7 +11233,7 @@ The
 option displays output in a format that may be reused as input.
 .IP
 \fBreadonly\fP allows the value of a variable to be set at the same time
-the readonly attribute is changed by following the variable name with      
+the readonly attribute is changed by following the variable name with
 =\fIvalue\fP.
 This sets the value of the variable is to \fIvalue\fP while modifying
 the readonly attribute.
@@ -12505,7 +12505,7 @@ in a shell function (see
 .B "SHELL GRAMMAR"
 .ie \n(zZ=1 in \fIbash\fP(1)).
 .el above).
-Refer to the description of the \fBextdebug\fP shell option 
+Refer to the description of the \fBextdebug\fP shell option
 (see
 .B shopt
 .ie \n(zZ=1 in \fIbash\fP(1))
@@ -12599,7 +12599,7 @@ option is used,
 either returns the pathname of the executable file
 that would be found by searching
 .B $PATH
-for 
+for
 .I name
 or nothing if
 .Q "type \-t name"
