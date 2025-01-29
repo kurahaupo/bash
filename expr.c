@@ -653,10 +653,10 @@ expcond (void)
 
       set_noeval = 0;
       if (cval)
- 	{
- 	  set_noeval = 1;
+	{
+	  set_noeval = 1;
 	  noeval++;
- 	}
+	}
 
       readtok ();
       if (curtok == 0)
@@ -1084,11 +1084,11 @@ exp0 (void)
       /* post-increment or post-decrement */
       if (stok == POSTINC || stok == POSTDEC)
 	{
- 	  /* restore certain portions of EC */
- 	  tokstr = ec.tokstr;
- 	  noeval = ec.noeval;
- 	  curlval = ec.lval;
- 	  lasttok = STR;	/* ec.curtok */
+	  /* restore certain portions of EC */
+	  tokstr = ec.tokstr;
+	  noeval = ec.noeval;
+	  curlval = ec.lval;
+	  lasttok = STR;	/* ec.curtok */
 
 	  v2 = val + ((stok == POSTINC) ? 1 : -1);
 	  vincdec = itos (v2);
