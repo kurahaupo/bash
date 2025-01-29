@@ -32,9 +32,11 @@ main (int argc, char **argv)
   int i;
   sighandler *h;
 
-  for (i = 1; i < NSIG; i++) {
+  for (i = 1; i < NSIG; i++)
+    {
       h = signal (i, SIG_DFL);
-      if (h != SIG_DFL) {
+      if (h != SIG_DFL)
+	{
 	  if (h == SIG_IGN)
 	    fprintf (stderr, "%d: ignored (%s)\n", i, sys_siglist[i]);
 	  else
