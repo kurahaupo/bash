@@ -83,7 +83,7 @@ extern char *signal_names[];
 
 #  if defined (DEBUG)
 static void debug_printf (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
-#  endif /* DEBUG */
+#  endif	/* DEBUG */
 
 static int it_init_joblist (ITEMLIST *, int);
 
@@ -116,18 +116,10 @@ static STRINGLIST *gen_action_completions (COMPSPEC *, const char *);
 static STRINGLIST *gen_globpat_matches (COMPSPEC *, const char *);
 static STRINGLIST *gen_wordlist_matches (COMPSPEC *, const char *);
 static STRINGLIST *gen_shell_function_matches (COMPSPEC *, const char *,
-					       const char *,
-					       char *, int, WORD_LIST *,
-					       int, int, int *);
-static STRINGLIST *gen_command_matches (COMPSPEC *, const char *,
-					const char *,
-					char *, int, WORD_LIST *,
-					int, int);
+					       const char *, char *, int, WORD_LIST *, int, int, int *);
+static STRINGLIST *gen_command_matches (COMPSPEC *, const char *, const char *, char *, int, WORD_LIST *, int, int);
 
-static STRINGLIST *gen_progcomp_completions (const char *, const char *,
-					     const char *,
-					     int, int, int *, int *,
-					     COMPSPEC **);
+static STRINGLIST *gen_progcomp_completions (const char *, const char *, const char *, int, int, int *, int *, COMPSPEC **);
 
 static char *pcomp_filename_completion_function (const char *, int);
 
@@ -660,8 +652,7 @@ gen_matches_from_itemlist (ITEMLIST *itp, const char *text)
   size_t tlen, i, n;
   char *ntxt;
 
-  if ((itp->flags & (LIST_DIRTY | LIST_DYNAMIC)) ||
-      (itp->flags & LIST_INITIALIZED) == 0)
+  if ((itp->flags & (LIST_DIRTY | LIST_DYNAMIC)) || (itp->flags & LIST_INITIALIZED) == 0)
     {
       if (itp->flags & (LIST_DIRTY | LIST_DYNAMIC))
 	clean_itemlist (itp);
@@ -714,8 +705,7 @@ pcomp_filename_completion_function (const char *text, int state)
          (rl_completion_found_quote == 0). */
       iscompgen = this_shell_builtin == compgen_builtin;
       iscompleting = RL_ISSTATE (RL_STATE_COMPLETING);
-      if (iscompgen && iscompleting == 0 && rl_completion_found_quote == 0
-       && rl_filename_dequoting_function)
+      if (iscompgen && iscompleting == 0 && rl_completion_found_quote == 0 && rl_filename_dequoting_function)
 	{
 	  /* Use rl_completion_quote_character because any single or
 	     double quotes have been removed by the time TEXT makes it
@@ -729,8 +719,7 @@ pcomp_filename_completion_function (const char *text, int state)
          calling readline, do the dequoting. */
       else if (iscompgen && iscompleting &&
 	       pcomp_curtxt && *pcomp_curtxt == 0 &&
-	       text && (*text == '\'' || *text == '"') && text[1] == text[0] && text[2] == 0 &&
-	       rl_filename_dequoting_function)
+	       text && (*text == '\'' || *text == '"') && text[1] == text[0] && text[2] == 0 && rl_filename_dequoting_function)
 	dfn = (*rl_filename_dequoting_function) ((char *)text, rl_completion_quote_character);
       /* Another mismatched assumption by bash-completion.  If compgen is being
          run as part of bash-completion, and the argument to compgen is not
@@ -743,11 +732,7 @@ pcomp_filename_completion_function (const char *text, int state)
          the unwind-protect stack, but there's no function to do that yet.
          We could simply check whether we're executing in a function by
          checking variable_context, and may end up doing that. */
-      else if (iscompgen && iscompleting && rl_filename_dequoting_function &&
-	       pcomp_curtxt && text &&
-	       STREQ (pcomp_curtxt, text) == 0 &&
-	       variable_context &&
-	       sh_contains_quotes (text))	/* guess */
+      else if (iscompgen && iscompleting && rl_filename_dequoting_function && pcomp_curtxt && text && STREQ (pcomp_curtxt, text) == 0 && variable_context && sh_contains_quotes (text))	/* guess */
 	dfn = (*rl_filename_dequoting_function) ((char *)text, rl_completion_quote_character);
       else
 	dfn = savestring (text);
@@ -925,7 +910,7 @@ bind_comp_words (WORD_LIST *lwords)
   VUNSETATTR (v, att_invisible);
   return v;
 }
-#  endif /* ARRAY_VARS */
+#  endif	/* ARRAY_VARS */
 
 static void
 bind_compfunc_variables (char *line, int ind, WORD_LIST *lwords, int cw, int exported)
@@ -1044,8 +1029,7 @@ build_arg_list (const char *cmd, const char *cname, const char *text, WORD_LIST 
 
 static STRINGLIST *
 gen_shell_function_matches (COMPSPEC *cs, const char *cmd, const char *text,
-			    char *line, int ind, WORD_LIST *lwords,
-			    int nw, int cw, int *foundp)
+			    char *line, int ind, WORD_LIST *lwords, int nw, int cw, int *foundp)
 {
   char *funcname;
   STRINGLIST *sl;
@@ -1153,9 +1137,7 @@ gen_shell_function_matches (COMPSPEC *cs, const char *cmd, const char *text,
    STRINGLIST from the results and return it. */
 
 static STRINGLIST *
-gen_command_matches (COMPSPEC *cs, const char *cmd, const char *text,
-		     char *line, int ind, WORD_LIST *lwords,
-		     int nw, int cw)
+gen_command_matches (COMPSPEC *cs, const char *cmd, const char *text, char *line, int ind, WORD_LIST *lwords, int nw, int cw)
 {
   char *csbuf, *cscmd, *t;
   int ws, we;
@@ -1225,7 +1207,8 @@ gen_command_matches (COMPSPEC *cs, const char *cmd, const char *text,
       if (sl->list_len + 1 >= sl->list_size)
 	strlist_resize (sl, sl->list_size + 16);
       sl->list[sl->list_len++] = t;
-      while (csbuf[we] == '\n') we++;
+      while (csbuf[we] == '\n')
+	we++;
       ws = we;
     }
   sl->list[sl->list_len] = (char *)NULL;
@@ -1248,8 +1231,7 @@ command_line_to_word_list (char *line, int llen, int sentinel, int *nwp, int *cw
 /* Evaluate COMPSPEC *cs and return all matches for WORD. */
 
 STRINGLIST *
-gen_compspec_completions (COMPSPEC *cs, const char *cmd, const char *word,
-			  int start, int end, int *foundp)
+gen_compspec_completions (COMPSPEC *cs, const char *cmd, const char *word, int start, int end, int *foundp)
 {
   STRINGLIST *ret, *tmatches;
   char *line;
@@ -1324,8 +1306,7 @@ gen_compspec_completions (COMPSPEC *cs, const char *cmd, const char *word,
       llen = end - start;
 
 #  ifdef DEBUG
-      debug_printf ("command_line_to_word_list (%s, %d, %d, %p, %p)",
-		    line, llen, pcomp_ind - start, &nw, &cw);
+      debug_printf ("command_line_to_word_list (%s, %d, %d, %p, %p)", line, llen, pcomp_ind - start, &nw, &cw);
 #  endif
       lwords = command_line_to_word_list (line, llen, pcomp_ind - start, &nw, &cw);
       /* If we skipped a NULL word at the beginning of the line, add it back */
@@ -1490,8 +1471,7 @@ pcomp_set_compspec_options (COMPSPEC *cs, int flags, int set_or_unset)
 
 static STRINGLIST *
 gen_progcomp_completions (const char *ocmd, const char *cmd, const char *word,
-			  int start, int end, int *foundp, int *retryp,
-			  COMPSPEC **lastcs)
+			  int start, int end, int *foundp, int *retryp, COMPSPEC **lastcs)
 {
   COMPSPEC *cs, *oldcs;
   const char *oldcmd, *oldtxt;
@@ -1550,8 +1530,7 @@ gen_progcomp_completions (const char *ocmd, const char *cmd, const char *word,
    bound the command currently being completed in pcomp_line (usually
    rl_line_buffer). */
 char **
-programmable_completions (const char *cmd, const char *word,
-			  int start, int end, int *foundp)
+programmable_completions (const char *cmd, const char *word, int start, int end, int *foundp)
 {
   COMPSPEC *lastcs;
   STRINGLIST *ret;
@@ -1645,7 +1624,7 @@ programmable_completions (const char *cmd, const char *word,
 	  /* And go back and start over. */
 	  retry = 1;
 	}
-#  endif /* ALIAS */
+#  endif	/* ALIAS */
 
       count++;
 
@@ -1683,4 +1662,4 @@ programmable_completions (const char *cmd, const char *word,
   return (rmatches);
 }
 
-#endif /* PROGRAMMABLE_COMPLETION */
+#endif		/* PROGRAMMABLE_COMPLETION */
