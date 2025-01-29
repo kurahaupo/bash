@@ -5036,7 +5036,7 @@ execute_builtin (sh_builtin_func_t *builtin, WORD_LIST *words, int flags, int su
 	  if (flags & CMD_COMMAND_BUILTIN)
 	    should_keep = 0;
 	  if (subshell == 0)
-	    add_unwind_protect (pop_scope, (void *)(intptr_t) should_keep);
+	    add_unwind_protect (pop_scope, (void *)(intptr_t)should_keep);
 	  temporary_env = (HASH_TABLE *)NULL;
 	}
     }
