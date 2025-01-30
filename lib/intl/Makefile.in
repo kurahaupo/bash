@@ -370,8 +370,8 @@ dcigettext.o: $(srcdir)/loadinfo.h
 dcigettext.o: $(srcdir)/localcharset.h
 dcigettext.o: $(srcdir)/lock.h
 dcigettext.o: $(srcdir)/plural-exp.h
-#dcigettext.o: $(srcdir)/tsearch.c
-#dcigettext.o: $(srcdir)/tsearch.h
+dcigettext.o: $(srcdir)/tsearch.c
+dcigettext.o: $(srcdir)/tsearch.h
 dcigettext.o: $(topdir)/config-bot.h
 dcigettext.o: $(topdir)/config-top.h
 dcigettext.o: ../../config.h

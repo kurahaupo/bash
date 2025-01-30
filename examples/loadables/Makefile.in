@@ -328,11 +328,11 @@ install-supported: all installdirs install-dev
 uninstall-dev:
 	- $(RM) $(DESTDIR)$(loadablesdir)/Makefile.inc $(DESTDIR)$(loadablesdir)/Makefile.sample
 	- $(RM) $(DESTDIR)$(loadablesdir)/loadables.h
-	- cd ../.. && ${MAKE} ${MFLAGS} DESTDIR="$(DESTDIR)" uninstall-headers
+	- cd ../.. && $(MAKE) $(MFLAGS) DESTDIR="$(DESTDIR)" uninstall-headers
 
 .PHONY: uninstall-supported
 uninstall-supported: uninstall-dev
-	- cd $(DESTDIR)${loadablesdir} && $(RM) ${ALLPROG}
+	- cd $(DESTDIR)$(loadablesdir) && $(RM) $(ALLPROG)
 
 .PHONY: install-unsupported uninstall-unsupported
 install-unsupported:
@@ -348,7 +348,7 @@ OBJS = print.o truefalse.o accept.o sleep.o finfo.o getconf.o logname.o \
        sync.o push.o mkdir.o mktemp.o realpath.o strftime.o setpgid.o stat.o \
        fdflags.o seq.o asort.o strptime.o
 
-${OBJS}: ../../config.h
+$(OBJS): ../../config.h
 
 .PHONY: depends depend
 depends depend Makefile:

@@ -121,3 +121,4 @@ tparam.o: $(topdir)/config-bot.h
 tparam.o: $(topdir)/config-top.h
 tparam.o: ../../config.h
 version.o: $(srcdir)/version.c
+#version.o: ../../config.h

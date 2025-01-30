@@ -1319,11 +1319,11 @@ builtins/pipesize.h: ${BUILTINS_LIBRARY}
 
 support/man2html$(EXEEXT): $(SUPPORT_SRC)man2html.c
 
+$(TERMCAP_LIBRARY) \
+$(TILDE_LIBRARY) \
 builtins/builtext.h \
 builtins/pipesize.h \
 support/man2html$(EXEEXT) \
-$(TERMCAP_LIBRARY) \
-$(TILDE_LIBRARY) \
  :
 	@ echo making $(@F) in $(@D)
 	@ cd $(@D) && $(MAKE) $(BASH_MAKEFLAGS) $(@F)
