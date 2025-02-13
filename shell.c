@@ -243,6 +243,12 @@ int posixly_correct = 1;	/* Non-zero means posix.2 superset. */
 int posixly_correct = 0;	/* Non-zero means posix.2 superset. */
 #endif
 
+#if defined (STRICT_POSIX) || ! defined (ALLOW_EMPTY_ZERO)
+int allow_empty_zero = 0;
+#else
+int allow_empty_zero = 1;
+#endif
+
 /* Some long-winded argument names.  These are obviously new. */
 #define Int 1
 #define Charp 2

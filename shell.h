@@ -126,6 +126,7 @@ extern char **subshell_argv;
 extern char **subshell_envp;
 
 /* variables managed using shopt */
+extern int allow_empty_zero;
 extern int hup_on_exit;
 extern int check_jobs_at_exit;
 extern int autocd;

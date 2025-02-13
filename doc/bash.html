@@ -14908,6 +14908,40 @@ must always be matched explicitly, even if
 <B>dotglob</B>
 
 is set.
+<DT><B>emptyzero</B>
+<DD>Prior to Bash 5.0, whenever a numeric constant was expected, an empty
+string would be accepted and interpreted as zero. POSIX was initially ambiguous
+on whether this was permissible, but it now requires a diagnostic in this
+situation.
+
+<DD>Although treating empty as zero can be a useful extension in limited
+cirumstances, more commonly such empty strings result from bugs in scripts, so
+those warnings are now enabled by default.
+
+<DD>If this option is set, the original behaviour is restored and no warning is
+emitted if <B>$var</B> is empty in various situations, including when:
+
+<DD>
+<UL>
+<LI>
+using ‘10#$var’ in a numeric expression (to force $var to be interpreted as a
+decimal whole number, even if it has leading zeroes); or
+
+<LI>
+using ‘0x$var’ in a numeric expression (to force $var to be interpreted as a
+hexadecimal whole number, even if it has leading zeroes); or
+
+<LI>
+using ‘"$var"’ as a argument to the built-in ‘printf’ for use with a numeric
+conversion (any of <B>%a</B>, <B>%A</B>, <B>%d</B>, <B>%e</B>, <B>%E</B>,
+<B>%f</B>, <B>%F</B>, <B>%g</B>, <B>%G</B>, <B>%i</B>, <B>%o</B>, <B>%u</B>,
+<B>%x</B>, or <B>%X</B>).
+</UL>
+
+<DD>
+This does not affect the interpretation of an empty string as a numeric
+expression; that continues to be evaluated as 0.
+
 <DT><B>execfail</B>
 
 <DD>

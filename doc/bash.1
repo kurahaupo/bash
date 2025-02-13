@@ -11941,6 +11941,44 @@ must always be matched explicitly, even if
 .B dotglob
 is set.
 .TP 8
+.B emptyzero
+Prior to Bash 5.0, whenever a numeric constant was expected,
+an empty string would be accepted and interpreted as zero.
+POSIX was initially ambiguous on whether this was permissible,
+but it now requires a diagnostic in this situation.
+
+.IP
+Although treating empty as zero can be a useful extension in
+limited cirumstances, more commonly such empty strings result
+from bugs in scripts, so those warnings are now enabled by
+default.
+
+.IP
+If this option is set, the original behaviour is restored and
+no warning is emitted if \fI$var\fP is empty in various
+situations, including when:
+.RS
+.TP
+.B *
+using \fB10#\fP\fI$var\fP in a numeric expression (to force
+$var to be interpreted as a decimal whole number, even
+if it has leading zeroes); or
+.TP
+.B *
+using \fB0x\fP\fI$var\fP in a numeric expression (to force
+$var to be interpreted as a hexadecimal whole number,
+even if it has leading zeroes); or
+.TP
+.B *
+using \fI"$var"\fP as a argument to the built-in \fBprintf\fP
+for use with a numeric conversion (any of \fB%a\fP, \fB%A\fP,
+\fB%d\fP, \fB%e\fP, \fB%E\fP, \fB%f\fP, \fB%F\fP, \fB%g\fP,
+\fB%G\fP, \fB%i\fP, \fB%o\fP, \fB%u\fP, \fB%x\fP, or \fB%X\fP).
+.RE
+.IP
+This does not affect the interpretation of an empty string as
+a numeric expression; that continues to be evaluated as 0.
+.TP 8
 .B execfail
 If set, a non-interactive shell will not exit if
 it cannot execute the file specified as an argument to the

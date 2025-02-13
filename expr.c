@@ -1594,6 +1594,8 @@ strlong (char *num)
 	  val = 0;
 	  foundbase++;
 
+	  if (!*s && allow_empty_zero)
+	    return 0;
 	  /* Make sure a base# is followed by a character that can compose a
 	     valid integer constant. Jeremy Townshend <jeremy.townshend@gmail.com> */
 	  if (VALID_NUMCHAR (*s) == 0)

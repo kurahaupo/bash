@@ -1386,7 +1386,7 @@ getstr (void)
 static inline void
 chk_converror (char *s, char *ep)
 {
-  if (*ep || ep == s)
+  if (*ep || ep == s && !allow_empty_zero)
     {
       sh_invalidnum (s);
       conversion_error = 1;
