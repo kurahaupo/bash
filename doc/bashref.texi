@@ -970,7 +970,7 @@ in @var{consequent-commands}, or zero if none was executed.
 The syntax of the @code{for} command is:
 
 @example
-for @var{name} [ [in [@var{words} @dots{}] ] ; ] do @var{commands}; done
+for @var{name} [ [in @var{words} @dots{}] ; ] do @var{commands}; done
 @end example
 
 Expand @var{words} (@pxref{Shell Expansions}), and then
@@ -985,10 +985,11 @@ The return status is the exit status of the last command that executes.
 If there are no items in the expansion of @var{words}, no commands are
 executed, and the return status is zero.
 
-An alternate form of the @code{for} command is also supported:
+There is an alternate form of the @code{for} command which is similar to the
+C language:
 
 @example
-for (( @var{expr1} ; @var{expr2} ; @var{expr3} )) ; do @var{commands} ; done
+for (( @var{expr1} ; @var{expr2} ; @var{expr3} )) [;] do @var{commands} ; done
 @end example
 
 First, evaluate the arithmetic expression @var{expr1} according
@@ -1161,8 +1162,11 @@ The arithmetic @var{expression} is evaluated according to the rules
 described below (@pxref{Shell Arithmetic}).
 The @var{expression} undergoes the same expansions
 as if it were within double quotes,
-but double quote characters in @var{expression} are not treated specially
-and are removed.
+but unescaped double quote characters
+in @var{expression} are not treated
+specially and are removed.
+Since this can potentially result in empty strings,
+this command treats those as expressions that evaluate to 0.
 If the value of the expression is non-zero, the return status is 0;
 otherwise the return status is 1. 
 
@@ -2066,7 +2070,7 @@ ade ace abe
 @end example
 
 A sequence expression takes the form
-@code{@{@var{x}..@var{y}[..@var{incr}]@}},
+@code{@var{x}..@var{y}[..@var{incr}]},
 where @var{x} and @var{y} are either integers or letters,
 and @var{incr}, an optional increment, is an integer.
 When integers are supplied, the expression expands to each number between
@@ -2076,7 +2080,7 @@ each generated term will contain the same number of digits,
 zero-padding where necessary.
 When letters are supplied, the expression expands to each character
 lexicographically between @var{x} and @var{y}, inclusive,
-using the default C locale.
+using the C locale.
 Note that both @var{x} and @var{y} must be of the same type
 (integer or letter).
 When the increment is supplied, it is used as the difference between
@@ -2398,9 +2402,15 @@ starting at the character specified by @var{offset}.
 If @var{parameter} is @samp{@@} or @samp{*}, an indexed array subscripted by
 @samp{@@} or @samp{*}, or an associative array name, the results differ as
 described below.
-If @var{length} is omitted, it expands to the substring of the value of
+If :@var{length} is omitted (the first form above), this
+expands to the substring of the value of
 @var{parameter} starting at the character specified by @var{offset}
 and extending to the end of the value.
+If @var{offset} is omitted,
+it is treated as 0.
+If @var{length} is omitted,
+but the colon after @var{offset} is present,
+it is treated as 0.
 @var{length} and @var{offset} are arithmetic expressions
 (@pxref{Shell Arithmetic}).
 
@@ -2922,11 +2932,16 @@ $(( @var{expression} ))
 
 The @var{expression} undergoes the same expansions
 as if it were within double quotes,
-but double quote characters in @var{expression} are not treated specially
-and are removed.
+but unescaped double quote characters
+in @var{expression} are not treated
+specially and are removed.
 All tokens in the expression undergo parameter and variable expansion,
 command substitution, and quote removal.
 The result is treated as the arithmetic expression to be evaluated.
+Since the way Bash handles double quotes
+can potentially result in empty strings,
+arithmetic expansion treats
+those as expressions that evaluate to 0.
 Arithmetic expansions may be nested. 
 
 The evaluation is performed according to the rules listed below
@@ -8375,6 +8390,11 @@ respectively.  @var{Arg1} and @var{arg2}
 may be positive or negative integers.
 When used with the @code{[[} command, @var{arg1} and @var{arg2}
 are evaluated as arithmetic expressions (@pxref{Shell Arithmetic}).
+Since the expansions the @code{[[} command performs on
+@var{arg1} and @var{arg2}
+can potentially result in empty strings,
+arithmetic expression evaluation treats
+those as expressions that evaluate to 0.
 @end table
 
 @node Shell Arithmetic
@@ -8593,8 +8613,24 @@ and are zero-based;
 associative arrays use arbitrary strings.
 Unless otherwise noted, indexed array indices must be non-negative integers.
 
-An indexed array is created automatically if any variable is assigned to
-using the syntax
+The shell performs
+parameter and variable expansion, arithmetic expansion,
+command substitution, and quote removal
+on indexed array subscripts.
+Since this
+can potentially result in empty strings,
+subscript indexing treats
+those as expressions that evaluate to 0.
+
+The shell performs
+tilde expansion,
+parameter and variable expansion, arithmetic expansion,
+command substitution, and quote removal
+on associative array subscripts.
+Empty strings cannot be used as associative array keys.
+
+Bash automatically creates an indexed array
+if any variable is assigned to using the syntax
 @example
 @var{name}[@var{subscript}]=@var{value}
 @end example
@@ -9849,6 +9885,9 @@ To facilitate the implementation of the user interface to job control,
 each process has a @dfn{process group @sc{id}}, and
 the operating system maintains the notion of a current terminal
 process group @sc{id}.
+This terminal process group @sc{id} is associated with the
+@dfn{controlling terminal}.
+
 Processes that have the same process group ID are said to be part of
 the same @dfn{process group}.
 Members of the foreground process group (processes whose
@@ -9857,14 +9896,18 @@ process group @sc{id} is equal to the current terminal process group
 Processes in the foreground process group are said to be
 foreground processes.
 Background processes
-are those whose process group @sc{id} differs from the terminal's;
+are those whose process group @sc{id} differs from the
+controlling terminal's;
 such processes are immune to keyboard-generated signals.
-Only foreground processes are allowed to read from or, if
-the user so specifies with @code{stty tostop}, write to the terminal.
-Background processes which attempt to
-read from (write to when @code{tostop} is in effect) the
-terminal are sent a @code{SIGTTIN} (@code{SIGTTOU})
-signal by the kernel's terminal driver,
+Only foreground processes are allowed to read from or,
+if the user so specifies with
+@code{stty tostop},
+write to the controlling terminal.
+The system sends a
+@code{SIGTTIN} (@code{SIGTTOU})
+signal to background processes which attempt to
+read from (write to when @code{tostop} is in effect)
+the terminal,
 which, unless caught, suspends the process. 
 
 If the operating system on which Bash is running supports
