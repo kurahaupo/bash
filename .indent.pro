@@ -29,7 +29,6 @@
 -T EXPANSION_SAVER
 -T EXPFUNC
 -T EXPR_CONTEXT
--T FILE
 -T FILEINFO
 -T FOR_COM
 -T FUNCTION_DEF
@@ -69,7 +68,6 @@
 -T WORD_DESC
 -T WORD_LIST
 -T _bashfunc
--T _hist_search_func_t
 -T _node
 -T accessor_t
 -T alias_t
@@ -77,11 +75,9 @@
 -T array_eltstate_t		// in arrayfunc.h
 -T arrayind_t
 -T breadfunc_t
--T cc_t				// only in lib/readline/examples/excallback.c
 -T ccp
 -T charset
 -T chartype
--T complete_sigcleanarg_t	// only in lib/readline/complete.c
 -T const_node
 -T cpelement_t			// only in execute_cmd.c
 -T cplist_t			// only in execute_cmd.c
@@ -96,9 +92,7 @@
 -T mk_handler_func_t
 -T mp_limb_t
 -T mp_twolimb_t
--T mpn_t			// only in lib/intl/vasnprintf.c
 -T mr_table_t			// from lib/malloc/table.h
--T node_t			// only in lib/intl/tsearch.c
 -T once_flag
 -T op_result_t
 -T opt_def_t
@@ -107,7 +101,6 @@
 -T opt_test_func_t
 -T option_value_t
 -T ps_index_t
--T range_t		// only in lib/intl/setlocale.c
 -T setopt_get_func_t
 -T setopt_set_func_t
 -T sh_ae_map_func_t
@@ -163,12 +156,13 @@
 
 // LibIntl library
 
--T __action_fn_t  // in lib/intl/tsearch.c
--T __compar_fn_t  // in lib/intl/tsearch.c
+-T __action_fn_t		// in lib/intl/tsearch.c
+-T __compar_fn_t		// in lib/intl/tsearch.c
 -T __free_fn_t
+-T mpn_t			// only in lib/intl/vasnprintf.c
+-T node_t			// only in lib/intl/tsearch.c
+-T range_t			// only in lib/intl/setlocale.c
 
--T __libc_lock_recursive_t	// #define for gl_recursive_lock_t
--T __libc_lock_t		// #define for gl_lock_t
 -T gl_cv_header_locale_has_locale_t
 -T gl_lock_t
 -T gl_once_t
@@ -183,6 +177,7 @@
 -T Keymap
 -T SigHandler
 -T VFunction
+-T _hist_search_func_t
 -T _rl_arg_cxt
 -T _rl_bool_t
 -T _rl_callback_func_t
@@ -190,6 +185,8 @@
 -T _rl_parser_func_t
 -T _rl_sigcleanup_func_t
 -T _rl_sv_func_t
+-T cc_t				// only in lib/readline/examples/excallback.c
+-T complete_sigcleanarg_t	// only in lib/readline/complete.c
 -T rl_command_func_t
 -T rl_compdisp_func_t
 -T rl_compdisplay_func_t
@@ -298,6 +295,7 @@
 
 // ISO C standard typenames
 
+-T FILE				// for fopen etc; both C89 & POSIX-2001
 -T _Bool
 -T bool
 -T fpos_t			// fgetpos & fsetpos (improved versions of ftell & fseek)
@@ -373,6 +371,9 @@
 // free_t			// not a typedef; actually a variable
 // lhs_t			// not a typedef; actually a variable
 // rhs_t			// not a typedef; actually a variable
+
+// __libc_lock_recursive_t	// not a typedef; actually an #ifdef; #define to enable gl_recursive_lock_t
+// __libc_lock_t		// not a typedef; actually an #ifdef; #define to enable gl_lock_t
 
 // unconfined_t			// not C; actually an SElinux context
 
