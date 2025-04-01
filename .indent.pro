@@ -3,6 +3,7 @@
 // Preferred style for this project, based on GNU default style
 
 -brs
+-cp17	// avoid line break after indented #else & #endif
 -l 128
 -nbc
 -ncs
@@ -15,9 +16,12 @@
 -T ARITH_FOR_COM
 -T ARRAY
 -T ARRAY_ELEMENT
+-T BASH_INPUT
 -T BUCKET_CONTENTS
 -T BUFFERED_STREAM
+-T BUILTIN_DESC
 -T CASE_COM
+-T COLOR_EXT_TYPE
 -T COMMAND
 -T COMPSPEC
 -T COND_COM
@@ -30,19 +34,25 @@
 -T EXPFUNC
 -T EXPR_CONTEXT
 -T FILEINFO
+-T FLIST
 -T FOR_COM
 -T FUNCTION_DEF
+-T FUNMAP
 -T GENERIC_LIST
 -T GROUP_COM
+-T HANDLER_ENTRY
 -T HASH_TABLE
+-T HISTORY_STATE
 -T HIST_ENTRY
 -T IF_COM
+-T INPUT_STREAM
 -T INTDEF
 -T ITEMLIST
 -T JOB
 -T JOB_STATE
 -T KEYMAP_ENTRY
 -T KEYMAP_ENTRY_ARRAY
+-T PATH_DATA
 -T PATTERN_LIST
 -T PFUNC
 -T PROCESS
@@ -51,31 +61,48 @@
 -T QSFUNC
 -T REDIRECT
 -T REDIRECTEE
+-T REPL
+-T RESOURCE_LIMITS
+-T SAVED_VAR
 -T SELECT_COM
 -T SHELL_VAR
 -T SIMPLE_COM
 -T STRDEF
 -T STREAM_SAVER
+-T STRINGLIST
+-T STRING_INT_ALIST
 -T STRING_SAVER
 -T STRUCT
 -T SUBSHELL_COM
 -T SVFUNC
 -T TABLEITEM
 -T TABLEROW
+-T ULCMD
+-T UNDO_LIST
+-T UNWIND_ELT
+-T VARLIST
+-T VAR_CONTEXT
 -T VISIT
 -T WAIT
 -T WHILE_COM
 -T WORD_DESC
 -T WORD_LIST
+-T __COLLSYM			// in lib/glob/collsyms.h, smatch.c
 -T _bashfunc
 -T _node
 -T accessor_t
 -T alias_t
+-T arg_type			// enum
+-T argument
+-T arguments
 -T array
 -T array_eltstate_t		// in arrayfunc.h
 -T arrayind_t
+-T assoc_list
 -T breadfunc_t
 -T ccp
+-T char_directive
+-T char_directives
 -T charset
 -T chartype
 -T const_node
@@ -86,13 +113,16 @@
 -T foo_t
 -T genptr_t			// only in lib/malloc/OLD/gmalloc.c
 -T hash_wfunc
+-T header			// only in lib/malloc/alloca.c
 -T histdata_t
 -T ma_table_t			// from lib/malloc/table.h
+-T malloc_info			// union in lib/malloc/OLD
 -T mguard_t
 -T mk_handler_func_t
 -T mp_limb_t
 -T mp_twolimb_t
 -T mr_table_t			// from lib/malloc/table.h
+-T node				// typedef struct node_t {} *node;
 -T once_flag
 -T op_result_t
 -T opt_def_t
@@ -132,6 +162,7 @@
 -T sh_string_func_t
 -T sh_strlist_map_func_t
 -T sh_sv_func_t
+-T sh_timer
 -T sh_unload_func_t
 -T sh_uwfunc_t
 -T sh_var_assign_func_t
@@ -151,8 +182,11 @@
 -T sigfunc
 -T sighandler
 -T sighandler_cxt
+-T sort_element
 -T tilde_hook_func_t
 -T transmem_block_t
+-T wchar_t_directive
+-T wchar_t_directives
 
 // LibIntl library
 
@@ -177,14 +211,19 @@
 -T Keymap
 -T SigHandler
 -T VFunction
+-T _RL_TTY_CHARS
 -T _hist_search_func_t
 -T _rl_arg_cxt
 -T _rl_bool_t
 -T _rl_callback_func_t
 -T _rl_callback_generic_arg
+-T _rl_keyseq_cxt
 -T _rl_parser_func_t
+-T _rl_readstr_cxt
+-T _rl_search_cxt
 -T _rl_sigcleanup_func_t
 -T _rl_sv_func_t
+-T _rl_vimotion_cxt
 -T cc_t				// only in lib/readline/examples/excallback.c
 -T complete_sigcleanarg_t	// only in lib/readline/complete.c
 -T rl_command_func_t
@@ -247,6 +286,7 @@
 
 // POSIX typenames
 
+-T DIR				// for opendir etc
 -T clock_t			// for times in <sys/times.h>
 -T cnd_t			// for cnd_init, cnd_signal, cnd_broadcast, cnd_wait, cnd_timedwait, cnd_destroy in <thread.h>
 -T dev_t			// for fstat, fstatat, lstat, stat in <sys/stat.h>+<unistd.h>
