@@ -5,7 +5,7 @@
 .\"	Case Western Reserve University
 .\"	chet.ramey@case.edu
 .\"
-.\"	Last Change: Wed Jan  8 09:27:11 EST 2025
+.\"	Last Change: Mon Feb 24 16:09:49 EST 2025
 .\"
 .\" For bash_builtins, strip all but "SHELL BUILTIN COMMANDS" section
 .\" For rbash, strip all but "RESTRICTED SHELL" section
@@ -21,7 +21,7 @@
 .ds zY \" empty
 .if \n(zZ=1 .ig zZ
 .if \n(zY=1 .ig zY
-.TH BASH 1 "2025 January 8" "GNU Bash 5.3"
+.TH BASH 1 "2025 February 24" "GNU Bash 5.3"
 .\"
 .ie \n(.g \{\
 .ds ' \(aq
@@ -771,8 +771,11 @@ otherwise the return status is 1.
 The \fIexpression\fP
 undergoes the same expansions
 as if it were within double quotes,
-but double quote characters in \fIexpression\fP are not treated
+but unescaped double quote characters
+in \fIexpression\fP are not treated
 specially and are removed.
+Since this can potentially result in empty strings, this command treats
+those as expressions that evaluate to 0.
 .TP
 \fB[[\fP \fIexpression\fP \fB]]\fP
 .PD
@@ -900,7 +903,7 @@ operators do not evaluate \fIexpression2\fP if the value of
 the entire conditional expression.
 .RE
 .TP
-\fBfor\fP \fIname\fP [ [ \fBin\fP [ \fIword .\|.\|.\&\fP ] ] ; ] \fBdo\fP \fIlist\fP ; \fBdone\fP
+\fBfor\fP \fIname\fP [ [ \fBin\fP \fIword .\|.\|.\&\fP ] ; ] \fBdo\fP \fIlist\fP ; \fBdone\fP
 First, expand The list of words following \fBin\fP, generating a list
 of items.
 Then, the variable \fIname\fP is set to each element of this list
@@ -914,7 +917,7 @@ The return status is the exit status of the last command that executes.
 If the expansion of the items following \fBin\fP results in an empty
 list, no commands are executed, and the return status is 0.
 .TP
-\fBfor\fP (( \fIexpr1\fP ; \fIexpr2\fP ; \fIexpr3\fP )) ; \fBdo\fP \fIlist\fP ; \fBdone\fP
+\fBfor\fP (( \fIexpr1\fP ; \fIexpr2\fP ; \fIexpr3\fP )) [;] \fBdo\fP \fIlist\fP ; \fBdone\fP
 First, evaluate the arithmetic expression \fIexpr1\fP according
 to the rules described below under
 .SM
@@ -1381,7 +1384,7 @@ below).
 .PP
 A
 .I variable
-may be assigned to by a statement of the form
+is assigned to using a statement of the form
 .RS
 .PP
 \fIname\fP=[\fIvalue\fP]
@@ -3131,8 +3134,24 @@ and are zero-based;
 associative arrays are referenced using arbitrary strings.
 Unless otherwise noted, indexed array indices must be non-negative integers.
 .PP
-An indexed array is created automatically if any variable is assigned to
-using the syntax
+The shell performs
+parameter and variable expansion, arithmetic expansion,
+command substitution, and quote removal
+on indexed array subscripts.
+Since this
+can potentially result in empty strings,
+subscript indexing treats
+those as expressions that evaluate to 0.
+.PP
+The shell performs
+tilde expansion,
+parameter and variable expansion, arithmetic expansion,
+command substitution, and quote removal
+on associative array subscripts.
+Empty strings cannot be used as associative array keys.
+.PP
+\fBBash\fP automatically creates an indexed array
+if any variable is assigned to using the syntax
 .RS
 \fIname\fP[\fIsubscript\fP]=\fIvalue\fP
 \&.
@@ -3400,7 +3419,7 @@ For example, a\fB{\fPd,c,b\fB}\fPe expands into
 .Q "ade ace abe" .
 .PP
 A sequence expression takes the form
-\fB{\fP\fIx\fP\fB..\fP\fIy\fP\fB[..\fP\fIincr\fP\fB]}\fP,
+\fIx\fP\fB..\fP\fIy\fP\fB[..\fP\fIincr\fP\fB]\fP,
 where \fIx\fP and \fIy\fP are either integers or single letters,
 and \fIincr\fP, an optional increment, is an integer.
 When integers are supplied, the expression expands to each number between
@@ -3410,7 +3429,7 @@ each generated term will contain the same number of digits,
 zero-padding where necessary.
 When letters are supplied, the expression expands to each character
 lexicographically between \fIx\fP and \fIy\fP, inclusive,
-using the default C locale.
+using the C locale.
 Note that both \fIx\fP and \fIy\fP must be of the same type
 (integer or letter).
 When the increment is supplied, it is used as the difference between
@@ -3689,9 +3708,15 @@ starting at the character specified by \fIoffset\fP.
 If \fIparameter\fP is \fB@\fP or \fB*\fP, an indexed array subscripted by
 \fB@\fP or \fB*\fP, or an associative array name, the results differ as
 described below.
-If \fIlength\fP is omitted, expands to the substring of the value of
+If \fB:\fP\fIlength\fP is omitted (the first form above), this
+expands to the substring of the value of
 \fIparameter\fP starting at the character specified by \fIoffset\fP
 and extending to the end of the value.
+If \fIoffset\fP is omitted,
+it is treated as 0.
+If \fIlength\fP is omitted,
+but the colon after \fIoffset\fP is present,
+it is treated as 0.
 \fIlength\fP and \fIoffset\fP are arithmetic expressions (see
 .SM
 .B
@@ -4164,11 +4189,16 @@ The
 .I expression
 undergoes the same expansions
 as if it were within double quotes,
-but double quote characters in \fIexpression\fP are not treated specially
-and are removed.
+but unescaped double quote characters
+in \fIexpression\fP are not treated
+specially and are removed.
 All tokens in the expression undergo parameter and variable expansion,
 command substitution, and quote removal.
 The result is treated as the arithmetic expression to be evaluated.
+Since the way Bash handles double quotes
+can potentially result in empty strings,
+arithmetic expansion treats
+those as expressions that evaluate to 0.
 Arithmetic expansions may be nested.
 .PP
 The evaluation is performed according to the rules listed below under
@@ -4867,7 +4897,7 @@ The format of here-documents is:
 .PP
 The shell does not perform
 parameter and variable expansion, command substitution,
-arithmetic expansion, or pathname expansion is performed on
+arithmetic expansion, or pathname expansion on
 .IR word .
 .PP
 If any part of
@@ -5593,6 +5623,13 @@ are evaluated as arithmetic expressions (see
 .SM
 .B "ARITHMETIC EVALUATION"
 above).
+Since the expansions the \fB[[\fP command performs on
+.I arg1
+and
+.I arg2
+can potentially result in empty strings,
+arithmetic expression evaluation treats
+those as expressions that evaluate to 0.
 .PD
 .SH "SIMPLE COMMAND EXPANSION"
 When the shell executes a simple command, it performs the following
@@ -6137,6 +6174,9 @@ To facilitate the implementation of the user interface to job control,
 each process has a \fIprocess group ID\fP, and
 the operating system maintains the notion of a \fIcurrent terminal
 process group ID\fP.
+This terminal process group ID is associated with the
+\fIcontrolling terminal\fP.
+.PP
 Processes that have the same process group ID are said to be part of
 the same \fIprocess group\fP.
 Members of the \fIforeground\fP process group (processes whose
@@ -6148,18 +6188,21 @@ Processes in the foreground process group are said to be
 .I foreground
 processes.
 .I Background
-processes are those whose process group ID differs from the terminal's;
+processes are those whose process group ID differs from the
+controlling terminal's;
 such processes are immune to keyboard-generated signals.
-Only foreground processes are allowed to read from or, if the
-user so specifies with
+Only foreground processes are allowed to read from or,
+if the user so specifies with
 .Q "stty tostop" ,
-write to the terminal.
-Background processes which attempt to read from (write to when
-.Q tostop
-is in effect) the terminal are sent a
+write to the controlling terminal.
+The system sends a
 .SM
 .B "SIGTTIN (SIGTTOU)"
-signal by the kernel's terminal driver,
+signal to background processes which attempt to
+read from (write to when
+.Q tostop
+is in effect)
+the terminal,
 which, unless caught, suspends the process.
 .PP
 If the operating system on which
@@ -7483,7 +7526,7 @@ leaving the current line at the top of the screen.
 Clear the screen,
 then redraw the current line,
 leaving the current line at the top of the screen.
-With an argument, refresh the current line without clearing the
+With a numeric argument, refresh the current line without clearing the
 screen.
 .TP
 .B redraw\-current\-line
@@ -11348,7 +11391,7 @@ command that fails is part of the command list immediately following a
 .B while
 or
 .B until
-keyword,
+reserved word,
 part of the test following the
 .B if
 or
@@ -12547,7 +12590,7 @@ command is part of the command list immediately following a
 .B while
 or
 .B until
-keyword,
+reserved word,
 part of the test in an
 .I if
 statement, part of a command executed in a

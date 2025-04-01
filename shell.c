@@ -1587,14 +1587,14 @@ uidget (void)
   (void)getresuid (&current_user.uid, &current_user.euid, &current_user.saveuid);
 #else
   current_user.uid = getuid ();
-  current_user.euid = geteuid ();
+  current_user.euid = current_user.saveuid = geteuid ();
 #endif
 
 #if HAVE_SETRESGID
   (void)getresgid (&current_user.gid, &current_user.egid, &current_user.savegid);
 #else
   current_user.gid = getgid ();
-  current_user.egid = getegid ();
+  current_user.egid = current_user.savegid = getegid ();
 #endif
 
   if (current_user.uid != u)
@@ -2013,7 +2013,18 @@ set_bash_input (void)
   if (interactive && no_line_editing == 0)
     with_input_from_stdin ();
   else if (interactive == 0)
-    with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+    {
+      errno = 0;
+      with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+      if (get_buffered_stream (default_buffered_input) == NULL)
+	{
+	  last_command_exit_value = EX_NOINPUT;
+	  if (errno != 0)
+	    sys_error ("%s", _("error creating buffered stream"));
+	  else
+	    report_error ("%s", _("error creating buffered stream"));
+	}
+    }
   else
     with_input_from_stream (default_input, dollar_vars[0]);
 }
