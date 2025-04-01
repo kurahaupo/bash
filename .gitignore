@@ -45,6 +45,8 @@ builtins/builtins.c
 builtins/mkbuiltins
 builtins/pipesize.h
 builtins/psize.aux
+builtins/tmpbuiltins.c
+builtins/tmpbuiltins.h
 
 doc/Makefile
 examples/loadables/Makefile

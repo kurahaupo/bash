@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# This prototype is intended to implement .git/hooks/pre-commit, but it should
+# work for any commit; simply copy or hard-link it to git-$hook.
+#
+# Activate by running ./git-$hook --install-hook
+
+shopt -s globstar extglob
+IFS=
+BashSource=.source
+
+arg0=$0     # may be either $DIR/git-$hook
+            #    or  $DIR/.git/hooks/$hook
+
+if [[ $* = --install-hook ]]
+then
+    case /$arg0 in
+        */.git/* | /"${GIT_DIR:-$arg0}"/*)
+            printf 'Aborting installation.\nPlease install by running this hook directly rather than via a symlink.\n'
+            exit 2
+    esac
+
+    name=${arg0##*/}
+    dir=${arg0%$name}   # includes trailing / unless empty for .
+    hook=${name#*git-}
+    target=$dir.git/hooks/$hook
+
+    if [[ -e $target ]]
+    then
+        if [[ $target -ef $arg0 ]]
+        then
+            echo Done
+            exit
+        fi
+        mv -v "$target" "$arg0".d/original
+    fi
+
+    ln -sv ../../"$name" "$target"
+
+    [[ $dir.git/hooks/../../"$name".d/. -ef "$target".d ]] ||
+        ln -sTv ../../"$name".d "$target".d
+    exit
+fi >&2
+
+parts_dir=$arg0.d/
+
+[[ -d $parts_dir ]] || {
+    printf '%s directory is missing\n' "$parts_dir"
+    exit 2
+}
+
+#
+# A customised "run-parts"
+#
+# Ignore any unreasonable filenames; valid part names must must start with a
+# digit, and be comprised entirely of lowercase letters, digits, underscores,
+# and hyphens, and optionally a control suffix.
+#
+# Files are normally either run as a stand-alone program (if they're
+# executable) or sourced into a subshell (if not).
+#
+# Filenames ending with the BashSource control suffix will be sourced into the
+# current shell, rather than running in separate processes.
+#
+
+for part in "$parts_dir"[0-9]!(*[!a-z0-9_-]*)?($BashSource)
+do
+    case ${part##*/} in
+        *$BashSource)
+            . "$part" "$@" ;;
+        *)
+            if [[ -x $part ]]
+            then
+                "$part" "$@"
+            else
+                ( . "$part" "$@" )
+            fi
+    esac || exit
+done

@@ -1,0 +1,6 @@
+# For testing, stop here
+
+[[ $GIT_TEST_PRECOMMIT != abort ]] && exit
+
+printf >&2 '\nAborting commit because GIT_TEST_PRECOMMIT is set to abort\n'
+exit 1
