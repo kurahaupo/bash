@@ -18,6 +18,7 @@
 *.a
 *.dSYM
 .build*
+.src*
 .depend*
 .made
 .*~
