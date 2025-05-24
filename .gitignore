@@ -116,3 +116,5 @@ examples/loadables/tty
 examples/loadables/uname
 examples/loadables/unlink
 examples/loadables/whoami
+.src
+*~
