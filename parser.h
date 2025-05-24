@@ -62,10 +62,10 @@ struct dstack {
   char *delimiters;
 
 /* Offset into the stack of delimiters. */
-  int delimiter_depth;
+  size_t delimiter_depth;
 
 /* How many slots are allocated to DELIMITERS. */
-  int delimiter_space;
+  size_t delimiter_space;
 };
 
 /* States we can be in while scanning a ${...} expansion.  Shared between
