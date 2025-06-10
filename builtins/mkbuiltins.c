@@ -428,8 +428,9 @@ static void
 array_append (ARRAY *a, void const *datum)
 {
   array_size_check (a, a->length+1);
-  memcpy (a->data + a->length++ * a->width, datum, a->width);
-  memset (a->data + a->length * a->width, 0, a->width);
+  char *bytes = a->data;
+  memcpy (bytes + a->length++ * a->width, datum, a->width);
+  memset (bytes + a->length   * a->width, 0,     a->width);
 }
 
 /* Free an allocated array and data pointer. */
