@@ -54,8 +54,8 @@ struct builtin {
   char const*name;		/* The name that the user types. */
   sh_builtin_func_t *function;	/* The address of the invoked function. */
   int flags;			/* One of the #defines above. */
-  char const * const *long_doc;	/* NULL terminated array of strings. */
   char const *short_doc;	/* Short version of documentation. */
+  char const *long_doc;		/* Long (multi-line) version of documentation. */
   char *handle;			/* for future use */
 };
 

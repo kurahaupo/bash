@@ -178,7 +178,7 @@ write_helpfiles (struct builtin *builtins)
 	  continue;
 	}
 
-      write_documentation (helpfp, b.long_doc[0], 4);
+      write_documentation (helpfp, b.long_doc, 4);
 
       fflush (helpfp);
       fclose (helpfp);

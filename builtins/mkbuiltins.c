@@ -44,6 +44,14 @@
 #  endif
 #endif
 
+#ifdef HAVE_STDBOOL
+# include <stdbool.h>
+#else
+# define bool int
+# define true 1
+# define false 0
+#endif
+
 #include "posixstat.h"
 #include "filecntl.h"
 
@@ -70,25 +78,27 @@ static void xfree (void const *);
 
 /* If this stream descriptor is non-zero, then write
    texinfo documentation to it. */
-FILE *documentation_file = (FILE *)NULL;
+FILE *documentation_file = NULL;
 
 /* Non-zero means to only produce documentation. */
-int only_documentation = 0;
+bool only_documentation = false;
 
 /* Non-zero means to not do any productions. */
-int inhibit_production = 0;
+bool inhibit_production = false;
 
 /* Non-zero means to not add functions (xxx_builtin) to the members of the
    produced `struct builtin []' */
-int inhibit_functions = 0;
+bool inhibit_functions = false;
 
 /* Non-zero means to produce separate help files for each builtin, named by
    the builtin name, in `./helpfiles'. */
-int separate_helpfiles = 0;
+bool separate_helpfiles = false;
 
 /* Non-zero means to create single C strings for each `longdoc', with
    embedded newlines, for ease of translation. */
-int single_longdoc_strings = 1;
+//#define single_longdoc_strings true
+
+bool verbose = false;
 
 /* The name of a directory into which the separate external help files will
    eventually be installed. */
@@ -96,17 +106,17 @@ char *helpfile_directory;
 
 /* The name of a directory to precede the filename when reporting
    errors. */
-char *error_directory = (char *)NULL;
+char *error_directory = NULL;
 
 /* The name of the structure file. */
-char *struct_filename = (char *)NULL;
+char *struct_filename = NULL;
 
 /* The name of the external declaration file. */
-char *extern_filename = (char *)NULL;
+char *extern_filename = NULL;
 
 /* The name of the include file to write into the structure file, if it's
    different from extern_filename. */
-char *include_filename = (char *)NULL;
+char *include_filename = NULL;
 
 /* The name of the include file to put into the generated struct filename. */
 
@@ -142,11 +152,11 @@ typedef struct builtin_desc_s {
   STR_ARRAY *dependencies;	/* Null terminated array of #define names. */
   __attribute__((__deprecated__))
   int flags;		/* Flags for this builtin. */
-  _Bool flag_special :1;
-  _Bool flag_assignment :1;
-  _Bool flag_localvar :1;
-  _Bool flag_posix_builtin :1;
-  _Bool flag_arrayref_arg :1;
+  bool flag_special :1;
+  bool flag_assignment :1;
+  bool flag_localvar :1;
+  bool flag_posix_builtin :1;
+  bool flag_arrayref_arg :1;
 } BUILTIN_DESC;
 
 typedef union {
@@ -173,19 +183,19 @@ char const*special_builtins[] =
 {
   ":", ".", "source", "break", "continue", "eval", "exec", "exit",
   "export", "readonly", "return", "set", "shift", "times", "trap", "unset",
-  (char *)NULL
+  NULL
 };
 
 /* The builtin commands that take assignment statements as arguments. */
 char const*assignment_builtins[] =
 {
   "alias", "declare", "export", "local", "readonly", "typeset",
-  (char *)NULL
+  NULL
 };
 
 char const*localvar_builtins[] =
 {
-  "declare", "local", "typeset", (char *)NULL
+  "declare", "local", "typeset", NULL
 };
 
 /* The builtin commands that are special to the POSIX search order. */
@@ -194,7 +204,7 @@ char const*posix_builtins[] =
   "alias", "bg", "cd", "command", "false", "fc", "fg", "getopts", "hash",
   "jobs", "kill", "newgrp", "pwd", "read", "true", "type", "ulimit",
   "umask", "unalias", "wait",
-  (char *)NULL
+  NULL
 };
 
 /* The builtin commands that can take array references as arguments and pay
@@ -204,7 +214,7 @@ char const*arrayvar_builtins[] =
 {
   "declare", "let", "local", "printf", "read", "test", "[",
   "typeset", "unset", "wait",		/*]*/
-  (char *)NULL
+  NULL
 };
 
 /* Forward declarations. */
@@ -232,7 +242,7 @@ void write_dummy_declarations (FILE *, BUILTIN_DESC_ARRAY *);
 void write_longdocs (FILE *, BUILTIN_DESC_ARRAY *);
 void write_builtins (DEF_FILE *, FILE *, FILE *);
 
-int write_helpfiles (BUILTIN_DESC_ARRAY *);
+//int write_helpfiles (BUILTIN_DESC_ARRAY *);
 
 void free_defs (DEF_FILE *);
 void add_documentation (DEF_FILE *, char const*);
@@ -241,89 +251,184 @@ void must_be_building (char const *, DEF_FILE *);
 
 #define document_name(b)	((b)->docname ? (b)->docname : (b)->name)
 
+#if ! defined HAVE_BASENAME && 0
+          static inline char const *basename(char const *p) {
+            char const *q = strrchr(p, '/');
+            return q ? q+1 : p;
+          }
+#endif
+
+static void
+show_help (char const *argv0)
+{
+  printf (
+          "Usage:\n"
+          "%1$s [options...]\n"
+          "  -D DIRNAME             write errors into named directory"
+          "  -H DIRNAME             write helpfiles into named directory\n"
+          "  -S\n"
+          "  --document             write documentation file\n"
+          "  --documentonly\n"
+          "  --externfile FILENAME  write extern declarations to named file\n"
+          "  --includefile FILENAME use path for #include (if different from externfile)\n"
+          "  --nofunctions          inhibit functions\n"
+          "  --noproduction         inhibit production\n"
+          "  --structfile FILENAME\n"
+          "\n"
+          "%1$s --help  (show this message)\n"
+          "", basename (argv0));
+  exit(0);
+}
+
+static bool
+arg_match (char const *arg, char const *name, size_t min_len)
+{
+  size_t l = strlen (arg);
+  return l >= min_len && ! memcmp (arg, name, l);
+}
+
 /* For each file mentioned on the command line, process it and
    write the information to STRUCTFILE and EXTERNFILE, while
    creating the production file if necessary. */
 int
 main (int argc, char **argv)
 {
+  if (argc < 1)
+    show_help (argv[0]);   /* QNX */
+
+  FILE *structfile = NULL, *externfile = NULL;
+  char *documentation_filename = DOCFILE;
+  char *temp_struct_filename = NULL;
+
   int arg_index = 1;
-  FILE *structfile, *externfile;
-  char *documentation_filename, *temp_struct_filename;
-
-  structfile = externfile = (FILE *)NULL;
-  documentation_filename = DOCFILE;
-  temp_struct_filename = (char *)NULL;
-
   while (arg_index < argc && argv[arg_index][0] == '-')
     {
-      char *arg = argv[arg_index++];
+      char *arg = argv[arg_index++]+1;
 
-      if (strcmp (arg, "-externfile") == 0)
+      if (arg[0] == '-')
+        {
+          if (! arg[1])
+            {
+              /* `--` terminates options */
+              ++arg_index;
+              break;
+            }
+          /* allow any long option to start with either - or -- */
+          ++arg;
+        }
+
+      if (arg_match (arg, "help", 1))
+        show_help (argv[0]);
+
+      if (arg_match (arg, "externfile", 7))
 	extern_filename = argv[arg_index++];
-      else if (strcmp (arg, "-includefile") == 0)
+      else if (arg_match (arg, "includefile", 8))
 	include_filename = argv[arg_index++];
-      else if (strcmp (arg, "-structfile") == 0)
+      else if (arg_match (arg, "structfile", 7))
 	struct_filename = argv[arg_index++];
-      else if (strcmp (arg, "-noproduction") == 0)
+      else if (arg_match (arg, "noproduction", 3))
 	inhibit_production = 1;
-      else if (strcmp (arg, "-nofunctions") == 0)
+      else if (arg_match (arg, "nofunctions", 3))
 	inhibit_functions = 1;
-      else if (strcmp (arg, "-document") == 0)
+      else if (arg_match (arg, "document", 2))
 	documentation_file = fopen (documentation_filename, "w");
-      else if (strcmp (arg, "-D") == 0)
-	{
-	  int len;
-
-	  if (error_directory)
-	    xfree (error_directory);
-
-	  error_directory = xmalloc (2 + strlen (argv[arg_index]));
-	  strcpy (error_directory, argv[arg_index]);
-	  len = strlen (error_directory);
-
-	  if (len && error_directory[len - 1] != '/')
-	    strcat (error_directory, "/");
-
-	  arg_index++;
-	}
-      else if (strcmp (arg, "-documentonly") == 0)
+      else if (arg_match (arg, "documentonly", 9))
 	{
 	  only_documentation = 1;
 	  documentation_file = fopen (documentation_filename, "w");
 	}
-      else if (strcmp (arg, "-H") == 0)
+      else if (arg_match (arg, "verbose", 1))
+        verbose = true;
+      else if (arg_match (arg, "D", 1))
+	{
+          char const *p = argv[arg_index++];
+	  char const *ep = strchr (p, 0);   // == p + strlen (p), since *p == '\0'
+          if (ep != p && ep[-1] != '/')
+            ep = "/";
+
+	  if (error_directory)
+	    xfree (error_directory);
+          int l = asprintf (&error_directory, "%s%s", p, ep);
+	}
+      else if (arg_match (arg, "H", 1))
 	{
 	  separate_helpfiles = 1;
 	  helpfile_directory = argv[arg_index++];
 	}
-      else if (strcmp (arg, "-S") == 0)
-	single_longdoc_strings = 0;
+      else if (arg_match (arg, "S", 1))
+	{
+	  fprintf (stderr, "%s: Unsupported flag %s; longdocs can only be single strings.\n", argv[0], arg);
+	  exit (2);
+        }
       else
 	{
-	  fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
+	  fprintf (stderr, "%1$s: Unknown option \"%2$s\".\nFor more information, run \"%1$s --help\"\n", argv[0], arg);
 	  exit (2);
 	}
     }
 
-  if (include_filename == 0)
+  if (include_filename == NULL)
     include_filename = extern_filename;
+
+  if (verbose)
+    {
+      printf ("Using:\n"
+              "  documentation file = %s\n"
+              "  other processing   = %s\n"
+              "\n"
+              "  production         = %s\n"
+              "  functions          = %s\n"
+              "\n"
+              "  separate helpfiles = %s\n"
+              "  helpfile directory = %s\n"
+              "\n"
+              "  error directory    = %s\n"
+              "  struct filename    = %s\n"
+              "  extern filename    = %s\n"
+              "  include filename   = %s\n"
+              "\n"
+              "  verbose            = %s\n"
+              "",
+              documentation_file && DOCFILE
+                                 ? DOCFILE     : "(none)",
+              only_documentation ? "alone"     : "combined",
+
+              inhibit_production ? "inhibited" : "enabled",
+              inhibit_functions  ? "inhibited" : "enabled",
+
+              separate_helpfiles ? "true"      : "false",
+              helpfile_directory ? helpfile_directory : "(none)",
+
+              error_directory    ? error_directory    : "(none)",
+              struct_filename    ? struct_filename    : "(none)",
+              extern_filename    ? extern_filename    : "(none)",
+              include_filename   ? include_filename   : "(none)",
+
+              verbose            ? "true"      : "false"
+            );
+    }
 
   /* If there are no files to process, just quit now. */
   if (arg_index == argc)
-    exit (0);
+    {
+      if (verbose)
+        printf ("%1$s: finished, no files to process\n", argv[0]);
+      exit (0);
+    }
 
   if (!only_documentation)
     {
       /* Open the files. */
       if (struct_filename)
 	{
-	  temp_struct_filename = xmalloc (15);
-	  sprintf (temp_struct_filename, "mk-%ld", (long) getpid ());
+          /* TODO: switch to mktemp */
+	  int l = asprintf (&temp_struct_filename, "mk-%ld", (long) getpid ());
 	  structfile = fopen (temp_struct_filename, "w");
 
 	  if (!structfile)
 	    file_error (temp_struct_filename);
+          if (verbose)
+            printf ("Created temporary struct file \"%s\" (%p)\n", temp_struct_filename, structfile);
 	}
 
       if (extern_filename)
@@ -348,9 +453,7 @@ main (int argc, char **argv)
   /* Process the .def files. */
   while (arg_index < argc)
     {
-      register char *arg;
-
-      arg = argv[arg_index++];
+      char *arg = argv[arg_index++];
 
       extract_info (arg, structfile, externfile);
     }
@@ -375,9 +478,8 @@ main (int argc, char **argv)
 #if 0
   /* This is now done by a different program */
   if (separate_helpfiles)
-    {
-      write_helpfiles (saved_builtins);
-    }
+    if (write_helpfiles (saved_builtins) < 0)
+      exit (1);
 #endif
 
   if (documentation_file)
@@ -461,20 +563,17 @@ string_array_append (STR_ARRAY *array, char const*element)
 STR_ARRAY *
 copy_string_array (STR_ARRAY *array)
 {
-  register int i;
-  STR_ARRAY *copy;
-
   if (!array)
     return NULL;
 
-  copy = create_string_array ();
+  STR_ARRAY *copy = create_string_array ();
   array_size_check (&copy->array, array->array.length);
-  copy->array.length = array->array.length;
+  size_t len = copy->array.length = array->array.length;
 
-  for (i = 0; i < array->array.length; i++)
+  for (size_t i = 0; i < len; i++)
     copy->strings[i] = savestring (array->strings[i]);
 
-  copy->strings[i] = NULL;
+  copy->strings[len] = NULL;
 
   return copy;
 }
@@ -520,7 +619,7 @@ typedef int mk_handler_func_t (char const *, DEF_FILE *, char const *);
 
 /* Structure handles processor directives. */
 typedef struct {
-  char *directive;
+  char const *directive;
   mk_handler_func_t *function;
 } HANDLER_ENTRY;
 
@@ -548,14 +647,11 @@ HANDLER_ENTRY handlers[] = {
 
 /* Return the entry in the table of handlers for NAME. */
 HANDLER_ENTRY *
-find_directive (char *directive)
+find_directive (char const *directive)
 {
-  register int i;
-
-  for (i = 0; handlers[i].directive; i++)
-    if (strcmp (handlers[i].directive, directive) == 0)
-      return (&handlers[i]);
-
+  for (HANDLER_ENTRY *h = handlers; h->directive; h++)
+    if (!strcmp (h->directive, directive))
+      return h;
   return NULL;
 }
 
@@ -579,7 +675,6 @@ int output_cpp_line_info = 0;
 void
 extract_info (char *filename, FILE *structfile, FILE *externfile)
 {
-  register int i;
   DEF_FILE *defs;
   struct stat finfo;
   size_t file_size;
@@ -625,7 +720,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 
   /* Build the array of lines, with trailing whitespace removed. */
   string_array_append (defs->lines, buffer);
-  for (int j = i = 0; i < file_size; ++i)
+  for (int j = 0, i = 0; i < file_size; ++i)
     if (buffer[i] == '\n')
       {
 	buffer[j] = 0;
@@ -641,25 +736,22 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   output_cpp_line_info = 1;
 
   /* Process each line in the array. */
-  for (i = 0; line = defs->lines->strings[i]; i++)
+  for (int i = 0; line = defs->lines->strings[i]; i++)
     {
       defs->line_number = i;
 
       if (*line == '$')
 	{
-	  register int j;
-	  char *directive;
-	  HANDLER_ENTRY *handler;
+	  int j = 1;
 
 	  /* Isolate the directive. */
-	  for (j = 0; line[j] && !isspace (line[j]); j++);
+	  for (; line[j] && !isspace (line[j]); j++);
 
-	  directive = xmalloc (j);
-	  strncpy (directive, line + 1, j - 1);
-	  directive[j -1] = '\0';
+	  char *directive;
+          int l = asprintf (&directive, "%.*s", j-1, line+1);
 
 	  /* Get the function handler and call it. */
-	  handler = find_directive (directive);
+	  HANDLER_ENTRY *handler = find_directive (directive);
 
 	  if (!handler)
 	    {
@@ -667,15 +759,14 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 	      xfree (directive);
 	      continue;
 	    }
-	  else
-	    {
-	      /* Advance to the first non-whitespace character. */
-	      while (isspace (line[j]))
-		j++;
 
-	      /* Call the directive handler with the FILE, and ARGS. */
-	      (*(handler->function)) (directive, defs, line + j);
-	    }
+          /* Advance to the first non-whitespace character. */
+          while (isspace (line[j]))
+            j++;
+
+          /* Call the directive handler with the FILE, and ARGS. */
+          handler->function (directive, defs, line + j);
+
 	  xfree (directive);
 	}
       else
@@ -720,8 +811,6 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 static void
 free_builtin (BUILTIN_DESC *builtin)
 {
-  register int i;
-
   xfree (builtin->name);
   xfree (builtin->function);
   xfree (builtin->shortdoc);
@@ -732,7 +821,7 @@ free_builtin (BUILTIN_DESC *builtin)
 
   if (builtin->dependencies)
     {
-      for (i = 0; builtin->dependencies->strings[i]; i++)
+      for (int i = 0; builtin->dependencies->strings[i]; i++)
 	xfree (builtin->dependencies->strings[i]);
       free_string_array (builtin->dependencies);
     }
@@ -742,9 +831,6 @@ free_builtin (BUILTIN_DESC *builtin)
 void
 free_defs (DEF_FILE *defs)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
-
   if (defs->production)
     xfree (defs->production);
 
@@ -753,7 +839,9 @@ free_defs (DEF_FILE *defs)
 
   if (defs->builtins)
     {
-      for (i = 0; builtin = (BUILTIN_DESC *)defs->builtins->descs[i]; i++)
+      void *builtin;
+
+      for (int i = 0; builtin = defs->builtins->descs[i]; i++)
 	{
 	  free_builtin (builtin);
 	  xfree (builtin);
@@ -808,9 +896,7 @@ current_builtin (char const*directive, DEF_FILE *defs)
 void
 add_documentation (DEF_FILE *defs, char const*line)
 {
-  register BUILTIN_DESC *builtin;
-
-  builtin = current_builtin ("(implied LONGDOC)", defs);
+  BUILTIN_DESC *builtin = current_builtin ("(implied LONGDOC)", defs);
 
   if (!*line && !builtin->longdoc)
     return;
@@ -1093,10 +1179,10 @@ save_builtin (BUILTIN_DESC *builtin)
 }
 
 /* Flags that mean something to write_documentation (). */
-#define STRING_ARRAY	0x01
+#define AS_INITIALISER	0x01
 #define TEXINFO		0x02
-#define PLAINTEXT	0x04
-#define HELPFILE	0x08
+//#define PLAINTEXT	0x04    // only for external helpfiles, which are now done by a different program
+#define AS_HELPFILE	0x08
 
 char const structfile_header[] =
   "/* builtins.c -- the built in shell commands. */\n"
@@ -1130,7 +1216,7 @@ char const structfile_header[] =
   "\n"
   "   Functions which need to look at only the simple commands (e.g.\n"
   "   the enable_builtin ()), should ignore entries where\n"
-  "   (array[i].function == (sh_builtin_func_t *)NULL).  Such entries are for\n"
+  "   (array[i].function == NULL).  Such entries are for\n"
   "   the list of shell reserved control structures, like `if' and `while'.\n"
   "   The end of the list is denoted with a NULL name field. */\n"
   "\n"
@@ -1193,14 +1279,12 @@ write_file_footers (FILE *structfile, FILE *externfile)
 void
 write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 {
-  register int i;
-
   /* Write out the information. */
   if (defs->builtins)
     {
       register BUILTIN_DESC *builtin;
 
-      for (i = 0; i < defs->builtins->array.length; i++)
+      for (int i = 0; i < defs->builtins->array.length; i++)
 	{
 	  builtin = (BUILTIN_DESC *)defs->builtins->descs[i];
 
@@ -1243,7 +1327,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 
 		  /* Don't translate short document summaries that are identical
 		     to command names */
-		  if (builtin->shortdoc && strcmp (builtin->name, builtin->shortdoc) == 0)
+		  if (builtin->shortdoc && !strcmp (builtin->name, builtin->shortdoc))
 		    fprintf (structfile, ", .short_doc = \"%s\"",
 		      builtin->shortdoc ? builtin->shortdoc : builtin->name);
 		  else
@@ -1287,30 +1371,26 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 void
 write_longdocs (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
-  char const*dname;
-
-  for (i = 0; i < builtins->array.length; i++)
+  for (int i = 0; i < builtins->array.length; i++)
     {
-      builtin = builtins->descs[i];
+      BUILTIN_DESC *builtin = builtins->descs[i];
 
       if (builtin->dependencies)
 	write_ifdefs (stream, builtin->dependencies->strings);
 
       /* Write the long documentation strings. */
-      dname = document_name (builtin);
+      char const *dname = document_name (builtin);
       fprintf (stream, "char const* const %s_doc[] =", dname);
 
       if (separate_helpfiles)
 	{
 	  char *p;
-	  int j = asprintf (&p, "%s/%s", helpfile_directory, dname);
-	  write_documentation (stream, (char const*[]){ p, NULL }, 0, STRING_ARRAY|HELPFILE);
+	  int l = asprintf (&p, "%s/%s", helpfile_directory, dname);
+	  write_documentation (stream, (char const*[]){ p, NULL }, 0, AS_HELPFILE);
 	  xfree (p);
 	}
       else
-	write_documentation (stream, builtin->longdoc->strings, 0, STRING_ARRAY);
+	write_documentation (stream, builtin->longdoc->strings, 0, AS_INITIALISER);
 
       if (builtin->dependencies)
 	write_endifs (stream, builtin->dependencies->strings);
@@ -1321,16 +1401,13 @@ write_longdocs (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 void
 write_dummy_declarations (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 {
-  register int i;
-  BUILTIN_DESC *builtin;
-
   fprintf (stream, "%s\n", structfile_header);
 
   fprintf (stream, "#include \"%s\"\n", "../builtins.h");
 
-  for (i = 0; i < builtins->array.length; i++)
+  for (int i = 0; i < builtins->array.length; i++)
     {
-      builtin = builtins->descs[i];
+      BUILTIN_DESC *builtin = builtins->descs[i];
 
       /* How to guarantee that no builtin is written more than once? */
       fprintf (stream, "int %s () { return (0); }\n", builtin->function);
@@ -1400,71 +1477,50 @@ write_endifs (FILE *stream, char const*const*defines)
 void
 write_documentation (FILE *stream, char const*const*documentation, int indentation, int flags)
 {
-  int i, j;
-  char const*line;
-  _Bool texinfo;
-
   if (stream == 0)
     return;
 
-  _Bool string_array = flags & STRING_ARRAY;
-  _Bool filename_p = flags & HELPFILE;
+  bool as_initialiser = flags & AS_INITIALISER;
+  bool as_helpfile = flags & AS_HELPFILE;
+  bool texinfo = flags & TEXINFO;
 
-  if (string_array)
+  if (as_initialiser || as_helpfile)
     {
-      fprintf (stream, " {\n#if defined (HELP_BUILTIN)\n");	/* "}" */
-      if (single_longdoc_strings)
-	{
-	  if (filename_p == 0)
-	    {
-	      if (documentation && documentation[0] && documentation[0][0])
-		fprintf (stream,  "N_(\"");
-	      else
-		fprintf (stream, "N_(\" ");		/* the empty string translates specially. */
-	    }
-	  else
-	    fprintf (stream, "\"");
-	}
+      fprintf (stream, "\n#if defined HELP_BUILTIN\n");	/* "}" */
+      if (as_helpfile)
+        fprintf (stream, "= \"");
+      else
+        {
+          fprintf (stream,  "= N_(\"");
+          if (!(documentation && documentation[0] && documentation[0][0]))
+            fprintf (stream, " ");		/* avoid empty string, which translates specially. */
+        }
     }
 
-  int base_indent = (string_array && single_longdoc_strings && filename_p == 0) ? BASE_INDENT : 0;
+  int base_indent = as_initialiser && !as_helpfile ? BASE_INDENT : 0;
 
-  for (i = 0, texinfo = (flags & TEXINFO); documentation && (line = documentation[i]); i++)
+  char const*line;
+  for (int i = 0; documentation && (line = documentation[i]); i++)
     {
       /* Allow #ifdef's to be written out verbatim, but don't put them into
 	 separate help files. */
       if (*line == '#')
 	{
-	  if (string_array && filename_p == 0 && single_longdoc_strings == 0)
+	  if (as_initialiser && !as_helpfile)
 	    fprintf (stream, "%s\n", line);
 	  continue;
 	}
 
-      /* prefix with N_( for gettext */
-      if (string_array && single_longdoc_strings == 0)
-	{
-	  if (filename_p == 0)
-	    {
-	      if (line[0])
-		fprintf (stream, "  N_(\"");
-	      else
-		fprintf (stream, "  N_(\" ");		/* the empty string translates specially. */
-	    }
-	  else
-	    fprintf (stream, "  \"");
-	}
-
       if (indentation && line[0] != 0)
-	for (j = 0; j < indentation; j++)
-	  fprintf (stream, " ");
+        fprintf (stream, "%.*s", indentation, "");
 
       /* Don't indent the first line, because of how the help builtin works. */
       if (i == 0)
 	indentation += base_indent;
 
-      if (string_array)
+      if (as_initialiser)
 	{
-	  for (j = 0; line[j]; j++)
+	  for (int j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
 		{
@@ -1478,20 +1534,13 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
 	    }
 
 	  /* closing right paren for gettext */
-	  if (single_longdoc_strings == 0)
-	    {
-	      if (filename_p == 0)
-		fprintf (stream, "\"),\n");
-	      else
-		fprintf (stream, "\",\n");
-	    }
-	  else if (documentation[i+1])
+	  if (documentation[i+1])
 	    /* don't add extra newline after last line */
 	    fprintf (stream, "\\n\"\n\"");
 	}
       else if (texinfo)
 	{
-	  for (j = 0; line[j]; j++)
+	  for (int j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
 		{
@@ -1511,24 +1560,20 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
 	fprintf (stream, "%s\n", line);
     }
 
-  /* closing right paren for gettext */
-  if (string_array && single_longdoc_strings)
+  if (as_initialiser || as_helpfile)
     {
-      if (filename_p == 0)
-	fprintf (stream, "\"),\n");
-      else
-	fprintf (stream, "\",\n");
+      fprintf (stream, "\"");
+      if (!as_helpfile)
+        fprintf (stream, ")");
+      fprintf (stream, "\n#endif /* HELP_BUILTIN */\n;\n");
     }
-
-  if (string_array)
-    fprintf (stream, "#endif /* HELP_BUILTIN */\n  (char *)NULL\n};\n");
 }
 
+#if 0
+/* This is now done by a different program */
 int
 write_helpfiles (BUILTIN_DESC_ARRAY *builtins)
 {
-  char *helpfile;
-  char const*bname;
   FILE *helpfp;
   int i, hdlen;
   BUILTIN_DESC *builtin;
@@ -1545,9 +1590,8 @@ write_helpfiles (BUILTIN_DESC_ARRAY *builtins)
     {
       builtin = builtins->descs[i];
 
-      bname = document_name (builtin);
-      helpfile = (char *)xmalloc (hdlen + strlen (bname) + 1);
-      sprintf (helpfile, "helpfiles/%s", bname);
+      char *helpfile;
+      int l = asprintf (&helpfile, "helpfiles/%s", document_name (builtin));
 
       helpfp = fopen (helpfile, "w");
       if (helpfp == 0)
@@ -1565,12 +1609,13 @@ write_helpfiles (BUILTIN_DESC_ARRAY *builtins)
     }
   return 0;
 }
+#endif
 
 static int
 _find_in_table (char const*name, char const*const*name_table)
 {
   for (int i = 0; name_table[i]; i++)
-    if (strcmp (name, name_table[i]) == 0)
+    if (!strcmp (name, name_table[i]))
       return 1;
   return 0;
 }

@@ -91,13 +91,13 @@ static void show_longdoc (int);
 int
 help_builtin (WORD_LIST *list)
 {
-  register int i;
-  char *pattern, *name;
-  int match_found, sflag, dflag, mflag, m, pass, this_found;
-  size_t plen;
+  bool sflag = false;
+  bool dflag = false;
+  bool mflag = false;
 
-  dflag = sflag = mflag = 0;
   reset_internal_getopt ();
+  {
+  int i;
   while ((i = internal_getopt (list, "dms")) != -1)
     {
       switch (i)
@@ -117,6 +117,7 @@ help_builtin (WORD_LIST *list)
 	  return (EX_USAGE);
 	}
     }
+  }
   list = loptend;
 
   if (list == 0)
@@ -135,47 +136,46 @@ help_builtin (WORD_LIST *list)
       printf ("%s", _("'\n\n"));
     }
 
-  for (match_found = 0, pattern = ""; list; list = list->next)
+  char *pattern = "";
+  int match_found = 0;
+  for (; list; list = list->next)
     {
       pattern = list->word->word;
-      plen = strlen (pattern);
+      size_t plen = strlen (pattern);
 
-      for (pass = 1, this_found = 0; pass < 3; pass++)
+      for (int pass = 1, bool this_found = 0; pass < 3; pass++)
 	{
-	  for (i = 0; name = (char*) shell_builtins[i].name; i++)
+	  char *name;
+	  for (int i = 0; name = (char*) shell_builtins[i].name; i++)
 	    {
 	      QUIT;
 
 	      /* First pass: look for exact string or pattern matches.
 		 Second pass: look for prefix matches like bash-4.2 */
-	      if (pass == 1)
-	        m = (strcmp (pattern, name) == 0) ||
-		    (strmatch (pattern, name, FNMATCH_EXTFLAG) != FNM_NOMATCH);
-	      else
-		m = strncmp (pattern, name, plen) == 0;
-
-	      if (m)
-	        {
-	          this_found = 1;
-	          match_found++;
-	          if (dflag)
+	      if (pass == 1 ? strcmp (pattern, name) == 0 ||
+			      strmatch (pattern, name, FNMATCH_EXTFLAG) != FNM_NOMATCH
+			    : strncmp (pattern, name, plen) == 0)
+		{
+		  this_found = true;
+		  match_found++;
+		  if (dflag)
 		    {
 		      show_desc (name, i);
 		      continue;
 		    }
-	          else if (mflag)
+		  else if (mflag)
 		    {
 		      show_manpage (name, i);
 		      continue;
 		    }
 
-	          printf ("%s: %s\n", name, _(shell_builtins[i].short_doc));
+		  printf ("%s: %s\n", name, _(shell_builtins[i].short_doc));
 
-	          if (sflag == 0)
+		  if (sflag == 0)
 		    show_longdoc (i);
-	        }
+		}
 	    }
-	  if (pass == 1 && this_found == 1)
+	  if (pass == 1 && this_found)
 	    break;
 	}
     }
@@ -217,115 +217,105 @@ open_helpfile (const char *name)
   return fd;
 }
 
+/* Fetch translated longdoc, either from a named file (which is assumed to be
+   translated), or by using gettext (_()) on the provided text. */
+static char const*
+fetch_long_doc (int i)
+{
+  char const *doc = shell_builtins[i].long_doc;
+  if (!doc)
+    return NULL;
+
+  if (doc[0] != '/')
+    return strdup (_(doc));    /* always return a value that can be freed */
+
+  int fd = open_helpfile (doc);
+  if (fd < 0)
+    return NULL;
+
+  char *content;
+
+  ssize_t r = zmapfd (fd, &content, doc);
+  if (r < 0)
+    {
+      builtin_error ("%s: %s: %s", doc, _("read error"), strerror (errno));
+      free (content);
+      content = NULL;
+    }
+  close (fd);
+  return content;
+}
+
 /* By convention, enforced by mkbuiltins.c, if separate help files are being
    used, the long_doc array contains one string -- the full pathname of the
    help file for this builtin.  */
 static void
 show_longdoc (int i)
 {
-  register int j;
-  char * const *doc;
-  int fd;
+  char const *doc = shell_builtins[i].long_doc;
 
-  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
+  if (!doc)
+    return;
 
-  if (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL)
+  if (doc[0] == '/')
     {
-      fd = open_helpfile (doc[0]);
+      int fd = open_helpfile (doc);
       if (fd < 0)
 	return;
-      zcatfd (fd, 1, doc[0]);
+      zcatfd (fd, 1, doc);
       close (fd);
     }
-  else if (doc)
-    for (j = 0; doc[j]; j++)
-      printf ("%*s%s\n", BASE_INDENT, " ", _(doc[j]));
+  else
+    printf ("%*s%s\n", BASE_INDENT, " ", _(doc));
+}
+
+/* Show first line of a string.
+   Return beginning of next line, if any */
+static char const *
+show_first_line (char const *r)
+{
+  char const *p = *r;
+  char const *e = strchr (doc, '\n');
+  if (e)
+    {
+      printf ("%.*s", e-doc, doc);
+      ++e;			/* skip \n */
+      if (!*e)
+	e = NULL;		/* No more lines after only line ended with \n */
+    }
+  else
+    printf ("%s\n", doc);
+  return e;
 }
 
 static void
 show_desc (char *name, int i)
 {
-  int j;
-  ssize_t r;
-  char * const *doc, *line;
-  int fd, usefile;
+  char const *doc = fetch_long_doc (i);
 
-  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
-
-  usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
-  if (usefile)
+  if (!doc)
     {
-      fd = open_helpfile (doc[0]);
-      if (fd < 0)
-	return;
-      r = zmapfd (fd, &line, doc[0]);
-      if (r < 0)
-	{
-	  builtin_error ("%s: %s: %s", doc[0], _("read error"), strerror (errno));
-	  free (line);
-	  line = (char *)NULL;
-	}
-      close (fd);
+      printf ("%s - %s\n", name, _("(no description)"));
+      return;
     }
-  else
-    line = doc ? doc[0] : (char *)NULL;
 
-  printf ("%s - ", name);
-  /* Don't assume LINE ends with a newline. */
-  for (j = 0; line && line[j] && line[j] != '\n'; j++)
-    putchar (line[j]);
-  putchar ('\n');
-
+  show_first_line (doc);
   fflush (stdout);
-
-  if (usefile)
-    free (line);
+  free (doc);
 }
 
 /* Print builtin help in pseudo-manpage format. */
 static void
 show_manpage (char *name, int i)
 {
-  register int j;
-  ssize_t r;
-  char * const *doc;
-  char *line;
-  int fd, usefile;
-
-  doc = (char*const*) shell_builtins[i].long_doc;	/* TODO get rid of cast */
-
-  usefile = (doc && doc[0] && *doc[0] == '/' && doc[1] == (char *)NULL);
-  if (usefile)
-    {
-      fd = open_helpfile (doc[0]);
-      if (fd < 0)
-	return;
-      r = zmapfd (fd, &line, doc[0]);
-      if (r < 0)
-	{
-	  builtin_error ("%s: %s: %s", doc[0], _("read error"), strerror (errno));
-	  free (line);
-	  line = (char *)NULL;
-	}
-      close (fd);
-    }
-  else
-    line = doc ? _(doc[0]) : (char *)NULL;
-
   /* NAME */
-  printf ("NAME\n");
-  printf ("%*s%s - ", BASE_INDENT, " ", name);
-  for (j = 0; line && line[j]; j++)
-    {
-      putchar (line[j]);
-      if (line[j] == '\n')
-	break;
-    }
-  /* If the line doesn't end with a newline, e.g., if it's a loadable builtin,
-     add one. */
-  if (line[j] != '\n')
-    putchar ('\n');
-  printf ("\n");
+  printf ("NAME\n%*s%s - ", BASE_INDENT, " ", name);
+
+  char const *doc = fetch_long_doc (i);
+
+  char const *dealloc = doc;
+
+  doc = show_first_line (doc);
 
   /* SYNOPSIS */
   printf ("SYNOPSIS\n");
@@ -333,20 +323,14 @@ show_manpage (char *name, int i)
 
   /* DESCRIPTION */
   printf ("DESCRIPTION\n");
-  if (usefile == 0)
+
+  for (;doc;)
     {
-      for (j = 0; doc[j]; j++)
-        printf ("%*s%s\n", BASE_INDENT, " ", _(doc[j]));
+      if (*doc != '\n')	/* don't indent empty lines */
+	printf ("%*s", BASE_INDENT, " ");
+      show_first_line (&doc);
     }
-  else
-    {
-      for (j = 0; line && line[j]; j++)
-	{
-	  putchar (line[j]);
-	  if (line[j] == '\n')
-	    printf ("%*s", BASE_INDENT, " ");
-	}
-    }
+
   putchar ('\n');
 
   /* SEE ALSO */
@@ -363,12 +347,10 @@ show_manpage (char *name, int i)
   printf ("%s\n", _(bash_license));
 
   fflush (stdout);
-  if (usefile)
-    free (line);
+  free (dealloc);
 }
 
-static void
-dispcolumn (int i, char *buf, size_t bufsize, int width, int height)
+static void dispcolumn (int i, char *buf, size_t bufsize, int width, int height)
 {
   int j;
   size_t dispcols;
