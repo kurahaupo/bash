@@ -25,26 +25,32 @@
 #  define PTR_T void *
 #endif /* PTR_T */
 
-#define OC_MEMSET(memp, xch, nbytes)					\
-do {									\
-  if ((nbytes) <= 32) {							\
-    register char * mzp = (char *)(memp);				\
-    unsigned long mctmp = (nbytes);					\
-    register long mcn;							\
-    if (mctmp < 8) mcn = 0; else { mcn = (mctmp-1)/8; mctmp &= 7; }	\
-    switch (mctmp) {							\
-      case 0: for(;;) { *mzp++ = xch;					\
-      case 7:	   *mzp++ = xch;					\
-      case 6:	   *mzp++ = xch;					\
-      case 5:	   *mzp++ = xch;					\
-      case 4:	   *mzp++ = xch;					\
-      case 3:	   *mzp++ = xch;					\
-      case 2:	   *mzp++ = xch;					\
-      case 1:	   *mzp++ = xch; if(mcn <= 0) break; mcn--; }		\
-    }									\
-  } else								\
-    memset ((memp), (xch), (nbytes));					\
-} while(0)
+static inline void
+OC_MEMSET (void *memp, char xch, size_t nbytes)
+{
+  #if ! defined __GNUC__ || 1
+  if (nbytes <= 32) {
+    if (nbytes <= 0)
+        return;
+
+    char *mzp = memp;
+    size_t nblocks = nbytes+7 >> 3;
+    switch (nbytes & 7) {
+              for (;--nblocks;) {
+      case 0:   *mzp++ = xch;
+      case 7:   *mzp++ = xch;
+      case 6:   *mzp++ = xch;
+      case 5:   *mzp++ = xch;
+      case 4:   *mzp++ = xch;
+      case 3:   *mzp++ = xch;
+      case 2:   *mzp++ = xch;
+      case 1:   *mzp++ = xch;
+              }
+    }
+  } else
+  #endif
+    memset (memp, xch, nbytes);
+}
 
 typedef struct objcache {
 	PTR_T	data;
@@ -97,7 +103,7 @@ typedef struct objcache {
 #define ocache_free(c, otype, r) \
 	do { \
 		if ((c).nc < (c).cs) { \
-			OC_MEMSET ((r), 0xdf, sizeof(otype)); \
+			OC_MEMSET ((r), '\xdf', sizeof(otype)); \
 			((otype **)((c).data))[(c).nc++] = (r); \
 		} else \
 			xfree (r); \
