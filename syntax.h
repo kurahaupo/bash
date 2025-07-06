@@ -100,7 +100,11 @@ extern int sh_syntabsiz;
 #define CTLNUL '\177'
 
 #if !defined (HAVE_ISBLANK) && !defined (isblank)
-#  define isblank(x)	((x) == ' ' || (x) == '\t')
+static inline int /* should be bool */
+isblank(int x)
+{
+    return x == ' ' || x == '\t';
+}
 #endif
 
 #endif /* _SYNTAX_H_ */
