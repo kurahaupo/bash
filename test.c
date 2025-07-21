@@ -254,10 +254,10 @@ term (void)
     beyond ();
 
   /* Deal with leading `not's. */
-  if (argv[pos][0] == '!' && argv[pos][1] == '\0')
+  if (ISTOKEN (argv[pos], '!'))
     {
       value = 0;
-      while (pos < argc && argv[pos][0] == '!' && argv[pos][1] == '\0')
+      while (pos < argc && ISTOKEN (argv[pos], '!'))
 	{
 	  advance (1);
 	  value = 1 - value;
@@ -267,7 +267,7 @@ term (void)
     }
 
   /* A paren-bracketed argument. */
-  if (argv[pos][0] == '(' && argv[pos][1] == '\0')	/* ) */
+  if (ISTOKEN (argv[pos], '('))	/* ) */
     {
       int nargs, count;
 
@@ -292,7 +292,7 @@ term (void)
 	value = expr ();
       if (argv[pos] == 0)	/* ( */
 	test_syntax_error (_("`)' expected"), (char *)NULL);
-      else if (argv[pos][0] != ')' || argv[pos][1])	/* ( */
+      else if (! ISTOKEN (argv[pos], ')'))	/* ( */
 	test_syntax_error (_("`)' expected, found %s"), argv[pos]);
       advance (0);
       return (value);
@@ -711,7 +711,7 @@ unary_test (char *op, char *arg, int flags)
 int
 test_binop (char *op)
 {
-  if (op[0] == '=' && op[1] == '\0')
+  if (ISTOKEN (op, '='))
     return (1);			/* '=' */
   else if ((op[0] == '<' || op[0] == '>') && op[1] == '\0')	/* string <, > */
     return (1);
@@ -784,7 +784,7 @@ test_unop (char *op)
 static int
 two_arguments (void)
 {
-  if (argv[pos][0] == '!' && argv[pos][1] == '\0')
+  if (ISTOKEN (argv[pos], '!'))
     {
       advance (0);
       return (argv[pos++][0] == '\0');
@@ -821,7 +821,7 @@ three_arguments (void)
 	value = ONE_ARG_TEST (argv[pos]) || ONE_ARG_TEST (argv[pos + 2]);
       pos += 3;
     }
-  else if (argv[pos][0] == '!' && argv[pos][1] == '\0')
+  else if (ISTOKEN (argv[pos], '!'))
     {
       advance (1);
       value = !two_arguments ();
@@ -864,7 +864,7 @@ posixtest (int nargs)
       break;
 
     case 4:
-      if (argv[pos][0] == '!' && argv[pos][1] == '\0')
+      if (ISTOKEN (argv[pos], '!'))
 	{
 	  advance (1);
 	  value = !three_arguments ();
@@ -923,11 +923,11 @@ test_command (int margc, char **margv)
 
   argv = margv;
 
-  if (margv[0] && margv[0][0] == '[' && margv[0][1] == '\0')
+  if (margv[0] && ISTOKEN (margv[0], '['))
     {
       --margc;
 
-      if (margv[margc] && (margv[margc][0] != ']' || margv[margc][1]))
+      if (margv[margc] && ! ISTOKEN (margv[margc], ']'))
 	test_syntax_error (_("missing `]'"), (char *)NULL);
 
       if (margc < 2)
