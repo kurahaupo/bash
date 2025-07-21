@@ -3,7 +3,7 @@
 </HEAD>
 <BODY><TABLE WIDTH=100%>
 <TR>
-<TH ALIGN=LEFT width=33%>BASH(1)<TH ALIGN=CENTER width=33%>2025 February 24<TH ALIGN=RIGHT width=33%>BASH(1)
+<TH ALIGN=LEFT width=33%>BASH(1)<TH ALIGN=CENTER width=33%>2025 April 7<TH ALIGN=RIGHT width=33%>BASH(1)
 </TR>
 </TABLE>
 <BR><A HREF="#index">Index</A>
@@ -1158,7 +1158,7 @@ operators do not evaluate <I>expression2</I> if the value of
 the entire conditional expression.
 </DL>
 
-<DT><B>for</B> <I>name</I> [ [ <B>in</B> [ <I>word ...</I> ] ] ; ] <B>do</B> <I>list</I> ; <B>done</B><DD>
+<DT><B>for</B> <I>name</I> [ [ <B>in</B> <I>word ...</I> ] ; ] <B>do</B> <I>list</I> ; <B>done</B><DD>
 First, expand The list of words following <B>in</B>, generating a list
 of items.
 Then, the variable <I>name</I> is set to each element of this list
@@ -1172,7 +1172,7 @@ below).
 The return status is the exit status of the last command that executes.
 If the expansion of the items following <B>in</B> results in an empty
 list, no commands are executed, and the return status is 0.
-<DT><B>for</B> (( <I>expr1</I> ; <I>expr2</I> ; <I>expr3</I> )) ; <B>do</B> <I>list</I> ; <B>done</B><DD>
+<DT><B>for</B> (( <I>expr1</I> ; <I>expr2</I> ; <I>expr3</I> )) [;] <B>do</B> <I>list</I> ; <B>done</B><DD>
 First, evaluate the arithmetic expression <I>expr1</I> according
 to the rules described below under
 <FONT SIZE=-1><B>ARITHMETIC EVALUATION</B>.
@@ -3291,8 +3291,13 @@ the shell does not save the command history when it exits.
 <DD>
 The maximum number of lines contained in the history file.
 When this variable is assigned a value, the history file is truncated,
-if necessary, to contain no more than that number of lines
+if necessary, to contain no more than
+the number of history entries
+that total no more than that number of lines
 by removing the oldest entries.
+If the history list contains multi-line entries,
+the history file may contain more lines than this maximum
+to avoid leaving partial history entries.
 The history file is also truncated to this size after
 writing it when a shell exits or by the
 <B>history</B>
@@ -4294,7 +4299,7 @@ For example, a<B>{</B>d,c,b<B>}</B>e expands into
 <P>
 
 A sequence expression takes the form
-<B>{</B><I>x</I><B>..</B><I>y</I><B>[..</B><I>incr</I><B>]}</B>,
+<I>x</I><B>..</B><I>y</I><B>[..</B><I>incr</I><B>]</B>,
 where <I>x</I> and <I>y</I> are either integers or single letters,
 and <I>incr</I>, an optional increment, is an integer.
 When integers are supplied, the expression expands to each number between
@@ -6134,7 +6139,7 @@ The format of here-documents is:
 
 The shell does not perform
 parameter and variable expansion, command substitution,
-arithmetic expansion, or pathname expansion is performed on
+arithmetic expansion, or pathname expansion on
 <I>word</I>.
 
 <P>
@@ -12740,7 +12745,7 @@ Any trap on
 is executed before the shell terminates.
 <DT><B>export</B> [<B>-fn</B>] [<I>name</I>[=<I>value</I>]] ...<DD>
 
-<DT><B>export -p</B>
+<DT><B>export -p [-f</B>]
 
 <DD>
 
@@ -12764,11 +12769,14 @@ option unexports, or removes the export attribute, from each <I>name</I>.
 If no
 <I>names</I>
 
-are given, or if the
+are given, or if only the
 <B>-p</B>
 
-option is supplied, <B>export</B> prints a list of names of all exported
+option is supplied,
+<B>export</B> displays a list of names of all exported
 variables on the standard output.
+Using <B>-p</B> and <B>-f</B> together displays exported functions.
+The <B>-p</B> option displays output in a form that may be reused as input.
 <DT><DD>
 <B>export</B> allows the value of a variable to be set when it is exported
 or unexported by following the variable name with =<I>value</I>.
@@ -16813,7 +16821,7 @@ Array variables may not (yet) be exported.
 <HR>
 <TABLE WIDTH=100%>
 <TR>
-<TH ALIGN=LEFT width=33%>GNU Bash 5.3<TH ALIGN=CENTER width=33%>2025 February 24<TH ALIGN=RIGHT width=33%>BASH(1)
+<TH ALIGN=LEFT width=33%>GNU Bash 5.3<TH ALIGN=CENTER width=33%>2025 April 7<TH ALIGN=RIGHT width=33%>BASH(1)
 </TR>
 </TABLE>
 <HR>
@@ -16922,7 +16930,7 @@ Array variables may not (yet) be exported.
 <DT><A HREF="#lbDJ">BUGS</A><DD>
 </DL>
 <HR>
-This document was created by man2html from /usr/local/src/bash/bash-20250224/doc/bash.1.<BR>
-Time: 28 February 2025 11:12:41 EST
+This document was created by man2html from /usr/local/src/bash/bash-20250502/doc/bash.1.<BR>
+Time: 04 May 2025 17:25:09 EDT
 </BODY>
 </HTML>

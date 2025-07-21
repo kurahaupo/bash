@@ -783,7 +783,7 @@ _rl_optimize_redisplay (void)
 
 /* Useful shorthand used by rl_redisplay, update_line, rl_move_cursor_relative */
 #define INVIS_FIRST()	(local_prompt_invis_chars[0])
-#define WRAP_OFFSET(line, offset)  ((line <= prompt_last_screen_line) ? local_prompt_invis_chars[line] : 0)
+#define WRAP_OFFSET(line, offset)  ((line <= prompt_last_screen_line && local_prompt_invis_chars) ? local_prompt_invis_chars[line] : 0)
 
 #define W_OFFSET(line, offset) ((line) == 0 ? offset : 0)
 #define VIS_LLEN(l)	((l) > _rl_vis_botlin ? 0 : (vis_lbreaks[l+1] - vis_lbreaks[l]))
@@ -809,7 +809,7 @@ rl_redisplay (void)
 {
   int in, out, c, linenum, cursor_linenum;
   int inv_botlin, lb_botlin, lb_linenum, o_cpos;
-  int newlines, lpos, temp, num, prompt_lines_estimate;
+  int newlines, lpos, temp, num;
   char *prompt_this_line;
   char cur_face;
   int hl_begin, hl_end;
@@ -1013,9 +1013,6 @@ rl_redisplay (void)
   /* XXX - There is code that assumes that all the invisible characters occur
      on the first and last prompt lines; change that to use
      local_prompt_invis_chars */
-
-  /* This is zero-based, used to set the newlines */
-  prompt_lines_estimate = lpos / _rl_screenwidth;
 
   /* what if lpos is already >= _rl_screenwidth before we start drawing the
      contents of the command line? */
@@ -1539,7 +1536,7 @@ rl_redisplay (void)
 		      _rl_output_some_chars (local_prompt, nleft);
 		      pmt_offset = 0;		/* force for calculation below */
 		    }
-	
+
 		  if (mb_cur_max > 1 && rl_byte_oriented == 0)
 		    /* Start width calculation where we started output. */
 		    _rl_last_c_pos = _rl_col_width (local_prompt, pmt_offset, nleft, 1) - WRAP_OFFSET(cursor_linenum, wrap_offset) + modmark;
@@ -1908,7 +1905,6 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
 	  if (newwidth > 0)
 	    {
 	      int i, j;
-	      char *optr;
 
 	      puts_face (new, new_face, newbytes);
 	      _rl_last_c_pos = newwidth;
@@ -3147,14 +3143,14 @@ rl_message (const char *format, ...)
 
 #if defined (HAVE_VSNPRINTF)
   bneed = vsnprintf (msg_buf, msg_bufsiz, format, args);
-  if (bneed >= msg_bufsiz - 1)
+  if (bneed > msg_bufsiz - 1)
     {
       msg_bufsiz = bneed + 1;
       msg_buf = xrealloc (msg_buf, msg_bufsiz);
       va_end (args);
 
       va_start (args, format);
-      vsnprintf (msg_buf, msg_bufsiz - 1, format, args);
+      vsnprintf (msg_buf, msg_bufsiz, format, args);
     }
 #else
   vsprintf (msg_buf, format, args);

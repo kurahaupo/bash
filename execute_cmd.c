@@ -4796,7 +4796,11 @@ execute_simple_command (SIMPLE_COM *simple_command, int pipe_in, int pipe_out, i
 	    builtin_is_special = 1;
 	}
       if (builtin == 0)
+#if 0	/*TAG bash-5.4 rob@landley.net 5/1/2025 */
+	func = ((shell_compatibility_level <= 52 && posixly_correct == 0) || absolute_program (words->word->word) == 0) ? find_function (words->word->word) : 0;
+#else
 	func = (posixly_correct == 0 || absolute_program (words->word->word) == 0) ? find_function (words->word->word) : 0;
+#endif
     }
 
   /* What happens in posix mode when an assignment preceding a command name
@@ -5659,6 +5663,10 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 
       if (result == EXITPROG || result == EXITBLTIN)
 	subshell_exit (last_command_exit_value);
+#if 0	/* TAG:bash-5.4 https://savannah.gnu.org/support/?109840 6/5/2025 */
+      else if (result == ERREXIT)
+	subshell_exit (last_command_exit_value ? last_command_exit_value : EXECUTION_FAILURE);
+#endif
       else if (result)
 	subshell_exit (EXECUTION_FAILURE);
       else if (funcvalue)

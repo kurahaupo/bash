@@ -487,10 +487,10 @@ valid_seqterm (char *text, size_t tlen)
   text[tlen] = '\0';	/* don't be tricked by something later in the string */
   t = strstr (text, BRACE_SEQ_SPECIFIER);
   text[tlen] = c;
-    
+
   if (t == 0)
     return 0;		/* invalid */
-  
+
   lhs = text;
   rhs = t + sizeof(BRACE_SEQ_SPECIFIER) - 1;
 
@@ -783,8 +783,9 @@ comsub:
 	  commas++;
 	}
       else if (satisfy == '}' && STREQN (text+i, BRACE_SEQ_SPECIFIER, 2) &&
-      		text[i+2] != satisfy && level == 0)
+      		text[i+2] != satisfy && level == 0 && btype == BRACE_NONE)
 	{
+	  /* The check against BRACE_NONE gives the comma higher precedence */
 	  btype = BRACE_SEQ;
 	  commas++;
 	}

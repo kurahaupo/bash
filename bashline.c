@@ -1,6 +1,6 @@
 /* bashline.c -- Bash's interface to the readline library. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -1413,6 +1413,22 @@ bash_spell_correct_shellword (int count, int key)
 #  define COMMAND_SEPARATORS_PLUS_WS ";|&{(` \t"
 /* )} */
 
+static inline int
+check_extglob (int ti)
+{
+#if defined (EXTENDED_GLOB)
+  int this_char, prev_char;
+
+  this_char = rl_line_buffer[ti];
+  prev_char = (ti > 0) ? rl_line_buffer[ti - 1] : 0;
+
+  if (extended_glob && ti > 0 && this_char == '(' && /*)*/
+      member (prev_char, "?*+@!") && char_is_quoted (rl_line_buffer, ti - 1) == 0)
+    return (1);
+#endif
+  return (0);
+}
+
 /* check for redirections and other character combinations that are not
    command separators */
 static inline int
@@ -1443,6 +1459,7 @@ check_redir (int ti)
 #  endif
   else if (char_is_quoted (rl_line_buffer, ti))
     return (1);
+
   return (0);
 }
 
@@ -1629,9 +1646,13 @@ attempt_shell_completion (const char *text, int start, int end)
     }
   else if (member (rl_line_buffer[ti], command_separator_chars))
     {
-      in_command_position++;
+      if (char_is_quoted (rl_line_buffer, ti) == 0)
+	in_command_position++;
 
-      if (check_redir (ti) == 1)
+      if (in_command_position && rl_line_buffer[ti] == '(' && check_extglob (ti) == 1) /*)*/
+	in_command_position = -1;
+
+      if (in_command_position && check_redir (ti) == 1)
 	in_command_position = -1;	/* sentinel that we're not the first word on the line */
     }
   else
@@ -4077,7 +4098,7 @@ bash_glob_expand_word (int count, int key)
 static int
 bash_glob_list_expansions (int count, int key)
 {
-  return bash_glob_completion_internal ('?');
+  return bash_glob_completion_internal ('|');
 }
 
 static int
@@ -4129,9 +4150,9 @@ vi_advance_point (void)
 	}
     }
 #    else
-  rl_point++:
+  rl_point++;
 #    endif
-    return point;
+  return point;
 }
 
 /* Completion, from vi mode's point of view.  This is a modified version of

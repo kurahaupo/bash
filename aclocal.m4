@@ -21,7 +21,7 @@ dnl check for typedef'd symbols in header files, but allow the caller to
 dnl specify the include files to be checked in addition to the default
 dnl
 dnl This could be changed to use AC_COMPILE_IFELSE instead of AC_EGREP_CPP
-dnl 
+dnl
 dnl BASH_CHECK_TYPE(TYPE, HEADERS, DEFAULT[, VALUE-IF-FOUND])
 AC_DEFUN(BASH_CHECK_TYPE,
 [
@@ -1367,7 +1367,7 @@ AC_CACHE_VAL(bash_cv_job_control_missing,
 #endif
 
 /* process control */
-#if !defined (WNOHANG) || !defined (WUNTRACED) 
+#if !defined (WNOHANG) || !defined (WUNTRACED)
 #error
 #endif
 
@@ -1478,7 +1478,7 @@ AC_CACHE_VAL(bash_cv_tiocgwinsz_in_ioctl,
   [bash_cv_tiocgwinsz_in_ioctl=yes], [bash_cv_tiocgwinsz_in_ioctl=no]
 )])
 AC_MSG_RESULT($bash_cv_tiocgwinsz_in_ioctl)
-if test $bash_cv_tiocgwinsz_in_ioctl = yes; then   
+if test $bash_cv_tiocgwinsz_in_ioctl = yes; then
 AC_DEFINE(GWINSZ_IN_SYS_IOCTL)
 fi
 ])
@@ -1492,7 +1492,7 @@ AC_CACHE_VAL(bash_cv_tiocstat_in_ioctl,
   [bash_cv_tiocstat_in_ioctl=yes], [bash_cv_tiocstat_in_ioctl=no]
 )])
 AC_MSG_RESULT($bash_cv_tiocstat_in_ioctl)
-if test $bash_cv_tiocstat_in_ioctl = yes; then   
+if test $bash_cv_tiocstat_in_ioctl = yes; then
 AC_DEFINE(TIOCSTAT_IN_SYS_IOCTL)
 fi
 ])
@@ -1506,7 +1506,7 @@ AC_CACHE_VAL(bash_cv_fionread_in_ioctl,
   [bash_cv_fionread_in_ioctl=yes], [bash_cv_fionread_in_ioctl=no]
 )])
 AC_MSG_RESULT($bash_cv_fionread_in_ioctl)
-if test $bash_cv_fionread_in_ioctl = yes; then   
+if test $bash_cv_fionread_in_ioctl = yes; then
 AC_DEFINE(FIONREAD_IN_SYS_IOCTL)
 fi
 ])
@@ -1526,7 +1526,7 @@ AC_CACHE_VAL(bash_cv_speed_t_in_sys_types,
 		[[speed_t x;]])],
 	[bash_cv_speed_t_in_sys_types=yes],[bash_cv_speed_t_in_sys_types=no])])
 AC_MSG_RESULT($bash_cv_speed_t_in_sys_types)
-if test $bash_cv_speed_t_in_sys_types = yes; then   
+if test $bash_cv_speed_t_in_sys_types = yes; then
 AC_DEFINE(SPEED_T_IN_SYS_TYPES)
 fi
 ])
@@ -1563,7 +1563,7 @@ if test -d /dev/fd && (exec test -r /dev/fd/0 < /dev/null) ; then
 elif test "$host_os" = "openedition" && (exec test -r /dev/fd0 < /dev/null); then
   bash_cv_dev_fd=nodir		# /dev/fdN via character device
 fi
-if test -z "$bash_cv_dev_fd" ; then 
+if test -z "$bash_cv_dev_fd" ; then
   if test -d /proc/self/fd && (exec test -r /proc/self/fd/0 < /dev/null) ; then
     bash_cv_dev_fd=whacky
   else
@@ -1980,7 +1980,7 @@ dnl
 
 AC_DEFUN([AM_PATH_LISPDIR],
  [AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir], [override the default lisp directory]),
-  [ lispdir="$withval" 
+  [ lispdir="$withval"
     AC_MSG_CHECKING([where .elc files should go])
     AC_MSG_RESULT([$lispdir])],
   [
@@ -2240,3 +2240,68 @@ else
 fi
 AC_DEFINE_UNQUOTED([FNMATCH_EQUIV_FALLBACK], [$bash_cv_fnmatch_equiv_value], [Whether fnmatch can be used for bracket equivalence classes])
 ])
+
+AC_DEFUN([BASH_FUNC_STRCHRNUL],
+[
+  AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
+  AC_CACHE_CHECK([whether strchrnul works],
+      [bash_cv_func_strchrnul_works],
+      [AC_RUN_IFELSE([AC_LANG_PROGRAM(
+[[
+#include <string.h>
+]],
+[[const char *buf = "abc";
+      return strchrnul (buf, 'd') != buf + 3;
+]]
+)],
+[bash_cv_func_strchrnul_works=yes], [bash_cv_func_strchrnul_works=no],
+[bash_cv_func_strchrnul_works=no]
+)])
+
+if test "$bash_cv_func_strchrnul_works" = "no"; then
+AC_LIBOBJ([strchrnul])
+fi
+])
+
+# AM_PROG_INSTALL_STRIP
+# ---------------------
+# One issue with vendor 'install' (even GNU) is that you can't
+# specify the program used to strip binaries.  This is especially
+# annoying in cross-compiling environments, where the build's strip
+# is unlikely to handle the host's binaries.
+# Fortunately install-sh will honor a STRIPPROG variable, so we
+# always use install-sh in "make install-strip", and initialize
+# STRIPPROG with the value of the STRIP variable (set by the user).
+AC_DEFUN([AM_PROG_INSTALL_STRIP],
+[AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
+# Installed binaries are usually stripped using 'strip' when the user
+# run "make install-strip".  However 'strip' might not be the right
+# tool to use in cross-compilation environments, therefore Automake
+# will honor the 'STRIP' environment variable to overrule this program.
+dnl Don't test for $cross_compiling = yes, because it might be 'maybe'.
+#if test "$cross_compiling" != no; then
+  AC_CHECK_TOOL([STRIP], [strip], :)
+#fi
+INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
+AC_SUBST([INSTALL_STRIP_PROGRAM])])
+
+AC_DEFUN([AM_AUX_DIR_EXPAND],
+[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])dnl
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
+])
+
+# AM_PROG_INSTALL_SH
+# ------------------
+# Define $install_sh.
+AC_DEFUN([AM_PROG_INSTALL_SH],
+[AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+if test x"${install_sh+set}" != xset; then
+  case $am_aux_dir in
+  *\ * | *\	*)
+    install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
+  *)
+    install_sh="\${SHELL} $am_aux_dir/install-sh"
+  esac
+fi
+AC_SUBST([install_sh])])

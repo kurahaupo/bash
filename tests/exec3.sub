@@ -25,10 +25,17 @@ cd $TDIR || exit 1
 
 shopt -s execfail
 
-trap 'echo EXIT' EXIT 
+trapsort()
+{
+	trap > x.output
+	sort x.output && rm -f x.output
+}
+
+trap 'rm -f x.sh x.output ; echo EXIT' EXIT
 trap 'echo USR1' USR1
 trap '' TERM
-trap | sort
+
+trapsort
 
 kill -s USR1 $$		# should run the trap
 
@@ -40,7 +47,7 @@ exec /tmp/bash-notthere
 echo $0: ENOENT: after failed exec: $?
 # relative pathname
 rm -f bash-notthere
-exec bash-notthere 
+exec bash-notthere
 
 # EACCES - permission denied
 rm -f x.sh x.output
@@ -60,12 +67,14 @@ rm -f x.sh x.output
 cat << \EOF > x.sh
 argmax=$(getconf ARG_MAX 2>/dev/null)
 if (( argmax <= 0 )); then
-        argmax=1048576
+	echo "exec3.sub: getconf ARG_MAX failed, skipping E2BIG test" >&2
+	exit 1
 fi
-v=$(echo {1..250000})
-while (( ${#v} < $argmax )); do
-        v+=$(echo {250001..350000})
-done
+if (( argmax > (2**31) )); then
+	echo "exec3.sub: ARG_MAX too large: $argmax, skipping E2BIG test" >&2
+	exit 0
+fi
+printf -v v %.*u "$argmax" 0
 export v
 exec ${THIS_SH} </dev/null
 EOF
@@ -92,7 +101,7 @@ case $string in
 esac
 rm -f x.sh x.output
 
-trap | sort
+trapsort
 kill -s USR1 $$		# should run the trap
 kill -s TERM $$		# should still be ignored
 

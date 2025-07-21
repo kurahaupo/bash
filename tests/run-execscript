@@ -13,11 +13,7 @@
 #
 
 echo "warning: the text of system error messages may vary between systems, causing" >&2
-echo "         ‘diff’ to produce output; please check for semantically equivalence." >&2
-echo >&2
-echo "warning: UNIX versions number signals differently." >&2
-echo "         If output differing only in line numbers is produced, please" >&2
-echo "         do not consider this a test failure." >&2
+echo "         ‘diff’ to produce output; please check for semantic equivalence." >&2
 echo >&2
 echo "warning: if the text of the error messages concerning ‘notthere’ or" >&2
 echo "         ‘/tmp/bash-notthere’ not being found or ‘/’ being a directory" >&2

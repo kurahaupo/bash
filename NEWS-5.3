@@ -117,7 +117,7 @@ ll. Documentation has been significantly updated.
 
 mm. `wait -n' can now return terminated process substitutions, jobs about
     which the user has already been notified (like `wait' without options),
-   
+
 nn. `wait -n' removes jobs from the jobs table or list of terminated children
      when in posix mode.
 
@@ -143,8 +143,11 @@ uu. If `exit' is run in a trap and not supplied an exit status argument, it
     `top level' and would cause the trap to end (that is, not in a subshell).
     This is from Posix interp 1602.
 
-vv. There is a new `fltexpr' builtin to perform floating-point arithmetic
-    similarly to `let'.
+vv. There is a new `fltexpr' loadable builtin to perform floating-point
+    arithmetic similarly to `let'.
+
+ww. The `install-strip' and `strip' Makefile targets now deal with cross-
+    compiling.
 
 2. New Features in Readline
 
