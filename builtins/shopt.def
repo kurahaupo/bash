@@ -398,8 +398,8 @@ static opt_def_t const xo_options[] = {
     .hide_shopt = true,
     .help = N_(
       "Disable some changes made after Bash v5.1\n"
-      " ‧ v5.1 Expand array indices twice\n"
-      " ‧ v5.2 Improve handling of array subscripts in numeric context."),
+      " ‧ v5.1 Re-expand array indices in $((...)) (array_expand_once off)\n"
+      " ‧ v5.2 Avoid re-expanding array indices in $((...)) (array_expand_once on)"),
   },
   { "compat52",
     .set_func = set_compatibility_level,
@@ -411,8 +411,10 @@ static opt_def_t const xo_options[] = {
     .hide_shopt = true,
     .help = N_(
       "Disable some changes made after Bash v5.2\n"
-      " ‧ v5.2 ...\n"
-      " ‧ v5.3 ..."),
+      " ‧ v5.2 test built-in: no special handling for bracketed subexpressions\n"
+      " ‧ v5.3 test built-in: bracketed subexpressions have POSIX semantics\n"
+      "	       bind -p/-P: restricts output if a given list of bindable command names\n"
+      "        hide job notifications while interactively sourcing a file"),
   },
   { "compat53",
     .set_func = set_compatibility_level,

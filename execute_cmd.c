@@ -4797,7 +4797,7 @@ execute_simple_command (SIMPLE_COM *simple_command, int pipe_in, int pipe_out, i
 	}
       if (builtin == 0)
 #if 0	/*TAG bash-5.4 rob@landley.net 5/1/2025 */
-	func = ((shell_compatibility_level <= 52 && posixly_correct == 0) || absolute_program (words->word->word) == 0) ? find_function (words->word->word) : 0;
+	func = ((shell_compatibility_level <= 53 && posixly_correct == 0) || absolute_program (words->word->word) == 0) ? find_function (words->word->word) : 0;
 #else
 	func = (posixly_correct == 0 || absolute_program (words->word->word) == 0) ? find_function (words->word->word) : 0;
 #endif
