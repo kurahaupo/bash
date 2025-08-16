@@ -184,7 +184,7 @@ Makefile.in
 	  library (if necessary) should work now
 
 bashline.c
-	- new function: quote_word_break_characters(), to backslash-quote 
+	- new function: quote_word_break_characters(), to backslash-quote
 	  characters in a filename that the readline completion code would
 	  treat as word breaks
 	- change bash_quote_filename to call quote_word_break_characters if
@@ -449,7 +449,7 @@ doc/{bash.{1,html},bashref.texi}
 
 test/test-tests
 	- before modifying the setgid bit on /tmp/setgid, try to change its
-	  group to ${GROUPS[0]} 
+	  group to ${GROUPS[0]}
 
 				    2/3
 				    ---
@@ -668,7 +668,7 @@ hashlib.c, getcwd.c
 
 error.c, siglist.c, xmalloc.c, builtins/{common,evalfile,mkbuiltins,psize}.c,
 builtins/{exec,exit,fg_bg,hash,history}.def
-	- include `bashtypes.h' instead of directly including <sys/types.h> 
+	- include `bashtypes.h' instead of directly including <sys/types.h>
 
 builtins/fc.def
 	- include ../bashtypes.h and ../posixstat.h instead of bashtypes.h
@@ -1432,7 +1432,7 @@ shell.c
 	  argument following `-c command'
 
 variables.c
-	- if unsetting a local variable with a previous context, make sure	
+	- if unsetting a local variable with a previous context, make sure
 	  to free the hash table element used to store the local variable
 
 lib/readline/terminal.c
@@ -1572,7 +1572,7 @@ sig.c
 
 bashline.c
 	- if a filename containing `!' is completed, and the user has started
-	  the string with a `"', change the completion style to backslash-	
+	  the string with a `"', change the completion style to backslash-
 	  quoting, since there's no way to use `!' with double quotes (this
 	  requires more changes to readline to really work right)
 
@@ -1767,7 +1767,7 @@ execute_cmd.c
 	  works right
 	  [in bash-2.01.1]
 	- print_formatted_time should pass a long as the fourth parameter
-	  to mkfmt 
+	  to mkfmt
 	  [in bash-2.01.1]
 
 externs.h, shell.c
@@ -3394,7 +3394,7 @@ parse.y
 		  leave it in the word_token_alist so that `type' still
 		  reports it as a `keyword'
 		o new function, time_command_acceptable(), encapsulates the
-		  necessary conditions for `time' to be returned as a 
+		  necessary conditions for `time' to be returned as a
 		  reserved word
 
 [bash-2.02-alpha1 frozen]
@@ -3508,7 +3508,7 @@ mailcheck.c
 execute_cmd.c
 	- execute_builtin needs to call run_unwind_frame if the builtin is
 	  `source' or `eval' and we're not in a subshell rather than just
-	  calling dispose_builtin_env, because not all invocations copy 
+	  calling dispose_builtin_env, because not all invocations copy
 	  the temporary_env to builtin_env, and nested calls to `.' require
 	  that the temporary env given to the first persist until that first
 	  call to `.' finishes
@@ -3597,7 +3597,7 @@ Makefile.in
 	- make sure support/Makefile is created and cleaned
 
 doc/Makefile.in
-	- changes to suffix rules to say how to make .html from .1 
+	- changes to suffix rules to say how to make .html from .1
 	- `bash.html' is now a makefile target, created by man2html from
 	  bash.1 rather than being hand-modified
 
@@ -3769,7 +3769,7 @@ lib/malloc/malloc.c
 				   4/23
 				   ----
 aclocal.m4
-	- add a new macro to check whether or not off_t is 64 bits 
+	- add a new macro to check whether or not off_t is 64 bits
 
 				   4/24
 				   ----
@@ -4099,7 +4099,7 @@ lib/readline/doc/{hist,rlman}.texinfo
 
 support/config.guess
 	- added case clause for matching UnixWare 7 from SCO (SVR5) -- further
-	  work may be needed 
+	  work may be needed
 	  [These fixes were in a usenet posting from hops@sco.com]
 
 support/config.sub
@@ -4252,7 +4252,7 @@ lib/readline/readline.h
 	- added prototypes for functions from vi_mode.c, util.c, terminal.c,
 	  search.c, util.c, undo.c, readline.c, parens.c, macro.c, kill.c,
 	  keymaps.c, isearch.c, input.c, funmap.c, display.c, complete.c,
-	  callback.c, 
+	  callback.c,
 	- added extern declarations for functions from rltty.c
 
 lib/readline/{readline,util}.c
@@ -6345,7 +6345,7 @@ lib/readline/display.c
 	- broke the code that initializes VISIBLE_LINE and INVISIBLE_LINE out
 	  of rl_redisplay into a new function, init_line_structures, which
 	  takes an argument giving the minimum number of characters that the
-	  line must hold 
+	  line must hold
 	- new function for use by applications that want to display the
 	  initial prompt themselves rather than having the first call to
 	  readline do it:  rl_on_new_line_with_prompt (modified from code in
@@ -7454,9 +7454,9 @@ bashline.c
 
 				 1/4/2000
 				 --------
-subst.c 
+subst.c
 	- make call_expand_word_internal set w->word to NULL if either
-	  expand_word_error or expand_word_fatal is returned 
+	  expand_word_error or expand_word_fatal is returned
 
 				    1/7
 				    ---
@@ -7534,7 +7534,7 @@ lib/readline/funmap.c
 
 lib/readline/terminal.c
 	- correct a typo in usage of the __EMX__ preprocessor define
-	- fix a reversed usage of `#if defined (__DJGPP__)' in 
+	- fix a reversed usage of `#if defined (__DJGPP__)' in
 	  _rl_control_keypad
 	- remove extern declarations for _rl_in_stream and _rl_out_stream
 
@@ -7715,7 +7715,7 @@ lib/sh/shtty.c
 				    3/7
 				    ---
 variables.h
-	- fix typo in COPY_EXPORTSTR definition 
+	- fix typo in COPY_EXPORTSTR definition
 
 				   3/14
 				   ----
@@ -8624,7 +8624,7 @@ subst.c
 
 				   10/6
 				   ----
-subst.c 
+subst.c
 	- change command_substitute to call setmode(fd, O_TEXT) on the pipe
 	  file descriptor if __CYGWIN__ is defined; remove the other code
 	  that converts CR/LF to LF on cygwin
@@ -8815,7 +8815,7 @@ lib/readline/rltypedefs.h
 	- new typedef, rl_linebuf_func_t, which takes a string and an int
 	  index and returns an int
 	- new generic typedefs, rl_intfunc_t and rl_voidfunc_t, which are
-	  functions which take and return int and void, respectively 
+	  functions which take and return int and void, respectively
 	- new generic typedef, rl_vintfunc_t, which takes an int and returns
 	  void
 	- new generic typedefs, rl_icpfunc_t and rl_vcpfunc_t, which take a
@@ -9295,7 +9295,7 @@ pcomplete.c
 	  gen_action_completions, gen_globpat_matches, gen_wordlist_matches,
 	  gen_compspec_completions now take `const char *' arguments as
 	  appropriate
-	- programmable_completions now takes `const char *' first and 
+	- programmable_completions now takes `const char *' first and
 	  second arguments
 
 pcomplib.c
@@ -9642,7 +9642,7 @@ lib/readline/readline.c
 
 lib/readline/terminal.c
 	- renamed crlf() to rl_crlf(); crlf() is still defined for backwards
-	  compatibility 
+	  compatibility
 
 bashline.c, lib/readline/{complete,display}.c
 	- changed all calls to crlf() to rl_crlf()
@@ -9712,7 +9712,7 @@ builtins/evalstring.c
 				   ----
 lib/readline/doc/rltech.texinfo
 	- fixed a couple of problems with the documentation for
-	  rl_prep_terminal and rl_deprep_terminal 
+	  rl_prep_terminal and rl_deprep_terminal
 	- added description of rl_set_prompt
 
 support/config.sub

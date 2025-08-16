@@ -11417,3 +11417,149 @@ builtins/getopt.c,builtins/getopt.h
 builtins/getopts.def
 	- dogetopts: call sh_getopt_reset when binding the name variable fails
 	  for some reason
+
+				   7/18
+				   ----
+lib/readline/text.c
+	- _rl_char_search: make sure that character search arguments are
+	  added to any macro currently being defined
+	  Report from A4-Tacks <wdsjxhno1001@163.com>
+
+lib/readline/histfile.c
+	- read_history_slow: new function that just reads the history file in
+	  4096-byte chunks until EOF, used when the history file isn't a
+	  regular file.
+	- read_history_range: use read_history_slow when the history file isn't
+	  a regular file
+	  Suggested by several, most recently by <macbeth.112358@gmail.com> in 2/25
+
+				   7/19
+				   ----
+parse.y,input.h,eval.c,array.h
+	- revert changes from 7/6 based on report from
+	  Sam James <sam@gentoo.org>
+
+parse.y
+	- exec_restore_parser_state: version of restore_parser_state that
+	  doesn't restore the pushed string list, since some calls to
+	  parse_and_execute may modify it out from underneath us
+	- parse_comsub: use exec_restore_parser_state instead of inline code
+	  (the version in parse_compound_assignment is a little more complex)
+	- parser_unset_string_list: extern function to set pushed_string_list
+	  to NULL from outside parse.y
+	- execute_variable_command: set pushed_string_list to NULL after
+	  saving the parser state, since we don't want parse_and_execute to
+	  pop a string off the list that was there before it was called
+	  Fixes bug reported by Carl Johnson <carl.johnson.new.hampshire@gmail.com>
+
+shell.h
+	- exec_restore_parser_state: extern declaration
+	- parser_unset_string_list: extern declaration
+
+trap.c
+	- _run_trap_internal: use parser_unset_string_list after saving
+	  parser_state to fix bug with DEBUG trap if it's invoked during
+	  an alias ending with a newline (similar to issue from 7/6)
+	- run_pending_traps: call parser_unset_string_list as above
+
+				   7/21
+				   ----
+bashline.c
+	- bash_execute_unix_command,edit_and_execute_command: use
+	  parser_unset_string_list after saving parser_state; executing a
+	  command while readline is active shouldn't modify any existing
+	  parser state
+
+				   7/25
+				   ----
+command.h
+	- revert changes to COMMAND and SIMPLE_COM from 7/16
+	  From a report by Jessica Clarke <jrtc27@jrtc27.com>
+
+parse.y
+	- pipeline: in BAR_AND form of the pipeline production, use a
+	  REDIRECT ** to manipulate the redirection list instead of trying
+	  to cast a COMAND * to a SIMPLE_COM *
+	  From a report by Jessica Clarke <jrtc27@jrtc27.com>
+
+expr.c
+	- expassign,expshift: avoid C23 undefined behavior when performing
+	  left and right arithmetic shifts
+	  From https://savannah.gnu.org/patch/?10532
+	  bkallus <benjamin.p.kallus.gr@dartmouth.edu>
+
+				   7/28
+				   ----
+subst.c
+	- expand_word_internal: if we see a `$' and call param_expand, pass a
+	  local copy of expanded_something and OR it into expanded_something,
+	  so this function can set it to 0 if we get a trailing $ or a $!
+	  when there are no background pids.
+	  From ahmedwaldsaaid@gmail.com via https://savannah.gnu.org/bugs/index.php?67358
+	  Fix suggested by Oğuz <oguzismailuysal@gmail.com>
+
+				    8/1
+				    ---
+lib/sh/getcwd.c
+	- getcwd: set errno to 0 before calling readdir to avoid a stale
+	  value if readdir() returns NULL and distinguish errors from the
+	  end of the directory. If readdir() returns NULL without changing
+	  errno, set it to ENOENT.
+	  From a report by Richard Weinberger <richard@sigma-star.at>
+
+aclocal.m4
+	- BASH_CHECK_LIB_TERMCAP: add libtinfow to the library list to search
+	  From a report by Дилян Палаузов <dilyan.palauzov@aegee.org>
+
+execute_cmd.c
+	- execute_subshell_builtin_or_function: fix to propagate exit statuses
+	  of builtins run in subshells back to the calling shell
+	  From https://savannah.gnu.org/support/?109840
+
+configure.ac
+	- make sure an installed version of readline is version 8.3 or newer
+	  before using it
+
+aclocal.m4
+	- if --with-curses=LIBNAME is supplied, skip the search and use
+	  LIBNAME as the name of the library where we can find the termcap
+	  definitions
+
+doc/bashref.texi
+	- --with-curses: updated description
+
+				    8/4
+				    ---
+general.h
+	- RESIZE_MALLOCED_BUFFER: replace loop with a single statement (using
+	  multiplication and integer division) to calculate the new size
+	  From a report and patch by Koichi Murase <myoga.murase@gmail.com>
+	  back in 6/2021
+
+subst.c
+	- parameter_brace_expand: if we are performing parameter transformation
+	  (c == '@') and we only want the variable's attributes (want_attributes == 1),
+	  don't throw an unbound variable error. Tagged for bash-5.4.
+	  Based on a report from konsolebox <konsolebox@gmail.com> in 10/2024
+
+				    8/5
+				    ---
+pathexp.c
+	- quote_string_for_globbing: if we have an unescaped CTLNUL in a
+	  quoted string, we want to remove it. This can happen when a pattern
+	  contains a quoted null string adjacent to non-null characters.
+	  From a report by Takaaki Konno <re_c25@yahoo.co.jp> in 6/2025
+
+				    8/7
+				    ---
+subst.c
+	- call_expand_word_internal: honor no_longjmp_on_fatal_error: if it's
+	  set, pass through return values of &expand_word_error and
+	  &expand_word_fatal
+	- cond_expand_word,expand_subscript_string,expand_arith_string: if
+	  call_expand_word_internal returns an error, return a NULL string
+	- expand_word,expand_string_internal,expand_string_assignment,
+	  expand_string_for_rhs,expand_string_for_pat,
+	  expand_word_leave_quoted: if call_expand_word_internal returns an
+	  error, return a NULL WORD_LIST *
+	  Fixes bug with PS1 expansion reported by smart.outfit080@8shield.net

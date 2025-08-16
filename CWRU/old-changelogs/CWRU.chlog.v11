@@ -24,7 +24,7 @@ documentation/Makefile
 				    6/4
 				    ---
 subst.c
-	- fix up the calls to string_extract_double_quoted and 
+	- fix up the calls to string_extract_double_quoted and
 	  string_extract_single_quoted in char_is_quoted so the initial
 	  value of the index is *after* the opening quote character
 	- make sure we only return 1 from char_is_quoted if the index
@@ -546,7 +546,7 @@ lib/readline/display.c
 	  to take invisible characters into account.  This was the source
 	  of many bugs
 
-				   
+
 				   7/14
 				   ----
 documentation/Makefile
@@ -761,7 +761,7 @@ lib/readline/vi_mode.c
 	- replaced uses of `numeric' with calls to digit_p
 	- added do...while(0) to `exchange' define
 
-				    
+
 				    8/4
 				    ---
 execute_cmd.c
@@ -1023,7 +1023,7 @@ cpp-Makefile
 lib/readline/rldefs.h
 	- make sure to #undef HAVE_DIRENT_H on NeXT machines
 
-				   
+
 				   8/19
 				   ----
 lib/readline/readline.h
@@ -1085,10 +1085,10 @@ builtins/read.def
 
 documentation/bash.1
 	- description of `read -p'
-	- description of new -r and -s options to `jobs' 
+	- description of new -r and -s options to `jobs'
 
 documentation/features.texi
-	- description of new -r and -s options to `jobs' 
+	- description of new -r and -s options to `jobs'
 
 jobs.c
 	- new functions: list_running_jobs, list_stopped_jobs
@@ -3193,7 +3193,7 @@ lib/readline/readline.c
 	  check against the legal_lc_ctype_values table
 
 lib/readline/bind.c
-	- moved strindex, stricmp, and strnicmp to lib/readline/util.c, 
+	- moved strindex, stricmp, and strnicmp to lib/readline/util.c,
 	  added _rl_ prefix to names
 	- some miscellaneous code cleanups and speedups
 
@@ -3676,7 +3676,7 @@ lib/readline/histexpand.c
 	  the char index is >= 0, the word index will be modified to point
 	  into the returned array of strings to the word surrounding that
 	  particular character index
-	- new function history_find_word(line, ind) to return the word 
+	- new function history_find_word(line, ind) to return the word
 	  containing the character at index IND in LINE
 	- new variable search_match, found by history_find_word, to hold the
 	  word last matched by a !?string? search
@@ -3854,7 +3854,7 @@ lib/readline/rldefs.h
 	  is defined
 
 builtins/command.def
-	- changed get_standard_path to use HAVE_CONFSTR 
+	- changed get_standard_path to use HAVE_CONFSTR
 
 execute_cmd.c
 	- execute_simple_command no longer uses alloca
@@ -4575,7 +4575,7 @@ lib/readline/readline.c
 	  values
 
 subst.c
-	- fixed a bug in parameter_brace_patsub: when replacing a string 
+	- fixed a bug in parameter_brace_patsub: when replacing a string
 	  with nothing, rep was set to "", and the code attempted to
 	  free "", which the GNU malloc upchucked on
 
@@ -4912,7 +4912,7 @@ builtins/cd.def
 builtins/set.def
 	- added a -o history option to enable and disable command history
 	  saving.  This uses bash_history_enable() and bash_history_disable()
-	  It's keyed off of remember_on_history.  With this, shell scripts 
+	  It's keyed off of remember_on_history.  With this, shell scripts
 	  can use the command history
 
 bashhist.c
@@ -6086,7 +6086,7 @@ lib/readline/funmap.c
 	- made `vi-fetch-history' a bindable command name
 
 doc/readline.3
-	- many cleanups, updated the list of default bindings 
+	- many cleanups, updated the list of default bindings
 
 				    4/4
 				    ---
@@ -6488,7 +6488,7 @@ lib/readline/bind.c
 
 lib/readline/complete.c
 	- in rl_complete_internal, if the completion function results in
-	  multiple matches, but none match up to even the first character, 
+	  multiple matches, but none match up to even the first character,
 	  use what the user typed in (which is presumably a glob pattern
 	  that expanded into multiple files) as matches[0].  This makes
 	  things like show-all-if-ambiguous work right, too
@@ -6811,7 +6811,7 @@ configure.in
 
 subst.c
 	- variable assignment errors when there is not a command name
-	  after the assignments now causes a non-interactive shell to 
+	  after the assignments now causes a non-interactive shell to
 	  exit in POSIX.2 mode
 
 execute_cmd.c
@@ -7301,7 +7301,7 @@ locale.c
 	- new variable `default_domain', used to track the value of
 	  $TEXTDOMAIN
 
-subst.c	
+subst.c
 	- call sv_locale when TEXTDOMAIN changes
 
 				    8/7

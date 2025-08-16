@@ -13,7 +13,7 @@ Message-Id: <9207271829.AA14484.SM@odin.INS.CWRU.Edu>
 Read-Receipt-To: chet@po.CWRU.Edu
 
 > I seem to have found a bug in Bash.
-> 
+>
 > How to cause the bug to appear:
 > 1) Start a long username-completion, e.g.
 >       cat ~user<TAB>
@@ -22,7 +22,7 @@ Read-Receipt-To: chet@po.CWRU.Edu
 >    is set to)
 > 2) As the next command, run a filename completion with a username in it, eg.
 >       cat ~username/.log<TAB>
-> 
+>
 > Error message:  "free: Called with already freed block argument
 
 This is a bug in the Sun YP code that everyone seems to have picked up.

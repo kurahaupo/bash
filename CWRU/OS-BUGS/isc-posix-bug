@@ -34,7 +34,7 @@ Recently, Uwe Doering posted the following article:
 	>
 	>Needless to say, I am most displeased with the crashes!
 	>
-	>Near as I can determine, the hardware is fine.  
+	>Near as I can determine, the hardware is fine.
 	>
 	>All pointers or ideas appreciated...
 
@@ -63,9 +63,9 @@ Recently, Uwe Doering posted the following article:
 	!                     [$0x0,-24+%ebp]
 	! 	cf84:  eb 19                  jmp    0x19 <cf9f>
 	!                     [0xcf9f]
-		cf86:  90                     nop    
+		cf86:  90                     nop
 			      []
-		cf87:  90                     nop    
+		cf87:  90                     nop
 	--- 35349,35372 ----
 			      [%al,%al]
 		cf71:  74 1e                  je     0x1e <cf91>
@@ -82,15 +82,15 @@ Recently, Uwe Doering posted the following article:
 			      [0xcf91]
 	! 	cf81:  eb 15                  jmp    0x15 <cf98>
 	!                     [0xcf98]
-	! 	cf83:  90                     nop    
+	! 	cf83:  90                     nop
 	!                     []
-	! 	cf84:  90                     nop    
+	! 	cf84:  90                     nop
 	!                     []
-	! 	cf85:  90                     nop    
+	! 	cf85:  90                     nop
 	!                     []
-		cf86:  90                     nop    
+		cf86:  90                     nop
 			      []
-		cf87:  90                     nop    
+		cf87:  90                     nop
 
 	I'm not absolutely sure whether the action that is now taken in case of
 	a NULL pointer is the right one, but I haven't noticed any problems,
@@ -109,7 +109,7 @@ Recently, Uwe Doering posted the following article:
 	PS: ISC, if you see this posting, could you drop me a note on whether
 	you have put this on your to-do list? This would save me the time
 	needed to file an official bug report.
-	-- 
+	--
 	Uwe Doering  |  INET : gemini@geminix.in-berlin.de
 	Berlin       |----------------------------------------------------------------
 	Germany      |  UUCP : ...!unido!fub!geminix.in-berlin.de!gemini

@@ -17,7 +17,7 @@ f
 f() { declare -A a; declare -a a; echo -n "$FUNCNAME: " ; declare -p a; }
 f
 
-echo 
+echo
 
 f() { declare -a a; echo -n "$FUNCNAME: " ; declare -p a; }
 a=7

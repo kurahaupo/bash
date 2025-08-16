@@ -50,7 +50,7 @@ recho ${@:+y}
 # problems with * and null expansions dating back to bash's earliest days
 A=(''); set -- ''
 
-echo "<${A[*]:-X}>" "<${*:-X}>" "<${A:-X}>" "<${A[0]:-X}>" 
+echo "<${A[*]:-X}>" "<${*:-X}>" "<${A:-X}>" "<${A[0]:-X}>"
 
 IFS=
 A=('' ''); set -- '' ''

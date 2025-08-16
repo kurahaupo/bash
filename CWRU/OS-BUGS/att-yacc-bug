@@ -58,13 +58,13 @@ and the value stack are the two major ones).  Second, some things that used
 to be automatic variables to yyparse (like the state stack) are now
 globally static variables in /usr/lib/yaccpar.  This means no more
 indirectly recursive calls to yyparse().  This is pure bogusness, and
-breaks backwards compatibility in a major way. 
+breaks backwards compatibility in a major way.
 
 The first indirect call to yyparse() occurs when PROMPT_COMMAND is run
 through parse_and_execute() (parse.y, around line 1200).  The next call to
 yyparse() in your example (hitting return) returns quickly, putting nothing
 onto the state stack.  Of course, YYACCEPT doesn't check whether anything
-was put into the stack; it just goes ahead and frees it anyway. 
+was put into the stack; it just goes ahead and frees it anyway.
 
 The next problem arises when PROMPT_COMMAND contains a backquoted command,
 which is run through parse_and_execute() again.  It doesn't matter that
@@ -74,7 +74,7 @@ screwed up and a segmentation fault is the inevitable result.  If Sun (and,
 I assume, AT&T, since the SCCS line at the top of /usr/lib/yaccpar
 indicates that it is derived from S5R3.1) wants to do this kind of shit,
 they should at least provide a convenience function to clear out the state
-stack. 
+stack.
 
 Both of these problems are avoided by using bison.  I have put bison on
 triton (you'll have to redo it if you want it; it looks for the parser
@@ -106,6 +106,6 @@ Chet
 --
 Chet Ramey				``Levi Stubbs' tears run down
 Network Services Group			  his face...''
-Case Western Reserve University	
-chet@ins.CWRU.Edu		
+Case Western Reserve University
+chet@ins.CWRU.Edu
 

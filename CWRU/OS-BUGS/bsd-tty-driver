@@ -21,7 +21,7 @@ driver ties input and output carriage return translation together with the
 CRMOD bit.  (The CRMOD bit causes CR->LF translation on input and LF->CRLF
 translation on output.)  Unless the CRMOD bit is cleared, it is impossible
 to get a literal ^M in an input line.  Unfortunately, one of the effects of
-clearing it is the loss of output processing you've observed. 
+clearing it is the loss of output processing you've observed.
 
 The Ultrix Posix-style tty driver can't be used because it has serious
 problems with losing typeahead when ICANON is switched on and off.  These

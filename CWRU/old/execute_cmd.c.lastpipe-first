@@ -256,7 +256,7 @@ open_files ()
   fprintf (stderr, "\n");
 }
 
-execute_command_internal (command, asynchronous, pipe_in, pipe_out, 
+execute_command_internal (command, asynchronous, pipe_in, pipe_out,
 			  fds_to_close)
      COMMAND *command;
      int asynchronous;
@@ -304,10 +304,10 @@ execute_command_internal (command, asynchronous, pipe_in, pipe_out,
 
 	  /* If a command is asynchronous in a subshell (like ( foo ) & or
 	     the special case of an asynchronous GROUP command where the
-	     the subshell bit is turned on down in case cm_group: below), 
+	     the subshell bit is turned on down in case cm_group: below),
 	     turn off `asynchronous', so that two subshells aren't spawned.
 
-	     This seems semantically correct to me.  For example, 
+	     This seems semantically correct to me.  For example,
 	     ( foo ) & seems to say ``do the command `foo' in a subshell
 	     environment, but don't wait for that subshell to finish'',
 	     and "{ foo ; bar } &" seems to me to be like functions or
@@ -359,7 +359,7 @@ execute_command_internal (command, asynchronous, pipe_in, pipe_out,
 	  /* If we are part of a pipeline, and not the end of the pipeline,
 	     then we should simply return and let the last command in the
 	     pipe be waited for.  If we are not in a pipeline, or are the
-	     last command in the pipeline, then we wait for the subshell 
+	     last command in the pipeline, then we wait for the subshell
 	     and return its exit status as usual. */
 	  if (pipe_out != NO_PIPE)
 	    return (EXECUTION_SUCCESS);
@@ -571,7 +571,7 @@ execute_command_internal (command, asynchronous, pipe_in, pipe_out,
 	    if (!interactive || !job_control)
 #endif /* JOB_CONTROL */
 	    {
-	      REDIRECT *tr = 
+	      REDIRECT *tr =
 		make_redirection (0, r_inputa_direction,
 				  make_word ("/dev/null"));
 	      tr->next = tc->redirects;
@@ -772,7 +772,7 @@ execute_command_internal (command, asynchronous, pipe_in, pipe_out,
 
 		    if (prev >= 0)
 		      close (prev);
-		    
+
 		    prev = fildes[0];
 		    close (outpipe);
 
@@ -977,7 +977,7 @@ execute_for_command (for_command)
 
       if (breaking)
 	{
-	  breaking--; 
+	  breaking--;
 	  break;
 	}
 
@@ -1083,7 +1083,7 @@ execute_case_command (case_command)
 
 	  if (match)
 	    {
-	      if (clauses->action && 
+	      if (clauses->action &&
 		  (case_command->flags & CMD_IGNORE_RETURN))
 		clauses->action->flags |= CMD_IGNORE_RETURN;
 	      execute_command (clauses->action);
@@ -1800,7 +1800,7 @@ execute_disk_command (words, redirects, command_line, pipe_in, pipe_out,
 	  hashed_file = (char *) NULL;
 	}
     }
-    
+
   if (hashed_file)
     command = savestring (hashed_file);
   else
@@ -1872,7 +1872,7 @@ execute_disk_command (words, redirects, command_line, pipe_in, pipe_out,
       /* This functionality is now provided by close-on-exec of the
 	 file descriptors manipulated by redirection and piping.
 	 Some file descriptors still need to be closed in all children
-	 because of the way bash does pipes; fds_to_close is a 
+	 because of the way bash does pipes; fds_to_close is a
 	 bitmap of all such file descriptors. */
       if (fds_to_close)
 	close_fd_bitmap (fds_to_close);

@@ -459,7 +459,7 @@ READLINE_SOURCE	= $(RL_LIBSRC)rldefs.h $(RL_LIBSRC)rlconf.h \
 		  $(RL_LIBSRC)input.c $(RL_LIBSRC)xmalloc.c \
 		  $(RL_LIBSRC)histexpand.c $(RL_LIBSRC)history.c \
 		  $(RL_LIBSRC)histsearch.c $(RL_LIBSRC)histfile.c
-	
+
 READLINE_OBJ	= $(RL_LIBDIR)readline.o $(RL_LIBDIR)funmap.o \
 		  $(RL_LIBDIR)parens.o $(RL_LIBDIR)search.o \
 		  $(RL_LIBDIR)keymaps.o $(RL_LIBDIR)xmalloc.o \
@@ -540,7 +540,7 @@ HIST_ABSSRC = $${topdir}/$(HIST_LIBDIR)/
 /* If you are building with readline, then you do not explicitly need the
    history library. */
 #  if defined (READLINE)
-HISTORY_LIBRARY = 
+HISTORY_LIBRARY =
 #  else
 HISTORY_LIBRARY = $(HIST_LIBDIR)libhistory.a
 #  endif /* !READLINE */
@@ -641,7 +641,7 @@ TILDE_LDFLAGS = $(SEARCH_LIB)$(TILDE_LIBDIR)
 #  endif /* !LD_HAS_NO_DASH_L */
 
 #else /* !HAVE_TILDE_SOURCE */
-/**/# Guessed at location of the tilde 
+/**/# Guessed at location of the tilde
 TILDE_LIBRARY = $(libdir)/libtilde.a
 #endif /* !HAVE_TILDE_SOURCE */
 
@@ -998,7 +998,7 @@ dispose_cmd.o: dispose_cmd.h make_cmd.h subst.h externs.h
 error.o: error.h
 execute_cmd.o: shell.h sig.h command.h stdc.h y.tab.h posixstat.h flags.h jobs.h
 execute_cmd.o: general.h variables.h config.h memalloc.h quit.h hash.h
-execute_cmd.o: unwind_prot.h siglist.h builtins/builtext.h 
+execute_cmd.o: unwind_prot.h siglist.h builtins/builtext.h
 execute_cmd.o: dispose_cmd.h make_cmd.h subst.h externs.h bashtypes.h
 expr.o: shell.h sig.h command.h stdc.h hash.h
 expr.o: general.h variables.h config.h memalloc.h quit.h
@@ -1123,7 +1123,7 @@ builtins/common.o: dispose_cmd.h make_cmd.h subst.h externs.h bashhist.h
 builtins/common.o: execute_cmd.h stdc.h
 builtins/alias.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/alias.o: quit.h builtins/common.h
-builtins/alias.o: shell.h sig.h command.h stdc.h unwind_prot.h variables.h 
+builtins/alias.o: shell.h sig.h command.h stdc.h unwind_prot.h variables.h
 builtins/alias.o: dispose_cmd.h make_cmd.h subst.h externs.h
 builtins/bind.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/bind.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
@@ -1134,14 +1134,14 @@ builtins/break.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/break.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/builtin.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/builtin.o: quit.h $(DEFDIR)common.h
-builtins/builtin.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/builtin.o: shell.h sig.h unwind_prot.h variables.h
 builtins/builtin.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/cd.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h 
+builtins/cd.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h
 builtins/cd.o: shell.h sig.h unwind_prot.h variables.h $(DEFDIR)common.h
 builtins/cd.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/command.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/command.o: quit.h $(DEFDIR)bashgetopt.h
-builtins/command.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/command.o: shell.h sig.h unwind_prot.h variables.h
 builtins/command.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/declare.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/declare.o: shell.h sig.h unwind_prot.h variables.h quit.h
@@ -1152,86 +1152,86 @@ builtins/echo.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/enable.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/enable.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/enable.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/eval.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h 
-builtins/eval.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/eval.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h
+builtins/eval.o: shell.h sig.h unwind_prot.h variables.h
 builtins/eval.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/exec.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h 
+builtins/exec.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h
 builtins/exec.o: shell.h sig.h unwind_prot.h variables.h $(DEFDIR)common.h stdc.h
 builtins/exec.o: dispose_cmd.h make_cmd.h subst.h externs.h execute_cmd.h
 builtins/exec.o: flags.h
 builtins/exit.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/exit.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/exit.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/fc.o: builtins.h command.h stdc.h 
-builtins/fc.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h 
-builtins/fc.o: flags.h unwind_prot.h variables.h shell.h sig.h 
+builtins/fc.o: builtins.h command.h stdc.h
+builtins/fc.o: command.h config.h memalloc.h error.h general.h maxpath.h quit.h
+builtins/fc.o: flags.h unwind_prot.h variables.h shell.h sig.h
 builtins/fc.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/fc.o: $(DEFDIR)bashgetopt.h bashhist.h
 builtins/fg_bg.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/fg_bg.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/fg_bg.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/getopts.o: command.h config.h memalloc.h error.h general.h maxpath.h
-builtins/getopts.o: shell.h sig.h unwind_prot.h variables.h quit.h 
+builtins/getopts.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/getopts.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/hash.o: builtins.h command.h execute_cmd.h stdc.h
 builtins/hash.o: command.h config.h memalloc.h error.h general.h maxpath.h
-builtins/hash.o: shell.h sig.h unwind_prot.h variables.h $(DEFDIR)common.h quit.h 
+builtins/hash.o: shell.h sig.h unwind_prot.h variables.h $(DEFDIR)common.h quit.h
 builtins/help.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/help.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/help.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/help.o: $(GLOB_LIBSRC)glob.h
 builtins/history.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/history.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/history.o: filecntl.h shell.h sig.h unwind_prot.h variables.h 
+builtins/history.o: filecntl.h shell.h sig.h unwind_prot.h variables.h
 builtins/history.o: bashhist.h
 builtins/inlib.o: command.h config.h memalloc.h error.h general.h maxpath.h
-builtins/inlib.o: shell.h sig.h unwind_prot.h variables.h quit.h 
+builtins/inlib.o: shell.h sig.h unwind_prot.h variables.h quit.h
 builtins/inlib.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/jobs.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/jobs.o: quit.h $(DEFDIR)bashgetopt.h
-builtins/jobs.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/jobs.o: shell.h sig.h unwind_prot.h variables.h
 builtins/jobs.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/kill.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/kill.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/kill.o: shell.h sig.h trap.h unwind_prot.h variables.h 
+builtins/kill.o: shell.h sig.h trap.h unwind_prot.h variables.h
 builtins/let.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/let.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/let.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/let.o: shell.h sig.h unwind_prot.h variables.h
 builtins/pushd.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/pushd.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/pushd.o: shell.h sig.h unwind_prot.h variables.h $(DEFDIR)common.h
 builtins/read.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/read.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/read.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/read.o: shell.h sig.h unwind_prot.h variables.h
 builtins/return.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/return.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/return.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/return.o: shell.h sig.h unwind_prot.h variables.h
 builtins/set.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/set.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h
 builtins/set.o: shell.h sig.h unwind_prot.h variables.h flags.h stdc.h
 builtins/setattr.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/setattr.o: quit.h $(DEFDIR)common.h $(DEFDIR)bashgetopt.h
-builtins/setattr.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/setattr.o: shell.h sig.h unwind_prot.h variables.h
 builtins/setattr.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/shift.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/shift.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/shift.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/shift.o: shell.h sig.h unwind_prot.h variables.h
 builtins/shift.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/source.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/source.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/source.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/source.o: shell.h sig.h unwind_prot.h variables.h
 builtins/suspend.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/suspend.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/suspend.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/suspend.o: shell.h sig.h unwind_prot.h variables.h
 builtins/test.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/test.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/test.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/test.o: shell.h sig.h unwind_prot.h variables.h
 builtins/times.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/times.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/times.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/times.o: shell.h sig.h unwind_prot.h variables.h
 builtins/trap.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/trap.o: quit.h $(DEFDIR)common.h
-builtins/trap.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/trap.o: shell.h sig.h unwind_prot.h variables.h
 builtins/trap.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/type.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/type.o: quit.h $(DEFDIR)common.h
@@ -1239,10 +1239,10 @@ builtins/type.o: shell.h sig.h unwind_prot.h variables.h execute_cmd.h
 builtins/type.o: dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/ulimit.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/ulimit.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/ulimit.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/ulimit.o: shell.h sig.h unwind_prot.h variables.h
 builtins/umask.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/umask.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
-builtins/umask.o: shell.h sig.h unwind_prot.h variables.h 
+builtins/umask.o: shell.h sig.h unwind_prot.h variables.h
 builtins/wait.o: command.h config.h memalloc.h error.h general.h maxpath.h
 builtins/wait.o: quit.h dispose_cmd.h make_cmd.h subst.h externs.h stdc.h
 builtins/wait.o: shell.h sig.h unwind_prot.h variables.h
@@ -1267,7 +1267,7 @@ builtins/history.o: $(HIST_LIBSRC)history.h
 
 #if defined (HAVE_TILDE_SOURCE)
 builtins/common.o: $(TILDE_LIBSRC)tilde.h
-builtins/cd.o: $(TILDE_LIBSRC)tilde.h 
+builtins/cd.o: $(TILDE_LIBSRC)tilde.h
 #endif /* HAVE_TILDE_SOURCE */
 
 builtins/alias.o: builtins/alias.def
@@ -1324,7 +1324,7 @@ install:	.made
 uninstall:	.made
 		$(RM) $(bindir)/$(Program) installed-$(Program) $(bindir)/bashbug
 		( cd $(DOCDIR) ; $(MAKE) $(MFLAGS) mandir=$(mandir) man3dir=$(man3dir) infodir=$(infodir) $@ )
-		
+
 .distribution:
 		./mkversion -dir $(srcdir) -dist `$(Program) -c 'echo $$BASH_VERSION'`
 

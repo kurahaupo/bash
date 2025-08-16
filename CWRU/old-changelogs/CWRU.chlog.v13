@@ -636,7 +636,7 @@ Makefile.in, builtins/Makefile.in
 	- have configure substitute RL_INCLUDEDIR, set RL_INCLUDEDIR variable
 
 doc/bashref.texi
-	- updated description of --with-installed-readline configure option 
+	- updated description of --with-installed-readline configure option
 
 general.c
 	- moved QSFUNC typedef here from builtins/common.c
@@ -1469,11 +1469,11 @@ alias.c
 
 pathexp.c
 	- function pointer argument to ignore_globbed_names is now an
-	  `sh_ignore_func_t *' 
+	  `sh_ignore_func_t *'
 
 bashline.c
 	- function pointer argument to _ignore_completion_names is now an
-	  `sh_ignore_func_t *' 
+	  `sh_ignore_func_t *'
 
 pathexp.h,{bashhist,bashline.c
 	- `item_func' member of a `struct ignorevar' is now an
@@ -1651,7 +1651,7 @@ execute_cmd.c
 	- execute_shell_script now takes a `char *' as first arg, not
 	  unsigned char *
 	- fix typo in forward declaration for `initialize_subshell'
-	
+
 general.[ch]
 	- check_binary_file now takes a (char *) argument, not unsigned char *
 	- pass unsigned char to isspace and isprint because of ISO C fuckup
@@ -1908,7 +1908,7 @@ lib/sh/tmpfile.c
 	  more random
 
 include/stdc.h,lib/readline/rldstdc.h
-	- add __attribute__ definition 
+	- add __attribute__ definition
 
 builtins/common.h
 	- add printf __attribute__ to declaration of builtin_error
@@ -2050,7 +2050,7 @@ findcmd.[ch]
 	- file_status, executable_file, is_directory, executable_or_directory
 	  now take a `const char *' as their argument
 	- _find_user_command_internal, find_user_command_internal,
-	  find_user_command_in_path 
+	  find_user_command_in_path
 
 lib/sh/makepath.c, externs.h
 	- changed sh_makepath so it takes `const char *' for its first
@@ -2450,7 +2450,7 @@ aclocal.m4
 	- change AC_DEFINE to AC_DEFINE_UNQUOTED in BASH_CHECK_TYPE
 	- new `long long' checking macros:  BASH_TYPE_LONG_LONG and
 	  BASH_TYPE_UNSIGNED_LONG_LONG
-	- new BASH_CHECK_DECL 
+	- new BASH_CHECK_DECL
 
 lib/sh/{strto[iu]max,strtoll}.c, lib/sh/Makefile.in, Makefile.in
 	- new files
@@ -3266,7 +3266,7 @@ execute_cmd.c
 	  EXECUTION_FAILURE
 
 doc/{bash.1,bashref.texi}
-	- documented new TMOUT behavior 
+	- documented new TMOUT behavior
 	- slight change to the description of the test `-ef' option
 
 doc/bashref.texi
@@ -3794,7 +3794,7 @@ arrayfunc.c
 				   12/27
 				   -----
 configure.in
-	- use AC_HELP_STRING in AC_ARG_WITH and AC_ARG_ENABLE 
+	- use AC_HELP_STRING in AC_ARG_WITH and AC_ARG_ENABLE
 	- remove AC_ARG_ENABLE for largefile, since AC_SYS_LARGEFILE adds
 	  one
 
@@ -4235,7 +4235,7 @@ lib/readline/readline.c
 	- new function, _rl_overwrite_rubout, handles RUBOUT when in
 	  overwrite mode, called from rl_rubout
 	- new function, _rl_rubout_char, old body of rl_rubout; rl_rubout
-	  calls this when not in overwrite mode 
+	  calls this when not in overwrite mode
 
 lib/readline/readline.h
 	- extern declarations for rl_insert_mode and rl_overwrite_mode()
@@ -5026,7 +5026,7 @@ jobs.c
 		last_pid(j) -> find_last_pid(j, 1)
 	  `last_pid()' is now gone
 	- rewrote wait_for_background_pids(); it was a little strange
-	
+
 copy_cmd.c
 	- copy_if_command: don't copy null false_case commands
 	- copy_simple_command: don't copy a null redirection list
@@ -5267,7 +5267,7 @@ doc/{bash.1,bashref.texi}
 
 				   3/13
 				   ----
-lib/readline/isearch.c	
+lib/readline/isearch.c
 	- enabled code to allow chars bound to rl_rubout to delete characters
 	  from the incremental search string
 
@@ -5975,7 +5975,7 @@ Makefile.in, {builtins,support}/Makefile.in
 	  by `configure'
 	- changed CCFLAGS_FOR_BUILD to BASE_CCFLAGS, removing $(CPPFLAGS);
 	  CCFLAGS and CCFLAGS_FOR_BUILD now include $(BASE_CCFLAGS) with
-	  (possibly) different values for CPPFLAGS and CFLAGS 
+	  (possibly) different values for CPPFLAGS and CFLAGS
 	- GCC_LINT_CFLAGS now includes $(BASE_CCFLAGS) and $(CPPFLAGS)
 	  instead of CCFLAGS_FOR_BUILD
 	- new variable, LDFLAGS_FOR_BUILD, right now equivalent to LDFLAGS
@@ -6282,7 +6282,7 @@ execute_cmd.c
 	- fix for executing_line_number() when compiling without conditional
 	  commands, dparen arithmetic or the arithmetic for command
 
-				   
+
 				   7/24
 				   ----
 support/Makefile.in
@@ -6528,7 +6528,7 @@ config-bot.h
 	  just use it if it's present
 
 tests/read2.sub
-	- redirect from /dev/tty when using `read -t' 
+	- redirect from /dev/tty when using `read -t'
 
 				   9/20
 				   ----
@@ -6582,7 +6582,7 @@ execute_cmd.c
 
 				   9/28
 				   ----
-Makefile.in,{builtins,lib/sh}/Makefile.in	
+Makefile.in,{builtins,lib/sh}/Makefile.in
 	- fix up dependencies, mostly on ${BUILD_DIR}/version.h, so that
 	  parallel makes work with GNU and BSD makes
 
@@ -6593,7 +6593,7 @@ shell.h
 
 parse.y
 	- new functions, save_parser_state() and restore_parser_state(), to
-	  save and restore partial parsing state 
+	  save and restore partial parsing state
 
 bashline.c
 	- change bash_execute_unix_command to call {save,restore}_parser_state
@@ -6700,7 +6700,7 @@ lib/readline/nls.c
 
 pcomplete.c
 	- change gen_wordlist_completions to dequote the text before comparing
-	  it against the expanded word list 
+	  it against the expanded word list
 	- changed gen_matches_from_itemlist to do the same thing
 
 bashline.c
@@ -7260,7 +7260,7 @@ dispose_cmd.c
 	  functions: dispose_function_def and dispose_function_def_contents
 
 dispose_cmd.h
-	- new extern declarations for dispose_function_def_contents and 
+	- new extern declarations for dispose_function_def_contents and
 	  dispose_function_def
 
 copy_cmd.c
@@ -7487,7 +7487,7 @@ subst.c
 
 variables.c
 	- change bind_int_variable to use valid_array_reference instead
-	  of looking for `[' 
+	  of looking for `['
 
 lib/readline/vi_mode.c
 	- check for `a' in _rl_vi_done_inserting so the text inserted by an
@@ -7632,7 +7632,7 @@ make_cmd.c
 
 				   3/28
 				   ----
-Makefile.in	
+Makefile.in
 	- fixed dependencies for `error.o' on shell.h and version.h -- makes
 	  parallel makes (gmake -j 4) work correctly
 

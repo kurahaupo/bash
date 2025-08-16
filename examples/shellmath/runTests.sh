@@ -28,7 +28,7 @@ function _shellmath_runTests()
 
         # Eat the continuation character and add to the buffer
         __shellfloat_commandBuffer+="${text/%\\/ }"
-        
+
         # Defer processing
         return
 
@@ -116,7 +116,7 @@ function _main()
 
     # Process the test file line-by-line using the above runTests() function
     mapfile -t -c 1 -C _shellmath_runTests -O 1 < "${1:-testCases.in}"
-    
+
     exit 0
 }
 

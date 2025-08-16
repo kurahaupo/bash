@@ -1185,7 +1185,7 @@ Let's look at the VT52 example again:
 dw|vt52|DEC vt52:\
         :cr=^M:do=^J:nl=^J:bl=^G:\
         :le=^H:bs:cd=\EJ:ce=\EK:cl=\EH\EJ:\
-        :cm=\EY%+ %+ :co#80:li#24:\     
+        :cm=\EY%+ %+ :co#80:li#24:\
         :nd=\EC:ta=^I:pt:sr=\EI:up=\EA:\
         :ku=\EA:kd=\EB:kr=\EC:kl=\ED:kb=^H:
 @end example
@@ -1495,7 +1495,7 @@ Flag whose presence means this is a hardcopy terminal.
 String of commands to output a graphic character @var{c}, repeated @var{n}
 times.  The first parameter value is the ASCII code for the desired
 character, and the second parameter is the number of times to repeat the
-character.  Often this command requires padding proportional to the 
+character.  Often this command requires padding proportional to the
 number of times the character is repeated.  This effect can be had by
 using parameter arithmetic with @samp{%}-sequences to compute the
 amount of padding, then generating the result as a number at the front

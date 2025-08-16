@@ -510,7 +510,7 @@ lib/readline/readline.c
 	  the ioctl(TIOCGWINSZ) and before calls to tgetent
 
 builtins/fc.def
-	- made the fc output format correspond to that specified by Posix.2a 
+	- made the fc output format correspond to that specified by Posix.2a
 	  ("%d\t%s\n")
 
 				   12/20

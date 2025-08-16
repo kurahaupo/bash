@@ -344,7 +344,7 @@ lib/readline/readline.c
 
 bashline.c
 	- added a function to implement the vi movement mode `v' command,
-	  which runs `fc -e ${VISUAL:-${EDITOR:-vi}}' on either the 
+	  which runs `fc -e ${VISUAL:-${EDITOR:-vi}}' on either the
 	  command being entered or a command from the history corresponding
 	  to the numeric argument given to the command.  This is commented
 	  out, because currently there's no way for the shell to know

@@ -109,7 +109,7 @@ declare -p foo
 unset ar
 declare -a ar=(ONE TWO THREE)
 declare -al ar=(${ar[@]})
-declare -p ar 
+declare -p ar
 unset a
 
 declare -a a

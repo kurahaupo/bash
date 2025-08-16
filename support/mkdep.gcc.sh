@@ -59,7 +59,7 @@ while :
 	esac
 done
 
-case $# in 0) 
+case $# in 0)
 	echo 'usage: mkdep [-ap] [-f file] [flags] file ...' >&2
 	exit 1;;
 esac
@@ -85,12 +85,12 @@ else
 fi
 
 case x$pflag in
-	x) case $append in 
+	x) case $append in
 		0) sed -e 's; \./; ;g' < $TMP >  $D;;
 		*) sed -e 's; \./; ;g' < $TMP >> $D;;
 	   esac
-	;;	
-	*) case $append in 
+	;;
+	*) case $append in
 		0) sed -e 's;\.o:;:;' -e 's; \./; ;g' < $TMP >  $D;;
 		*) sed -e 's;\.o:;:;' -e 's; \./; ;g' < $TMP >> $D;;
 	   esac

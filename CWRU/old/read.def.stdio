@@ -198,7 +198,7 @@ read_builtin (list)
       free (input_string);
       return (retval);
     }
-#endif /* ARRAY_VARS */ 
+#endif /* ARRAY_VARS */
 
   if (!list)
     {

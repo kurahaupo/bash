@@ -954,7 +954,7 @@ doc/{bash.1,bashref.texi}
 	- correct description of {x}>file (and other redirection operators
 	  that allocate a file descriptor) to note the the fd range is
 	  greater than or equal to 10.  Fixes problem reported by
-	  Christian Ullrich 
+	  Christian Ullrich
 
 lib/readline/signals.c
 	- rl_signal_handler: don't interrupt immediately if in callback mode
@@ -1059,7 +1059,7 @@ configure.in
 	  [changes inspired by bug report from Nathan Phillip Brink
 	  <ohnobinki@ohnopublishing.net> -- gentoo bug 378941]
 
-builtins/Makefile.in	
+builtins/Makefile.in
 	- substitute LIBS_FOR_BUILD from configure, not strictly initialized
 	  to $(LIBS)
 
@@ -3074,7 +3074,7 @@ variables.c
 	- find_global_variable_last_nameref: resolve variable NAME until last
 	  in a chain of possibly more than one nameref starting at
 	  global_variables
-	- find_nameref_at_context: resolve SHELL_VAR V through chain of namerefs	
+	- find_nameref_at_context: resolve SHELL_VAR V through chain of namerefs
 	  in a specific variable context (usually a local variable hash table)
 	- find_variable_nameref_context: resolve SHELL_VAR V through chain of
 	  namerefs following a chain of varible contexts
@@ -3977,7 +3977,7 @@ lib/glob/glob.c
 				   12/10
 				   -----
 lib/glob/glob.c
-	- glob_filename: finish up a series of changes to make globstar-style	
+	- glob_filename: finish up a series of changes to make globstar-style
 	  globbing more efficient, avoid more duplicate filenames, and be more
 	  compatible with other shells that implement it
 		o collapse a sequence of **/**/** to one **
@@ -4817,7 +4817,7 @@ subst.c
 execute_cmd.c
 	- fix_assignment_words: skip over assignment statements preceding a
 	  command word before trying to figure out whether or not assignment
-	  statements following a possible declaration command should be 
+	  statements following a possible declaration command should be
 	  treated specially.  Fixes bug reported by Dan Douglas
 	  <ormaaj@gmail.com>
 
@@ -6569,7 +6569,7 @@ execute_cmd.c
 	  by Vincent Lefevre <vincent@vinc17.net>
 
 lib/readline/display.c
-	- rl_message: call vsnprintf with full msg_bufsiz, since it counts 
+	- rl_message: call vsnprintf with full msg_bufsiz, since it counts
 	  one fewer than the buffer length passed as an argument.  Bug report
 	  and fix from Dylan Cali <calid1984@gmail.com>
 
@@ -7214,7 +7214,7 @@ lib/readline/display.c
 lib/readline/rlprivate.h
 	- _rl_{emacs,vi_cmd,vi_ins}_mode_str: extern declarations for
 	  variables to hold current values of user-settable mode strings;
-	  variables to hold lengths 
+	  variables to hold lengths
 
 lib/readline/rlconf.h
 	- defines for default values of the mode strings for each editing mode
@@ -8213,7 +8213,7 @@ builtins/declare.def
 	  variable in VAR, check for null variable before dereferencing it.
 	  This happens with nameref variables referencing variables set to
 	  the empty string.
-	  Fixes bug reported by Arthur200000 <arthur200126@163.com> 
+	  Fixes bug reported by Arthur200000 <arthur200126@163.com>
 
 				   3/23
 				   ----
@@ -8761,7 +8761,7 @@ findcmd.c
 	  if we set path back to 0 (or path lookup failed)
 	- search_for_command: just call find_user_command_in_path with a
 	  pathlist argument that's set depending on the flags passed
-	- find_in_path: new function, just calls find_user_command_in_path at 
+	- find_in_path: new function, just calls find_user_command_in_path at
 	  this point
 	- search_for_command: don't put non-existent files into the hash table
 
@@ -9307,7 +9307,7 @@ subst.c
 	  may call this for unterminated command substitutions.  Fixes
 	  (imperfectly) bug reported by Ingo Ruhnke <grumbel@gmail.com>
 	- skip_to_delim: if passed the SD_COMPLETE flag, pass the SX_COMPLETE
-	  flag to skip_double_quoted 
+	  flag to skip_double_quoted
 	- char_is_quoted: pass SX_COMPLETE flag to skip_double_quoted
 	- unclosed_pair: pass SX_COMPLETE flag to skip_double_quoted
 
@@ -9492,7 +9492,7 @@ examples/loadables/Makefile.inc
 configure.ac
 	- headersdir: directory where headers get installed to support loadable
 	  builtin development
-	- examples/loadables/Makefile.inc, support/bash.pc: create 
+	- examples/loadables/Makefile.inc, support/bash.pc: create
 
 Makefile.in
 	- INSTALLED_HEADERS, INSTALLED_BUILTINS_HEADERS, INSTALLED_INCFILES,
@@ -11123,7 +11123,7 @@ builtins/declare.def
 				   5/29
 				   ----
 builtins/declare.def
-	- declare_internal: use name of readonly variable when calling sh_readonly	
+	- declare_internal: use name of readonly variable when calling sh_readonly
 	  instead of name passed as argument to declare in case we've followed
 	  a nameref chain
 	- declare_internal: when turning off attributes on a nameref variable

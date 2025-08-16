@@ -103,7 +103,7 @@ the completion code now single-quotes a match that contains a shell word
 break character
 
 the readline code does not define USE_XON_XOFF.  This causes output to be
-swallowed when using bash over a relatively slow line (like a modem line). 
+swallowed when using bash over a relatively slow line (like a modem line).
 
 there is now a bindable readline function to do only history expansion;
 bound to M-^ (M-! was already taken)

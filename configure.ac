@@ -21,7 +21,7 @@ dnl Process this file with autoconf to produce a configure script.
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_REVISION([for Bash 5.3, version 5.080])dnl
+AC_REVISION([for Bash 5.3, version 5.082])dnl
 
 define(bashvers, 5.3)
 define(relstatus, maint)
@@ -130,14 +130,14 @@ else
 	MALLOC_LIB=
 	MALLOC_LIBRARY=
 	MALLOC_LDFLAGS=
-	MALLOC_DEP=
+	MALLOC_DEP=	
 fi
 
 if test "$opt_afs" = yes; then
 	AC_DEFINE(AFS)
 fi
 
-if test "$opt_curses" = yes; then
+if test "$opt_curses" != "no" ; then
 	prefer_curses=yes
 fi
 
@@ -524,7 +524,7 @@ if test "$opt_static_link" = yes; then
 	prefer_shared=no
 	# if we're using gcc, add `-static' to LDFLAGS, except on Solaris >= 2
 	if test "$GCC" = "yes"; then
-		STATIC_LD="-static"
+		STATIC_LD="-static" 
 		case "$host_os" in
 		solaris2*)	;;
 		linux*)		test "$opt_profiling" = "no" && LDFLAGS="$LDFLAGS -static" ;;
@@ -588,8 +588,8 @@ then
 	RL_LIB_READLINE_VERSION
 
 	case "$ac_cv_rl_version" in
-	8*|9*)	;;
-	*)	opt_with_installed_readline=no
+	8.3*|9*)	;;
+	*)	opt_with_installed_readline=no 
 		AC_MSG_WARN([installed readline library is too old to be linked with bash])
 		AC_MSG_WARN([using private bash version])
 		;;
@@ -616,7 +616,7 @@ if test $opt_readline = yes; then
 		cygwin*|msys*)	TILDE_LIB= ;;
 		esac
 	else
-		RL_LIBDIR='$(LIBSUBDIR)/readline'
+		RL_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
 		READLINE_DEP='$(READLINE_LIBRARY)'
 		# for dependencies
 		RL_INCLUDEDIR='$(RL_LIBDIR)'
@@ -630,7 +630,7 @@ if test $opt_readline = yes; then
 		esac
 	fi
 else
-	RL_LIBDIR='$(LIBSUBDIR)/readline'
+	RL_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
 	READLINE_LIB= READLINE_DEP=
 	RL_INCLUDEDIR=
 fi
@@ -654,7 +654,7 @@ if test $opt_history = yes || test $opt_bang_history = yes; then
 			;;
 		esac
 	else
-		HIST_LIBDIR='$(LIBSUBDIR)/readline'
+		HIST_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
 		HISTORY_DEP='$(HISTORY_LIBRARY)'
 		# for dependencies
 		HIST_INCLUDEDIR='$(HIST_LIBDIR)'
@@ -668,7 +668,7 @@ if test $opt_history = yes || test $opt_bang_history = yes; then
 		esac
 	fi
 else
-	HIST_LIBDIR='$(LIBSUBDIR)/readline'
+	HIST_LIBDIR='$(dot)/$(LIBSUBDIR)/readline'
 	HISTORY_LIB= HISTORY_DEP=
 	HIST_INCLUDEDIR=
 fi

@@ -12,7 +12,7 @@ each time a child is forked
 
 make execute_disk_command look in the temp environment for an
 assignment to PATH, and disable hash lookup for the command if
-such an assignment is present 
+such an assignment is present
 
 fixed here documents so that backslash-quoted newlines are treated as
 Posix.2 specifies

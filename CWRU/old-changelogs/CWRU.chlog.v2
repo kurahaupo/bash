@@ -1,7 +1,7 @@
 
 This documents the changes between the first `public' release of CWRU bash
 and this, its second release.  It summarizes, without going into detail,
-the changes that have been made. 
+the changes that have been made.
 
 NEW FEATURES
 
@@ -154,7 +154,7 @@ trap.c
 	  values
 
 ulimit.c
-	- add new -p option to report pipe buffer size.  This is flaky on 
+	- add new -p option to report pipe buffer size.  This is flaky on
 	  all non-Posix systems (those that do not define PIPE_BUF).
 
 readline/readline.c
@@ -173,7 +173,7 @@ jobs.c, jobs.c.posix
 machines.h
 	- new entry for Stardent
 	- new variable USE_TERMCAP_EMULATION, for those systems that have the
-	  termcap(3) functions in the curses library, but have not linked 
+	  termcap(3) functions in the curses library, but have not linked
 	  /usr/lib/libtermcap.a to libcurses.a
 
 cpp-Makefile
@@ -285,7 +285,7 @@ parse.y
 shell.c
 	- make shells started with -s read .bashrc
 
-	
+
                                    10/14
                                    -----
 
@@ -365,7 +365,7 @@ trap.c, shell.c
 	- made SIGINT trap handling act the same as that of ksh and the BSD
 	  sh.  As a side effect (really the reason for doing this in the
 	  first place), `read' is now interruptible.
- 
+
 Makefile
 	- made the CPPFLAGS definition useful by passing it to cpp when
 	  making bash-Makefile from cpp-Makefile

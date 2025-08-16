@@ -1,6 +1,6 @@
 This documents the changes between the second `public' release of CWRU bash
 and this, its third release.  It summarizes, without going into detail, the
-changes that have been made. 
+changes that have been made.
 
 NEW FEATURES
 
@@ -143,7 +143,7 @@ shell.c
 	- when invoked as an interactive login shell, close all file
 	  descriptors < 20 first thing.  There is a fairly common bug in the
 	  Sun NFS code that leaves an open file descriptor when you use one
-	  of the getpw* C library functions. 
+	  of the getpw* C library functions.
 
                                    11/28
                                    -----
@@ -240,7 +240,7 @@ subst.c
 	- for some reason which I have not yet fully divined, a shell whose
 	  standard output (file descriptor 1) is closed cannot perform
 	  backquote substitution if the child closes both sides of the pipe
-	  after dup2(fildes[1], 1).  The obvious fix is to not close 
+	  after dup2(fildes[1], 1).  The obvious fix is to not close
 	  fildes[0] in the child, but it's not intuitive.  I got the example
 	  from the Dec Ultrix 4.0 release notes:
 
@@ -275,7 +275,7 @@ parse.y
 	  interactive, because history expansion and remembering lines
 	  on the history are not done for script shells
 	- make the shell echo comment lines (lines whose first character
-	  is `#') by moving the after_pre_process label to just before 
+	  is `#') by moving the after_pre_process label to just before
 	  that code
 	- eliminated several calls to xrealloc in shell_getc when the
 	  shell is non-interactive by correcting confusing uses of
@@ -346,7 +346,7 @@ general.h
 	  character to possibly save a function call.  From C News.
 
 variables.c
-	- changed add_or_supercede to use STREQN 
+	- changed add_or_supercede to use STREQN
 
 parse.y
 	- changed most instances of strcmp() in read_token to use STREQ.
@@ -459,7 +459,7 @@ builtins.c, builtins.c.posix
                                    12/11
                                    -----
 cpp-Makefile
-	- make ulimit.o dependent on `psize' so that psize can use 
+	- make ulimit.o dependent on `psize' so that psize can use
 	  the same #ifdefs and #defines as the rest of the code
 
 psize.c
@@ -953,7 +953,7 @@ shell.c
 	  like sh.  Brian wants it this way.
 
 parse.y
-	- build a stack of tokens that have been alias expanded during a 
+	- build a stack of tokens that have been alias expanded during a
 	  single call to read_token(), and use it to stop alias loops
 
                                     2/6
