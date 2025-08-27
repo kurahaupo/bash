@@ -126,7 +126,7 @@ typedef struct _vlist {
    declare checks whether it gets +r explicitly, before testing these.
    att_nameref is in there because declare performs its own validation due
    to some ksh93 quirks. */
-#  define valid_readonly_attrs	(att_exported|att_local|att_nameref|att_trace|att_readonly)
+#  define valid_readonly_attrs		(att_exported|att_local|att_nameref|att_trace|att_readonly)
 #  define invalid_readonly_attrs	(~valid_readonly_attrs & attmask_user)
 
 /* Internal attributes used for bookkeeping */
@@ -145,6 +145,11 @@ typedef struct _vlist {
 #  define att_propagate		0x0200000	/* propagate to previous scope */
 
 #  define attmask_scope		0x0f00000
+
+/* Internal attributes used for variable state management. */
+#  define att_assigning	        0x1000000
+
+#  define attmask_state	        0xf000000
 
 #  define exported_p(var)		((((var)->attributes) & (att_exported)))
 #  define readonly_p(var)		((((var)->attributes) & (att_readonly)))
@@ -169,6 +174,8 @@ typedef struct _vlist {
 
 #  define tempvar_p(var)		((((var)->attributes) & (att_tempvar)))
 #  define propagate_p(var)		((((var)->attributes) & (att_propagate)))
+
+#define assigning_p(var)	((((var)->attributes) & (att_assigning)))
 
 /* Variable names: lvalues */
 #  define name_cell(var)		((var)->name)

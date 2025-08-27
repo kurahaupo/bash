@@ -11,3 +11,11 @@ _cut_leading_spaces()
 {
 	sed -e 's/^[ 	]*//g'
 }
+
+test_runsub()
+{
+	scriptname=${1##*/}
+	printf '\t%s\n' "${scriptname}"
+
+	${THIS_SH} "$1"
+}
