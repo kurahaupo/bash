@@ -373,7 +373,7 @@ set_binding_values (const char *domainname,
 
 /* Specify that the DOMAINNAME message catalog will be found
    in DIRNAME rather than in the system locale data base.  */
-char *
+const char *
 BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 {
 #ifdef __EMX__
@@ -415,7 +415,7 @@ BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 #if defined _WIN32 && !defined __CYGWIN__
 /* Specify that the DOMAINNAME message catalog will be found
    in WDIRNAME rather than in the system locale data base.  */
-wchar_t *
+const wchar_t *
 libintl_wbindtextdomain (const char *domainname, const wchar_t *wdirname)
 {
   set_binding_values (domainname, NULL, &wdirname, NULL);
@@ -425,7 +425,7 @@ libintl_wbindtextdomain (const char *domainname, const wchar_t *wdirname)
 
 /* Specify the character encoding in which the messages from the
    DOMAINNAME message catalog will be returned.  */
-char *
+const char *
 BIND_TEXTDOMAIN_CODESET (const char *domainname, const char *codeset)
 {
   set_binding_values (domainname, NULL, NULL, &codeset);

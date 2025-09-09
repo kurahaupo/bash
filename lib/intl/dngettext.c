@@ -44,7 +44,7 @@
 
 /* Look up MSGID in the DOMAINNAME message catalog of the current
    LC_MESSAGES locale and skip message according to the plural form.  */
-char *
+const char *
 DNGETTEXT (const char *domainname,
 	   const char *msgid1, const char *msgid2, unsigned long int n)
 {

@@ -324,9 +324,9 @@ struct binding *_nl_domain_bindings;
 #endif
 
 /* Prototypes for local functions.  */
-static char *plural_lookup (struct loaded_l10nfile *domain,
-			    unsigned long int n,
-			    const char *translation, size_t translation_len)
+static const char *plural_lookup (struct loaded_l10nfile *domain,
+                                  unsigned long int n,
+                                  const char *translation, size_t translation_len)
      internal_function;
 
 #ifdef IN_LIBGLOCALE
@@ -455,14 +455,14 @@ static int enable_secure;
    CATEGORY locale and, if PLURAL is nonzero, search over string
    depending on the plural form determined by N.  */
 #ifdef IN_LIBGLOCALE
-char *
+const char *
 gl_dcigettext (const char *domainname,
 	       const char *msgid1, const char *msgid2,
 	       int plural, unsigned long int n,
 	       int category,
 	       const char *localename, const char *encoding)
 #else
-char *
+const char *
 DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	    int plural, unsigned long int n, int category)
 #endif
@@ -480,7 +480,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 #endif
   char *xdomainname;
   char *single_locale;
-  char *retval;
+  const char *retval;
   size_t retlen;
   int saved_errno;
   struct known_translation_t search;
@@ -498,9 +498,9 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
   if (category < 0 || category >= __LC_LAST || category == LC_ALL)
     /* Bogus.  */
     return (plural == 0
-	    ? (char *) msgid1
+	    ? msgid1
 	    /* Use the Germanic plural rule.  */
-	    : n == 1 ? (char *) msgid1 : (char *) msgid2);
+	    : n == 1 ? msgid1 : msgid2);
 #endif
 
   /* Preserve the `errno' value.  */
@@ -564,7 +564,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	retval = plural_lookup ((*foundp)->domain, n, (*foundp)->translation,
 				(*foundp)->translation_length);
       else
-	retval = (char *) (*foundp)->translation;
+	retval = (*foundp)->translation;
 
       gl_rwlock_unlock (_nl_state_lock);
 # ifdef _LIBC
@@ -928,10 +928,8 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
     }
 #endif
   __set_errno (saved_errno);
-  return (plural == 0
-	  ? (char *) msgid1
-	  /* Use the Germanic plural rule.  */
-	  : n == 1 ? (char *) msgid1 : (char *) msgid2);
+  /* Use the Germanic plural rule.  */
+  return (plural == 0 || n == 1 ? msgid1 : msgid2);
 }
 
 
@@ -949,7 +947,7 @@ __libc_lock_define_initialized (static, lock)
    failure (problem in the particular message catalog).  Return (char *) -1
    in case of a memory allocation failure during conversion (only if
    ENCODING != NULL resp. CONVERT == true).  */
-char *
+const char *
 internal_function
 #ifdef IN_LIBGLOCALE
 _nl_find_msg (struct loaded_l10nfile *domain_file,
@@ -1163,7 +1161,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 #  endif
 # endif
 	    {
-	      char *nullentry;
+	      const char *nullentry;
 	      size_t nullentrylen;
 
 	      /* Get the header entry.  This is a recursion, but it doesn't
@@ -1352,29 +1350,29 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 		  size_t non_reversible;
 		  int res;
 
-		  if (freemem_size < sizeof (size_t))
-		    goto resize_freemem;
-
-		  res = __gconv (convd->conv,
-				 &inbuf, inbuf + resultlen,
-				 &outbuf,
-				 outbuf + freemem_size - sizeof (size_t),
-				 &non_reversible);
-
-		  if (res == __GCONV_OK || res == __GCONV_EMPTY_INPUT)
-		    break;
-
-		  if (res != __GCONV_FULL_OUTPUT)
+		  if (freemem_size >= sizeof (size_t))
 		    {
-		      /* We should not use the translation at all, it
-			 is incorrectly encoded.  */
-#ifdef _LIBC
-		      __libc_lock_unlock (lock);
-#endif
-		      return NULL;
-		    }
+		      res = __gconv (convd->conv,
+		                     &inbuf, inbuf + resultlen,
+		                     &outbuf,
+		                     outbuf + freemem_size - sizeof (size_t),
+		                     &non_reversible);
 
-		  inbuf = (const unsigned char *) result;
+		      if (res == __GCONV_OK || res == __GCONV_EMPTY_INPUT)
+			break;
+
+		      if (res != __GCONV_FULL_OUTPUT)
+			{
+			  /* We should not use the translation at all, it
+			     is incorrectly encoded.  */
+#ifdef _LIBC
+			  __libc_lock_unlock (lock);
+#endif
+			  return NULL;
+			}
+
+		      inbuf = (const unsigned char *) result;
+		    }
 # else
 #  if HAVE_ICONV
 		  const char *inptr = (const char *) inbuf;
@@ -1382,29 +1380,28 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 		  char *outptr = (char *) outbuf;
 		  size_t outleft;
 
-		  if (freemem_size < sizeof (size_t))
-		    goto resize_freemem;
-
-		  outleft = freemem_size - sizeof (size_t);
-		  if (iconv (convd->conv,
-			     (ICONV_CONST char **) &inptr, &inleft,
-			     &outptr, &outleft)
-		      != (size_t) (-1))
+		  if (freemem_size >= sizeof (size_t))
 		    {
-		      outbuf = (unsigned char *) outptr;
-		      break;
-		    }
-		  if (errno != E2BIG)
-		    {
+		      outleft = freemem_size - sizeof (size_t);
+		      if (iconv (convd->conv,
+			         (ICONV_CONST char **) &inptr, &inleft,
+			         &outptr, &outleft)
+			  != (size_t) (-1))
+			{
+			  outbuf = (unsigned char *) outptr;
+			  break;
+			}
+		      if (errno != E2BIG)
+			{
 #ifdef _LIBC
-		      __libc_lock_unlock (lock);
+			  __libc_lock_unlock (lock);
 #endif
-		      return NULL;
+			  return NULL;
+			}
 		    }
 #  endif
 # endif
 
-		resize_freemem:
 		  /* We must allocate a new buffer or resize the old one.  */
 		  if (malloc_count > 0)
 		    {
@@ -1493,7 +1490,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 
 
 /* Look up a plural variant.  */
-static char *
+static const char *
 internal_function
 plural_lookup (struct loaded_l10nfile *domain, unsigned long int n,
 	       const char *translation, size_t translation_len)
@@ -1675,7 +1672,7 @@ guess_category_value (int category, const char *categoryname)
       /* The next priority value is the default language preferences list. */
       language_default = _nl_language_preferences_default ();
       if (language_default != NULL)
-        return language_default;
+	return language_default;
     }
   /* The least priority value is the locale name, if defaulted.  */
 #endif

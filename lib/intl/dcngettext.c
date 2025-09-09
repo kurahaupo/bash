@@ -41,7 +41,7 @@
 
 /* Look up MSGID in the DOMAINNAME message catalog for the current CATEGORY
    locale.  */
-char *
+const char *
 DCNGETTEXT (const char *domainname,
 	    const char *msgid1, const char *msgid2, unsigned long int n,
 	    int category)

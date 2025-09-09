@@ -51,7 +51,7 @@
 /* Look up MSGID in the current default message catalog for the current
    LC_MESSAGES locale.  If not found, returns MSGID itself (the default
    text).  */
-char *
+const char *
 NGETTEXT (const char *msgid1, const char *msgid2, unsigned long int n)
 {
   return DCNGETTEXT (NULL, msgid1, msgid2, n, LC_MESSAGES);

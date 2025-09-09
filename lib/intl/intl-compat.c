@@ -57,7 +57,7 @@
 
 
 DLL_EXPORTED
-char *
+const char *
 gettext (const char *msgid)
 {
   return libintl_gettext (msgid);
@@ -65,7 +65,7 @@ gettext (const char *msgid)
 
 
 DLL_EXPORTED
-char *
+const char *
 dgettext (const char *domainname, const char *msgid)
 {
   return libintl_dgettext (domainname, msgid);
@@ -73,7 +73,7 @@ dgettext (const char *domainname, const char *msgid)
 
 
 DLL_EXPORTED
-char *
+const char *
 dcgettext (const char *domainname, const char *msgid, int category)
 {
   return libintl_dcgettext (domainname, msgid, category);
@@ -81,7 +81,7 @@ dcgettext (const char *domainname, const char *msgid, int category)
 
 
 DLL_EXPORTED
-char *
+const char *
 ngettext (const char *msgid1, const char *msgid2, unsigned long int n)
 {
   return libintl_ngettext (msgid1, msgid2, n);
@@ -89,7 +89,7 @@ ngettext (const char *msgid1, const char *msgid2, unsigned long int n)
 
 
 DLL_EXPORTED
-char *
+const char *
 dngettext (const char *domainname,
            const char *msgid1, const char *msgid2, unsigned long int n)
 {
@@ -98,7 +98,7 @@ dngettext (const char *domainname,
 
 
 DLL_EXPORTED
-char *
+const char *
 dcngettext (const char *domainname,
             const char *msgid1, const char *msgid2, unsigned long int n,
             int category)
@@ -108,7 +108,7 @@ dcngettext (const char *domainname,
 
 
 DLL_EXPORTED
-char *
+const char *
 textdomain (const char *domainname)
 {
   return libintl_textdomain (domainname);
@@ -116,7 +116,7 @@ textdomain (const char *domainname)
 
 
 DLL_EXPORTED
-char *
+const char *
 bindtextdomain (const char *domainname, const char *dirname)
 {
   return libintl_bindtextdomain (domainname, dirname);
@@ -124,7 +124,7 @@ bindtextdomain (const char *domainname, const char *dirname)
 
 
 DLL_EXPORTED
-char *
+const char *
 bind_textdomain_codeset (const char *domainname, const char *codeset)
 {
   return libintl_bind_textdomain_codeset (domainname, codeset);

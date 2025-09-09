@@ -41,7 +41,7 @@
 
 /* Look up MSGID in the DOMAINNAME message catalog for the current CATEGORY
    locale.  */
-char *
+const char *
 DCGETTEXT (const char *domainname, const char *msgid, int category)
 {
   return DCIGETTEXT (domainname, msgid, NULL, 0, 0, category);

@@ -60,7 +60,7 @@ gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
 /* Set the current default message catalog to DOMAINNAME.
    If DOMAINNAME is null, return the current default.
    If DOMAINNAME is "", reset to the default of "messages".  */
-char *
+const char *
 TEXTDOMAIN (const char *domainname)
 {
   char *new_domain;
