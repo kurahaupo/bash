@@ -211,6 +211,15 @@ static void *mempcpy (void *dest, const void *src, size_t n);
 # define HAVE_PER_THREAD_LOCALE
 #endif
 
+#ifndef INVALID
+# if __STDC__ > 202300
+#  define INVALID INVALID
+static char INVALID[1];
+# else
+#  define INVALID ((void *)-1)
+#endif
+#endif
+
 /* This is the type used for the search tree where known translations
    are stored.  */
 struct known_translation_t
@@ -805,7 +814,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 
 		  /* Resource problems are not fatal, instead we return no
 		     translation.  */
-		  if (__builtin_expect (retval == (char *) -1, 0))
+		  if (__builtin_expect (retval == INVALID, 0))
 		    goto return_untranslated;
 
 		  if (retval != NULL)
@@ -819,7 +828,7 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 	  /* Returning -1 means that some resource problem exists
 	     (likely memory) and that the strings could not be
 	     converted.  Return the original strings.  */
-	  if (__builtin_expect (retval == (char *) -1, 0))
+	  if (__builtin_expect (retval == INVALID, 0))
 	    break;
 
 	  if (retval != NULL)
@@ -944,7 +953,7 @@ __libc_lock_define_initialized (static, lock)
 
 /* Look up the translation of msgid within DOMAIN_FILE and DOMAINBINDING.
    Return it if found.  Return NULL if not found or in case of a conversion
-   failure (problem in the particular message catalog).  Return (char *) -1
+   failure (problem in the particular message catalog).  Return INVALID
    in case of a memory allocation failure during conversion (only if
    ENCODING != NULL resp. CONVERT == true).  */
 const char *
@@ -1133,7 +1142,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 		   translation because it might be encoded incorrectly.  */
 	      unlock_fail:
 		gl_rwlock_unlock (domain->conversions_lock);
-		return (char *) -1;
+		return INVALID;
 	      }
 
 	    domain->conversions = new_conversions;
@@ -1177,7 +1186,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 
 	      /* Resource problems are fatal.  If we continue onwards we will
 	         only attempt to calloc a new conv_tab and fail later.  */
-	      if (__builtin_expect (nullentry == (char *) -1, 0))
+	      if (__builtin_expect (nullentry == INVALID, 0))
 		{
 # ifndef IN_LIBGLOCALE
 		  free ((char *) encoding);
@@ -1311,7 +1320,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 	  if (__builtin_expect (convd->conv_tab == (char **) -1, 0))
 	    /* Nothing we can do, no more memory.  We cannot use the
 	       translation because it might be encoded incorrectly.  */
-	    return (char *) -1;
+	    return INVALID;
 
 	  if (convd->conv_tab[act] == NULL)
 	    {
@@ -1444,7 +1453,7 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 #ifdef _LIBC
 		      __libc_lock_unlock (lock);
 #endif
-		      return (char *) -1;
+		      return INVALID;
 		    }
 
 # ifdef _LIBC
