@@ -42,7 +42,7 @@
  #pragma alloca
 #   else
 #    ifndef alloca
-char *alloca ();
+char *alloca (size_t);
 #    endif
 #   endif
 #  endif
