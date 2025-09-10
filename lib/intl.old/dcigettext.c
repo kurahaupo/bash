@@ -18,7 +18,7 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Tell glibc's <string.h> to provide a prototype for mempcpy().
+/* Tell glibc's <string.h> to provide non-standard prototypes.
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
@@ -158,9 +158,6 @@ char *getcwd ();
 # endif
 # ifndef HAVE_STPCPY
 static char *stpcpy (char *dest, const char *src);
-# endif
-# ifndef HAVE_MEMPCPY
-static void *mempcpy (void *dest, const void *src, size_t n);
 # endif
 #endif
 
@@ -579,8 +576,8 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 				 + domainname_len + 5);
   ADD_BLOCK (block_list, xdomainname);
 
-  stpcpy (mempcpy (stpcpy (stpcpy (xdomainname, categoryname), "/"),
-		  domainname, domainname_len),
+  stpcpy (stpcpy (stpcpy (stpcpy (xdomainname, categoryname), "/"),
+		  domainname),
 	  ".mo");
 
   /* Creating working area.  */
@@ -665,8 +662,8 @@ DCIGETTEXT (domainname, msgid1, msgid2, plural, n, category)
 			    + msgid_len + domainname_len + 1);
 		  if (newp != NULL)
 		    {
-		      newp->domainname =
-			mempcpy (newp->msgid, msgid1, msgid_len);
+		      newp->domainname = msgid_len + (char *)
+			memcpy (newp->msgid, msgid1, msgid_len);
 		      memcpy (newp->domainname, domainname, domainname_len + 1);
 		      newp->category = category;
 		      newp->counter = _nl_msg_cat_cntr;
@@ -1193,18 +1190,6 @@ stpcpy (dest, src)
   return dest - 1;
 }
 #endif
-
-#if !_LIBC && !HAVE_MEMPCPY
-static void *
-mempcpy (dest, src, n)
-     void *dest;
-     const void *src;
-     size_t n;
-{
-  return (void *) ((char *) memcpy (dest, src, n) + n);
-}
-#endif
-
 
 #ifdef _LIBC
 /* If we want to free all resources we have to do some work at

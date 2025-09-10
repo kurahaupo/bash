@@ -14,7 +14,7 @@
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-/* Tell glibc's <string.h> to provide a prototype for mempcpy().
+/* Tell glibc's <string.h> to provide non-standard prototypes.
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
@@ -149,9 +149,6 @@ char *getcwd (char *, size_t);
 # endif
 # ifndef HAVE_STPCPY
 static char *stpcpy (char *dest, const char *src);
-# endif
-# ifndef HAVE_MEMPCPY
-static void *mempcpy (void *dest, const void *src, size_t n);
 # endif
 #endif
 
@@ -737,8 +734,8 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 				 + domainname_len + 5);
   ADD_BLOCK (block_list, xdomainname);
 
-  stpcpy ((char *) mempcpy (stpcpy (stpcpy (xdomainname, categoryname), "/"),
-			    domainname, domainname_len),
+  stpcpy (stpcpy (stpcpy (stpcpy (xdomainname, categoryname), "/"),
+		  domainname),
 	  ".mo");
 
   /* Creating working area.  */
@@ -857,10 +854,10 @@ DCIGETTEXT (const char *domainname, const char *msgid1, const char *msgid2,
 		      char *new_localename;
 #endif
 
-		      new_domainname =
-			(char *) mempcpy (newp->msgid.appended, msgid1,
-					  msgid_len);
-		      memcpy (new_domainname, domainname, domainname_len + 1);
+		      new_domainname = msgid_len +
+			(char *) memcpy (newp->msgid.appended, msgid1,
+					 msgid_len);
+		      strcpy (new_domainname, domainname);
 #ifdef HAVE_PER_THREAD_LOCALE
 		      new_localename = new_domainname + domainname_len + 1;
 		      strcpy (new_localename, localename);
@@ -1209,12 +1206,8 @@ _nl_find_msg (struct loaded_l10nfile *domain_file,
 		      len = strcspn (charsetstr, " \t\n");
 
 		      charset = (char *) alloca (len + 1);
-# if defined _LIBC || HAVE_MEMPCPY
-		      *((char *) mempcpy (charset, charsetstr, len)) = '\0';
-# else
 		      memcpy (charset, charsetstr, len);
 		      charset[len] = '\0';
-# endif
 
 		      outcharset = encoding;
 
@@ -1743,10 +1736,10 @@ get_output_charset (struct binding *domainbinding)
 
 /* @@ begin of epilog @@ */
 
-/* We don't want libintl.a to depend on any other library.  So we
-   avoid the non-standard function stpcpy.  In GNU C Library this
-   function is available, though.  Also allow the symbol HAVE_STPCPY
-   to be defined.  */
+/* We don't want libintl.a to depend on any other library, so we provide our
+   own version of stpcpy if the symbol HAVE_STPCPY is not defined. (This should
+   be obsolete; the stpcpy function was added to POSIX in 2008 and to the C
+   standard in 2024, after being in the GNU C Library for decades.) */
 #if !_LIBC && !HAVE_STPCPY
 static char *
 stpcpy (char *dest, const char *src)
@@ -1754,14 +1747,6 @@ stpcpy (char *dest, const char *src)
   while ((*dest++ = *src++) != '\0')
     /* Do nothing. */ ;
   return dest - 1;
-}
-#endif
-
-#if !_LIBC && !HAVE_MEMPCPY
-static void *
-mempcpy (void *dest, const void *src, size_t n)
-{
-  return (void *) ((char *) memcpy (dest, src, n) + n);
 }
 #endif
 

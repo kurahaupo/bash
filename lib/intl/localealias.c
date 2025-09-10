@@ -14,7 +14,7 @@
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-/* Tell glibc's <string.h> to provide a prototype for mempcpy().
+/* Tell glibc's <string.h> to provide non-standard prototypes.
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
@@ -75,10 +75,6 @@ char *alloca ();
    file and the name space must not be polluted.  */
 # define strcasecmp(s1, s2) __strcasecmp_l (s1, s2, _nl_C_locobj_ptr)
 
-# ifndef mempcpy
-#  define mempcpy __mempcpy
-# endif
-# define HAVE_MEMPCPY	1
 # define HAVE___FSETLOCKING	1
 #endif
 
@@ -229,13 +225,8 @@ read_alias_file (const char *fname, int fname_len)
   static const char aliasfile[] = "/locale.alias";
 
   full_fname = (char *) alloca (fname_len + sizeof aliasfile);
-#ifdef HAVE_MEMPCPY
-  mempcpy (mempcpy (full_fname, fname, fname_len),
-	   aliasfile, sizeof aliasfile);
-#else
   memcpy (full_fname, fname, fname_len);
   memcpy (&full_fname[fname_len], aliasfile, sizeof aliasfile);
-#endif
 
 #ifdef _LIBC
   /* Note the file is opened with cancellation in the I/O functions

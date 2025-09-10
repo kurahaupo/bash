@@ -18,7 +18,7 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Tell glibc's <string.h> to provide a prototype for mempcpy().
+/* Tell glibc's <string.h> to provide non-standard prototypes.
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
@@ -78,10 +78,6 @@ char *alloca ();
    file and the name space must not be polluted.  */
 # define strcasecmp __strcasecmp
 
-# ifndef mempcpy
-#  define mempcpy __mempcpy
-# endif
-# define HAVE_MEMPCPY	1
 # define HAVE___FSETLOCKING	1
 
 /* We need locking here since we can be called from different places.  */
@@ -220,13 +216,8 @@ read_alias_file (fname, fname_len)
   static const char aliasfile[] = "/locale.alias";
 
   full_fname = (char *) alloca (fname_len + sizeof aliasfile);
-#ifdef HAVE_MEMPCPY
-  mempcpy (mempcpy (full_fname, fname, fname_len),
-	   aliasfile, sizeof aliasfile);
-#else
   memcpy (full_fname, fname, fname_len);
   memcpy (&full_fname[fname_len], aliasfile, sizeof aliasfile);
-#endif
 
   fp = fopen (relocate (full_fname), "r");
   freea (full_fname);

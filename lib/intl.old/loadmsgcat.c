@@ -18,7 +18,7 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Tell glibc's <string.h> to provide a prototype for mempcpy().
+/* Tell glibc's <string.h> to provide non-standard prototypes.
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
@@ -807,12 +807,8 @@ _nl_init_domain_conv (domain_file, domain, domainbinding)
 	  len = strcspn (charsetstr, " \t\n");
 
 	  charset = (char *) alloca (len + 1);
-# if defined _LIBC || HAVE_MEMPCPY
-	  *((char *) mempcpy (charset, charsetstr, len)) = '\0';
-# else
 	  memcpy (charset, charsetstr, len);
 	  charset[len] = '\0';
-# endif
 
 	  /* The output charset should normally be determined by the
 	     locale.  But sometimes the locale is not used or not correctly
