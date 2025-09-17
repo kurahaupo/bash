@@ -94,7 +94,7 @@ whitespace(int c)
 
 /* If this stream descriptor is non-zero, then write
    texinfo documentation to it. */
-FILE *documentation_file = (FILE *)NULL;
+FILE *documentation_file = NULL;
 
 /* Only produce documentation. */
 bool only_documentation = false;
@@ -120,17 +120,17 @@ char *helpfile_directory;
 
 /* The name of a directory to precede the filename when reporting
    errors. */
-char *error_directory = (char *)NULL;
+char *error_directory = NULL;
 
 /* The name of the structure file. */
-char *struct_filename = (char *)NULL;
+char *struct_filename = NULL;
 
 /* The name of the external declaration file. */
-char *extern_filename = (char *)NULL;
+char *extern_filename = NULL;
 
 /* The name of the include file to write into the structure file, if it's
    different from extern_filename. */
-char *include_filename = (char *)NULL;
+char *include_filename = NULL;
 
 /* The name of the include file to put into the generated struct filename. */
 
@@ -165,7 +165,7 @@ typedef struct {
 } DEF_FILE;
 
 /* The array of all builtins encountered during execution of this code. */
-ARRAY *saved_builtins = (ARRAY *)NULL;
+ARRAY *saved_builtins = NULL;
 
 /* The Posix.2 so-called ‘special’ builtins.
    This list must be kept sorted. */
@@ -187,7 +187,7 @@ char const *const special_builtins[] =
   "times",
   "trap",
   "unset",
-  (char *)NULL
+  NULL
 };
 
 /* The builtin commands that take assignment statements as arguments.
@@ -200,7 +200,7 @@ char const *const assignment_builtins[] =
   "local",
   "readonly",
   "typeset",
-  (char *)NULL
+  NULL
 };
 
 /* This list must be kept sorted. */
@@ -209,7 +209,7 @@ char const *const localvar_builtins[] =
   "declare",
   "local",
   "typeset",
-  (char *)NULL
+  NULL
 };
 
 /* The builtin commands that are special to the POSIX search order.
@@ -236,7 +236,7 @@ char const *const posix_builtins[] =
   "umask",
   "unalias",
   "wait",
-  (char *)NULL
+  NULL
 };
 
 /* The builtin commands that can take array references as arguments and pay
@@ -255,7 +255,7 @@ char const *const arrayvar_builtins[] =
   "typeset",
   "unset",
   "wait",
-  (char *)NULL
+  NULL
 };
 
 /* Forward declarations. */
@@ -309,9 +309,9 @@ main (int argc, char **argv)
   char *documentation_filename;
   char *temp_struct_filename;
 
-  structfile = externfile = (FILE *)NULL;
+  structfile = externfile = NULL;
   documentation_filename = DOCFILE;
-  temp_struct_filename = (char *)NULL;
+  temp_struct_filename = NULL;
 
   while (arg_index < argc && argv[arg_index][0] == '-')
     {
@@ -364,7 +364,7 @@ main (int argc, char **argv)
 	}
     }
 
-  if (include_filename == 0)
+  if (include_filename == NULL)
     include_filename = extern_filename;
   if (include_filename == NULL)
     include_filename = "builtext.h";
@@ -557,7 +557,7 @@ HANDLER_ENTRY handlers[] = {
   { "DEPENDS_ON", depends_on_handler },
   { "PRODUCES", produces_handler },
   { "END", end_handler },
-  { (char *)NULL, (mk_handler_func_t *)NULL }
+  { NULL, NULL }
 };
 
 /* Return the entry in the table of handlers for NAME. */
@@ -570,7 +570,7 @@ find_directive (char *directive)
     if (strcmp (handlers[i].directive, directive) == 0)
       return (&handlers[i]);
 
-  return ((HANDLER_ENTRY *)NULL);
+  return (NULL);
 }
 
 /* Non-zero indicates that a $BUILTIN has been seen, but not
@@ -649,9 +649,9 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   defs->filename = filename;
   defs->lines = array_create (sizeof (char *));
   defs->line_number = 0;
-  defs->production = (char *)NULL;
-  defs->output = (FILE *)NULL;
-  defs->builtins = (ARRAY *)NULL;
+  defs->production = NULL;
+  defs->output = NULL;
+  defs->builtins = NULL;
 
   /* Build the array of lines. */
   i = 0;
@@ -862,7 +862,7 @@ current_builtin (char *directive, DEF_FILE *defs)
   if (defs->builtins)
     return ((BUILTIN_DESC *)defs->builtins->array[defs->builtins->sindex - 1]);
   else
-    return ((BUILTIN_DESC *)NULL);
+    return (NULL);
 }
 
 /* Add LINE to the long documentation for the current builtin.
@@ -910,11 +910,11 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
 
   new = (BUILTIN_DESC *)xmalloc (sizeof (BUILTIN_DESC));
   new->name = name;
-  new->function = (char *)NULL;
-  new->shortdoc = (char *)NULL;
-  new->docname = (char *)NULL;
-  new->longdoc = (ARRAY *)NULL;
-  new->dependencies = (ARRAY *)NULL;
+  new->function = NULL;
+  new->shortdoc = NULL;
+  new->docname = NULL;
+  new->longdoc = NULL;
+  new->dependencies = NULL;
   new->flags = 0;
 
   if (is_special_builtin (name))
@@ -1176,14 +1176,14 @@ char *structfile_header[] = {
   "",
   "   Functions which need to look at only the simple commands (e.g.",
   "   the enable_builtin ()), should ignore entries where",
-  "   (array[i].function == (sh_builtin_func_t *)NULL).  Such entries are for",
+  "   (array[i].function == NULL).  Such entries are for",
   "   the list of shell reserved control structures, like `if' and `while'.",
   "   The end of the list is denoted with a NULL name field. */",
   "",
   "/* TRANSLATORS: Please do not translate command names in descriptions */",
   "",
   "#include \"../builtins.h\"",
-  (char *)NULL
+  NULL
   };
 
 char *structfile_footer[] = {
@@ -1193,7 +1193,7 @@ char *structfile_footer[] = {
   "",
   "int num_shell_builtins =",
   "\tsizeof (static_shell_builtins) / sizeof (struct builtin) - 1;",
-  (char *)NULL
+  NULL
 };
 
 /* Write out any necessary opening information for
@@ -1231,7 +1231,7 @@ write_file_footers (FILE *structfile, FILE *externfile)
   /* Write out the footers. */
   if (structfile)
     {
-      fprintf (structfile, "  { (char *)NULL, (sh_builtin_func_t *)NULL, 0, (char **)NULL, (char *)NULL, (char *)NULL }\n};\n");
+      fprintf (structfile, "  { NULL, NULL, 0, NULL, NULL, NULL }\n};\n");
       for (i = 0; structfile_footer[i]; i++)
 	fprintf (structfile, "%s\n", structfile_footer[i]);
     }
@@ -1281,7 +1281,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 		  if (builtin->function && !inhibit_functions)
 		    fprintf (structfile, "%s, ", builtin->function);
 		  else
-		    fprintf (structfile, "(sh_builtin_func_t *)0x0, ");
+		    fprintf (structfile, "NULL, ");
 
 		  fprintf (structfile, "%s%s%s%s%s%s, %s_doc,\n",
 		    "BUILTIN_ENABLED | STATIC_BUILTIN",
@@ -1301,7 +1301,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 			  builtin->shortdoc ? builtin->shortdoc : builtin->name,
 			  document_name (builtin));
 		      else
-			fprintf (structfile, "     \"%s\", (char *)NULL },\n",
+			fprintf (structfile, "     \"%s\", NULL },\n",
 			  builtin->shortdoc ? builtin->shortdoc : builtin->name);
 		    }
 		  else
@@ -1311,7 +1311,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 			  builtin->shortdoc ? builtin->shortdoc : builtin->name,
 			  document_name (builtin));
 		      else
-			fprintf (structfile, "     N_(\"%s\"), (char *)NULL },\n",
+			fprintf (structfile, "     N_(\"%s\"), NULL },\n",
 			  builtin->shortdoc ? builtin->shortdoc : builtin->name);
 		    }
 		}
@@ -1557,7 +1557,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 	    fputc (')', stream);
 	  fputc (',', stream);
 	}
-      fprintf (stream, "\n#endif /* HELP_BUILTIN */\n\t(char *)NULL\n};\n");
+      fprintf (stream, "\n#endif /* HELP_BUILTIN */\n\tNULL\n};\n");
     }
 }
 
