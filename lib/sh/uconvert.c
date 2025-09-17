@@ -35,20 +35,11 @@
 #include "shell.h"
 #include "builtins.h"
 
-#define DECIMAL	'.'		/* XXX - should use locale */
-
-#define RETURN(x) \
-do { \
-  if (ip) *ip = ipart * mult; \
-  if (up) *up = upart * (ipart == 0 ? mult : 1); \
-  if (ep) *ep = p; \
-  return (x); \
-} while (0)
+enum { DECIMAL = '.' };		/* XXX - should use locale */
 
 /*
  * An incredibly simplistic floating point converter.
  */
-static int multiplier[7] = { 1, 100000, 10000, 1000, 100, 10, 1 };
 
 /* Take a decimal number int-part[.[micro-part]] and convert it to the whole
    and fractional portions.  The fractional portion is returned in
@@ -56,66 +47,94 @@ static int multiplier[7] = { 1, 100000, 10000, 1000, 100, 10, 1 };
    EP, if non-null, gets the address of the character where conversion stops.
    Return 1 if value converted; 0 if invalid integer for either whole or
    fractional parts. */
-int
-uconvert(const char *s, long *ip, long *up, char **ep)
+static bool
+xconvert (const char *p, size_t frac_scale, long *ip, long *up, const char **ep)
 {
-  int n, mult;
-  long ipart, upart;
-  char *p;
+  bool negative = 0;
+  long ipart = 0, upart = 0;
 
-  ipart = upart = 0;
-  mult = 1;
+  if (p == 0)	/* callers ensure p can never be 0; this is to shut up clang */
+    goto Good;	/* Arguably Bad? */
 
-  if (s && (*s == '-' || *s == '+'))
-    {
-      mult = (*s == '-') ? -1 : 1;
-      p = (char *)s + 1;
-    }
-  else
-    p = (char *)s;
+  if (*p == '-' || *p == '+')
+    negative = *p++ == '-';
 
-  for ( ; p && *p; p++)
-    {
-      if (*p == DECIMAL)		/* decimal point */
-	break;
-      if (DIGIT(*p) == 0)
-	RETURN(0);
-      ipart = (ipart * 10) + (*p - '0');
-    }
+  for (; DIGIT(*p) ; ipart *= 10, ipart += *p++ - '0') {}
 
-  if (p == 0 || *p == 0)	/* callers ensure p can never be 0; this is to shut up clang */
-    RETURN(1);
+  if (negative)
+    ipart = -ipart;
 
   if (*p == DECIMAL)
     p++;
 
+  if (*p == 0)
+    goto Good;
+
+  if (! DIGIT(*p))
+    goto Bad;
+
   /* Look for up to six digits past a decimal point. */
-  for (n = 0; n < 6 && p[n]; n++)
+  char const *q = p;
+
+  static const long multiplier[] = {
+				    1, 10, 100, 1000, 10000, 100000,
+				    1000000, 10000000, 100000000,
+				    1000000000, 10000000000, 100000000000
+				  };
+  const long *ms = multiplier + frac_scale - 1;
+
+  for (; p-q < frac_scale && DIGIT(*p) ; p++)
+    upart += (*p - '0') * ms[q-p];
+
+  /* round 0.5 up to 1; TODO: fix this for negatives */
+  if (p-q == frac_scale && *p >= '5' && *p <= '9')
+    upart++;
+
+  if (negative && upart > 0)
     {
-      if (DIGIT(p[n]) == 0)
-	{
-	  if (ep)
-	    {
-	      upart *= multiplier[n];
-	      p += n;		/* To set EP */
-	    }
-	  RETURN(0);
-	}
-      upart = (upart * 10) + (p[n] - '0');
+      upart = *ms - upart;
+      ipart -= 1;
     }
 
-  /* Now convert to millionths */
-  upart *= multiplier[n];
+  while (DIGIT(*p))
+    p++;
 
-  if (n == 6 && p[6] >= '5' && p[6] <= '9')
-    upart++;			/* round up 1 */
+  if (*p == 0)
+    goto Good;
 
-  if (ep)
-    {
-      p += n;
-      while (DIGIT(*p))
-	p++;
-    }
+Bad:
+  if (ip) *ip = ipart;
+  if (up) *up = upart;
+  if (ep) *ep = p;
+  return 0;
 
-  RETURN(1);
+Good:
+  if (ip) *ip = ipart;
+  if (up) *up = upart;
+  if (ep) *ep = (char *)p;
+  return 1;
+}
+
+bool
+uconvert (const char *p, long *ip, long *up, char **ep)
+{
+  return xconvert (p, 6, ip, up, (char const **)ep);
+}
+
+bool
+nconvert (const char *p, long *ip, long *up, char const **ep)
+{
+  return xconvert (p, 9, ip, up, ep);
+}
+
+bool
+tvconvert (const char *p, struct timeval *t, char const **ep)
+{
+  return xconvert (p, 6, &t->tv_sec, &t->tv_usec, ep);
+}
+
+bool
+tsconvert (const char *p, struct timespec *t, char const **ep)
+{
+  return xconvert (p, 9, &t->tv_sec, &t->tv_nsec, ep);
 }

@@ -518,7 +518,10 @@ extern int sh_mktmpfd (const char *, int, char **);
 extern char *sh_mktmpdir (const char *, int);
 
 /* declarations for functions defined in lib/sh/uconvert.c */
-extern int uconvert (const char *, long *, long *, char **);
+extern bool uconvert (const char *, long *, long *, char **); /* sec, µsec */
+extern bool nconvert (const char *, long *, long *, const char **); /* sec, nsec */
+extern bool tvconvert (const char *, struct timeval *, const char **); /* sec, µsec */
+extern bool tsconvert (const char *, struct timespec *, const char **); /* sec, nsec */
 
 /* declarations for functions defined in lib/sh/ufuncs.c */
 extern unsigned int falarm (unsigned int, unsigned int);
