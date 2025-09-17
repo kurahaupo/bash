@@ -44,9 +44,15 @@
 #include "filecntl.h"
 
 #include "../bashansi.h"
+
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
+
+#ifdef USE_MMAP
+#include <sys/mman.h>
+#endif
 
 #include "stdc.h"
 
@@ -586,6 +592,20 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
     file_error (filename);
 
   file_size = (size_t)finfo.st_size;
+
+#if USE_MMAP
+  /* MAP_PRIVATE because we're going to modify the content in-place, changing
+     '\n' to '\0' */
+  buffer = mmap (NULL, file_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+
+  close (fd);
+
+  if (!buffer)
+    {
+      fprintf (stderr, "mkbuiltins: %s: skipping zero-length file\n", filename);
+      return;
+    }
+#else
   buffer = xmalloc (1 + file_size);
 
   if ((nr = read (fd, buffer, file_size)) < 0)
@@ -603,6 +623,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
       free (buffer);
       return;
     }
+#endif
 
   /* Create and fill in the initial structure describing this file. */
   defs = (DEF_FILE *)xmalloc (sizeof (DEF_FILE));
@@ -701,7 +722,11 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
      builtext.h file. */
   write_builtins (defs, structfile, externfile);
 
+#ifdef USE_MMAP
+  munmap (buffer, file_size);
+#else
   free (buffer);
+#endif
   free_defs (defs);
 }
 
