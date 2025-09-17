@@ -66,7 +66,11 @@ static void *xmalloc (size_t);
 static void *xrealloc (void *, size_t);
 
 #define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
-#define whitespace(c) (((c) == ' ') || ((c) == '\t'))
+static inline bool
+whitespace(int c)
+{
+    return c == ' ' || c == '\t';
+}
 
 /* Flag values that builtins can have. */
 #define BUILTIN_FLAG_SPECIAL	0x01
