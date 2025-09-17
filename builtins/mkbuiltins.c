@@ -62,10 +62,21 @@
 extern int errno;
 #endif
 
-static void *xmalloc (size_t);
-static void *xrealloc (void *, size_t);
+static void memory_error_and_abort (void);
+inline static void *
+nonnull(void *temp)
+{
+  if (!temp)
+    memory_error_and_abort ();
+  return temp;
+}
 
-#define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
+static inline void *xmalloc (size_t s) { return nonnull(malloc(s)); }
+
+static inline void *xrealloc (void *p, size_t s) { return nonnull(realloc(p, s)); }
+
+static inline char *xstrdup (char const *s) { return nonnull(strdup(s)); }
+
 static inline bool
 whitespace(int c)
 {
@@ -280,7 +291,11 @@ void add_documentation (DEF_FILE *, char *);
 void must_be_building (char *, DEF_FILE *);
 void remove_trailing_whitespace (char *);
 
-#define document_name(b)	((b)->docname ? (b)->docname : (b)->name)
+inline static const char *
+document_name(BUILTIN_DESC *b)
+{
+  return b->docname ? b->docname : b->name;
+}
 
 /* For each file mentioned on the command line, process it and
    write the information to STRUCTFILE and EXTERNFILE, while
@@ -479,7 +494,7 @@ copy_string_array (ARRAY *array)
   copy->array = (char **)xmalloc ((1 + array->sindex) * sizeof (char *));
 
   for (i = 0; i < array->sindex; i++)
-    copy->array[i] = savestring (array->array[i]);
+    copy->array[i] = xstrdup (array->array[i]);
 
   copy->array[i] = (char *)NULL;
 
@@ -828,7 +843,7 @@ get_arg (char *for_whom, DEF_FILE *defs, char *string)
   if (!*new)
     line_error (defs, "%s requires an argument", for_whom, "");
 
-  return (savestring (new));
+  return (xstrdup (new));
 }
 
 /* Error if not building a builtin. */
@@ -1072,34 +1087,6 @@ file_error (char *filename)
 /*								    */
 /* **************************************************************** */
 
-static void memory_error_and_abort (void);
-
-static void *
-xmalloc (size_t bytes)
-{
-  void *temp = malloc (bytes);
-
-  if (!temp)
-    memory_error_and_abort ();
-  return (temp);
-}
-
-static void *
-xrealloc (void *pointer, size_t bytes)
-{
-  void *temp;
-
-  if (!pointer)
-    temp = malloc (bytes);
-  else
-    temp = realloc (pointer, bytes);
-
-  if (!temp)
-    memory_error_and_abort ();
-
-  return (temp);
-}
-
 static void
 memory_error_and_abort (void)
 {
@@ -1122,15 +1109,15 @@ copy_builtin (BUILTIN_DESC *builtin)
 
   new = (BUILTIN_DESC *)xmalloc (sizeof (BUILTIN_DESC));
 
-  new->name = savestring (builtin->name);
-  new->shortdoc = savestring (builtin->shortdoc);
+  new->name = xstrdup (builtin->name);
+  new->shortdoc = xstrdup (builtin->shortdoc);
   new->longdoc = copy_string_array (builtin->longdoc);
   new->dependencies = copy_string_array (builtin->dependencies);
 
   new->function =
-    builtin->function ? savestring (builtin->function) : (char *)NULL;
+    builtin->function ? xstrdup (builtin->function) : (char *)NULL;
   new->docname =
-    builtin->docname  ? savestring (builtin->docname)  : (char *)NULL;
+    builtin->docname  ? xstrdup (builtin->docname)  : (char *)NULL;
 
   return (new);
 }
@@ -1361,7 +1348,7 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 {
   register int i;
   register BUILTIN_DESC *builtin;
-  char *dname;
+  char const *dname;
   char *sarray[2];
 
   for (i = 0; i < builtins->sindex; i++)
@@ -1578,7 +1565,7 @@ int
 write_helpfiles (ARRAY *builtins)
 {
   char *helpfile;
-  char *bname;
+  char const *bname;
   FILE *helpfp;
   int i;
   int hdlen;
