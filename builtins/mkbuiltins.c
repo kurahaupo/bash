@@ -449,6 +449,12 @@ main (int argc, char **argv)
   exit (0);
 }
 
+static inline char *
+strdup_null (char const *orig)
+{
+  return orig ? xstrdup (orig) : NULL;
+}
+
 /* **************************************************************** */
 /*								    */
 /*		  Array Functions and Manipulators		    */
