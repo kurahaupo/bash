@@ -96,23 +96,23 @@ whitespace(int c)
    texinfo documentation to it. */
 FILE *documentation_file = (FILE *)NULL;
 
-/* Non-zero means to only produce documentation. */
-int only_documentation = 0;
+/* Only produce documentation. */
+bool only_documentation = false;
 
-/* Non-zero means to not do any productions. */
-int inhibit_production = 0;
+/* Do not do any productions. */
+bool inhibit_production = false;
 
-/* Non-zero means to not add functions (xxx_builtin) to the members of the
-   produced `struct builtin []' */
-int inhibit_functions = 0;
+/* Do not add functions (xxx_builtin) to the members of the
+   produced ‘struct builtin []’ */
+bool inhibit_functions = false;
 
-/* Non-zero means to produce separate help files for each builtin, named by
-   the builtin name, in `./helpfiles'. */
-int separate_helpfiles = 0;
+/* Produce separate help files for each builtin, named by the builtin name,
+   in ‘./helpfiles’. */
+bool separate_helpfiles = false;
 
-/* Non-zero means to create single C strings for each `longdoc', with
-   embedded newlines, for ease of translation. */
-int single_longdoc_strings = 1;
+/* Create single C strings for each ‘longdoc’, with embedded newlines,
+   for ease of translation. */
+bool single_longdoc_strings = true;
 
 /* The name of a directory into which the separate external help files will
    eventually be installed. */
@@ -324,9 +324,9 @@ main (int argc, char **argv)
       else if (strcmp (arg, "-structfile") == 0)
 	struct_filename = argv[arg_index++];
       else if (strcmp (arg, "-noproduction") == 0)
-	inhibit_production = 1;
+	inhibit_production = true;
       else if (strcmp (arg, "-nofunctions") == 0)
-	inhibit_functions = 1;
+	inhibit_functions = true;
       else if (strcmp (arg, "-document") == 0)
 	documentation_file = fopen (documentation_filename, "w");
       else if (strcmp (arg, "-D") == 0)
@@ -347,12 +347,12 @@ main (int argc, char **argv)
 	}
       else if (strcmp (arg, "-documentonly") == 0)
 	{
-	  only_documentation = 1;
+	  only_documentation = true;
 	  documentation_file = fopen (documentation_filename, "w");
 	}
       else if (strcmp (arg, "-H") == 0)
 	{
-	  separate_helpfiles = 1;
+	  separate_helpfiles = true;
 	  helpfile_directory = argv[arg_index++];
 	}
       else if (strcmp (arg, "-S") == 0)
@@ -577,9 +577,9 @@ find_directive (char *directive)
    the corresponding $END. */
 static int building_builtin = 0;
 
-/* Non-zero means to output cpp line and file information before
-   printing the current line to the production file. */
-int output_cpp_line_info = 0;
+/* Output cpp line and file information before printing the current line
+   to the production file. */
+bool output_cpp_line_info = false;
 
 /* The main function of this program.  Read FILENAME and act on what is
    found.  Lines not starting with a dollar sign are copied to the
@@ -666,7 +666,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 
   /* Begin processing the input file.  We don't write any output
      until we have a file to write output to. */
-  output_cpp_line_info = 1;
+  output_cpp_line_info = true;
 
   /* Process each line in the array. */
   for (i = 0; line = defs->lines->array[i]; i++)
@@ -724,7 +724,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 			     defs->line_number + 1,
 			     error_directory ? error_directory : "./",
 			     defs->filename);
-		  output_cpp_line_info = 0;
+		  output_cpp_line_info = false;
 		}
 
 	      fprintf (defs->output, "%s\n", line);
@@ -899,7 +899,7 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
       return (-1);
     }
 
-  output_cpp_line_info++;
+  output_cpp_line_info = true;
 
   /* Get the name of this builtin, and stick it in the array. */
   name = get_arg (self, defs, arg);
@@ -1024,7 +1024,7 @@ produces_handler (char *self, DEF_FILE *defs, char *arg)
   if (only_documentation)
     return (0);
 
-  output_cpp_line_info++;
+  output_cpp_line_info = true;
 
   if (defs->production)
     line_error (defs, "%s already has a %s definition", defs->filename, self);
@@ -1278,7 +1278,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 		{
 		  fprintf (structfile, "  { \"%s\", ", builtin->name);
 
-		  if (builtin->function && inhibit_functions == 0)
+		  if (builtin->function && !inhibit_functions)
 		    fprintf (structfile, "%s, ", builtin->function);
 		  else
 		    fprintf (structfile, "(sh_builtin_func_t *)0x0, ");
