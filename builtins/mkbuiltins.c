@@ -145,10 +145,10 @@ typedef struct {
 
 /* Here is a structure defining a single BUILTIN. */
 typedef struct {
-  char *name;		/* The name of this builtin. */
-  char *function;	/* The name of the function to call. */
-  char *shortdoc;	/* The short documentation for this builtin. */
-  char *docname;	/* Possible name for documentation string. */
+  char const *name;		/* The name of this builtin. */
+  char const *function;	/* The name of the function to call. */
+  char const *shortdoc;	/* The short documentation for this builtin. */
+  char const *docname;	/* Possible name for documentation string. */
   ARRAY *longdoc;	/* The long documentation for this builtin. */
   ARRAY *dependencies;	/* Null terminated array of #define names. */
   int flags;		/* Flags for this builtin. */
@@ -276,9 +276,9 @@ void line_error (DEF_FILE *, char *, char *, char *);
 
 void write_file_headers (FILE *, FILE *);
 void write_file_footers (FILE *, FILE *);
-void write_ifdefs (FILE *, char **);
-void write_endifs (FILE *, char **);
-void write_documentation (FILE *, char **, int, int);
+void write_ifdefs (FILE *, char const *const *);
+void write_endifs (FILE *, char const *const *);
+void write_documentation (FILE *, char const *const *, int, int);
 void write_dummy_declarations (FILE *, ARRAY *);
 void write_longdocs (FILE *, ARRAY *);
 void write_builtins (DEF_FILE *, FILE *, FILE *);
@@ -286,10 +286,9 @@ void write_builtins (DEF_FILE *, FILE *, FILE *);
 int write_helpfiles (ARRAY *);
 
 void free_defs (DEF_FILE *);
-void add_documentation (DEF_FILE *, char *);
+void add_documentation (DEF_FILE *, char const *);
 
 void must_be_building (char *, DEF_FILE *);
-void remove_trailing_whitespace (char *);
 
 inline static const char *
 document_name(BUILTIN_DESC *b)
@@ -536,7 +535,7 @@ array_free (ARRAY *array)
 /* **************************************************************** */
 
 /* The definition of a function. */
-typedef int mk_handler_func_t (char *, DEF_FILE *, char *);
+typedef int mk_handler_func_t (char *, DEF_FILE *, char const *);
 
 /* Structure handles processor directives. */
 typedef struct {
@@ -544,14 +543,14 @@ typedef struct {
   mk_handler_func_t *function;
 } HANDLER_ENTRY;
 
-extern int builtin_handler (char *, DEF_FILE *, char *);
-extern int function_handler (char *, DEF_FILE *, char *);
-extern int short_doc_handler (char *, DEF_FILE *, char *);
-extern int comment_handler (char *, DEF_FILE *, char *);
-extern int depends_on_handler (char *, DEF_FILE *, char *);
-extern int produces_handler (char *, DEF_FILE *, char *);
-extern int end_handler (char *, DEF_FILE *, char *);
-extern int docname_handler (char *, DEF_FILE *, char *);
+extern int builtin_handler (char *, DEF_FILE *, char const *);
+extern int function_handler (char *, DEF_FILE *, char const *);
+extern int short_doc_handler (char *, DEF_FILE *, char const *);
+extern int comment_handler (char *, DEF_FILE *, char const *);
+extern int depends_on_handler (char *, DEF_FILE *, char const *);
+extern int produces_handler (char *, DEF_FILE *, char const *);
+extern int end_handler (char *, DEF_FILE *, char const *);
+extern int docname_handler (char *, DEF_FILE *, char const *);
 
 HANDLER_ENTRY handlers[] = {
   { "BUILTIN", builtin_handler },
@@ -660,14 +659,17 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   defs->builtins = NULL;
 
   /* Build the array of lines. */
-  i = 0;
-  while (i < file_size)
+  for (int i = 0; i < file_size; ++i)
     {
       array_add (&buffer[i], defs->lines);
 
       while (i < file_size && buffer[i] != '\n')
 	i++;
-      buffer[i++] = '\0';
+      buffer[i] = '\0';
+
+      /* trim trailing whitespace */
+      for (int j = i ; --j >= 0 && buffer[j] && whitespace (buffer[j]) ;)
+	buffer[j] = 0;
     }
 
   /* Begin processing the input file.  We don't write any output
@@ -811,28 +813,12 @@ free_defs (DEF_FILE *defs)
 
 /* Strip surrounding whitespace from STRING, and
    return a pointer to the start of it. */
-char *
-strip_whitespace (char *string)
+static char const *
+skip_leading_whitespace (char const *string)
 {
   while (whitespace (*string))
-      string++;
-
-  remove_trailing_whitespace (string);
+    string++;
   return (string);
-}
-
-/* Remove only the trailing whitespace from STRING. */
-void
-remove_trailing_whitespace (char *string)
-{
-  register int i;
-
-  i = strlen (string) - 1;
-
-  while (i > 0 && whitespace (string[i]))
-    i--;
-
-  string[++i] = '\0';
 }
 
 /* Ensure that there is a argument in STRING and return it.
@@ -840,11 +826,9 @@ remove_trailing_whitespace (char *string)
    DEFS is the DEF_FILE in which the directive is found.
    If there is no argument, produce an error. */
 char *
-get_arg (char *for_whom, DEF_FILE *defs, char *string)
+get_arg (char *for_whom, DEF_FILE *defs, char const *string)
 {
-  char *new;
-
-  new = strip_whitespace (string);
+  char const *new = skip_leading_whitespace (string);
 
   if (!*new)
     line_error (defs, "%s requires an argument", for_whom, "");
@@ -874,13 +858,11 @@ current_builtin (char *directive, DEF_FILE *defs)
 /* Add LINE to the long documentation for the current builtin.
    Ignore blank lines until the first non-blank line has been seen. */
 void
-add_documentation (DEF_FILE *defs, char *line)
+add_documentation (DEF_FILE *defs, char const *line)
 {
   register BUILTIN_DESC *builtin;
 
   builtin = current_builtin ("(implied LONGDOC)", defs);
-
-  remove_trailing_whitespace (line);
 
   if (!*line && !builtin->longdoc)
     return;
@@ -893,7 +875,7 @@ add_documentation (DEF_FILE *defs, char *line)
 
 /* How to handle the $BUILTIN directive. */
 int
-builtin_handler (char *self, DEF_FILE *defs, char *arg)
+builtin_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   BUILTIN_DESC *new;
   char *name;
@@ -942,7 +924,7 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $FUNCTION directive. */
 int
-function_handler (char *self, DEF_FILE *defs, char *arg)
+function_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -964,7 +946,7 @@ function_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $DOCNAME directive. */
 int
-docname_handler (char *self, DEF_FILE *defs, char *arg)
+docname_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -981,7 +963,7 @@ docname_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $SHORT_DOC directive. */
 int
-short_doc_handler (char *self, DEF_FILE *defs, char *arg)
+short_doc_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
 
@@ -998,14 +980,14 @@ short_doc_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $COMMENT directive. */
 int
-comment_handler (char *self, DEF_FILE *defs, char *arg)
+comment_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   return (0);
 }
 
 /* How to handle the $DEPENDS_ON directive. */
 int
-depends_on_handler (char *self, DEF_FILE *defs, char *arg)
+depends_on_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
   char *dependent;
@@ -1023,7 +1005,7 @@ depends_on_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $PRODUCES directive. */
 int
-produces_handler (char *self, DEF_FILE *defs, char *arg)
+produces_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   /* If just hacking documentation, don't change any of the production
      files. */
@@ -1054,7 +1036,7 @@ produces_handler (char *self, DEF_FILE *defs, char *arg)
 
 /* How to handle the $END directive. */
 int
-end_handler (char *self, DEF_FILE *defs, char *arg)
+end_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   must_be_building (self, defs);
   building_builtin = 0;
@@ -1411,7 +1393,7 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
    If a define is preceded by an `!', then the sense of the test is
    reversed. */
 void
-write_ifdefs (FILE *stream, char **defines)
+write_ifdefs (FILE *stream, char const *const *defines)
 {
   register int i;
 
@@ -1422,7 +1404,7 @@ write_ifdefs (FILE *stream, char **defines)
 
   for (i = 0; defines[i]; i++)
     {
-      char *def = defines[i];
+      char const *def = defines[i];
 
       if (*def == '!')
 	fprintf (stream, "!defined (%s)", def + 1);
@@ -1440,7 +1422,7 @@ write_ifdefs (FILE *stream, char **defines)
    STREAM is the stream to write the information to.
    DEFINES is a null terminated array of define names. */
 void
-write_endifs (FILE *stream, char **defines)
+write_endifs (FILE *stream, char const *const *defines)
 {
   register int i;
 
@@ -1465,7 +1447,7 @@ write_endifs (FILE *stream, char **defines)
    internationalization (gettext) and the single-string vs. multiple-strings
    issues. */
 void
-write_documentation (FILE *stream, char **documentation, int indentation, int flags)
+write_documentation (FILE *stream, char const *const *documentation, int indentation, int flags)
 {
   if (stream == 0)
     return;
@@ -1485,7 +1467,7 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 
   for (int i = 0; documentation && documentation[i]; i++)
     {
-      char *line = documentation[i];
+      char const *line = documentation[i];
       const bool first_line = !i;
       const bool last_line = !documentation[i+1];
 
