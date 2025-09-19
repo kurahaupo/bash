@@ -228,8 +228,10 @@ int
 main (int argc, char **argv)
 {
   int arg_index = 1;
-  FILE *structfile, *externfile;
-  char *documentation_filename, *temp_struct_filename;
+  FILE *structfile;
+  FILE *externfile;
+  char *documentation_filename;
+  char *temp_struct_filename;
 
   structfile = externfile = (FILE *)NULL;
   documentation_filename = DOCFILE;
@@ -517,8 +519,10 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   DEF_FILE *defs;
   struct stat finfo;
   size_t file_size;
-  char *buffer, *line;
-  int fd, nr;
+  char *buffer;
+  char *line;
+  int fd;
+  int nr;
 
   if (stat (filename, &finfo) == -1)
     file_error (filename);
@@ -1518,9 +1522,11 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 int
 write_helpfiles (ARRAY *builtins)
 {
-  char *helpfile, *bname;
+  char *helpfile;
+  char *bname;
   FILE *helpfp;
-  int i, hdlen;
+  int i;
+  int hdlen;
   BUILTIN_DESC *builtin;
 
   i = mkdir ("helpfiles", 0777);
