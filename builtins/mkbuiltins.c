@@ -1588,7 +1588,7 @@ write_helpfiles (ARRAY *builtins)
       sprintf (helpfile, "helpfiles/%s", bname);
 
       helpfp = fopen (helpfile, "w");
-      if (helpfp == 0)
+      if (helpfp == NULL)
 	{
 	  fprintf (stderr, "write_helpfiles: cannot open %s\n", helpfile);
 	  free (helpfile);
