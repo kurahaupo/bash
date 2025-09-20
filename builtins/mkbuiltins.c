@@ -137,12 +137,24 @@ char *include_filename = NULL;
 /* The name of the include file to put into the generated struct filename. */
 
 /* Here is a structure for manipulating arrays of data. */
+/* Omit "width", since every array has void* elements */
 typedef struct {
-  int size;		/* Number of slots allocated to array. */
-  int sindex;		/* Current location in array. */
-  int width;		/* Size of each element. */
-  int growth_rate;	/* How fast to grow. */
-  char **array;		/* The array itself. */
+  size_t size;		/* Number of slots allocated to array. */
+  size_t count;		/* Current location in array. */
+  int growth_rate;	/* How fast to grow; +ve for linear, -ve for exponential. */
+  bool alloc_self:1;    /* free array itself on disposal */
+  bool alloc_elem:1;    /* free elements on disposal */
+  bool trailing_null:1; /* allow extra space for NULL at end of elements */
+  union {		/* The array itself. */
+      void **elements;
+      char const *const *strings; /* when used as a null-terminated list of strings */
+			/* Although std C leaves double-pointer aliasing
+			   undefined, Posix requires a flattish address space,
+			   so all pointers have the same bitwise representation
+			   regardless of the target type, which implies
+			   (*(void**)ptr == *ptr) for ptr having any double
+			   pointer type T**. */
+  };
 } ARRAY;
 
 /* Here is a structure defining a single BUILTIN. */
@@ -451,7 +463,7 @@ main (int argc, char **argv)
 }
 
 static inline char *
-strdup_null (char const *orig)
+xstrdup_null (char const *orig)
 {
   return orig ? xstrdup (orig) : NULL;
 }
@@ -462,72 +474,123 @@ strdup_null (char const *orig)
 /*								    */
 /* **************************************************************** */
 
-/* Make a new array, and return a pointer to it.  The array will
-   contain elements of size WIDTH, and is initialized to no elements. */
-ARRAY *
-array_create (int width)
+/* Initialise an empty array. */
+void
+array_init (ARRAY *a, bool alloc_elem, bool trailing_null)
 {
-  ARRAY *array;
-
-  array = (ARRAY *)xmalloc (sizeof (ARRAY));
-  array->size = 0;
-  array->sindex = 0;
-  array->width = width;
-
-  /* Default to increasing size in units of 20. */
-  array->growth_rate = 20;
-
-  array->array = (char **)NULL;
-
-  return (array);
+  *a = (ARRAY){
+    .size          = 0,
+    .count         = 0,
+    .alloc_self    = false,
+    .alloc_elem    = alloc_elem,
+    .trailing_null = trailing_null,
+    .growth_rate   = 16,  /* Default to increasing size in units of 16. */
+    .elements      = NULL
+  };
 }
 
-/* Copy the array of strings in ARRAY. */
+/* Allocate and initialise an empty array, and return a pointer to it.  */
 ARRAY *
-copy_string_array (ARRAY *array)
+array_create (bool alloc_elem, bool trailing_null)
 {
-  register int i;
-  ARRAY *copy;
+  ARRAY *a = xmalloc (sizeof (ARRAY));
+  array_init (a, alloc_elem, trailing_null);
+  a->alloc_self = true;
+  return a;
+}
 
-  if (!array)
-    return (ARRAY *)NULL;
+void
+array_resize (ARRAY *a, size_t want_size, bool squeeze)
+{
+  if (a->trailing_null)
+    ++want_size;
 
-  copy = array_create (sizeof (char *));
+  /* Do nothing if already sized to accommodate the requested size */
+  if (want_size == a->size)
+    return;
 
-  copy->size = array->size;
-  copy->sindex = array->sindex;
-  copy->width = array->width;
+  /* Do nothing if already big enough, and not squeezing to minimum size */
+  if (! squeeze)
+    {
+      if (want_size <= a->size)
+	return;
 
-  copy->array = (char **)xmalloc ((1 + array->sindex) * sizeof (char *));
+      /* Round the requested size up, unless squeezing */
+      if (want_size > 0)
+	{
+	  size_t g = a->growth_rate;
+	  if (g == 0)
+	    {
+	      /* Round up to a power of 2 */
+	      for (;want_size & want_size-1; want_size += want_size & -want_size) {}
+	    }
+	  else
+	    {
+	      /* Round up to a multiple of .growth_rate */
+	      want_size += g - want_size % g;
+	    }
 
-  for (i = 0; i < array->sindex; i++)
-    copy->array[i] = xstrdup (array->array[i]);
+	  /* Do nothing if already at the adjusted size */
+	  if (want_size == a->size)
+	    return;
+	}
+    }
 
-  copy->array[i] = (char *)NULL;
+  a->elements = xrealloc (a->elements, want_size * sizeof (void*));
 
-  return (copy);
+  /* To ensure .trailing_null works as advertised, zero out any additional
+     elements so that they will read as NULL.
+     The the assertion ensures this will work; if it fails for you, your NULL
+     pointer isn't bitwise zero, so you'll need to replace the following memset
+     with a loop. */
+  assert (*(uintptr_t*)((void const *[]){0}) == 0);
+  if (a->size < want_size)
+    memset (a->elements + a->size, 0, (want_size - a->size) * sizeof (void*));
+  a->size = want_size;
 }
 
 /* Add ELEMENT to ARRAY, growing the array if necessary. */
 void
-array_add (char const *element, ARRAY *array)
+array_add (void const *element, ARRAY *a)
 {
-  if (array->sindex + 2 > array->size)
-    array->array = (char **)xrealloc
-      (array->array, (array->size += array->growth_rate) * array->width);
+  array_resize (a, a->count + 1, false);
+  a->elements[a->count++] = (void *) element;   /* TODO: void const *element; ??? */
+}
 
-  array->array[array->sindex++] = (char *)element;
-  array->array[array->sindex] = (char *)NULL;
+/* Copy the array of strings in ARRAY. */
+ARRAY *
+copy_string_array (ARRAY *orig)
+{
+  if (!orig)
+    return NULL;
+  ARRAY *copy = array_create (true, orig->trailing_null);
+  array_resize (copy, orig->count, true);
+  for (size_t i = 0 ; i < orig->count ; i++)
+    copy->elements[i] = xstrdup_null (orig->strings[i]);
+  copy->count = orig->count;
+  return copy;
 }
 
 /* Free an allocated array and data pointer. */
 void
-array_free (ARRAY *array)
+array_destroy (ARRAY *a)
 {
-  if (array->array)
-    free (array->array);
-
-  free (array);
+  if (!a)
+    return;
+  if (a->elements)
+    {
+      if (a->alloc_elem)
+	{
+	  void **p = a->elements;
+	  void **ep = p + a->size;
+	  for (; p < ep ; ++p)
+	    if (*p)
+	      free (*p);
+	}
+      free (a->elements);
+    }
+  if (a->alloc_self)
+    free (a);
 }
 
 /* **************************************************************** */
@@ -605,7 +668,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   struct stat finfo;
   size_t file_size;
   char *buffer;
-  char *line;
+  char const *line;
   int fd;
   int nr;
 
@@ -654,7 +717,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   /* Create and fill in the initial structure describing this file. */
   defs = (DEF_FILE *)xmalloc (sizeof (DEF_FILE));
   defs->filename = filename;
-  defs->lines = array_create (sizeof (char *));
+  defs->lines = array_create (false, true);
   defs->line_number = 0;
   defs->production = NULL;
   defs->output = NULL;
@@ -679,8 +742,9 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   output_cpp_line_info = true;
 
   /* Process each line in the array. */
-  for (i = 0; line = defs->lines->array[i]; i++)
+  for (i = 0 ; i < defs->lines->count ; i++)
     {
+      line = defs->lines->strings[i];
       defs->line_number = i;
 
       if (*line == '$')
@@ -762,47 +826,32 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 static void
 free_builtin (BUILTIN_DESC *builtin)
 {
-  register int i;
+  if (!builtin)
+    return;
 
   free_const (builtin->name);
   free_const (builtin->function);
   free_const (builtin->shortdoc);
   free_const (builtin->docname);
-
-  if (builtin->longdoc)
-    array_free (builtin->longdoc);
-
-  if (builtin->dependencies)
-    {
-      for (i = 0; builtin->dependencies->array[i]; i++)
-	free (builtin->dependencies->array[i]);
-      array_free (builtin->dependencies);
-    }
+  array_destroy (builtin->longdoc);
+  array_destroy (builtin->dependencies);
 }
 
 /* Free all of the memory allocated to a DEF_FILE. */
 void
 free_defs (DEF_FILE *defs)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
+  free (defs->production);
 
-  if (defs->production)
-    free (defs->production);
+  array_destroy (defs->lines);
 
-  if (defs->lines)
-    array_free (defs->lines);
-
-  if (defs->builtins)
+  ARRAY *builtins = defs->builtins;
+  if (builtins)
     {
-      for (i = 0; builtin = (BUILTIN_DESC *)defs->builtins->array[i]; i++)
-	{
-	  free_builtin (builtin);
-	  free (builtin);
-	}
-      array_free (defs->builtins);
+      for (size_t i = 0; i < builtins->count; i++)
+	free_builtin (builtins->elements[i]);
+      array_destroy (builtins);
     }
-  free (defs);
 }
 
 /* **************************************************************** */
@@ -850,7 +899,7 @@ current_builtin (char *directive, DEF_FILE *defs)
 {
   must_be_building (directive, defs);
   if (defs->builtins)
-    return ((BUILTIN_DESC *)defs->builtins->array[defs->builtins->sindex - 1]);
+    return (defs->builtins->elements[defs->builtins->count - 1]);
   else
     return (NULL);
 }
@@ -868,7 +917,7 @@ add_documentation (DEF_FILE *defs, char const *line)
     return;
 
   if (!builtin->longdoc)
-    builtin->longdoc = array_create (sizeof (char *));
+    builtin->longdoc = array_create (false, true);
 
   array_add (line, builtin->longdoc);
 }
@@ -894,7 +943,7 @@ builtin_handler (char *self, DEF_FILE *defs, char const *arg)
 
   /* If this is the first builtin, create the array to hold them. */
   if (!defs->builtins)
-    defs->builtins = array_create (sizeof (BUILTIN_DESC *));
+    defs->builtins = array_create (true, true);
 
   new = (BUILTIN_DESC *)xmalloc (sizeof (BUILTIN_DESC));
   new->name = name;
@@ -916,7 +965,7 @@ builtin_handler (char *self, DEF_FILE *defs, char const *arg)
   if (is_arrayvar_builtin (name))
     new->flags |= BUILTIN_FLAG_ARRAYREF_ARG;
 
-  array_add ((char *)new, defs->builtins);
+  array_add (new, defs->builtins);
   building_builtin = 1;
 
   return (0);
@@ -996,7 +1045,7 @@ depends_on_handler (char *self, DEF_FILE *defs, char const *arg)
   dependent = get_arg (self, defs, arg);
 
   if (!builtin->dependencies)
-    builtin->dependencies = array_create (sizeof (char *));
+    builtin->dependencies = array_create (true, true);
 
   array_add (dependent, builtin->dependencies);
 
@@ -1121,9 +1170,9 @@ save_builtin (BUILTIN_DESC *builtin)
   /* If this is the first builtin to be saved, create the array
      to hold it. */
   if (!saved_builtins)
-      saved_builtins = array_create (sizeof (BUILTIN_DESC *));
+    saved_builtins = array_create (false, true);
 
-  array_add ((char *)newbuiltin, saved_builtins);
+  array_add (newbuiltin, saved_builtins);
 }
 
 /* Flags that mean something to write_documentation (). */
@@ -1235,19 +1284,18 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
   /* Write out the information. */
   if (defs->builtins)
     {
-      register BUILTIN_DESC *builtin;
 
-      for (i = 0; i < defs->builtins->sindex; i++)
+      for (i = 0; i < defs->builtins->count; i++)
 	{
-	  builtin = (BUILTIN_DESC *)defs->builtins->array[i];
+	  BUILTIN_DESC *builtin = defs->builtins->elements[i];
 
 	  /* Write out any #ifdefs that may be there. */
 	  if (!only_documentation)
 	    {
 	      if (builtin->dependencies)
 		{
-		  write_ifdefs (externfile, (char const*const*) builtin->dependencies->array);
-		  write_ifdefs (structfile, (char const*const*) builtin->dependencies->array);
+		  write_ifdefs (externfile, builtin->dependencies->strings);
+		  write_ifdefs (structfile, builtin->dependencies->strings);
 		}
 
 	      /* Write the extern definition. */
@@ -1313,10 +1361,10 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	      if (builtin->dependencies)
 		{
 		  if (externfile)
-		    write_endifs (externfile, (char const*const*) builtin->dependencies->array);
+		    write_endifs (externfile, builtin->dependencies->strings);
 
 		  if (structfile)
-		    write_endifs (structfile, (char const*const*) builtin->dependencies->array);
+		    write_endifs (structfile, builtin->dependencies->strings);
 		}
 	    }
 
@@ -1324,7 +1372,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	    {
 	      fprintf (documentation_file, "@item %s\n", builtin->name);
 	      write_documentation
-		(documentation_file, (char const*const*) builtin->longdoc->array, 0, TEXINFO);
+		(documentation_file, builtin->longdoc->strings, 0, TEXINFO);
 	    }
 	}
     }
@@ -1336,18 +1384,17 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 {
   register int i;
   register BUILTIN_DESC *builtin;
-  char const *dname;
   char *sarray[2];
 
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->count; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->elements[i];
 
       if (builtin->dependencies)
-	write_ifdefs (stream, (char const*const*) builtin->dependencies->array);
+	write_ifdefs (stream, builtin->dependencies->strings);
 
       /* Write the long documentation strings. */
-      dname = document_name (builtin);
+      char const *dname = document_name (builtin);
       fprintf (stream, "char * const %s_doc[] =", dname);
 
       if (separate_helpfiles)
@@ -1360,11 +1407,10 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 	  free (sarray[0]);
 	}
       else
-	write_documentation (stream, (char const*const*) builtin->longdoc->array, 0, STRING_ARRAY);
+	write_documentation (stream, builtin->longdoc->strings, 0, STRING_ARRAY);
 
       if (builtin->dependencies)
-	write_endifs (stream, (char const*const*) builtin->dependencies->array);
-
+	write_endifs (stream, builtin->dependencies->strings);
     }
 }
 
@@ -1377,9 +1423,9 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
   for (i = 0; structfile_header[i]; i++)
     fprintf (stream, "%s\n", structfile_header[i]);
 
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->count; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->elements[i];
 
       /* How to guarantee that no builtin is written more than once? */
       fprintf (stream, "int %s () { return (0); }\n", builtin->function);
@@ -1567,9 +1613,9 @@ write_helpfiles (ARRAY *builtins)
     }
 
   hdlen = strlen ("helpfiles/");
-  for (i = 0; i < builtins->sindex; i++)
+  for (i = 0; i < builtins->count; i++)
     {
-      builtin = (BUILTIN_DESC *)builtins->array[i];
+      builtin = builtins->elements[i];
 
       bname = document_name (builtin);
       helpfile = (char *)xmalloc (hdlen + strlen (bname) + 1);
@@ -1583,7 +1629,7 @@ write_helpfiles (ARRAY *builtins)
 	  continue;
 	}
 
-      write_documentation (helpfp, (char const*const*) builtin->longdoc->array, 4, PLAINTEXT);
+      write_documentation (helpfp, builtin->longdoc->strings, 4, PLAINTEXT);
 
       fflush (helpfp);
       fclose (helpfp);
