@@ -1593,7 +1593,6 @@ write_helpfiles (ARRAY *builtins)
   char *helpfile;
   FILE *helpfp;
   int i;
-  int hdlen;
   BUILTIN_DESC *builtin;
 
   i = mkdir ("helpfiles", 0777);
@@ -1603,7 +1602,6 @@ write_helpfiles (ARRAY *builtins)
       return -1;
     }
 
-  hdlen = strlen ("helpfiles/");
   for (i = 0; i < builtins->count; i++)
     {
       builtin = builtins->elements[i];
