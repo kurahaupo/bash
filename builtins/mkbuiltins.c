@@ -1102,7 +1102,7 @@ line_error (DEF_FILE *defs, char const *format, char const *arg1, char const *ar
     fprintf (stderr, "%s", error_directory ? error_directory : "./");
   fprintf (stderr, "%s:%d:", defs->filename, defs->line_number + 1);
   fprintf (stderr, format, arg1, arg2);
-  fprintf (stderr, "\n");
+  fputc ('\n', stderr);
   fflush (stderr);
 }
 
