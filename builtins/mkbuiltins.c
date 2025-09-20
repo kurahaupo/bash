@@ -632,9 +632,7 @@ HANDLER_ENTRY handlers[] = {
 HANDLER_ENTRY *
 find_directive (char *directive)
 {
-  register int i;
-
-  for (i = 0; handlers[i].directive; i++)
+  for (size_t i = 0; handlers[i].directive; i++)
     if (strcmp (handlers[i].directive, directive) == 0)
       return (&handlers[i]);
 
@@ -661,7 +659,6 @@ bool output_cpp_line_info = false;
 void
 extract_info (char *filename, FILE *structfile, FILE *externfile)
 {
-  register int i;
   DEF_FILE *defs;
   struct stat finfo;
   size_t file_size;
@@ -721,7 +718,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   defs->builtins = NULL;
 
   /* Build the array of lines. */
-  for (int i = 0; i < file_size; ++i)
+  for (size_t i = 0; i < file_size; ++i)
     {
       array_add (&buffer[i], defs->lines);
 
@@ -730,7 +727,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
       buffer[i] = '\0';
 
       /* trim trailing whitespace */
-      for (int j = i ; --j >= 0 && buffer[j] && whitespace (buffer[j]) ;)
+      for (size_t j = i ; --j >= 0 && buffer[j] && whitespace (buffer[j]) ;)
 	buffer[j] = 0;
     }
 
@@ -739,7 +736,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   output_cpp_line_info = true;
 
   /* Process each line in the array. */
-  for (i = 0 ; i < defs->lines->count ; i++)
+  for (size_t i = 0 ; i < defs->lines->count ; i++)
     {
       char const *line = defs->lines->strings[i];
       defs->line_number = i;
@@ -1235,11 +1232,9 @@ char *structfile_footer[] = {
 void
 write_file_headers (FILE *structfile, FILE *externfile)
 {
-  register int i;
-
   if (structfile)
     {
-      for (i = 0; structfile_header[i]; i++)
+      for (size_t i = 0; structfile_header[i]; i++)
 	fprintf (structfile, "%s\n", structfile_header[i]);
 
       fprintf (structfile, "#include \"%s\"\n", include_filename);
@@ -1260,13 +1255,11 @@ write_file_headers (FILE *structfile, FILE *externfile)
 void
 write_file_footers (FILE *structfile, FILE *externfile)
 {
-  register int i;
-
   /* Write out the footers. */
   if (structfile)
     {
       fprintf (structfile, "  { NULL, NULL, 0, NULL, NULL, NULL }\n};\n");
-      for (i = 0; structfile_footer[i]; i++)
+      for (size_t i = 0; structfile_footer[i]; i++)
 	fprintf (structfile, "%s\n", structfile_footer[i]);
     }
 }
@@ -1461,14 +1454,12 @@ write_ifdefs (FILE *stream, char const *const *defines)
 void
 write_endifs (FILE *stream, char const *const *defines)
 {
-  register int i;
-
   if (!stream)
     return;
 
   fprintf (stream, "#endif /* ");
 
-  for (i = 0; defines[i]; i++)
+  for (size_t i = 0; defines[i]; i++)
     {
       fprintf (stream, "%s", defines[i]);
 
@@ -1502,7 +1493,7 @@ write_documentation (FILE *stream, char const *const *documentation, int indenta
 	fprintf (stream,  "     N_(");
     }
 
-  for (int i = 0; documentation && documentation[i]; i++)
+  for (size_t i = 0; documentation && documentation[i]; i++)
     {
       char const *line = documentation[i];
       const bool first_line = !i;
@@ -1528,7 +1519,7 @@ write_documentation (FILE *stream, char const *const *documentation, int indenta
 	    line = " ";	/* avoid entirely empty string, which translates specially. */
 	  if (indentation && *line)
 	    fprintf (stream, "%*.0s", indentation, "");
-	  for (int j = 0; line[j]; j++)
+	  for (size_t j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
 		{
@@ -1552,7 +1543,7 @@ write_documentation (FILE *stream, char const *const *documentation, int indenta
 	{
 	  if (indentation && *line)
 	    fprintf (stream, "%*.0s", indentation, "");
-	  for (int j = 0; line[j]; j++)
+	  for (size_t j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
 		{
@@ -1592,7 +1583,6 @@ write_helpfiles (ARRAY *builtins)
 {
   char *helpfile;
   FILE *helpfp;
-  int i;
   BUILTIN_DESC *builtin;
 
   if (mkdir ("helpfiles", 0777) < 0 && errno != EEXIST)
@@ -1601,7 +1591,7 @@ write_helpfiles (ARRAY *builtins)
       return -1;
     }
 
-  for (i = 0; i < builtins->count; i++)
+  for (size_t i = 0; i < builtins->count; i++)
     {
       builtin = builtins->elements[i];
 
