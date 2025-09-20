@@ -1595,8 +1595,7 @@ write_helpfiles (ARRAY *builtins)
   int i;
   BUILTIN_DESC *builtin;
 
-  i = mkdir ("helpfiles", 0777);
-  if (i < 0 && errno != EEXIST)
+  if (mkdir ("helpfiles", 0777) < 0 && errno != EEXIST)
     {
       fprintf (stderr, "write_helpfiles: helpfiles: cannot create directory\n");
       return -1;
