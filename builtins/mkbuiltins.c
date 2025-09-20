@@ -504,13 +504,13 @@ array_resize (ARRAY *a, size_t want_size, bool squeeze)
   if (want_size == a->size)
     return;
 
-  /* Do nothing if already big enough, and not squeezing to minimum size */
+  /* Round requested size up, unless squeezing to minimum size */
   if (! squeeze)
     {
+      /* Do nothing if already big enough */
       if (want_size <= a->size)
 	return;
 
-      /* Round the requested size up, unless squeezing */
       if (want_size > 0)
 	{
 	  size_t g = a->growth_rate;
@@ -522,7 +522,9 @@ array_resize (ARRAY *a, size_t want_size, bool squeeze)
 	  else
 	    {
 	      /* Round up to a multiple of .growth_rate */
-	      want_size += g - want_size % g;
+	      --want_size;
+	      g -= want_size % g;
+	      want_size += g;
 	    }
 
 	  /* Do nothing if already at the adjusted size */
