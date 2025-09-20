@@ -1450,7 +1450,7 @@ write_ifdefs (FILE *stream, char const *const *defines)
       if (defines[i + 1])
 	fprintf (stream, " && ");
     }
-  fprintf (stream, "\n");
+  fputc ('\n', stream);
 }
 
 /* Write an #endif string saying what defines controlled the compilation
