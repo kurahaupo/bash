@@ -297,7 +297,9 @@ void write_dummy_declarations (FILE *, ARRAY *);
 void write_longdocs (FILE *, ARRAY *);
 void write_builtins (DEF_FILE *, FILE *, FILE *);
 
+#if 0 /* This is now done by a different program */
 int write_helpfiles (ARRAY *);
+#endif
 
 void free_defs (DEF_FILE *);
 void add_documentation (DEF_FILE *, char const *);
@@ -440,8 +442,7 @@ main (int argc, char **argv)
 	fclose (externfile);
     }
 
-#if 0
-  /* This is now done by a different program */
+#if 0 /* This is now done by a different program */
   if (separate_helpfiles)
     {
       write_helpfiles (saved_builtins);
@@ -1585,6 +1586,7 @@ write_documentation (FILE *stream, char const *const *documentation, int indenta
     }
 }
 
+#if 0 /* This is now done by a different program */
 int
 write_helpfiles (ARRAY *builtins)
 {
@@ -1624,6 +1626,7 @@ write_helpfiles (ARRAY *builtins)
     }
   return 0;
 }
+#endif
 
 static bool
 _find_in_table (char const *name, char const *const *name_table)
