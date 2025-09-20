@@ -668,7 +668,6 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   struct stat finfo;
   size_t file_size;
   char *buffer;
-  char const *line;
   int fd;
   int nr;
 
@@ -744,7 +743,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   /* Process each line in the array. */
   for (i = 0 ; i < defs->lines->count ; i++)
     {
-      line = defs->lines->strings[i];
+      char const *line = defs->lines->strings[i];
       defs->line_number = i;
 
       if (*line == '$')
@@ -1382,13 +1381,9 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 void
 write_longdocs (FILE *stream, ARRAY *builtins)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
-  char *sarray[2];
-
-  for (i = 0; i < builtins->count; i++)
+  for (size_t i = 0; i < builtins->count; i++)
     {
-      builtin = builtins->elements[i];
+      BUILTIN_DESC *builtin = builtins->elements[i];
 
       if (builtin->dependencies)
 	write_ifdefs (stream, builtin->dependencies->strings);
@@ -1399,12 +1394,10 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 
       if (separate_helpfiles)
 	{
-	  int l = strlen (helpfile_directory) + strlen (dname) + 1;
-	  sarray[0] = (char *)xmalloc (l + 1);
-	  sprintf (sarray[0], "%s/%s", helpfile_directory, dname);
-	  sarray[1] = (char *)NULL;
-	  write_documentation (stream, (char const*const*) sarray, 0, STRING_ARRAY|HELPFILE);
-	  free (sarray[0]);
+	  char *s;
+	  asprintf (&s, "%s/%s", helpfile_directory, dname);
+	  write_documentation (stream, (char const*const[2]){s}, 0, STRING_ARRAY|HELPFILE);
+	  free (s);
 	}
       else
 	write_documentation (stream, builtin->longdoc->strings, 0, STRING_ARRAY);
