@@ -1485,7 +1485,7 @@ write_endifs (FILE *stream, char const *const *defines)
 void
 write_documentation (FILE *stream, char const *const *documentation, int indentation, int flags)
 {
-  if (stream == 0)
+  if (stream == NULL)
     return;
 
   const bool output_c_struct = flags & STRING_ARRAY;
