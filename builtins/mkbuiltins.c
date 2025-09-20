@@ -1217,7 +1217,7 @@ char *structfile_header[] = {
   "",
   "#include \"../builtins.h\"",
   NULL
-  };
+};
 
 char *structfile_footer[] = {
   "",
