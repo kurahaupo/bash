@@ -545,14 +545,14 @@ typedef struct {
   mk_handler_func_t *function;
 } HANDLER_ENTRY;
 
-extern int builtin_handler (char *, DEF_FILE *, char const *);
-extern int function_handler (char *, DEF_FILE *, char const *);
-extern int short_doc_handler (char *, DEF_FILE *, char const *);
-extern int comment_handler (char *, DEF_FILE *, char const *);
-extern int depends_on_handler (char *, DEF_FILE *, char const *);
-extern int produces_handler (char *, DEF_FILE *, char const *);
-extern int end_handler (char *, DEF_FILE *, char const *);
-extern int docname_handler (char *, DEF_FILE *, char const *);
+static int builtin_handler (char *, DEF_FILE *, char const *);
+static int function_handler (char *, DEF_FILE *, char const *);
+static int short_doc_handler (char *, DEF_FILE *, char const *);
+static int comment_handler (char *, DEF_FILE *, char const *);
+static int depends_on_handler (char *, DEF_FILE *, char const *);
+static int produces_handler (char *, DEF_FILE *, char const *);
+static int end_handler (char *, DEF_FILE *, char const *);
+static int docname_handler (char *, DEF_FILE *, char const *);
 
 HANDLER_ENTRY handlers[] = {
   { "BUILTIN", builtin_handler },
@@ -874,7 +874,7 @@ add_documentation (DEF_FILE *defs, char const *line)
 }
 
 /* How to handle the $BUILTIN directive. */
-int
+static int
 builtin_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   BUILTIN_DESC *new;
@@ -923,7 +923,7 @@ builtin_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $FUNCTION directive. */
-int
+static int
 function_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
@@ -945,7 +945,7 @@ function_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $DOCNAME directive. */
-int
+static int
 docname_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
@@ -962,7 +962,7 @@ docname_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $SHORT_DOC directive. */
-int
+static int
 short_doc_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
@@ -979,14 +979,14 @@ short_doc_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $COMMENT directive. */
-int
+static int
 comment_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   return (0);
 }
 
 /* How to handle the $DEPENDS_ON directive. */
-int
+static int
 depends_on_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   register BUILTIN_DESC *builtin;
@@ -1004,7 +1004,7 @@ depends_on_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $PRODUCES directive. */
-int
+static int
 produces_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   /* If just hacking documentation, don't change any of the production
@@ -1035,7 +1035,7 @@ produces_handler (char *self, DEF_FILE *defs, char const *arg)
 }
 
 /* How to handle the $END directive. */
-int
+static int
 end_handler (char *self, DEF_FILE *defs, char const *arg)
 {
   must_be_building (self, defs);
