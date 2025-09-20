@@ -387,8 +387,7 @@ main (int argc, char **argv)
       /* Open the files. */
       if (struct_filename)
 	{
-	  temp_struct_filename = xmalloc (15);
-	  sprintf (temp_struct_filename, "mk-%ld", (long) getpid ());
+	  asprintf (&temp_struct_filename, "mk-%ld", (long) getpid ());
 	  structfile = fopen (temp_struct_filename, "w");
 
 	  if (!structfile)
@@ -1588,7 +1587,6 @@ int
 write_helpfiles (ARRAY *builtins)
 {
   char *helpfile;
-  char const *bname;
   FILE *helpfp;
   int i;
   int hdlen;
@@ -1606,9 +1604,7 @@ write_helpfiles (ARRAY *builtins)
     {
       builtin = builtins->elements[i];
 
-      bname = document_name (builtin);
-      helpfile = (char *)xmalloc (hdlen + strlen (bname) + 1);
-      sprintf (helpfile, "helpfiles/%s", bname);
+      asprintf (&helpfile, "helpfiles/%s", document_name (builtin));
 
       helpfp = fopen (helpfile, "w");
       if (helpfp == NULL)
