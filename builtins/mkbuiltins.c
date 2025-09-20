@@ -146,42 +146,94 @@ typedef struct {
 /* The array of all builtins encountered during execution of this code. */
 ARRAY *saved_builtins = (ARRAY *)NULL;
 
-/* The Posix.2 so-called `special' builtins. */
-char *special_builtins[] =
+/* The Posix.2 so-called ‘special’ builtins.
+   This list must be kept sorted. */
+char const *const special_builtins[] =
 {
-  ":", ".", "source", "break", "continue", "eval", "exec", "exit",
-  "export", "readonly", "return", "set", "shift", "times", "trap", "unset",
+  ".",
+  ":",
+  "break",
+  "continue",
+  "eval",
+  "exec",
+  "exit",
+  "export",
+  "readonly",
+  "return",
+  "set",
+  "shift",
+  "source",
+  "times",
+  "trap",
+  "unset",
   (char *)NULL
 };
 
-/* The builtin commands that take assignment statements as arguments. */
-char *assignment_builtins[] =
+/* The builtin commands that take assignment statements as arguments.
+   This list must be kept sorted. */
+char const *const assignment_builtins[] =
 {
-  "alias", "declare", "export", "local", "readonly", "typeset",
+  "alias",
+  "declare",
+  "export",
+  "local",
+  "readonly",
+  "typeset",
   (char *)NULL
 };
 
-char *localvar_builtins[] =
+/* This list must be kept sorted. */
+char const *const localvar_builtins[] =
 {
-  "declare", "local", "typeset", (char *)NULL
+  "declare",
+  "local",
+  "typeset",
+  (char *)NULL
 };
 
-/* The builtin commands that are special to the POSIX search order. */
-char *posix_builtins[] =
+/* The builtin commands that are special to the POSIX search order.
+   This list must be kept sorted. */
+char const *const posix_builtins[] =
 {
-  "alias", "bg", "cd", "command", "false", "fc", "fg", "getopts", "hash",
-  "jobs", "kill", "newgrp", "pwd", "read", "true", "type", "ulimit",
-  "umask", "unalias", "wait",
+  "alias",
+  "bg",
+  "cd",
+  "command",
+  "false",
+  "fc",
+  "fg",
+  "getopts",
+  "hash",
+  "jobs",
+  "kill",
+  "newgrp",
+  "pwd",
+  "read",
+  "true",
+  "type",
+  "ulimit",
+  "umask",
+  "unalias",
+  "wait",
   (char *)NULL
 };
 
 /* The builtin commands that can take array references as arguments and pay
    attention to `array_expand_once'. These are the ones that don't assign
-   values, but need to avoid double expansions. */
-char *arrayvar_builtins[] =
+   values, but need to avoid double expansions.
+   This list must be kept sorted. */
+char const *const arrayvar_builtins[] =
 {
-  "declare", "let", "local", "printf", "read", "test", "[",
-  "typeset", "unset", "wait",		/*]*/
+  "[", /*"]"*/
+  "declare",
+  "let",
+  "local",
+  "printf",
+  "read",
+  "test",
+  "typeset",
+  "unset",
+  "wait",
   (char *)NULL
 };
 
@@ -211,8 +263,6 @@ void write_longdocs (FILE *, ARRAY *);
 void write_builtins (DEF_FILE *, FILE *, FILE *);
 
 int write_helpfiles (ARRAY *);
-
-static int _find_in_table (char *, char **);
 
 void free_defs (DEF_FILE *);
 void add_documentation (DEF_FILE *, char *);
@@ -1538,14 +1588,23 @@ write_helpfiles (ARRAY *builtins)
   return 0;
 }
 
-static int
-_find_in_table (char *name, char **name_table)
+static bool
+_find_in_table (char const *name, char const *const *name_table)
 {
-  register int i;
+  size_t e;
+  for (e = 0; name_table[e]; e++) {}
 
-  for (i = 0; name_table[i]; i++)
-    if (strcmp (name, name_table[i]) == 0)
-      return 1;
+  for (size_t i = 0; i<e ;)
+    {
+      const size_t m = i+e >> 1;
+      const int cmp = strcmp (name, name_table[m]);
+      if (!cmp)
+	return 1;
+      if (cmp < 0)
+	e = m;
+      else
+	i = m+1;
+    }
   return 0;
 }
 
