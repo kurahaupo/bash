@@ -77,6 +77,8 @@ static inline void *xrealloc (void *p, size_t s) { return nonnull(realloc(p, s))
 
 static inline char *xstrdup (char const *s) { return nonnull(strdup(s)); }
 
+static inline void free_const(void const *x) { free ((void *)x); } /* free(NULL) is OK */
+
 static inline bool
 whitespace(int c)
 {
@@ -272,7 +274,7 @@ static int rename (char *, char *);
 void extract_info (char *, FILE *, FILE *);
 
 void file_error (char *);
-void line_error (DEF_FILE *, char *, char *, char *);
+void line_error (DEF_FILE *, char const *, char const *, char const *);
 
 void write_file_headers (FILE *, FILE *);
 void write_file_footers (FILE *, FILE *);
@@ -508,13 +510,13 @@ copy_string_array (ARRAY *array)
 
 /* Add ELEMENT to ARRAY, growing the array if necessary. */
 void
-array_add (char *element, ARRAY *array)
+array_add (char const *element, ARRAY *array)
 {
   if (array->sindex + 2 > array->size)
     array->array = (char **)xrealloc
       (array->array, (array->size += array->growth_rate) * array->width);
 
-  array->array[array->sindex++] = element;
+  array->array[array->sindex++] = (char *)element;
   array->array[array->sindex] = (char *)NULL;
 }
 
@@ -757,17 +759,15 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   free_defs (defs);
 }
 
-#define free_safely(x) if (x) free (x)
-
 static void
 free_builtin (BUILTIN_DESC *builtin)
 {
   register int i;
 
-  free_safely (builtin->name);
-  free_safely (builtin->function);
-  free_safely (builtin->shortdoc);
-  free_safely (builtin->docname);
+  free_const (builtin->name);
+  free_const (builtin->function);
+  free_const (builtin->shortdoc);
+  free_const (builtin->docname);
 
   if (builtin->longdoc)
     array_free (builtin->longdoc);
@@ -1051,7 +1051,7 @@ end_handler (char *self, DEF_FILE *defs, char const *arg)
 
 /* Produce an error for DEFS with FORMAT and ARGS. */
 void
-line_error (DEF_FILE *defs, char *format, char *arg1, char *arg2)
+line_error (DEF_FILE *defs, char const *format, char const *arg1, char const *arg2)
 {
   if (defs->filename[0] != '/')
     fprintf (stderr, "%s", error_directory ? error_directory : "./");
@@ -1246,8 +1246,8 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	    {
 	      if (builtin->dependencies)
 		{
-		  write_ifdefs (externfile, builtin->dependencies->array);
-		  write_ifdefs (structfile, builtin->dependencies->array);
+		  write_ifdefs (externfile, (char const*const*) builtin->dependencies->array);
+		  write_ifdefs (structfile, (char const*const*) builtin->dependencies->array);
 		}
 
 	      /* Write the extern definition. */
@@ -1313,10 +1313,10 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	      if (builtin->dependencies)
 		{
 		  if (externfile)
-		    write_endifs (externfile, builtin->dependencies->array);
+		    write_endifs (externfile, (char const*const*) builtin->dependencies->array);
 
 		  if (structfile)
-		    write_endifs (structfile, builtin->dependencies->array);
+		    write_endifs (structfile, (char const*const*) builtin->dependencies->array);
 		}
 	    }
 
@@ -1324,7 +1324,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 	    {
 	      fprintf (documentation_file, "@item %s\n", builtin->name);
 	      write_documentation
-		(documentation_file, builtin->longdoc->array, 0, TEXINFO);
+		(documentation_file, (char const*const*) builtin->longdoc->array, 0, TEXINFO);
 	    }
 	}
     }
@@ -1344,7 +1344,7 @@ write_longdocs (FILE *stream, ARRAY *builtins)
       builtin = (BUILTIN_DESC *)builtins->array[i];
 
       if (builtin->dependencies)
-	write_ifdefs (stream, builtin->dependencies->array);
+	write_ifdefs (stream, (char const*const*) builtin->dependencies->array);
 
       /* Write the long documentation strings. */
       dname = document_name (builtin);
@@ -1356,14 +1356,14 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 	  sarray[0] = (char *)xmalloc (l + 1);
 	  sprintf (sarray[0], "%s/%s", helpfile_directory, dname);
 	  sarray[1] = (char *)NULL;
-	  write_documentation (stream, sarray, 0, STRING_ARRAY|HELPFILE);
+	  write_documentation (stream, (char const*const*) sarray, 0, STRING_ARRAY|HELPFILE);
 	  free (sarray[0]);
 	}
       else
-	write_documentation (stream, builtin->longdoc->array, 0, STRING_ARRAY);
+	write_documentation (stream, (char const*const*) builtin->longdoc->array, 0, STRING_ARRAY);
 
       if (builtin->dependencies)
-	write_endifs (stream, builtin->dependencies->array);
+	write_endifs (stream, (char const*const*) builtin->dependencies->array);
 
     }
 }
@@ -1583,7 +1583,7 @@ write_helpfiles (ARRAY *builtins)
 	  continue;
 	}
 
-      write_documentation (helpfp, builtin->longdoc->array, 4, PLAINTEXT);
+      write_documentation (helpfp, (char const*const*) builtin->longdoc->array, 4, PLAINTEXT);
 
       fflush (helpfp);
       fclose (helpfp);
