@@ -316,16 +316,12 @@ document_name(BUILTIN_DESC *b)
 int
 main (int argc, char **argv)
 {
+  FILE *structfile = NULL;
+  FILE *externfile = NULL;
+  char *documentation_filename = DOCFILE;
+  char *temp_struct_filename = NULL;
+
   int arg_index = 1;
-  FILE *structfile;
-  FILE *externfile;
-  char *documentation_filename;
-  char *temp_struct_filename;
-
-  structfile = externfile = NULL;
-  documentation_filename = DOCFILE;
-  temp_struct_filename = NULL;
-
   while (arg_index < argc && argv[arg_index][0] == '-')
     {
       char *arg = argv[arg_index++];
