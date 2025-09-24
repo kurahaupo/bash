@@ -290,7 +290,7 @@ start_op:
 #endif
 	      if ((initial_bits & S_IXUGO) == 0)
 		break;		/* no-op if original mask doesn't include execute bits */
-	      /* FALLTHROUGH */
+	      FALLTHROUGH;
 	    case 'x':
 	      perm |= S_IXUGO;
 	      break;

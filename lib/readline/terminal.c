@@ -884,7 +884,7 @@ rl_ding (void)
 #endif
 	      break;
 	    }
-	  /* FALLTHROUGH */
+	  FALLTHROUGH;
 	case AUDIBLE_BELL:
 	  fprintf (stderr, "\007");
 	  fflush (stderr);

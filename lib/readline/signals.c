@@ -223,7 +223,7 @@ _rl_handle_signal (int sig)
       rl_callback_sigcleanup ();
 #endif
 
-      /* FALLTHROUGH */
+      FALLTHROUGH;
 
 #if defined (SIGTSTP)
     case SIGTSTP:

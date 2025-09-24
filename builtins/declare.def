@@ -316,7 +316,7 @@ declare_internal (WORD_LIST *list, int local_var)
 	case 'G':			/* undocumented, used internally */
 	  if (flags == &flags_on)
 	    chklocal = 1;
-	  /*FALLTHROUGH*/
+	  FALLTHROUGH;
 	case 'g':
 	  if (flags == &flags_on)
 	    mkglobal = 1;

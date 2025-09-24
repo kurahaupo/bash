@@ -113,7 +113,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 		  *r++ = '\\';
 		  break;
 		}
-	    /*FALLTHROUGH*/
+	      FALLTHROUGH;
 #endif
 	    case '0':
 	      /* If (FLAGS & 1), we're translating a string for echo -e (or
@@ -203,7 +203,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
  		  c = TOCTRL(c);
 		  break;
 		}
-		/*FALLTHROUGH*/
+	      FALLTHROUGH;
 	    default:
 		if ((flags & 4) == 0)
 		  *r++ = '\\';

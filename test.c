@@ -872,7 +872,7 @@ posixtest (int nargs)
 	    advance (0);
 	    break;
 	  }
-	/* FALLTHROUGH */
+	FALLTHROUGH;
       default:
 	value = expr ();
     }

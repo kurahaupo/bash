@@ -553,7 +553,7 @@ printf_builtin (WORD_LIST *list)
 		    break;
 		  }
 	      }
-	      /*FALLTHROUGH*/
+	      FALLTHROUGH;
 
 	    case 'b':		/* expand escapes in argument */
 	      {

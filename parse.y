@@ -3307,7 +3307,7 @@ time_command_acceptable (void)
     case '\n':
       if (token_before_that == '|')
 	return (0);
-      /* FALLTHROUGH */
+      FALLTHROUGH;
     case AND_AND:
     case OR_OR:
     case '&':

@@ -2221,7 +2221,7 @@ rl_complete_internal (int what_to_do)
 	  append_to_match (matches[0], delimiter, quote_char, nontrivial_lcd);
 	  break;
 	}
-      /*FALLTHROUGH*/
+      FALLTHROUGH;
 
     case '%':			/* used by menu_complete */
     case '|':			/* add this for unconditional display */

@@ -1431,7 +1431,7 @@ conv_break:
 #endif /* FLOATING_POINT */
 	      case 'U':
 		data->flags |= PF_LONGINT;
-		/* FALLTHROUGH */
+		FALLTHROUGH;
 	      case 'u':
 		STAR_ARGS(data);
 #ifdef HAVE_LONG_LONG_INT
@@ -1450,7 +1450,7 @@ conv_break:
 		break;
 	      case 'D':
 		data->flags |= PF_LONGINT;
-		/* FALLTHROUGH */
+		FALLTHROUGH;
 	      case 'd':  /* decimal */
 	      case 'i':
 		STAR_ARGS(data);
@@ -1510,7 +1510,7 @@ conv_break:
 #if HANDLE_MULTIBYTE
 	      case 'C':
 		data->flags |= PF_LONGINT;
-		/* FALLTHROUGH */
+		FALLTHROUGH;
 #endif
 	      case 'c': /* character */
 		STAR_ARGS(data);
@@ -1531,7 +1531,7 @@ conv_break:
 #if HANDLE_MULTIBYTE
 	      case 'S':
 		data->flags |= PF_LONGINT;
-		/* FALLTHROUGH */
+		FALLTHROUGH;
 #endif
 	      case 's':  /* string */
 		STAR_ARGS(data);

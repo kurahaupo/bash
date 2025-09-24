@@ -11937,7 +11937,7 @@ add_twochars:
 	      twochars[1] = c;
 	      goto add_twochars;
 	    }
-	  /* FALLTHROUGH */
+	  FALLTHROUGH;
 	  
 	default:
 	  /* This is the fix for " $@ " */
@@ -12225,7 +12225,7 @@ string_quote_removal (const char *string, int quoted)
 #endif
 	  if (((quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES)) || dquote) && (sh_syntaxtab[c] & CBSDQUOTE) == 0)
 	    *r++ = '\\';
-	  /* FALLTHROUGH */
+	  FALLTHROUGH;
 
 	default:
 	  SCOPY_CHAR_M (r, string, send, sindex);

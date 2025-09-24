@@ -20,6 +20,24 @@
 */
 
 /*********************************************************/
+/* Features that depend on the version of the C standard */
+/*********************************************************/
+
+#ifndef __STDC_VERSION__
+#  error "Your compiler seems to be too old; C99 or later is required"
+#endif
+
+#ifndef FALLTHROUGH
+#  if __GNUC__                          /* gcc, since C99 */
+#    define FALLTHROUGH __attribute__ ((fallthrough))
+#  elif __STDC_VERSION__ >= 201701L     /* C17 or C++14 or later */
+#    define FALLTHROUGH [[fallthrough]]
+#  else                                 /* C11 or earlier */
+#    define FALLTHROUGH
+#  endif
+#endif
+
+/*********************************************************/
 /* Modify or set defines based on the configure results. */
 /*********************************************************/
 

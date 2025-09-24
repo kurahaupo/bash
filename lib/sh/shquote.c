@@ -397,7 +397,7 @@ sh_contains_shell_metas (const char *string)
 	case '#':
 	  if (s == string)			/* comment char */
 	    return (1);
-	  /* FALLTHROUGH */
+	  FALLTHROUGH;
 	default:
 	  break;
 	}

@@ -321,7 +321,7 @@ dispose_redirects (REDIRECT *list)
 	case r_reading_until:
 	case r_deblank_reading_until:
 	  free (t->here_doc_eof);
-	/*FALLTHROUGH*/
+	  FALLTHROUGH;
 	case r_reading_string:
 	case r_output_direction:
 	case r_input_direction:
@@ -336,7 +336,7 @@ dispose_redirects (REDIRECT *list)
 	case r_move_input_word:
 	case r_move_output_word:
 	  dispose_word (t->redirectee.filename);
-	  /* FALLTHROUGH */
+	  FALLTHROUGH;
 	default:
 	  break;
 	}

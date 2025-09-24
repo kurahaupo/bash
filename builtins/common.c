@@ -732,7 +732,7 @@ get_job_spec (WORD_LIST *list)
     case '?':			/* Substring search requested. */
       jflags |= JM_SUBSTRING;
       word++;
-      /* FALLTHROUGH */
+      FALLTHROUGH;
 
     default:
       return get_job_by_name (word, jflags);

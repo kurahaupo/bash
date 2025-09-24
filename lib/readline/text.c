@@ -2168,7 +2168,7 @@ _rl_readstr_dispatch (_rl_readstr_cxt *cxt, int c)
 	  _rl_insert_char (1, c);
 	  break;
 	}
-    /* FALLTHROUGH */
+      FALLTHROUGH;
     case TAB:
       /* Perform completion if the caller has set a completion function. */
       n = (cxt->compfunc) ? (*cxt->compfunc) (cxt, c) : _rl_insert_char (1, c);

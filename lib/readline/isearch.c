@@ -738,7 +738,7 @@ opcode_dispatch:
       
       _rl_add_executing_keyseq (c);
 
-      /*FALLTHROUGH*/
+      FALLTHROUGH;
     /* Add character to search string and continue search. */
     default:
 #if defined (HANDLE_MULTIBYTE)
