@@ -219,7 +219,7 @@ find_flag (int name)
   return (FLAG_UNKNOWN);
 }
 
-/* Change the state of a flag, and return it's original value, or return
+/* Change the state of a flag, and return its original value, or return
    FLAG_ERROR if there is no flag FLAG.  ON_OR_OFF must be either
    FLAG_ON or FLAG_OFF. */
 int
