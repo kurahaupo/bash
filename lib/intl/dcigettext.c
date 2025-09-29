@@ -250,7 +250,7 @@ struct known_translation_t
   /* Pointer to the string in question.  */
   union
     {
-      char appended[ZERO];  /* used if domain != NULL */
+      char appended[1];     /* used if domain != NULL */
       const char *ptr;      /* used if domain == NULL */
     }
   msgid;
@@ -403,7 +403,7 @@ struct block_list
 typedef struct transmem_list
 {
   struct transmem_list *next;
-  char data[ZERO];
+  char data[];      /* C99 FAM */
 } transmem_block_t;
 static struct transmem_list *transmem_list;
 #else

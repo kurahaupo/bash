@@ -236,7 +236,7 @@ struct known_translation_t
   size_t translation_length;
 
   /* Pointer to the string in question.  */
-  char msgid[ZERO];
+  char msgid[];     /* C99 FAM */
 };
 
 /* Root of the search tree with known translations.  We can use this
@@ -365,7 +365,7 @@ struct block_list
 typedef struct transmem_list
 {
   struct transmem_list *next;
-  char data[ZERO];
+  char data[];      /* C99 FAM */
 } transmem_block_t;
 static struct transmem_list *transmem_list;
 #else

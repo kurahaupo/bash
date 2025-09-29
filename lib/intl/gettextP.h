@@ -193,14 +193,6 @@ struct loaded_domain
   unsigned long int nplurals;
 };
 
-/* We want to allocate a string at the end of the struct.  But ISO C
-   doesn't allow zero sized arrays.  */
-#ifdef __GNUC__
-# define ZERO 0
-#else
-# define ZERO 1
-#endif
-
 /* A set of settings bound to a message domain.  Used to store settings
    from bindtextdomain() and bind_textdomain_codeset().  */
 struct binding
@@ -211,7 +203,7 @@ struct binding
   wchar_t *wdirname;
 #endif
   char *codeset;
-  char domainname[ZERO];
+  char domainname[];    /* C99 FAM */
 };
 
 /* A counter which is incremented each time some previous translations
