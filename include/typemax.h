@@ -119,6 +119,17 @@ static const unsigned long long int maxquad = ULLONG_MAX;
 #  define SIZE_MAX	((size_t) ~(size_t)0)
 #endif
 
+#ifndef RSIZE_MAX   /* C11 invention */
+#  ifndef SSIZE_MAX
+#    define SSIZE_MAX (SIZE_MAX>>1)
+#  endif
+#  if SSIZE_MAX > 65536
+#    define RSIZE_MAX ((size_t)SSIZE_MAX)
+#  else
+#    define RSIZE_MAX ((size_t)65535U)
+#  endif
+#endif
+
 #ifndef sh_imaxabs
 #  define sh_imaxabs(x)	(((x) >= 0) ? (x) : -(x))
 #endif
