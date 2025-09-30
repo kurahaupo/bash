@@ -601,8 +601,8 @@ namespace std { using ::libintl_newlocale; }
    instead of "/").  */
 #define libintl_set_relocation_prefix libintl_set_relocation_prefix
 extern void
-       libintl_set_relocation_prefix (const char *orig_prefix,
-                                      const char *curr_prefix);
+libintl_set_relocation_prefix (const char *orig_prefix,
+			       const char *curr_prefix);
 
 
 #ifdef __cplusplus
