@@ -51,7 +51,7 @@
 static struct loaded_l10nfile *_nl_loaded_domains;
 
 /* Lock that protects the access to _NL_LOADED_DOMAINS.  */
-gl_rwlock_define_initialized (static, lock);
+gl_rwlock_define_initialized (static, lock)
 
 
 /* Return a data structure describing the message catalog described by
