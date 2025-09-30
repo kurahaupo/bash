@@ -403,8 +403,9 @@ namespace std { using ::libintl_vfprintf; }
    mingw does not have a function __printf__.
    Alternatively, we could have done this redirection only when compiling with
    __GNUC__, together with a symbol redirection:
-       extern int printf (const char *, ...)
-              __asm__ (#__USER_LABEL_PREFIX__ "libintl_printf");
+       extern
+       int printf (const char *, ...)
+	   __asm__ (#__USER_LABEL_PREFIX__ "libintl_printf");
    But doing it now would introduce a binary incompatibility with already
    distributed versions of libintl on these systems.  */
 #   define libintl_printf __printf__
