@@ -1671,7 +1671,7 @@ msgid "Bogus signal"
 msgstr "Falešný signál"
 
 # Překlady názvů signálů převzaty (s mírnými úpravami) z české překladu
-# manuálové stránky signal(7). 
+# manuálové stránky signal(7).
 #: siglist.c:51
 msgid "Hangup"
 msgstr "Linka terminálu zavěšena"

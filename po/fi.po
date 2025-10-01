@@ -4,7 +4,7 @@
 #
 # Pekka Niemi, 2009.
 # Pekka Niemi <pekka.niemi@iki.fi>, 2009.
-# $Id: bash-4.0.fi.po 38 2009-05-09 12:21:42Z pen $ 
+# $Id: bash-4.0.fi.po 38 2009-05-09 12:21:42Z pen $
 msgid ""
 msgstr "Project-Id-Version: bash-4.0\n"
 "Report-Msgid-Bugs-To: \n"

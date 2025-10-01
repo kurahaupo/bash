@@ -2703,7 +2703,7 @@ msgstr "Führt die Pipelie aus (die auch ein einzelnes Kommando sein kann) und\n
 msgid "Execute commands for each member in a list.\n    \n    The `for' loop executes a sequence of commands for each member in a\n    list of items.  If `in WORDS ...;' is not present, then `in \"$@\"' is\n    assumed.  For each element in WORDS, NAME is set to that element, and\n    the COMMANDS are executed.\n    \n    Exit Status:\n    Returns the status of the last command executed."
 msgstr "Führt Befehle für jeden Listeneintrag aus.\n    \n    Die `for' Schleife führt eine Befehlsfolge für jeden Listeneintrag aus. Wenn\n    das Schlüsselwort `in Wort ...;' fehlt, wird `in \"$@\"' angenommen. Für jeden\n    Eintrag in \"Wort\" wird die Variable \"Name\" gesetzt und die angegebenen\n    Kommandos ausgeführt.\n    \n    Rückgabewert:\n    Der Status des zuletzt ausgeführten Kommandos."
 
-# for (( 
+# for ((
 #: builtins.c:1617
 msgid "Arithmetic for loop.\n    \n    Equivalent to\n    \t(( EXP1 ))\n    \twhile (( EXP2 )); do\n    \t\tCOMMANDS\n    \t\t(( EXP3 ))\n    \tdone\n    EXP1, EXP2, and EXP3 are arithmetic expressions.  If any expression is\n    omitted, it behaves as if it evaluates to 1.\n    \n    Exit Status:\n    Returns the status of the last command executed."
 msgstr "Arithmetische For Schleife.\n\n    Äquivalent zu:\n    \t(( Ausdr1 ))\n    \twhile (( Ausdr2 )); do\n    \t\tKommandos\n    \t\t(( Ausdr3 ))\n    \tdone\n    Ausdr1-3 sind arithmethische Ausdrücke. Für fehlende Ausdrücke wird 1\n    angenommen.\n\n    Rückgabewert:\n    Status des zuletzt ausgeführten Kommandos."
