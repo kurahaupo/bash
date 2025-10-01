@@ -1486,12 +1486,8 @@ msgstr "make_redirection: η οδηγία της ανακατεύθυνσης «
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) υπερβαίνει το SIZE_MAX (%lu): γραμμή "
-"κόπηκε"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) υπερβαίνει το RSIZE_MAX (%zu): γραμμή κόπηκε"
 
 #: parse.y:2864
 #, fuzzy

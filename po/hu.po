@@ -1545,12 +1545,9 @@ msgstr "make_redirection: %d. átirányító utasítás kívül esik a tartomán
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: a shell_input_line_size (%zu) meghaladja a MÉRET_MAXIMUM értékét "
-"(%lu): a sor csonkolva"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: a shell_input_line_size (%zu) meghaladja a RSIZE_MAX (%zu) értékét: a sor csonkolva"
+# msgstr "shell_getc: a shell_input_line_size (%zu) meghaladja a MÉRET_MAXIMUM (%zu) értékét: a sor csonkolva"
 
 #: parse.y:2864
 #, fuzzy

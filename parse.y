@@ -2580,7 +2580,7 @@ shell_getc (int remove_quoted_newline)
 	      if (n <= 2)	/* we have to save 1 for the newline added below */
 		{
 		  if (truncating == 0)
-		    internal_warning(_("shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%jd): line truncated"), shell_input_line_size, (intmax_t)RSIZE_MAX);
+		    internal_warning(_("shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"), shell_input_line_size, (size_t)RSIZE_MAX);
 		  shell_input_line[i] = '\0';
 		  truncating = 1;
 		}

@@ -1551,12 +1551,8 @@ msgstr "make_redirection: instruksi redireksi `%d' diluar dari jangkauan"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) terlampaui SIZE_MAX (%lu): baris "
-"terpotong"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) terlampaui RSIZE_MAX (%zu): baris terpotong"
 
 #: parse.y:2864
 #, fuzzy

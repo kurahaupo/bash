@@ -1542,12 +1542,8 @@ msgstr "make_redirection: リダイレクト指定 `%d' は範囲外です"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) が SIZE_MAX (%lu)を越えています: 行が"
-"途中で切られました"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) が RSIZE_MAX (%zu) を越えています: 行が途中で切られました"
 
 #: parse.y:2864
 msgid "script file read error"

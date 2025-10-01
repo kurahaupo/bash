@@ -1510,8 +1510,8 @@ msgstr "make_redirection : l'instruction de redirection « %d » est hors plag
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) dépasse SIZE_MAX (%lu): ligne tronquée"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) dépasse RSIZE_MAX (%zu): ligne tronquée"
 
 #: parse.y:2864
 msgid "script file read error"

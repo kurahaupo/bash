@@ -1605,12 +1605,8 @@ msgstr "make_redirection: Alidirektada komando „%d‟ ekster sia variejo"
 # internal_warning():
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) superas SIZE_MAX (%lu): la linio "
-"tranĉita"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) superas RSIZE_MAX (%zu): la linio tranĉita"
 
 #: parse.y:2864
 #, fuzzy

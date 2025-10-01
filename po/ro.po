@@ -1707,8 +1707,8 @@ msgstr "make_redirection: instrucțiunea de redirecționare „%d” este în af
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) depășește SIZE_MAX (%lu): linie trunchiată"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) depășește RSIZE_MAX (%zu): linie trunchiată"
 
 #: parse.y:2864
 msgid "script file read error"

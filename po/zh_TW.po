@@ -1539,10 +1539,8 @@ msgstr "make_redirection：重新導向指示「%d」超出範圍"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) 超過 SIZE_MAX (%lu)：列被截斷"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%jd): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) 超過 RSIZE_MAX (%jd)：列被截斷"
 
 #: parse.y:2864
 #, fuzzy

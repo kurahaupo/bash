@@ -1576,12 +1576,9 @@ msgstr "make_redirection: ordú atreoraithe \"%d\" as raon."
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: tá méid an líne ionchuir blaoisce (%zu) níos mó ná SIZE_MAX "
-"(%lu): líne giorraithe"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) níos mó ná RSIZE_MAX (%zu): líne giorraithe"
+# msgstr "shell_getc: tá méid an líne ionchuir blaoisce (%zu) níos mó ná RSIZE_MAX (%zu): líne giorraithe"
 
 #: parse.y:2864
 #, fuzzy

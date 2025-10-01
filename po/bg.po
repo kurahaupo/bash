@@ -1523,8 +1523,8 @@ msgstr "пренасочване: инструкцията за пренасоч
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) надвишава SIZE_MAX (%lu): редът е отрязан"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) надвишава RSIZE_MAX (%zu): редът е отрязан"
 
 #: parse.y:2864
 msgid "script file read error"

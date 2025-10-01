@@ -1517,8 +1517,8 @@ msgstr "make_redirection: 重定向指令 \"%d\" 超出范围"
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) 超过 SIZE_MAX (%lu)：行已被截断"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) 超过 RSIZE_MAX (%zu)：行已被截断"
 
 #: parse.y:2864
 msgid "script file read error"

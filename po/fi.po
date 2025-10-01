@@ -1547,9 +1547,7 @@ msgstr "make_redirection: uudelleenohjaus ”%d” rajojen ulkopuolella"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
 msgstr ""
 
 #: parse.y:2864

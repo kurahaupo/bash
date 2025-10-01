@@ -1536,8 +1536,9 @@ msgstr "make_redirection: la instrucción de redirección `%d' está fuera de ra
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size (%zu) excede TAMAÑO_MAX (%lu): línea truncada"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) excede RSIZE_MAX (%zu): línea truncada"
+# msgstr "shell_getc: shell_input_line_size (%zu) excede TAMAÑO_MAX (%zu): línea truncada"
 
 #: parse.y:2864
 msgid "script file read error"

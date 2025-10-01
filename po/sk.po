@@ -1545,9 +1545,7 @@ msgstr "make_redirection: inštrukcia presmerovania „%d“ mimo rozsahu"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
 msgstr ""
 
 #: parse.y:2864

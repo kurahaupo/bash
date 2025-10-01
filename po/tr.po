@@ -1545,12 +1545,9 @@ msgstr "make_redirection: yönlendirme yönergesi `%d' aralık dışında"
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) SIZE_MAX değerini aşıyor (%lu): "
-"satır kırpıldı"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) RSIZE_MAX (%zu) değerini aşıyor: satır kırpıldı"
+# msgstr "shell_getc: shell_input_line_size (%zu) RSIZE_MAX değerini aşıyor (%zu): satır kırpıldı"
 
 #: parse.y:2864
 #, fuzzy

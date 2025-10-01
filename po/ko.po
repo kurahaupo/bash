@@ -1505,8 +1505,8 @@ msgstr "make_redirection: 방향재지정 처리 명령어 `%d' 범위 벗어남
 
 #: parse.y:2572
 #, c-format
-msgid "shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"
-msgstr "shell_getc: shell_input_line_size(%zu)가 SIZE_MAX(%lu)를 초과함: 줄 잘림"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size(%zu)가 RSIZE_MAX(%zu)를 초과함: 줄 잘림"
 
 #: parse.y:2864
 msgid "script file read error"

@@ -1564,12 +1564,8 @@ msgstr ""
 
 #: parse.y:2572
 #, c-format
-msgid ""
-"shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line "
-"truncated"
-msgstr ""
-"shell_getc: shell_input_line_size (%zu) превысил SIZE_MAX (%lu): строка "
-"обрезана"
+msgid "shell_getc: shell_input_line_size (%zu) exceeds RSIZE_MAX (%zu): line truncated"
+msgstr "shell_getc: shell_input_line_size (%zu) превысил RSIZE_MAX (%zu): строка обрезана"
 
 #: parse.y:2864
 #, fuzzy
