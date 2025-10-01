@@ -1557,7 +1557,7 @@ msgstr ""
 #: parse.y:2864
 #, fuzzy
 msgid "script file read error"
-msgstr "napaka med pisanjem: %s"
+msgstr "napaka med pisanjem"
 
 #: parse.y:3101
 msgid "maximum here-document count exceeded"
