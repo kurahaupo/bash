@@ -1931,7 +1931,7 @@ VASNPRINTF (DCHAR_T *resultbuf, size_t *lengthp,
        If length > 0, then result != NULL.  */
 
     /* Ensures that allocated >= needed.  Aborts through a jump to
-       out_of_memory if needed is SIZE_MAX or otherwise too big.  */
+       out_of_memory if needed exceeds RSIZE_MAX or is otherwise too big.  */
 #define ENSURE_ALLOCATION_ELSE(needed, oom_statement) \
     if ((needed) > allocated)                                                \
       {                                                                      \

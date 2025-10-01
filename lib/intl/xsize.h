@@ -27,6 +27,9 @@
 # include <stdint.h>
 #endif
 
+/* Get RSIZE_MAX.  */
+#include "typemax.h"
+
 /* Get ATTRIBUTE_PURE.  */
 #include "attribute.h"
 
