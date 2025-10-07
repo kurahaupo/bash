@@ -65,7 +65,13 @@ extern void xtrace_fdchk (int);
 extern void xtrace_reset (void);
 extern char *indirection_level_string (void);
 extern void xtrace_print_assignment (char *, char *, int, int);
-extern void xtrace_print_word_list (WORD_LIST *, int);
+
+/* bits for xtrace_print_word_list's xtflags parameter */
+typedef enum xtpwl_e {
+  XTPWL_PS4 = 1,
+  XTPWL_NOQUOTE = 2,
+} xtpwl_t;
+extern void xtrace_print_word_list (WORD_LIST *, xtpwl_t);
 extern void xtrace_print_for_command_head (FOR_COM *);
 #if defined (SELECT_COMMAND)
 extern void xtrace_print_select_command_head (SELECT_COM *);

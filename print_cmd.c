@@ -546,14 +546,14 @@ xtrace_print_assignment (char *name, char *value, int assign_list, int xflags)
    quoting the words because they haven't been expanded yet.  XTFLAGS&1 means to
    print $PS4; XTFLAGS&2 means to suppress quoting the words in LIST. */
 void
-xtrace_print_word_list (WORD_LIST *list, int xtflags)
+xtrace_print_word_list (WORD_LIST *list, xtpwl_t xtflags)
 {
   WORD_LIST *w;
   char *t, *x;
 
   CHECK_XTRACE_FP;
 
-  if (xtflags&1)
+  if (xtflags & XTPWL_PS4)
     fprintf (xtrace_fp, "%s", indirection_level_string ());
 
   for (w = list; w; w = w->next)
@@ -561,7 +561,7 @@ xtrace_print_word_list (WORD_LIST *list, int xtflags)
       t = w->word->word;
       if (t == 0 || *t == '\0')
 	fprintf (xtrace_fp, "''%s", w->next ? " " : "");
-      else if (xtflags & 2)
+      else if (xtflags & XTPWL_NOQUOTE)
 	fprintf (xtrace_fp, "%s%s", t, w->next ? " " : "");
       else if (ansic_shouldquote (t))
 	{
@@ -611,7 +611,7 @@ xtrace_print_for_command_head (FOR_COM *for_command)
   CHECK_XTRACE_FP;
   fprintf (xtrace_fp, "%s", indirection_level_string ());
   fprintf (xtrace_fp, "for %s in ", for_command->name->word);
-  xtrace_print_word_list (for_command->map_list, 2);
+  xtrace_print_word_list (for_command->map_list, XTPWL_NOQUOTE);
 }
 
 static void
@@ -670,7 +670,7 @@ xtrace_print_select_command_head (SELECT_COM *select_command)
   CHECK_XTRACE_FP;
   fprintf (xtrace_fp, "%s", indirection_level_string ());
   fprintf (xtrace_fp, "select %s in ", select_command->name->word);
-  xtrace_print_word_list (select_command->map_list, 2);
+  xtrace_print_word_list (select_command->map_list, XTPWL_NOQUOTE);
 }
 
 static void

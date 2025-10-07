@@ -4646,7 +4646,7 @@ execute_simple_command (SIMPLE_COM *simple_command, int pipe_in, int pipe_out, i
   begin_unwind_frame ("simple-command");
 
   if (echo_command_at_execute && (cmdflags & CMD_COMMAND_BUILTIN) == 0)
-    xtrace_print_word_list (words, 1);
+    xtrace_print_word_list (words, XTPWL_PS4);
 
   builtin = (sh_builtin_func_t *)NULL;
   func = (SHELL_VAR *)NULL;
