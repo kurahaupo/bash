@@ -85,6 +85,114 @@ static void show_desc (char *, int);
 static void show_manpage (char *, int);
 static void show_longdoc (int);
 
+static void
+print_nlquoted_word_list (WORD_LIST *w1)
+{
+  if (w1 == NULL)
+    return;
+
+  WORD_LIST *w2 = w1->next;
+  if (!w2)
+    {
+      /* C.UTF-8: "‘%s’" */
+      printf (_("\"%s\""), w1->word->word);
+      return;
+    }
+
+  WORD_LIST *w3 = w2->next;
+  if (!w3)
+    {
+      /* C.UTF-8: "‘%s’ & ‘%s’" */
+      printf (_("\"%s\" & \"%s\""),
+		    w1->word->word,
+		    w2->word->word);
+      return;
+    }
+
+  WORD_LIST *w4 = w3->next;
+  if (!w4)
+    {
+      /* C.UTF-8: "‘%s’, ‘%s’, & ‘%s’" */
+      printf (_("\"%s\", \"%s\", & \"%s\""),
+		    w1->word->word,
+		    w2->word->word,
+		    w3->word->word);
+      return;
+    }
+
+  WORD_LIST *w5 = w4->next;
+  if (!w5)
+    {
+      /* C.UTF-8: "‘%s’, ‘%s’, ‘%s’, & ‘%s’" */
+      printf (_("\"%s\", \"%s\", \"%s\", & \"%s\""),
+		    w1->word->word,
+		    w2->word->word,
+		    w3->word->word,
+		    w4->word->word);
+      return;
+    }
+
+  /* More than 4 items
+   * Use 4-item format, repeating either 1st or 2nd field as often as necessary.
+   * Probably won't work unless ASCII or UTF-8 encoded. */
+
+  /* XXX Take care that this repeats the format line above */
+  /* C.UTF-8:         "‘%s’,   ‘%s’,   ‘%s’,  &  ‘%s’" */
+  char const *p0 = _("\"%s\", \"%s\", \"%s\", & \"%s\""); /*#, c-format */
+  char const *p1 = strchr (p0, '%');
+  char const *p2 = p1 ? strchr (p1+1, '%') : NULL;
+  char const *p3 = p2 ? strchr (p2+1, '%') : NULL;
+  char const *p4 = p3 ? strchr (p3+1, '%') : NULL;
+  if (!p4)
+    {
+broken:
+      /* Broken or unusable translation; fall back to English pattern. */
+      p0 = "\"%s\", \"%s\", \"%s\", & \"%s\"";
+      p1 = p0+1;                       /* p0+1+6*n */
+      p2 = p0+7;
+      p3 = p0+13;
+      p4 = p0+21;
+    }
+
+  int o1 = p1 - p0;
+  int o2 = p2 - p0; int l1 = o2 - o1;
+  int o3 = p3 - p0; int l2 = o3 - o2;
+
+  if (l1 <= l2 && memcmp (p0, p2-o1, l1) == 0)
+    {
+      /* first part is leading substring of second part; like "«%s», «%s», FOO «%s», BAR «%s»" */
+      /* repeat the first part as needed */
+      char *q = NULL;
+      asprintf (&q, "%.*s", l1, p0);
+      for (; w4 = w4->next ; w1 = w1->next)
+	printf (q, w1->word->word);
+      free (q);
+      printf (p1-o1,
+		    w1->word->word,
+		    w1->next->word->word,
+		    w1->next->next->word->word,
+		    w1->next->next->next->word->word);
+    }
+  else if (l1 >= l2 && (memcmp(p1,    p2,    l2) == 0   /* second part is trailing substring of first part; like "ALL OF «%s», «%s», «%s», AND «%s»" */
+		     || memcmp(p1-o1, p2-o1, l2) == 0)) /* second part is leading substring of first part; like "«%s», WITH «%s», «%s», AND «%s»" */
+    {
+      /* Repeat the second part as needed */
+      char *q = NULL;
+      asprintf (&q, "%.*s", o3, p0);
+      printf (q, w1->word->word,
+		 w2->word->word);
+      for (; w5 = w5->next ; w3 = w3->next)
+	printf (q+o2, w3->word->word);
+      free (q);
+      printf (p2,
+		    w3->word->word,
+		    w3->next->word->word,
+		    w3->next->next->word->word);
+    }
+  else
+    goto broken;
+}
+
 /* Print out a list of the known functions in the shell, and what they do.
    If LIST is supplied, print out the list which matches for each pattern
    specified. */
@@ -130,9 +238,9 @@ help_builtin (WORD_LIST *list)
 
   if (glob_pattern_p (list->word->word) == 1)
     {
-      printf ("%s", ngettext ("Shell commands matching keyword `", "Shell commands matching keywords `", (list->next ? 2 : 1)));
-      print_word_list (list, ", ");
-      printf ("%s", _("'\n\n"));
+      printf ("%s", ngettext ("Shell commands matching keyword ", "Shell commands matching keywords ", (list->next ? 2 : 1)));
+      print_nlquoted_word_list (list);
+      printf ("%s", "\n\n");
     }
 
   for (match_found = 0, pattern = ""; list; list = list->next)
