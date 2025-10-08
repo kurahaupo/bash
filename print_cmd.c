@@ -52,10 +52,9 @@ extern int printf (const char *, ...);	/* Yuck.  Double yuck. */
 static int indentation;
 static int indentation_amount = 4;
 
-typedef void PFUNC (const char *, ...);
+typedef int PFUNC (const char *, ...);
 
-static void cprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-static void xprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+static int cprintf (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 
 static void uw_reset_locals (void *);
 
@@ -388,7 +387,7 @@ _print_word_list (WORD_LIST *list, char *separator, PFUNC *pfunc)
 void
 print_word_list (WORD_LIST *list, char *separator)
 {
-  _print_word_list (list, separator, xprintf);
+  _print_word_list (list, separator, printf);
 }
 
 void
@@ -1529,7 +1528,7 @@ semicolon (void)
 }
 
 /* How to make the string. */
-static void
+static int
 cprintf (const char *control, ...)
 {
   const char *s;
@@ -1537,6 +1536,8 @@ cprintf (const char *control, ...)
   int digit_arg, c;
   size_t arg_len;
   va_list args;
+
+  int starting_csi = command_string_index;
 
   va_start (args, control);
 
@@ -1610,6 +1611,7 @@ cprintf (const char *control, ...)
   va_end (args);
 
   the_printed_command[command_string_index] = '\0';
+  return command_string_index - starting_csi;
 }
 
 /* Ensure that there is enough space to stuff LENGTH characters into
@@ -1634,15 +1636,4 @@ the_printed_command_resize (size_t length)
 
       the_printed_command = (char *)xrealloc (the_printed_command, the_printed_command_size);
     }
-}
-
-static void
-xprintf (const char *format, ...)
-{
-  va_list args;
-
-  va_start (args, format);
-
-  vfprintf (stdout, format, args);
-  va_end (args);
 }
