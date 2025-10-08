@@ -260,7 +260,7 @@ make_command_string_internal (COMMAND *command)
 		s[0] = ' ';
 		s[1] = c;
 		s[2] = '\0';
-		
+
 		print_deferred_heredocs (s);
 
 		if (c != '&' || command->value.Connection->second)
@@ -332,7 +332,7 @@ make_command_string_internal (COMMAND *command)
 	     heavy. */
 	  if (printing_connection == 1)
 	    PRINT_DEFERRED_HEREDOCS ("");
-	  printing_connection--;	  	  
+	  printing_connection--;
 	  break;
 
 	case cm_function_def:
@@ -407,7 +407,7 @@ xtrace_set (int fd, FILE *fp)
     }
   if (fd >= 0 && fileno (fp) != fd)
     internal_warning (_("xtrace fd (%d) != fileno xtrace fp (%d)"), fd, fileno (fp));
-  
+
   xtrace_fd = fd;
   xtrace_fp = fp;
 }
@@ -501,7 +501,7 @@ indirection_level_string (void)
 	indirection_string[i] = ps4_firstc[0];
       else
 	memcpy (indirection_string+i, ps4_firstc, ps4_firstc_len);
-    }      
+    }
 
   for (j = ps4_firstc_len; *ps4 && ps4[j] && i < indirection_stringsiz - 1; i++, j++)
     indirection_string[i] = ps4[j];
@@ -978,7 +978,7 @@ xtrace_print_cond_term (int type, int invert, WORD_DESC *op, char *arg1, char *a
   fprintf (xtrace_fp, " ]]\n");
 
   fflush (xtrace_fp);
-}	  
+}
 #endif /* COND_COMMAND */
 
 #if defined (DPAREN_ARITHMETIC) || defined (ARITH_FOR_COMMAND)
@@ -1020,7 +1020,7 @@ print_heredocs (REDIRECT *heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf (" "); 
+  cprintf (" ");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_redirection (hdtail);
@@ -1034,7 +1034,7 @@ print_heredoc_bodies (REDIRECT *heredocs)
 {
   REDIRECT *hdtail;
 
-  cprintf ("\n"); 
+  cprintf ("\n");
   for (hdtail = heredocs; hdtail; hdtail = hdtail->next)
     {
       print_heredoc_body (hdtail);
@@ -1055,7 +1055,7 @@ print_deferred_heredocs (const char *cstring)
 {
   /* We now print the heredoc headers in print_redirection_list */
   if (cstring && cstring[0] && (cstring[0] != ';' || cstring[1]))
-    cprintf ("%s", cstring); 
+    cprintf ("%s", cstring);
   if (deferred_heredocs)
     {
       print_heredoc_bodies (deferred_heredocs);
@@ -1066,7 +1066,7 @@ print_deferred_heredocs (const char *cstring)
     }
   deferred_heredocs = (REDIRECT *)NULL;
 }
-      
+
 static void
 print_redirection_list (REDIRECT *redirects)
 {
@@ -1338,7 +1338,7 @@ print_function_def (FUNCTION_DEF *func)
     }
 
   w = pretty_print_mode ? dequote_word (func->name) : func->name;
-  /* we're just pretty-printing, so this can be destructive */      
+  /* we're just pretty-printing, so this can be destructive */
 
   func_redirects = NULL;
   /* When in posix mode, print functions as posix specifies them, but prefix
@@ -1483,7 +1483,7 @@ named_function_string (char *name, COMMAND *command, int flags)
   if ((flags & FUNC_MULTILINE) == 0)
     {
       if (result[2] == '\n')
-	memmove (result + 2, result + 3, strlen (result) - 2);	
+	memmove (result + 2, result + 3, strlen (result) - 2);
     }
 
   if (flags & FUNC_EXTERNAL)
@@ -1522,7 +1522,7 @@ semicolon (void)
 {
   if ((command_string_index > 0 &&
 	the_printed_command[command_string_index - 1] == '\n') ||
-      (command_string_index > 1 && 
+      (command_string_index > 1 &&
 	the_printed_command[command_string_index - 1] == '&' &&
 	the_printed_command[command_string_index - 2] == ' '))
     return;
