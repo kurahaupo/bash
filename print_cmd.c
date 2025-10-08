@@ -64,7 +64,6 @@ static void semicolon (void);
 static void the_printed_command_resize (size_t);
 
 static void make_command_string_internal (COMMAND *);
-static void _print_word_list (WORD_LIST *, char *, PFUNC *);
 static void command_print_word_list (WORD_LIST *, char *);
 static void print_case_clauses (PATTERN_LIST *);
 static void print_redirection_list (REDIRECT *);
@@ -376,12 +375,15 @@ make_command_string_internal (COMMAND *command)
 }
 
 static void
-_print_word_list (WORD_LIST *list, char *separator, PFUNC *pfunc)
+_print_word_list (WORD_LIST const *w, char const *separator, PFUNC *pfunc)
 {
-  WORD_LIST *w;
-
-  for (w = list; w; w = w->next)
-    (*pfunc) ("%s%s", w->word->word, w->next ? separator : "");
+  char const *sep = NULL;
+  for (; w ; w = w->next, sep = separator)
+    {
+      if (sep)
+	pfunc ("%s", sep);
+      pfunc ("%s", w->word->word);
+    }
 }
 
 void
