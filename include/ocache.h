@@ -25,33 +25,6 @@
 #  define PTR_T void *
 #endif /* PTR_T */
 
-static inline void
-OC_MEMSET (void *memp, char xch, size_t nbytes)
-{
-  #if ! defined __GNUC__ || 1
-  if (nbytes <= 32) {
-    if (nbytes <= 0)
-        return;
-
-    char *mzp = memp;
-    size_t nblocks = nbytes+7 >> 3;
-    switch (nbytes & 7) {
-              for (;--nblocks;) {
-      case 0:   *mzp++ = xch;
-      case 7:   *mzp++ = xch;
-      case 6:   *mzp++ = xch;
-      case 5:   *mzp++ = xch;
-      case 4:   *mzp++ = xch;
-      case 3:   *mzp++ = xch;
-      case 2:   *mzp++ = xch;
-      case 1:   *mzp++ = xch;
-              }
-    }
-  } else
-  #endif
-    memset (memp, xch, nbytes);
-}
-
 typedef struct objcache {
 	PTR_T	data;
 	int	cs;		/* cache size, number of objects */
@@ -103,7 +76,7 @@ typedef struct objcache {
 #define ocache_free(c, otype, r) \
 	do { \
 		if ((c).nc < (c).cs) { \
-			OC_MEMSET ((r), '\xdf', sizeof(otype)); \
+			memset ((r), '\xdf', sizeof(otype)); \
 			((otype **)((c).data))[(c).nc++] = (r); \
 		} else \
 			xfree (r); \
