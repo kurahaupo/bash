@@ -23,27 +23,31 @@ SUFFIX=$( ${THIS_SH} -c 'echo $(( $RANDOM + $BASHPID ))' )
 BASH_TSTOUT=${TMPDIR}/bashtst-$SUFFIX	# for now
 export BASH_TSTOUT
 
-trap 'rm -f $BASH_TSTOUT ; exit' 1 2 3 15
+trap 'rm -f $BASH_TSTOUT ; exit 1' 1 2 3 15
 trap 'rm -f $BASH_TSTOUT' 0
 
-PATH=.:$PATH	# just to get recho/zecho/printenv if not run via `make tests'
-export PATH
+PATH=.:$PATH	# just to get the right version of recho/zecho/printenv if not run via 'make tests'
+export PATH	# should be redundant
 
 # unset BASH_ENV only if it is set
-[ "${BASH_ENV+set}" = "set" ] && unset BASH_ENV
-# can't reliably do it for SHELLOPTS; SHELLOPTS is readonly in bash
-if [ "${BASH_VERSION+set}" = "set" ]; then
-	export -n SHELLOPTS	# just make sure its not exported
+[ "${BASH_ENV+set}" = set ] && unset BASH_ENV
+
+# ditto for SHELLOPTS & BASHOPTS, which are both readonly in bash
+[ "${SHELLOPTS+set}" = set ] &&
+if [ "${BASH_VERSION+set}" = set ]; then
+	export -n SHELLOPTS	# can't unset, so just make sure its not exported
 	set +o posix
 	typeset -p SHELLOPTS
 else
-	[ "${SHELLOPTS+set}" = "set" ] && unset SHELLOPTS 2>/dev/null
+	unset SHELLOPTS 2>/dev/null
 fi
-# ditto for BASHOPTS, which is also readonly in bash
-if [ "${BASH_VERSION+set}" = "set" ]; then
-	export -n BASHOPTS	# just make sure its not exported
+[ "${BASHOPTS+set}" = set ] &&
+if [ "${BASH_VERSION+set}" = set ]; then
+	export -n BASHOPTS	# can't unset, so just make sure its not exported
+	set +o posix
+	typeset -p BASHOPTS
 else
-	[ "${BASHOPTS+set}" = "set" ] && unset BASHOPTS 2>/dev/null
+	unset BASHOPTS 2>/dev/null
 fi
 
 : ${THIS_SH:=../bash}
@@ -54,7 +58,7 @@ export BUILD_DIR
 
 ${THIS_SH} ./version
 
-rm -f ${BASH_TSTOUT}
+rm -f "$BASH_TSTOUT"
 
 echo Any output from any test, unless otherwise noted, indicates a possible anomaly
 
