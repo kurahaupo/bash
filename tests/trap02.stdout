@@ -1,0 +1,10 @@
+exit subshell 1
+current shell
+exit subshell 2
+current shell
+current shell
+current shell
+outside 1
+outside 2
+outside 3
+outside 4

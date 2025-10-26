@@ -1,0 +1,8 @@
+caught a child death
+caught a child death
+caught a child death
+trap -- 'echo caught a child death' SIGCHLD
+echo caught a child death
+trap -- 'echo caught a child death' SIGCHLD
+echo exiting
+exiting

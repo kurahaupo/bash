@@ -1,0 +1,3 @@
+UNIX versions number signals and schedule processes differently.
+If output differing only in line numbers is produced, please
+do not consider this a test failure.

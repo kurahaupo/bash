@@ -2,3 +2,4 @@
 trap 'echo USR2' USR2
 
 trap -p USR2
+# vim: syntax=bash :

@@ -1,3 +1,4 @@
 echo before false in trap2a.sub
 false
 echo after false in trap2a.sub
+# vim: syntax=bash :

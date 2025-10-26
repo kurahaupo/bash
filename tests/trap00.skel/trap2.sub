@@ -33,7 +33,8 @@ done
 
 echo after while
 
-./trap2a.sub
+./trap2a.sub # (ths will result in execve reporting ENOEXEC, causing this
+             # Bash to run trap2a.sub directly, forking without execve)
 
 echo $(false ; echo command substitution)
 
@@ -57,3 +58,4 @@ fi
 
 command $FALSE
 command command command $FALSE
+# vim: syntax=bash :

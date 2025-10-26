@@ -1,0 +1,5 @@
+ERR: 23: -func- failed
+ERR: 20: -[[ -z nonempty ]]- failed
+ERR: 27: -func- failed
+ERR: 35: -func2- failed
+ERR: 39: -func2- failed

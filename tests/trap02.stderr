@@ -1,0 +1,8 @@
+sleep 2
+wait $!
+exit
+in trap EXIT
+sleep 2
+wait $!
+exit
+in trap EXIT

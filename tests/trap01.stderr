@@ -1,0 +1,7 @@
++[6] echo 1
++[7] echo 2
++[8] false
++[8] false
++[8] false
+++[8] echo trap: 8
++[9] echo 4

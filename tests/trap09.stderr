@@ -1,0 +1,6 @@
+SRC/tests/trap09.run: line 17: trap: cannot specify both -p and -P
+SRC/tests/trap09.run: line 18: trap: -P requires at least one signal name
+trap: usage: trap [-Plp] [[action] signal_spec ...]
+SRC/tests/trap09.run: line 20: trap: -x: invalid option
+trap: usage: trap [-Plp] [[action] signal_spec ...]
+trap: usage: trap [-Plp] [[action] signal_spec ...]

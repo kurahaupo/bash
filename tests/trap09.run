@@ -1,0 +1,39 @@
+#
+# show that setting a trap on SIGCHLD is not disastrous.
+#
+set -o monitor
+
+trap 'echo caught a child death' SIGCHLD
+
+sleep 7 & sleep 6 & sleep 5 &
+
+# this will only catch the first, since there's a trap on SIGCHLD
+wait
+
+trap -p SIGCHLD
+trap -P SIGCHLD
+
+# all errors
+trap -p -P
+trap -P
+trap ''
+trap -x
+
+# Now reset some of the signals the shell handles specially back to
+# their default values (with or without the SIG prefix)
+trap - SIGINT QUIT TERM
+
+trap
+
+trap - SIGCHLD
+wait
+
+trap 512	# error
+trap 0		# revert
+trap -p EXIT
+
+trap 'echo exiting' 0
+trap -P EXIT
+
+exit
+# vim: syntax=bash :

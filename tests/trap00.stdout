@@ -1,0 +1,77 @@
+subshell exit
+trap -- 'echo exiting' EXIT
+trap -- 'echo aborting' SIGHUP
+trap -- 'echo aborting' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+[33] debug
+debug line
+[35] debug
+trap -- 'echo exiting' EXIT
+trap -- 'echo aborting' SIGHUP
+trap -- 'echo aborting' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+trap -- 'echo [$LINENO] debug' DEBUG
+[37] debug
+func[29] funcdebug
+funcdebug line
+SRC/tests/trap00.run[39] funcdebug
+trap -- 'echo exiting' EXIT
+trap -- 'echo aborting' SIGHUP
+trap -- 'echo aborting' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+trap -- 'echo ${FUNCNAME:-$0}[$LINENO] funcdebug' DEBUG
+SRC/tests/trap00.run[41] funcdebug
+SRC/tests/trap00.run[46] debug
+SRC/tests/trap00.run[47] debug
+func2[43] debug
+func2[44] debug
+func2debug line
+SRC/tests/trap00.run[49] debug
+SRC/tests/trap00.run[51] debug
+trap -- 'echo exiting' EXIT
+trap -- 'echo aborting' SIGHUP
+trap -- 'echo aborting' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+trap -- '' DEBUG
+trap -- 'echo exiting' EXIT
+trap -- 'echo aborting' SIGHUP
+trap -- 'echo aborting' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+trap -- 'echo exiting' EXIT
+trap -- '' SIGINT
+trap -- 'echo aborting' SIGQUIT
+trap -- 'echo aborting' SIGABRT
+trap -- 'echo aborting' SIGTERM
+0
+	trap1.sub
+trap -- '' SIGUSR2
+	trap2.sub
+ERRTRAP
+ERRTRAP
+ERRTRAP
+after falses
+if negation ok
+after negation
+after while
+before false in trap2a.sub
+after false in trap2a.sub
+command substitution
+ERRTRAP
+ERRTRAP
+bar
+ERRTRAP
+ERRTRAP
+ERRTRAP
+ERRTRAP
+ERRTRAP
+exiting
