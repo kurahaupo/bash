@@ -1,0 +1,6 @@
+declare -a aa=([0]="/homes/cj/Desktop")
+declare -a aa=([0]="/homes/cj/Desktop")
+declare -a aa=([0]="/homes/cj/Desktop:/homes/cj/Library:/homes/cj/Documents")
+declare -a aa=([0]="/homes/cj/Desktop:/homes/cj/Library:/homes/cj/Documents")
+declare -a aa=([0]="/homes/cj/Desktop:/homes/cj/Library:/homes/cj/Documents" [1]="/homes/cj/Applications")
+declare -a aa=([0]="/homes/cj/Desktop:/homes/cj/Library:/homes/cj/Documents" [1]="/homes/cj/Applications")

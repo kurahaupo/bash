@@ -1,0 +1,9 @@
+declare -a a=([0]="hi")
+declare -a a
+declare -a a
+declare -ai a
+declare -a a
+declare -a a
+declare -a a
+declare -a a=()
+declare -a a=()

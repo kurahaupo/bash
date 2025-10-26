@@ -82,9 +82,13 @@ unset a a2
 
 IFS=
 pat=('*.*')
-case $(ls ${pat[@]} 2>/dev/null) in
-'')	echo '*.* BAD' ;;
-*)	echo '*.* OK' ;;
+# The test above does not work because there are files matching this wildcard in $PWD
+pat=('*#*')
+touch 'X#Y'
+case $( ls ${pat[@]} 2>/dev/null ) in
+'X#Y')	echo 'unquoted wildcard matched as expected' ;;
+'')	echo 'unquoted wildcard failed to match' ;;
+*)	echo 'unquoted wildcard - unexpected result' ;;
 esac
 
 IFS="$oIFS"

@@ -1,0 +1,4 @@
+SRC/tests/array05.run: line 40: syntax error near unexpected token `<>'
+SRC/tests/array05.run: line 40: `metas=( <> < > ! )'
+SRC/tests/array05.run: line 41: syntax error near unexpected token `<>'
+SRC/tests/array05.run: line 41: `metas=( [1]=<> [2]=< [3]=> [4]=! )'

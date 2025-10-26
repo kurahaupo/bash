@@ -1,0 +1,42 @@
+declare -a foo=([0]="( zeroind )")
+declare -a foo=([0]="zeroind")
+declare -a foo=([0]="zeroind")
+declare -a foo=([0]="[0]=bar")
+declare -a foo=([0]="[0]=bar")
+declare -a foo=([0]="[0]=bar")
+declare -- a="(1 2 3)"
+declare -a a=([0]="1" [1]="2" [2]="3")
+declare -- a="([0]=a [1]=b)"
+declare -a a=([0]="a" [1]="b")
+declare -A a=([1]="b" [0]="a" )
+declare -a var=([0]="[\$(echo" [1]="total" [2]="0)]=1" [3]="[2]=2]")
+declare -a var=([0]="[\$(echo total 0)]=1 [2]=2]")
+declare -a var=([0]="[\$(echo" [1]="total" [2]="0)]=1" [3]="[2]=2]")
+declare -a var=()
+declare -al foo=([0]="abcde" [1]="two" [2]="three")
+declare -al foo=([0]="abcde")
+declare -al ar=([0]="one" [1]="two" [2]="three")
+declare -a a=([2]="foo")
+declare -a a=([2]="foo")
+declare -a a=([1]="(var)" [2]="foo")
+declare -a a=([1]="(var)")
+declare -a a=([0]="1" [1]="2" [2]="(1 2 3)")
+declare -a a=([0]="1" [1]="2" [2]="(1 2 3)")
+declare -a a=([0]="1" [1]="2" [2]="3")
+declare -a a=([0]="1" [1]="2" [2]="3")
+declare -a a=([0]="1" [1]="2" [2]="3")
+declare -- a="a b"
+declare -- b="/scratch/bash"
+declare -- c="(1 2)"
+declare -- d="(\$a)"
+declare -- e="(\$(echo Darwin))"
+declare -a a=([0]="a b")
+declare -a b=([0]="/scratch/bash")
+declare -a c=([0]="1" [1]="2")
+declare -a d=([0]="a" [1]="b")
+declare -a e=([0]="Darwin")
+declare -A a=([0]="a b" )
+declare -A b=([0]="/scratch/bash" )
+declare -A c=([1]="2" )
+declare -A d=(["a b"]="" )
+declare -A e=([Darwin]="" )

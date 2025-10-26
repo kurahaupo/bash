@@ -1,0 +1,2 @@
+SRC/tests/array18.run: line 43: ~: arithmetic syntax error: operand expected (error token is "~")
+SRC/tests/array18.run: line 89: ~ : arithmetic syntax error: operand expected (error token is "~ ")

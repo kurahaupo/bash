@@ -1,0 +1,60 @@
+
+a b c d e f g
+for case if then else
+<> < > !
+12 14 16 18 20
+4414758999202
+aaa bbb
+abc 3
+case 4
+abc case if then else 5
+abc case if then else 5
+0
+case 4
+case if then else 5
+case if then else 5
+argv[1] = <0>
+argv[2] = <1>
+argv[3] = <4>
+argv[4] = <10>
+argv[1] = <0>
+argv[2] = <1>
+argv[3] = <4>
+argv[4] = <10>
+argv[1] = <0>
+argv[2] = <1>
+argv[3] = <4>
+argv[4] = <10>
+argv[1] = <0 1 4 10>
+include null element -- expect one
+one
+include unset element -- expect three five
+three five
+start at unset element -- expect five seven
+five seven
+too many elements -- expect three five seven
+three five seven
+positive offset - expect five seven
+five seven
+negative offset to unset element - expect seven
+seven
+positive offset 2 - expect seven
+seven
+negative offset 2 - expect seven
+seven
+out-of-range offset
+
+e
+4
+1 4 7 10
+'b
+b  c
+$0
+declare -a A=([0]="X=a" [1]="b")
+2 3 4 5 6
+FIN1:0
+FIN2:0
+FIN3:0
+FIN4:0
+FIN5:0
+FIN6:0

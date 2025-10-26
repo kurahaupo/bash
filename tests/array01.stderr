@@ -1,0 +1,2 @@
+SRC/tests/array01.run: line 1: syntax error near unexpected token `('
+SRC/tests/array01.run: line 1: `printf "%s\n" -a a=(a 'b  c')'

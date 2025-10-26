@@ -1,0 +1,2 @@
+SRC/tests/array20.run: line 89: total 0: arithmetic syntax error in expression (error token is "0")
+SRC/tests/array20.run: line 128: warning: a[1]=(var): quoted compound array assignment deprecated

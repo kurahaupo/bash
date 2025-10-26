@@ -1,0 +1,47 @@
+IFS=: ${var-$*}
+abc
+def ghi
+jkl
+abc
+def ghi
+jkl
+----
+IFS=: ${var=$*}
+abc
+def ghi
+jkl
+var=abc:def ghi:jkl
+abc
+def ghi
+jkl
+var=abc:def ghi:jkl
+----
+IFS=: ${var+$*}
+abc
+def ghi
+jkl
+abc
+def ghi
+jkl
+----
+IFS= ${var-$*}
+abc
+def ghi
+jkl
+abc
+def ghi
+jkl
+----
+IFS= ${var=$*}
+abcdef ghijkl
+var=abcdef ghijkl
+abcdef ghijkl
+var=abcdef ghijkl
+----
+IFS= ${var+$*}
+abc
+def ghi
+jkl
+abc
+def ghi
+jkl

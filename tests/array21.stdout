@@ -1,0 +1,10 @@
+a+b+c
+x+b+c
+a+b+c
+x+b+c
+argv[1] = <a+b+c+d+e+f>
+argv[1] = <x+b+c+d+e+f>
+a b c
+x b c
+a b c
+x b c

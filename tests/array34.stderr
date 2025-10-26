@@ -1,0 +1,7 @@
+SRC/tests/array34.run: line 27: f: A: cannot convert associative to indexed array
+SRC/tests/array34.run: line 27: declare: A: cannot convert associative to indexed array
+SRC/tests/array34.run: line 31: A: cannot convert associative to indexed array
+SRC/tests/array34.run: line 40: f: A: cannot convert indexed to associative array
+SRC/tests/array34.run: line 40: declare: A: cannot convert indexed to associative array
+SRC/tests/array34.run: line 46: A: cannot convert indexed to associative array
+SRC/tests/array34.run: line 52: read: A: not an indexed array

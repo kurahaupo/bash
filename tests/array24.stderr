@@ -1,0 +1,8 @@
+SRC/tests/array24.run: line 22: $( echo >&2 foo ) : arithmetic syntax error: operand expected (error token is "$( echo >&2 foo ) ")
+SRC/tests/array24.run: line 23: $( echo >&2 foo ) : arithmetic syntax error: operand expected (error token is "$( echo >&2 foo ) ")
+SRC/tests/array24.run: line 24: $( echo >&2 foo ) : arithmetic syntax error: operand expected (error token is "$( echo >&2 foo ) ")
+SRC/tests/array24.run: line 26: $( echo >&2 foo ) : arithmetic syntax error: operand expected (error token is "$( echo >&2 foo ) ")
+SRC/tests/array24.run: line 30: $( echo >&2 foo ): arithmetic syntax error: operand expected (error token is "$( echo >&2 foo )")
+SRC/tests/array24.run: line 33: $( echo >&2 foo ): arithmetic syntax error: operand expected (error token is "$( echo >&2 foo )")
+SRC/tests/array24.run: line 34: $index: arithmetic syntax error: operand expected (error token is "$index")
+SRC/tests/array24.run: line 35: $( echo >&2 foo ): arithmetic syntax error: operand expected (error token is "$( echo >&2 foo )")

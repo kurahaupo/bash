@@ -1,0 +1,4 @@
+SRC/tests/array02.run: line 1: declare: `[]=asdf': not a valid identifier
+SRC/tests/array02.run: line 2: a[]: bad array subscript
+SRC/tests/array02.run: line 4: syntax error near unexpected token `('
+SRC/tests/array02.run: line 4: `declare -a ''=(a 'b c')'

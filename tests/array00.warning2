@@ -1,0 +1,2 @@
+the BASH_ARGC and BASH_ARGV tests will fail if debugging support
+has not been compiled into the shell

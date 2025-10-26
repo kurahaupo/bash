@@ -1,0 +1,18 @@
+SRC/tests/array00.run: line 35: syntax error near unexpected token `&'
+SRC/tests/array00.run: line 35: `test=(first & second)'
+SRC/tests/array00.run: line 99: readonly: `a[5]': not a valid identifier
+SRC/tests/array00.run: line 123: a: readonly variable
+SRC/tests/array00.run: line 125: b[]: bad array subscript
+SRC/tests/array00.run: line 126: b[*]: bad array subscript
+SRC/tests/array00.run: line 129: c[-2]: bad array subscript
+SRC/tests/array00.run: line 130: c: bad array subscript
+SRC/tests/array00.run: line 132: d[7]: cannot assign list to array member
+SRC/tests/array00.run: line 134: []=abcde: bad array subscript
+SRC/tests/array00.run: line 135: [*]=last: cannot assign to non-numeric index
+SRC/tests/array00.run: line 136: [-65]=negative: bad array subscript
+SRC/tests/array00.run: line 144: unset: ps1: not an array variable
+SRC/tests/array00.run: line 148: declare: c: readonly variable
+SRC/tests/array00.run: line 239: [-10]: bad array subscript
+SRC/tests/array00.run: line 268: syntax error near unexpected token `&'
+SRC/tests/array00.run: line 268: `badarray=( metacharacters like & need to be quoted in compound assignments)'
+SRC/tests/array00.run: line 272: narray[4]: unbound variable

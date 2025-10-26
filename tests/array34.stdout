@@ -1,0 +1,6 @@
+declare -A A=([x]="x" )
+declare -A A=([1]="1" )
+declare -A A=([1]="1" )
+declare -a A=([0]="x" [1]="x")
+declare -a A=([0]="x" [1]="x")
+declare -a A=([0]="x" [1]="x")

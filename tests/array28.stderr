@@ -1,0 +1,6 @@
+SRC/tests/array28.run: line 52: read: `A[]]': not a valid identifier
+SRC/tests/array28.run: line 60: printf: `A[]]': not a valid identifier
+SRC/tests/array28.run: line 68: declare: `A[]]=X': not a valid identifier
+SRC/tests/array28.run: line 76: declare: `A[]]=X': not a valid identifier
+SRC/tests/array28.run: line 81: y[]: bad array subscript
+SRC/tests/array28.run: line 81: y[]: bad array subscript

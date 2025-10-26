@@ -1,0 +1,20 @@
+SRC/tests/array33.run: line 20: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 21: declare: a: not found
+SRC/tests/array33.run: line 24: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 25: declare: a: not found
+SRC/tests/array33.run: line 29: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 35: declare: a: not found
+SRC/tests/array33.run: line 38: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 39: declare: a: not found
+SRC/tests/array33.run: line 42: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 50: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 57: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 65: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 66: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 68: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 75: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 77: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 80: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 85: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 91: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
+SRC/tests/array33.run: line 95: $(echo INJECTION! >&2 ; echo 0): arithmetic syntax error: operand expected (error token is "$(echo INJECTION! >&2 ; echo 0)")
