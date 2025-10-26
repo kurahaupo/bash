@@ -1,0 +1,7 @@
+12
+[1]-  Running                    sleep 20 &
+[3]+  Running                    sleep 20 &
+5: ok 1
+2: ok 2
+2: ok 3
+127

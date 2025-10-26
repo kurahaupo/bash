@@ -1,0 +1,4 @@
+SRC/tests/jobs05.run: line 26: wait: %8: no such job
+SRC/tests/jobs05.run: line 57: declare: wpid: not found
+SRC/tests/jobs05.run: line 60: wait: `invalid-varname': not a valid identifier
+SRC/tests/jobs05.run: line 62: wait: WV: cannot unset: readonly variable

@@ -1,0 +1,8 @@
+[1]   Running                    sleep 2 &
+[2]   Running                    sleep 2 &
+[3]   Running                    sleep 2 &
+[4]-  Running                    sleep 2 &
+[5]+  Running                    ( sleep 2; exit 4 ) &
+4
+0
+i killed it

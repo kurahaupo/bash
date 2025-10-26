@@ -1,0 +1,26 @@
+# test out behavior of using job control notation when job control is not
+# active
+
+sleep 2 &
+
+sleep 2 &
+sleep 2 &
+sleep 2 &
+(sleep 2 ; exit 4) &
+
+jobs
+
+wait %%
+echo $?
+
+wait %1
+echo $?
+
+wait
+
+# the sleep is intended to give the kill time to execute before the job
+# exits
+(sleep 1 ; cat ) &
+# suppress any message about terminated process
+exec 2>/dev/null
+kill -1 %% && echo i killed it || echo could not kill it

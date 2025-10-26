@@ -1,3 +1,5 @@
+# test out fg/bg failure in a subshell
+
 # make sure fg and bg don't work on jobs started without job control,
 # even if they are executed when job control is active
 set +o monitor

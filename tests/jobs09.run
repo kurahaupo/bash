@@ -1,3 +1,5 @@
+# wait interrupted by signal for which a trap has been set
+
 # When the shell is waiting, by means of the wait utility, for asynchronous
 # commands to complete, the reception of a signal for which a trap has been
 # set shall cause the wait utility to return immediately with an exit status

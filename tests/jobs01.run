@@ -1,0 +1,20 @@
+# test out %+, jobs -p, and $! agreement in a subshell first
+#
+# make sure that jobs -p, %+, and $! all agree
+
+set -m
+sleep 60 &
+
+FN=$TMPDIR/jobs-pid.$$
+
+pid1=$!
+jobs -p %+ > $FN
+pid2=$(< $FN)
+rm $FN
+
+if [ $pid1 -ne $pid2 ]; then
+	echo 'oops - $! and jobs -p %+ disagree!'
+fi
+
+exec 2>/dev/null
+kill -9 $pid1

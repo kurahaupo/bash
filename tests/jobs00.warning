@@ -1,0 +1,2 @@
+some of these tests may fail if job control has not been compiled
+into the shell

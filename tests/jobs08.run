@@ -1,0 +1,16 @@
+# more disown -h tests
+# tests of disown -h
+
+set -m
+
+sleep 1&
+sleep 1&
+sleep 1&
+
+disown -ah
+
+sleep 1&
+sleep 1&
+sleep 1&
+
+disown -rh

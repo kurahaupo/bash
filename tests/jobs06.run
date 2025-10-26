@@ -1,4 +1,5 @@
-# framework to test `wait -f' which forces wait until a job exits
+# framework to test ‘wait -f’ which forces wait until a job exits
+
 set -o monitor
 sleep 5 &
 child1=$!
