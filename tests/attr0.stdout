@@ -1,0 +1,7 @@
+after f1:declare -ar a=([0]="1")
+after f2:declare -ar a=([0]="1")
+after f3:declare -ar a=([0]="1")
+after f4:declare -ar a=([0]="1")
+after f2:declare -ar b=([0]="2")
+after f3:declare -ar c=([0]="(3)")
+after f4:declare -ar d=([0]="4")

@@ -1,0 +1,5 @@
+SRC/tests/attr1.run: line 26: p: readonly variable
+SRC/tests/attr1.run: line 32: r: readonly variable
+SRC/tests/attr1.run: line 36: r: readonly variable
+SRC/tests/attr1.run: line 40: f: r: readonly variable
+SRC/tests/attr1.run: line 44: readonly: r: readonly variable

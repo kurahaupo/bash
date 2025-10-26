@@ -50,6 +50,3 @@ declare -p c
 f4
 echo -n after f4:
 declare -p d
-
-test_runsub ./attr1.sub
-test_runsub ./attr2.sub

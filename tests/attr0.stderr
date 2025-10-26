@@ -1,0 +1,3 @@
+SRC/tests/attr0.run: line 19: f2: a: readonly variable
+SRC/tests/attr0.run: line 20: a: readonly variable
+SRC/tests/attr0.run: line 21: readonly: a: readonly variable
