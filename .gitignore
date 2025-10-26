@@ -71,8 +71,13 @@ po/Makefile.in
 po/POTFILES
 
 support/bash.pc
-support/man2html
 support/bashbug.sh
+support/man2html
+support/nonohup
+support/printenv
+support/recho
+support/xcase
+support/zecho
 
 lsignames.h
 pathnames.h
@@ -84,15 +89,6 @@ stamp-h
 
 mksignames
 mksyntax
-
-printenv
-recho
-xcase
-zecho
-tests/printenv
-tests/recho
-tests/xcase
-tests/zecho
 
 parser-built
 y.tab.c

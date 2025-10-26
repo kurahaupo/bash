@@ -18,7 +18,7 @@
 #
 #	TESTSCRIPT = run-all
 #	cd $(srcdir)/tests &&
-#		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT}
+#		BUILD_DIR=$(BUILD_DIR) THIS_SH=$(THIS_SH) $(SHELL) $(TESTSCRIPT)
 #
 # When run manually, $PWD should be the build directory.
 #
@@ -90,20 +90,25 @@ parallel=no
 while [ $# != 0 ]
 do
 	case $1 in
-		-b) BUILD_DIR=$2 ; shift ;;
-		-B) THIS_SH=$2 ; shift ;;
+		-b | --build-dir)	BUILD_DIR=$2 ; shift ;;
+		     --build-dir=*)	BUILD_DIR=${1#*=} ;;
+		-B | --this-sh)	THIS_SH=$2 ; shift ;;
+		     --this-sh=*)	THIS_SH=${1#*=} ;;
 		-D)	tests_dir=$2 ; shift ;;
-		-j)	parallel=$DEFAULT_PARALLEL ;;
 		-J)	parallel=no ;;
+		-j)	parallel=$DEFAULT_PARALLEL ;;
 		-j*)	parallel=${1#-?} ;;
-		-K | --keep-results=all)	keep_results=yes ;;
-		-k | --keep-results=error)	keep_results=on-error ;;
-		-nk | --keep-results=no)	keep_results=no ;;
-		-l | --locale)	BASHTEST_en_utf8=$2 ; shift ;;
-		-s) srcdir=$2 ; shift ;;
+		-K | --keep-results=n*)	keep_results=no ;;
+		-ka | --keep-results=a*)	keep_results=yes ;;
+		-ke | --keep-results=e*)	keep_results=if-error ;;
+		-l | --locale)	BASHTEST_utf8_locale=$2 ; shift ;;
+		     --locale=*)	BASHTEST_utf8_locale=${1#*=} ;;
+		-s | --src-dir)	srcdir=$2 ; shift ;;
+		     --src-dir=*)	srcdir=${1#*=} ;;
+
+		-[bBDls]*)	t=${1#-?} o=${1%"$t"} ; shift ; set X "$o"  "$t" "$@" ;;
+		-[JK]*)	t=${1#-?} o=${1%"$t"} ; shift ; set X "$o" "-$t" "$@" ;;
 		--)	shift ; break ;;
-		-[bBDls]*) t=${1#-?} o=${1%"$t"} ; shift ; set X "$o"  "$t" "$@" ;;
-		-[JKk]*)   t=${1#-?} o=${1%"$t"} ; shift ; set X "$o" "-$t" "$@" ;;
 		-*)	die "Invalid option '$1'" ;;
 		*)	break ;;
 	esac
@@ -298,7 +303,7 @@ case $keep_results in
 	no)
 		BASHTEST_finish () { BASHTEST_purge_results ; }
 		;;
-	auto | on-error | '')
+	auto | if-error | '')
 		BASHTEST_finish () {
 			if [ "$BASHTEST_status" = 0 ]
 			then
@@ -425,8 +430,12 @@ run_old () {
 			fi
 		fi || exit
 
-		BASH_TSTOUT=$run_dir/out \
-		TMPDIR=$run_dir_tmp \
+		export BASH_TSTOUT=$run_dir/out
+		export TMPDIR=$run_dir_tmp
+		PATH=$srcdir/tests:$PATH
+
+		case $pmode in p*) exec nonohup \
+			 sh "${file##*/}" ;; esac
 		exec sh "${file##*/}"
 	)
 	this_status=$?
@@ -530,7 +539,10 @@ run_new ()
 			fi
 		fi || exit
 
-		TMPDIR=$run_dir_tmp \
+		export TMPDIR=$run_dir_tmp
+
+		case $pmode in p*)	exec nonohup \
+			 "$THIS_SH" "$file" "$@" ;; esac
 		exec "$THIS_SH" "$file" "$@"
 	)
 	this_status=$?
