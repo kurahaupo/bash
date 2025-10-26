@@ -1,0 +1,6 @@
+SRC/tests/arith_for.run: line 133: ((: 7++ : arithmetic syntax error: operand expected (error token is "+ ")
+SRC/tests/arith_for.run: line 134: ((: i < 4/0: division by 0 (error token is "0")
+SRC/tests/arith_for.run: line 135: ((: i=2/0: division by 0 (error token is "0")
+SRC/tests/arith_for.run: line 137: ((: 7=4 : attempted assignment to non-variable (error token is "=4 ")
+SRC/tests/arith_for.run: line 139: ((: j=: arithmetic syntax error: operand expected (error token is "=")
+SRC/tests/arith_for.run: line 141: break: only meaningful in a `for', `while', or `until' loop
