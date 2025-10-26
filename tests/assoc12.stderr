@@ -1,0 +1,2 @@
+SRC/tests/assoc12.run: line 34: "": bad array subscript
+SRC/tests/assoc12.run: line 90: foo: readonly variable

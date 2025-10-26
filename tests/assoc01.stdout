@@ -1,0 +1,10 @@
+
+foo qux
+/usr/sbin/foo /usr/local/bin/qux
+hits	command
+   0	/usr/sbin/foo
+   0	/bin/sh
+   0	/sbin/blat
+   0	/usr/local/bin/qux
+foo sh blat qux
+/usr/sbin/foo /bin/sh /sbin/blat /usr/local/bin/qux

@@ -10,10 +10,13 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# tests with subscripts being expanded more than one in ${xxx} word expansions
 
 # bash versions up to and including bash-5.1 expanded these subscripts more
 # than once
+
+exec 2>&1   # so that ‘stderr’ is interleaved in the correct order
 
 declare -A A
 

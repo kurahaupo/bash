@@ -1,0 +1,1 @@
+SRC/tests/assoc05.run: line 26: declare: `myarray[foo[bar]=bleh': not a valid identifier

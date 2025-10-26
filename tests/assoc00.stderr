@@ -1,0 +1,5 @@
+SRC/tests/assoc00.run: line 41: chaff: four: must use subscript when assigning associative array
+SRC/tests/assoc00.run: line 53: waste: readonly variable
+SRC/tests/assoc00.run: line 54: unset: waste: cannot unset: readonly variable
+SRC/tests/assoc00.run: line 73: declare: chaff: cannot destroy array variables in this way
+SRC/tests/assoc00.run: line 101: [$unset]: bad array subscript

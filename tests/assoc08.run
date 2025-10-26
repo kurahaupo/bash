@@ -1,0 +1,26 @@
+# test converting between scalars and assoc arrays
+unset assoc
+assoc=assoc
+declare -A assoc
+declare -p assoc
+echo ${assoc[@]}
+
+# weird syntax required to append to multiple existing array elements using
+# compound assignment syntax
+unset assoc
+declare -A assoc
+assoc=( [one]=one [two]=two [three]=three )
+assoc+=( [one]+=more [two]+=less )
+declare -p assoc
+
+readonly -A assoc
+declare -p assoc
+
+declare -A hash
+
+hash=(["key"]="value1")
+declare -p hash
+hash=(["key"]="${hash["key"]} value2")
+declare -p hash
+
+unset hash

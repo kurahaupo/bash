@@ -1,0 +1,8 @@
+outside: outside
+declare -A BASH_ALIASES=()
+declare -A BASH_CMDS=()
+declare -A afoo=([six]="six" ["foo bar"]="foo quux" )
+argv[1] = <inside:>
+argv[2] = <six>
+argv[3] = <foo quux>
+outside 2: outside

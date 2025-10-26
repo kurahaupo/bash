@@ -10,7 +10,8 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# tests with `[' and `]' subscripts and printf/read/wait builtins
 
 # test behavior of builtins that can take array subscript arguments, make
 # sure they work in the presence of associative arrays and `problematic' keys

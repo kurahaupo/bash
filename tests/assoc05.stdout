@@ -1,0 +1,8 @@
+abc
+def
+def
+def bleh abc
+myarray=(["]"]="def" [foo]="bleh" ["a]a"]="abc" ["a]=test1;#a"]="123" )
+
+123
+myarray=(["]"]="def" ["a]=test2;#a"]="def" [foo]="bleh" ["a]a"]="abc" ["a]=test1;#a"]="123" )

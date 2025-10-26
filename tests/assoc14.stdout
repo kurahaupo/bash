@@ -1,0 +1,8 @@
+declare -A assoc=(["*"]="star" ["!"]="bang" ["@"]="at" )
+at
+star
+declare -A a=(["@"]="at" )
+declare -a ia
+declare -A a=(["@"]="at2" )
+declare -A a=(["@"]="    string" )
+declare -A a=(["*"]="star2" ["@"]="at" )

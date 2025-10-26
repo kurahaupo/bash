@@ -10,8 +10,8 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# these tests were previously in array19.sub, but they are acceptable syntax now
+
+# test assigning associative arrays using compound key/value pair assignments
 
 declare -A a
 declare a='(1 2 3)'

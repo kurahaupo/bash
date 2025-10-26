@@ -1,0 +1,3 @@
+SRC/tests/assoc10.run: line 86: read: `a[80's]': not a valid identifier
+SRC/tests/assoc10.run: line 98: printf: `a[80's]': not a valid identifier
+SRC/tests/assoc10.run: line 156: typeset: `foo[foo]bar]=bax': not a valid identifier

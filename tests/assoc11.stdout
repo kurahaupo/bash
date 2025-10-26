@@ -1,0 +1,7 @@
+f: declare -a a
+f: declare -A a
+
+f: declare -a a
+main: declare -- a="7"
+f: declare -A a
+main: declare -- a="42"

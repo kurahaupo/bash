@@ -1,0 +1,6 @@
+declare -A assoc=([0]="assoc" )
+assoc
+declare -A assoc=([two]="twoless" [three]="three" [one]="onemore" )
+declare -Ar assoc=([two]="twoless" [three]="three" [one]="onemore" )
+declare -A hash=([key]="value1" )
+declare -A hash=([key]="value1 value2" )

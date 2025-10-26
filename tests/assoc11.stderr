@@ -1,0 +1,2 @@
+SRC/tests/assoc11.run: line 14: declare: a: cannot convert indexed to associative array
+SRC/tests/assoc11.run: line 17: declare: a: cannot convert associative to indexed array

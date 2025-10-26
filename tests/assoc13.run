@@ -10,7 +10,9 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# more kvpair associative array assignment tests
+
 foo='1 2'
 bar='3 4 5'
 xtra='20 40 80'

@@ -10,10 +10,10 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# tests with subscripts and values containing 0x01 (some indexed array tests too)
 
 # associative arrays first
-
 v=$'\x01'
 
 declare -A var foo v2

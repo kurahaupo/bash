@@ -11,6 +11,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+# new shopt option to prevent multiple expansion of assoc array subscripts
+
 typeset -A a=( [\\]= [\"]= [\)]= ) b
 for x in "${!a[@]}"; do b[$x]=; done
 b+=([\`]= [\]]=)
