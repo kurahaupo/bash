@@ -10,6 +10,8 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# internal quoting for array subscripts
 #
 # make sure all internal backslash quoting for array subscripts in arithmetic
 # contexts is removed appropriately before the expression is evaluated

@@ -1,0 +1,5 @@
+SRC/tests/arith13.run: line 9: ((: x=9 y=41 : arithmetic syntax error in expression (error token is "y=41 ")
+SRC/tests/arith13.run: line 13: a b: arithmetic syntax error in expression (error token is "b")
+SRC/tests/arith13.run: line 14: ((: a b: arithmetic syntax error in expression (error token is "b")
+SRC/tests/arith13.run: line 29: 'foo' : arithmetic syntax error: operand expected (error token is "'foo' ")
+SRC/tests/arith13.run: line 32: b[c]d: arithmetic syntax error in expression (error token is "d")

@@ -1,0 +1,14 @@
+SRC/tests/arith10.run: line 19: a: unbound variable
+SRC/tests/arith10.run: line 20: a: unbound variable
+SRC/tests/arith10.run: line 29: b: expression recursion level exceeded (error token is "b")
++ var=42
++ echo 42
++ echo 0
++ echo 0
++ echo 0
++ ((  42  ))
++ echo 0
++ ((    ))
++ echo 1
++ set +x
+SRC/tests/arith10.run: line 52: 4+: arithmetic syntax error: operand expected (error token is "+")

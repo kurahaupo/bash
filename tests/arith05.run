@@ -1,0 +1,2 @@
+# make sure arithmetic expansion handles ints > 2**31 - 1 using intmax_t
+echo $(( 2147483645 + 4 ))

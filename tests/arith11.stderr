@@ -1,0 +1,15 @@
+SRC/tests/arith11.run: line 35: " ": arithmetic syntax error: operand expected (error token is "" "")
+SRC/tests/arith11.run: line 40: "": arithmetic syntax error: operand expected (error token is """")
+SRC/tests/arith11.run: line 46: ((: `a[]': not a valid identifier
+SRC/tests/arith11.run: line 47: `a[]': not a valid identifier
+SRC/tests/arith11.run: line 35: " ": arithmetic syntax error: operand expected (error token is "" "")
+SRC/tests/arith11.run: line 38: " ": arithmetic syntax error: operand expected (error token is "" "")
+SRC/tests/arith11.run: line 40: "": arithmetic syntax error: operand expected (error token is """")
+SRC/tests/arith11.run: line 43: "": arithmetic syntax error: operand expected (error token is """")
+SRC/tests/arith11.run: line 46: ((: `a[]': not a valid identifier
+SRC/tests/arith11.run: line 47: `a[]': not a valid identifier
+SRC/tests/arith11.run: line 48: "": arithmetic syntax error: operand expected (error token is """")
+SRC/tests/arith11.run: line 82: "" : arithmetic syntax error: operand expected (error token is """ ")
+SRC/tests/arith11.run: line 91: ((: 1 -  : arithmetic syntax error: operand expected (error token is "-  ")
+SRC/tests/arith11.run: line 96: let: 0 - "": arithmetic syntax error: operand expected (error token is """")
+SRC/tests/arith11.run: line 97: let: 0 - "": arithmetic syntax error: operand expected (error token is """")

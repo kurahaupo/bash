@@ -10,8 +10,6 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-. ./test-aux-functions
 
 set +o posix
 declare -i iv jv
@@ -297,67 +295,3 @@ unset -v x
 # combinations of expansions
 echo $(( "`echo 1+1`" ))
 echo $(( `echo 1+1` ))
-
-test_runsub ./arith1.sub
-test_runsub ./arith2.sub
-test_runsub ./arith3.sub
-test_runsub ./arith4.sub
-
-# make sure arithmetic expansion handles ints > 2**31 - 1 using intmax_t
-echo $(( 2147483645 + 4 ))
-
-# other tests using INTMAX_MIN and INTMAX_MAX that cause exceptions if not
-# handled correctly -- problem through bash-4.2
-test_runsub ./arith5.sub
-
-# problems with suppressing evaluation present through bash-4.2
-test_runsub ./arith6.sub
-
-# problems with parsing arithmetic expressions containing colons that are
-# part of word expansions such as substring extraction
-test_runsub ./arith7.sub
-
-# problems with evaluation of conditional expressions
-test_runsub ./arith8.sub
-
-# expressions with unset variables and nounset enabled
-test_runsub ./arith9.sub
-
-# empty expressions in various arithmetic evaluation contexts
-test_runsub ./arith10.sub
-
-# internal quoting for array subscripts
-test_runsub ./arith11.sub
-
-x=4
-y=7
-
-(( x=8 , y=12 ))
-
-echo $x $y
-
-# should be an error
-(( x=9 y=41 ))
-
-# These are errors
-unset b
-echo $((a b))
-((a b))
-
-n=42
-printf "%d\n" $n
-printf "%i\n" $n
-echo $(( 8#$(printf "%o\n" $n) ))
-printf "%u\n" $n
-echo $(( 16#$(printf "%x\n" $n) ))
-echo $(( 16#$(printf "%X\n" $n) ))
-
-# allow reserved words after an arithmetic command just because
-if ((expr)) then ((expr)) fi
-
-# these are errors
-foo=1
-echo $(( 'foo' ))
-
-# causes longjmp botches through bash-2.05b
-a[b[c]d]=e

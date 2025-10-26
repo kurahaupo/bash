@@ -1,0 +1,32 @@
+x=4
+y=7
+
+(( x=8 , y=12 ))
+
+echo $x $y
+
+# should be an error
+(( x=9 y=41 ))
+
+# These are errors
+unset b
+echo $((a b))
+((a b))
+
+n=42
+printf "%d\n" $n
+printf "%i\n" $n
+echo $(( 8#$(printf "%o\n" $n) ))
+printf "%u\n" $n
+echo $(( 16#$(printf "%x\n" $n) ))
+echo $(( 16#$(printf "%X\n" $n) ))
+
+# allow reserved words after an arithmetic command just because
+if ((expr)) then ((expr)) fi
+
+# these are errors
+foo=1
+echo $(( 'foo' ))
+
+# causes longjmp botches through bash-2.05b
+a[b[c]d]=e

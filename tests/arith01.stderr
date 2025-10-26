@@ -1,0 +1,6 @@
+SRC/tests/arith01.run: line 15: 4-- : arithmetic syntax error: operand expected (error token is "- ")
+SRC/tests/arith01.run: line 16: 4++ : arithmetic syntax error: operand expected (error token is "+ ")
+SRC/tests/arith01.run: line 17: 4 -- : arithmetic syntax error: operand expected (error token is "- ")
+SRC/tests/arith01.run: line 18: 4 ++ : arithmetic syntax error: operand expected (error token is "+ ")
+SRC/tests/arith01.run: line 48: ((: ++ : arithmetic syntax error: operand expected (error token is "+ ")
+SRC/tests/arith01.run: line 51: ((: -- : arithmetic syntax error: operand expected (error token is "- ")

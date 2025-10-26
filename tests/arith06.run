@@ -10,9 +10,13 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# other tests using INTMAX_MIN and INTMAX_MAX that cause exceptions if not
+# handled correctly -- problem through bash-4.2
 #
 # a lot of this is technically undefined behavior due to signed 64-bit
 # integer overflow, but we're testing exception handling here
+
 
 intmax_max=$((2**63 - 1))
 intmax_min1=$((2**63))

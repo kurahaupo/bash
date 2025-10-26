@@ -1,0 +1,4 @@
+SRC/tests/arith12.run: line 48: $(echo xxxx) : arithmetic syntax error: operand expected (error token is "$(echo xxxx) ")
+SRC/tests/arith12.run: line 49: $(echo xxxx): arithmetic syntax error: operand expected (error token is "$(echo xxxx)")
+SRC/tests/arith12.run: line 50: $(echo xxxx): arithmetic syntax error: operand expected (error token is "$(echo xxxx)")
+SRC/tests/arith12.run: line 67: 'foo' : arithmetic syntax error: operand expected (error token is "'foo' ")

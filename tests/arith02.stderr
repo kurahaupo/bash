@@ -1,0 +1,2 @@
+SRC/tests/arith02.run: line 46: ((: -- : arithmetic syntax error: operand expected (error token is "- ")
+SRC/tests/arith02.run: line 50: ((: ++ : arithmetic syntax error: operand expected (error token is "+ ")

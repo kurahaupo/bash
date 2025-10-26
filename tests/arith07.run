@@ -10,7 +10,9 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# problems with suppressing evaluation present through bash-4.2
+
 function reorder
 {
 	(( x[1] < x && (x=x[1], x[1]=$x) ))
