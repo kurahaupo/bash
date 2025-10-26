@@ -324,7 +324,11 @@ trap 'sig=$? ; BASHTEST_finish ; exit 2' 1 2 3 15
 trap 'sig=$? ; BASHTEST_finish ; exit $BASHTEST_status' 0
 
 # Get the right version of recho/zecho/printenv, especially if not run via ‘make tests’
-PATH=${BUILD_DIR:+$BUILD_DIR/support:}$srcdir/support:$srcdir/tests:$PATH
+PATH=$srcdir/support:$PATH
+case $BUILD_DIR in
+	'' | "$srcdir") ;;
+	*) PATH=$BUILD_DIR/support:$PATH ;;
+esac
 export PATH		# should be redundant
 
 # unset BASH_ENV only if it is set
@@ -389,6 +393,12 @@ export TAB='	'
 run_old () {
 	(
 		cd "$tests_dir" || exit 66
+
+		# Only include $srcdir/tests for old-style tests.
+		# (For new-style tests, put commands either in $BUILD_DIR/support
+		# (built from $srcdir/support) or in $run_dir (copied from
+		# ${base}skel).)
+		PATH=$srcdir/tests:$PATH
 
 		# Make sure we don't write xtrace into the stderr file. Try using
 		# Bash's BASH_XTRACEFD magic, otherwise turn off xtrace.
