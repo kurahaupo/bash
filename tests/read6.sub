@@ -6,5 +6,10 @@ echo $?
 read -t 0 < $0
 echo $?
 
-read -t 0
-echo $?
+if test -t 0
+then
+	read -t 0
+	echo $?
+else
+	echo 0
+fi

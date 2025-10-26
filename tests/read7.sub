@@ -21,7 +21,7 @@ estat=$?
 if [ $estat -gt 128 ]; then
 	echo timeout 1: ok
 else
-	echo $estat
+	echo timeout 1: fail $estat
 fi
 echo ${var:-unset or null 1}
 
@@ -30,7 +30,7 @@ estat=$?
 if [ $estat -gt 128 ]; then
 	echo timeout 2: ok
 else
-	echo $estat
+	echo timeout 2: fail $estat
 fi
 echo ${var:-unset or null 2}
 
@@ -39,7 +39,7 @@ estat=$?
 if [ $estat -gt 128 ]; then
 	echo timeout 3: ok
 else
-	echo $estat
+	echo timeout 3: fail $estat
 fi
 echo ${var:-unset or null 3}
 
@@ -48,7 +48,7 @@ estat=$?
 if [ $estat -gt 128 ]; then
 	echo timeout 4: ok
 else
-	echo $estat
+	echo timeout 4: fail $estat
 fi
 
 # the above should all time out
