@@ -73,6 +73,7 @@ export CSTART CEND
 passed=0
 total=0
 failed=0
+overall_result=0
 
 if [ -n "$BASH_TSTOUT_SAVEDIR" ] && [ -d "$BASH_TSTOUT_SAVEDIR" ]; then
 	echo "Using $BASH_TSTOUT_SAVEDIR to save output from failed tests"
@@ -90,6 +91,7 @@ do
 		if sh $x; then
 			passed=$(( $passed + 1 ))
 		else
+			overall_result=$?
 			failed=$(( $failed + 1 ))
 			echo "${CSTART}${x}: NON-ZERO exit status $?${CEND}"
 			if [ -n "$BASH_TSTOUT_SAVEDIR" ]; then
@@ -105,4 +107,5 @@ do
 done
 
 echo "${CSTART}${passed}/${total} tests succeeded${CEND}"
-exit $failed
+
+exit $overall_result
