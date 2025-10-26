@@ -1,4 +1,4 @@
-LANG=en_US.UTF-8
+LANG=$BASHTEST_utf8_locale
 
 shopt -s extglob
 a="aaaäöü"

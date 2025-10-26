@@ -14,7 +14,7 @@
 . ./test-aux-functions
 
 # more tests to make sure that IFS splits on characters, not bytes
-export LANG=en_US.UTF-8
+export LANG=$BASHTEST_utf8_locale
 
 euro=$'\342\202\254'
 o342=$'\342'

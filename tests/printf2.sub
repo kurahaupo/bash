@@ -6,7 +6,7 @@ case $(printf %d\\n \'A) in
 *)	echo "printf2.sub: character conversion failed" >&2  ;;
 esac
 
-export LANG=en_US.UTF-8
+export LANG=$BASHTEST_utf8_locale
 case $(printf %d\\n \'À) in
 192)	exit 0;;
 *)	echo "printf2.sub: multibyte character conversion failed" >&2 ; exit 2 ;;

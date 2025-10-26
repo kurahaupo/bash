@@ -1,4 +1,4 @@
-LANG=en_US.UTF-8	# safest
+LANG=$BASHTEST_utf8_locale	# safest
 : ${TMPDIR:=/var/tmp}
 HOME=${TMPDIR}
 
@@ -8,6 +8,6 @@ echo ~/ಇಳಿಕೆಗಳು/*.txt >/dev/null
 
 rm -rf ${TMPDIR}/ಇಳಿಕೆಗಳು
 
-LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+LC_ALL=$BASHTEST_utf8_locale LANG=$BASHTEST_utf8_locale
 echo é/*
 echo 'é'/*

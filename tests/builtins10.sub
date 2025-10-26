@@ -32,7 +32,7 @@ help :
 
 help -m : | grep -v version
 
-LC_ALL=en_US.UTF-8
+LC_ALL=$BASHTEST_utf8_locale
 help -- | sed 1d
 
 # maybe sometime in the future this will do something

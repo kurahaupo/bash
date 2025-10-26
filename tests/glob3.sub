@@ -65,7 +65,7 @@ echo invalid bracket expression
 export LANG=C
 matchfunc
 
-export LANG=en_US.UTF-8
+export LANG=$BASHTEST_utf8_locale
 matchfunc
 
 unset -f matchfunc
@@ -116,7 +116,7 @@ echo invalid character class
 export LANG=C
 matchfunc
 
-export LANG=en_US.UTF-8
+export LANG=$BASHTEST_utf8_locale
 matchfunc
 
 unset -f matchfunc
@@ -156,7 +156,7 @@ echo invalid collating symbols
 export LANG=C
 matchfunc
 
-export LANG=en_US.UTF-8
+export LANG=$BASHTEST_utf8_locale
 matchfunc
 
 cd $OLDPWD

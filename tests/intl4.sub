@@ -14,7 +14,7 @@
 
 # printf "%ls" and "%lc" format specifiers for multibyte characters with
 # field width and precision in characters instead of bytes
-LC_ALL=en_US.UTF-8
+LC_ALL=$BASHTEST_utf8_locale
 
 V=ಇಳಿಕೆಗಳು
 V2=${V:0:2}

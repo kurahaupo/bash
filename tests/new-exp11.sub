@@ -13,7 +13,7 @@
 #
 # pattern matching and replacement operators with multibyte characters
 
-LANG=en_US.UTF-8
+LANG=$BASHTEST_utf8_locale
 
 s1='abcÃ¥def'
 s2='Ã¥'
