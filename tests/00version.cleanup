@@ -1,0 +1,4 @@
+#! sourced/by/bash
+exec >&5 2>&6
+[ -s "$run_dir/stdout" ] && cat "$run_dir/stdout"
+rm -f "$run_dir/stdout"

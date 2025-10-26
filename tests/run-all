@@ -387,12 +387,6 @@ check_gprof () {
 	echo "Profiling summary written to ${base}gmon.sum"
 }
 
-( cd "$tests_dir" && "$THIS_SH" ./version )
-
-export TAB='	'
-
-#echo Any output from any test, unless otherwise noted, indicates a possible anomaly
-
 # An old-style test is just an plain shell script that's run in its containing
 # directory; only exit status zero is considered a pass.
 run_old () {
