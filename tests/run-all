@@ -56,6 +56,17 @@ export THIS_SH
 : ${BUILD_DIR:=..}
 export BUILD_DIR
 
+if [ "$with_gprof" = yes ]
+then
+	GPROF=gprof
+
+	rm -f gmon.sum
+	# prime the pump; ${GPROF} complains if gmon.sum is empty
+	[ -f gmon.out ] && ${GPROF} -s ${THIS_SH} gmon.out >/dev/null
+
+	export GMON_OUT_PREFIX=bash
+fi
+
 ${THIS_SH} ./version
 
 rm -f "$BASH_TSTOUT"
@@ -88,7 +99,7 @@ fi
 for x in run-*
 do
 	case $x in
-	$0|run-minimal|run-gprof)	;;
+	$0|run-all|run-minimal|run-gprof)	;;
 	*.orig|*.save|*~) ;;
 	*)	echo $x
 		total=$(( $total + 1 ))
@@ -106,9 +117,39 @@ do
 			fi
 		fi
 		rm -f ${BASH_TSTOUT}
+		if [ "$with_gprof" = yes ]
+		then
+			if [ -f $TMPDIR/gmon.out ]; then
+				if [ -f gmon.out ]; then
+					${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+				else
+					${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+				fi
+			else
+				${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+			fi
+			rm -f $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* ${GMON_OUT_PREFIX}.[0-9]*
+		fi
 		;;
 	esac
 done
+
+if [ "$with_gprof" = yes ]
+then
+	if [ -f ./-specialname.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./-specialname.gmon > /dev/null
+		rm -f ./-specialname.gmon
+	fi
+	if [ -f ./ohio-state.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./ohio-state.gmon > /dev/null
+		rm -f ./ohio-state.gmon
+	fi
+
+	if [ -f specialname.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./specialname.gmon > /dev/null
+		rm -f specialname.gmon
+	fi
+fi
 
 echo "${CSTART}${passed}/${total} tests succeeded${CEND}"
 

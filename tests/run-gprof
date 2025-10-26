@@ -14,6 +14,8 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+with_gprof=yes exec run-all "$@"
+
 : ${TMPDIR:=/tmp}
 export TMPDIR
 
@@ -56,52 +58,101 @@ export THIS_SH
 : ${BUILD_DIR:=..}
 export BUILD_DIR
 
-GPROF=gprof
+if [ "$with_gprof" = yes ]
+then
+	GPROF=gprof
 
-rm -f gmon.sum
+	rm -f gmon.sum
+	# prime the pump; ${GPROF} complains if gmon.sum is empty
+	[ -f gmon.out ] && ${GPROF} -s ${THIS_SH} gmon.out >/dev/null
+
+	export GMON_OUT_PREFIX=bash
+fi
 
 ${THIS_SH} ./version
 
 rm -f "$BASH_TSTOUT"
 
-# prime the pump; ${GPROF} complains if gmon.sum is empty
-[ -f gmon.out ] && ${GPROF} -s ${THIS_SH} gmon.out >/dev/null
+export TAB='	'
 
-export GMON_OUT_PREFIX=bash
 echo Any output from any test, unless otherwise noted, indicates a possible anomaly
+
+# keep track of passed and failed tests and report them
+if [ -t 1 ]; then
+	# can't rely on having $'...' or printf understanding \e
+	# bright red background, white foreground text
+	CSTART=$(printf '\033[01;101;37m') CEND=$(printf '\033[0m')
+else
+	CSTART= CEND=
+fi
+export CSTART CEND
+
+passed=0
+total=0
+failed=0
+overall_result=0
+
+if [ -n "$BASH_TSTOUT_SAVEDIR" ] && [ -d "$BASH_TSTOUT_SAVEDIR" ]; then
+	echo "Using $BASH_TSTOUT_SAVEDIR to save output from failed tests"
+else
+	unset BASH_TSTOUT_SAVEDIR
+fi
 
 for x in run-*
 do
 	case $x in
 	$0|run-all|run-minimal|run-gprof)	;;
-	*.orig|*~) ;;
-	*)	echo $x ; sh $x
-		if [ -f $TMPDIR/gmon.out ]; then
-			if [ -f gmon.out ]; then
-				${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
-			else
-				${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
-			fi
+	*.orig|*.save|*~) ;;
+	*)	echo $x
+		total=$(( $total + 1 ))
+		if sh $x; then
+			passed=$(( $passed + 1 ))
 		else
-			${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+			overall_result=$?
+			failed=$(( $failed + 1 ))
+			echo "${CSTART}${x}: NON-ZERO exit status $?${CEND}"
+			if [ -n "$BASH_TSTOUT_SAVEDIR" ]; then
+				mv ${BASH_TSTOUT} ${BASH_TSTOUT_SAVEDIR}/${x}-${SUFFIX}
+				echo "${CSTART}output saved to ${BASH_TSTOUT_SAVEDIR}/${x}-${SUFFIX}${CEND}"
+			elif [ $failed -eq 1 ]; then
+				echo "${CSTART}Set environment variable BASH_TSTOUT_SAVEDIR to a directory to save failed test output${CEND}"
+			fi
 		fi
-		rm -f $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* ${GMON_OUT_PREFIX}.[0-9]*
+		rm -f ${BASH_TSTOUT}
+		if [ "$with_gprof" = yes ]
+		then
+			if [ -f $TMPDIR/gmon.out ]; then
+				if [ -f gmon.out ]; then
+					${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+				else
+					${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+				fi
+			else
+				${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+			fi
+			rm -f $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* ${GMON_OUT_PREFIX}.[0-9]*
+		fi
 		;;
 	esac
 done
 
-if [ -f ./-specialname.gmon ]; then
-	${GPROF} -s ${THIS_SH} gmon.sum ./-specialname.gmon > /dev/null
-	rm -f ./-specialname.gmon
-fi
-if [ -f ./ohio-state.gmon ]; then
-	${GPROF} -s ${THIS_SH} gmon.sum ./ohio-state.gmon > /dev/null
-	rm -f ./ohio-state.gmon
+if [ "$with_gprof" = yes ]
+then
+	if [ -f ./-specialname.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./-specialname.gmon > /dev/null
+		rm -f ./-specialname.gmon
+	fi
+	if [ -f ./ohio-state.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./ohio-state.gmon > /dev/null
+		rm -f ./ohio-state.gmon
+	fi
+
+	if [ -f specialname.gmon ]; then
+		${GPROF} -s ${THIS_SH} gmon.sum ./specialname.gmon > /dev/null
+		rm -f specialname.gmon
+	fi
 fi
 
-if [ -f specialname.gmon ]; then
-	${GPROF} -s ${THIS_SH} gmon.sum ./specialname.gmon > /dev/null
-	rm -f specialname.gmon
-fi
+echo "${CSTART}${passed}/${total} tests succeeded${CEND}"
 
-exit 0
+exit $overall_result
