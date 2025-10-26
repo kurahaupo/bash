@@ -1,3 +1,70 @@
-Type `sh run-all'.
+Type ‘make tests’. This invokes ‘tests/run-all’ with appropriate parameters.
+
+run-all is the main framework, and consolidates most of the common
+functionality of the old-style tests.
+
+run-minimal and run-gprof have been reduced to wrappers for run-all with extra
+parameters.
+
+
+run-all figures out $srcdir based on $0 and $BUILD_DIR based on $THIS_SH (which has
+to be supplied if it's not $PWD/bash), so it doesn't matter which directory
+it's run from; in particular it can run from $BUILD_DIR when that separate from
+$srcdir.
+
+run-all iterates over tests/*.run and tests/run-*, starting each as a
+background job if possible.
+
+Each invocation of run-all is performed in a separate directory
+(/tmp/bash-test-run.XXXXXXXXX), and within that each test job has its own
+tracking directory (named after the job).
+
+A human-readable report file and a machine-readable status file are
+written in each job directory; the final report is based on summarising the
+status files. Then, if all test jobs pass and unless requested by the user,
+the entire run directory is deleted.
+
+Each run-* file is run in a similar manner to the old run-all, except that
+run-*.* are ignored (to avoid misinterpreting optional control files).
+They're still all run with $srcdir/tests as $PWD, which limits their isolation.
+
+Some differences include:
+  · stdout & stderr are written into files, not to the tty.
+  · the exit status is checked (previously this was ignoreed)
+
+Each *.run file is a script to be run under $THIS_SH in an isolated
+subdirectory within the job tracking directory, with stdout & stderr run through filters that compensate for the
+paths to the isolation directory, to $BUILD_DIR, and to $srcdir.
+
+In addition, it looks for optional control files:
+
+  · *.warning: a textual message that is displayed before starting the test
+    job (and before forking, when parallelising the tests)
+
+  · *.need-tty: if this file exists, then this test job is exempted from
+    parallelisation, and its stdin, stdout & stderr remain unchanged.
+    (The test might still misbehave if those aren't the tty.)
+
+    This is needed (a) where the test needs to interact with the user; (b) to
+    test [[ -t {0..2} ]]; (c) to test job control, when the tty's foreground
+    pgrp is significant.
+
+  · *.setup is run before the test; if it fails (non-zero exit status) then
+    the test is skipped (neither passing nor failing)
+
+  · *.stdout.ignore & *.stderr.ignore: if these are present, stdout & stderr
+    of the test job are recorded but ignored (for the purpose of assessing
+    pass/fail); otherwise
+  · *.stdout & *.stderr: the stdout & stderr of the test job must match the
+    contents of the corresponding file, or be empty if the file is missing.
+
+  · *.stdout.filter & *.stderr.filter: apply filtering before comparison (in
+    addition to the standard filters).
+
+  · *.status.ignore: if this file exists, the exit status of the test job is
+    ignored; otherwise
+  · *.status: a list of decimal numbers, one per line, that are acceptable
+    exit statuses; if the file is missing then the status must be 0.
+
 
 Read COPYRIGHT for copyright information.
