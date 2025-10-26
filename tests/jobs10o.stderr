@@ -1,0 +1,6 @@
+SRC/tests/jobs10o.run: line 4: disown: -s: invalid option
+disown: usage: disown [-h] [-ar] [jobspec ... | pid ...]
+SRC/tests/jobs10o.run: line 8: disown: %1: no such job
+SRC/tests/jobs10o.run: line 11: disown: %2: no such job
+SRC/tests/jobs10o.run: line 14: disown: warning: @12: job specification requires leading `%'
+SRC/tests/jobs10o.run: line 14: disown: @12: no such job

@@ -1,0 +1,6 @@
+set -m
+echo wait-for-job
+sleep 3 &
+wait %2		# this should be a no-such-job error
+echo $?
+wait %1

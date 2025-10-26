@@ -1,0 +1,4 @@
+SRC/tests/jobs10n.run: line 6: fg: -s: invalid option
+fg: usage: fg [job_spec]
+SRC/tests/jobs10n.run: line 7: bg: -s: invalid option
+bg: usage: bg [job_spec ...]

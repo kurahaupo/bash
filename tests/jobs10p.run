@@ -1,0 +1,7 @@
+set -m
+echo wait-for-non-child
+wait 1
+echo $?
+
+exit 1 | exit 2 | exit 3
+echo $? -- ${PIPESTATUS[@]} -- ${PIPESTATUS[0]} - ${PIPESTATUS[1]} - ${PIPESTATUS[2]}

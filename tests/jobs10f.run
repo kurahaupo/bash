@@ -1,0 +1,2 @@
+echo posix jobs output
+${THIS_SH} -o posix -c 'sleep 1 & P=$! ; sleep 2; jobs; wait'

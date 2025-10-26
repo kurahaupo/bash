@@ -1,0 +1,8 @@
+set -m
+# these may someday mean to start the jobs, but not print the line
+# describing the status, but for now they are errors
+echo fg-bg 6
+sleep 2 &
+fg -s %1
+bg -s %1
+wait

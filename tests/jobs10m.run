@@ -1,0 +1,7 @@
+set -m
+# these next two are error cases
+echo fg-bg 5
+sleep 2 &
+fg %2		# this should be a no-such-job error
+bg %1		# this should be a `bg background job?' error
+wait

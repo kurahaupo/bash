@@ -1,0 +1,8 @@
+SRC/tests/jobs10q.run: line 14: kill: %4: no such job
+SRC/tests/jobs10q.run: line 16: jobs: %4: no such job
+SRC/tests/jobs10q.run: line 76: jobs: -q: invalid option
+jobs: usage: jobs [-lnprs] [jobspec ...] or jobs -x command [args]
+SRC/tests/jobs10q.run: line 78: suspend: -z: invalid option
+suspend: usage: suspend [-f]
+SRC/tests/jobs10q.run: line 79: suspend: cannot suspend: no job control
+SRC/tests/jobs10q.run: line 80: suspend: cannot suspend: no job control

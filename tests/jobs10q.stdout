@@ -1,0 +1,36 @@
+[1]   Running                    sleep 300 &
+[2]-  Running                    sleep 350 &
+[3]+  Running                    sleep 400 &
+running jobs:
+[1]   Running                    sleep 300 &
+[2]-  Running                    sleep 350 &
+[3]+  Running                    sleep 400 &
+current job:
+[3]+  Running                    sleep 400 &
+previous job:
+[2]-  Running                    sleep 350 &
+after kill -STOP
+running jobs:
+[1]   Running                    sleep 300 &
+[3]-  Running                    sleep 400 &
+stopped jobs:
+[2]+  Stopped                    sleep 350
+after disown
+[2]+  Stopped                    sleep 350
+[3]-  Running                    sleep 400 &
+running jobs:
+[3]-  Running                    sleep 400 &
+stopped jobs:
+[2]+  Stopped                    sleep 350
+after kill -s CONT
+running jobs:
+[2]+  Running                    sleep 350 &
+[3]-  Running                    sleep 400 &
+stopped jobs:
+after kill -STOP, backgrounding %3:
+[3]+ sleep 400 &
+killing...
+done
+after KILL -STOP, foregrounding %1
+sleep 4
+done

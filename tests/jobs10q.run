@@ -1,0 +1,80 @@
+set -m
+
+sleep 300 &
+sleep300pid=$!
+sleep 350 &
+sleep 400 &
+
+jobs
+
+echo running jobs:
+jobs -r
+
+# should be an error
+kill -n 1 %4
+# should be an error
+jobs %4
+echo current job:
+jobs %+
+echo previous job:
+jobs %-
+
+kill -STOP %2
+sleep 3	# give time for the shell to get the stop notification
+echo after kill -STOP
+echo running jobs:
+jobs -r
+echo stopped jobs:
+jobs -s
+
+disown %1
+
+echo after disown
+jobs
+echo running jobs:
+jobs -r
+echo stopped jobs:
+jobs -s
+
+kill -s CONT %2
+echo after kill -s CONT
+echo running jobs:
+jobs -r
+echo stopped jobs:
+jobs -s
+
+kill -STOP %3
+sleep 3	# give time for the shell to get the stop notification
+echo after kill -STOP, backgrounding %3:
+bg %3
+
+disown -h %2
+
+# make sure the killed processes don't cause a message
+exec 5>&2
+exec 2>/dev/null
+
+echo killing...
+kill -n 9 $sleep300pid
+kill -n 9 %2 %3
+wait	# make sure we reap the processes while stderr is still redirected
+echo done
+
+exec 2>&5
+
+sleep 4 &
+kill -STOP %1
+sleep 2	# give time for the shell to get the stop notification
+echo after KILL -STOP, foregrounding %1
+fg %1
+echo done
+
+# these are all errors
+
+set +m
+
+jobs -q
+
+suspend -z
+suspend
+suspend --

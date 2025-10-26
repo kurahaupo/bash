@@ -1,0 +1,4 @@
+echo wait-for-background-pids
+sleep 2 &
+sleep 4 &
+wait

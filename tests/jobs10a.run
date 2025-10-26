@@ -1,0 +1,3 @@
+echo wait-for-pid
+sleep 4 &
+wait $!

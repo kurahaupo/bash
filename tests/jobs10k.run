@@ -1,0 +1,4 @@
+set -m
+echo fg-bg 3
+sleep 2 &
+fg %s

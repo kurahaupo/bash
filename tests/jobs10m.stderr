@@ -1,0 +1,2 @@
+SRC/tests/jobs10m.run: line 5: fg: %2: no such job
+SRC/tests/jobs10m.run: line 6: bg: job 1 already in background

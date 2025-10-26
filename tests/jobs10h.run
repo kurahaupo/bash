@@ -1,0 +1,4 @@
+set -m
+echo async list wait-for-job
+sleep 2 & echo forked
+wait %1

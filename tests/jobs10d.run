@@ -1,0 +1,3 @@
+echo async list wait for child
+sleep 2 & echo forked
+wait

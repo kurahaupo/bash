@@ -1,0 +1,2 @@
+echo wait-when-no-children
+wait

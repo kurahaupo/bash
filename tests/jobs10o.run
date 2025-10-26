@@ -1,0 +1,14 @@
+set -m
+# someday this may mean to disown all stopped jobs, but for now it is
+# an error
+disown -s
+
+# this is an error -- the job with the pid that is the value of $! is
+# retained only until a `wait' is performed
+disown %1
+
+# this, however, is an error
+disown %2
+
+# this is definitely an error
+disown -h @12
