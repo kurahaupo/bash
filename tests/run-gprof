@@ -60,7 +60,7 @@ do
 			if [ -f gmon.out ]; then
 				${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
 			else
-				${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null				
+				${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
 			fi
 		else
 			${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* >/dev/null
