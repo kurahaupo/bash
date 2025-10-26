@@ -116,8 +116,18 @@ t -s run-all
 
 echo 't -t 20'
 t -t 20
-echo 't -t 0'
-t -t 0 < /dev/tty
+
+echo 't -t 0 < /dev/tty'
+# stdin will be /dev/null (not a tty) when tests are run in parallel
+if exec 4< /dev/tty ; then
+	t -t 4
+	have_ctty=true
+	# keep /dev/tty opened as fd#4 for later use
+else
+	# /dev/tty will be unavailable without a controlling terminal.
+	echo 0
+	have_ctty=false
+fi
 
 echo 't -u noexist'
 t -u noexist
@@ -250,8 +260,15 @@ echo 't ! \( 700 -le 1000 -a -n "1" -a "20" = "20" \)'
 t ! \( 700 -le 1000 -a -n "1" -a "20" = "20" \)
 
 # more traditional parsing algorithm
-echo 't -n xx -a -z "" -a -t 0 -a -t'
-t -n xx -a -z "" -a -t 0 -a -t
+
+# Stdin will be /dev/null (which is not a tty) when tests are run in parallel,
+# so enforce that here to ensure consistency.
+#
+# The point of this test is to check that the test is parsed correctly, so
+# arrange it to have a consistent result regardless of the tty component of the
+# test.
+echo 't -n xx -o -z "" -o -t 0 -o -t < /dev/null'
+t -n xx -o -z "" -o -t 0 -o -t < /dev/null
 
 touch /tmp/abc
 sleep 2
@@ -419,14 +436,13 @@ case "${THIS_SH}" in
 *)	SHNAME=${PWD}/${THIS_SH} ;;
 esac
 
-if ln -s ${SHNAME} /tmp/test.symlink 2>/dev/null; then
-	chgrp ${GROUPS[0]} /tmp/test.symlink 2>/dev/null
-	echo 't -h /tmp/test.symlink'
-	t -h /tmp/test.symlink
+echo 't -h /tmp/test.symlink'
+if ln -s ${SHNAME} /tmp/test.symlink$$ 2>/dev/null; then
+	chgrp ${GROUPS[0]} /tmp/test.symlink$$ 2>/dev/null
+	t -h /tmp/test.symlink$$
 	# some systems don't let you remove this
-	rm -f /tmp/test.symlink 2>/dev/null
+	rm -f /tmp/test.symlink$$ 2>/dev/null
 else
-	echo 't -h /tmp/test.symlink'
 	echo 0
 fi
 
