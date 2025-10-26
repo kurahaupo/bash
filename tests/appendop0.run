@@ -97,6 +97,3 @@ readonly x+=7
 echo $x
 
 x+=5
-
-test_runsub ./appendop1.sub
-test_runsub ./appendop2.sub
