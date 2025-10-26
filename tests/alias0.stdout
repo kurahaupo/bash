@@ -1,0 +1,5 @@
+alias: 0
+alias: 0
+quux
+hi
+declare -a m=([0]="x")

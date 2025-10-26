@@ -12,7 +12,6 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # place holder for future alias testing
-. ./test-aux-functions
 
 shopt -s expand_aliases
 
@@ -67,11 +66,3 @@ declare -p m
 # invalid alias names generate errors
 alias '\$'=xx
 BASH_ALIASES['\$']=xx
-
-test_runsub ./alias1.sub
-test_runsub ./alias2.sub
-test_runsub ./alias3.sub
-test_runsub ./alias4.sub
-test_runsub ./alias5.sub
-test_runsub ./alias6.sub
-test_runsub ./alias7.sub

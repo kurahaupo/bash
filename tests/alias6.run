@@ -2,7 +2,7 @@
 # space sentinel alias expansion adds; problem through bash-5.1
 shopt -s expand_aliases
 
-LC_ALL=en_US.UTF-8
+LC_ALL=$BASHTEST_utf8_locale
 
 alias a1='printf "<%s>\\n" áa'
 a1

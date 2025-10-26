@@ -1,0 +1,4 @@
+SRC/tests/alias0.run: line 39: qfoo: command not found
+SRC/tests/alias0.run: line 45: unalias: foo: not found
+SRC/tests/alias0.run: line 67: alias: `\$': invalid alias name
+SRC/tests/alias0.run: line 68: `\$': invalid alias name

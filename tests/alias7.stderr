@@ -1,0 +1,2 @@
+bash: -c: line 7: syntax error near unexpected token `do'
+bash: -c: line 7: `do echo foo=$foo bar=$bar'
