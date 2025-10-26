@@ -1,0 +1,3 @@
+some of these tests may fail if process substitution has not
+been compiled into the shell or if the OS does not provide
+/dev/fd.

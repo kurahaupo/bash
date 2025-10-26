@@ -1,0 +1,5 @@
+SRC/tests/builtins05.run: line 41: improbable-filename: No such file or directory
+SRC/tests/builtins05.run: line 42: improbable-filename: No such file or directory
+SRC/tests/builtins05.run: line 56: .: cwd-filename: file not found
+bash: line 1: .: cwd-filename: file not found
+bash: line 1: .: cwd-filename: file not found

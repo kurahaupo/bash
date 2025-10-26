@@ -1,0 +1,2 @@
+SRC/tests/builtins11.run: line 45: declare: f1: not found
+SRC/tests/builtins11.run: line 45: declare: f2: not found

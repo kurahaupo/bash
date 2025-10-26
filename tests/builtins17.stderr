@@ -1,0 +1,8 @@
+SRC/tests/builtins17.run: line 21: pushd: -x: invalid number
+pushd: usage: pushd [-n] [+N | -N | dir]
+SRC/tests/builtins17.run: line 24: popd: -x: invalid number
+popd: usage: popd [-n] [+N | -N]
+SRC/tests/builtins17.run: line 27: popd: dir: invalid argument
+popd: usage: popd [-n] [+N | -N]
+SRC/tests/builtins17.run: line 35: popd: -8: directory stack index out of range
+SRC/tests/builtins17.run: line 36: popd: +8: directory stack index out of range

@@ -1,0 +1,2 @@
+SRC/tests/builtins02.run: line 25: /tmp/source-notthere: No such file or directory
+SRC/tests/builtins02.run: line 32: /tmp/source-notthere: No such file or directory

@@ -1,0 +1,4 @@
+SRC/tests/builtins16.run: line 27: ulimit: +1999: invalid number
+SRC/tests/builtins16.run: line 37: ulimit: -g: invalid option
+ulimit: usage: ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]
+SRC/tests/builtins16.run: line 39: ulimit: max user processes: cannot modify limit: Operation not permitted

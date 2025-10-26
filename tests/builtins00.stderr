@@ -1,0 +1,2 @@
+SRC/tests/builtins00.run: line 128: enable: notbuiltin: not a shell builtin
+SRC/tests/builtins00.run: line 129: enable: test: not dynamically loaded

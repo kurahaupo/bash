@@ -1,0 +1,3 @@
+before: f = 4
+inside
+after: f = 8 bar = 4

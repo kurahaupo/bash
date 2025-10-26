@@ -1,0 +1,3 @@
+SRC/tests/builtins15.run: line 19: help: -x: invalid option
+help: usage: help [-dms] [pattern ...]
+SRC/tests/builtins15.run: line 41: help: no help topics match `bash'.  Try `help help' or `man -k bash' or `info bash'.

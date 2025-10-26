@@ -1,0 +1,6 @@
+SRC/tests/builtins14.run: line 20: hash: notthere: not found
+SRC/tests/builtins14.run: line 31: hash: notthere: not found
+SRC/tests/builtins14.run: line 33: hash: notthere: not found
+SRC/tests/builtins14.run: line 34: hash: notthere: not found
+SRC/tests/builtins14.run: line 41: /nosuchdir/nosuchfile: No such file or directory
+SRC/tests/builtins14.run: line 53: hash: /: Is a directory

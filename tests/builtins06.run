@@ -1,0 +1,89 @@
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# in posix mode, assignment statements preceding special builtins are
+# reflected in the shell environment.  `.' and `eval' need special-case
+# code.
+#
+
+AVAR=AVAR   # copied from builtins00.run
+
+printf '\tsource1.sub\n'
+set -o posix
+echo $AVAR
+AVAR=foo . ./source1.sub
+echo $AVAR
+
+AVAR=AVAR
+echo $AVAR
+AVAR=foo eval echo \$AVAR
+echo $AVAR
+
+AVAR=AVAR
+echo $AVAR
+AVAR=foo :
+echo $AVAR
+set +o posix
+
+# but assignment statements preceding `export' are always reflected in
+# the environment
+foo="" export foo
+declare -p foo
+unset foo
+
+# assignment statements preceding `declare' should be displayed correctly,
+# but not persist after the command
+FOO='$$' declare -p FOO
+declare -p FOO
+unset FOO
+
+# except for `declare -x', which should be equivalent to `export'
+FOO='$$' declare -x FOO
+declare -p FOO
+unset FOO
+
+# test out kill -l.  bash versions prior to 2.01 did `kill -l num' wrong
+sigone=$(kill -l | sed -n 's:^ 1) *\([^ 	]*\)[ 	].*$:\1:p')
+
+case "$(kill -l 1)" in
+${sigone/SIG/})	echo ok;;
+*)	echo oops -- kill -l failure;;
+esac
+
+# kill -l and trap -l should display exactly the same output
+sigonea=$(trap -l | sed -n 's:^ 1) *\([^ 	]*\)[ 	].*$:\1:p')
+
+if [ "$sigone" != "$sigonea" ]; then
+	echo oops -- kill -l and trap -l differ
+fi
+
+# POSIX.2 says that exit statuses > 128 are mapped to signal names by
+# subtracting 128 so you can find out what signal killed a process
+case "$(kill -l $(( 128 + 1)) )" in
+${sigone/SIG/})	echo ok;;
+*)	echo oops -- kill -l 129 failure;;
+esac
+
+# out-of-range signal numbers should report the argument in the error
+# message, not 128 less than the argument
+kill -l 4096
+
+# kill -l NAME should return the signal number
+kill -l ${sigone/SIG/}
+
+# kill -l NAME should work with and without the SIG prefix
+x=$(kill -l INT)
+y=$(kill -l SIGINT)
+
+[[ $x == $y ]] || echo kill -l error with SIG prefix
+unset -v x y

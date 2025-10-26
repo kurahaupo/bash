@@ -1,0 +1,39 @@
+all set:
+one
+two
+f1 () 
+{ 
+    echo f1
+}
+f2 () 
+{ 
+    echo f2
+}
+all unset:
+unset1
+unset2
+all reset:
+one-one
+two-one
+f1 () 
+{ 
+    echo f1
+}
+f2 () 
+{ 
+    echo f2
+}
+vars unset:
+unset1
+unset2
+f1 () 
+{ 
+    echo f1
+}
+f2 () 
+{ 
+    echo f2
+}
+funcs unset:
+one-two
+two-two

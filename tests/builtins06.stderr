@@ -1,0 +1,2 @@
+SRC/tests/builtins06.run: line 47: declare: FOO: not found
+SRC/tests/builtins06.run: line 79: kill: 4096: invalid signal specification

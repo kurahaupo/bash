@@ -1,0 +1,12 @@
+hash: hash table empty
+1
+/nosuchdir/nosuchfile
+builtin hash -p /nosuchdir/nosuchfile cat
+builtin hash -p /nosuchdir/nosuchfile cat
+1
+127
+/nosuchdir/nosuchfile
+0
+0
+found
+builtin hash -p /nosuchfile cat

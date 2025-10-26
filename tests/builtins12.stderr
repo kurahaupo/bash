@@ -1,0 +1,12 @@
+bash: line 1: notthere: No such file or directory
+bash: line 1: notthere: No such file or directory
+bash: line 1: .: notthere: file not found
+bash: line 1: .: notthere: file not found
+SRC/tests/builtins12.run: line 35: : command not found
+SRC/tests/builtins12.run: line 43: notthere: No such file or directory
+SRC/tests/builtins12.run: line 44: notthere: No such file or directory
++ command -v type
++ command command -v type
++ command -p command -v type
++ command -p -- command -v type
++ set +x

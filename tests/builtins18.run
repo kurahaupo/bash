@@ -1,0 +1,24 @@
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# in posix mode, assignment statements preceding special builtins are
+# reflected in the shell environment.  `.' and `eval' need special-case
+# code.
+#
+
+
+shift 0	# succeeds silently
+
+options=$(set -o -B 2>&1 | wc -l)
+[[ $options -gt 3 ]] || echo 'set: bad -o option name parsing'
+
+# this no longer must be last -- it is no longer a fatal error
+exit status
+echo after non-numeric arg to exit: $?

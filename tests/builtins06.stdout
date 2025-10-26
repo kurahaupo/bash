@@ -1,0 +1,15 @@
+	source1.sub
+AVAR
+foo
+foo
+AVAR
+foo
+foo
+AVAR
+foo
+declare -x foo=""
+declare -x FOO="\$\$"
+declare -x FOO="\$\$"
+ok
+ok
+1

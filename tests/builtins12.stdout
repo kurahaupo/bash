@@ -1,0 +1,24 @@
+one
+two
+one
+0
+0
+0
+0
+argv[1] = <one>
+0
+argv[1] = <two>
+0
+three
+0
+four
+0
+127
+0
+after 1
+after 2
+type is a shell builtin
+type
+type
+type
+type
