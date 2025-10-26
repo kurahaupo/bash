@@ -1,0 +1,19 @@
+fallthrough
+to here
+and here
+retest
+and match
+no more clauses
+1.0
+1.1
+matches 1
+no
+no
+no
+no
+no
+ok
+esac
+unset word ok 1
+unset word ok 2
+unset word ok 3

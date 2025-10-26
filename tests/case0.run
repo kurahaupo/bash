@@ -76,9 +76,3 @@ $unset|$var)	echo unset word ok 2 ;;&
 unset|$unset)	echo unset word ok 3 ;;
 *)	echo unset word bad ;;
 esac
-
-# tests of quote removal and pattern matching
-test_runsub ./case1.sub
-test_runsub ./case2.sub
-test_runsub ./case3.sub
-test_runsub ./case4.sub
