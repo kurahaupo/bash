@@ -7,27 +7,325 @@
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-: ${TMPDIR:=/tmp}
-export TMPDIR
+# From “make tests” this script is invoked as
+#
+#	TESTSCRIPT = run-all
+#	cd $(srcdir)/tests &&
+#		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT}
+#
+# When run manually, $PWD should be the build directory.
+#
+# If not specified, $srcdir is inferred as the grandparent directory of $0,
+# which should be
+#	$srcdir/tests/run-all
+#
+# If is not specified, $THIS_SH is taken as ‘bash’. Then if it's not absolute,
+# it searched for among:
+#	(1) the initial cwd, or
+#	(2) $BUILD_DIR (if given), or
+#	(3) $srcdir (as above)
+#
+# If not specified, $BUILD_DIR is the parent directory of $THIS_SH.
+# It's not mandatory within this script but it is required by a few tests that
+# want to look at build artefacts (including config.h & version.h).
 
-# basic /bin/sh syntax
-SUFFIX=$( ${THIS_SH} -c 'echo $(( $RANDOM + $BASHPID ))' )
+#DEFAULT_PARALLEL=no	# ⎫
+#DEFAULT_PARALLEL=4		# ⎮
+#DEFAULT_PARALLEL=16	# ⎬ pick a meaning for bare ‘-j’
+DEFAULT_PARALLEL=32		# ⎮
+#DEFAULT_PARALLEL=max	# ⎭
 
-BASH_TSTOUT=${TMPDIR}/bashtst-$SUFFIX	# for now
-export BASH_TSTOUT
+initial_cwd=${PWD:=$( pwd )}
 
-trap 'rm -f $BASH_TSTOUT ; exit 1' 1 2 3 15
-trap 'rm -f $BASH_TSTOUT' 0
+if [ -t 1 ]; then
+	# can't rely on having $'...', nor on printf understanding \e
+	export C_success=$(printf '\033[1;37;102m')	# bold white text on bright green
+	export C_warning=$(printf '\033[1;37;101m')	# bold white text on bright red
+	export C_notice=$(printf '\033[1;37;104m')		# bold white text on bright blue
+	export C_end=$(printf '\033[m')
+else
+	C_success=
+	C_warning=
+	C_notice=
+	C_end=
+fi
+export TAB='	'	# must be a literal tab character
 
-PATH=.:$PATH	# just to get the right version of recho/zecho/printenv if not run via 'make tests'
-export PATH	# should be redundant
+if [ -t 1 ]; then
+	# can't rely on having $'...', nor on printf understanding \e
+	C_success=$(printf '\033[1;37;102m')	# bold white text on bright green
+	C_warning=$(printf '\033[1;37;101m')	# bold white text on bright red
+	C_notice=$(printf '\033[1;37;104m')		# bold white text on bright blue
+	C_end=$(printf '\033[m')
+else
+	C_success=
+	C_warning=
+	C_notice=
+	C_end=
+fi
+
+die ()
+{
+	echo "$C_warning$*$C_end" >&2
+	exit 2
+}
+
+: "${TMPDIR:=/tmp}"
+
+export BASHTEST_utf8_locale=en_US.UTF-8
+
+# When run using 'bash -x', make sure that xtrace output goes to current stderr
+[ -n "$BASH" ] && case $- in *x*) eval ' exec {BASH_XTRACEFD}>&2 ' ; esac
+
+keep_results=${BASH_TSTOUT_SAVEDIR+yes}
+parallel=no
+
+while [ $# != 0 ]
+do
+	case $1 in
+		-b) BUILD_DIR=$2 ; shift ;;
+		-B) THIS_SH=$2 ; shift ;;
+		-D)	tests_dir=$2 ; shift ;;
+		-j)	parallel=$DEFAULT_PARALLEL ;;
+		-J)	parallel=no ;;
+		-j*)	parallel=${1#-?} ;;
+		-K | --keep-results=all)	keep_results=yes ;;
+		-k | --keep-results=error)	keep_results=on-error ;;
+		-nk | --keep-results=no)	keep_results=no ;;
+		-l | --locale)	BASHTEST_en_utf8=$2 ; shift ;;
+		-s) srcdir=$2 ; shift ;;
+		--)	shift ; break ;;
+		-[bBDls]*) t=${1#-?} o=${1%"$t"} ; shift ; set X "$o"  "$t" "$@" ;;
+		-[JKk]*)   t=${1#-?} o=${1%"$t"} ; shift ; set X "$o" "-$t" "$@" ;;
+		-*)	die "Invalid option '$1'" ;;
+		*)	break ;;
+	esac
+	shift
+done
+
+case $0 in
+	/*)	argv0=$0 ;;
+	*)
+		d=$initial_cwd
+		argv0=$0
+		# normalise relative path
+		while
+			case $argv0 in
+				./*)	argv0=${argv0#*/} ;;
+				../*)	argv0=${argv0#*/} d=${d%/*} ;;
+				*)		false ;;
+			esac
+		do :; done
+		argv0=$d/$argv0
+		;;
+esac
+
+case $argv0 in
+	*/tests/*) ;;
+	*) die "Sorry '$argv0' does not match */tests/*" ;;
+esac
+
+case $srcdir in
+	'') srcdir=${argv0%/tests/*} ;;
+	/*) ;;
+	*)
+		# Look in initial cwd first; note that it can also be relative to the build dir, but only if that's given
+		for d in "${argv0%/*}/" "$initial_cwd/" ${BUILD_DIR:+"$BUILD_DIR/"}
+		do
+			t=$srcdir
+			# normalise relative path
+			while
+				case $t in
+					./*)	t=${t#*/} ;;
+					../*)	t=${t#*/} d=${d%/*} ;;
+					*)		false ;;
+				esac
+			do :; done
+			t=$d$t
+			# check that target is a directory
+			[ -d "$t" ] &&
+				break
+		done ||
+			die "Cannot locate dir '$srcdir' in '$initial_cwd' or '$d'${BUILD_DIR:+ or '$BUILD_DIR'}"
+		srcdir=$t
+		;;
+esac
+
+case $BUILD_DIR in
+	'') ;;	# leave unset (use only srcdir)
+	/*) ;;
+	*)
+		# Look in initial cwd first
+		for d in "$initial_cwd/" ${THIS_SH:+"${THIS_SH%/*}/:"} "${argv0%/*}/"
+		do
+			t=$BUILD_DIR
+			# normalise relative path
+			while
+				case $t in
+					./*)	t=${t#*/} ;;
+					../*)	t=${t#*/} d=${d%/*} ;;
+					*)		false ;;
+				esac
+			do :; done
+			t=$d$t
+			# check that target is a directory
+			[ -d "$t" ] &&
+				break
+		done ||
+			die "Cannot locate dir '$BUILD_DIR' in '$initial_cwd' or '$d'${BUILD_DIR:+ or '$BUILD_DIR'}"
+		BUILD_DIR=$t
+		;;
+esac
+
+case $THIS_SH in
+	/*) ;;
+	*)
+		# Look in initial cwd first
+		for d in "$initial_cwd/" ${BUILD_DIR:+"$BUILD_DIR/"} "$srcdir/"
+		do
+			b=${THIS_SH:-bash}
+			# normalise relative path
+			while
+				case $b in
+					./*)	b=${b#*/} ;;
+					../*)	b=${b#*/} d=${d%/*/}/ ;;
+					*)		false ;;
+				esac
+			do :; done
+			b=$d$b
+			# check that target is a file (not a directory)
+			[ -f "$b" ] &&
+				break
+		done ||
+			die "Cannot locate executable file '$THIS_SH' in '$initial_cwd'${BUILD_DIR:+ or '$BUILD_DIR'} or '$srcdir'"
+		THIS_SH=$b
+		;;
+esac
+export THIS_SH
+
+[ -e "$THIS_SH" ] || die "Nonexistent $THIS_SH"
+[ -x "$THIS_SH" ] || die "$THIS_SH is not executable"
+
+case $tests_dir in
+	'') tests_dir=$srcdir/tests ;;
+	/*) ;;
+	*)
+		# Look in initial cwd first
+		for d in "$initial_cwd/" ${BUILD_DIR:+"$BUILD_DIR/"} "$srcdir/"
+		do
+			t=$tests_dir
+			# normalise relative path
+			while
+				case $t in
+					./*)	t=${t#*/} ;;
+					../*)	t=${t#*/} d=${d%/*} ;;
+					*)		false ;;
+				esac
+			do :; done
+			t=$d$t
+			# check that target is a directory
+			[ -d "$t" ] &&
+				break
+		done ||
+			die "Cannot locate subdirectory '$tests_dir' in '$initial_cwd'${BUILD_DIR:+ or '$BUILD_DIR'} or '$srcdir'"
+		tests_dir=$t
+		;;
+esac
+
+[ -e "$tests_dir" ] || die "Nonexistent '$tests_dir'"
+[ -d "$tests_dir" ] || die "No directory '$tests_dir'"
+
+# BUILD_DIR is not mandatory within this script but it is required by a few
+# tests that want to look at build artefacts (including config.h & version.h).
+
+: "${BUILD_DIR:=${THIS_SH%/*}}"
+export BUILD_DIR
+
+# If no test specified, run all of them
+
+if [ $# = 0 ]
+then
+	set -- "$tests_dir"/*.run "$tests_dir"/run-*
+else
+	# Ensure that all given test paths are absolute, so that they can still run
+	# after we cd into either $run_dir_cwd or $tests_dir
+	for t do
+		case $t in
+			/*);;
+			'') continue ;;
+			*) t=$initial_cwd/$t ;;
+		esac
+		shift ; set -- "$@" "$t"
+	done
+
+fi
+
+RUNDIR=${BASH_TSTOUT_SAVEDIR:-$( mktemp -d "$TMPDIR/bash-test-run-tmp.XXXXXXXXXX" )}
+if [ -d "$RUNDIR" ]; then
+	echo "Using $RUNDIR to save output from tests"
+else
+	unset BASH_TSTOUT_SAVEDIR
+fi
+
+mkdir -p "$RUNDIR"
+
+BASHTEST_keep_results ()
+{
+	echo "Details of these tests are in '$RUNDIR'."
+	echo "Remember to clean up using"
+	echo "  rm -rf '$RUNDIR'"
+	echo
+	echo "To remove all test results, use"
+	echo "  rm -rf '${RUNDIR%[-.]*}'.*"
+}
+
+BASHTEST_purge_results ()
+{
+	rm -rf "$RUNDIR"
+}
+
+case $keep_results in
+	yes)
+		BASHTEST_finish () { BASHTEST_keep_results ; }
+		;;
+	no)
+		BASHTEST_finish () { BASHTEST_purge_results ; }
+		;;
+	auto | on-error | '')
+		BASHTEST_finish () {
+			if [ "$BASHTEST_status" = 0 ]
+			then
+				BASHTEST_purge_results
+				echo "All tests were successful, so the details have been deleted."
+			else
+				BASHTEST_keep_results
+			fi
+		}
+		;;
+	*)
+		die "Invalid keeping mode '$keep_results'"
+		;;
+esac
+
+copy_dir () {
+	# Adjust this if your ‘cp -p -r’ doesn't work
+	cp -p -r "$@"
+}
+
+BASHTEST_status=1	# in case we die before actually starting the tests	# EXIT_FAILURE
+trap 'sig=$? ; BASHTEST_finish ; exit 2' 1 2 3 15
+trap 'sig=$? ; BASHTEST_finish ; exit $BASHTEST_status' 0
+
+# Get the right version of recho/zecho/printenv, especially if not run via ‘make tests’
+PATH=${BUILD_DIR:+$BUILD_DIR/support:}$srcdir/support:$srcdir/tests:$PATH
+export PATH		# should be redundant
 
 # unset BASH_ENV only if it is set
 [ "${BASH_ENV+set}" = set ] && unset BASH_ENV
@@ -35,122 +333,501 @@ export PATH	# should be redundant
 # ditto for SHELLOPTS & BASHOPTS, which are both readonly in bash
 [ "${SHELLOPTS+set}" = set ] &&
 if [ "${BASH_VERSION+set}" = set ]; then
-	export -n SHELLOPTS	# can't unset, so just make sure its not exported
+	export -n SHELLOPTS	# can't unset, so just make sure it's not exported
 	set +o posix
 	typeset -p SHELLOPTS
 else
 	unset SHELLOPTS 2>/dev/null
 fi
+
 [ "${BASHOPTS+set}" = set ] &&
 if [ "${BASH_VERSION+set}" = set ]; then
-	export -n BASHOPTS	# can't unset, so just make sure its not exported
+	export -n BASHOPTS	# can't unset, so just make sure it's not exported
 	set +o posix
 	typeset -p BASHOPTS
 else
 	unset BASHOPTS 2>/dev/null
 fi
 
-: ${THIS_SH:=../bash}
-export THIS_SH
-
-: ${BUILD_DIR:=..}
-export BUILD_DIR
 
 if [ "$with_gprof" = yes ]
 then
-	GPROF=gprof
-
 	rm -f gmon.sum
-	# prime the pump; ${GPROF} complains if gmon.sum is empty
-	[ -f gmon.out ] && ${GPROF} -s ${THIS_SH} gmon.out >/dev/null
-
+	# prime the pump; gprof complains if gmon.sum is empty
+	[ -f gmon.out ] && gprof -s "$THIS_SH" gmon.out >/dev/null
 	export GMON_OUT_PREFIX=bash
 fi
 
-${THIS_SH} ./version
+check_gprof () {
+	[ "$with_gprof" = yes ] || return
+	gprof_rundir=${1:-.}
+	gprof_tmpdir=${2:-$TMPDIR}
+	# Use the $GMON_OUT_PREFIX.* in each dir where gmon.out exists
 
-rm -f "$BASH_TSTOUT"
+	if [ -f $gprof_rundir/gmon.out ] ||
+	 ! [ -f $gprof_tmpdir/gmon.out ]
+	then
+		gprof -s "$THIS_SH" ${base}gmon.sum "$gprof_rundir/$GMON_OUT_PREFIX".[0-9]* >/dev/null
+		rm -f "$gprof_rundir/$GMON_OUT_PREFIX".[0-9]*
+	fi
+	if [ -f $gprof_tmpdir/gmon.out ]; then
+		gprof -s "$THIS_SH" ${base}gmon.sum "$gprof_tmpdir/$GMON_OUT_PREFIX".[0-9]* >/dev/null
+		rm -f "$gprof_tmpdir/$GMON_OUT_PREFIX".[0-9]*
+	fi
+
+	echo "Profiling summary written to ${base}gmon.sum"
+}
+
+( cd "$tests_dir" && "$THIS_SH" ./version )
 
 export TAB='	'
 
-echo Any output from any test, unless otherwise noted, indicates a possible anomaly
+#echo Any output from any test, unless otherwise noted, indicates a possible anomaly
 
-# keep track of passed and failed tests and report them
-if [ -t 1 ]; then
-	# can't rely on having $'...' or printf understanding \e
-	# bright red background, white foreground text
-	CSTART=$(printf '\033[01;101;37m') CEND=$(printf '\033[0m')
-else
-	CSTART= CEND=
-fi
-export CSTART CEND
+# An old-style test is just an plain shell script that's run in its containing
+# directory; only exit status zero is considered a pass.
+run_old () {
+	(
+		cd "$tests_dir" || exit 66
 
-passed=0
-total=0
-failed=0
-overall_result=0
+		# Make sure we don't write xtrace into the stderr file. Try using
+		# Bash's BASH_XTRACEFD magic, otherwise turn off xtrace.
+		[ "$BASH" ] && eval '
+			(	exec {BASH_XTRACEFD}>&2 ) &&
+				exec {BASH_XTRACEFD}>&2 ||
+			{
+				BASH_XTRACEFD=7
+				exec          7>&2
+			}
+			export BASH_XTRACEFD
+		' || set +x
 
-if [ -n "$BASH_TSTOUT_SAVEDIR" ] && [ -d "$BASH_TSTOUT_SAVEDIR" ]; then
-	echo "Using $BASH_TSTOUT_SAVEDIR to save output from failed tests"
-else
-	unset BASH_TSTOUT_SAVEDIR
-fi
-
-for x in run-*
-do
-	case $x in
-	$0|run-all|run-minimal|run-gprof)	;;
-	*.orig|*.save|*~) ;;
-	*)	echo $x
-		total=$(( $total + 1 ))
-		if sh $x; then
-			passed=$(( $passed + 1 ))
-		else
-			overall_result=$?
-			failed=$(( $failed + 1 ))
-			echo "${CSTART}${x}: NON-ZERO exit status $?${CEND}"
-			if [ -n "$BASH_TSTOUT_SAVEDIR" ]; then
-				mv ${BASH_TSTOUT} ${BASH_TSTOUT_SAVEDIR}/${x}-${SUFFIX}
-				echo "${CSTART}output saved to ${BASH_TSTOUT_SAVEDIR}/${x}-${SUFFIX}${CEND}"
-			elif [ $failed -eq 1 ]; then
-				echo "${CSTART}Set environment variable BASH_TSTOUT_SAVEDIR to a directory to save failed test output${CEND}"
-			fi
-		fi
-		rm -f ${BASH_TSTOUT}
-		if [ "$with_gprof" = yes ]
+		if [ "$pmode" = t ]
 		then
-			if [ -f $TMPDIR/gmon.out ]; then
-				if [ -f gmon.out ]; then
-					${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
-				else
-					${GPROF} -s ${THIS_SH} gmon.sum $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* >/dev/null
-				fi
-			else
-				${GPROF} -s ${THIS_SH} gmon.sum ${GMON_OUT_PREFIX}.[0-9]* >/dev/null
+			echo "(Interactive test stdout & stderr were sent to terminal)" > "$run_dir/stdout+stderr"
+			exec < /dev/tty > /dev/tty 2>&1 &&
+			echo '(Interactive test may require responses)'
+		else
+			#
+			if [ -e "${base}stdin" ]
+			then exec < "${base}stdin" >&3 2>&3
+			else exec < /dev/null >&3 2>&3
 			fi
-			rm -f $TMPDIR/${GMON_OUT_PREFIX}.[0-9]* ${GMON_OUT_PREFIX}.[0-9]*
+		fi || exit
+
+		BASH_TSTOUT=$run_dir/out \
+		TMPDIR=$run_dir_tmp \
+		exec sh "${file##*/}"
+	)
+	this_status=$?
+
+	check_gprof "$tests_dir" >&3 2>&3
+	return $this_status
+}
+
+# A new-style test comprises a fragment to run, accompanied by some optional ancillary checks.
+# By default, it simply checks for a 0 exit status, but
+#   - can accept any of a list of statuses, or completely ignore the exit status;
+#   - stdout & stderr can each be:
+#     - ignored, or
+#     - optionally filtered, and then
+#       - required to be empty, or
+#       - required to match something;
+# Everything is logged
+
+run_new ()
+{
+
+	if [ -d "$tests_dir/skel" ]
+	then
+		echo >&3 "Populating '$run_dir_cwd' directory from common '$tests_dir/skel'"
+		copy_dir "$tests_dir/skel/." "$run_dir_cwd/"
+	fi
+
+	if [ -d "${base}skel" ]
+	then
+		echo >&3 "Populating '$run_dir_cwd' directory from unique '${base}skel'"
+		copy_dir "${base}skel/." "$run_dir_cwd/"
+	fi
+
+	if [ -s "${base}setup" ]
+	then
+		#
+		# Stuff that is not part of the actual test; typically this is used to
+		# install sample input files into the runtime directory
+		# should not affect the status.
+		#
+		# The set-up can include any kind of preamble, including issuing
+		# warnings that tests might fail if relevant features are not
+		# enabled.
+		#
+		# Pass the original stdout & stderr as fd#5 & fd#6 just in case they're needed
+		echo >&3 "(Setting up)"
+		. "${base}setup" 5>&1 6>&2 < /dev/null > "$run_dir/setup.stdout" 2> "$run_dir/setup.stderr"
+		e=$?
+		echo $e > $run_dir/setup.status
+		echo >&3 "(Set-up done, with status $e)"
+		#
+		# Show any errors and/or warnings immediately
+		#
+		cat "$run_dir/setup.stderr"
+	fi
+
+	(
+		cd "$run_dir_cwd" || exit
+
+		# Read assignments from .env file
+		if [ -s "${base}env" ]
+		then
+			set -a
+			. "${base}env"
+			set +a
+		fi || exit
+
+		# Set argv from .args file
+		set --
+		if [ -s "${base}args" ]
+		then
+			while
+				IFS= \
+				read -r
+			do
+				set -- "$@" "$REPLY"
+			done < "${base}args"
+		fi || exit
+
+		# Make sure we don't write xtrace into the stderr file. Try using
+		# Bash's BASH_XTRACEFD magic, otherwise turn off xtrace.
+		[ "$BASH" ] && eval '
+			(	exec {BASH_XTRACEFD}>&2 ) &&
+				exec {BASH_XTRACEFD}>&2 ||
+			{
+				BASH_XTRACEFD=7
+				exec          7>&2
+			}
+			export BASH_XTRACEFD
+		' || set +x
+
+		if [ "$pmode" = t ]
+		then
+			echo "(Interactive test stdout & stderr were sent to terminal)" > "$run_dir/stdout+stderr"
+			exec < /dev/tty > /dev/tty 2>&1 &&
+			echo '(Interactive test may require responses)'
+		else
+			if [ -e "${base}stdin" ]
+			then exec < "${base}stdin" > "$run_dir/stdout" 2> "$run_dir/stderr"
+			else exec < /dev/null      > "$run_dir/stdout" 2> "$run_dir/stderr"
+			fi
+		fi || exit
+
+		TMPDIR=$run_dir_tmp \
+		exec "$THIS_SH" "$file" "$@"
+	)
+	this_status=$?
+
+	echo "$this_status" > "$run_dir/status"
+
+	if [ -s "${base}cleanup" ]
+	then
+		# Stuff that is not part of the actual test; whether it passes or fails
+		# should not affect the status
+		# Pass the original stdout & stderr as fd#5 & fd#6 just in case they're needed
+		echo >&3 "(Cleaning up)"
+		. "${base}cleanup" < /dev/null 5>&1 6>&2 > "$run_dir/cleanup.stdout" 2> "$run_dir/cleanup.stderr"
+		e=$?
+		echo "$e" > "$run_dir/cleanup.status"
+		echo >&3 "(Clean-up done, with status $e)"
+	fi
+
+	if [ -e "${base}status.ignore" ]
+	then
+		echo >&3 "Status $this_status ignored"
+		this_status=0
+	elif
+		if [ -s "${base}status" ]
+		then
+			grep -Fx "$this_status" < "${base}status" >/dev/null
+		else
+			[ "$this_status" = 0 ]
 		fi
-		;;
+	then
+		echo >&3 "Status $this_status acceptable"
+		this_status=0
+	else
+		echo >&3 "Status $this_status unacceptable"
+		this_status=1
+	fi
+
+	if [ -e "${base}stdout.ignore" ] || ! [ -e "$run_dir/stdout" ]
+	then
+		[ -s "$run_dir/stdout" ] &&
+			echo >&3 "Stdout is ignored"
+	else
+		if [ -s "$run_dir/stdout" ]
+		then
+			mv -f "$run_dir/stdout" "$run_dir/stdout.pre-norm"
+			sed "s#$run_dir/#RUN/#g; s#$tests_dir/#SRC/tests/#g" < "$run_dir/stdout.pre-norm" > "$run_dir/stdout"
+			if cmp -s "$run_dir/stdout.pre-norm" "$run_dir/stdout"
+			then
+				# Discard identical file and restore original stdout timestamp
+				mv -f "$run_dir/stdout.pre-norm" "$run_dir/stdout"
+			else
+				echo >&3 "Stdout normalised"
+			fi
+		fi
+		if [ -x "${base}stdout.filter" ]
+		then
+			mv -f "$run_dir/stdout" "$run_dir/stdout.pre-filter"
+			"${base}stdout.filter" < "$run_dir/stdout.pre-filter" > "$run_dir/stdout"
+			if cmp -s "$run_dir/stdout.pre-filter" "$run_dir/stdout"
+			then
+				# Discard identical file and restore original stdout timestamp
+				mv -f "$run_dir/stdout.pre-filter" "$run_dir/stdout"
+			else
+				echo >&3 "Stdout changed by filter"
+			fi
+		fi
+		if [ -f "${base}stdout" ]
+		then
+			if diff "${base}stdout" "$run_dir/stdout" > "$run_dir/stdout.diff" 2>/dev/null
+			then
+				echo >&3 "Stdout matches $run_dir/stdout ${base}stdout"
+				rm -f "$run_dir/stdout.diff"
+			else
+				echo >&3 "Stdout BAD, diff $run_dir/stdout ${base}stdout"
+				this_status=1
+			fi
+		else
+			if [ -s "$run_dir/stdout" ]
+			then
+				echo >&3 "Stdout BAD, should be empty $run_dir/stdout"
+				this_status=1	# stdout unexpectedly nonempty
+			else
+				echo >&3 "Stdout is empty"
+			fi
+		fi
+	fi
+
+	if [ -e "${base}stderr.ignore" ] || ! [ -e "$run_dir/stderr" ]
+	then
+		[ -s "$run_dir/stderr" ] &&
+			echo >&3 "Stderr is ignored"
+	else
+		if [ -s "$run_dir/stderr" ]
+		then
+			mv -f "$run_dir/stderr" "$run_dir/stderr.pre-norm"
+			sed "s#$run_dir/#RUN/#g; s#$tests_dir/#SRC/tests/#g" < "$run_dir/stderr.pre-norm" > "$run_dir/stderr"
+			if cmp -s "$run_dir/stderr.pre-norm" "$run_dir/stderr"
+			then
+				# Discard identical file and restore original stderr timestamp
+				mv -f "$run_dir/stderr.pre-norm" "$run_dir/stderr"
+			else
+				echo >&3 "Stderr normalised"
+			fi
+		fi
+		if [ -x "${base}stderr.filter" ]
+		then
+			mv -f "$run_dir/stderr" "$run_dir/stderr.pre-filter"
+			"${base}stderr.filter" < "$run_dir/stderr.pre-filter" > "$run_dir/stderr"
+			if cmp -s "$run_dir/stderr.pre-filter" "$run_dir/stderr"
+			then
+				# Discard identical file and restore original stdout timestamp
+				mv -f "$run_dir/stderr.pre-filter" "$run_dir/stderr"
+			else
+				echo >&3 "Stderr changed by filter"
+			fi
+		fi
+		if [ -f "${base}stderr" ]
+		then
+			if diff "${base}stderr" "$run_dir/stderr" > "$run_dir/stderr.diff" 2>/dev/null
+			then
+				echo >&3 "Stderr matches $run_dir/stderr ${base}stderr"
+			else
+				echo >&3 "Stderr BAD, diff $run_dir/stderr ${base}stderr"
+				this_status=1
+			fi
+		else
+			if [ -s "$run_dir/stderr" ]
+			then
+				echo >&3 "Stderr BAD, should be empty $run_dir/stderr"
+				this_status=1	# stderr unexpectedly nonempty
+			else
+				echo >&3 "Stderr is empty"
+			fi
+		fi
+	fi
+
+	check_gprof "$run_dir_tmp"
+	return "$this_status"
+}
+
+run_one ()
+{
+	pmode=$1	# p=parallel, s=serial, t=tty/foreground
+
+	{
+		echo >&3 "Testing $part"
+		total=$(( $total + 1 ))
+		case $part in
+			*.run)
+				run_new ;;
+
+			run-*)
+				run_old ;;
+		esac
+
+		case "$this_status" in
+		'' )
+			echo >&3 SKIPPED
+			echo >&4 "SKIPPED $this_status $file $run_dir/"
+			;;
+		0 )
+			echo >&3 OK
+			echo >&4 "OK $this_status $file $run_dir/"
+			;;
+		*)
+			echo >&3 FAILED
+			echo >&4 "FAILED $this_status $file $run_dir/"
+		esac 4> "$run_dir/result"
+
+		echo >&3
+	} 3> "$run_dir/README"
+	return $status
+}
+
+BASHTEST_status=0	# change this if any test fails
+
+case $parallel in
+	no | 1 | 0)	p_avail= parallel=false ;;
+	max)		p_avail= parallel=true ;;
+	*)			p_avail=$parallel parallel=true ;;
+esac
+
+pids=
+for file do
+
+	part=${file##*/}
+	dir=${file%"$part"}
+	name=${part%.*}
+	base=$dir$name.
+
+	# · skip this file plus its wrappers (run-all, run-minimal, run-gprof);
+	# · skip run-*.* so as to ignore ‘run-*.need-tty’, ‘run-*.warning’, and any
+	#   similar that are created in future;
+	# · skip editor and packaging temporaries;
+	# · complain about anything else
+	case $part in
+		"${0##*/}" | run-all | run-minimal | run-gprof |\
+		run-*.* |\
+		*.orig | *.save | *~ | .*)
+			continue ;;	# quietly ignored
+		run-* | *.run ) ;;
+		*)
+			echo >&2 "Invalid test name $file"
+			continue ;;	# noisily ignored
 	esac
+	if ! [ -s "$file" ]
+	then
+		echo >&2 "Empty test $file ignored"
+		continue
+	fi
+
+	echo "Checking $part"
+
+	run_dir=$RUNDIR/$part
+	run_dir_cwd=$run_dir/run
+	run_dir_tmp=$run_dir/tmp
+	this_status=	# status if something goes wrong during set-up
+
+	mkdir -p "$run_dir" "$run_dir_tmp" "$run_dir_cwd" ||
+		die 'Failed to create directories'
+
+	# Can display multiple warnings, each with a ‘warning:’ prefix.
+	for w in "${base}warning"*
+	do
+		[ -s "$w" ] &&
+			sed " 1 s/^/${C_warning}warning$C_end: /; 1! s/^/	 /; " < "$w" &&
+			echo
+	done
+
+	if [ -e "${base}need-tty" ]
+	then
+		# When a test needs to interact with the terminal, avoid backgrounding,
+		# and keep stdio connected to the terminal. (This means its output
+		# won't be logged, but will be shown to the user instead, so the test
+		# should be written to ensure its exit status is meaningful.)
+		run_one t
+	elif $parallel
+	then
+		run_one p &
+		pids=$pids$!,
+		if [ -n "$p_avail" ]
+		then
+			p_avail=$(( p_avail - 1 ))
+			if [ "$p_avail" = 0 ]
+			then
+				pid=${pids%%,*} pids=${pids#*,}
+				wait "$pid"
+				p_avail=1
+			fi
+		fi
+	else
+		run_one s
+	fi
 done
+
+wait
+cat "$RUNDIR"/*/result > "$RUNDIR/agregate-status" ||
+	BASHTEST_status=1
 
 if [ "$with_gprof" = yes ]
 then
-	if [ -f ./-specialname.gmon ]; then
-		${GPROF} -s ${THIS_SH} gmon.sum ./-specialname.gmon > /dev/null
-		rm -f ./-specialname.gmon
-	fi
-	if [ -f ./ohio-state.gmon ]; then
-		${GPROF} -s ${THIS_SH} gmon.sum ./ohio-state.gmon > /dev/null
-		rm -f ./ohio-state.gmon
-	fi
-
-	if [ -f specialname.gmon ]; then
-		${GPROF} -s ${THIS_SH} gmon.sum ./specialname.gmon > /dev/null
-		rm -f specialname.gmon
-	fi
+	for p in ./-specialname.gmon \
+	         ./ohio-state.gmon \
+	         ./specialname.gmon
+	do
+		gprof -s "$THIS_SH" gmon.sum "$p" > /dev/null
+		rm -f "$p"
+	done
 fi
 
-echo "${CSTART}${passed}/${total} tests succeeded${CEND}"
+cat "$RUNDIR"/*/README
 
-exit $overall_result
+# count passed and failed tests and report them
+total=$( wc -l < "$RUNDIR/agregate-status" )
+case $total in
+	0) 	echo "${C_warning}No tests recorded$C_end" ;;
+	*)
+		if
+			skipped=$( grep '^SKIPPED' "$RUNDIR/agregate-status" )
+		then
+			nskipped=$( echo "$skipped" | wc -l )
+			echo "$C_notice$nskipped/$total tests skipped$C_end"
+			echo "$skipped"
+		fi
+
+		if
+			failed=$( grep '^FAILED' "$RUNDIR/agregate-status" )
+		then
+			BASHTEST_status=1
+			nfailed=$( echo "$failed" | wc -l )
+			echo "$C_warning$nfailed/$total tests failed$C_end"
+			echo "$failed"
+		fi
+
+		if
+			passed=$( grep '^OK' "$RUNDIR/agregate-status" )
+		then
+			npassed=$( echo "$passed" | wc -l )
+			case $npassed in
+				"$total")
+					echo "${C_success}All $total tests succeeded$C_end" ;;
+				*)	echo "$C_warning$npassed/$total tests succeeded$C_end" ;;
+			esac
+		fi
+		;;
+esac
+
+exit "$BASHTEST_status"
+
+# vim: set ts=4 sts=4 sw=4 noet :
