@@ -164,12 +164,14 @@ examples/loadables/accept
 examples/loadables/asort
 examples/loadables/basename
 examples/loadables/cat
+examples/loadables/chmod
 examples/loadables/csv
 examples/loadables/cut
 examples/loadables/dirname
 examples/loadables/dsv
 examples/loadables/fdflags
 examples/loadables/finfo
+examples/loadables/fltexpr
 examples/loadables/getconf
 examples/loadables/head
 examples/loadables/hello
