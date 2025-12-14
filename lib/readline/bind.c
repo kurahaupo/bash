@@ -115,7 +115,7 @@ Keymap rl_binding_keymap;
 /* Functions exported by this file. */
 rl_macro_print_func_t *rl_macro_display_hook = (rl_macro_print_func_t *)NULL;
 
-static int _rl_skip_to_delim (char *, int, int);
+static int _rl_skip_to_delim (char const *, int, int);
 
 static void _rl_init_file_error (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
 
@@ -1594,31 +1594,24 @@ handle_parser_directive (char *statement)
 /* Start at STRING[START] and look for DELIM.  Return I where STRING[I] ==
    DELIM or STRING[I] == 0.  DELIM is usually a double quote. */
 static int
-_rl_skip_to_delim (char *string, int start, int delim)
+_rl_skip_to_delim (char const *string, int start, int delim)
 {
-  int i, c, passc;
+  char const *p = string;
 
-  for (i = start,passc = 0; c = string[i]; i++)
-    {
-      if (passc)
-	{
-	  passc = 0;
-	  if (c == 0)
-	    break;
-	  continue;
-	}
-
-      if (c == '\\')
-	{
-	  passc = 1;
-	  continue;
-	}
-
-      if (c == delim)
+  for (; *p && *p != delim ; ++p)
+    if (*p == '\\')
+      if (! *++p)
 	break;
+  return p-string;
+  for (char const *q; q = strchr (p, delim);)
+    {
+      char const *r = memchr (p, '\\', q-p);
+      for (;r && r+1 < q ; r = memchr (r+2, '\\', q-(r+2))) { }
+      if (!r || r+1 > q)
+	return q-string;
+      p = q+1;
     }
-
-  return i;
+  return strchr (p, 0)  - string;
 }
 
 /* Read the binding command from STRING and perform it.
