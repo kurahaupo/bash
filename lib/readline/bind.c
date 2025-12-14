@@ -2068,7 +2068,7 @@ find_string_var (const char *name)
    the value is null or empty, `on' (case-insensitive), or "1".  All other
    values result in 0 (false). */
 static int
-bool_to_int (const char *value)
+string_to_bool (const char *value)
 {
   return (value == 0 || *value == '\0' ||
 		(_rl_stricmp (value, "on") == 0) ||
@@ -2100,7 +2100,7 @@ rl_variable_bind (const char *name, const char *value)
   bool_var_def_t const *bvar = find_boolean_var (name);
   if (bvar)
     {
-      bool v = bool_to_int (value);
+      bool v = string_to_bool (value);
       if (bvar->set_func)
 	{
 	  int r = bvar->set_func (bvar, v);
