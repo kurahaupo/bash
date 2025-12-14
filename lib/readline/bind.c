@@ -65,6 +65,48 @@ extern int errno;
 #include "rlshell.h"
 #include "xmalloc.h"
 
+/* structs & typedefs before declarations that use them */
+
+typedef struct assoc_list_s assoc_list_t;
+struct assoc_list_s {
+  const char * const name;
+  int value;
+};
+
+//struct name_and_keymap;
+typedef struct name_and_keymap name_and_keymap_t;
+struct name_and_keymap {
+  char *name;
+  Keymap map;
+};
+
+typedef struct bool_var_def_s bool_var_def_t;
+struct bool_var_def_s {
+  const char * const name;
+  int *value;
+  int flags;
+};
+
+typedef struct str_var_def_s str_var_def_t;
+typedef char const *_rl_gv_func_t (str_var_def_t const *);
+typedef int _rl_sv_func_t (const char *);	/* TODO: pass var def to each setfunc */
+struct str_var_def_s {
+  const char * const name;
+  int ignored_flags;
+  _rl_sv_func_t *set_func;
+  _rl_gv_func_t *get_func;
+  void *store;
+  void *reference;
+};
+
+typedef struct parser_dir_s parser_dir_t;
+typedef int _rl_parser_func_t (char *);
+struct parser_dir_s {
+  const char * const name;
+  _rl_parser_func_t *function;
+};
+
+
 /* Variables exported by this file. */
 Keymap rl_binding_keymap;
 
@@ -1207,7 +1249,6 @@ parse_comparison_op (const char *s, int *indp)
 /*								    */
 /* **************************************************************** */
 
-typedef int _rl_parser_func_t (char *);
 
 /* Things that mean `Control'. */
 const char * const _rl_possible_control_prefixes[] = {
@@ -1508,10 +1549,7 @@ parser_include (char *args)
 }
   
 /* Associate textual names with actual functions. */
-static const struct {
-  const char * const name;
-  _rl_parser_func_t *function;
-} parser_directives [] = {
+static const parser_dir_t parser_directives [] = {
   { "if", parser_if },
   { "endif", parser_endif },
   { "else", parser_else },
@@ -1866,11 +1904,7 @@ rl_parse_and_bind (char *string)
 #define V_SPECIAL	0x1
 #define V_DEPRECATED	0x02
 
-static const struct {
-  const char * const name;
-  int *value;
-  int flags;
-} boolean_varlist [] = {
+static const bool_var_def_t boolean_varlist [] = {
   { "bind-tty-special-chars",	&_rl_bind_stty_chars,		0 },
   { "blink-matching-paren",	&rl_blink_matching_paren,	V_SPECIAL },
   { "byte-oriented",		&rl_byte_oriented,		0 },
@@ -1956,8 +1990,6 @@ hack_special_boolean_var (int i)
     _rl_enable_active_region = _rl_enable_bracketed_paste;
 }
 
-typedef int _rl_sv_func_t (const char *);
-
 /* These *must* correspond to the array indices for the appropriate
    string variable.  (Though they're not used right now.) */
 #define V_BELLSTYLE	0
@@ -1986,11 +2018,7 @@ static int sv_seqtimeout (const char *);
 static int sv_viins_modestr (const char *);
 static int sv_vicmd_modestr (const char *);
 
-static const struct {
-  const char * const name;
-  int flags;
-  _rl_sv_func_t *set_func;
-} string_varlist[] = {
+static const str_var_def_t string_varlist[] = {
   { "active-region-end-color", V_STRING, sv_region_end_color },
   { "active-region-start-color", V_STRING, sv_region_start_color },
   { "bell-style",	V_STRING,	sv_bell_style },
@@ -2363,12 +2391,8 @@ sv_vicmd_modestr (const char *value)
 /* Return the character which matches NAME.
    For example, `Space' returns ' '. */
 
-typedef struct {
-  const char * const name;
-  int value;
-} assoc_list;
 
-static const assoc_list name_key_alist[] = {
+static const assoc_list_t name_key_alist[] = {
   { "DEL", 0x7f },
   { "ESC", '\033' },
   { "Escape", '\033' },
@@ -2396,12 +2420,8 @@ glean_key_from_name (char *name)
 }
 
 /* Auxiliary functions to manage keymaps. */
-struct name_and_keymap {
-  char *name;
-  Keymap map;
-};
 
-static struct name_and_keymap builtin_keymap_names[] = {
+static name_and_keymap_t builtin_keymap_names[] = {
   { "emacs", emacs_standard_keymap },
   { "emacs-standard", emacs_standard_keymap },
   { "emacs-meta", emacs_meta_keymap },
