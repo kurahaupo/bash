@@ -123,13 +123,10 @@ static char *_rl_read_file (char *, size_t *);
 static int _rl_read_init_file (const char *, int);
 static int glean_key_from_name (char *);
 
-static int find_boolean_var (const char *);
-static int find_string_var (const char *);
+static bool_var_def_t const * find_boolean_var (const char *);
+static str_var_def_t const *find_string_var (const char *);
 
-static const char *boolean_varname (int);
-static const char *string_varname (int);
-
-static char *_rl_get_string_variable_value (const char *);
+static char *_rl_get_string_variable_value (str_var_def_t const *);
 static int substring_member_of_array (const char *, const char * const *);
 
 static int _rl_get_keymap_by_name (const char *);
@@ -1280,9 +1277,10 @@ static size_t if_stack_size;
 static int
 parser_if (char *args)
 {
-  int i, llen, boolvar, strvar;
+  int i, llen;
 
-  boolvar = strvar = -1;
+  bool_var_def_t const *boolvar;
+  str_var_def_t const *strvar;
 
   /* Push parser state. */
   if (if_stack_depth + 1 >= if_stack_size)
@@ -1429,7 +1427,7 @@ parser_if (char *args)
      value stored in rl_readline_name. */
   else if (_rl_stricmp (args, rl_readline_name) == 0)
     _rl_parsing_conditionalized_out = 0;
-  else if ((boolvar = find_boolean_var (args)) >= 0 || (strvar = find_string_var (args)) >= 0)
+  else if ((boolvar = find_boolean_var (args)) != NULL || (strvar = find_string_var (args)) != NULL)
     {
       int op, previ;
       size_t vlen;
@@ -1437,7 +1435,7 @@ parser_if (char *args)
       char *valuearg, *vval, prevc;
 
       _rl_parsing_conditionalized_out = 1;
-      vname = (boolvar >= 0) ? boolean_varname (boolvar) : string_varname (strvar);
+      vname = boolvar ? boolvar->name : strvar->name;
       vlen = strlen (vname);
       if (i > 0 && i <= llen && args[i-1] == '\0')
         args[i-1] = ' ';
@@ -1708,7 +1706,7 @@ rl_parse_and_bind (char *string)
       while (*value && whitespace (*value)) value++;
 
       /* Strip trailing whitespace from values of boolean variables. */
-      if (find_boolean_var (var) >= 0)
+      if (find_boolean_var (var) != NULL)
 	{
 	  /* just read a whitespace-delimited word or empty string */
 	  for (e = value; *e && whitespace (*e) == 0; e++)
@@ -1716,7 +1714,7 @@ rl_parse_and_bind (char *string)
 	  if (e > value)
 	    *e = '\0';		/* cut off everything trailing */
 	}
-      else if ((i = find_string_var (var)) >= 0)
+      else if (find_string_var (var) != NULL)
 	{
 	  /* Allow quoted strings in variable values */
 	  if (*value == '"')
@@ -1953,30 +1951,22 @@ static const bool_var_def_t boolean_varlist [] = {
   { (char *)NULL, (int *)NULL, 0 }
 };
 
-static int
+static bool_var_def_t const *
 find_boolean_var (const char *name)
 {
-  register int i;
-
-  for (i = 0; boolean_varlist[i].name; i++)
-    if (_rl_stricmp (name, boolean_varlist[i].name) == 0)
+  for (bool_var_def_t const *i = boolean_varlist; i->name; i++)
+    if (_rl_stricmp (name, i->name) == 0)
       return i;
-  return -1;
+  return NULL;
 }
-
-static const char *
-boolean_varname (int i)
-{
-  return ((i >= 0) ? boolean_varlist[i].name : (char *)NULL);
-}  
 
 /* Hooks for handling special boolean variables, where a
    function needs to be called or another variable needs
    to be changed when they're changed. */
 static void
-hack_special_boolean_var (int i)
+hack_special_boolean_var (bool_var_def_t const *bvar)
 {
-  switch (boolean_varlist[i].flags & V_SPECIAL)
+  switch (bvar->flags & V_SPECIAL)
     {
       case V_BLINK_MATCH:
 	_rl_enable_paren_matching (rl_blink_matching_paren);
@@ -2048,22 +2038,14 @@ static const str_var_def_t string_varlist[] = {
   { (char *)NULL,	0, (_rl_sv_func_t *)0 }
 };
 
-static int
+static str_var_def_t const *
 find_string_var (const char *name)
 {
-  register int i;
-
-  for (i = 0; string_varlist[i].name; i++)
-    if (_rl_stricmp (name, string_varlist[i].name) == 0)
-      return i;
-  return -1;
+  for (str_var_def_t const *var = string_varlist ; var->name; var++)
+    if (_rl_stricmp (name, var->name) == 0)
+      return var;
+  return NULL;
 }
-
-static const char *
-string_varname (int i)
-{
-  return ((i >= 0) ? string_varlist[i].name : (char *)NULL);
-}  
 
 /* A boolean value that can appear in a `set variable' command is true if
    the value is null or empty, `on' (case-insensitive), or "1".  All other
@@ -2082,13 +2064,13 @@ rl_variable_value (const char *name)
   register int i;
 
   /* Check for simple variables first. */
-  i = find_boolean_var (name);
-  if (i >= 0)
-    return (*boolean_varlist[i].value ? "on" : "off");
+  bool_var_def_t const *bvar = find_boolean_var (name);
+  if (bvar)
+    return (bvar->value ? "on" : "off");
 
-  i = find_string_var (name);
-  if (i >= 0)
-    return (_rl_get_string_variable_value (string_varlist[i].name));
+  str_var_def_t const *svar = find_string_var (name);
+  if (svar)
+    return (_rl_get_string_variable_value (svar));
 
   /* Unknown variable names return NULL. */
   return (char *)NULL;
@@ -2097,34 +2079,32 @@ rl_variable_value (const char *name)
 int
 rl_variable_bind (const char *name, const char *value)
 {
-  register int i;
-  int	v;
-
   /* Check for simple variables first. */
-  i = find_boolean_var (name);
-  if (i >= 0)
+  bool_var_def_t const *bvar = find_boolean_var (name);
+  if (bvar)
     {
-      *boolean_varlist[i].value = bool_to_int (value);
-      if (boolean_varlist[i].flags & V_SPECIAL)
-	hack_special_boolean_var (i);
+      *bvar->value = bool_to_int (value);
+      if (bvar->flags & V_SPECIAL)
+	hack_special_boolean_var (bvar);
       return 0;
     }
 
-  i = find_string_var (name);
-
-  /* For the time being, string names without a handler function are simply
-     ignored. */
-  if (i < 0 || string_varlist[i].set_func == 0)
+  str_var_def_t const *svar = find_string_var (name);
+  if (svar)
     {
-      if (i < 0)
-	_rl_init_file_error ("%s: unknown variable name", name);
-      return 0;
+      /* For the time being, string names without a handler function are simply
+	 ignored. */
+      if (! svar->set_func)
+	return 0;
+
+      int v = svar->set_func (value);
+      if (v != 0)
+	_rl_init_file_error ("%s: could not set value to `%s'", name, value);
+      return v;
     }
 
-  v = (*string_varlist[i].set_func) (value);
-  if (v != 0)
-    _rl_init_file_error ("%s: could not set value to `%s'", name, value);
-  return v;
+  _rl_init_file_error ("%s: unknown variable name", name);
+  return 0;
 }
 
 static int
@@ -2943,11 +2923,12 @@ rl_dump_macros (int count, int key)
 }
 
 static char *
-_rl_get_string_variable_value (const char *name)
+_rl_get_string_variable_value (str_var_def_t const *var)
 {
   static char numbuf[64];	/* more than enough for INTMAX_MAX */
   char *ret;
 
+  char const *name = var->name;
   if (_rl_stricmp (name, "active-region-start-color") == 0)
     {
       if (_rl_active_region_start_color == 0)
@@ -3090,7 +3071,7 @@ rl_variable_dumper (int print_readably)
 
   for (i = 0; string_varlist[i].name; i++)
     {
-      v = _rl_get_string_variable_value (string_varlist[i].name);
+      v = _rl_get_string_variable_value (&string_varlist[i]);
       if (v == 0)	/* _rl_isearch_terminators can be NULL */
 	continue;
       if (print_readably)
