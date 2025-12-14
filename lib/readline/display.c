@@ -1058,7 +1058,6 @@ rl_redisplay (void)
      This handles expanding tabs for display and displaying meta characters. */
   lb_linenum = 0;
 #if defined (HANDLE_MULTIBYTE)
-  in = 0;
   if (mb_cur_max > 1 && rl_byte_oriented == 0)
     {
       memset (&ps, 0, sizeof (mbstate_t));
@@ -1072,10 +1071,8 @@ rl_redisplay (void)
     }
   else
     wc_bytes = 1;
-  while (in < rl_end)
-#else
-  for (in = 0; in < rl_end; in++)
 #endif
+  for (in = 0; in < rl_end;)
     {
       if (in == hl_begin)
 	cur_face = FACE_STANDOUT;
@@ -1267,14 +1264,11 @@ rl_redisplay (void)
 		CHECK_LPOS();
 	    }
 	  else
+#endif
 	    {
 	      invis_addc (&out, c, cur_face);
 	      CHECK_LPOS();
 	    }
-#else
-	  invis_addc (&out, c, cur_face);
-	  CHECK_LPOS();
-#endif
 	}
 
 #if defined (HANDLE_MULTIBYTE)
@@ -1291,8 +1285,8 @@ rl_redisplay (void)
 	    wc_bytes = MBRTOWC (&wc, rl_line_buffer + in, rl_end - in, &ps);
 	}
       else
-        in++;
 #endif
+	in++;
     }
   invis_nul (&out);
   line_totbytes = out;
