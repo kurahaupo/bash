@@ -1999,21 +1999,21 @@ hack_special_boolean_var (int i)
 #define V_INT		2
 
 /* Forward declarations */
-static int sv_region_start_color (const char *);
-static int sv_region_end_color (const char *);
-static int sv_bell_style (const char *);
-static int sv_combegin (const char *);
-static int sv_dispprefix (const char *);
-static int sv_compquery (const char *);
-static int sv_compwidth (const char *);
-static int sv_editmode (const char *);
-static int sv_emacs_modestr (const char *);
-static int sv_histsize (const char *);
-static int sv_isrchterm (const char *);
-static int sv_keymap (const char *);
-static int sv_seqtimeout (const char *);
-static int sv_viins_modestr (const char *);
-static int sv_vicmd_modestr (const char *);
+static _rl_sv_func_t sv_region_start_color;
+static _rl_sv_func_t sv_region_end_color;
+static _rl_sv_func_t sv_bell_style;
+static _rl_sv_func_t sv_combegin;
+static _rl_sv_func_t sv_dispprefix;
+static _rl_sv_func_t sv_compquery;
+static _rl_sv_func_t sv_compwidth;
+static _rl_sv_func_t sv_editmode;
+static _rl_sv_func_t sv_emacs_modestr;
+static _rl_sv_func_t sv_histsize;
+static _rl_sv_func_t sv_isrchterm;
+static _rl_sv_func_t sv_keymap;
+static _rl_sv_func_t sv_seqtimeout;
+static _rl_sv_func_t sv_viins_modestr;
+static _rl_sv_func_t sv_vicmd_modestr;
 
 static const str_var_def_t string_varlist[] = {
   { "active-region-end-color", V_STRING, sv_region_end_color },
