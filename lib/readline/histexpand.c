@@ -81,11 +81,11 @@ static char *quote_breaks (char *);
 
 /* Variables exported by this file. */
 /* The character that represents the start of a history expansion
-   request.  This is usually `!'. */
+   request.  This is usually ‘!’. */
 char history_expansion_char = '!';
 
 /* The character that invokes word substitution if found at the start of
-   a line.  This is usually `^'. */
+   a line.  This is usually ‘^’. */
 char history_subst_char = '^';
 
 /* During tokenization, if this character is seen as the first character
@@ -131,7 +131,7 @@ static char *search_match;
    begins this specification.
    DELIMITING_QUOTE is a character that is allowed to end the string
    specification for what to search for in addition to the normal
-   characters `:', ` ', `\t', `\n', and sometimes `?'.
+   characters ‘:’, ‘ ’, ‘\t’, ‘\n’, and sometimes ‘?’.
    So you might call this function like:
    line = get_history_event ("!echo:p", &index, 0);  */
 char *
@@ -208,7 +208,7 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
       i++;
     }
 
-  /* Only a closing `?' or a newline delimit a substring search string. */
+  /* Only a closing ‘?’ or a newline delimit a substring search string. */
   for (local_index = i; c = string[i]; i++)
     {
 #if defined (HANDLE_MULTIBYTE)
@@ -506,7 +506,7 @@ postproc_subst_rhs (void)
 	}
       else
 	{
-	  /* a single backslash protects the `&' from lhs interpolation */
+	  /* a single backslash protects the ‘&’ from lhs interpolation */
 	  if (subst_rhs[i] == '\\' && subst_rhs[i + 1] == '&')
 	    i++;
 	  if (j + 1 >= new_size)
@@ -522,7 +522,7 @@ postproc_subst_rhs (void)
 
 /* Expand the bulk of a history specifier starting at STRING[START].
    Returns 0 if everything is OK, -1 if an error occurred, and 1
-   if the `p' modifier was supplied and the caller should just print
+   if the ‘p’ modifier was supplied and the caller should just print
    the returned string.  Returns the new index into string in
    *END_INDEX_PTR, and the expanded specifier in *RET_STRING. */
 /* need current line for !# */
@@ -574,7 +574,7 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
   starting_index = i;
   word_spec = get_history_word_specifier (string, event, &i);
 
-  /* There is no such thing as a `malformed word specifier'.  However,
+  /* There is no such thing as a ‘malformed word specifier’.  However,
      it is possible for a specifier that has no match.  In that case,
      we complain. */
   if (word_spec == (char *)&error_pointer)
@@ -669,9 +669,9 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
 	    }
 	  break;
 
-	/* :s/this/that substitutes `that' for the first
-	   occurrence of `this'.  :gs/this/that substitutes `that'
-	   for each occurrence of `this'.  :& repeats the last
+	/* :s/this/that substitutes ‘that’ for the first
+	   occurrence of ‘this’.  :gs/this/that substitutes ‘that’
+	   for each occurrence of ‘this’.  :& repeats the last
 	   substitution.  :g& repeats the last substitution
 	   globally. */
 
@@ -728,7 +728,7 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
 		FREE (subst_rhs);
 		subst_rhs = get_subst_pattern (string, &i, delimiter, 1, &subst_rhs_len);
 
-		/* If `&' appears in the rhs, it's supposed to be replaced
+		/* If ‘&’ appears in the rhs, it's supposed to be replaced
 		   with the lhs. */
 		if (subst_lhs && member ('&', subst_rhs))
 		  postproc_subst_rhs ();
@@ -872,7 +872,7 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
       the text was the de-slashifying of the history expansion
       character)
    1) If expansions did take place
-   2) If the `p' modifier was given and the caller should print the result
+   2) If the ‘p’ modifier was given and the caller should print the result
 
   If an error occurred in expansion, then OUTPUT contains a descriptive
   error message. */
@@ -968,7 +968,7 @@ history_expand (const char *hstring, char **output)
       string = (char *)hstring;
       /* If not quick substitution, still maybe have to do expansion. */
 
-      /* `!' followed by one of the characters in history_no_expand_chars
+      /* ‘!’ followed by one of the characters in history_no_expand_chars
 	 is NOT an expansion. */
       dquote = history_quoting_state == '"';
       squote = history_quoting_state == '\'';
@@ -1237,7 +1237,7 @@ history_expand (const char *hstring, char **output)
 	      temp = (*history_inhibit_expansion_function) (result, save_j);
 	      if (temp)
 		{
-		  result[--j] = '\0';	/* `unadd' cc, leaving ADD_CHAR(string[i]) */
+		  result[--j] = '\0';	/* ‘unadd’ cc, leaving ADD_CHAR(string[i]) */
 		  break;
 		}
 	      else
@@ -1245,10 +1245,10 @@ history_expand (const char *hstring, char **output)
 	    }
 
 #if defined (NO_BANG_HASH_MODIFIERS)
-	  /* There is something that is listed as a `word specifier' in csh
-	     documentation which means `the expanded text to this point'.
+	  /* There is something that is listed as a ‘word specifier’ in csh
+	     documentation which means ‘the expanded text to this point’.
 	     That is not a word specifier, it is an event specifier.  If we
-	     don't want to allow modifiers with `!#', just stick the current
+	     don't want to allow modifiers with ‘!#’, just stick the current
 	     output line in again. */
 	  if (cc == '#')
 	    {
@@ -1331,14 +1331,14 @@ get_history_word_specifier (const char *spec, char *from, int *caller_index)
 
   /* Handle special cases first. */
 
-  /* `%' is the word last searched for. */
+  /* ‘%’ is the word last searched for. */
   if (spec[i] == '%')
     {
       *caller_index = i + 1;
       return (search_match ? savestring (search_match) : savestring (""));
     }
 
-  /* `*' matches all of the arguments, but not the command. */
+  /* ‘*’ matches all of the arguments, but not the command. */
   if (spec[i] == '*')
     {
       *caller_index = i + 1;
@@ -1346,7 +1346,7 @@ get_history_word_specifier (const char *spec, char *from, int *caller_index)
       return (result ? result : savestring (""));
     }
 
-  /* `$' is last arg. */
+  /* ‘$’ is last arg. */
   if (spec[i] == '$')
     {
       *caller_index = i + 1;
@@ -1368,7 +1368,7 @@ get_history_word_specifier (const char *spec, char *from, int *caller_index)
 	first = (first * 10) + _rl_digit_value (spec[i]);
     }
   else
-    return ((char *)NULL);	/* no valid `first' for word specifier */
+    return ((char *)NULL);	/* no valid ‘first’ for word specifier */
 
   if (spec[i] == '^' || spec[i] == '*')
     {
@@ -1398,13 +1398,13 @@ get_history_word_specifier (const char *spec, char *from, int *caller_index)
 	}
 #if 0
       else if (!spec[i] || spec[i] == ':')
-	/* check against `:' because there could be a modifier separator */
+	/* check against ‘:’ because there could be a modifier separator */
 #else
       else
 	/* csh seems to allow anything to terminate the word spec here,
 	   leaving it as an abbreviation. */
 #endif
-	last = -1;		/* x- abbreviates x-$ omitting word `$' */
+	last = -1;		/* x- abbreviates x-$ omitting word ‘$’ */
     }
 
   *caller_index = i;
@@ -1419,7 +1419,7 @@ get_history_word_specifier (const char *spec, char *from, int *caller_index)
    The args are taken from STRING.  If either FIRST or LAST is < 0,
    then make that arg count from the right (subtract from the number of
    tokens, so that FIRST = -1 means the next to last token on the line).
-   If LAST is `$' the last arg from STRING is used. */
+   If LAST is ‘$’ the last arg from STRING is used. */
 char *
 history_arg_extract (int first, int last, const char *string)
 {

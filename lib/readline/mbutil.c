@@ -556,7 +556,7 @@ _rl_char_value (const char *buf, int ind)
 }
 #endif /* HANDLE_MULTIBYTE */
 
-/* Find next `count' characters started byte point of the specified seed.
+/* Find next ‘count’ characters started byte point of the specified seed.
    If flags is MB_FIND_NONZERO, we look for non-zero-width multibyte
    characters. */
 #undef _rl_find_next_mbchar
@@ -587,7 +587,7 @@ _rl_find_prev_mbchar (const char *string, int seed, int flags)
 #if defined (HANDLE_MULTIBYTE)
 /* Compare the first N characters of S1 and S2 without regard to case. If
    FLAGS&1, apply the mapping specified by completion-map-case and make
-   `-' and `_' equivalent. Returns 1 if the strings are equal. */
+   ‘-’ and ‘_’ equivalent. Returns 1 if the strings are equal. */
 int
 _rl_mb_strcaseeqn (const char *s1, size_t l1, const char *s2, size_t l2, size_t n, int flags)
 {
@@ -634,7 +634,7 @@ _rl_mb_strcaseeqn (const char *s1, size_t l1, const char *s2, size_t l2, size_t 
 
 /* Return 1 if the multibyte characters pointed to by S1 and S2 are equal
    without regard to case. If FLAGS&1, apply the mapping specified by
-   completion-map-case and make `-' and `_' equivalent. */
+   completion-map-case and make ‘-’ and ‘_’ equivalent. */
 int
 _rl_mb_charcasecmp (const char *s1, mbstate_t *ps1, const char *s2, mbstate_t *ps2, int flags)
 {

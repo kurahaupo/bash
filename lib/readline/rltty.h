@@ -42,7 +42,7 @@
 
 #include "rlwinsize.h"
 
-/* Define _POSIX_VDISABLE if we are not using the `new' tty driver and
+/* Define _POSIX_VDISABLE if we are not using the ‘new’ tty driver and
    it is not already defined.  It is used both to determine if a
    special character is disabled and to disable certain special
    characters.  Posix systems should set to 0, USG systems to -1. */

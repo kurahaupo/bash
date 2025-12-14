@@ -77,7 +77,7 @@ main (int c, char **v)
 	  add_history (temp);
 	}
 
-      /* Check for `command' that we handle. */
+      /* Check for ‘command’ that we handle. */
       if (strcmp (temp, "quit") == 0)
 	done = 1;
 

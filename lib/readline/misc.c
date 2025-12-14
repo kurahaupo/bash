@@ -120,7 +120,7 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
 
   key = c;
 
-  /* If we see a key bound to `universal-argument' after seeing digits,
+  /* If we see a key bound to ‘universal-argument’ after seeing digits,
       it ends the argument but is otherwise ignored. */
   if (c >= 0 && _rl_keymap[c].type == ISFUNC && _rl_keymap[c].function == rl_universal_argument)
     {
@@ -367,12 +367,12 @@ rl_maybe_replace_line (void)
 void
 _rl_unsave_line (HIST_ENTRY *entry)
 {
-  /* Can't call with `1' because rl_undo_list might point to an undo
+  /* Can't call with ‘1’ because rl_undo_list might point to an undo
      list from a history entry, as in rl_replace_from_history() below. */
   rl_replace_line (entry->line, 0);
   rl_undo_list = (UNDO_LIST *)entry->data;
 
-  /* Doesn't free `data'. */
+  /* Doesn't free ‘data’. */
   _rl_free_history_entry (entry);
 
   rl_point = rl_end;	/* rl_replace_line sets rl_end */
@@ -453,7 +453,7 @@ _rl_history_set_point (void)
 void
 rl_replace_from_history (HIST_ENTRY *entry, int flags)
 {
-  /* Can't call with `1' because rl_undo_list might point to an undo list
+  /* Can't call with ‘1’ because rl_undo_list might point to an undo list
      from a history entry, just like we're setting up here. */
   rl_replace_line (entry->line, 0);
   rl_undo_list = (UNDO_LIST *)entry->data;
@@ -726,9 +726,9 @@ rl_fetch_history (int count, int c)
 
   /* Giving an argument of n means we want the nth command in the history
      file.  The command number is interpreted the same way that the bash
-     `history' command does it -- that is, giving an argument count of 450
+     ‘history’ command does it -- that is, giving an argument count of 450
      to this command would get the command listed as number 450 in the
-     output of `history'. */
+     output of ‘history’. */
   if (rl_explicit_arg)
     {
       nhist = history_base + where_history ();
@@ -738,7 +738,7 @@ rl_fetch_history (int count, int c)
       if (wanted <= 0 || wanted >= nhist)
 	{
 	  /* In vi mode, we don't change the line with an out-of-range
-	     argument, as for the `G' command. */
+	     argument, as for the ‘G’ command. */
 	  if (rl_editing_mode == vi_mode)
 	    rl_ding ();
 	  else

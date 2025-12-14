@@ -241,7 +241,7 @@ extern "C" {
 #endif
 
 /* is_basic(c) tests whether the single-byte character c is
-   - in the ISO C "basic character set" or is one of '@', '$', and '`'
+   - in the ISO C "basic character set" or is one of ‘@’, ‘$’, and ‘`’
      which ISO C 23 § 5.2.1.1.(1) guarantees to be single-byte and in
      practice are safe to treat as basic in the execution character set,
      or

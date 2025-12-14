@@ -111,7 +111,7 @@ const char *rl_library_version = RL_LIBRARY_VERSION;
 
 int rl_readline_version = RL_READLINE_VERSION;
 
-/* True if this is `real' readline as opposed to some stub substitute. */
+/* True if this is ‘real’ readline as opposed to some stub substitute. */
 int rl_gnu_readline_p = 1;
 
 /* A pointer to the keymap that is currently in use.
@@ -182,7 +182,7 @@ FILE *rl_outstream = (FILE *)NULL;
 
 /* Non-zero means echo characters as they are read.  Defaults to no echo;
    set to 1 if there is a controlling terminal, we can get its attributes,
-   and the attributes include `echo'.  Look at rltty.c:prepare_terminal_settings
+   and the attributes include ‘echo’.  Look at rltty.c:prepare_terminal_settings
    for the code that sets it. */
 int _rl_echoing_p = 0;
 
@@ -230,7 +230,7 @@ int _rl_horizontal_scroll_mode = 0;
    which have been modified. */
 int _rl_mark_modified_lines = 0;
 
-/* The style of `bell' notification preferred.  This can be set to NO_BELL,
+/* The style of ‘bell’ notification preferred.  This can be set to NO_BELL,
    AUDIBLE_BELL, or VISIBLE_BELL. */
 int _rl_bell_preference = AUDIBLE_BELL;
      
@@ -257,7 +257,7 @@ int rl_num_chars_to_read = 0;
 char *rl_line_buffer = (char *)NULL;
 int rl_line_buffer_len = 0;
 
-/* Key sequence `contexts' */
+/* Key sequence ‘contexts’ */
 _rl_keyseq_cxt *_rl_kscxt = 0;
 
 int rl_executing_key;
@@ -286,7 +286,7 @@ int _rl_keyseq_timeout = 500;
 
 /* **************************************************************** */
 /*								    */
-/*			`Forward' declarations  		    */
+/*			‘Forward’ declarations  		    */
 /*								    */
 /* **************************************************************** */
 
@@ -325,7 +325,7 @@ int _rl_echo_control_chars = 1;
    the editing mode: @ for emacs, : for vi-command, + for vi-insert. */
 int _rl_show_mode_in_prompt = 0;
 
-/* Non-zero means to attempt to put the terminal in `bracketed paste mode',
+/* Non-zero means to attempt to put the terminal in ‘bracketed paste mode’,
    where it will prefix pasted text with an escape sequence and send
    another to mark the end of the paste. */
 int _rl_enable_bracketed_paste = BRACKETED_PASTE_DEFAULT;
@@ -834,7 +834,7 @@ _rl_dispatch_callback (_rl_keyseq_cxt *cxt)
 
   /* For now */
   /* The first time this context is used, we want to read input and dispatch
-     on it.  When traversing the chain of contexts back `up', we want to use
+     on it.  When traversing the chain of contexts back ‘up’, we want to use
      the value from the next context down.  We're simulating recursion using
      a chain of contexts. */
   if ((cxt->flags & KSEQ_DISPATCHED) == 0)
@@ -1011,7 +1011,7 @@ _rl_dispatch_subseq (register int key, Keymap map, int got_subseq)
 	     will be if an arrow key has been pressed, and, if there's not,
 	     just dispatch to (what we assume is) rl_vi_movement_mode right
 	     away.  This is essentially an input test with a zero timeout (by
-	     default) or a timeout determined by the value of `keyseq-timeout' */
+	     default) or a timeout determined by the value of ‘keyseq-timeout’ */
 	  /* _rl_keyseq_timeout specified in milliseconds; _rl_input_queued
 	     takes microseconds, so multiply by 1000 */
 	  if (rl_editing_mode == vi_mode && key == ESC && map == vi_insertion_keymap &&
@@ -1340,7 +1340,7 @@ readline_initialize_everything (void)
       _rl_screenchars -= _rl_screenheight;
     }
 
-  /* Override the effect of any `set keymap' assignments in the
+  /* Override the effect of any ‘set keymap’ assignments in the
      inputrc file. */
   rl_set_keymap_from_edit_mode ();
 
@@ -1453,7 +1453,7 @@ bind_arrow_keys_internal (Keymap map)
 }
 
 /* Try and bind the common arrow key prefixes after giving termcap and
-   the inputrc file a chance to bind them and create `real' keymaps
+   the inputrc file a chance to bind them and create ‘real’ keymaps
    for the arrow key prefix. */
 static void
 bind_arrow_keys (void)
@@ -1605,7 +1605,7 @@ _rl_add_executing_keyseq (int key)
   rl_executing_keyseq[rl_key_sequence_length++] = key;
 }
 
-/* `delete' the last character added to the executing key sequence. Use this
+/* ‘delete’ the last character added to the executing key sequence. Use this
    before calling rl_execute_next to avoid keys being added twice. */
 void
 _rl_del_executing_keyseq (void)

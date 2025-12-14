@@ -106,7 +106,7 @@ set_winsize (int tty)
 /* Nothing */
 #elif defined (NEW_TTY_DRIVER)
 
-/* Values for the `flags' field of a struct bsdtty.  This tells which
+/* Values for the ‘flags’ field of a struct bsdtty.  This tells which
    elements of the struct bsdtty have been fetched from the system and
    are valid. */
 #define SGTTY_SET	0x01
@@ -531,7 +531,7 @@ prepare_terminal_settings (int meta_flag, TIOTYPE oldtio, TIOTYPE *tiop)
 #if defined (IXANY)
     tiop->c_iflag &= ~(IXON | IXANY);
 #else
-    /* `strict' Posix systems do not define IXANY. */
+    /* ‘strict’ Posix systems do not define IXANY. */
     tiop->c_iflag &= ~IXON;
 #endif /* IXANY */
 

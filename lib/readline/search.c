@@ -113,7 +113,7 @@ make_history_line_current (int curpos, int newpos)
 
 #if defined (VI_MODE)
   if (rl_editing_mode == vi_mode)
-    /* POSIX.2 says that the `U' command doesn't affect the copy of any
+    /* POSIX.2 says that the ‘U’ command doesn't affect the copy of any
        command lines to the edit line.  We're going to implement that by
        making the undo list start after the matching line is copied to the
        current editing buffer. */
@@ -122,7 +122,7 @@ make_history_line_current (int curpos, int newpos)
 }
 
 /* Search the history list for STRING starting at absolute history position
-   POS.  If STRING begins with `^', the search must match STRING at the
+   POS.  If STRING begins with ‘^’, the search must match STRING at the
    beginning of a history line, otherwise a full substring match is performed
    for STRING.  DIR < 0 means to search backwards through the history list,
    DIR >= 0 means to search forward. */
@@ -457,7 +457,7 @@ _rl_nsearch_dosearch (_rl_search_cxt *cxt)
    search backwards through the history of previous commands; otherwise
    the search is for commands subsequent to the current position in the
    history list.  PCHAR is the character to use for prompting when reading
-   the search string; if not specified (0), it defaults to `:'. */
+   the search string; if not specified (0), it defaults to ‘:’. */
 static int
 noninc_search (int dir, int pchar)
 {
@@ -496,7 +496,7 @@ noninc_search (int dir, int pchar)
 }
 
 /* Search forward through the history list for a string.  If the vi-mode
-   code calls this, KEY will be `?'. */
+   code calls this, KEY will be ‘?’. */
 int
 rl_noninc_forward_search (int count, int key)
 {
@@ -504,7 +504,7 @@ rl_noninc_forward_search (int count, int key)
 }
 
 /* Reverse search the history list for a string.  If the vi-mode code
-   calls this, KEY will be `/'. */
+   calls this, KEY will be ‘/’. */
 int
 rl_noninc_reverse_search (int count, int key)
 {
@@ -513,7 +513,7 @@ rl_noninc_reverse_search (int count, int key)
 
 /* Search forward through the history list for the last string searched
    for.  If there is no saved search string, abort.  If the vi-mode code
-   calls this, KEY will be `N'. */
+   calls this, KEY will be ‘N’. */
 int
 rl_noninc_forward_search_again (int count, int key)
 {
@@ -537,7 +537,7 @@ rl_noninc_forward_search_again (int count, int key)
 
 /* Reverse search in the history list for the last string searched
    for.  If there is no saved search string, abort.  If the vi-mode code
-   calls this, KEY will be `n'. */
+   calls this, KEY will be ‘n’. */
 int
 rl_noninc_reverse_search_again (int count, int key)
 {

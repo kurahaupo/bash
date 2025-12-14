@@ -459,7 +459,7 @@ extern int rl_timeout_remaining (unsigned int *, unsigned int *);
 #undef rl_clear_timeout
 #define rl_clear_timeout() rl_set_timeout (0, 0)
 
-/* `Public' utility functions . */
+/* ‘Public’ utility functions . */
 extern void rl_extend_line_buffer (int);
 extern int rl_ding (void);
 extern int rl_alphabetic (int);

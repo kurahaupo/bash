@@ -66,7 +66,7 @@ static int rl_search_history (int, int);
 static _rl_search_cxt *_rl_isearch_init (int);
 static void _rl_isearch_fini (_rl_search_cxt *);
 
-/* Last line found by the current incremental search, so we don't `find'
+/* Last line found by the current incremental search, so we don't ‘find’
    identical lines many times in a row.  Now part of isearch context. */
 /* static char *prev_line_found; */
 
@@ -580,7 +580,7 @@ add_character:
   _rl_init_executing_keyseq ();
 
 opcode_dispatch:
-  /* Now dispatch on the character.  `Opcodes' affect the search string or
+  /* Now dispatch on the character.  ‘Opcodes’ affect the search string or
      state.  Other characters are added to the string.  */
   switch (cxt->lastc)
     {

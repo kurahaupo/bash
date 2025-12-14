@@ -100,12 +100,12 @@ tilde_hook_func_t *tilde_expansion_failure_hook = (tilde_hook_func_t *)NULL;
 
 /* When non-null, this is a NULL terminated array of strings which
    are duplicates for a tilde prefix.  Bash uses this to expand
-   `=~' and `:~'. */
+   ‘=~’ and ‘:~’. */
 char **tilde_additional_prefixes = (char **)default_prefixes;
 
 /* When non-null, this is a NULL terminated array of strings which match
    the end of a username, instead of just "/".  Bash sets this to
-   `:' and `=~'. */
+   ‘:’ and ‘=~’. */
 char **tilde_additional_suffixes = (char **)default_suffixes;
 
 static int tilde_find_prefix (const char *, int *);
@@ -234,7 +234,7 @@ tilde_expand (const char *string)
       len = strlen (expansion);
 #ifdef __CYGWIN__
       /* Fix for Cygwin to prevent ~user/xxx from expanding to //xxx when
-	 $HOME for `user' is /.  On cygwin, // denotes a network drive. */
+	 $HOME for ‘user’ is /.  On cygwin, // denotes a network drive. */
       if (len > 1 || *expansion != '/' || *string != '/')
 #endif
 	{
@@ -338,7 +338,7 @@ tilde_expand_word (const char *filename)
   if (*filename != '~')
     return (savestring (filename));
 
-  /* A leading `~/' or a bare `~' is *always* translated to the value of
+  /* A leading ‘~/’ or a bare ‘~’ is *always* translated to the value of
      $HOME or the home directory of the current user, regardless of any
      preexpansion hook. */
   if (filename[1] == '\0' || filename[1] == '/')

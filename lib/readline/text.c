@@ -255,7 +255,7 @@ rl_replace_line (const char *text, int clear_undo)
 /*								    */
 /* **************************************************************** */
 
-/* Note that if you `optimize' the display for these functions, you cannot
+/* Note that if you ‘optimize’ the display for these functions, you cannot
    use said functions in other functions which do not do optimizing display.
    I.e., you will have to update the data base for rl_redisplay, and you
    might as well let rl_redisplay do that job. */

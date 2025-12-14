@@ -1,4 +1,4 @@
-/* callback.c -- functions to use readline as an X `callback' mechanism. */
+/* callback.c -- functions to use readline as an X ‘callback’ mechanism. */
 
 /* Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
@@ -196,7 +196,7 @@ rl_callback_read_char (void)
 	  k = _rl_callback_data->i2;
 
 	  eof = (*_rl_callback_func) (_rl_callback_data);
-	  /* If the function `deregisters' itself, make sure the data is
+	  /* If the function ‘deregisters’ itself, make sure the data is
 	     cleaned up. */
 	  if (_rl_callback_func == 0)	/* XXX - just sanity check */
 	    {
@@ -259,7 +259,7 @@ rl_callback_read_char (void)
 	     passed to the registering function and space for any additional
 	     parameters.  */
 	  eof = (*_rl_callback_func) (_rl_callback_data);
-	  /* If the function `deregisters' itself, make sure the data is
+	  /* If the function ‘deregisters’ itself, make sure the data is
 	     cleaned up. */
 	  if (_rl_callback_func == 0)
 	    {

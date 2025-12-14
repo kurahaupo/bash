@@ -711,9 +711,9 @@ _rl_init_terminal_io (const char *terminal_name)
     _rl_get_screen_size (tty, 0);
 
   /* "An application program can assume that the terminal can do
-      character insertion if *any one of* the capabilities `IC',
-      `im', `ic' or `ip' is provided."  But we can't do anything if
-      only `ip' is provided, so... */
+      character insertion if *any one of* the capabilities ‘IC’,
+      ‘im’, ‘ic’ or ‘ip’ is provided."  But we can't do anything if
+      only ‘ip’ is provided, so... */
   _rl_terminal_can_insert = (_rl_term_IC || _rl_term_im || _rl_term_ic);
 
   /* Check to see if this terminal has a meta key and clear the capability

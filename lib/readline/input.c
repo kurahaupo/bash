@@ -585,8 +585,8 @@ reset_alarm ()
 #  endif /* !HAVE_SETITIMER */
 #endif /* RL_TIMEOUT_USE_SIGALRM */
 
-/* Set a timeout which will be used for the next call of `readline
-   ()'.  When (0, 0) are specified the timeout is cleared.  */
+/* Set a timeout which will be used for the next call of ‘readline()’.
+   When (0, 0) are specified the timeout is cleared.  */
 int
 rl_set_timeout (unsigned int secs, unsigned int usecs)
 {
@@ -699,8 +699,8 @@ _rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptf
   unsigned int sec, usec;
 
   /* When the remaining time for rl_timeout is shorter than the
-     keyboard input timeout, replace `timeout' with the remaining time
-     for `rl_timeout' and set `tmout_status = 1'. */
+     keyboard input timeout, replace ‘timeout’ with the remaining time
+     for ‘rl_timeout’ and set ‘tmout_status = 1’. */
   tmout_status = rl_timeout_remaining (&sec, &usec);
   tmout.tv_sec = sec;
   tmout.tv_usec = usec;
@@ -764,8 +764,8 @@ _rl_timeout_handle_sigalrm ()
   if (timerisunset (&timeout_point))
     return -1;
 
-  /* Reset `timeout_point' to the current time to ensure that later
-     calls of `rl_timeout_pending ()' return 0 (timeout expired). */
+  /* Reset ‘timeout_point’ to the current time to ensure that later
+     calls of ‘rl_timeout_pending ()’ return 0 (timeout expired). */
   if (gettimeofday(&timeout_point, 0) != 0)
     timerclear (&timeout_point);
 

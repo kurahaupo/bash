@@ -82,11 +82,11 @@
 
 /* This is global so other parts of the code can check whether the last
    command was a text modification command. */
-int _rl_vi_last_command = 'i';	/* default `.' puts you in insert mode */
+int _rl_vi_last_command = 'i';	/* default ‘.’ puts you in insert mode */
 
 _rl_vimotion_cxt *_rl_vimvcxt = 0;
 
-/* Non-zero indicates we are redoing a vi-mode command with `.' */
+/* Non-zero indicates we are redoing a vi-mode command with ‘.’ */
 int _rl_vi_redoing;
 
 /* Non-zero means enter insertion mode. */
@@ -104,7 +104,7 @@ static int vi_replace_count;
 
 /* If non-zero, we have text inserted after a c[motion] command that put
    us implicitly into insert mode.  Some people want this text to be
-   attached to the command so that it is `redoable' with `.'. */
+   attached to the command so that it is ‘redoable’ with ‘.’. */
 static char *vi_insert_buffer;
 static size_t vi_insert_buffer_size;
 
@@ -121,7 +121,7 @@ static char _rl_vi_last_replacement[MB_LEN_MAX+1];	/* reserve for trailing NULL 
 
 static int _rl_vi_last_key_before_insert;
 
-/* Text modification commands.  These are the `redoable' commands. */
+/* Text modification commands.  These are the ‘redoable’ commands. */
 static const char * const vi_textmod = "_*\\AaIiCcDdPpYyRrSsXx~";
 
 /* Arrays for the saved marks. */
@@ -242,7 +242,7 @@ _rl_vi_stuff_insert (int count)
   rl_end_undo_group ();
 }
 
-/* Bound to `.'.  Called from command mode, so we know that we have to
+/* Bound to ‘.’.  Called from command mode, so we know that we have to
    redo a text modification command.  The default for _rl_vi_last_command
    puts you back into insert mode. */
 int
@@ -258,7 +258,7 @@ rl_vi_redo (int count, int c)
 
   r = 0;
   _rl_vi_redoing = 1;
-  /* If we're redoing an insert with `i', stuff in the inserted text
+  /* If we're redoing an insert with ‘i’, stuff in the inserted text
      and do not go into insertion mode. */
   if (_rl_vi_last_command == 'i' && vi_insert_buffer && *vi_insert_buffer)
     {
@@ -274,8 +274,8 @@ rl_vi_redo (int count, int c)
       if (rl_point > 0)
 	_rl_vi_backup ();
     }
-  /* Ditto for redoing an insert with `I', but move to the beginning of the
-     line like the `I' command does. */
+  /* Ditto for redoing an insert with ‘I’, but move to the beginning of the
+     line like the ‘I’ command does. */
   else if (_rl_vi_last_command == 'I' && vi_insert_buffer && *vi_insert_buffer)
     {
       rl_beg_of_line (1, 'I');
@@ -283,8 +283,8 @@ rl_vi_redo (int count, int c)
       if (rl_point > 0)
 	_rl_vi_backup ();
     }
-  /* Ditto for redoing an insert with `a', but move forward a character first
-     like the `a' command does. */
+  /* Ditto for redoing an insert with ‘a’, but move forward a character first
+     like the ‘a’ command does. */
   else if (_rl_vi_last_command == 'a' && vi_insert_buffer && *vi_insert_buffer)
     {
       _rl_vi_append_forward ('a');
@@ -292,8 +292,8 @@ rl_vi_redo (int count, int c)
       if (rl_point > 0)
 	_rl_vi_backup ();
     }
-  /* Ditto for redoing an insert with `A', but move to the end of the line
-     like the `A' command does. */
+  /* Ditto for redoing an insert with ‘A’, but move to the end of the line
+     like the ‘A’ command does. */
   else if (_rl_vi_last_command == 'A' && vi_insert_buffer && *vi_insert_buffer)
     {
       rl_end_of_line (1, 'A');
@@ -664,7 +664,7 @@ rl_vi_bword (int count, int ignore)
 	if (--rl_point == 0)
 	  break;
 
-      /* If this character and the previous character are `opposite', move
+      /* If this character and the previous character are ‘opposite’, move
 	 back so we don't get messed up by the rl_point++ down there in
 	 the while loop.  Without this code, words like `l;' screw up the
 	 function. */
@@ -861,7 +861,7 @@ _rl_vi_done_inserting (void)
 {
   if (_rl_vi_doing_insert)
     {
-      /* The `c', `s', `S', and `R' commands set this. */
+      /* The ‘c’, ‘s’, ‘S’, and ‘R’ commands set this. */
       rl_end_undo_group ();	/* for the group in rl_vi_start_inserting */
       /* Now, the text between rl_undo_list->next->start and
 	 rl_undo_list->next->end is what was inserted while in insert
@@ -904,7 +904,7 @@ rl_vi_movement_mode (int count, int key)
   _rl_keymap = vi_movement_keymap;
   _rl_vi_done_inserting ();
 
-  /* This is how POSIX.2 says `U' should behave -- everything up until the
+  /* This is how POSIX.2 says ‘U’ should behave -- everything up until the
      first time you go into command mode should not be undone. */
   if (RL_ISSTATE (RL_STATE_VICMDONCE) == 0)
     rl_free_undo_list ();
@@ -1425,7 +1425,7 @@ rl_vi_delete_to (int count, int key)
     }
   else if (_rl_vimvcxt)
     {
-      /* are we being called recursively or by `y' or `c'? */
+      /* are we being called recursively or by ‘y’ or ‘c’? */
       savecxt = _rl_vimvcxt;
       _rl_vimvcxt = _rl_mvcxt_alloc (VIM_DELETE, key);
     }
@@ -1440,12 +1440,12 @@ rl_vi_delete_to (int count, int key)
       _rl_vimvcxt->motion = '$';
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing && _rl_vi_last_motion != 'd')	/* `dd' is special */
+  else if (_rl_vi_redoing && _rl_vi_last_motion != 'd')	/* ‘dd’ is special */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing)		/* handle redoing `dd' here */
+  else if (_rl_vi_redoing)		/* handle redoing ‘dd’ here */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       rl_mark = rl_end;
@@ -1502,9 +1502,9 @@ vi_change_dispatch (_rl_vimotion_cxt *m)
     }
   else
     {
-      rl_begin_undo_group ();		/* to make the `u' command work */
+      rl_begin_undo_group ();		/* to make the ‘u’ command work */
       rl_kill_text (rl_point, rl_mark);
-      /* `C' does not save the text inserted for undoing or redoing. */
+      /* ‘C’ does not save the text inserted for undoing or redoing. */
       if (_rl_uppercase_p (m->key) == 0)
 	_rl_vi_doing_insert = 1;
       /* XXX -- TODO -- use m->numericarg? */
@@ -1528,7 +1528,7 @@ rl_vi_change_to (int count, int key)
     }
   else if (_rl_vimvcxt)
     {
-      /* are we being called recursively or by `y' or `d'? */
+      /* are we being called recursively or by ‘y’ or ‘d’? */
       savecxt = _rl_vimvcxt;
       _rl_vimvcxt = _rl_mvcxt_alloc (VIM_CHANGE, key);
     }      
@@ -1542,12 +1542,12 @@ rl_vi_change_to (int count, int key)
       _rl_vimvcxt->motion = '$';
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing && _rl_vi_last_motion != 'c')	/* `cc' is special */
+  else if (_rl_vi_redoing && _rl_vi_last_motion != 'c')	/* ‘cc’ is special */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing)		/* handle redoing `cc' here */
+  else if (_rl_vi_redoing)		/* handle redoing ‘cc’ here */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       rl_mark = rl_end;
@@ -1611,7 +1611,7 @@ rl_vi_yank_to (int count, int key)
     }
   else if (_rl_vimvcxt)
     {
-      /* are we being called recursively or by `c' or `d'? */
+      /* are we being called recursively or by ‘c’ or ‘d’? */
       savecxt = _rl_vimvcxt;
       _rl_vimvcxt = _rl_mvcxt_alloc (VIM_YANK, key);
     }      
@@ -1625,12 +1625,12 @@ rl_vi_yank_to (int count, int key)
       _rl_vimvcxt->motion = '$';
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing && _rl_vi_last_motion != 'y')	/* `yy' is special */
+  else if (_rl_vi_redoing && _rl_vi_last_motion != 'y')	/* ‘yy’ is special */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       r = rl_domove_motion_callback (_rl_vimvcxt);
     }
-  else if (_rl_vi_redoing)			/* handle redoing `yy' here */
+  else if (_rl_vi_redoing)			/* handle redoing ‘yy’ here */
     {
       _rl_vimvcxt->motion = _rl_vi_last_motion;
       rl_mark = rl_end;
@@ -1778,7 +1778,7 @@ rl_vi_unix_word_rubout (int count, int key)
 	      ;
 
 	  /* If we're at the start of a word, move back to word boundary so we
-	     move back to the `preceding' word */
+	     move back to the ‘preceding’ word */
 	  if (rl_point > 0 && (vi_unix_word_boundary (rl_line_buffer[rl_point]) == 0) &&
 		vi_unix_word_boundary (rl_line_buffer[rl_point - 1]))
 	    rl_point--;
@@ -2159,7 +2159,7 @@ rl_vi_subst (int count, int key)
 {
   /* If we are redoing, rl_vi_change_to will stuff the last motion char */
   if (_rl_vi_redoing == 0)
-    rl_stuff_char ((key == 'S') ? 'c' : 'l');	/* `S' == `cc', `s' == `cl' */
+    rl_stuff_char ((key == 'S') ? 'c' : 'l');	/* ‘S’ == ‘cc’, ‘s’ == ‘cl’ */
 
   return (rl_vi_change_to (count, 'c'));
 }

@@ -28,7 +28,7 @@
 #include "xmalloc.h"
 
 /* Backwards compatibility, now that savestring has been removed from
-   all `public' readline header files. */
+   all ‘public’ readline header files. */
 char *
 savestring (const char *s)
 {

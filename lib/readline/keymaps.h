@@ -81,7 +81,7 @@ extern void rl_discard_keymap (Keymap);
 /* These functions actually appear in bind.c */
 
 /* Return the keymap corresponding to a given name.  Names look like
-   `emacs' or `emacs-meta' or `vi-insert'.  */
+   ‘emacs’ or ‘emacs-meta’ or ‘vi-insert’.  */
 extern Keymap rl_get_keymap_by_name (const char *);
 
 /* Return the current keymap. */

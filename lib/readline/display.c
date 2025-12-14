@@ -124,7 +124,7 @@ static int _rl_col_width (const char *, int, int, int);
 /* _rl_last_c_pos is an absolute cursor position in multibyte locales and a
    buffer index in others.  This macro is used when deciding whether the
    current cursor position is in the middle of a prompt string containing
-   invisible characters.  XXX - might need to take `modmark' into account. */
+   invisible characters.  XXX - might need to take ‘modmark’ into account. */
 /* XXX - only valid when tested against _rl_last_c_pos; buffer indices need
    to use prompt_last_invisible directly. */
 #define PROMPT_ENDING_INDEX \
@@ -223,7 +223,7 @@ static int _rl_inv_botlin = 0;
    doing horizontal scrolling.  It shifts in thirds of a screenwidth. */
 static int last_lmargin;
 
-/* A buffer for `modeline' messages. */
+/* A buffer for ‘modeline’ messages. */
 static char *msg_buf = 0;
 static int msg_bufsiz = 0;
 
@@ -343,7 +343,7 @@ prompt_modestr (int *lenp)
 	\002 (^B) end non-visible characters
    all characters except \001 and \002 (following a \001) are copied to
    the returned string; all characters except those between \001 and
-   \002 are assumed to be `visible'. */	
+   \002 are assumed to be ‘visible’. */	
 
 /* Possible values for FLAGS:
 	PMT_MULTILINE	caller indicates that this is part of a multiline prompt
@@ -898,7 +898,7 @@ rl_redisplay (void)
   if (visible_line[0] != invisible_line[0])
     rl_display_fixed = 0;
 
-  /* If the prompt to be displayed is the `primary' readline prompt (the
+  /* If the prompt to be displayed is the ‘primary’ readline prompt (the
      one passed to readline()), use the values we have already expanded.
      If not, use what's already in rl_display_prompt.  WRAP_OFFSET is the
      number of non-visible characters (bytes) in the prompt string. */
@@ -1350,7 +1350,7 @@ rl_redisplay (void)
 	  /* We don't want to highlight anything that's going to be off the top
 	     of the display; if the current line takes up more than an entire
 	    screen, just mark the lines that won't be displayed as having a
-	    `normal' face.
+	    ‘normal’ face.
 	    It's imperfect, but better than display corruption. */
 	  if (rl_mark_active_p () && inv_botlin > _rl_screenheight)
 	    {
@@ -1365,7 +1365,7 @@ rl_redisplay (void)
 	  /* Now that _rl_last_v_pos is a logical count, not bounded by the
 	     number of physical screen lines, this is a start at being able
 	     to redisplay lines that consume more than the number of physical
-	     screen lines in more than a simple `move-to-the-next-line' way.
+	     screen lines in more than a simple ‘move-to-the-next-line’ way.
 
 	     If the new line has more lines than there are physical screen
 	     lines, and the cursor would be off the top of the screen if we
@@ -1977,7 +1977,7 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
 	      if (oldbytes != 0 && newbytes != 0)
 		{
 		  /* We have written as many bytes from new as we need to
-		     consume the first character of old. Fix up `old' so it
+		     consume the first character of old. Fix up ‘old’ so it
 		     reflects the new screen contents.  We use +1 in the
 		     memmove call to copy the trailing NUL. */
 		  /* (strlen(old+oldbytes) == (omax - oldbytes - 1)) */
@@ -2172,7 +2172,7 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
 #if defined (HANDLE_MULTIBYTE)
   /* Find the last character that is the same between the two lines.  This
      bounds the region that needs to change. */
-  /* In this case, `last character' means the one farthest from the end of
+  /* In this case, ‘last character’ means the one farthest from the end of
      the line. */
   if (mb_cur_max > 1 && rl_byte_oriented == 0)
     {
@@ -2290,7 +2290,7 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
      cursor position is before the last invisible character in the prompt,
      and the index of the character to move to is past the end of the prompt
      string, then redraw the entire prompt string.  We can only do this
-     reliably if the terminal supports a `cr' capability.
+     reliably if the terminal supports a ‘cr’ capability.
 
      This can also happen if the prompt string has changed, and the first
      difference in the line is in the middle of the prompt string, after a
@@ -2305,8 +2305,8 @@ update_line (char *old, char *old_face, char *new, char *new_face, int current_l
 
      This is not an efficiency hack -- there is a problem with redrawing
      portions of the prompt string if they contain terminal escape
-     sequences (like drawing the `unbold' sequence without a corresponding
-     `bold') that manifests itself on certain terminals. */
+     sequences (like drawing the ‘unbold’ sequence without a corresponding
+     ‘bold’) that manifests itself on certain terminals. */
 
   lendiff = local_prompt_len;
   if (lendiff > nmax)
@@ -2537,7 +2537,7 @@ dumb_update:
 
   /* We use temp as a count of the number of bytes from the first difference
      to the end of the new line.  col_temp is the corresponding number of
-     screen columns.  A `dumb' update moves to the spot of first difference
+     screen columns.  A ‘dumb’ update moves to the spot of first difference
      and writes TEMP bytes. */
   /* Insert (diff (len (old), len (new)) ch. */
   temp = ne - nfd;
@@ -3612,7 +3612,7 @@ _rl_ttyflush (void)
   fflush (rl_outstream);
 }
 
-/* return the `current display line' of the cursor -- the number of lines to
+/* return the ‘current display line’ of the cursor -- the number of lines to
    move up to get to the first screen line of the current readline line. */
 int
 _rl_current_display_line (void)

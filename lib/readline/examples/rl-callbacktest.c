@@ -48,7 +48,7 @@ sighandler (int sig)
 static void
 cb_linehandler (char *line)
 {
-  /* Can use ^D (stty eof) or `exit' to exit. */
+  /* Can use ^D (stty eof) or ‘exit’ to exit. */
   if (line == NULL || strcmp (line, "exit") == 0)
     {
       if (line == 0)

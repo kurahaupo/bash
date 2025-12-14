@@ -109,7 +109,7 @@ int history_offset;
    always <= real_history_length */
 int history_length;
 
-/* The logical `base' of the history array.  It defaults to 1. */
+/* The logical ‘base’ of the history array.  It defaults to 1. */
 int history_base = 1;
 
 /* Compute the number of bits required to store a given nonnegative integer.
@@ -538,7 +538,7 @@ _hs_append_history_line (int which, const char *line)
 /* Replace the DATA in the specified history entries, replacing OLD with
    NEW.  WHICH says which one(s) to replace:  WHICH == -1 means to replace
    all of the history entries where entry->data == OLD; WHICH == -2 means
-   to replace the `newest' history entry where entry->data == OLD; and
+   to replace the ‘newest’ history entry where entry->data == OLD; and
    WHICH >= 0 means to replace that particular history entry's data, as
    long as it matches OLD. */
 void

@@ -249,7 +249,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
   int ret, unescaped_backslash;
 
 #if defined (HAVE_FNMATCH)
-  /* Assume that the string passed does not have a leading `^' and any
+  /* Assume that the string passed does not have a leading ‘^’ and any
      anchored search request is captured in FLAGS */
   len = strlen (string);
   ret = len - 1;
@@ -264,7 +264,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
     return -1;
   pat = (char *)xmalloc (len + 3);
   /* If the search string is not anchored, we'll be calling fnmatch (assuming
-     we have it). Prefix a `*' to the front of the search string so we search
+     we have it). Prefix a ‘*’ to the front of the search string so we search
      anywhere in the line. */
   if ((flags & ANCHORED_SEARCH) == 0 && string[0] != '*')
     {
@@ -277,7 +277,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
       start = 0;
     }
 
-  /* Attempt to reduce the number of searches by tacking a `*' onto the end
+  /* Attempt to reduce the number of searches by tacking a ‘*’ onto the end
      of a pattern that doesn't have one.  Assume a pattern that ends in a
      backslash contains an even number of trailing backslashes; we check
      above */

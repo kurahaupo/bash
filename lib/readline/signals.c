@@ -193,7 +193,7 @@ _rl_handle_signal (int sig)
     rl_set_sighandler (sig, SIG_IGN, &dummy_cxt);
 #endif /* !HAVE_BSD_SIGNALS && !HAVE_POSIX_SIGNALS */
 
-  /* If there's a sig cleanup function registered, call it and `deregister'
+  /* If there's a sig cleanup function registered, call it and ‘deregister’
      the cleanup function to avoid multiple calls */
   if (_rl_sigcleanup)
     {

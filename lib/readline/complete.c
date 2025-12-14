@@ -180,7 +180,7 @@ int _rl_complete_mark_directories = 1;
 int _rl_complete_mark_symlink_dirs = 0;
 
 /* If non-zero, completions are printed horizontally in alphabetical order,
-   like `ls -x'. */
+   like ‘ls -x’. */
 int _rl_print_completions_horizontally;
 
 /* Non-zero means that case is not significant in filename completion. */
@@ -190,15 +190,15 @@ int _rl_completion_case_fold = 1;
 int _rl_completion_case_fold = 0;
 #endif
 
-/* Non-zero means that `-' and `_' are equivalent when comparing filenames
+/* Non-zero means that ‘-’ and ‘_’ are equivalent when comparing filenames
   for completion. */
 int _rl_completion_case_map = 0;
 
-/* If zero, don't match hidden files (filenames beginning with a `.' on
+/* If zero, don't match hidden files (filenames beginning with a ‘.’ on
    Unix) when doing filename completion. */
 int _rl_match_hidden_files = 1;
 
-/* Length in characters of a common prefix replaced with an ellipsis (`...')
+/* Length in characters of a common prefix replaced with an ellipsis (‘...’)
    when displaying completion matches.  Matches whose printable portion has
    more than this number of displaying characters in common will have the common
    display prefix replaced with an ellipsis. */
@@ -221,7 +221,7 @@ int _rl_colored_completion_prefix = 0;
 /* If non-zero, when completing in the middle of a word, don't insert
    characters from the match that match characters following point in
    the word.  This means, for instance, completing when the cursor is
-   after the `e' in `Makefile' won't result in `Makefilefile'. */
+   after the ‘e’ in ‘Makefile’ won't result in ‘Makefilefile’. */
 int _rl_skip_completed_text = 0;
 
 /* If non-zero, menu completion displays the common prefix first in the
@@ -642,13 +642,13 @@ path_isdir (const char *filename)
 
 #if defined (VISIBLE_STATS)
 /* Return the character which best describes FILENAME.
-     `@' for symbolic links
-     `/' for directories
-     `*' for executables
-     `=' for sockets
-     `|' for FIFOs
-     `%' for character special devices
-     `#' for block special devices */
+     ‘@’ for symbolic links
+     ‘/’ for directories
+     ‘*’ for executables
+     ‘=’ for sockets
+     ‘|’ for FIFOs
+     ‘%’ for character special devices
+     ‘#’ for block special devices */
 static int
 stat_char (char *filename)
 {
@@ -985,7 +985,7 @@ fnprint (const char *to_print, int prefix_bytes, const char *real_pathname)
 }
 
 /* Output TO_PRINT to rl_outstream.  If VISIBLE_STATS is defined and we
-   are using it, check for and output a single character for `special'
+   are using it, check for and output a single character for ‘special’
    filenames.  Return the number of characters we output. */
 
 static int
@@ -1023,13 +1023,13 @@ print_filename (char *to_print, char *full_pathname, int prefix_bytes)
 	     full_pathname being the empty string, we are trying to complete
 	     files in the root directory.  If we pass a null string to the
 	     bash directory completion hook, for example, it will expand it
-	     to the current directory.  We just want the `/'. */
+	     to the current directory.  We just want the ‘/’. */
 	  if (full_pathname == 0 || *full_pathname == 0)
 	    dn = "/";
 	  else if (full_pathname[0] != '/')
 	    dn = full_pathname;
 	  else if (full_pathname[1] == 0)
-	    dn = "//";		/* restore trailing slash to `//' */
+	    dn = "//";		/* restore trailing slash to ‘//’ */
 	  else if (full_pathname[1] == '/' && full_pathname[2] == 0)
 	    dn = "/";		/* don't turn /// into // */
 	  else
@@ -1911,7 +1911,7 @@ insert_match (char *match, int start, int mtype, char *qc)
 
 /* Append any necessary closing quote and a separator character to the
    just-inserted match.  If the user has specified that directories
-   should be marked by a trailing `/', append one of those instead.  The
+   should be marked by a trailing ‘/’, append one of those instead.  The
    default trailing character is a space.  Returns the number of characters
    appended.  If NONTRIVIAL_MATCH is set, we test for a symlink (if the OS
    has them) and don't add a suffix for a symlink to a directory.  A
@@ -2057,14 +2057,14 @@ compare_match (char *text, const char *match)
 
 /* Complete the word at or before point.
    WHAT_TO_DO says what to do with the completion.
-   `?' means list the possible completions.
+   ‘?’ means list the possible completions.
    TAB means do standard completion.
-   `*' means insert all of the possible completions.
-   `!' means to do standard completion, and list all possible completions if
+   ‘*’ means insert all of the possible completions.
+   ‘!’ means to do standard completion, and list all possible completions if
    there is more than one.
-   `@' means to do standard completion, and list all possible completions if
+   ‘@’ means to do standard completion, and list all possible completions if
    there is more than one and partial completion is not possible.
-   `$' implements a protocol for exporting completions and information about
+   ‘$’ implements a protocol for exporting completions and information about
    what is being completed to another process via rl_outstream. */
 int
 rl_complete_internal (int what_to_do)
@@ -2181,10 +2181,10 @@ rl_complete_internal (int what_to_do)
 
       /* If there are more matches, ring the bell to indicate.
 	 If we are in vi mode, Posix.2 says to not ring the bell.
-	 If the `show-all-if-ambiguous' variable is set, display
+	 If the ‘show-all-if-ambiguous’ variable is set, display
 	 all the matches immediately.  Otherwise, if this was the
 	 only match, and we are hacking files, check the file to
-	 see if it was a directory.  If so, and the `mark-directories'
+	 see if it was a directory.  If so, and the ‘mark-directories’
 	 variable is set, add a '/' to the name.  If not, and we
 	 are at the end of the line, then add a space.  */
       if (matches[1])
@@ -2372,7 +2372,7 @@ rl_completion_matches (const char *text, rl_compentry_func_t *entry_function)
 
 /* A completion function for usernames.
    TEXT contains a partial username preceded by a random
-   character (usually `~').  */
+   character (usually ‘~’).  */
 char *
 rl_username_completion_function (const char *text, int state)
 {
@@ -2427,7 +2427,7 @@ rl_username_completion_function (const char *text, int state)
 /* Return non-zero if CONVFN matches FILENAME up to the length of FILENAME
    (FILENAME_LEN).  If _rl_completion_case_fold is set, compare without
    regard to the alphabetic case of characters.  If
-   _rl_completion_case_map is set, make `-' and `_' equivalent.  CONVFN is
+   _rl_completion_case_map is set, make ‘-’ and ‘_’ equivalent.  CONVFN is
    the possibly-converted directory entry; FILENAME is what the user typed. */
 static int
 complete_fncmp (const char *convfn, int convlen, const char *filename, int filename_len)
@@ -2628,7 +2628,7 @@ rl_filename_completion_function (const char *text, int state)
 	}
 
       /* Special case for no filename.  If the user has disabled the
-         `match-hidden-files' variable, skip filenames beginning with `.'.
+         ‘match-hidden-files’ variable, skip filenames beginning with ‘.’.
 	 All other entries except "." and ".." match. */
       if (filename_len == 0)
 	{

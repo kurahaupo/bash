@@ -191,7 +191,7 @@ typedef struct __rl_vimotion_context
 } _rl_vimotion_cxt;
 
 /* fill in more as needed */
-/* `Generic' callback data and functions */
+/* ‘Generic’ callback data and functions */
 typedef struct __rl_callback_generic_arg
 {
   int count;
@@ -262,7 +262,7 @@ extern int _rl_utf8_skiplen (const char *p);
  *									 *
  *************************************************************************/
 
-/* NOTE: Functions and variables prefixed with `_rl_' are
+/* NOTE: Functions and variables prefixed with ‘_rl_’ are
    pseudo-global: they are global so they can be shared
    between files in the readline library, but are not intended
    to be visible to readline callers. */

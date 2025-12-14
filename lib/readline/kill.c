@@ -334,7 +334,7 @@ rl_unix_word_rubout (int count, int key)
 }
 
 /* This deletes one filename component in a Unix pathname.  That is, it
-   deletes backward to directory separator (`/') or whitespace.  */
+   deletes backward to directory separator (‘/’) or whitespace.  */
 int
 rl_unix_filename_rubout (int count, int key)
 {
@@ -417,7 +417,7 @@ rl_unix_line_discard (int count, int key)
   return 0;
 }
 
-/* Copy the text in the `region' to the kill ring.  If DELETE is non-zero,
+/* Copy the text in the ‘region’ to the kill ring.  If DELETE is non-zero,
    delete the text from the line as well. */
 static int
 region_kill_internal (int delete)
@@ -599,7 +599,7 @@ rl_vi_yank_pop (int count, int key)
 #endif /* VI_MODE */
 
 /* Yank the COUNTh argument from the previous history line, skipping
-   HISTORY_SKIP lines before looking for the `previous line'. */
+   HISTORY_SKIP lines before looking for the ‘previous line’. */
 static int
 rl_yank_nth_arg_internal (int count, int key, int history_skip)
 {
@@ -661,8 +661,8 @@ rl_yank_nth_arg (int count, int key)
   return (rl_yank_nth_arg_internal (count, key, 0));
 }
 
-/* Yank the last argument from the previous history line.  This `knows'
-   how rl_yank_nth_arg treats a count of `$'.  With an argument, this
+/* Yank the last argument from the previous history line.  This ‘knows’
+   how rl_yank_nth_arg treats a count of ‘$’.  With an argument, this
    behaves the same as rl_yank_nth_arg. */
 int
 rl_yank_last_arg (int count, int key)
@@ -702,7 +702,7 @@ rl_yank_last_arg (int count, int key)
 }
 
 /* Having read the special escape sequence denoting the beginning of a
-   `bracketed paste' sequence, read the rest of the pasted input until the
+   ‘bracketed paste’ sequence, read the rest of the pasted input until the
    closing sequence and return the pasted text. */
 char *
 _rl_bracketed_text (size_t *lenp)
@@ -751,7 +751,7 @@ _rl_bracketed_text (size_t *lenp)
 }
 
 /* Having read the special escape sequence denoting the beginning of a
-   `bracketed paste' sequence, read the rest of the pasted input until the
+   ‘bracketed paste’ sequence, read the rest of the pasted input until the
    closing sequence and insert the pasted text as a single unit without
    interpretation. Temporarily highlight the inserted text. */
 int

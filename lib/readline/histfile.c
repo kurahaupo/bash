@@ -443,7 +443,7 @@ after_file_read:
   current_line = 0;
 
   /* Heuristic: the history comment character rarely changes, so assume we
-     have timestamps if the buffer starts with `#[:digit:]' and temporarily
+     have timestamps if the buffer starts with ‘#[:digit:]’ and temporarily
      set history_comment_char so timestamp parsing works right */
   reset_comment_char = 0;
   if (history_comment_char == '\0' && buffer[0] == '#' && isdigit ((unsigned char)buffer[1]))

@@ -1,5 +1,5 @@
 /* rlwinsize.h -- an attempt to isolate some of the system-specific defines
-   for `struct winsize' and TIOCGWINSZ. */
+   for ‘struct winsize’ and TIOCGWINSZ. */
 
 /* Copyright (C) 1997-2025 Free Software Foundation, Inc.
 
@@ -27,7 +27,7 @@
 #  include "config.h"
 #endif
 
-/* Try to find the definitions of `struct winsize' and TIOGCWINSZ */
+/* Try to find the definitions of ‘struct winsize’ and TIOGCWINSZ */
 
 #if defined (GWINSZ_IN_SYS_IOCTL) && !defined (TIOCGWINSZ)
 #  include <sys/ioctl.h>

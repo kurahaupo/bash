@@ -373,7 +373,7 @@ _rl_stricmp (const char *string1, const char *string2)
 
 /* Compare the first N characters of S1 and S2 without regard to case. If
    FLAGS&1, apply the mapping specified by completion-map-case and make
-   `-' and `_' equivalent. Returns 1 if the strings are equal. */
+   ‘-’ and ‘_’ equivalent. Returns 1 if the strings are equal. */
 int
 _rl_strcaseeqn(const char *s1, const char *s2, size_t n, int flags)
 {
@@ -404,7 +404,7 @@ _rl_strcaseeqn(const char *s1, const char *s2, size_t n, int flags)
 
 /* Return 1 if the characters C1 and C2 are equal without regard to case.
    If FLAGS&1, apply the mapping specified by completion-map-case and make
-   `-' and `_' equivalent. */
+   ‘-’ and ‘_’ equivalent. */
 int
 _rl_charcasecmp (int c1, int c2, int flags)
 {
@@ -451,7 +451,7 @@ rl_free (void *mem)
 }
 
 /* Backwards compatibility, now that savestring has been removed from
-   all `public' readline header files. */
+   all ‘public’ readline header files. */
 #undef _rl_savestring
 char *
 _rl_savestring (const char *s)

@@ -66,7 +66,7 @@ typedef struct _hist_state {
   int flags;
 } HISTORY_STATE;
 
-/* Flag values for the `flags' member of HISTORY_STATE. */
+/* Flag values for the ‘flags’ member of HISTORY_STATE. */
 #define HS_STIFLED	0x01
 
 /* Initialization and state management. */
@@ -244,7 +244,7 @@ extern char *history_arg_extract (int, int, const char *);
    history_expansion_char that begins this specification.
    DELIMITING_QUOTE is a character that is allowed to end the string
    specification for what to search for in addition to the normal
-   characters `:', ` ', `\t', `\n', and sometimes `?'. */
+   characters ‘:’, ‘ ’, ‘\t’, ‘\n’, and sometimes ‘?’. */
 extern char *get_history_event (const char *, int *, int);
 
 /* Return an array of tokens, much as the shell might.  The tokens are

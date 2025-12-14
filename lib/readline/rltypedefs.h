@@ -71,7 +71,7 @@ typedef int rl_getc_func_t (FILE *);
    an int. */
 typedef int rl_linebuf_func_t (char *, int);
 
-/* `Generic' function pointer typedefs */
+/* ‘Generic’ function pointer typedefs */
 typedef int rl_intfunc_t (int);
 #define rl_ivoidfunc_t rl_hook_func_t
 typedef int rl_icpfunc_t (char *);

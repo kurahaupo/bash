@@ -367,7 +367,7 @@ rl_bind_keyseq_if_unbound_in_map (const char *keyseq, rl_command_func_t *default
 
   if (keyseq)
     {
-      /* Handle key sequences that require translations and `raw' ones that
+      /* Handle key sequences that require translations and ‘raw’ ones that
 	 don't. This might be a problem with backslashes. */
       keys = (char *)xmalloc (1 + (2 * strlen (keyseq)));
       if (rl_translate_keyseq (keyseq, keys, &keys_len))
@@ -476,7 +476,7 @@ rl_generic_bind (int type, const char *keyseq, char *data, Keymap map)
 	  if (map[ic].type != ISKMAP)
 	    {
 	      /* We allow subsequences of keys.  If a keymap is being
-		 created that will `shadow' an existing function or macro
+		 created that will ‘shadow’ an existing function or macro
 		 key binding, we save that keybinding into the ANYOTHERKEY
 		 index in the new map.  The dispatch code will look there
 		 to find the function to execute if the subsequence is not
@@ -491,10 +491,10 @@ rl_generic_bind (int type, const char *keyseq, char *data, Keymap map)
 	  map = FUNCTION_TO_KEYMAP (map, ic);
 	  /* The dispatch code will return this function if no matching
 	     key sequence is found in the keymap.  This (with a little
-	     help from the dispatch code in readline.c) allows `a' to be
-	     mapped to something, `abc' to be mapped to something else,
-	     and the function bound  to `a' to be executed when the user
-	     types `abx', leaving `bx' in the input queue. */
+	     help from the dispatch code in readline.c) allows ‘a’ to be
+	     mapped to something, ‘abc’ to be mapped to something else,
+	     and the function bound  to ‘a’ to be executed when the user
+	     types ‘abx’, leaving ‘bx’ in the input queue. */
 	  if (k.function && ((k.type == ISFUNC && k.function != rl_do_lowercase_version) || k.type == ISMACR))
 	    {
 	      map[ANYOTHERKEY] = k;
@@ -591,7 +591,7 @@ rl_translate_keyseq (const char *seq, char *array, int *len)
 	    }	      
 
 	  /* Translate other backslash-escaped characters.  These are the
-	     same escape sequences that bash's `echo' and `printf' builtins
+	     same escape sequences that bash's ‘echo’ and ‘printf’ builtins
 	     handle, with the addition of \d -> RUBOUT.  A backslash
 	     preceding a character that is not special is stripped. */
 	  switch (c)
@@ -922,7 +922,7 @@ rl_trim_arg_from_keyseq	(const char *keyseq, size_t len, Keymap map)
   map0 = map;
 
   /* Make sure to add the digits following the initial one (e.g., the binding
-     to digit-argument) and the optional `-' in a binding to digit-argument
+     to digit-argument) and the optional ‘-’ in a binding to digit-argument
      or universal-argument to rl_executing_keyseq. This is basically
      everything read by rl_digit_loop. */
   for (i = j = parsing_digits = 0; keyseq && i < len; i++)
@@ -973,8 +973,8 @@ rl_trim_arg_from_keyseq	(const char *keyseq, size_t len, Keymap map)
 
 	  /* This logic should be identical to rl_digit_loop */
 	  /* We accept M-- as equivalent to M--1, C-u- as equivalent to C-u-1
-	     but set parsing_digits to 2 to note that we saw `-'. See above
-	     for the check that skips over one or more `-' characters. */
+	     but set parsing_digits to 2 to note that we saw ‘-’. See above
+	     for the check that skips over one or more ‘-’ characters. */
 	  if (map[ic].function == rl_universal_argument ||
 	       (map[ic].function == rl_digit_argument && ic == '-'))
 	    parsing_digits = 2;
@@ -1074,7 +1074,7 @@ rl_re_read_init_file (int count, int ignore)
 /* Do key bindings from a file.  If FILENAME is NULL it defaults
    to the first non-null filename from this list:
      1. the filename used for the previous call
-     2. the value of the shell variable `INPUTRC'
+     2. the value of the shell variable ‘INPUTRC’
      3. ~/.inputrc
      4. /etc/inputrc
    If the file existed and could be opened and read, 0 is returned,
@@ -1130,7 +1130,7 @@ _rl_read_init_file (const char *filename, int include_level)
 
   currently_reading_init_file = 1;
 
-  /* Loop over the lines in the file.  Lines that start with `#' are
+  /* Loop over the lines in the file.  Lines that start with ‘#’ are
      comments; all other lines are commands for readline initialization. */
   current_readline_init_lineno = 1;
   line = buffer;
@@ -1141,7 +1141,7 @@ _rl_read_init_file (const char *filename, int include_level)
       for (i = 0; line + i != end && line[i] != '\n'; i++);
 
 #if defined (__CYGWIN__)
-      /* ``Be liberal in what you accept.'' */
+      /* “Be liberal in what you accept.” */
       if (line[i] == '\n' && line[i-1] == '\r')
 	line[i - 1] = '\0';
 #endif
@@ -1249,7 +1249,7 @@ parse_comparison_op (const char *s, int *indp)
 /* **************************************************************** */
 
 
-/* Things that mean `Control'. */
+/* Things that mean ‘Control’. */
 const char * const _rl_possible_control_prefixes[] = {
   "Control-", "C-", "CTRL-", (const char *)NULL
 };
@@ -1319,10 +1319,10 @@ parser_if (char *args)
       if (tem)
 	*tem = '\0';
 
-      /* Test the `long' and `short' forms of the terminal name so that
-	 if someone has a `sun-cmd' and does not want to have bindings
-	 that will be executed if the terminal is a `sun', they can put
-	 `$if term=sun-cmd' into their .inputrc. */
+      /* Test the ‘long’ and ‘short’ forms of the terminal name so that
+	 if someone has a ‘sun-cmd’ and does not want to have bindings
+	 that will be executed if the terminal is a ‘sun’, they can put
+	 ‘$if term=sun-cmd’ into their .inputrc. */
       _rl_parsing_conditionalized_out = _rl_stricmp (args + 5, tname) &&
 					_rl_stricmp (args + 5, rl_terminal_name);
       xfree (tname);
@@ -1555,7 +1555,7 @@ static const parser_dir_t parser_directives [] = {
 };
 
 /* Handle a parser directive.  STATEMENT is the line of the directive
-   without any leading `$'. */
+   without any leading ‘$’. */
 static int
 handle_parser_directive (char *statement)
 {
@@ -1756,7 +1756,7 @@ rl_parse_and_bind (char *string)
      to the matching delimiter.  We allow the backslash to quote the
      delimiter characters in the macro body. */
   /* This code exists to allow whitespace in macro expansions, which
-     would otherwise be gobbled up by the next `for' loop.*/
+     would otherwise be gobbled up by the next ‘for’ loop.*/
   /* XXX - it may be desirable to allow backslash quoting only if " is
      the quoted string delimiter, like the shell. */
   if (*funname == '\'' || *funname == '"')
@@ -2061,8 +2061,8 @@ find_string_var (const char *name)
   return NULL;
 }
 
-/* A boolean value that can appear in a `set variable' command is true if
-   the value is null or empty, `on' (case-insensitive), or "1".  All other
+/* A boolean value that can appear in a ‘set variable’ command is true if
+   the value is null or empty, ‘on’ (case-insensitive), or "1".  All other
    values result in 0 (false). */
 static int
 string_to_bool (const char *value)
@@ -2563,7 +2563,7 @@ sv_vicmd_modestr (const char *value)
 }
 
 /* Return the character which matches NAME.
-   For example, `Space' returns ' '. */
+   For example, ‘Space’ returns ' '. */
 
 
 static const assoc_list_t name_key_alist[] = {

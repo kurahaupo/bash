@@ -134,7 +134,7 @@ _rl_init_locale (void)
   /* Since _rl_get_locale_var queries the right environment variables,
      we query the current locale settings with setlocale(), and, if
      that doesn't return anything, we set lspec to the empty string to
-     force the subsequent call to setlocale() to define the `native'
+     force the subsequent call to setlocale() to define the ‘native’
      environment. */
 #if defined (HAVE_SETLOCALE)
   if (lspec == 0 || *lspec == 0)
@@ -263,7 +263,7 @@ normalize_codeset (char *codeset)
     return ((char *)0);
 
   wp = retval;
-  /* Add `iso' to beginning of an all-digit codeset */
+  /* Add ‘iso’ to beginning of an all-digit codeset */
   if (all_digits)
     {
       *wp++ = 'i';

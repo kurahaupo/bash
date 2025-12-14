@@ -52,11 +52,11 @@
    over a character when updating the line rather than rewriting it. */
 /* #define HACK_TERMCAP_MOTION */
 
-/* The string inserted by the `insert comment' command. */
+/* The string inserted by the ‘insert comment’ command. */
 #define RL_COMMENT_BEGIN_DEFAULT "#"
 
 /* Define this if you want code that allows readline to be used in an
-   X `callback' style. */
+   X ‘callback’ style. */
 #define READLINE_CALLBACKS
 
 /* Define this if you want the cursor to indicate insert or overwrite mode. */
