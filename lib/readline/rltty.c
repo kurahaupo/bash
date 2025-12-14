@@ -705,9 +705,8 @@ rl_deprep_terminal (void)
       fprintf (rl_outstream, BRACK_PASTE_FINI);
       /* Since the last character in BRACK_PASTE_FINI is \r */
       _rl_last_c_pos = 0;
-      if (rl_eof_found && (RL_ISSTATE (RL_STATE_TIMEOUT) == 0))
- 	fprintf (rl_outstream, "\n");
-      else if (_rl_echoing_p == 0)
+      if (rl_eof_found && (RL_ISSTATE (RL_STATE_TIMEOUT) == 0) ||
+	  ! _rl_echoing_p && ! _rl_echo_subst_mode)
  	fprintf (rl_outstream, "\n");
     }
 

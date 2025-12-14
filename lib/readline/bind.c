@@ -2000,6 +2000,7 @@ hack_special_boolean_var (bool_var_def_t const *bvar)
 
 #define	V_STRING	1
 #define V_INT		2
+#define V_SPECIAL	4
 
 /* Forward declarations */
 static _rl_sv_func_t sv_region_start_color;
@@ -2018,6 +2019,7 @@ static _rl_sv_func_t sv_keymap;
 static _rl_sv_func_t sv_seqtimeout;
 static _rl_sv_func_t sv_viins_modestr;
 static _rl_sv_func_t sv_vicmd_modestr;
+static _rl_gv_func_t gv_echo_substition;
 
 static const str_var_def_t string_varlist[] = {
   { "active-region-end-color", V_STRING, sv_region_end_color },
@@ -2027,6 +2029,7 @@ static const str_var_def_t string_varlist[] = {
   { "completion-display-width", V_INT,	sv_compwidth },
   { "completion-prefix-display-length", V_INT,	sv_dispprefix },
   { "completion-query-items", V_INT,	sv_compquery },
+  { "echo-substitution", V_SPECIAL,	sv_echo_substition, gv_echo_substition },
   { "editing-mode",	V_STRING,	sv_editmode },
   { "emacs-mode-string", V_STRING,	sv_emacs_modestr },  
   { "history-size",	V_INT,		sv_histsize },
@@ -2179,6 +2182,134 @@ sv_compwidth (const char *value)
 
   _rl_completion_columns = nval;
   return 0;
+}
+
+static char const *
+_rl_codepoint_to_utf8 (unsigned long c)
+{
+  /* Don't use unprintable chars */
+  if (CTRL_CHAR (c) || c == RUBOUT)
+    return NULL;
+#if defined (HANDLE_MULTIBYTE)
+  /* Only UTF-8 wide char supported */
+  if (c != (unsigned char) c && ! _rl_utf8locale)
+    return NULL;
+  /* Don't generate UTF-8 longer than 6 bytes */
+  if (c >> 6*5+1)
+    return NULL;
+  char b[8];
+  char *p = b + 7;
+  *p-- = 0;
+  if (_rl_utf8locale)
+    {
+      if (c >= 0x7f && c < 0xa0)
+	/* TODO: look up codepoint properties and verify it's printable */
+	return NULL;
+      if (c >= 0x80)
+	{
+	  /* UTF-8 ≥ 0x80 */
+	  unsigned int cz = ~0x3f;
+	  for (; c & cz; c >>= 6, cz >>= 1, --p)
+	    *p = 0x80 | c & 0x3f;
+	  c |= cz << 1;
+	  c &= 0xff;
+	}
+    }
+  *p = c;
+#else
+  /* Wide char not supported */
+  if (c != (char) c)
+    return NULL;
+  char p[2] = { c, 0 };
+#endif
+  return strdup (p);
+}
+
+static int
+sv_echo_substition (const char *value)
+{
+  /* discard previous value, if any */
+  if (_rl_echo_subst_str)
+    free (_rl_echo_subst_str);
+
+  _rl_echo_subst_str = NULL;
+  _rl_echo_subst_len = 0;
+  _rl_echo_subst_mode = ESM_NO_ECHO;
+
+  if (value == NULL || ! *value || ! strcmp (value, "none"))
+    return 0;
+
+  if (! strcmp (value, "R+"))
+    {
+#if defined NO_RANDOMIZE_ECHO_SUBST
+      return -1;
+#else
+      _rl_echo_subst_mode = ESM_RANDOM_ASCII;
+      return 0;
+#endif
+    }
+
+  if (! strncmp (value, "S+", 2))
+    {
+      /* Empty sequence not allowed */
+      if (! value[2])
+	return -1;
+
+      /* Only allow single-byte ASCII */
+      for (char *q = value+2, c; c = *q; ++q)
+	if (! isascii (c) || CTRL_CHAR (c) || c == RUBOUT)
+	  return -1;
+
+      _rl_echo_subst_str = strdup (value);
+      _rl_echo_subst_mode = ESM_SEQUENCE;
+      return 0;
+    }
+
+  if (_rl_utf8locale && value[0] == 'U' && value[1] == '+')
+    {
+      /* accept “U+xxxx” */
+      char *ep;
+      unsigned long nval = strtoul (value+2, &ep, 16);
+      if (*ep)
+	return -1;
+      char const *res = _rl_codepoint_to_utf8 (nval);
+      if (! res)
+	return -1;
+      _rl_echo_subst_str = res;
+    }
+  else if (isupper (value[0]) && value[1] == '+')
+    /* All words of the form UPPERLETTER "+" are reserved for future use */
+    return -1;
+  else
+    _rl_echo_subst_str = strdup (value);
+
+  if (_rl_echo_subst_str)
+    {
+      _rl_echo_subst_len = strlen (_rl_echo_subst_str);
+      _rl_echo_subst_mode = ESM_ONE;
+    }
+  return 0;
+}
+
+static char const *
+gv_echo_substition (str_var_def_t const *)
+{
+  switch (_rl_echo_subst_mode)
+    {
+      case ESM_SEQUENCE:
+	return _rl_echo_subst_str;
+
+      case ESM_RANDOM_ASCII:
+	return "R+";
+
+      case ESM_ONE:
+	return _rl_echo_subst_str;
+
+      case ESM_NO_ECHO: return "none";
+
+      default:
+	return "*BROKEN*";
+    }
 }
 
 static int
@@ -2927,6 +3058,11 @@ _rl_get_string_variable_value (str_var_def_t const *var)
 {
   static char numbuf[64];	/* more than enough for INTMAX_MAX */
   char *ret;
+
+  _rl_gv_func_t *get_func = var->get_func;
+
+  if (get_func)
+    return get_func (var);
 
   char const *name = var->name;
   if (_rl_stricmp (name, "active-region-start-color") == 0)

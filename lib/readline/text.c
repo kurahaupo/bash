@@ -1167,7 +1167,7 @@ rl_newline (int count, int key)
   if (rl_erase_empty_line && rl_point == 0 && rl_end == 0)
     return 0;
 
-  if (_rl_echoing_p)
+  if (_rl_echoing_p || _rl_echo_subst_mode)
     _rl_update_final ();
   return 0;
 }
