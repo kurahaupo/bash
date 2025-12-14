@@ -822,9 +822,18 @@ rl_redisplay (void)
   mbstate_t ps;
   int _rl_wrapped_multicolumn = 0;
 #endif
+  esm_t echo_subst_mode = _rl_echo_subst_mode;
 
-  if (_rl_echoing_p == 0)
-    return;
+  if (! _rl_echoing_p)
+    {
+      if (_rl_echo_subst_str && ! *_rl_echo_subst_str &&
+	  _rl_echo_subst_mode != ESM_RANDOM_ASCII)
+	_rl_echo_subst_mode = ESM_NO_ECHO;
+      if (_rl_echo_subst_mode == ESM_NO_ECHO)
+	return;
+    }
+  else
+    echo_subst_mode = ESM_NORMAL;
 
   RL_SETSTATE (RL_STATE_REDISPLAYING);
   /* Block keyboard interrupts because this function manipulates global
@@ -1101,11 +1110,43 @@ rl_redisplay (void)
 	  lb_linenum = newlines;
 	}
 
+      if (echo_subst_mode == ESM_SEQUENCE)
+	{
+	  /* Repeating fixed sequence of single-byte characters */
+	  static char const *seq;
+	  if (in == 0 || !seq || !*seq)
+	    seq = _rl_echo_subst_str + 8; /* skip leading ":repeat=" */
+	  char c = *seq++;
+	  invis_addc (&out, c, cur_face);
+	  CHECK_LPOS();
+	}
+      else if (echo_subst_mode == ESM_RANDOM_ASCII)
+	{
+	  /* Random printable ASCII */
+	  char c = rand() % ('~' - '!' + 1) + '!';
+	  if (! isgraph (c))
+            /*NOTREACHED*/
+	    c = '#';
+	  invis_addc (&out, c, cur_face);
+	  CHECK_LPOS();
+	}
+      else if (echo_subst_mode == ESM_ONE && _rl_echo_subst_len > 0)
+	{
+	  invis_adds (&out, _rl_echo_subst_str, _rl_echo_subst_len, cur_face);
+	  for (int i = 0; i < _rl_echo_subst_len; i++)
+	    CHECK_LPOS();
+	}
+      else if (echo_subst_mode)
+	{
+	  /* fall-back; should be reached, but do something sensible anyway */
+	  invis_addc (&out, '*', cur_face);
+	  CHECK_LPOS();
+	}
+      else if (META_CHAR (c)
 #if defined (HANDLE_MULTIBYTE)
-      if (META_CHAR (c) && wc_bytes == 1 && wc_width == 1)
-#else
-      if (META_CHAR (c))
+	  && wc_bytes == 1 && wc_width == 1
 #endif
+      )
 	{
 #if 0
 	  /* TAG: readline-8.4 20230227 */
@@ -3539,7 +3580,7 @@ _rl_redisplay_after_sigwinch (void)
 void
 _rl_clean_up_for_exit (void)
 {
-  if (_rl_echoing_p)
+  if (_rl_echoing_p || _rl_echo_subst_mode)
     {
       if (_rl_vis_botlin > 0)	/* minor optimization plus bug fix */
 	_rl_move_vert (_rl_vis_botlin);
