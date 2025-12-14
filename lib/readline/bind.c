@@ -1277,8 +1277,6 @@ static size_t if_stack_size;
 static int
 parser_if (char *args)
 {
-  int i, llen;
-
   bool_var_def_t const *boolvar;
   str_var_def_t const *strvar;
 
@@ -1297,10 +1295,11 @@ parser_if (char *args)
   if (_rl_parsing_conditionalized_out)
     return 0;
 
-  llen = strlen (args);
+  int llen = strlen (args);
 
   /* Isolate first argument. */
-  for (i = 0; args[i] && !whitespace (args[i]); i++);
+  int i = 0;
+  for (; args[i] && !whitespace (args[i]); i++);
 
   if (args[i])
     args[i++] = '\0';
@@ -1430,13 +1429,11 @@ parser_if (char *args)
   else if ((boolvar = find_boolean_var (args)) != NULL || (strvar = find_string_var (args)) != NULL)
     {
       int op, previ;
-      size_t vlen;
-      const char *vname;
       char *valuearg, *vval, prevc;
 
       _rl_parsing_conditionalized_out = 1;
-      vname = boolvar ? boolvar->name : strvar->name;
-      vlen = strlen (vname);
+      char const *const vname = boolvar ? boolvar->name : strvar->name;
+      size_t const vlen = strlen (vname);
       if (i > 0 && i <= llen && args[i-1] == '\0')
         args[i-1] = ' ';
       args[llen] = '\0';		/* just in case */
@@ -1719,7 +1716,7 @@ rl_parse_and_bind (char *string)
 	  /* Allow quoted strings in variable values */
 	  if (*value == '"')
 	    {
-	      i = _rl_skip_to_delim (value, 1, *value);
+	      int i = _rl_skip_to_delim (value, 1, *value);
 	      value[i] = '\0';
 	      value++;	/* skip past the quote */
 	    }
