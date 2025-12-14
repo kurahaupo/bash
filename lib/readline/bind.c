@@ -1901,8 +1901,13 @@ rl_parse_and_bind (char *string)
    have one of two values; either "On" or 1 for truth, or "Off" or 0 for
    false. */
 
-#define V_SPECIAL	0x1
-#define V_DEPRECATED	0x02
+#define V_SPECIAL	0x07
+#define V_BLINK_MATCH	0x04
+#define V_VISUAL_BELL	0x05
+#define V_SHOW_MODE	0x06
+#define V_BRACKET_PASTE	0x07
+
+#define V_DEPRECATED	0x08
 
 static _rl_bsv_func_t sv_echo_substition_auto;
 static _rl_bgv_func_t gv_echo_substition_none;
@@ -1914,7 +1919,7 @@ static _rl_bsv_func_t sv_echo_substition_rand;
 
 static const bool_var_def_t boolean_varlist [] = {
   { "bind-tty-special-chars",	&_rl_bind_stty_chars,		0 },
-  { "blink-matching-paren",	&rl_blink_matching_paren,	V_SPECIAL },
+  { "blink-matching-paren",	&rl_blink_matching_paren,	V_BLINK_MATCH },
   { "byte-oriented",		&rl_byte_oriented,		0 },
 #if defined (COLOR_SUPPORT)
   { "colored-completion-prefix",&_rl_colored_completion_prefix,	0 },
@@ -1931,7 +1936,7 @@ static const bool_var_def_t boolean_varlist [] = {
   { "echo-substitution-random",	NULL,				0, sv_echo_substition_rand, gv_echo_substition_rand },
 #endif
   { "enable-active-region",	&_rl_enable_active_region,	0 },
-  { "enable-bracketed-paste",	&_rl_enable_bracketed_paste,	V_SPECIAL },
+  { "enable-bracketed-paste",	&_rl_enable_bracketed_paste,	V_BRACKET_PASTE },
   { "enable-keypad",		&_rl_enable_keypad,		0 },
   { "enable-meta-key",		&_rl_enable_meta,		0 },
   { "expand-tilde",		&rl_complete_with_tilde_expansion, 0 },
@@ -1947,13 +1952,13 @@ static const bool_var_def_t boolean_varlist [] = {
   { "meta-flag",		&_rl_meta_flag,			0 },
   { "output-meta",		&_rl_output_meta_chars,		0 },
   { "page-completions",		&_rl_page_completions,		0 },
-  { "prefer-visible-bell",	&_rl_prefer_visible_bell,	V_SPECIAL },
+  { "prefer-visible-bell",	&_rl_prefer_visible_bell,	V_VISUAL_BELL },
   { "print-completions-horizontally", &_rl_print_completions_horizontally, 0 },
   { "revert-all-at-newline",	&_rl_revert_all_at_newline,	0 },
   { "search-ignore-case",	&_rl_search_case_fold,		0 },
   { "show-all-if-ambiguous",	&_rl_complete_show_all,		0 },
   { "show-all-if-unmodified",	&_rl_complete_show_unmodified,	0 },
-  { "show-mode-in-prompt",	&_rl_show_mode_in_prompt,	V_SPECIAL },
+  { "show-mode-in-prompt",	&_rl_show_mode_in_prompt,	0 /* TODO: use V_SHOW_MODE */ },
   { "skip-completed-text",	&_rl_skip_completed_text,	0 },
 #if defined (VISIBLE_STATS)
   { "visible-stats",		&rl_visible_stats,		0 },
@@ -1976,23 +1981,28 @@ find_boolean_var (const char *name)
 static void
 hack_special_boolean_var (bool_var_def_t const *var)
 {
-  const char *name;
-
-  name = var->name;
-
-  if (_rl_stricmp (name, "blink-matching-paren") == 0)
-    _rl_enable_paren_matching (rl_blink_matching_paren);
-  else if (_rl_stricmp (name, "prefer-visible-bell") == 0)
+  switch (var->flags & V_SPECIAL)
     {
-      if (_rl_prefer_visible_bell)
-	_rl_bell_preference = VISIBLE_BELL;
-      else
-	_rl_bell_preference = AUDIBLE_BELL;
+      case V_BLINK_MATCH:
+	_rl_enable_paren_matching (rl_blink_matching_paren);
+	break;
+      case V_VISUAL_BELL:
+	_rl_bell_preference = _rl_prefer_visible_bell
+			      ? VISIBLE_BELL
+			      : AUDIBLE_BELL;
+	break;
+      case V_SHOW_MODE:
+	_rl_reset_prompt ();
+	break;
+      case V_BRACKET_PASTE:
+	_rl_enable_active_region = _rl_enable_bracketed_paste;
+	break;
+      case 0: /* nothing special */
+	break;
+      default:
+	/*NOTREACHED*/
+	;
     }
-  else if (_rl_stricmp (name, "show-mode-in-prompt") == 0)
-    _rl_reset_prompt ();
-  else if (_rl_stricmp (name, "enable-bracketed-paste") == 0)
-    _rl_enable_active_region = _rl_enable_bracketed_paste;
 }
 
 /* These *must* correspond to the array indices for the appropriate
