@@ -111,7 +111,7 @@ main (int argc, char **argv)
 	  fd = atoi(optarg);
 	  if (fd < 0)
 	    {
-	      fprintf (stderr, "%s: bad file descriptor `%s'\n", progname, optarg);
+	      fprintf (stderr, "%s: bad file descriptor '%s'\n", progname, optarg);
 	      exit (2);
 	    }
 	  break;
@@ -122,7 +122,7 @@ main (int argc, char **argv)
 	  nch = atoi(optarg);
 	  if (nch < 0)
 	    {
-	      fprintf (stderr, "%s: bad value for -n: `%s'\n", progname, optarg);
+	      fprintf (stderr, "%s: bad value for -n: '%s'\n", progname, optarg);
 	      exit (2);
 	    }
 	  break;

@@ -121,7 +121,7 @@ main (int argc, char **argv)
 	    }
 	  else
 	    {
-	      fprintf (stderr, "non-numeric arg given to `delete'\n");
+	      fprintf (stderr, "non-numeric arg given to 'delete'\n");
 	    }
 	}
     }

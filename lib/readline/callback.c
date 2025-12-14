@@ -73,7 +73,7 @@ int rl_persistent_signal_handlers = 0;
    text read in at each end of line.  The terminal is kept prepped
    all the time, except during calls to the user's function.  Signal
    handlers are only installed when the application calls back into
-   readline, so readline doesn't `steal' signals from the application.  */
+   readline, so readline doesn't ‘steal’ signals from the application.  */
 
 rl_vcpfunc_t *rl_linefunc;		/* user callback function */
 static int in_handler;		/* terminal_prepped and signals set? */

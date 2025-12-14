@@ -93,9 +93,9 @@ COMMAND commands[] = {
   { "cd", com_cd, "Change to directory DIR" },
   { "delete", com_delete, "Delete FILE" },
   { "help", com_help, "Display this text" },
-  { "?", com_help, "Synonym for `help'" },
+  { "?", com_help, "Synonym for 'help'" },
   { "list", com_list, "List files in DIR" },
-  { "ls", com_list, "Synonym for `list'" },
+  { "ls", com_list, "Synonym for 'list'" },
   { "pwd", com_pwd, "Print the current working directory" },
   { "quit", com_quit, "Quit using Fileman" },
   { "rename", com_rename, "Rename FILE to NEWNAME" },
@@ -331,7 +331,7 @@ com_stat (char *arg)
       return (1);
     }
 
-  printf ("Statistics for `%s':\n", arg);
+  printf ("Statistics for '%s':\n", arg);
 
   printf ("%s has %d link%s, and is %lu byte%s in length.\n",
 	  arg,
@@ -371,7 +371,7 @@ com_help (char *arg)
 
   if (!printed)
     {
-      printf ("No commands match `%s'.  Possibilities are:\n", arg);
+      printf ("No commands match '%s'.  Possibilities are:\n", arg);
 
       for (i = 0; commands[i].name; i++)
         {

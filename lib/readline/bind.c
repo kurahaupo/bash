@@ -1359,21 +1359,21 @@ parser_if (char *args)
 	;
       if (OPSTART(args[i]) == 0)
 	{
-	  _rl_init_file_error ("comparison operator expected, found `%s'", args[i] ? args + i : "end-of-line");
+	  _rl_init_file_error ("comparison operator expected, found '%s'", args[i] ? args + i : "end-of-line");
 	  return 0;
 	}
       previ = i;
       op = parse_comparison_op (args, &i);
       if (op <= 0)
 	{
-	  _rl_init_file_error ("comparison operator expected, found `%s'", args+previ);
+	  _rl_init_file_error ("comparison operator expected, found '%s'", args+previ);
 	  return 0;
 	}
       for ( ; args[i] && whitespace (args[i]); i++)
 	;
       if (args[i] == 0 || _rl_digit_p (args[i]) == 0)
 	{
-	  _rl_init_file_error ("numeric argument expected, found `%s'", args+i);
+	  _rl_init_file_error ("numeric argument expected, found '%s'", args+i);
 	  return 0;
 	}
       major = minor = 0;
@@ -1384,7 +1384,7 @@ parser_if (char *args)
 	{
 	  if (args[i + 1] && _rl_digit_p (args [i + 1]) == 0)
 	    {
-	      _rl_init_file_error ("numeric argument expected, found `%s'", args+previ);
+	      _rl_init_file_error ("numeric argument expected, found '%s'", args+previ);
 	      return 0;
 	    }
 	  for (++i; args[i] && _rl_digit_p (args[i]); i++)
@@ -1397,7 +1397,7 @@ parser_if (char *args)
 	;
       if (args[i] && args[i] != '#')
 	{
-	  _rl_init_file_error ("trailing garbage on line: `%s'", args+previ);
+	  _rl_init_file_error ("trailing garbage on line: '%s'", args+previ);
 	  return 0;
 	}
       versionarg = major*10 + minor;
@@ -1446,21 +1446,21 @@ parser_if (char *args)
 	;
       if (CMPSTART(args[i]) == 0)
 	{
-	  _rl_init_file_error ("equality comparison operator expected, found `%s'", args[i] ? args + i : "end-of-line");
+	  _rl_init_file_error ("equality comparison operator expected, found '%s'", args[i] ? args + i : "end-of-line");
 	  return 0;
 	}
       previ = i;
       op = parse_comparison_op (args, &i);
       if (op != OP_EQ && op != OP_NE)
 	{
-	  _rl_init_file_error ("equality comparison operator expected, found `%s'", args+previ);
+	  _rl_init_file_error ("equality comparison operator expected, found '%s'", args+previ);
 	  return 0;
 	}
       for ( ; args[i] && whitespace (args[i]); i++)
 	;
       if (args[i] == 0)
 	{
-	  _rl_init_file_error ("argument expected, found `%s'", args+i);
+	  _rl_init_file_error ("argument expected, found '%s'", args+i);
 	  return 0;
 	}
       previ = i;
@@ -1663,7 +1663,7 @@ rl_parse_and_bind (char *string)
       /* If we didn't find a closing quote, abort the line. */
       if (string[i] == '\0')
         {
-          _rl_init_file_error ("%s: no closing `\"' in key binding", string);
+          _rl_init_file_error ("%s: no closing '\"' in key binding", string);
           return 1;
         }
       else
@@ -1675,7 +1675,7 @@ rl_parse_and_bind (char *string)
 
   if (i == 0)
     {
-      _rl_init_file_error ("`%s': invalid key binding: missing key sequence", string);
+      _rl_init_file_error ("'%s': invalid key binding: missing key sequence", string);
       return 1;
     }
 
@@ -1769,7 +1769,7 @@ rl_parse_and_bind (char *string)
 	i++;
       else
 	{
-	  _rl_init_file_error ("`%s': missing closing quote for macro", funname);
+	  _rl_init_file_error ("'%s': missing closing quote for macro", funname);
 	  return 1;
 	}
     }
@@ -2124,7 +2124,7 @@ rl_variable_bind (const char *name, const char *value)
 
       int r = svar->set_func (value);	/* TODO: pass var def to each setfunc */
       if (r != 0)
-	_rl_init_file_error ("%s: could not set value to `%s'", name, value);
+	_rl_init_file_error ("%s: could not set value to '%s'", name, value);
       return r;
     }
 
@@ -3259,7 +3259,7 @@ rl_variable_dumper (int print_readably)
 	fprintf (rl_outstream, "set %s %s\n", var->name,
 			       x ? "on" : "off");
       else
-	fprintf (rl_outstream, "%s is set to `%s'\n", var->name,
+	fprintf (rl_outstream, "%s is set to '%s'\n", var->name,
 			       x ? "on" : "off");
     }
 
@@ -3271,7 +3271,7 @@ rl_variable_dumper (int print_readably)
       if (print_readably)
         fprintf (rl_outstream, "set %s %s\n", var->name, v);
       else
-        fprintf (rl_outstream, "%s is set to `%s'\n", var->name, v);
+        fprintf (rl_outstream, "%s is set to '%s'\n", var->name, v);
     }
 }
 
