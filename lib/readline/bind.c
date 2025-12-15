@@ -1958,7 +1958,7 @@ static const bool_var_def_t boolean_varlist [] = {
   { "search-ignore-case",	&_rl_search_case_fold,		0 },
   { "show-all-if-ambiguous",	&_rl_complete_show_all,		0 },
   { "show-all-if-unmodified",	&_rl_complete_show_unmodified,	0 },
-  { "show-mode-in-prompt",	&_rl_show_mode_in_prompt,	0 /* TODO: use V_SHOW_MODE */ },
+  { "show-mode-in-prompt",	&_rl_show_mode_in_prompt,	V_SHOW_MODE },
   { "skip-completed-text",	&_rl_skip_completed_text,	0 },
 #if defined (VISIBLE_STATS)
   { "visible-stats",		&rl_visible_stats,		0 },
