@@ -1,6 +1,6 @@
 /* util.c -- readline utility functions */
 
-/* Copyright (C) 1987-2017 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
    for reading lines of text with interactive input and history editing.      
@@ -292,7 +292,7 @@ _rl_strpbrk (const char *string1, const char *string2)
   register const char *scan;
 #if defined (HANDLE_MULTIBYTE)
   mbstate_t ps;
-  register int i, v;
+  int v;
 
   memset (&ps, 0, sizeof (mbstate_t));
 #endif

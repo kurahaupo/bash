@@ -1,7 +1,7 @@
 This file is read.def, from which is created read.c.
 It implements the builtin "read" in Bash.
 
-Copyright (C) 1987-2024 Free Software Foundation, Inc.
+Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -216,6 +216,28 @@ uw_reset_rl_instream (void *fp)
 }
 #endif
 
+/* Check whether there is input on FD after setting the terminal settings to
+   what they would be if the read was actually performed. */
+static int
+check_read_input (int fd, int change_term)
+{
+  TTYSTRUCT ttattrs, ttset;
+  int r;
+
+  if (change_term)
+    {
+      ttgetattr (fd, &ttattrs);
+      ttset = ttattrs;
+      r = ttfd_onechar (fd, &ttset);
+      if (r < 0)
+	sh_ttyerror (1);
+    }
+  r = input_avail (fd);
+  if (change_term)
+    ttsetattr (fd, &ttattrs);
+  return r;
+}
+
 /* Read the value of the shell variables whose names follow.
    The reading is done from the current input stream, whatever
    that may be.  Successive words of the input line are assigned
@@ -300,7 +322,8 @@ read_builtin (WORD_LIST *list)
 
   mb_cur_max = MB_CUR_MAX;
   tmsec = tmusec = 0;		/* no timeout */
-  nr = nchars = input_is_tty = input_is_pipe = unbuffered_read = have_timeout = 0;
+  nr = nchars = input_is_pipe = unbuffered_read = have_timeout = 0;
+  input_is_tty = -1;	/* not checked yet */
   delim = '\n';		/* read until newline */
   ignore_delim = nflag = 0;
 
@@ -395,7 +418,12 @@ read_builtin (WORD_LIST *list)
   /* `read -t 0 var' tests whether input is available with select/FIONREAD,
      and fails if those are unavailable */
   if (have_timeout && tmsec == 0 && tmusec == 0)
-    return (input_avail (fd) ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
+    {
+      int ct;		/* change terminal settings */
+
+      ct = (nflag || delim != '\n') && isatty (fd);
+      return (check_read_input (fd, ct) ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
+    }
 
   /* Convenience: check early whether or not the first of possibly several
      variable names is a valid identifier, and bail early if so. */
@@ -477,6 +505,7 @@ read_builtin (WORD_LIST *list)
 #else
   input_is_tty = 1;
 #endif
+
   if (input_is_tty == 0)
 #ifndef __CYGWIN__
     input_is_pipe = fd_ispipe (fd);
@@ -538,7 +567,8 @@ read_builtin (WORD_LIST *list)
 	     so we have to save input_string temporarily, run the unwind-
 	     protects, then restore input_string so we can use it later */
 	  orig_input_string = 0;
-	  input_string[i] = '\0';	/* make sure it's terminated */
+	  if (i >= 0)
+	    input_string[i] = '\0';	/* make sure it's terminated */
 	  if (i == 0)
 	    {
 	      t = (char *)xmalloc (1);
@@ -592,8 +622,7 @@ read_builtin (WORD_LIST *list)
 	  termsave.attrs = ttattrs;
 
 	  ttset = ttattrs;	  
-	  i = silent ? ttfd_cbreak (fd, &ttset) : ttfd_onechar (fd, &ttset);
-	  if (i < 0)
+	  if ((silent ? ttfd_cbreak (fd, &ttset) : ttfd_onechar (fd, &ttset)) < 0)
 	    sh_ttyerror (1);
 	  tty_modified = 1;
 	  add_unwind_protect (uw_ttyrestore, &termsave);
@@ -609,8 +638,7 @@ read_builtin (WORD_LIST *list)
       termsave.attrs = ttattrs;
 
       ttset = ttattrs;
-      i = ttfd_noecho (fd, &ttset);			/* ttnoecho (); */
-      if (i < 0)
+      if (ttfd_noecho (fd, &ttset) < 0)
 	sh_ttyerror (1);
 
       tty_modified = 1;
@@ -788,8 +816,11 @@ read_builtin (WORD_LIST *list)
 	  char *x;
 	  x = (char *)xrealloc (input_string, size += 128);
 
-	  /* Only need to change unwind-protect if input_string changes */
+#if 0
+	  /* This is, in theory, undefined behavior, since input_string may
+	     have been freed. */
 	  if (x != input_string)
+#endif
 	    {
 	      input_string = x;
 	      remove_unwind_protect ();
@@ -910,7 +941,7 @@ add_char:
       run_unwind_frame ("read_builtin");
       if (free_ifs)
 	free (ifs_chars);
-      return ((t_errno != EINTR) ? EXECUTION_FAILURE : 128+lastsig);
+      return ((t_errno != EINTR) ? EX_MISCERROR : 128+lastsig);
     }
 
   if (tmsec > 0 || tmusec > 0)
@@ -1159,7 +1190,7 @@ static int
 read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 {
   char mbchar[MB_LEN_MAX + 1];
-  int i, n, r;
+  int i, n, r, delim_ind;
   char c;
   size_t ret;
   mbstate_t ps, ps_back;
@@ -1167,7 +1198,8 @@ read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 
   memset (&ps, '\0', sizeof (mbstate_t));
   memset (&ps_back, '\0', sizeof (mbstate_t));
-  
+
+  delim_ind = 0;
   mbchar[0] = ch;
   i = 1;
   for (n = 0; n <= MB_LEN_MAX; n++)
@@ -1187,19 +1219,24 @@ read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 	    r = zreadc (fd, &c);
 	  if (r <= 0)
 	    goto mbchar_return;
+	  if ((unsigned char)c == delim)
+	    delim_ind = i;
 	  mbchar[i++] = c;	
 	  continue;
 	}
       else if (ret == (size_t)-1)
 	{
-	  /* If we read a delimiter character that makes this an invalid
-	     multibyte character, we can't just add it to the input string
-	     and treat it as a byte. We need to push it back so a subsequent
-	     zread will pick it up. */
-	  if ((unsigned char)c == delim)
+	  /* If we read (i > 1) a delimiter character (delim_ind >= 1)
+	     that is a part of this invalid multibyte character, we can't
+	     just add it to the input string and treat it as a byte.
+	     We need to push it and everything we read after it back so a
+	     subsequent zread will pick it up. */
+	  if (i > 1 && delim_ind >= 1)
 	    {
-	      zungetc ((unsigned char)c);
-	      mbchar[--i] = '\0';		/* unget the delimiter */
+	      size_t j;
+	      for (j = delim_ind; j < i; j++)
+		zungetc ((unsigned char)mbchar[j]);
+	      i = delim_ind;
 	    }
 	  break;		/* invalid multibyte character */
 	}
