@@ -1,6 +1,6 @@
 /* evalstring.c - evaluate a string as one or more shell commands. */
 
-/* Copyright (C) 1996-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -341,10 +341,10 @@ parse_and_execute (char *string, const char *from_file, int flags)
   if (parser_expanding_alias ())
     /* push current shell_input_line */
     parser_save_alias ();
-  
+
   if (lreset == 0)
     line_number--;
-    
+
   indirection_level++;
 
   code = should_jump_to_top_level = 0;
@@ -425,7 +425,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 		run_unwind_frame ("pe_dispose");
 	      last_result = last_command_exit_value = EXECUTION_FAILURE; /* XXX */
 	      set_pipestatus_from_exit (last_command_exit_value);
-	      
+
 	      if (subshell_environment)
 		{
 		  should_jump_to_top_level = 1;
@@ -698,7 +698,7 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 	      break;
 	    }
 	}
-	  
+
       if (parse_command () == 0)
 	{
 	  if (cmdp)
@@ -725,7 +725,8 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 
       if (current_token == yacc_EOF || current_token == shell_eof_token)
 	{
-	  if (current_token == shell_eof_token)
+	  /* check for EOFTOKEN out of paranoia */
+	  if ((parser_state & PST_EOFTOKEN) && (current_token == shell_eof_token))
 	    rewind_input_string ();
 	  break;
 	}
@@ -744,10 +745,10 @@ out:
      us, after doing cleanup */
   if (should_jump_to_top_level)
     {
-      if (parse_and_execute_level == 0)
-	top_level_cleanup ();
       if (code == DISCARD)
 	return -DISCARD;
+      if (parse_and_execute_level == 0)
+	top_level_cleanup ();
       jump_to_top_level (code);
     }
 
@@ -860,6 +861,6 @@ evalstring (char *string, const char *from_file, int flags)
 	  sh_longjmp (return_catch, 1);
 	}
     }
-    
+
   return (r);
 }

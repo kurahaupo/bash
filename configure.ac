@@ -5,7 +5,7 @@ dnl report bugs to chet.ramey@case.edu
 dnl
 dnl Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 1987-2024 Free Software Foundation, Inc.
+# Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ dnl Process this file with autoconf to produce a configure script.
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_REVISION([for Bash 5.3, version 5.074])dnl
+AC_REVISION([for Bash 5.3, version 5.082])dnl
 
 define(bashvers, 5.3)
-define(relstatus, beta)
+define(relstatus, maint)
 
 AC_INIT([bash], bashvers-relstatus, [bug-bash@gnu.org])
 
@@ -32,7 +32,7 @@ dnl make sure we are using a recent autoconf version
 AC_PREREQ(2.69)
 
 AC_CONFIG_SRCDIR(shell.h)
-dnl where to find install.sh, config.sub, and config.guess
+dnl where to find install-sh, config.sub, and config.guess
 AC_CONFIG_AUX_DIR(./support)
 AC_CONFIG_HEADERS(config.h buildconf.h)
 
@@ -137,7 +137,7 @@ if test "$opt_afs" = yes; then
 	AC_DEFINE(AFS)
 fi
 
-if test "$opt_curses" = yes; then
+if test "$opt_curses" != "no" ; then
 	prefer_curses=yes
 fi
 
@@ -588,7 +588,7 @@ then
 	RL_LIB_READLINE_VERSION
 
 	case "$ac_cv_rl_version" in
-	8*|9*)	;;
+	8.3*|9*)	;;
 	*)	opt_with_installed_readline=no 
 		AC_MSG_WARN([installed readline library is too old to be linked with bash])
 		AC_MSG_WARN([using private bash version])
@@ -695,6 +695,9 @@ AC_PROG_RANLIB
 AC_PROG_YACC
 AC_PROG_MAKE_SET
 
+AM_PROG_INSTALL_SH
+AM_PROG_INSTALL_STRIP
+
 case "$ac_cv_prog_YACC" in
 *bison*)	;;
 *)	AC_MSG_WARN([bison not available; needed to process parse.y]) ;;
@@ -778,6 +781,7 @@ m4_include([m4/glibc21.m4])
 m4_include([m4/host-cpu-c-abi.m4])
 
 m4_include([m4/c-bool.m4])
+m4_include([m4/d-type.m4])
 
 dnl C compiler characteristics
 AC_C_CONST
@@ -873,7 +877,8 @@ AC_CHECK_FUNCS(dup2 eaccess fcntl getdtablesize getentropy getgroups \
 		gethostname getpagesize getpeername getrandom getrlimit \
 		getrusage gettimeofday kill killpg lstat nanosleep \
 		pselect readlink \
-		select setdtablesize setitimer tcgetpgrp uname ulimit waitpid)
+		select setdtablesize setitimer statfs \
+		tcgetpgrp uname ulimit waitpid)
 AC_REPLACE_FUNCS(rename)
 
 dnl checks for c library functions
@@ -897,7 +902,6 @@ AC_REPLACE_FUNCS(getcwd memset)
 AC_REPLACE_FUNCS(strcasecmp strcasestr strerror strftime strnlen strpbrk strstr)
 AC_REPLACE_FUNCS(strtod strtol strtoul strtoll strtoull strtoumax)
 AC_REPLACE_FUNCS(dprintf)
-AC_REPLACE_FUNCS(strchrnul)
 AC_REPLACE_FUNCS(strdup)
 AC_REPLACE_FUNCS(strlcpy)
 AC_REPLACE_FUNCS(reallocarray)
@@ -1048,6 +1052,8 @@ if test "$ac_cv_func_lstat" = "no"; then
 BASH_FUNC_LSTAT
 fi
 
+BASH_FUNC_STRCHRNUL
+
 dnl behavior of system calls and library functions
 BASH_FUNC_DUP2_CLOEXEC_CHECK
 BASH_SYS_PGRP_SYNC
@@ -1079,6 +1085,7 @@ BASH_STRUCT_TERMIO_LDISC
 BASH_STRUCT_DIRENT_D_INO
 BASH_STRUCT_DIRENT_D_FILENO
 BASH_STRUCT_DIRENT_D_NAMLEN
+gl_CHECK_TYPE_STRUCT_DIRENT_D_TYPE
 BASH_STRUCT_WINSIZE
 BASH_STRUCT_TIMEVAL
 AC_CHECK_MEMBERS([struct stat.st_blocks])

@@ -160,8 +160,10 @@ file_error_and_exit:
       nr = read (fd, string, file_size);
       if (nr >= 0)
 	string[nr] = '\0';
+#if 0
       if (nr != file_size)
 	nr = -1;		/* XXX - didn't get the whole file */
+#endif
     }
   else
     nr = zmapfd (fd, &string, 0);
@@ -181,7 +183,7 @@ file_error_and_exit:
       free (string);
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_SUCCESS : 1);
     }
-      
+
   if ((flags & FEVAL_CHECKBINARY) && 
       check_binary_file (string, (nr > 80) ? 80 : nr))
     {

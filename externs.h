@@ -1,7 +1,7 @@
 /* externs.h -- extern function declarations which do not appear in their
    own header file. */
 
-/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -27,7 +27,8 @@
 #include "stdc.h"
 
 /* Functions from expr.c. */
-#define EXP_EXPANDED	0x01
+#define EXP_EXPANDED	0x01	/* already expanded */
+#define EXP_QUOTED	0x02	/* expanded, needs internal quote removal, not used yet */
 
 extern intmax_t evalexp (const char *, int, int *);
 
@@ -308,8 +309,12 @@ extern int getdtablesize (void);
 #endif /* !HAVE_GETDTABLESIZE */
 
 #if !defined (HAVE_GETHOSTNAME)
-extern int gethostname (char *, int);
+extern int gethostname (char *, size_t);
 #endif /* !HAVE_GETHOSTNAME */
+
+#if !defined (HAVE_KILLPG)
+extern int killpg (pid_t, int);
+#endif /* !HAVE_KILLPG */
 
 extern int getmaxgroups (void);
 extern long getmaxchild (void);
@@ -550,7 +555,7 @@ extern int zcatfd (int, int, const char *);
 extern ssize_t zgetline (int, char **, size_t *, int, int);
 
 /* declarations for functions defined in lib/sh/zmapfd.c */
-extern int zmapfd (int, char **, const char *);
+extern ssize_t zmapfd (int, char **, const char *);
 
 /* declarations for functions defined in lib/sh/zread.c */
 extern ssize_t zread (int, char *, size_t);

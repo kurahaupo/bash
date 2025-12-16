@@ -1,6 +1,6 @@
 /* parse.y - Yacc grammar for bash. */
 
-/* Copyright (C) 1989-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -47,7 +47,7 @@
 
 #include "shell.h"
 #include "execute_cmd.h"
-#include "typemax.h"		/* SIZE_MAX if needed */
+#include "typemax.h"		/* PTRDIFF_MAX if needed */
 #include "trap.h"
 #include "flags.h"
 #include "parser.h"
@@ -1473,23 +1473,22 @@ pipeline:	pipeline '|' newline_list pipeline
 	|	pipeline BAR_AND newline_list pipeline
 			{
 			  /* Make cmd1 |& cmd2 equivalent to cmd1 2>&1 | cmd2 */
-			  COMMAND *tc;
 			  REDIRECTEE rd, sd;
-			  REDIRECT *r;
+			  REDIRECT *r, **rp;
 
-			  tc = $1->type == cm_simple ? (COMMAND *)$1->value.Simple : $1;
+			  rp = $1->type == cm_simple ? &$1->value.Simple->redirects : &$1->redirects;
 			  sd.dest = 2;
 			  rd.dest = 1;
 			  r = make_redirection (sd, r_duplicating_output, rd, 0);
-			  if (tc->redirects)
+			  if (*rp)
 			    {
 			      register REDIRECT *t;
-			      for (t = tc->redirects; t->next; t = t->next)
+			      for (t = *rp; t->next; t = t->next)
 				;
 			      t->next = r;
 			    }
 			  else
-			    tc->redirects = r;
+			    *rp = r;
 
 			  $$ = command_connect ($1, $4, '|');
 			}
@@ -1847,9 +1846,9 @@ yy_stream_get (void)
   result = EOF;
   if (bash_input.location.file)
     {
-      /* XXX - don't need terminate_immediately; getc_with_restart checks
+      /* XXX - don't need terminate_immediately; stream_getc checks
 	 for terminating signals itself if read returns < 0 */
-      result = getc_with_restart (bash_input.location.file);
+      result = stream_getc (bash_input.location.file);
     }
   return (result);
 }
@@ -1857,7 +1856,7 @@ yy_stream_get (void)
 static int
 yy_stream_unget (int c)
 {
-  return (ungetc_with_restart (c, bash_input.location.file));
+  return (stream_ungetc (c, bash_input.location.file));
 }
 
 void
@@ -2166,6 +2165,12 @@ parser_restore_alias (void)
 #endif
 }
 
+void
+parser_unset_string_list (void)
+{
+  pushed_string_list = (STRING_SAVER *)NULL;
+}
+
 #if defined (ALIAS)
 /* Before freeing AP, make sure that there aren't any cases of pointer
    aliasing that could cause us to reference freed memory later on. */
@@ -2214,7 +2219,15 @@ read_a_line (int remove_quoted_newline)
       QUIT;
 
       /* If we're reading the here-document from an alias, use shell_getc */
-      c = heredoc_string ? shell_getc (0) : yy_getc ();
+      if (interactive && EOF_Reached && heredoc_string == 0)
+	{
+	  c = EOF;
+	  EOF_Reached = 0;
+	  if (current_token == yacc_EOF)
+	    current_token = '\n';		/* reset state */
+	}
+      else
+	c = heredoc_string ? shell_getc (0) : yy_getc ();
 
       /* Ignore null bytes in input. */
       if (c == 0)
@@ -2451,7 +2464,10 @@ static struct dstack temp_dstack = { (char *)NULL, 0, 0 };
     } \
   while (0)
 
-#define pop_delimiter(ds)	ds.delimiter_depth--
+/* The parsing or expansion code may have called reset_parser() between the
+   time push_delimiter was called and this call to pop_delimiter, which resets
+   delimiter_depth to 0, so we check. */
+#define pop_delimiter(ds) do { if (ds.delimiter_depth > 0) ds.delimiter_depth--; } while (0)
 
 /* Return the next shell input character.  This always reads characters
    from shell_input_line; when that line is exhausted, it is time to
@@ -2484,6 +2500,8 @@ shell_getc (int remove_quoted_newline)
      something on the pushed list of strings, then we don't want to go
      off and get another line.  We let the code down below handle it. */
 
+  /* If we're reading input from the keyboard or from a file, fetch
+     another line from the current source. */
   if (!shell_input_line || ((!shell_input_line[shell_input_line_index]) &&
 			    (pushed_string_list == (STRING_SAVER *)NULL)))
 #else /* !ALIAS && !DPAREN_ARITHMETIC */
@@ -2561,21 +2579,21 @@ shell_getc (int remove_quoted_newline)
 	  /* If we can't put 256 bytes more into the buffer, allocate
 	     everything we can and fill it as full as we can. */
 	  /* XXX - we ignore rest of line using `truncating' flag */
-	  if (shell_input_line_size > (SIZE_MAX - 256))
+	  if (shell_input_line_size > (PTRDIFF_MAX - 256))
 	    {
 	      size_t n;
 
-	      n = SIZE_MAX - i;	/* how much more can we put into the buffer? */
+	      n = PTRDIFF_MAX - i;	/* how much more can we put into the buffer? */
 	      if (n <= 2)	/* we have to save 1 for the newline added below */
 		{
 		  if (truncating == 0)
-		    internal_warning(_("shell_getc: shell_input_line_size (%zu) exceeds SIZE_MAX (%lu): line truncated"), shell_input_line_size, (unsigned long)SIZE_MAX);
+		    internal_warning(_("shell_getc: shell_input_line_size (%zu) exceeds PTRDIFF_MAX (%lu): line truncated"), shell_input_line_size, (unsigned long)PTRDIFF_MAX);
 		  shell_input_line[i] = '\0';
 		  truncating = 1;
 		}
-	      if (shell_input_line_size < SIZE_MAX)
+	      if (shell_input_line_size < PTRDIFF_MAX)
 		{
-		  shell_input_line_size = SIZE_MAX;
+		  shell_input_line_size = PTRDIFF_MAX;
 		  shell_input_line = xrealloc (shell_input_line, shell_input_line_size);
 		}
 	    }
@@ -2717,7 +2735,7 @@ shell_getc (int remove_quoted_newline)
 	 not already end in an EOF character.  */
       if (shell_input_line_terminator != EOF && shell_input_line_terminator != READERR)
 	{
-	  if (shell_input_line_size + 3 < SIZE_MAX && (shell_input_line_len+3 > shell_input_line_size))
+	  if (shell_input_line_size + 3 < PTRDIFF_MAX && (shell_input_line_len+3 > shell_input_line_size))
 	    shell_input_line = (char *)xrealloc (shell_input_line,
 					1 + (shell_input_line_size += 2));
 
@@ -2725,11 +2743,11 @@ shell_getc (int remove_quoted_newline)
 	     going to be removing quoted newlines, since that will eat the
 	     backslash.  Add another backslash instead (will be removed by
 	     word expansion). */
-	  if (bash_input.type == st_string && expanding_alias() == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
+	  if (bash_input.type == st_string && expanding_alias () == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
 	    shell_input_line[shell_input_line_len] = '\\';
-	  else if (bash_input.type == st_bstream && expanding_alias() == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
+	  else if (bash_input.type == st_bstream && expanding_alias () == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
 	    shell_input_line[shell_input_line_len] = '\\';
-	  else if (interactive == 0 && bash_input.type == st_stream && expanding_alias() == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
+	  else if (interactive == 0 && bash_input.type == st_stream && expanding_alias () == 0 && last_was_backslash && c == EOF && remove_quoted_newline)
 	    shell_input_line[shell_input_line_len] = '\\';
 	  else
 	    shell_input_line[shell_input_line_len] = '\n';
@@ -2889,6 +2907,18 @@ pop_alias:
       shell_input_line_index = 0;
       goto restart_read;
     }
+
+#if 0	/*TAG:bash-5.4 wyeth2485@gmail.com 8/15/2025 */
+  /* When we're reading input from a string, we don't increment line_number
+     until now. If we're being called from read_token_word(), this will be
+     pushed back into the input string with shell_ungetc for the next call
+     to read_token() to consume. We don't want to increment line_number
+     twice, so this requires cooperation from shell_ungetc (decrement
+     line_number if we're pushing back a newline while parsing an alias
+     expansion). */
+  if (uc == '\n' && expanding_alias () && pushed_string_list->flags == PSH_ALIAS)
+    line_number++;
+#endif
 #endif
 
   return (uc);
@@ -2906,6 +2936,11 @@ shell_ungetc (int c)
     shell_input_line[--shell_input_line_index] = c;
   else
     eol_ungetc_lookahead = c;
+
+#if 0	/*TAG:bash-5.4 wyeth2485@gmail.com 8/15/2025 */
+  if (c == '\n' && expanding_alias () && heredoc_string == 0 && line_number > 0)
+    line_number--;
+#endif
 }
 
 /* Push S back into shell_input_line; updating shell_input_line_index */
@@ -3003,6 +3038,7 @@ execute_variable_command (const char *command, const char *vname)
   sh_parser_state_t ps;
 
   save_parser_state (&ps);
+  pushed_string_list = (STRING_SAVER *)NULL;
   last_lastarg = save_lastarg ();
 
   parse_and_execute (savestring (command), vname, SEVAL_NONINT|SEVAL_NOHIST|SEVAL_NOOPTIMIZE|SEVAL_NOTIFY);
@@ -3521,6 +3557,8 @@ reset_parser (void)
   expecting_in_command = 0;
 
   simplecmd_lineno = line_number;
+
+  shell_eof_token = 0;		/* no longer parsing command substitution */
 
   current_token = '\n';		/* XXX */
   last_read_token = '\n';
@@ -4446,7 +4484,6 @@ parse_comsub (int qc, int open, int close, size_t *lenp, int flags)
   char *ret, *tcmd;
   size_t retlen;
   sh_parser_state_t ps;
-  STRING_SAVER *saved_strings;
   COMMAND *saved_global, *parsed_command;
 
   /* Posix interp 217 says arithmetic expressions have precedence, so
@@ -4612,9 +4649,7 @@ INTERNAL_DEBUG(("current_token (%d) != shell_eof_token (%c)", current_token, she
   /* We don't want to restore the old pushed string list, since we might have
      used it to consume additional input from an alias while parsing this
      command substitution. */
-  saved_strings = pushed_string_list;
-  restore_parser_state (&ps);
-  pushed_string_list = saved_strings;
+  exec_restore_parser_state (&ps);
 
   simplecmd_lineno = save_lineno;
 
@@ -4983,11 +5018,12 @@ parse_arith_cmd (char **ep, int adddq)
     }
   else				/* nested subshell */
     {
+      shell_ungetc (c);
+
       tokstr[0] = '(';
       strncpy (tokstr + 1, ttok, ttoklen - 1);
       tokstr[ttoklen] = ')';
-      tokstr[ttoklen+1] = c;
-      tokstr[ttoklen+2] = '\0';
+      tokstr[ttoklen+1] = '\0';
     }
 
   *ep = tokstr;
@@ -5523,7 +5559,11 @@ read_token_word (int character)
 	      strcpy (token + token_index, ttok);
 	      token_index += ttoklen;
 	      FREE (ttok);
+#if 0	/*TAG: bash-5.4 kre@munnari.oz.au 6/12/2025 */
 	      dollar_present |= character == '$';
+#else
+	      dollar_present = 1;
+#endif
 	      all_digit_token = 0;
 	      goto next_character;
 	    }
@@ -5990,6 +6030,10 @@ static const int no_semi_successors[] = {
   0
 };
 
+static const int no_semi_predecessors[] = {
+'&', '|', ';', 0
+};
+
 /* If we are not within a delimited expression, try to be smart
    about which separators can be semi-colons and which must be
    newlines.  Returns the string that should be added into the
@@ -5999,6 +6043,7 @@ char *
 history_delimiting_chars (const char *line)
 {
   static int last_was_heredoc = 0;	/* was the last entry the start of a here document? */
+  const char *lp;
   register int i;
 
   if ((parser_state & PST_HEREDOC) == 0)
@@ -6045,6 +6090,9 @@ history_delimiting_chars (const char *line)
   if (parser_state & PST_COMPASSIGN)
     return (" ");
 
+  for (lp = line; *lp && shellblank(*lp); lp++)
+    ;
+
   /* First, handle some special cases. */
   /*(*/
   /* If we just read `()', assume it's a function definition, and don't
@@ -6061,7 +6109,15 @@ history_delimiting_chars (const char *line)
       else if (parser_state & PST_CASESTMT)	/* case statement pattern */
 	return " ";
       else
-	return "; ";				/* (...) subshell */
+	{
+	  /* (...) subshell. Make sure this line doesn't start with an
+	     operator that cannot be preceded by a semicolon. If it can't
+	     (basically the command terminators), return a newline. */
+	  for (i = 0; no_semi_predecessors[i]; i++)
+	    if (*lp == no_semi_predecessors[i])
+	      return "\n";
+	  return "; ";
+	}
     }
   else if (token_before_that == WORD && two_tokens_ago == FUNCTION)
     return " ";		/* function def using `function name' without `()' */
@@ -6510,7 +6566,13 @@ decode_prompt_string (char *string, int is_prompt)
 	    case 'u':
 	      if (current_user.user_name == 0)
 		get_current_user_info ();
-	      temp = savestring (current_user.user_name);
+	      if (promptvars || posixly_correct)
+		/* Make sure that expand_prompt_string is called with a
+		   second argument of Q_DOUBLE_QUOTES if we use this
+		   function here. */
+		temp = sh_backslash_quote_for_double_quotes (current_user.user_name, 0);
+	      else
+		temp = savestring (current_user.user_name);
 	      goto add_string;
 
 	    case 'h':
@@ -7313,6 +7375,20 @@ void
 uw_restore_parser_state (void *ps)
 {
   restore_parser_state (ps);
+}
+
+/* Special version of restore parser state for cases where we called
+   parse_and_execute(), which may have modified the pushed string list
+   out from underneath us. We may need to use this in other places,
+   like running traps while processing aliases. */
+void
+exec_restore_parser_state (sh_parser_state_t *ps)
+{
+  STRING_SAVER *ss;
+
+  ss = pushed_string_list;
+  restore_parser_state (ps);
+  pushed_string_list = ss;
 }
 
 /* Free the parts of a parser state struct that have allocated memory. */

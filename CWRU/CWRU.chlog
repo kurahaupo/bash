@@ -1,4 +1,3 @@
-
 				 12/6/2020
 				 ---------
 
@@ -14,7 +13,8 @@ Makefile.in
 				   -----
 builtins/wait.def
 	- wait_builtin: don't assign the variable given with -p if there are no
-	  jobs to wait for. Report and fix from O�uz <oguzismailuysal@gmail.com>
+	  jobs to wait for.
+	  Report and fix from Oğuz <oguzismailuysal@gmail.com>
 
 arrayfunc.c
 	- kvpair_assignment_p: return non-zero if argument L appears to be a
@@ -29,8 +29,8 @@ arrayfunc.h
 subst.c
 	- expand_oneword: detect whether VALUE appears to be a key-value
 	  pair compound assignment and call the appropriate function to expand
-	  each word in the resulting list. Fixes inconsistency reported by
-	  oguzismailuysal@gmail.com
+	  each word in the resulting list.
+	  Fixes inconsistency reported by oguzismailuysal@gmail.com
 
 				   12/12
 				   -----
@@ -153,8 +153,8 @@ variables.c
 	  array variable that was the value of a nameref (used in the original
 	  assignment), don't call make_variable_value on the value, since that
 	  messes up +=. Just call assign_array_element and let that take care
-	  of calling make_variable_value appropriately. Fixes bug reported by
-	  Oguz <oguzismailuysal@gmail.com>
+	  of calling make_variable_value appropriately.
+	  Fixes bug reported by Oguz <oguzismailuysal@gmail.com>
 
 				   1/14
 				   ----
@@ -207,7 +207,8 @@ Makefile.in
 subst.c
 	- param_expand: if a nameref expands to array[@] or array[*], make sure
 	  to call chk_atstar so the right variables are set to split the
-	  result. Report from Oguz <oguzismailuysal@gmail.com>
+	  result.
+	  Report from Oguz <oguzismailuysal@gmail.com>
 
 				   1/22
 				   ----
@@ -10796,3 +10797,1533 @@ tests/printf7.sub,tests/cond-regexp2.sub
 tests/run-all, tests/run-minimal
 	- BASHOPTS: unset or unexport as appropriate, same as SHELLOPTS
 	  From a report by Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				    1/9
+				    ---
+subst.c
+	- string_extract_verbatim: take into account the fact that CTLESC can
+	  quote multibyte characters; use ADVANCE_CHAR instead of increment
+	  Fixes bug reported by jktseug@gmail.com
+
+				   1/10
+				   ----
+expr.c
+	- expr_bind_variable,expr_streval: suppress additional expansion if
+	  called by the `let' builtin, whether or not array_expand_once is set
+	- expr_skipsubscript: suppress expansion while parsing subscripts
+	  whether array_expand_once is set or not
+	  Still have to change tests if this goes final
+	  These are all conditional on shell_compatibility_level > 51
+	  From a bug-bash post by Greg Wooledge <greg@wooledge.org>
+
+				   1/14
+				   ----
+lib/readline/complete.c
+	- _rl_export_completions: use print_filename instead of fprintf to
+	  display the possible completions so slashes and file types can
+	  be included
+	  From a patch from Matthew Tromp <matthewktromp@gmail.com>
+
+				   1/15
+				   ----
+examples/loadables/fltexpr.c
+	- fltexpr: new loadable builtin to do floating-point arithmetic
+	  expression evaluation and optionally print the result
+
+				   1/16
+				   ----
+builtins/printf.def
+	- getarg(), advancearg(): cosmetic changes to make it easier to
+	  implement %N$ format specifiers in the future
+
+				   1/18
+				   ----
+subst.c
+	- array_length_reference: requesting the length of an element of an
+	  unset variable using array syntax is a fatal error when `set -u'
+	  is enabled and the subscript is not `@' or `*'.
+	  Inspired by a report from Ian Kelling <iank@fsf.org>
+
+				   1/20
+				   ----
+parse.y
+	- decode_prompt_string: since Debian has made the spectaculary bad call
+	  to allow arbitrary characters in usernames, protect the results of
+	  the \u expansion in the same way as \[Ww] and \[Hh] (externally-
+	  controlled data)
+	  From https://savannah.gnu.org/patch/?10496
+
+				   1/21
+				   ----
+eval.c
+	- reader_loop: if we longjmp with ERREXIT, don't reset any local
+	  function contexts in posix mode, since POSIX says to exit as if
+	  executing the `exit builtin with no arguments'. Revision of change
+	  from 7/2022.
+	  From a report by Ivan Shapovalov <intelfx@intelfx.name> in 11/2024
+
+lib/readline/display.c
+	- rl_redisplay: after calling update_line, when putting the cursor
+	  where it needs to be and reprinting part of the line with the
+	  prompt that contains invisible characters, make sure we start to
+	  output characters at the portion in the prompt buffer that begins
+	  on the current line and only offset by the number of invisible
+	  characters on the current line, and set _rl_last_c_pos accordingly
+	  in both multibyte and singlebyte locales.
+	  Fixes bug reported by Andreas Schwab <schwab@linux-m68k.org>
+
+				   1/22
+				   ----
+execute_cmd.c
+	- execute_builtin_or_function: if we're executing the exec builtin,
+	  and there are redirections, let exec_builtin handle disposing of
+	  redirection_undo_list if there is no program name to execute, so
+	  it's still there if exec returns and doesn't exit the shell.
+	  Then we can manage disposing of exec_redirection_undo_list and
+	  letting the redirections be undone as normal.
+	  This is POSIX interp 1896, with modifications from
+	  https://www.austingroupbugs.net/view.php?id=1896#c7037
+
+builtins/exec.def
+	- exec_builtin: dispose of redirection_undo_list and set it to NULL
+	  if there is no program name operand; let execute_builtin_or_function
+	  clean it up
+
+				   1/23
+				   ----
+lib/readline/terminal.c
+	- _rl_tcgetwinsize,_rl_tcsetwinsize: function wrappers for tcgetwinsize/
+	  tcsetwinsize with fallbacks to ioctl if those functions aren't
+	  available
+	- _rl_get_screensize: use _rl_tcgetwinsize
+
+lib/readline/rlwinsize.h
+	- _rl_tcgetwinsize,_rl_tcsetwinsize: extern function declarations
+
+lib/readine/rltty.c
+	- set_winsize: use _rl_tcgetwinsize/_rl_tcsetwinsize
+	- set_winsize: if _rl_tcgetwinsize succeeds, use the values to set
+	  readline's idea of the screen size via _rl_set_screen_size
+	  Inspired by a discussion with Olav Mørkrid <omega@funker.no>
+
+				   1/24
+				   ----
+lib/readline/signals.c
+	- _rl_handling_signal: new private variable, set to the signal we're
+	  currently handling in _rl_signal_handler (SIGWINCH) or
+	  _rl_handle_signal (all others). Only valid if RL_STATE_SIGHANDLER
+	  is set
+
+lib/readline/rlprivate.h
+	- _rl_handling_signal: new extern declaration
+
+lib/readline/rltty.c
+	- set_winsize: only set readline's idea of the screen size if we're
+	  executing in a signal handler context and handling SIGTSTP and the
+	  application has indicated that it doesn't want the environment
+	  variables LINES and COLUMNS to have priority (rl_prefer_env_winsize)
+
+				   1/30
+				   ----
+jobs.c
+	- wait_for_single_pid: if wait_for returns -1/ECHILD, make sure to
+	  return 257 just as if the child was not found, optionally printing
+	  an error message if JWAIT_PERROR is supplied
+	  From a discussion with Ian <saturns_rings@protonmail.com>
+
+				    2/8
+				    ---
+redir.c
+	- do_redirection_internal: keep track of whether the redirector fd
+	  was active with a new variable. Not used yet, should be optimized
+	  out.
+	- add_undo_fd_redirect: new undo function using r_move_input so we
+	  don't need a dup redir and a separate close redir to undo. Not
+	  used yet
+	- do_redirection_internal: only call check_bash_input if we're
+	  creating an undo list and not running one
+
+command.h
+	- OUTPUT_REDIRECT: add r_output_force
+
+input.c
+	- check_bash_input: if we dup the bash input fd to another in
+	  save_bash_input, return that fd. Continue to return -1 on error
+	  and 0 if we don't do anything but sync
+
+execute_cmd.c
+	- execute_null_command: force a subshell if any of the redirections
+	  involve the bash input buffered fd.
+	  From a report by Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   2/10
+				   ----
+
+examples/loadables/chmod.c
+	- chmod: new loadable builtin, inspired by zhixu.liu@gmail.com in
+	  https://savannah.gnu.org/patch/?10499
+
+				   2/11
+				   ----
+builtins/kill.def
+	- kill_builtin: in posix mode, return a failure status if any of the
+	  pid/job arguments are not found or sending the signal fails. This
+	  is consistent with
+	  https://pubs.opengroup.org/onlinepubs/9799919799/utilities/kill.html#tag_20_64_14
+
+				   2/12
+				   ----
+braces.c
+	- brace_gobbler: take a new argument in which to return the type of
+	  brace expansion (comma or sequence) we think we've found; change
+	  all callers
+	- brace_expand: even if we find a BRACE_ARG_SEPARATOR, don't try to
+	  perform expansion if brace_gobbler doesn't think we have a
+	  BRACE_COMMA expansion
+	- valid_seqterm: new function, performs minimal validation on a
+	  sequence expansion, used to skip over invalid sequence expressions
+	  in brace_expand
+	- brace_expand: call valid_seqterm if brace_gobbler finds a BRACE_SEQ
+	  expansion
+	  Inspired by report from Robert Elz <kre@munnari.oz.au>
+
+				   2/13
+				   ----
+doc/bash.1,doc/bashref.texi
+	- clarified the handling of double quotes in EXPRESSION in
+	  (( EXPRESSION )) and $(( EXPRESSION )) to say that only unescaped
+	  double quotes are removed
+
+expr.c
+	- expr_bind_variable,expr_streval: revert change from 1/10 that
+	  suppresses additional expansion when called by the `let' builtin,
+	  tag for possible inclusion in a future release when I can look
+	  at parallel changes to ((...)) and $((...)) (and probably
+	  declare 'a[" "]=12' or similar)
+
+				   2/14
+				   ----
+
+lib/sh/zmapfd.c,externs.h
+	- zmapfd: now returns ssize_t in case of large files when size_t is
+	  larger than int
+
+builtins/evalfile.c,builtins/help.def
+	- zmapfd: changed callers
+
+print_cmd.c
+	- print_redirection: the default file descriptor for <> is 0
+	  Report and fix from Emanuele Torre <torreemanuele6@gmail.com>
+
+				   2/18
+				   ----
+configure.ac
+	- check for d_type member of struct dirent for future use
+
+				   2/24
+				   ----
+doc/bash.1,doc/bashref.texi
+	- document the word expansions performed on indexed array subscripts
+	  and assoc array keys
+	- document the possibility and effect of empty strings on arithmetic
+	  evaluation for substring expansion, arithmetic expansion, operands
+	  to the the [[ command's arithmetic operators, the expression in
+	  the (( compound command, and indexed array subscripts
+
+				   2/24
+				   ----
+execute_cmd.c
+	- execute_command_internal: if executing a (...) subshell, make sure
+	  to update BASH_COMMAND before exiting on an error return from the
+	  subshell with -e set
+	  Report from Max Bowsher <maxbowsher@gmail.com>
+
+				    3/3
+				    ---
+redir.c
+	- here_document_to_fd: if we are trying to use a pipe for a here
+	  document, but the F_GETPIPE_SZ fcntl returns a value shorter than
+	  the here document length, make sure to close the pipe file descriptors
+
+builtins/ulimit.def
+	- pipesize: use pathconf and _PC_PIPE_BUF if available
+
+				    3/8
+				    ---
+braces.c
+	- brace_expand: make sure to call valid_seqterm with the right length
+	  so that text[tlen] == '}'
+
+				   3/10
+				   ----
+builtins/help.def
+	- show_manpage: if the first line of long_doc doesn't contain a
+	  newline, e.g., if it's a loadable builtin, add one so there's the
+	  usual space between NAME and SYNOPSIS
+
+m4/codeset.m4
+	- define HAVE_NL_LANGINFO
+
+lib/sh/strftime.c
+	- updates for locale-awareness
+
+				   3/14
+				   ----
+lib/termcap/termcap.c,lib/termcap/tparam.c
+	- updates for ISO C
+
+				   3/17
+				   ----
+configure.ac
+	- update release to rc1, update CHANGES and NEWS
+
+				   3/19
+				   ----
+lib/readline/rlmbutil.h
+	- _rl_wcwidth: make sure wchar_t constants have an `L' prefix
+
+				   3/24
+				   ----
+subst.c
+	- function_substitute: set temporary_env to NULL (we've already
+	  set up an unwind-protect for it) before pushing the context, so
+	  pop_context doesn't free it out from underneath the caller.
+	  Report from Emanuele Torre <torreemanuele6@gmail.com>
+
+				   3/27
+				   ----
+shell.c
+	- set_bash_input: if the call to with_input_from_buffered_stream does
+	  not result in a valid buffer corresponding to the file descriptor,
+	  print an error message and set last_command_exit_value
+	  From a report in https://savannah.gnu.org/patch/?10512
+
+				    4/3
+				    ---
+lib/sh/gettimeofday.c
+	- updated from version in gnulib
+
+[bash-5.3-rc1 frozen]
+
+				    4/4
+				    ---
+examples/loadables/fltexpr.c
+	- add support for function calls; support almost all math function
+	  calls in math.h
+	- add support for pi, gamma, e mathematical constants
+
+				    4/7
+				    ---
+doc/bash.1,doc/bashref.texi
+	- HISTFILESIZE: note that the history file will contain complete
+	  history entries whose lines may total slightly more than
+	  $HISTFILESIZE if the entries contain multiple lines
+	  From a report from Jens Schmidt <farblos@vodafonemail.de>
+	- export: note that you can use -f with -p to display exported functions
+	  From a report from Duncan Roe <duncan_roe@optusnet.com.au>
+
+builtins/history.def
+	- add history -d start-end to the long doc
+	  From a report from Duncan Roe <duncan_roe@optusnet.com.au>
+
+				    4/9
+				    ---
+lib/readline/histfile.c
+	- read_history_range: changes to not skip blank lines if we are
+	  reading a history file with multiline history entries.
+	  From a report by Jens Schmidt <farblos@vodafonemail.de>
+
+				   4/11
+				   ----
+bashline.c
+	- attempt_shell_completion: move the check for char_is_quoted from
+	  check_redir to the caller, set in_command_position to 0 if the
+	  command separator is quoted
+	  From https://savannah.gnu.org/support/?111224 david@mandelberg.org
+	- check_extglob: break check for extended glob out into separate
+	  function, call from attempted_shell_completion, set in_command_position
+	  to -1 if it returns 1, as with the old call to check_redir
+
+				   4/21
+				   ----
+builtins/read.def
+	- read_mbchar: if we read a delimiter character that makes an
+	  incomplete multibyte character into an invalid multibyte character,
+	  only push the delimiter back if we read that character ourselves
+	  (i > 1).
+	  Report from Greg Wooledge <greg@wooledge.org>
+
+				   4/23
+				   ----
+parse.y
+	- pop_delimiter: only decrement delimiter_depth if it's > 0, since
+	  reset_parser() may have set it to 0 after the matching call to
+	  push_delimiter
+	  Report from Grisha Levit <grishalevit@gmail.com> based on a report
+	  from Александр Ушаков <aushakov@astralinux.ru>
+
+				   4/25
+				   ----
+parse.y
+	- read_a_line: if the shell is interactive, and not reading from a
+	  string, check whether a previous call to shell_getc has set
+	  EOF_Reached and return EOF in this case, after resetting the
+	  current token to '\n'. This makes EOFs that are not the first
+	  character on the line `sticky' instead of just token delimiters.
+	  From https://savannah.gnu.org/bugs/?67045
+	- history_delimiting_chars: if it looks like we just finished a
+	  subshell, and the line we're adding begins with an operator that
+	  can't follow a semicolon, return a newline
+	  From https://savannah.gnu.org/patch/?10517
+
+				   4/28
+				   ----
+parse.y
+	- parse_arith_command: if the character after the first right paren
+	  isn't a right paren, making the construct a nested subshell, push
+	  that character back and return the subshell command as the current
+	  token string, which we push onto the pushed string list. Reading
+	  one character more can cause synchronization problems with backslash
+	  newline, among other things.
+	  From https://savannah.gnu.org/patch/?10517
+
+				   4/29
+				   ----
+builtins/evalstring.c
+	- parse_string: only run the top-level unwind-protects if we're
+	  actually going to be calling jump_to_top_level(); otherwise let
+	  xparse_dolparen take care of it
+	  From a report by Александр Ушаков <aushakov@astralinux.ru>
+
+				    5/1
+				    ---
+lib/sh/zread.c
+	- zungetc: rework to use a local 16-byte buffer so we can push back
+	  multiple characters whether we use read or zread
+	- zread/zreadretry/zreadintr/zreadc/zreadcintr/zreadn: changed to use
+	  zpopbuf to check whether we have pushed back bytes
+	- zreset,zsyncfd: reset the pushback buffer indices
+
+builtins/read.def
+	- read_mbchar: handle the delimiter being part of an invalid multibyte
+	  character, not just the byte that makes the multibyte character
+	  invalid: keep track of where the delimiter char is in the buffer and
+	  use zungetc to push back that character and everything we read
+	  after it so subsequent buffered (zread) or unbuffered (read) reads
+	  will return them
+
+				    5/2
+				    ---
+lib/readline/display.c,lib/readline/histexpand.c,lib/readline/history.c,
+lib/readline/input.c,lib/readline/search.c,lib/readline/shell.c,
+lib/readline/util.c,lib/readline/readline.c,lib/readline/histfile.c
+	- fixes for issues (unused variables, etc.) uncovered by static
+	  analysis
+	  All from a report by Siteshwar Vashisht <svashisht@redhat.com>
+
+				   5/16
+				   ----
+lib/readline/terminal.c
+	- NEED_EXTERN_PC: add __gnu_hurd__ to the systems that require this
+	  if not using ncurses; rework the structure of the defines
+	  Report from Collin Funk <collin.funk1@gmail.com>
+
+braces.c
+	- brace_gobbler: don't mark an expression as BRACE_SEQ if we've
+	  already seen a comma and marked it as BRACE_COMMA, so we treat
+	  it as a comma brace expansion.
+	  From a report by Sam James <sam@gentoo.org>
+
+support/install-sh
+	- new version from coreutils-git (2024-12-03.03); renamed from install.sh
+
+aclocal.m4
+	- AM_PROG_INSTALL_SH, AM_PROG_INSTALL_STRIP: added from automake
+
+configure.ac
+	- call AM_PROG_INSTALL_SH, AM_PROG_INSTALL_STRIP
+
+Makefile.in
+	- STRIP: let configure substitute it from AC_CHECK_TOOL result
+	- INSTALL_STRIP_PROGRAM: let configure substitute it from
+	  AM_PROG_INSTALL_STRIP
+	- install-strip: change to set INSTALL_PROGRAM=${INSTALL_STRIP_PROGRAM}
+	  to avoid hard-coding `-s' in the recipe
+	  All from a report by NR <nroycea+gnu@gmail.com>
+
+				   5/18
+				   ----
+subst.c
+	- param_expand: if we expand a nameref that references an unset array
+	  variable reference, make sure we enforce `nounset', with the usual
+	  exceptions for `@' and `*' subscripts
+	  From a report from Emanuele Torre <torreemanuele6@gmail.com>
+
+				   5/22
+				   ----
+buildconf.h.in
+	- add additional defines for conservative ISO C/POSIX environment
+	- add HAVE_C_BOOL define in case someone cross-compiles with a C23
+	  compiler
+	  From a report by Bruce Dubbs <bdubbs@linuxfromscratch.org>
+
+builtins/mkbuiltins.c
+	- include buildconf.h instead of having separate defines when
+	  cross-compiling
+
+				   6/11
+				   ----
+lib/readline/terminal.c
+	- rework change from 5/16 to add __gnu_hurd__ to the list of systems
+	  that don't need extern PC/UP/BC
+	  Reported by Joel Ebel <jbebel@google.com> as a static link failure
+	  due to multiply-defined symbols
+
+				   6/12
+				   ----
+general.c
+	- valid_function_word: back out change from 2/4/2023 that allowed
+	  quoted characters in function names.
+	  Inspired by discussion with Robert Elz <kre@munnari.oz.au> and
+	  Koichi Murase <myoga.murase@gmail.com>
+
+parse.y
+	- read_token_word: set dollar_present if we see <( or >), backing
+	  out change from 2/4/2023
+
+[bash-5.3 frozen]
+
+				    7/2
+				    ---
+tests/printf7.sub,tests/exec3.sub
+	- changes to compensate for some system differences (macos/Linux/BSD)
+
+				    7/6
+				    ---
+parse.y,input.h
+	- execute_variable_command: takes an additional FLAGS argument; right
+	  now only takes one value. If FLAGS != 0, we save and restore the
+	  parser state
+
+eval.c,array.h
+	- execute_array_command: takes an additional flags argument to pass to
+	  execute_variable_command for each array element
+	- execute_prompt_command: call execute_array_command or execute_variable_command
+	  with 0 as the appropriate flags argument, since we don't need to
+	  save and restore the parser state at the point we're calling this
+	  Fixes bug reported by Carl Johnson <carl.johnson.new.hampshire@gmail.com>
+
+lib/readline/display.c
+	- WRAP_OFFSET: make sure local_prompt_invis_chars is non-null before
+	  dereferencing it
+	  Fixes bug reported by Tobias Powalowski <tobias.powalowski@pm.me>
+
+				    7/7
+				    ---
+lib/readline/mbutil.c
+	- Make sure _rl_mb_strcaseeqn and _rl_mb_charcasecmp are protected by
+	  HAVE_MULTIBYTE
+	  Report from Bernd Kuhls <bernd@kuhls.net>
+
+lib/readline/doc/rltech.texi
+	- rl_complete_internal: document that the `?' specifier will insert a
+	  single completion if the last completion failed, and that `|' will
+	  display possible completions unconditionally.
+
+bashline.c
+	- bash_glob_list_expansions: use `|' to force listing possible
+	  completions even in the presence of a single completion after previous
+	  completion failure
+	  Based on report from A4-Tacks <wdsjxhno1001@163.com>
+
+lib/readline/mbutil.c
+	- _rl_utf8_mblen: accept 4-byte UTF-8 characters beginning with 0xF4
+	  Report from Collin Funk <collin.funk1@gmail.com>
+
+				    7/8
+				    ---
+builtins/printf.def
+	- printstr: only adjust precision if the decoded precision is >= 0,
+	  since decodeint returns -1 on overflow/failure
+
+lib/readline/input.c
+	- _rl_gather_tyi: if the input-available hook returns success,
+	  indicating that input is available, set chars_avail to 1, assuming
+	  there is at minimum a single character of input available
+	- _rl_gather_tyi: if pselect/select return non-zero, indicating that
+	  input is available, set result = -1 before going on so subsequent
+	  branches will check how many chars are available and set chars_avail
+	  Report from Dmitri A. Sergatskov <dasergatskov@gmail.com>
+
+				   7/10
+				   ----
+subst.c
+	- ARITH_EXP_CHARS: remove ~ from set because we don't perform tilde
+	  expansion when expanding arithmetic expressions
+	- string_quote_removal: if quoted includes Q_ARITH, indicating we are
+	  expanding an arithmetic expression for a compound command or array
+	  subscript, remove backslashes quoting `[', `]', and `~', since those
+	  are quoted by expand_array_subscript but not dequoted anywhere else
+	  Fixes quoting bug reported by Isabella Bosia <izaberina@gmail.com>
+
+				   7/14
+				   ----
+jobs.c
+	- wait_for_any_job: in posix mode, only look in the bgpids list if
+	  JWAIT_WAITING isn't set in FLAGS, indicating that wait -n didn't
+	  get any pid or job arguments
+	  Fixes bug reported by John Sidles <jasidles@gmail.com>
+
+lib/readline/display.c
+	- rl_message: reallocate msg_buf only if vsnprintf returns a count
+	  greater than msg_bufsiz - 1, and allow vsnprintf to write a full
+	  msg_bufsiz bytes, since the count it returns includes the
+	  trailing NULL.
+	  Report and fix from Torgny Lyon <torgny@abc.se>
+
+				   7/15
+				   ----
+builtins/evalfile.c
+	- evalfile_internal: if we get a short read, less than the file size
+	  as reported by the kernel, don't treat it as an error
+	  Report from Emanuele Torre <torreemanuele6@gmail.com>
+
+doc/bash.1,lib/readline/doc/readline.3,lib/readline/doc/rluser.texi
+	- bind-tty-special-chars: clarify that the bindings take place on
+	  each call to readline()
+
+				   7/16
+				   ----
+command.h
+	- make sure the first few members of a COMMAND and a SIMPLE_COM are
+	  aligned so casts from the latter to the former work correctly on
+	  systems with fat pointers.
+	  From https://savannah.gnu.org/bugs/?67323
+
+				   7/17
+				   ----
+lib/sh/anonfile.c
+	- anonshmopen: remove shm_open code; just use shm_mkstemp if it's
+	  available.
+	  From https://savannah.gnu.org/bugs/index.php?67326
+
+builtins/getopt.c
+	- sh_getopt_restore_state: make sure not to set `nextchar' beyond the
+	  end of the current argument, in case someone called getopts twice
+	  without resetting OPTIND.
+	  Fixes asan bug reported by Nathan Mills <the.true.nathan.mills@gmail.com>
+
+builtins/getopt.c,builtins/getopt.h
+	- sh_getopt_reset: small function to reset nextchar and sh_charindex
+
+builtins/getopts.def
+	- dogetopts: call sh_getopt_reset when binding the name variable fails
+	  for some reason
+
+				   7/18
+				   ----
+lib/readline/text.c
+	- _rl_char_search: make sure that character search arguments are
+	  added to any macro currently being defined
+	  Report from A4-Tacks <wdsjxhno1001@163.com>
+
+lib/readline/histfile.c
+	- read_history_slow: new function that just reads the history file in
+	  4096-byte chunks until EOF, used when the history file isn't a
+	  regular file.
+	- read_history_range: use read_history_slow when the history file isn't
+	  a regular file
+	  Suggested by several, most recently by <macbeth.112358@gmail.com> in 2/25
+
+				   7/19
+				   ----
+parse.y,input.h,eval.c,array.h
+	- revert changes from 7/6 based on report from
+	  Sam James <sam@gentoo.org>
+
+parse.y
+	- exec_restore_parser_state: version of restore_parser_state that
+	  doesn't restore the pushed string list, since some calls to
+	  parse_and_execute may modify it out from underneath us
+	- parse_comsub: use exec_restore_parser_state instead of inline code
+	  (the version in parse_compound_assignment is a little more complex)
+	- parser_unset_string_list: extern function to set pushed_string_list
+	  to NULL from outside parse.y
+	- execute_variable_command: set pushed_string_list to NULL after
+	  saving the parser state, since we don't want parse_and_execute to
+	  pop a string off the list that was there before it was called
+	  Fixes bug reported by Carl Johnson <carl.johnson.new.hampshire@gmail.com>
+
+shell.h
+	- exec_restore_parser_state: extern declaration
+	- parser_unset_string_list: extern declaration
+
+trap.c
+	- _run_trap_internal: use parser_unset_string_list after saving
+	  parser_state to fix bug with DEBUG trap if it's invoked during
+	  an alias ending with a newline (similar to issue from 7/6)
+	- run_pending_traps: call parser_unset_string_list as above
+
+				   7/21
+				   ----
+bashline.c
+	- bash_execute_unix_command,edit_and_execute_command: use
+	  parser_unset_string_list after saving parser_state; executing a
+	  command while readline is active shouldn't modify any existing
+	  parser state
+
+				   7/25
+				   ----
+command.h
+	- revert changes to COMMAND and SIMPLE_COM from 7/16
+	  From a report by Jessica Clarke <jrtc27@jrtc27.com>
+
+parse.y
+	- pipeline: in BAR_AND form of the pipeline production, use a
+	  REDIRECT ** to manipulate the redirection list instead of trying
+	  to cast a COMAND * to a SIMPLE_COM *
+	  From a report by Jessica Clarke <jrtc27@jrtc27.com>
+
+expr.c
+	- expassign,expshift: avoid C23 undefined behavior when performing
+	  left and right arithmetic shifts
+	  From https://savannah.gnu.org/patch/?10532
+	  bkallus <benjamin.p.kallus.gr@dartmouth.edu>
+
+				   7/28
+				   ----
+subst.c
+	- expand_word_internal: if we see a `$' and call param_expand, pass a
+	  local copy of expanded_something and OR it into expanded_something,
+	  so this function can set it to 0 if we get a trailing $ or a $!
+	  when there are no background pids.
+	  From ahmedwaldsaaid@gmail.com via https://savannah.gnu.org/bugs/index.php?67358
+	  Fix suggested by Oğuz <oguzismailuysal@gmail.com>
+
+				    8/1
+				    ---
+lib/sh/getcwd.c
+	- getcwd: set errno to 0 before calling readdir to avoid a stale
+	  value if readdir() returns NULL and distinguish errors from the
+	  end of the directory. If readdir() returns NULL without changing
+	  errno, set it to ENOENT.
+	  From a report by Richard Weinberger <richard@sigma-star.at>
+
+aclocal.m4
+	- BASH_CHECK_LIB_TERMCAP: add libtinfow to the library list to search
+	  From a report by Дилян Палаузов <dilyan.palauzov@aegee.org>
+
+execute_cmd.c
+	- execute_subshell_builtin_or_function: fix to propagate exit statuses
+	  of builtins run in subshells back to the calling shell
+	  From https://savannah.gnu.org/support/?109840
+
+configure.ac
+	- make sure an installed version of readline is version 8.3 or newer
+	  before using it
+
+aclocal.m4
+	- if --with-curses=LIBNAME is supplied, skip the search and use
+	  LIBNAME as the name of the library where we can find the termcap
+	  definitions
+
+doc/bashref.texi
+	- --with-curses: updated description
+
+				    8/4
+				    ---
+general.h
+	- RESIZE_MALLOCED_BUFFER: replace loop with a single statement (using
+	  multiplication and integer division) to calculate the new size
+	  From a report and patch by Koichi Murase <myoga.murase@gmail.com>
+	  back in 6/2021
+
+subst.c
+	- parameter_brace_expand: if we are performing parameter transformation
+	  (c == '@') and we only want the variable's attributes (want_attributes == 1),
+	  don't throw an unbound variable error. Tagged for bash-5.4.
+	  Based on a report from konsolebox <konsolebox@gmail.com> in 10/2024
+
+				    8/5
+				    ---
+pathexp.c
+	- quote_string_for_globbing: if we have an unescaped CTLNUL in a
+	  quoted string, we want to remove it. This can happen when a pattern
+	  contains a quoted null string adjacent to non-null characters.
+	  From a report by Takaaki Konno <re_c25@yahoo.co.jp> in 6/2025
+
+				    8/7
+				    ---
+subst.c
+	- call_expand_word_internal: honor no_longjmp_on_fatal_error: if it's
+	  set, pass through return values of &expand_word_error and
+	  &expand_word_fatal
+	- cond_expand_word,expand_subscript_string,expand_arith_string: if
+	  call_expand_word_internal returns an error, return a NULL string
+	- expand_word,expand_string_internal,expand_string_assignment,
+	  expand_string_for_rhs,expand_string_for_pat,
+	  expand_word_leave_quoted: if call_expand_word_internal returns an
+	  error, return a NULL WORD_LIST *
+	  Fixes bug with PS1 expansion reported by smart.outfit080@8shield.net
+
+config.h.in
+	- MAJOR_IN_MKDEV: fix typo
+
+				    8/8
+				    ---
+execute_cmd.c
+	- CHECK_BREAK_AND_CONTINUE: macro to encapsulate common code for
+	  testing `breaking' and `continuing' while in loops
+	- execute_for_command,execute_arith_for_command,execute_select_command,
+	  execute_while_or_until: replace common code with CHECK_BREAK_AND_CONTINUE
+	- execute_for_command,execute_select_command: add call to
+	  CHECK_BREAK_AND_CONTINUE after binding variable, in case it contains
+	  a nofork comsub that executes break or continue
+	  Report from Oğuz <oguzismailuysal@gmail.com>
+
+				   8/11
+				   ----
+builtins/declare.def
+	- declare_internal: if the value of an assignment statement expands to
+	  an invalid value for a nameref variable, but the original value is
+	  valid, add an error message for the assignment error
+	  Report from Oğuz <oguzismailuysal@gmail.com>
+
+				   8/12
+				   ----
+subst.c
+	- function_substitute: unwind-protect redirection_undo_list and
+	  exec_redirection_undo_list so the funsub command doesn't undo them
+	  prematurely
+	  Report from jdhedden@gmail.com
+
+				   8/13
+				   ----
+execute_cmd.c
+	- bind_lastarg: don't try to bind the argument in the temporary
+	  environment; just skip that and bind in the closest enclosing
+	  scope
+	  Report from Nathan Mills <the.true.nathan.mills@gmail.com>
+
+				   8/15
+				   ----
+arrayfunc.c
+	- convert_var_to_array,convert_var_to_assoc: call
+	  stupidly_hack_special_variables to clean up any state associated
+	  with the variable (e.g., IFS).
+	  Report from Nathan Mills <the.true.nathan.mills@gmail.com>
+
+subst.c
+	- setifs: if a script attempts to make IFS an array variable, use
+	  element 0 or "0" as appropriate.
+	  Report from Nathan Mills <the.true.nathan.mills@gmail.com>
+
+				   8/19
+				   ----
+lib/readline/isearch.c
+	- _rl_isearch_cleanup: to avoid problems caused by calling this from
+	  normal isearch termination and from signal cleanup code, turn off
+	  the RL_STATE_ISEARCH flag and set _rl_iscxt to NULL before doing
+	  anything else that would cause signals to be processed.
+	  Report and fix from Grisha Levit <grishalevit@gmail.com> based on
+	  a report from penguin p <tgckpg@gmail.com>
+
+				   8/21
+				   ----
+lib/readline/input.c
+	- rl_getc: it is possible, though extremely unlikely, for read(2)
+	  to both succeed (result == 1) and receive a signal
+	  (_rl_caught_signal != 0).
+	  We know we have a signal we're interested in, since readline's
+	  handler was called, so we want to handle it immediately and defer
+	  returning the character we read until the next time through the loop.
+	  From a report from penguin p <tgckpg@gmail.com>
+	- rl_getc: if the application's SIGINT signal handler returns without
+	  longjmping or exiting the program, make sure to abort out of
+	  searches and numeric arguments, because the readline signal handler
+	  has freed necessary state. Previously we did this only for the
+	  callback interface
+
+				   8/22
+				   ----
+bashline.c
+	- bash_quote_filename: only check whether the file exists and change
+	  the quote character accordingly if we have a single match.
+	  Otherwise, it's a prefix and likely doesn't exist, so we'll stick
+	  with the default backslash completion quoting style.
+	  Fixes completion quoting issue from Aaron Laws <dartme18@gmail.com>
+
+				   8/29
+				   ----
+builtins/declare.def
+	- declare_invalid_opts: reject attempts to use -n with -i, since you
+	  can't have nameref variables referring to positional parameters
+
+lib/readline/isearch.c
+	- rl_display_search: if the search string contains a control char,
+	  display it using the same translation (^C) as in other places
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+				    9/4
+				    ---
+lib/readline/input.c
+	- rl_getc: add RL_STATE_MOREINPUT to the list of states that cause
+	  a received SIGINT to call _rl_abort_internal
+
+lib/readline/display.c
+	- rl_redisplay: put setting RL_STATE_REDISPLAYING outside the calls
+	  to _rl_block_sigint and _rl_release_sigint
+
+lib/readline/text.c
+	- _rl_readstr_init: set RL_STATE_READSTR before calling rl_message
+	  to prompt for the command name so we know we're in readstr if we
+	  get a SIGINT
+
+lib/readline/signals.c
+	- _rl_release_sigint: after calling RL_CHECK_SIGNALS, call _rl_abort_internal
+	  if the state indicates that we are in one of the places that can
+	  call rl_message. That takes care of the case where redisplay gets a
+	  SIGINT while `blocking' it.
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+jobs.c
+	- print_pipeline: make sure we separate the fatal signal description
+	  from the pipeline command by at least one space
+
+				    9/6
+				    ---
+doc/Makefile.in
+	- MAN2HTML: experimental change to use `groff -Thtml -man' to
+	  generate HTML versions of man pages instead of man2html
+
+doc/bash.1,doc/bashref.texi
+	- reserved words: add clarifying language about when reserved words
+	  are recognized
+	- lists: modify description to define lists as sequences of and-or
+	  lists; clarify list terminators
+	- select: update synopsis to indicate a word list and optional
+	  semicolon like `for'
+	- case: rearrange description to introduce pattern lists and expand
+	  the definition of a case clause to include the terminator, which
+	  is optional for the last clause
+	  From a report by Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				    9/8
+				    ---
+lib/glob/smatch.c
+	- charcmp_wc: don't restrict codepoints to 0..UCHAR_MAX; this will
+	  eventually break with multibyte character codepoints
+	  From a report from Duncan Roe <duncan_roe@optusnet.com.au>; fix
+	  suggested by Grisha Levit <grishalevit@gmail.com>
+
+				   9/11
+				   ----
+[prayers for the victims of 9/11/2001]
+
+lib/readline/macro.c
+        - rl_start_kbd_macro: don't allow keyboard macro definitions while
+          reading input from a bound macro.
+	  Suggested by Grisha Levit <grishalevit@gmail.com>
+
+lib/readline/readline.c,lib/readline/text.c,lib/readline/kill.c
+	- _rl_dispatch_subseq,_rl_insert_next,_rl_char_search,
+	  _rl_bracketed_text: if we're defining a keyboard macro, don't
+	  insert the expanded value of a macro that is bound to a key
+	  sequence added to the keyboard macro
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+				   9/12
+				   ----
+builtins/mkbuiltins.c
+	- some minor code cleanups
+	  Patch from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   9/15
+				   ----
+lib/readline/kill.c
+	- _rl_read_bracketed_paste_prefix: if we read the bracketed paste
+	  prefix except for the last character (key != BRACK_PASTE_LAST),
+	  return 0, since we didn't read a valid prefix
+	  Report from Grisha Levit <grishalevit@gmail.com>
+	- _rl_bracketed_text: if _rl_read_key returns < 0, abort trying
+	  to read the string
+
+lib/readline/text.c
+	- _rl_readstr_init: set _rl_rscxt after we finish initializing cxt,
+	  before the call to rl_message
+	  Report from Grisha Levit <grishalevit@gmail.com>
+	- _rl_readstr_getchar: if _rl_read_mbstring returns and _rl_caught_signal
+	  is != 0, treat this as a failure and return -1 after handling the
+	  signal
+	- _rl_read_command_name: if _rl_readstr_getchar returns -1, but
+	  _rl_rscxt is NULL, assume this was the result of a signal and call
+	  _rl_abort_internal accordingly
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+lib/readline/input.c
+	- rl_getc: skip trying to read a character if we have a signal pending
+	  when we enter this function in all cases, not just callback mode.
+	  Suggestion from Grisha Levit <grishalevit@gmail.com>
+
+lib/sh/strtrans.c
+	- ansic_quote: handle the undefined state of the internal state
+	  pointer when encountering an invalid wide character by using our
+	  own mbstate_t and reinitializing it on EILSEQ.
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+				   9/17
+				   ----
+builtins/read.def
+	- read_builtin: make sure i is >= 0 after a timeout longjmp before
+	  trying to terminate input_string
+	  From a report from Duncan Roe <duncan_roe@optusnet.com.au>
+
+jobs.c,jobs.h
+	- wait_for_background_pids: now takes a new first argument, WFLAGS.
+	  Used by wait builtin to pass through JWAIT_FORCE
+
+builtins/wait.def
+	- wait_builtin: if wait doesn't have any pid or job arguments, make
+	  sure to pass JWAIT_FORCE through to wait_for_background_pids so
+	  we make sure to wait for all background jobs to terminate
+	  Inspired by report from Robert Elz <kre@munnari.oz.au>
+
+doc/bash.1,doc/bashref.texi
+	- wait: update description of -f to include wait with no arguments
+
+				   9/18
+				   ----
+execute_cmd.c
+	- execute_function: save and restore the_printed_command_except_trap
+	  (reflected in $BASH_COMMAND) around shell function calls
+	  From a report by Mike Jonkmans <bashbug@jonkmans.nl>
+
+				   9/19
+				   ----
+builtins/common.h
+	- CHECK_HELPOPT, CASE_HELPOPT: return EXECUTION_SUCCESS if --help is
+	  supplied
+	  From a report by pourko@tutamail.com
+
+shell.h,builtins/common.c
+	- no_options: return EX_HELPOPT if --help is supplied to allow callers
+	  to return success
+
+builtins/getopts.def,builtins/times.def,builtins/builtin.def,builtins/eval.def
+	- return EXECUTION_SUCCESS if no_options returns EX_HELPOPT
+	  From a report by pourko@tutamail.com
+
+Makefile.in
+	- man2html: remove from dependencies, since we're currently using
+	  groff to build HTML man pages
+
+				   9/22
+				   ----
+lib/sh/strtrans.c
+	- ansicstr: break out of the loop if mbrtowc returns 0 (NULL wchar_t)
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+	- ansic_quote: go to the end of the quoting loop on a null wide
+	  character; use a goto since we're in a switch statement
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+				   9/23
+				   ----
+builtins/read.def
+	- check_read_input: new function, call input_avail but optionally
+	  change the terminal settings to what they would be if supplied the
+	  -n/-N/-d options
+	- read_builtin: call check_read_input instead of input_avail if we
+	  have a zero timeout
+	  Report from pourko@tutamail.com
+
+bashline.c
+	- bash_quote_filename: if the user supplies an opening double quote
+	  and the word being completed contains a `$' or ``', make sure there
+	  is a single match and it doesn't exist as a filename before setting
+	  the quoting style to COMPLETE_DQUOTE2.
+	  This is similar to the change from 8/22.
+	  Report from Koichi Murase <myoga.murase@gmail.com>
+
+				   9/25
+				   ----
+builtins/printf.def
+	- printwidestr: handle precision < 0 as an overflow return from
+	  decodeint; don't adjust pr in this case so the string gets printed.
+	  Same as fix to printstr from 7/8
+	  Report from pourko@tutamail.com
+
+				   9/29
+				   ----
+execute_cmd.c
+	- time_command: if we don't have gettimeofday or getrusage, and we're
+	  using times(3), make sure we convert from seconds to CLK_TCKs
+	  when assigning tbefore from shell_start_time (use get_clk_tck())
+	  Report from pourko2@tutamail.com
+
+parse.y
+	- reset_parser: reset shell_eof_token to 0, rely on callers to restore
+	  it if they need to
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+execute_cmd.c
+	- print_formatted_time: when processing %P, sum_frac should be in
+	  microseconds; missed when making max precision 6 back in 6/2023
+	  Report from pourko2@tutamail.com
+
+				   9/30
+				   ----
+subst.h
+	- ASS_NOEXPORT: don't export the variable being assigned even if
+	  `allexport' is enabled
+
+builtins/set.def
+	- set_shellopts: pass ASS_NOEXPORT so we don't have to mess with
+	  unsetting the export attribute
+
+builtins/shopt.def
+	- set_bashopts: pass ASS_NOEXPORT so we don't have to mess with
+	  unsetting the export attribute
+
+variables.c
+	- bind_variable_internal,bind_variable_value: if ASS_NOEXPORT is set in
+	  the flags argument, don't export the variable even if `allexport'
+	  (mark_modified_vars) is set.
+	  Patch from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   10/1
+				   ----
+include/typemax.h
+	- PTRDIFF_MAX: add default max value for ptrdiff_t if the system
+	  doesn't provide one
+
+parse.y
+	- SIZE_MAX -> PTRDIFF_MAX to avoid spurious compiler warning
+	  Patch from Martin D Kealey <martin@kurahaupo.gen.nz> and
+	  Grisha Levit <grishalevit@gmail.com>
+
+execute_cmd.c
+	- time_command: don't bother with time zone info in gettimeofday()
+	- time_command: don't bother trying to execute a null command in
+	  posix mode, since we just want timing information since the shell
+	  started
+
+				   10/3
+				   ----
+builtins/read.def
+	- read_builtin: don't use i as a return value for functions and then
+	  as an index into input_string without resetting it
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+variables.c
+	- make_new_array_variable,make_new_assoc_variable: since temporary
+	  variables can't be arrays, turn off the att_tempvar attribute if
+	  we are making a variable and `inheriting' the temporary environment
+	  instance
+
+arrayfunc.c
+	- convert_var_to_array,convert_var_to_assoc: ditto turning off the
+	  att_tempvar attribute
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+				   10/6
+				   ----
+doc/bash.1,doc/bashref.texi,lib/readline/readline.3,lib/readline/history.3
+	- minor updates for bug workarounds and HTML output
+	- rework the BUG REPORTS section
+	- introduce groff macros for email addresses and URLs
+
+examples/loadables/Makefile.in,examples/loadables/Makefile.inc.in
+	- use `GNU' consistently instead of `Gnu'
+	  Patches from G. Branden Robinson <g.branden.robinson@gmail.com>
+
+builtins/read.def
+	- read_builtin: check whether `delim' is not a newline before calling
+	  check_read_input
+	  Report from pourko2@tutamail.com
+
+builtins/read.def
+	- read_builtin: CHERI systems require that we update the unwind-protect
+	  after every xrealloc, not just if the pointer changes
+	  From https://savannah.gnu.org/bugs/?67586
+
+				   10/7
+				   ----
+doc/bash.1,lib/readline/doc/readline.3,lib/readline/doc/history.3
+	- remove mention of Usenet and gnu.bash.bug. End of an era.
+
+lib/sh/gettimeofday.c
+	- gettimeofday: if we're replacing this function on a non-Windows
+	  system, prefer clock_gettime (CLOCK_REALTIME, ...) if it's available
+	  instead of just filling in the seconds from time(3)
+
+				   10/9
+				   ----
+lib/readline/text.c
+	- rl_insert: don't try to optimize runs of typeahead characters if we
+	  are defining a keyboard macro
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+				   10/12
+				   -----
+variables.c
+	- make_variable_value: make sure to check whether VALUE is non-NULL
+	  before trying to strdup it; not all callers check
+	  Report from Александр Ушаков <anushakov@edu.hse.ru>
+
+				   10/13riable`
+				   -----
+builtins/declare.def
+	- declare_internal: if we are trying to set the attributes or value
+	  for an unset nameref variable (attributes but no value), allow
+	  the attribute or value setting to happen on the nameref, and don't
+	  destroy the nameref variable on an assignment error
+	  Report from Александр Ушаков <anushakov@edu.hse.ru>
+
+execute_cmd.c
+	- execute_for_command,eval_arith_for_expr,execute_select_command,
+	  execute_case_command,execute_arith_command,execute_cond_command,
+	  execute_simple_command: save and restore currently_executing_command
+	  around calls to run_debug_trap the same way we do it for
+	  run_return_trap
+	  Report from Александр Ушаков <anushakov@edu.hse.ru>
+
+				   10/14
+				   -----
+tests/run-all
+	- keep track of how many tests run and how many exit with status 0,
+	  and report tests that exit with a non-zero status
+	  Report and patch from Alexander Bantyev <alexander.bantyev@tweag.io>
+	- keep output of failed tests if the BASH_TSTOUT_SAVEDIR environment
+	  variable is set to a valid directory
+	  Report and patch from Alexander Bantyev <alexander.bantyev@tweag.io>
+
+				   10/15
+				   -----
+tests/run-*
+	- indent the second and subsequent lines of warning messages so they
+	  stand out a little more
+
+tests/*.tests
+	- use test_runsub to run sub-tests instead of calling ${THIS_SH}
+	  directly, so we can print a message with the name of the sub-test
+	  script into the output. This will help with identifying the script
+	  that fails
+	  Original suggestion from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   10/16
+				   -----
+tests/run-*
+	- highlight `warning' in warning messages
+
+				   10/17
+				   -----
+lib/glob/sm_loop.c
+	- BRACKMATCH: fix range parsing to treat collating symbols and
+	  character classes consistently, don't treat invalid collating
+	  symbols or equivalence classes as 0xFF, fix issue with escaped
+	  open brackets when parsing the end of a range expression
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+oslib.c
+	- bcopy: update function declaration to add `const'
+
+execute_cmd.c
+	- mkfmt: fix rounding of fractional part of the printed value to
+	  increment the seconds value if necessary (e.g., 0.9848 -> 1.0 if
+	  precision == 1)
+	- mkfmt: compute the seconds and seconds fraction before writing
+	  anything into the buffer in case we increment the seconds
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+subst.h
+	- SD_QUOTEDSTR: tell skip_to_delim that we're skipping over a quoted
+	  string; *delims is the close quote
+
+subst.c
+	- skip_to_delim: understand SD_QUOTEDSTR and call skip_single_quoted
+	  or skip_double_quoted immediately as appropriate
+
+bashline.c
+	- bash_forward_shellword: use SD_QUOTEDSTR in the call to skip_to_delim
+	  Fixes bug reported by Grisha Levit <grishalevit@gmail.com>
+
+				   10/20
+				   -----
+execute_cmd.c
+	- mkfmt: round when the precision is 0 like with other precision values
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+variables.c
+	- make_local_array_variable,make_local_assoc_variable: if we're
+	  converting an unset nameref into an array, warn about it and turn
+	  off the nameref attribute
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+builtins/mkbuiltins.c
+	- write_documentation: change to use modern C-style strings, where
+	  adjacent strings are effectively concatenated
+	- write_documentation: don't add indent to otherwise blank lines
+	  Original patch from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   10/21
+				   -----
+builtins/read.def
+	- read_builtin: since referring to a pointer after realloc may have
+	  freed it is, in theory, undefined behavior, redo the unwind-protect
+	  every time we increase the size of input_string. This updates the
+	  CHERI-only change of 10/6
+	  From https://savannah.gnu.org/bugs/?67586
+
+				   10/22
+				   -----
+arrayfunc.c
+	- make_array_variable_value,assign_array_element_internal: set
+	  att_assigning while evaluating the value to be assigned so the rest
+	  of the shell knows not to unset the variable
+
+variables.c
+	- bind_variable_internal,bind_variable_value: set att_assigning
+	  around calls to make_variable_value to avoid unsetting the variable
+	- makunbound: if we are assigning to the variable being unset, just
+	  empty it out and set it to invisible, assuming the variable will be
+	  marked as visible after assignment
+	  Report from Oğuz <oguzismailuysal@gmail.com> back on 8/8/2025
+
+lib/sh/strtrans.c
+	- ansicstr: only consume an entire multibyte character with mbrtowc
+	  if we are in a locale where a backslash can appear as part of a
+	  multibyte character. UTF-8 encodings don't allow this, so we can
+	  consume a byte at a time
+	- ansic_quote,ansic_shouldquote: tighten check for potential start
+	  of a multibyte character, so we call mbrtowc fewer times
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+execute_cmd.c
+	- select_query: write '\n' to stderr like other `select' command output
+	  if `read' returns failure (EOF)
+	  Report from Stan Marsh <gazelle@xmission.com>
+
+				   10/23
+				   -----
+input.c,input.h,parse.y
+	- getc_with_restart -> stream_getc, ungetc_with_restart -> stream_ungetc
+	- stream_setsize: new function to allow caller to set the amount read
+	  by each call to read(2).
+
+shell.c
+	- set_bash_input: if we are forced interactive (-i), running under
+	  emacs (INSIDE_EMACS=something), and the default input is a pipe
+	  (fd_ispipe (0)), set the read size to 1 with stream_setsize
+	  Report from Rudi Horn <rh@rudi-horn.de>
+
+builtins/declare.def
+	- declare_internal: if we're making a local variable
+	  (VARIABLE_CONTEXT != 0) and we act on a variable from a function's
+	  temporary environment at the right context, make sure that variable
+	  has the local attribute so commands like `local -p' will find it.
+	  Report from Grisha Levit <grishalevit@gmail.com>
+	- declare_internal: if we're taking a variable from the temporary
+	  environment and making a local nameref out of it, make sure we
+	  create a local variable and inherit the value appropriately. Fixes
+	  `x=tempenv local -n x' not finding `x' as a local variable
+
+variables.c
+	- make_local_array_variable,make_local_assoc_variable: turn off the
+	  nameref attribute even if the nameref variable we're converting
+	  to an array already has a value. Modification of change from 10/20
+	- find_variable_nameref: save and restore last_table_searched around
+	  calls to internal_warning, since the gettext calls might look up
+	  LC_ variables and change it (not used right now anyway)
+	- make_local_variable: if we find a variable with att_tempenv set,
+	  make sure we actually have a temporary environment and we found
+	  the variable somewhere other than the temporary environment passed
+	  to declare/local -- we could have found it in a function-level
+	  temporary environment. This fixes the `local -n x; local -A x;' bug
+	  reported by Grisha Levit <grishalevit@gmail.com>
+	- make_local_variable: since declare_internal now adds the local
+	  attribute to variables from the temporary environment when
+	  `local -n' is executed (for now), return that variable instead of
+	  creating a new one
+
+				   10/27
+				   -----
+tests/unicode1.sub
+	- report total number of failed tests to avoid script failure if some
+	  tests are skipped due to non-installed locales
+
+tests/run-all
+	- use tput for colored output strings if available
+	  Patches from G. Branden Robinson <g.branden.robinson@gmail.com>
+
+				   10/28
+				   -----
+variables.c
+	- make_local_array_variable,make_local_assoc_variable: call
+	  INVALIDATE_EXPORTSTR in case this is a variable from the function
+	  environment being converted into a local array/assoc variable
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+				   11/5
+				   ----
+sig.c
+	- throw_to_top_level: if we get a SIGINT (interrupt_state != 0) in an
+	  interactive shell (interactive != 0), call fpurge to throw away
+	  any pending output to stdout before undoing any redirections
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+subst.c
+	- skip_to_delim: if we're trying to skip to the close quote in a single-
+	  or double-quoted string, decrement the index by 1 before returning
+	  it because skip_single_quoted and skip_double_quoted return an
+	  index one past the end of the close quote.
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+				   11/6
+				   ----
+jobs.c
+	- make_child: only call bgp_delete on a newly-created pid if that
+	  process is asynchronous, since that is what will cause it to be
+	  put into the bgpids table. This mostly matters for procsubs and
+	  asynchronous jobs, but will happen for comsubs in async jobs
+	  and coprocs as well.
+	  From a report by Kerin Millar <kfm@plushkava.net>
+
+builtins/read.def
+	- read_builtin: POSIX says read must return >1 on a read error, 1
+	  is reserved for EOF
+
+				   11/7
+				   ----
+trap.c
+	- restore_default_signal: if we're restoring the default signal
+	  disposition for a signal that was ignored due to SIG_ASYNCSIG,
+	  make sure to mark the signal as not trapped after calling
+	  change_signal (..., DEFAULT_SIG)
+
+builtins/cd.def
+	- cd_builtin: POSIX says to return >1 if -P and -e are supplied and
+	  the directory can't be changed
+
+				   11/11
+				   -----
+arrayfunc.c
+	- assign_compound_array_list: paranoia: make sure to set att_assoc
+	  after assigning a kvpair-style list; the array could have been
+	  unset by some perverse script. This makes kvpair assignment, assoc
+	  subscripted compound assignment, and indexed array subscripted
+	  compound assignment behave consistently
+
+				   11/12
+				   -----
+externs.h
+	- gethostname, killpg: fixed prototypes for functions defined in
+	  lib/sh/oslib.c
+	  From andrew@andrewoates.com
+
+lib/termcap/termcap.c,shell.c
+	- lseek: use symbolic constants instead of 0 and 1
+	  From andrew@andrewoates.com
+
+execute_cmd.c
+	- time_command: make usage of the various preprocessor defines that
+	  determine how we measure the command's duration consistent
+	  From andrew@andrewoates.com
+
+variables.c
+	- make_local_variable: if we inherit the export attribute from an
+	  existing variable at a previous scope, set array_needs_making
+	  Report from Grisha Levit <grishalevit@gmail.com>
+
+builtins/help.def
+	- help_builtin: treat each pattern individually; print one message per
+	  glob pattern instead of printing a comma-separated list of all
+	  patterns and print a potential error message once per failing
+	  pattern
+	- help_builtin: suggest using man or info only if the pattern is not
+	  a glob pattern
+	  Suggestion from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   11/17
+				   -----
+sig.c
+	- NEED_FPURGE_DECL: add before including externs.h, since we now call
+	  fpurge
+	  Report by Emanuele Torre <torreemanuele6@gmail.com>
+
+doc/bash.1,doc/bashref.texi
+	- fix some options typeset in the wrong font
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+subst.c
+	- list_remove_pattern,parameter_list_remove_pattern,array_remove_pattern,
+	  parameter_brace_remove_pattern: take an additional PFLAGS argument
+	  from the PFLAGS passed to parameter_brace_expand
+	- list_remove_pattern: pass PFLAGS to string_list_pos_params so it can
+	  get the right expansion of `@' and `*'
+	  Report by Emanuele Torre <torreemanuele6@gmail.com>
+
+				   11/18
+				   -----
+variables.c
+	- get_bash_name: only call sh_canonpath on the directory portion of
+	  the full pathname to the current executable; it only works on
+	  directories. Then glue the return value and the trailing component
+	  together to get the full pathname
+	  Report from Stan Marsh <gazelle@xmission.com>
+
+				   11/20
+				   -----
+subst.c
+	- parameter_list_transform,array_transform,list_transform: add an
+	  extra PFLAGS argument, passed down from parameter_brace_transform
+	- list_transform,array_transform: pass PFLAGS to string_list_pos_params
+	  so it can get the right expansion of `@' and `*'
+	  This makes all the quoted and unquoted expansions of `@' consistent
+	  when they are expanded in a context that will not perform word
+	  splitting
+	  Report by Emanuele Torre <torreemanuele6@gmail.com>
+
+execute_cmd.c
+	- time_command: make sure to initialize CODE in the posix and null
+	  command case so we don't longjmp to nowhere
+	  Report and patch from Grisha Levit <grishalevit@gmail.com>
+
+pathexp.c
+	- globsort_sortarray: if the sort type is unknown, default sortfunc
+	  to globsort_namecmp
+
+error.h
+	- programming_error: add `noreturn' attribute
+
+				   11/25
+				   -----
+variables.c
+	- get_bash_name: use sh_realpath instead of sh_canonpath; less code
+	  Modification of change from 11/18
+
+				   12/1
+				   ----
+trap.c, trap.h
+	- clear_exit_trap: new function to unset the exit trap and clear out
+	  the trap string
+
+execute_cmd.c
+	- execute_in_subshell: clear the exit trap before checking for a
+	  pending fatal signal
+	  From https://savannah.gnu.org/bugs/?67745
+
+				   12/2
+				   ----
+builtins/printf.def
+	- import %N$ specifier implementation from printf-nspecifier branch;
+	  implementation is similar to coreutils'.
+	- we warn about mixing numbered and unnumbered format specifiers in
+	  posix mode
+	- getint: now takes second argument to deal with numbered specifiers
+	- getstar: new function to get precision and fieldwidth from argument
+	  list if `*' in format specifier, handling numbered arguments
+	- narg, nptr: we build a new format string as necessary
+	  Originally from https://savannah.gnu.org/support/?111166, also
+	  discussed in thread starting with
+	  https://lists.gnu.org/archive/html/bug-bash/2025-02/msg00151.html
+

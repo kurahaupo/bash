@@ -1,6 +1,6 @@
 /* bashline.c -- Bash's interface to the readline library. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -984,6 +984,7 @@ edit_and_execute_command (int count, int c, int editing_mode, const char *edit_c
     (*rl_deprep_term_function) ();
   rl_clear_signals ();
   save_parser_state (&ps);
+  parser_unset_string_list ();
   r = parse_and_execute (command, (editing_mode == VI_EDITING_MODE) ? "v" : "C-xC-e", SEVAL_NOHIST);
   restore_parser_state (&ps);
 
@@ -1113,10 +1114,10 @@ bash_forward_shellword (int count, int key)
 		ADVANCE_CHAR (rl_line_buffer, slen, p);
 	      break;
 	    case '\'':
-	      p = skip_to_delim (rl_line_buffer, ++p, "'", SD_NOJMP);
+	      p = skip_to_delim (rl_line_buffer, ++p, "'", SD_NOJMP|SD_QUOTEDSTR|SD_COMPLETE);
 	      break;
 	    case '"':
-	      p = skip_to_delim (rl_line_buffer, ++p, "\"", SD_NOJMP);
+	      p = skip_to_delim (rl_line_buffer, ++p, "\"", SD_NOJMP|SD_QUOTEDSTR|SD_COMPLETE);
 	      break;
 	    }
 
@@ -1144,10 +1145,10 @@ bash_forward_shellword (int count, int key)
 		ADVANCE_CHAR (rl_line_buffer, slen, p);
 	      break;
 	    case '\'':
-	      p = skip_to_delim (rl_line_buffer, ++p, "'", SD_NOJMP);
+	      p = skip_to_delim (rl_line_buffer, ++p, "'", SD_NOJMP|SD_QUOTEDSTR|SD_COMPLETE);
 	      break;
 	    case '"':
-	      p = skip_to_delim (rl_line_buffer, ++p, "\"", SD_NOJMP);
+	      p = skip_to_delim (rl_line_buffer, ++p, "\"", SD_NOJMP|SD_QUOTEDSTR|SD_COMPLETE);
 	      break;
 	    }
 
@@ -1422,6 +1423,22 @@ bash_spell_correct_shellword (int count, int key)
 #define COMMAND_SEPARATORS_PLUS_WS ";|&{(` \t"
 /* )} */ 
 
+static inline int
+check_extglob (int ti)
+{
+#if defined (EXTENDED_GLOB)
+  int this_char, prev_char;
+
+  this_char = rl_line_buffer[ti];
+  prev_char = (ti > 0) ? rl_line_buffer[ti - 1] : 0;
+
+  if (extended_glob && ti > 0 && this_char == '(' && /*)*/
+      member (prev_char, "?*+@!") && char_is_quoted (rl_line_buffer, ti - 1) == 0)
+    return (1);
+#endif
+  return (0);
+}
+
 /* check for redirections and other character combinations that are not
    command separators */
 static inline int
@@ -1440,27 +1457,11 @@ check_redir (int ti)
     return (1);
   else if (this_char == '{' && prev_char == '$' && FUNSUB_CHAR (next_char) == 0) /*}*/
     return (1);
-#if 0	/* Not yet */
-  else if (this_char == '(' && prev_char == '$') /*)*/
-    return (1);
-  else if (this_char == '(' && prev_char == '<') /*)*/
-    return (1);
-#if defined (EXTENDED_GLOB)
-  else if (extended_glob && this_char == '(' && prev_char == '!') /*)*/
-    return (1);
-#endif
-#endif
-  else if (char_is_quoted (rl_line_buffer, ti))
-    return (1);
+
   return (0);
 }
 
 #if defined (PROGRAMMABLE_COMPLETION)
-/*
- * XXX - because of the <= start test, and setting os = s+1, this can
- * potentially return os > start.  This is probably not what we want to
- * happen, but fix later after 2.05a-release.
- */
 static int
 find_cmd_start (int start)
 {
@@ -1638,9 +1639,13 @@ attempt_shell_completion (const char *text, int start, int end)
     }
   else if (member (rl_line_buffer[ti], command_separator_chars))
     {
-      in_command_position++;
+      if (char_is_quoted (rl_line_buffer, ti) == 0)
+	in_command_position++;
 
-      if (check_redir (ti) == 1)
+      if (in_command_position && rl_line_buffer[ti] == '(' && check_extglob (ti) == 1) /*)*/
+	in_command_position = -1;
+
+      if (in_command_position && check_redir (ti) == 1)
 	in_command_position = -1;	/* sentinel that we're not the first word on the line */
     }
   else
@@ -4086,7 +4091,7 @@ bash_glob_expand_word (int count, int key)
 static int
 bash_glob_list_expansions (int count, int key)
 {
-  return bash_glob_completion_internal ('?');
+  return bash_glob_completion_internal ('|');
 }
 
 static int
@@ -4138,7 +4143,7 @@ vi_advance_point (void)
 	}
     }
 #else
-    rl_point++:
+    rl_point++;
 #endif
   return point;
 }
@@ -4410,9 +4415,11 @@ bash_quote_filename (char *s, int rtype, char *qcp)
      quoted correctly using backslashes (a backslash-newline pair is
      special to the shell parser). */
   expchar = nextch = closer = 0;
+  /* Only check whether the file exists if we're quoting a single completion.
+     Otherwise, it's a common prefix and probably doesn't exist. */
   if (*qcp == '\0' && cs == COMPLETE_BSQUOTE && dircomplete_expand == 0 &&
       (expchar = bash_check_expchar (s, 0, &nextch, &closer)) &&
-      file_exists (s) == 0)
+      rtype == SINGLE_MATCH && file_exists (s) == 0)
     {
       /* If it looks like the name is subject to expansion, see if we want to
 	 double-quote it. */
@@ -4435,7 +4442,7 @@ bash_quote_filename (char *s, int rtype, char *qcp)
     cs = COMPLETE_SQUOTE;
   else if (*qcp == '"')
     {
-      if ((expchar = bash_check_expchar (s, 0, &nextch, &closer)) == '$' || expchar == '`')
+      if (((expchar = bash_check_expchar (s, 0, &nextch, &closer)) == '$' || expchar == '`') && rtype == SINGLE_MATCH && file_exists (s) == 0)
 	cs = COMPLETE_DQUOTE2;
       else
 	cs = COMPLETE_DQUOTE;
@@ -4676,6 +4683,7 @@ bash_execute_unix_command (int count, int key)
 
   begin_unwind_frame ("execute-unix-command");
   save_parser_state (&ps);
+  parser_unset_string_list ();
   rl_clear_signals ();
   add_unwind_protect (uw_unbind_readline_variables, 0);
   add_unwind_protect (uw_restore_parser_state, &ps);
