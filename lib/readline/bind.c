@@ -2212,26 +2212,6 @@ _rl_codepoint_to_utf8 (unsigned long c)
   return strdup (p);
 }
 
-/* return number of bytes to skip for one codepoint */
-static int
-_rl_utf8_skiplen (const char *p)
-{
-  unsigned char c = *p;
-  if (c == 0)
-    return 0; /* reached end of string */
-  if ((c & 0x80) == 0)
-    return 1;
-  if (! _rl_utf8locale)
-    return -1;	/* unsupported */
-  if (c < 0xc2 || c > 0xfd)
-    return -1;
-  char *q = p+1;
-  while ((c <<= 1) & 0x80)
-    if ((*q++ & 0xc0) != 0x80)
-      return -1;
-  return q-p;
-}
-
 static int
 sv_echo_substition (const char *value)
 {
@@ -2241,7 +2221,7 @@ sv_echo_substition (const char *value)
 
   _rl_echo_subst_str = NULL;
   _rl_echo_subst_len = 0;
-  _rl_echo_subst_mode = ESM_NO_ECHO;
+  _rl_echo_subst_mode = _RL_ESM_NO_ECHO;
 
   if (value == NULL || ! *value)
     return 0;
@@ -2253,7 +2233,7 @@ sv_echo_substition (const char *value)
 #ifndef NOT_ASCII
       if (! strcmp (value, ":random"))
 	{
-	  _rl_echo_subst_mode = ESM_RANDOM_ASCII;
+	  _rl_echo_subst_mode = _RL_ESM_RANDOM_ASCII;
 	  return 0;
 	}
 #endif
@@ -2281,7 +2261,7 @@ sv_echo_substition (const char *value)
       char const *res = _rl_codepoint_to_utf8 (nval);
       if (! res)
 	return -1;
-      _rl_echo_subst_mode = ESM_ONE;
+      _rl_echo_subst_mode = _RL_ESM_ONE;
       _rl_echo_subst_str = res;
     }
   else
@@ -2304,17 +2284,11 @@ sv_echo_substition (const char *value)
 	  ++n;
 	}
       if (n == 0)
-	_rl_echo_subst_mode = ESM_NO_ECHO;
+	_rl_echo_subst_mode = _RL_ESM_NO_ECHO;
       else if (n == 1)
-	_rl_echo_subst_mode = ESM_ONE;
+	_rl_echo_subst_mode = _RL_ESM_ONE;
       else
-	{
-	  if (mb)
-	    /* TODO: allow any sequence of multibyte characters */
-	    /* We don't currently support a character sequence if any is a multibyte char */
-	    return -1;
-	  _rl_echo_subst_mode = ESM_SEQUENCE;
-	}
+	_rl_echo_subst_mode = _RL_ESM_SEQUENCE;
       /* The string consists of single-byte ASCII; use them one at a time */
       _rl_echo_subst_str = strdup (value);
     }
@@ -2327,15 +2301,15 @@ gv_echo_substition (str_var_def_t const *)
 {
   switch (_rl_echo_subst_mode)
     {
-      case ESM_SEQUENCE:
-      case ESM_ONE:
+      case _RL_ESM_SEQUENCE:
+      case _RL_ESM_ONE:
 	return _rl_echo_subst_str;
 
-      case ESM_RANDOM_ASCII:
+      case _RL_ESM_RANDOM_ASCII:
 	return ":random";
 
 
-      case ESM_NO_ECHO:
+      case _RL_ESM_NO_ECHO:
         return "";
 
       default:

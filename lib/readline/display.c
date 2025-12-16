@@ -822,18 +822,18 @@ rl_redisplay (void)
   mbstate_t ps;
   int _rl_wrapped_multicolumn = 0;
 #endif
-  esm_t echo_subst_mode = _rl_echo_subst_mode;
+  _rl_esm_t echo_subst_mode = _rl_echo_subst_mode;
 
   if (! _rl_echoing_p)
     {
       if (_rl_echo_subst_str && ! *_rl_echo_subst_str &&
-	  _rl_echo_subst_mode != ESM_RANDOM_ASCII)
-	_rl_echo_subst_mode = ESM_NO_ECHO;
-      if (_rl_echo_subst_mode == ESM_NO_ECHO)
+	  _rl_echo_subst_mode != _RL_ESM_RANDOM_ASCII)
+	_rl_echo_subst_mode = _RL_ESM_NO_ECHO;
+      if (_rl_echo_subst_mode == _RL_ESM_NO_ECHO)
 	return;
     }
   else
-    echo_subst_mode = ESM_NORMAL;
+    echo_subst_mode = _RL_ESM_NORMAL;
 
   RL_SETSTATE (RL_STATE_REDISPLAYING);
   /* Block keyboard interrupts because this function manipulates global
@@ -1110,18 +1110,22 @@ rl_redisplay (void)
 	  lb_linenum = newlines;
 	}
 
-      if (echo_subst_mode == ESM_SEQUENCE)
+      if (echo_subst_mode == _RL_ESM_SEQUENCE)
 	{
-	  /* Repeating fixed sequence of single-byte characters */
+	  /* Repeating fixed sequence characters */
 	  static char const *seq;
 	  if (in == 0 || !seq || !*seq)
 	    seq = _rl_echo_subst_str;
-	  char c = *seq++;
-	  invis_addc (&out, c, cur_face);
+	  int l = _rl_utf8_skiplen (seq);
+	  invis_adds (&out, seq, l, cur_face);
+	  if (l > 0)
+	    seq += l;
+	  else
+	    seq = NULL;
 	  CHECK_LPOS();
 	}
 #ifndef NOT_ASCII
-      else if (echo_subst_mode == ESM_RANDOM_ASCII)
+      else if (echo_subst_mode == _RL_ESM_RANDOM_ASCII)
 	{
 	  /* Random printable ASCII */
 	  char c = rand() % ('~' - '!' + 1) + '!';
@@ -1132,7 +1136,7 @@ rl_redisplay (void)
 	  CHECK_LPOS();
 	}
 #endif
-      else if (echo_subst_mode == ESM_ONE && _rl_echo_subst_len > 0)
+      else if (echo_subst_mode == _RL_ESM_ONE && _rl_echo_subst_len > 0)
 	{
 	  invis_adds (&out, _rl_echo_subst_str, _rl_echo_subst_len, cur_face);
 	  for (int i = 0; i < _rl_echo_subst_len; i++)

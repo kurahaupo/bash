@@ -315,7 +315,7 @@ int _rl_revert_all_at_newline = 0;
 /* If non-null, output this as a substitute when in ~ECHO mode. */
 char const *_rl_echo_subst_str = NULL;
 size_t _rl_echo_subst_len = 0;	/* cache strlen (_rl_echo_subst_str) */
-esm_t _rl_echo_subst_mode = ESM_NO_ECHO;
+_rl_esm_t _rl_echo_subst_mode = _RL_ESM_NO_ECHO;
 
 /* Non-zero means to honor the termios ECHOCTL bit and echo control
    characters corresponding to keyboard-generated signals. */

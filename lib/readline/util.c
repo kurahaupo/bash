@@ -559,3 +559,23 @@ _rl_audit_tty (char *string)
   close (fd);
 }
 #endif
+
+/* Return number of bytes to skip for one codepoint, in UTF-8 */
+int
+_rl_utf8_skiplen (const char *p)
+{
+  unsigned char c = *p;
+  if (c == 0)
+    return 0; /* reached end of string */
+  if ((c & 0x80) == 0)
+    return 1;
+  if (! _rl_utf8locale)
+    return -1;	/* unsupported */
+  if (c < 0xc2 || c > 0xfd)
+    return -1;
+  char *q = p+1;
+  while ((c <<= 1) & 0x80)
+    if ((*q++ & 0xc0) != 0x80)
+      return -1;
+  return q-p;
+}

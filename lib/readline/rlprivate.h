@@ -254,6 +254,7 @@ extern int _rl_fix_last_undo_of_type (int, int, int);
 
 /* util.c */
 extern char *_rl_savestring (const char *);
+extern int _rl_utf8_skiplen (const char *p);
 
 /*************************************************************************
  *									 *
@@ -606,13 +607,14 @@ extern _rl_arg_cxt _rl_argcxt;
 extern int _rl_utf8locale;
 
 /* readline.c */
+/* echo-substitution modes */
 typedef enum {
-    ESM_NO_ECHO,
-    ESM_ONE,
-    ESM_SEQUENCE,
-    ESM_RANDOM_ASCII,
-    ESM_NORMAL = ESM_NO_ECHO
-} esm_t;
+    _RL_ESM_NO_ECHO,
+    _RL_ESM_ONE,
+    _RL_ESM_SEQUENCE,
+    _RL_ESM_RANDOM_ASCII,
+    _RL_ESM_NORMAL = _RL_ESM_NO_ECHO
+} _rl_esm_t;
 
 extern int _rl_echoing_p;
 extern int _rl_horizontal_scroll_mode;
@@ -626,7 +628,7 @@ extern int _rl_revert_all_at_newline;
 extern int _rl_echo_control_chars;
 extern char const *_rl_echo_subst_str;
 extern size_t _rl_echo_subst_len;
-extern esm_t _rl_echo_subst_mode;
+extern _rl_esm_t _rl_echo_subst_mode;
 extern int _rl_show_mode_in_prompt;
 extern int _rl_enable_bracketed_paste;
 extern int _rl_enable_active_region;
