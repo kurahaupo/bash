@@ -433,7 +433,7 @@ rl_resize_terminal (void)
   width = _rl_screenwidth;
   height = _rl_screenheight;
   _rl_get_screen_size (fileno (rl_instream), 1);
-  if (_rl_echoing_p && (width != _rl_screenwidth || height != _rl_screenheight))
+  if ((_rl_echoing_p || _rl_echo_subst_mode) && (width != _rl_screenwidth || height != _rl_screenheight))
     {
       if (CUSTOM_REDISPLAY_FUNC ())
 	rl_forced_update_display ();
@@ -867,7 +867,7 @@ _rl_cr (void)
 int
 rl_ding (void)
 {
-  if (_rl_echoing_p)
+  if (_rl_echoing_p || _rl_echo_subst_mode)
     {
       switch (_rl_bell_preference)
         {

@@ -312,6 +312,11 @@ int _rl_bind_stty_chars = 1;
    its initial state. */
 int _rl_revert_all_at_newline = 0;
 
+/* If non-null, output this as a substitute when in ~ECHO mode. */
+char const *_rl_echo_subst_str = NULL;
+size_t _rl_echo_subst_len = 0;	/* cache strlen (_rl_echo_subst_str) */
+esm_t _rl_echo_subst_mode = ESM_NO_ECHO;
+
 /* Non-zero means to honor the termios ECHOCTL bit and echo control
    characters corresponding to keyboard-generated signals. */
 int _rl_echo_control_chars = 1;
@@ -449,7 +454,8 @@ readline_internal_setup (void)
   /* If we're not echoing, we still want to at least print a prompt, because
      rl_redisplay will not do it for us.  If the calling application has a
      custom redisplay function, though, let that function handle it. */
-  if (_rl_echoing_p == 0 && rl_redisplay_function == rl_redisplay)
+  if (! _rl_echoing_p && ! _rl_echo_subst_mode &&
+      rl_redisplay_function == rl_redisplay)
     {
       if (rl_prompt && rl_already_prompted == 0)
 	{

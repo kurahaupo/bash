@@ -94,6 +94,7 @@ struct str_var_def_s {
   const char * const name;
   int ignored_flags;
   _rl_sv_func_t *set_func;
+  _rl_gv_func_t *get_func;
 };
 
 typedef struct parser_dir_s parser_dir_t;
@@ -1996,6 +1997,8 @@ static _rl_sv_func_t sv_combegin;
 static _rl_sv_func_t sv_dispprefix;
 static _rl_sv_func_t sv_compquery;
 static _rl_sv_func_t sv_compwidth;
+static _rl_gv_func_t gv_echo_substition;
+static _rl_sv_func_t sv_echo_substition;
 static _rl_sv_func_t sv_editmode;
 static _rl_sv_func_t sv_emacs_modestr;
 static _rl_sv_func_t sv_histsize;
@@ -2013,6 +2016,7 @@ static const str_var_def_t string_varlist[] = {
   { "completion-display-width", V_INT,	sv_compwidth },
   { "completion-prefix-display-length", V_INT,	sv_dispprefix },
   { "completion-query-items", V_INT,	sv_compquery },
+  { "echo-substitution", V_STRING,	sv_echo_substition, gv_echo_substition },
   { "editing-mode",	V_STRING,	sv_editmode },
   { "emacs-mode-string", V_STRING,	sv_emacs_modestr },  
   { "history-size",	V_INT,		sv_histsize },
@@ -2165,6 +2169,178 @@ sv_compwidth (const char *value)
 
   _rl_completion_columns = nval;
   return 0;
+}
+
+static char const *
+_rl_codepoint_to_utf8 (unsigned long c)
+2914{
+  /* Don't use unprintable chars */
+  if (CTRL_CHAR (c) || c == RUBOUT)
+    return NULL;
+#if defined (HANDLE_MULTIBYTE)
+  /* Only UTF-8 wide char supported */
+  if (c != (unsigned char) c && ! _rl_utf8locale)
+    return NULL;
+  /* Don't generate UTF-8 longer than 6 bytes */
+  if (c >> 6*5+1)
+    return NULL;
+  char b[8];
+  char *p = b + 7;
+  *p-- = 0;
+  if (_rl_utf8locale)
+    {
+      if (c >= 0x7f && c < 0xa0)
+	/* TODO: look up codepoint properties and verify it's printable */
+	return NULL;
+      if (c >= 0x80)
+	{
+	  /* UTF-8 ≥ 0x80 */
+	  unsigned int cz = ~0x3f;
+	  for (; c & cz; c >>= 6, cz >>= 1, --p)
+	    *p = 0x80 | c & 0x3f;
+	  c |= cz << 1;
+	  c &= 0xff;
+	}
+    }
+  *p = c;
+#else
+  /* Wide char not supported */
+  if (c != (char) c)
+    return NULL;
+  char p[2] = { c, 0 };
+#endif
+  return strdup (p);
+}
+
+/* return number of bytes to skip for one codepoint */
+static int
+_rl_utf8_skiplen (const char *p)
+{
+  unsigned char c = *p;
+  if (c == 0)
+    return 0; /* reached end of string */
+  if ((c & 0x80) == 0)
+    return 1;
+  if (! _rl_utf8locale)
+    return -1;	/* unsupported */
+  if (c < 0xc2 || c > 0xfd)
+    return -1;
+  char *q = p+1;
+  while ((c <<= 1) & 0x80)
+    if ((*q++ & 0xc0) != 0x80)
+      return -1;
+  return q-p;
+}
+
+static int
+sv_echo_substition (const char *value)
+{
+  /* discard previous value, if any */
+  if (_rl_echo_subst_str)
+    free (_rl_echo_subst_str);
+
+  _rl_echo_subst_str = NULL;
+  _rl_echo_subst_len = 0;
+  _rl_echo_subst_mode = ESM_NO_ECHO;
+
+  if (value == NULL || ! *value)
+    return 0;
+
+  if (value[0] == ':' && isalpha (value[1]))
+    {
+      if (! strcmp (value, ":none"))
+        return 0;
+#ifndef NOT_ASCII
+      if (! strcmp (value, ":random"))
+	{
+	  _rl_echo_subst_mode = ESM_RANDOM_ASCII;
+	  return 0;
+	}
+#endif
+      if (! strcmp (value, ":auto"))
+        {
+	  if (_rl_utf8locale)
+	    value = "•";
+	  else
+	    value = "*";
+        }
+      else
+      /* All other values of the form
+	  COLON LETTER [ANYTHING...]
+	 are reserved for future use */
+      return -1;
+    }
+
+  if (_rl_utf8locale && value[0] == 'U' && value[1] == '+')
+    {
+      /* accept “U+xxxx” */
+      char *ep;
+      unsigned long nval = strtoul (value+2, &ep, 16);
+      if (*ep)
+	return -1;
+      char const *res = _rl_codepoint_to_utf8 (nval);
+      if (! res)
+	return -1;
+      _rl_echo_subst_mode = ESM_ONE;
+      _rl_echo_subst_str = res;
+    }
+  else
+    {
+      int mb = 0;
+      size_t n = 0;
+      const char *q = value;
+      while (*q)
+	{
+	  unsigned char c = *q;
+	  if (CTRL_CHAR (c) || c == RUBOUT)
+	    /* Try not to allow unprintable chars */
+	    return -1;
+          int l = _rl_utf8_skiplen (q);
+          if (l < 0)
+            return -1;
+          if (l > 1)
+            mb = 1; /* seen multi-byte */
+	  q += l;
+	  ++n;
+	}
+      if (n == 0)
+	_rl_echo_subst_mode = ESM_NO_ECHO;
+      else if (n == 1)
+	_rl_echo_subst_mode = ESM_ONE;
+      else
+	{
+	  if (mb)
+	    /* TODO: allow any sequence of multibyte characters */
+	    /* We don't currently support a character sequence if any is a multibyte char */
+	    return -1;
+	  _rl_echo_subst_mode = ESM_SEQUENCE;
+	}
+      /* The string consists of single-byte ASCII; use them one at a time */
+      _rl_echo_subst_str = strdup (value);
+    }
+  _rl_echo_subst_len = strlen (_rl_echo_subst_str);
+  return 0;
+}
+
+static char const *
+gv_echo_substition (str_var_def_t const *)
+{
+  switch (_rl_echo_subst_mode)
+    {
+      case ESM_SEQUENCE:
+      case ESM_ONE:
+	return _rl_echo_subst_str;
+
+      case ESM_RANDOM_ASCII:
+	return ":random";
+
+
+      case ESM_NO_ECHO:
+        return "";
+
+      default:
+	return "*BROKEN*";
+    }
 }
 
 static int
@@ -2913,6 +3089,9 @@ _rl_get_string_variable_value (str_var_def_t const *var)
 {
   static char numbuf[64];	/* more than enough for INTMAX_MAX */
   char *ret;
+
+  if (var->get_func)
+    return var->get_func (var);
 
   char const *name = var->name;
   if (_rl_stricmp (name, "active-region-start-color") == 0)
