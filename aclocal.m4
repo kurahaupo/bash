@@ -3,7 +3,7 @@ dnl Bash specific tests
 dnl
 dnl Some derived from PDKSH 5.1.3 autoconf tests
 dnl
-dnl Copyright (C) 1987-2024 Free Software Foundation, Inc.
+dnl Copyright (C) 1987-2025 Free Software Foundation, Inc.
 dnl
 
 dnl
@@ -934,20 +934,29 @@ AC_CACHE_VAL(bash_cv_termcap_lib,
 [AC_CHECK_FUNC(tgetent, bash_cv_termcap_lib=libc,
   [AC_CHECK_LIB(termcap, tgetent, bash_cv_termcap_lib=libtermcap,
     [AC_CHECK_LIB(tinfo, tgetent, bash_cv_termcap_lib=libtinfo,
+      [AC_CHECK_LIB(tinfow, tgetent, bash_cv_termcap_lib=libtinfow,
         [AC_CHECK_LIB(curses, tgetent, bash_cv_termcap_lib=libcurses,
-	    [AC_CHECK_LIB(ncursesw, tgetent, bash_cv_termcap_lib=libncursesw,
-                [AC_CHECK_LIB(ncurses, tgetent, bash_cv_termcap_lib=libncurses,
-	            bash_cv_termcap_lib=gnutermcap)])])])])])])
+	  [AC_CHECK_LIB(ncursesw, tgetent, bash_cv_termcap_lib=libncursesw,
+            [AC_CHECK_LIB(ncurses, tgetent, bash_cv_termcap_lib=libncurses,
+	      bash_cv_termcap_lib=gnutermcap)])])])])])])])
 if test "X$_bash_needmsg" = "Xyes"; then
 AC_MSG_CHECKING(which library has the termcap functions)
 fi
 AC_MSG_RESULT(using $bash_cv_termcap_lib)
-if test $bash_cv_termcap_lib = gnutermcap && test -z "$prefer_curses"; then
+# we assume that anyone specifying --with-curses=library is savvy enough to
+# put it in a place that the linker can find it without a special -L option
+if test "$opt_curses" != "no" && test "$opt_curses" != "yes" ; then
+TERMCAP_LIB="$opt_curses"
+TERMCAP_DEP=
+elif test $bash_cv_termcap_lib = gnutermcap && test -z "$prefer_curses"; then
 LDFLAGS="$LDFLAGS -L./lib/termcap"
 TERMCAP_LIB="./lib/termcap/libtermcap.a"
 TERMCAP_DEP="./lib/termcap/libtermcap.a"
 elif test $bash_cv_termcap_lib = libtermcap && test -z "$prefer_curses"; then
 TERMCAP_LIB=-ltermcap
+TERMCAP_DEP=
+elif test $bash_cv_termcap_lib = libtinfow; then
+TERMCAP_LIB=-ltinfow
 TERMCAP_DEP=
 elif test $bash_cv_termcap_lib = libtinfo; then
 TERMCAP_LIB=-ltinfo
@@ -2240,3 +2249,68 @@ else
 fi
 AC_DEFINE_UNQUOTED([FNMATCH_EQUIV_FALLBACK], [$bash_cv_fnmatch_equiv_value], [Whether fnmatch can be used for bracket equivalence classes])
 ])
+
+AC_DEFUN([BASH_FUNC_STRCHRNUL],
+[
+  AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
+  AC_CACHE_CHECK([whether strchrnul works],
+      [bash_cv_func_strchrnul_works],
+      [AC_RUN_IFELSE([AC_LANG_PROGRAM(
+[[
+#include <string.h>
+]],
+[[const char *buf = "abc";
+      return strchrnul (buf, 'd') != buf + 3;
+]]
+)],
+[bash_cv_func_strchrnul_works=yes], [bash_cv_func_strchrnul_works=no],
+[bash_cv_func_strchrnul_works=no]
+)])
+
+if test "$bash_cv_func_strchrnul_works" = "no"; then
+AC_LIBOBJ([strchrnul])
+fi
+])
+
+# AM_PROG_INSTALL_STRIP
+# ---------------------
+# One issue with vendor 'install' (even GNU) is that you can't
+# specify the program used to strip binaries.  This is especially
+# annoying in cross-compiling environments, where the build's strip
+# is unlikely to handle the host's binaries.
+# Fortunately install-sh will honor a STRIPPROG variable, so we
+# always use install-sh in "make install-strip", and initialize
+# STRIPPROG with the value of the STRIP variable (set by the user).
+AC_DEFUN([AM_PROG_INSTALL_STRIP],
+[AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
+# Installed binaries are usually stripped using 'strip' when the user
+# run "make install-strip".  However 'strip' might not be the right
+# tool to use in cross-compilation environments, therefore Automake
+# will honor the 'STRIP' environment variable to overrule this program.
+dnl Don't test for $cross_compiling = yes, because it might be 'maybe'.
+#if test "$cross_compiling" != no; then
+  AC_CHECK_TOOL([STRIP], [strip], :)
+#fi
+INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
+AC_SUBST([INSTALL_STRIP_PROGRAM])])
+
+AC_DEFUN([AM_AUX_DIR_EXPAND],
+[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])dnl
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
+])
+
+# AM_PROG_INSTALL_SH
+# ------------------
+# Define $install_sh.
+AC_DEFUN([AM_PROG_INSTALL_SH],
+[AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+if test x"${install_sh+set}" != xset; then
+  case $am_aux_dir in
+  *\ * | *\	*)
+    install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
+  *)
+    install_sh="\${SHELL} $am_aux_dir/install-sh"
+  esac
+fi
+AC_SUBST([install_sh])])

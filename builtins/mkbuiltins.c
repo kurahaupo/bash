@@ -1,7 +1,7 @@
 /* mkbuiltins.c - Create builtins.c, builtext.h, and builtdoc.c from
    a single source file called builtins.def. */
 
-/* Copyright (C) 1987-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -23,11 +23,7 @@
 #  include <config.h>
 #else	/* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */
-#  define HAVE_UNISTD_H
-#  define HAVE_STRING_H
-#  define HAVE_STDLIB_H
-
-#  define HAVE_RENAME
+#  include <buildconf.h>
 #endif /* CROSS_COMPILING */
 
 #if defined (HAVE_UNISTD_H)
@@ -48,6 +44,7 @@
 #include "filecntl.h"
 
 #include "../bashansi.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -292,6 +289,8 @@ main (int argc, char **argv)
 
   if (include_filename == 0)
     include_filename = extern_filename;
+  if (include_filename == 0)
+    include_filename = "builtext.h";
 
   /* If there are no files to process, just quit now. */
   if (arg_index == argc)
@@ -332,7 +331,7 @@ main (int argc, char **argv)
   /* Process the .def files. */
   while (arg_index < argc)
     {
-      register char *arg;
+      char *arg;
 
       arg = argv[arg_index++];
 
@@ -403,7 +402,7 @@ array_create (int width)
 ARRAY *
 copy_string_array (ARRAY *array)
 {
-  register int i;
+  int i;
   ARRAY *copy;
 
   if (!array)
@@ -488,7 +487,7 @@ HANDLER_ENTRY handlers[] = {
 HANDLER_ENTRY *
 find_directive (char *directive)
 {
-  register int i;
+  int i;
 
   for (i = 0; handlers[i].directive; i++)
     if (strcmp (handlers[i].directive, directive) == 0)
@@ -517,7 +516,7 @@ int output_cpp_line_info = 0;
 void
 extract_info (char *filename, FILE *structfile, FILE *externfile)
 {
-  register int i;
+  int i;
   DEF_FILE *defs;
   struct stat finfo;
   size_t file_size;
@@ -527,7 +526,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   if (stat (filename, &finfo) == -1)
     file_error (filename);
 
-  fd = open (filename, O_RDONLY, 0666);
+  fd = open (filename, O_RDONLY);
 
   if (fd == -1)
     file_error (filename);
@@ -582,7 +581,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 
       if (*line == '$')
 	{
-	  register int j;
+	  int j;
 	  char *directive;
 	  HANDLER_ENTRY *handler;
 
@@ -657,7 +656,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 static void
 free_builtin (BUILTIN_DESC *builtin)
 {
-  register int i;
+  int i;
 
   free_safely (builtin->name);
   free_safely (builtin->function);
@@ -679,8 +678,8 @@ free_builtin (BUILTIN_DESC *builtin)
 void
 free_defs (DEF_FILE *defs)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
+  int i;
+  BUILTIN_DESC *builtin;
 
   if (defs->production)
     free (defs->production);
@@ -722,7 +721,7 @@ strip_whitespace (char *string)
 void
 remove_trailing_whitespace (char *string)
 {
-  register int i;
+  int i;
 
   i = strlen (string) - 1;
 
@@ -773,7 +772,7 @@ current_builtin (char *directive, DEF_FILE *defs)
 void
 add_documentation (DEF_FILE *defs, char *line)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin ("(implied LONGDOC)", defs);
 
@@ -841,7 +840,7 @@ builtin_handler (char *self, DEF_FILE *defs, char *arg)
 int
 function_handler (char *self, DEF_FILE *defs, char *arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -863,7 +862,7 @@ function_handler (char *self, DEF_FILE *defs, char *arg)
 int
 docname_handler (char *self, DEF_FILE *defs, char *arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -880,7 +879,7 @@ docname_handler (char *self, DEF_FILE *defs, char *arg)
 int
 short_doc_handler (char *self, DEF_FILE *defs, char *arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -904,7 +903,7 @@ comment_handler (char *self, DEF_FILE *defs, char *arg)
 int
 depends_on_handler (char *self, DEF_FILE *defs, char *arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
   char *dependent;
 
   builtin = current_builtin (self, defs);
@@ -1081,7 +1080,7 @@ char *structfile_header[] = {
   "/* This file is manufactured by ./mkbuiltins, and should not be",
   "   edited by hand.  See the source to mkbuiltins for details. */",
   "",
-  "/* Copyright (C) 1987-2022 Free Software Foundation, Inc.",
+  "/* Copyright (C) 1987-2025 Free Software Foundation, Inc.",
   "",
   "   This file is part of GNU Bash, the Bourne Again SHell.",
   "",
@@ -1134,16 +1133,14 @@ char *structfile_footer[] = {
 void
 write_file_headers (FILE *structfile, FILE *externfile)
 {
-  register int i;
+  int i;
 
   if (structfile)
     {
       for (i = 0; structfile_header[i]; i++)
 	fprintf (structfile, "%s\n", structfile_header[i]);
 
-      fprintf (structfile, "#include \"%s\"\n",
-	       include_filename ? include_filename : "builtext.h");
-
+      fprintf (structfile, "#include \"%s\"\n", include_filename);
       fprintf (structfile, "#include \"bashintl.h\"\n");
 
       fprintf (structfile, "\nstruct builtin static_shell_builtins[] = {\n");
@@ -1151,8 +1148,7 @@ write_file_headers (FILE *structfile, FILE *externfile)
 
   if (externfile)
     fprintf (externfile,
-	     "/* %s - The list of builtins found in libbuiltins.a. */\n",
-	     include_filename ? include_filename : "builtext.h");
+	     "/* %s - The list of builtins found in libbuiltins.a. */\n", include_filename);
 }
 
 /* Write out any necessary closing information for
@@ -1160,7 +1156,7 @@ write_file_headers (FILE *structfile, FILE *externfile)
 void
 write_file_footers (FILE *structfile, FILE *externfile)
 {
-  register int i;
+  int i;
 
   /* Write out the footers. */
   if (structfile)
@@ -1175,12 +1171,12 @@ write_file_footers (FILE *structfile, FILE *externfile)
 void
 write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 {
-  register int i;
+  int i;
 
   /* Write out the information. */
   if (defs->builtins)
     {
-      register BUILTIN_DESC *builtin;
+      BUILTIN_DESC *builtin;
 
       for (i = 0; i < defs->builtins->sindex; i++)
 	{
@@ -1279,8 +1275,8 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 void
 write_longdocs (FILE *stream, ARRAY *builtins)
 {
-  register int i;
-  register BUILTIN_DESC *builtin;
+  int i;
+  BUILTIN_DESC *builtin;
   char *dname;
   char *sarray[2];
 
@@ -1316,7 +1312,7 @@ write_longdocs (FILE *stream, ARRAY *builtins)
 void
 write_dummy_declarations (FILE *stream, ARRAY *builtins)
 {
-  register int i;
+  int i;
   BUILTIN_DESC *builtin;
 
   for (i = 0; structfile_header[i]; i++)
@@ -1340,7 +1336,7 @@ write_dummy_declarations (FILE *stream, ARRAY *builtins)
 void
 write_ifdefs (FILE *stream, char **defines)
 {
-  register int i;
+  int i;
 
   if (!stream)
     return;
@@ -1369,7 +1365,7 @@ write_ifdefs (FILE *stream, char **defines)
 void
 write_endifs (FILE *stream, char **defines)
 {
-  register int i;
+  int i;
 
   if (!stream)
     return;
@@ -1394,98 +1390,74 @@ write_endifs (FILE *stream, char **defines)
 void
 write_documentation (FILE *stream, char **documentation, int indentation, int flags)
 {
-  register int i, j;
-  register char *line;
-  int string_array, texinfo, base_indent, filename_p;
+  int i, j;
+  char *line;
+  int string_array, texinfo, filename_p;
+  int full_indent, base_indent;
 
   if (stream == 0)
     return;
 
   string_array = flags & STRING_ARRAY;
   filename_p = flags & HELPFILE;
+  texinfo = flags & TEXINFO;
+
+  base_indent = (string_array && single_longdoc_strings && filename_p == 0) ? BASE_INDENT : 0;
+  full_indent = indentation + base_indent;
 
   if (string_array)
     {
       fprintf (stream, " {\n#if defined (HELP_BUILTIN)\n");	/* } */
-      if (single_longdoc_strings)
-	{
-	  if (filename_p == 0)
-	    {
-	      if (documentation && documentation[0] && documentation[0][0])
-		fprintf (stream,  "N_(\"");
-	      else
-		fprintf (stream, "N_(\" ");		/* the empty string translates specially. */
-	    }
-	  else
-	    fprintf (stream, "\"");
-	}
+      if (filename_p == 0 && single_longdoc_strings)
+	fprintf (stream, "N_(");
     }
 
-  base_indent = (string_array && single_longdoc_strings && filename_p == 0) ? BASE_INDENT : 0;
-
-  for (i = 0, texinfo = (flags & TEXINFO); documentation && (line = documentation[i]); i++)
+  for (i = 0; documentation && (line = documentation[i]); i++)
     {
+      bool first_line = i == 0;
+      bool last_line = documentation[i+1] == 0;
+
       /* Allow #ifdef's to be written out verbatim, but don't put them into
 	 separate help files. */
       if (*line == '#')
 	{
-	  if (string_array && filename_p == 0 && single_longdoc_strings == 0)
+	  if (string_array)
 	    fprintf (stream, "%s\n", line);
 	  continue;
 	}
 
       /* prefix with N_( for gettext */
-      if (string_array && single_longdoc_strings == 0)
-	{
-	  if (filename_p == 0)
-	    {
-	      if (line[0])
-		fprintf (stream, "  N_(\"");
-	      else
-		fprintf (stream, "  N_(\" ");		/* the empty string translates specially. */
-	    }
-	  else
-	    fprintf (stream, "  \"");
-	}
-
-      if (indentation)
-	for (j = 0; j < indentation; j++)
-	  fprintf (stream, " ");
-
-      /* Don't indent the first line, because of how the help builtin works. */
-      if (i == 0)
-	indentation += base_indent;
-
       if (string_array)
 	{
+	  if (filename_p == 0 && single_longdoc_strings == 0)
+	    fprintf (stream,  "N_(");
+	  else if (first_line == 0)
+	    fputc ('\t', stream);
+	  fputc ('"', stream);
+	  if (filename_p == 0 && *line == 0 && last_line && first_line && indentation == 0)
+	    line = " ";		/* the empty string translates specially. */
+	  if (indentation && *line)
+	    fprintf (stream, "%*.0s", indentation, "");
+
 	  for (j = 0; line[j]; j++)
 	    {
-	      switch (line[j])
-		{
-		case '\\':
-		case '"':
-		  fprintf (stream, "\\%c", line[j]);
-		  break;
-
-		default:
-		  fprintf (stream, "%c", line[j]);
-		}
+	      if (line[j] == '\\' || line[j] == '"')
+		fputc ('\\', stream);
+	      fputc (line[j], stream);
 	    }
 
-	  /* closing right paren for gettext */
-	  if (single_longdoc_strings == 0)
-	    {
-	      if (filename_p == 0)
-		fprintf (stream, "\"),\n");
-	      else
-		fprintf (stream, "\",\n");
-	    }
-	  else if (documentation[i+1])
-	    /* don't add extra newline after last line */
-	    fprintf (stream, "\\n\\\n");
+	  if (last_line == 0)
+	    fprintf (stream, "\\n");
+	  fputc ('"', stream);
+	  if (filename_p == 0 && single_longdoc_strings == 0)
+	    fprintf (stream,  "),");
+	  if (last_line == 0)
+	    fprintf (stream, "\n");
 	}
       else if (texinfo)
 	{
+	  if (indentation && *line)
+	    fprintf (stream, "%*.0s", indentation, "");
 	  for (j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
@@ -1493,30 +1465,31 @@ write_documentation (FILE *stream, char **documentation, int indentation, int fl
 		case '@':
 		case '{':
 		case '}':
-		  fprintf (stream, "@%c", line[j]);
+		  fputc ('@', stream);
 		  break;
-
-		default:
-		  fprintf (stream, "%c", line[j]);
 		}
+	      fputc (line[j], stream);
 	    }
-	  fprintf (stream, "\n");
+	  fputc ('\n', stream);
 	}
       else
-	fprintf (stream, "%s\n", line);
+	fprintf (stream, "%*.0s%s\n", indentation, "", line);
+
+      /* Don't indent the first line, because of how the help builtin works. */
+      indentation = full_indent;
     }
 
   /* closing right paren for gettext */
-  if (string_array && single_longdoc_strings)
-    {
-      if (filename_p == 0)
-	fprintf (stream, "\"),\n");
-      else
-	fprintf (stream, "\",\n");
-    }
-
   if (string_array)
-    fprintf (stream, "#endif /* HELP_BUILTIN */\n  (char *)NULL\n};\n");
+    {
+      if (single_longdoc_strings)
+	{
+	  if (filename_p == 0)
+	    fputc (')', stream);
+	  fputc (',', stream);
+	}
+      fprintf (stream, "\n#endif /* HELP_BUILTIN */\n\t(char *)NULL\n};\n");
+    }
 }
 
 int
@@ -1563,7 +1536,7 @@ write_helpfiles (ARRAY *builtins)
 static int
 _find_in_table (char *name, char **name_table)
 {
-  register int i;
+  int i;
 
   for (i = 0; name_table[i]; i++)
     if (strcmp (name, name_table[i]) == 0)

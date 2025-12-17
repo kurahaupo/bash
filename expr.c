@@ -1,6 +1,6 @@
 /* expr.c -- arithmetic expression evaluation. */
 
-/* Copyright (C) 1990-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1990-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -88,6 +88,9 @@
 #include "subst.h"
 #include "typemax.h"		/* INTMAX_MAX, INTMAX_MIN */
 
+#include "builtins/common.h"	/* this_shell_builtin */
+#include "builtins/builtext.h"	/* let_builtin */
+
 /* Because of the $((...)) construct, expressions may include newlines.
    Here is a macro which accepts newlines, tabs and spaces as whitespace. */
 #define cr_whitespace(c) (whitespace(c) || ((c) == '\n'))
@@ -142,10 +145,6 @@
    lowest precedence. */
 #define EXP_LOWEST	expcomma
 
-#ifndef MAX_INT_LEN
-#  define MAX_INT_LEN 32
-#endif
-
 struct lvalue
 {
   char *tokstr;		/* possibly-rewritten lvalue if not NULL */
@@ -193,6 +192,10 @@ static void	free_lvalue (struct lvalue *);
 static intmax_t	expr_streval (char *, int, struct lvalue *);
 static intmax_t	strlong (char *);
 static void	evalerror (const char *);
+
+#if defined (ARRAYS)
+static int	expr_skipsubscript (char *, char *);
+#endif
 
 static void	pushexp (void);
 static void	popexp (void);
@@ -330,7 +333,11 @@ expr_bind_variable (const char *lhs, const char *rhs)
     return;		/* XXX */
 
 #if defined (ARRAY_VARS)
-  aflags = (array_expand_once && already_expanded) ? ASS_NOEXPAND : 0;
+  aflags = (array_expand_once && already_expanded) ? ASS_NOEXPAND : 0;	/* XXX */
+#if 0 /* TAG:bash-5.4 https://lists.gnu.org/archive/html/bug-bash/2024-12/msg00193.html */
+  if (this_shell_builtin == let_builtin && shell_compatibility_level > 51)
+    aflags |= ASS_NOEXPAND;		/* we didn't quote subscripts */
+#endif
   aflags |= ASS_ALLOWALLSUB;		/* allow assoc[@]=value */
 #else
   aflags = 0;
@@ -347,18 +354,21 @@ expr_bind_variable (const char *lhs, const char *rhs)
 static int
 expr_skipsubscript (char *vp, char *cp)
 {
-  int flags, isassoc;
+  int flags, isassoc, noexp;
   SHELL_VAR *entry;
 
-  isassoc = 0;
+  isassoc = noexp = 0;
   entry = 0;
-  if (array_expand_once & already_expanded)
+  /* We're not doing any evaluation here, we should suppress expansion when
+     skipping over the subscript */
+  noexp = already_expanded && (shell_compatibility_level > 51 || array_expand_once);
+  if (noexp)
     {
       *cp = '\0';
       isassoc = valid_identifier (vp) && (entry = find_variable (vp)) && assoc_p (entry);
       *cp = '[';	/* ] */
     }
-  flags = (isassoc && array_expand_once && already_expanded) ? VA_NOEXPAND : 0;
+  flags = (isassoc && noexp) ? VA_NOEXPAND : 0;
   return (skipsubscript (cp, 0, flags));
 }
 
@@ -567,10 +577,10 @@ expassign (void)
 	      lvalue -= value;
 	      break;
 	    case LSH:
-	      lvalue <<= value;
+	      lvalue = (uintmax_t)lvalue << (value & (TYPE_WIDTH(uintmax_t) - 1));
 	      break;
 	    case RSH:
-	      lvalue >>= value;
+	      lvalue >>= (value & (TYPE_WIDTH(uintmax_t) - 1));
 	      break;
 	    case BAND:
 	      lvalue &= value;
@@ -827,7 +837,7 @@ expcompare (void)
 static intmax_t
 expshift (void)
 {
-  register intmax_t val1, val2;
+  intmax_t val1, val2;
 
   val1 = expaddsub ();
 
@@ -839,9 +849,9 @@ expshift (void)
       val2 = expaddsub ();
 
       if (op == LSH)
-	val1 = val1 << val2;
+	val1 = (uintmax_t)val1 << (val2 & (TYPE_WIDTH(uintmax_t) - 1));
       else
-	val1 = val1 >> val2;
+	val1 = val1 >> (val2 & (TYPE_WIDTH(uintmax_t) - 1));
       lasttok = NUM;
     }
 
@@ -881,9 +891,7 @@ expmuldiv (void)
 
   val1 = exppower ();
 
-  while ((curtok == MUL) ||
-	 (curtok == DIV) ||
-	 (curtok == MOD))
+  while ((curtok == MUL) || (curtok == DIV) || (curtok == MOD))
     {
       int op = curtok;
       char *stp, *sltp;
@@ -1057,47 +1065,49 @@ exp0 (void)
       /* Skip over closing paren. */
       readtok ();
     }
-  else if ((curtok == NUM) || (curtok == STR))
+  else if (curtok == NUM)
     {
       val = tokval;
-      if (curtok == STR)
+      readtok ();
+    }
+  else if (curtok == STR)
+    {
+      val = tokval;
+      SAVETOK (&ec);
+      tokstr = (char *)NULL;	/* keep it from being freed */
+      noeval = 1;
+      readtok ();
+      stok = curtok;
+
+      /* post-increment or post-decrement */
+      if (stok == POSTINC || stok == POSTDEC)
 	{
-	  SAVETOK (&ec);
-	  tokstr = (char *)NULL;	/* keep it from being freed */
-          noeval = 1;
-          readtok ();
-          stok = curtok;
+ 	  /* restore certain portions of EC */
+ 	  tokstr = ec.tokstr;
+ 	  noeval = ec.noeval;
+ 	  curlval = ec.lval;
+ 	  lasttok = STR;	/* ec.curtok */
 
-	  /* post-increment or post-decrement */
- 	  if (stok == POSTINC || stok == POSTDEC)
- 	    {
- 	      /* restore certain portions of EC */
- 	      tokstr = ec.tokstr;
- 	      noeval = ec.noeval;
- 	      curlval = ec.lval;
- 	      lasttok = STR;	/* ec.curtok */
-
-	      v2 = val + ((stok == POSTINC) ? 1 : -1);
-	      vincdec = itos (v2);
-	      if (noeval == 0)
-		{
+	  v2 = val + ((stok == POSTINC) ? 1 : -1);
+	  vincdec = itos (v2);
+	  if (noeval == 0)
+	    {
 #if defined (ARRAY_VARS)
-		  if (curlval.ind != -1)
-		    expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
-		  else
+	      if (curlval.ind != -1)
+		expr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
+	      else
 #endif
-		    expr_bind_variable (tokstr, vincdec);
-		}
-	      free (vincdec);
-	      curtok = NUM;	/* make sure x++=7 is flagged as an error */
- 	    }
- 	  else
- 	    {
-	      /* XXX - watch out for pointer aliasing issues here */
-	      if (stok == STR)	/* free new tokstr before old one is restored */
-		FREE (tokstr);
-	      RESTORETOK (&ec);
- 	    }
+		expr_bind_variable (tokstr, vincdec);
+	    }
+	  free (vincdec);
+	  curtok = NUM;	/* make sure x++=7 is flagged as an error */
+	}
+      else
+	{
+	  /* XXX - watch out for pointer aliasing issues here */
+	  if (stok == STR)	/* free new tokstr before old one is restored */
+	    FREE (tokstr);
+	  RESTORETOK (&ec);
 	}
 
       readtok ();
@@ -1155,6 +1165,10 @@ expr_streval (char *tok, int e, struct lvalue *lvalue)
 
 #if defined (ARRAY_VARS)
   tflag = (array_expand_once && already_expanded) ? AV_NOEXPAND : 0;	/* for a start */
+#if 0 /* TAG:bash-5.4 https://lists.gnu.org/archive/html/bug-bash/2024-12/msg00193.html */
+  if (this_shell_builtin == let_builtin && shell_compatibility_level > 51)
+    tflag |= AV_NOEXPAND;	/* we didn't quote subscripts */
+#endif
 #endif
 
   /* [[[[[ */

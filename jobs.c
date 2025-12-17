@@ -3,7 +3,7 @@
 /* This file works with both POSIX and BSD systems.  It implements job
    control. */
 
-/* Copyright (C) 1989-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -2317,7 +2317,7 @@ make_child (char *command, int flags)
 	break;
       forksleep <<= 1;
 
-      if (interrupt_state)
+      if (interrupt_state)	/* XXX - and terminating_signal? */
 	break;
       sigprocmask (SIG_SETMASK, &set, (sigset_t *)NULL);
     }
@@ -2482,9 +2482,11 @@ make_child (char *command, int flags)
 	 been reused. */
       delete_old_job (pid);
 
-      /* Perform the check for pid reuse unconditionally.  Some systems reuse
-	 PIDs before giving a process CHILD_MAX/_SC_CHILD_MAX unique ones. */
-      bgp_delete (pid);		/* new process, discard any saved status */
+      /* Perform the check for background pid reuse unconditionally.
+	 Some systems reuse PIDs before giving a process
+	 CHILD_MAX/_SC_CHILD_MAX unique ones. */
+      if (async_p)
+	bgp_delete (pid);	/* new background process, discard any saved status */
 
       last_made_pid = pid;
 
@@ -2749,6 +2751,7 @@ wait_for_single_pid (pid_t pid, int flags)
 
   if (child == 0)
     {
+no_child:
       if (flags & JWAIT_PERROR)
 	internal_error (_("wait: pid %ld is not a child of this shell"), (long)pid);
       return (257);
@@ -2758,6 +2761,8 @@ wait_for_single_pid (pid_t pid, int flags)
   do
     {
       r = wait_for (pid, 0);
+      if (r == -1 && errno == ECHILD)
+	goto no_child;
       if ((flags & JWAIT_FORCE) == 0)
 	break;
 
@@ -2790,7 +2795,7 @@ wait_for_single_pid (pid_t pid, int flags)
 
 /* Wait for all of the background processes started by this shell to finish. */
 int
-wait_for_background_pids (struct procstat *ps)
+wait_for_background_pids (int wflags, struct procstat *ps)
 {
   register int i, r;
   int any_stopped, check_async, njobs;
@@ -2830,7 +2835,7 @@ wait_for_background_pids (struct procstat *ps)
       UNBLOCK_CHILD (oset);
       QUIT;
       errno = 0;		/* XXX */
-      r = wait_for_single_pid (pid, JWAIT_PERROR);
+      r = wait_for_single_pid (pid, JWAIT_PERROR|wflags);
       if (ps)
 	{
 	  ps->pid = pid;
@@ -3535,7 +3540,7 @@ return_procsub:
   /* There aren't any dead jobs in the jobs table, but let's see if there's
      one in bgpids. We can do this in posix mode because we'll remove any
      one we find from the table, preserving existing semantics. */
-  if (posixly_correct && (t = bgp_findone ()))
+  if (posixly_correct && (flags & JWAIT_WAITING) == 0 && (t = bgp_findone ()))
     {
       pid = t->pid;
       r = t->status;
