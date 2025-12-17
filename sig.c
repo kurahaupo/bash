@@ -34,6 +34,8 @@
 
 #include "bashintl.h"
 
+#define NEED_FPURGE_DECL
+
 #include "shell.h"
 #include "execute_cmd.h"
 #if defined (JOB_CONTROL)
@@ -461,6 +463,10 @@ throw_to_top_level (void)
 #if defined (PROCESS_SUBSTITUTION)
   unlink_fifo_list ();
 #endif /* PROCESS_SUBSTITUTION */
+
+  /* We don't want any more output after a SIGINT. */
+  if (interactive && print_newline)
+    fpurge (stdout);
 
   run_unwind_protects ();
   loop_level = continuing = breaking = funcnest = 0;

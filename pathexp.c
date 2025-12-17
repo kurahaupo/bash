@@ -391,6 +391,15 @@ convert_to_backslash:
 	}
       else if (pathname[i] == '\\' && (qflags & QGLOB_REGEXP))
         last_was_backslash = 1;
+      else if (pathname[i] == CTLNUL && (qflags & QGLOB_CVTNULL)
+				     && (qflags & QGLOB_CTLESC))
+	/* If we have an unescaped CTLNUL in the string, and QFLAGS says
+	   we want to remove those (QGLOB_CVTNULL) but the string is quoted
+	   (QGLOB_CVTNULL and QGLOB_CTLESC), we need to remove it. This can
+	   happen when the pattern contains a quoted null string adjacent
+	   to non-null characters, and it is not removed by quote removal. */
+	continue;
+
       temp[j++] = pathname[i];
     }
 endpat:
@@ -895,6 +904,7 @@ globsort_sortarray (struct globsort_t *garray, size_t len)
       break;
     default:
       internal_error (_("invalid glob sort type"));
+      sortfunc = (QSFUNC *)globsort_namecmp;
       break;
     }
 

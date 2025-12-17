@@ -1,6 +1,6 @@
 /* general.h -- defines that everybody likes to use. */
 
-/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -178,12 +178,15 @@ STREQN(const char *a, const char *b, size_t n)
    CSIZE is the currently-allocated size of STR (int)
    SINCR is how much to increment CSIZE before calling xrealloc (int) */
 
+/* old code used to use a loop:
+	while ((cind) + (room) >= csize) \
+	  csize += (sincr); \
+*/
 #define RESIZE_MALLOCED_BUFFER(str, cind, room, csize, sincr) \
   do { \
     if ((cind) + (room) >= csize) \
       { \
-	while ((cind) + (room) >= csize) \
-	  csize += (sincr); \
+	csize += ((cind) + (room) - csize + (sincr)) / (sincr) * (sincr); \
 	str = xrealloc (str, csize); \
       } \
   } while (0)
@@ -213,6 +216,7 @@ typedef int sh_glist_func_t (GENERIC_LIST *);
 typedef int sh_gcp_func_t (GENERIC_LIST *, char *);
 
 typedef char *sh_string_func_t (char *);	/* like savestring, et al. */
+typedef void *sh_copy_func_t (void *);		/* generic copy function */
 
 typedef int sh_msg_func_t (const char *, ...);	/* printf(3)-like */
 typedef void sh_vmsg_func_t (const char *, ...);	/* printf(3)-like */
