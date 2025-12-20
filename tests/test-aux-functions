@@ -1,0 +1,42 @@
+# shell functions to include in multiple test files
+
+# squeeze out blanks to avoid white space differences in od implementations
+_intl_normalize_spaces()
+{
+	sed -e 's/[[:space:]]\{1,\}/ /g' -e 's/[[:space:]]*$//'
+}
+
+# avoid whitespace differences in wc implementations
+_cut_leading_spaces()
+{
+	sed -e 's/^[ 	]*//g'
+}
+
+test_runsub()
+{
+	scriptname=${1##*/}
+	printf '\t%s\n' "${scriptname}"
+
+	${THIS_SH} "$@"
+}
+
+# some useful locale variables
+ZH_LOCALE=$(locale -a | grep -i '^zh_TW\.big5' | sed 1q)
+ZH_DEFAULT=zh_TW.big5
+
+US_LOCALE=$(locale -a | grep -i '^en_US\.utf-8' | sed 1q)
+if [ -z "$US_LOCALE" ]; then
+	US_LOCALE=$(locale -a | grep -i '^en_US\.utf8' | sed 1q)
+fi
+CTYPE_DEFAULT=$(locale | grep ^LC_CTYPE | sed 's:^.*=::' | tr -d '"')
+
+# figure out default locale; use LC_CTYPE value since that is what we use it for
+if [ -n "$LC_ALL" ]; then
+	DEFAULT_LOCALE=${LC_ALL}
+elif [ -n "$LC_CTYPE" ]; then
+	DEFAULT_LOCALE=${LC_CTYPE}
+elif [ -n "$LANG" ]; then
+	DEFAULT_LOCALE=${LANG}
+else
+	DEFAULT_LOCALE="C"
+fi

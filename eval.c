@@ -1,6 +1,6 @@
 /* eval.c -- reading and evaluating commands. */
 
-/* Copyright (C) 1996-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -95,7 +95,11 @@ reader_loop (void)
 	    {
 	      /* Some kind of throw to top_level has occurred. */
 	    case ERREXIT:
-	      if (exit_immediately_on_error)
+	      /* POSIX says to exit on error "as if by executing the
+		 exit special built-in utility with no arguments," so we
+		 don't reset any local contexts and keep the execution
+		 context in a shell function if we were executing one. */
+	      if (exit_immediately_on_error && posixly_correct == 0)
 		reset_local_contexts ();	/* not in a function */
 	    case FORCE_EOF:
 	    case EXITPROG:
@@ -174,7 +178,7 @@ reader_loop (void)
 	      current_command_number++;
 
 	      executing = 1;
-	      stdin_redir = 0;
+	      stdin_redirected = 0;
 
 	      execute_command (current_command);
 
