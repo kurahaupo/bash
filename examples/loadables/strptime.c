@@ -175,7 +175,7 @@ inittime (time_t *clock, struct tm *timeptr)
       return;
     }
 
-  memcpy (timeptr, loctime, sizeof (struct tm));
+  *timeptr = *loctime;
 
   /* but default to midnight */
   timeptr->tm_hour = timeptr->tm_min = timeptr->tm_sec = 0;
