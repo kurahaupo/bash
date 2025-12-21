@@ -1,6 +1,6 @@
 /* shell.c -- GNU's idea of the POSIX shell specification. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -1348,14 +1348,14 @@ uidget (void)
   (void)getresuid (&current_user.uid, &current_user.euid, &current_user.saveuid);
 #else
   current_user.uid = getuid ();
-  current_user.euid = geteuid ();
+  current_user.euid = current_user.saveuid = geteuid ();
 #endif
 
 #if HAVE_SETRESGID
   (void)getresgid (&current_user.gid, &current_user.egid, &current_user.savegid);
 #else
   current_user.gid = getgid ();
-  current_user.egid = getegid ();
+  current_user.egid = current_user.savegid = getegid ();
 #endif
 
   if (current_user.uid != u)
@@ -1690,7 +1690,7 @@ open_shell_script (char *script_name)
 #endif
 
   /* Only do this with non-tty file descriptors we can seek on. */
-  if (fd_is_tty == 0 && (lseek (fd, 0L, 1) != -1))
+  if (fd_is_tty == 0 && (lseek (fd, 0L, SEEK_CUR) != -1))
     {
       /* Check to see if the `file' in `bash file' is a binary file
 	 according to the same tests done by execute_simple_command (),
@@ -1727,7 +1727,7 @@ open_shell_script (char *script_name)
 	  exit (EX_BINARY_FILE);
 	}
       /* Now rewind the file back to the beginning. */
-      lseek (fd, 0L, 0);
+      lseek (fd, 0L, SEEK_SET);
     }
 
   /* Open the script.  But try to move the file descriptor to a randomly
@@ -1774,9 +1774,24 @@ set_bash_input (void)
   if (interactive && no_line_editing == 0)
     with_input_from_stdin ();
   else if (interactive == 0)
-    with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+    {
+      errno = 0;
+      with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+      if (get_buffered_stream (default_buffered_input) == NULL)
+	{
+	  last_command_exit_value = EX_NOINPUT;
+	  if (errno != 0)
+	    sys_error ("%s", _("error creating buffered stream"));
+	  else
+	    report_error ("%s", _("error creating buffered stream"));
+	}
+    }
   else
-    with_input_from_stream (default_input, dollar_vars[0]);
+    {
+      with_input_from_stream (default_input, dollar_vars[0]);
+      if (forced_interactive && running_under_emacs && fd_ispipe (fileno (default_input)))
+	stream_setsize (1);
+    }
 }
 
 /* Close the current shell script input source and forget about it.  This is

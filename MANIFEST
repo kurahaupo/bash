@@ -535,6 +535,7 @@ m4/timespec.m4		f
 m4/bison.m4		f
 m4/c-bool.m4		f
 m4/codeset.m4		f
+m4/d-type.m4		f
 m4/extern-inline.m4	f
 m4/fcntl-o.m4		f
 m4/flexmember.m4	f
@@ -736,13 +737,13 @@ support/signames.c	f
 support/siglen.c	f
 #support/bashbug.sh	f
 support/bashbug.sh.in	f
-support/man2html.c	f
+#support/man2html.c	f
 support/recho.c		f
 support/zecho.c		f
 support/xcase.c		f
 support/SYMLINKS	f
 support/fixlinks	f	755
-support/install.sh	f	755
+support/install-sh	f	755
 support/texi2dvi	f	755
 support/texi2html	f	755
 #support/xenix-link.sh	f	755
@@ -786,11 +787,14 @@ examples/loadables/getconf.h	f
 examples/loadables/getconf.c	f
 examples/loadables/fdflags.c	f
 examples/loadables/finfo.c	f
+examples/loadables/fltexpr.c	f
 examples/loadables/cat.c	f
+examples/loadables/chmod.c	f
 examples/loadables/csv.c	f
 examples/loadables/dsv.c	f
 examples/loadables/kv.c		f
 examples/loadables/cut.c	f
+examples/loadables/ocut.c	f
 examples/loadables/logname.c	f
 examples/loadables/basename.c	f
 examples/loadables/dirname.c	f
@@ -861,9 +865,10 @@ examples/functions/login	f
 #examples/functions/mhfold	f
 #examples/functions/newdirstack.bsh	f
 examples/functions/notify.bash	f
+examples/functions/repeat	f
+examples/functions/repeat2	f
 #examples/functions/pathfuncs	f
 #examples/functions/recurse	f
-#examples/functions/repeat2	f
 #examples/functions/repeat3	f
 examples/functions/seq		f
 examples/functions/seq2		f
@@ -940,7 +945,7 @@ examples/shellmath/testCases.in	f
 examples/shellmath/timingData.txt	f
 tests/README		f
 tests/COPYRIGHT		f
-tests/test-glue-functions	f
+tests/test-aux-functions	f
 tests/alias.tests	f
 tests/alias1.sub	f
 tests/alias2.sub	f
@@ -967,6 +972,8 @@ tests/arith6.sub	f
 tests/arith7.sub	f
 tests/arith8.sub	f
 tests/arith9.sub	f
+tests/arith10.sub	f
+tests/arith11.sub	f
 tests/array.tests	f
 tests/array.right	f
 tests/array1.sub	f
@@ -1080,6 +1087,7 @@ tests/comsub23.sub	f
 tests/comsub24.sub	f
 tests/comsub25.sub	f
 tests/comsub26.sub	f
+tests/comsub27.sub	f
 tests/comsub-eof.tests	f
 tests/comsub-eof0.sub	f
 tests/comsub-eof1.sub	f
@@ -1182,6 +1190,7 @@ tests/exec13.sub	f
 tests/exec14.sub	f
 tests/exec15.sub	f
 tests/exec16.sub	f
+tests/exec17.sub	f
 tests/exp.tests		f
 tests/exp.right		f
 tests/exp1.sub		f
@@ -1197,6 +1206,7 @@ tests/exp10.sub		f
 tests/exp11.sub		f
 tests/exp12.sub		f
 tests/exp13.sub		f
+tests/exp14.sub		f
 tests/exportfunc.tests	f
 tests/exportfunc.right	f
 tests/exportfunc1.sub	f
@@ -1291,6 +1301,7 @@ tests/history5.sub	f
 tests/history6.sub	f
 tests/history7.sub	f
 tests/history8.sub	f
+tests/history9.sub	f
 tests/ifs.tests		f
 tests/ifs.right		f
 tests/ifs1.sub		f
@@ -1363,6 +1374,7 @@ tests/nameref21.sub	f
 tests/nameref22.sub	f
 tests/nameref23.sub	f
 tests/nameref24.sub	f
+tests/nameref25.sub	f
 tests/nameref.right	f
 tests/new-exp.tests	f
 tests/new-exp1.sub	f
@@ -1432,6 +1444,7 @@ tests/printf4.sub	f
 tests/printf5.sub	f
 tests/printf6.sub	f
 tests/printf7.sub	f
+tests/printf8.sub	f
 tests/procsub.tests	f
 tests/procsub.right	f
 tests/procsub1.sub	f
@@ -1609,6 +1622,7 @@ tests/trap6.sub		f
 tests/trap7.sub		f
 tests/trap8.sub		f
 tests/trap9.sub		f
+tests/trap10.sub	f
 tests/type.tests	f
 tests/type.right	f
 tests/type1.sub		f

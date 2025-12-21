@@ -1,7 +1,7 @@
 This file is declare.def, from which is created declare.c.
 It implements the builtins "declare" and "local" in Bash.
 
-Copyright (C) 1987-2024 Free Software Foundation, Inc.
+Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -39,14 +39,20 @@ Options:
   -p	display the attributes and value of each NAME
 
 Options which set attributes:
+#ifdef ARRAY_VARS
   -a	to make NAMEs indexed arrays (if supported)
   -A	to make NAMEs associative arrays (if supported)
+#endif
   -i	to make NAMEs have the `integer' attribute
+#ifdef CASEMOD_ATTRS
   -l	to convert the value of each NAME to lower case on assignment
+#endif
   -n	make NAME a reference to the variable named by its value
   -r	to make NAMEs readonly
   -t	to make NAMEs have the `trace' attribute
+#ifdef CASEMOD_ATTRS
   -u	to convert the value of each NAME to upper case on assignment
+#endif
   -x	to make NAMEs export
 
 Using `+' instead of `-' turns off the given attribute, except for a,
@@ -250,6 +256,12 @@ declare_invalid_opts (int flags_on, int flags_off)
   else if ((flags_on & att_assoc) && (flags_on & att_array))
     {
       sh_invalidopt ("-a");
+      return (EX_BADUSAGE);
+    }
+  /* Ineffective, since you can't have namerefs referencing positional parameters */
+  else if ((flags_on & att_nameref) && (flags_on & att_integer))
+    {
+      builtin_error (_("cannot use -n with -i"));
       return (EX_BADUSAGE);
     }
 
@@ -644,19 +656,48 @@ restart_new_var_name:
 #endif
 	  if (offset == 0 && (flags_on & att_nameref))
 	    {
-	      /* First look for refvar at current scope */
+	      /* First look for refvar at current scope. Since we're turning
+		 on the nameref flag, it doesn't matter whether it's already
+		 a nameref. */
 	      refvar = find_variable_last_nameref (name, 1);
+
 	      /* VARIABLE_CONTEXT != 0, so we are attempting to create or modify
 		 the attributes for a local variable at the same scope.  If we've
 		 used a reference from a previous context to resolve VAR, we
-		 want to throw REFVAR and VAR away and create a new local var. */
+		 want to throw REFVAR and VAR away and create a new local var.
+		 If we use REFVAR at the same context, make sure the att_local
+		 attribute is set. By the time we exit this clause, VAR points
+		 to a local variable at the current context. */
 	      if (refvar && refvar->context != variable_context)
 		{
 		  refvar = 0;
 		  var = make_local_variable (name, inherit_flag);
 		}
 	      else if (refvar && refvar->context == variable_context)
-		var = refvar;
+		{
+		  SHELL_VAR *tv;
+
+		  /* We handle the difference between a variable found in
+		     the function's temporary environment and the temporary
+		     environment passed to declare/local. */
+		  /* handle case of something like `x=value local -n x' -- we
+		     want to make sure we create a local variable */
+		  tv = find_tempenv_variable (name);
+		  if (tv && tv == refvar)
+		    {
+		      refvar = 0;
+		      var = make_local_variable (name, inherit_flag);
+		    }
+		  else
+		    {
+		      /* Make sure we modify a variable in a function temporary
+			 environment to have the local attribute so it shows
+			 up as a local variable. */
+		      if (tempvar_p (refvar) && variable_context)
+			VSETATTR (refvar, att_local);
+		      var = refvar;
+		    }
+		}
 	      /* Maybe we just want to create a new local variable */
 	      else if ((var = find_variable (name)) == 0 || var->context != variable_context)
 		var = make_local_variable (name, inherit_flag);
@@ -763,10 +804,21 @@ restart_new_var_name:
       */
       if (var == 0 && (mkglobal || flags_on || flags_off || offset))
 	{
-	  refvar = mkglobal ? find_global_variable_last_nameref (name, 0) : find_variable_last_nameref (name, 0);
+	  refvar = mkglobal ? find_global_variable_last_nameref (name, 1) : find_variable_last_nameref (name, 1);
 	  if (refvar && nameref_p (refvar) == 0)
 	    refvar = 0;
-	  if (refvar)
+	  /* If we are trying to set attributes for an unset nameref variable,
+	     we have a couple of choices: we can set the attributes on the
+	     nameref itself, or we can remove the nameref attribute from the
+	     variable and treat it as an unset variable with the new
+	     attribute(s). The former is what bash has traditionally done; the
+	     latter is what ksh93 does. */
+	  if (refvar && nameref_cell (refvar) == 0)
+	    {
+	      var = refvar;
+	      refvar = 0;
+	    }
+	  if (refvar && nameref_cell (refvar))
 	    var = declare_find_variable (nameref_cell (refvar), mkglobal, 0);
 	  if (refvar && var == 0)
 	    {
@@ -1032,6 +1084,9 @@ restart_new_var_name:
 	    {
 	      if (valid_nameref_value (value, 1) == 0)
 		sh_invalidid (value);
+	      /* what else can cause this to fail? */
+	      else if (flags_on & att_integer)
+		builtin_error (_("%s: expands to invalid variable name for name reference"), value);
 	      assign_error++;
 	      /* XXX - unset this variable? or leave it as normal var? */
 	      if (created_var)

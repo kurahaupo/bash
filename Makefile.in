@@ -1,6 +1,6 @@
-# Makefile for bash-5.3, version 5.8
+# Makefile for bash-5.3, version 5.11
 #
-# Copyright (C) 1996-2024 Free Software Foundation, Inc.
+# Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -77,14 +77,17 @@ AR = @AR@
 ARFLAGS = @ARFLAGS@
 RANLIB = @RANLIB@
 SIZE = @SIZE@
-STRIP = strip
+STRIP = @STRIP@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALLMODE= -m 0755
 INSTALLMODE2 = -m 0555
+
+install_sh = @install_sh@
 
 CTAGS = ctags
 CTAGSFLAGS = -x
@@ -194,14 +197,17 @@ ASAN_XCFLAGS	= \
 ASAN_XLDFLAGS	= \
 		  -fsanitize=address \
 
-
 UBSAN_XCFLAGS	= \
 		  -fsanitize=undefined \
+		  -fsanitize=local-bounds \
+		  -fsanitize=vptr \
 		  -fsanitize-recover \
 		  -fstack-protector \
 
 UBSAN_XLDFLAGS	= \
-		  -fsanitize=undefined
+		  -fsanitize=undefined \
+		  -fsanitize=local-bounds \
+		  -fsanitize=vptr \
 
 GCOV_XCFLAGS	= \
 		  -fprofile-arcs \
@@ -1429,9 +1435,9 @@ install: .made installdirs
 	- cd $(LOADABLES_DIR) && $(MAKE) $(BASH_MAKEFLAGS) DESTDIR=$(DESTDIR) $@
 
 install-strip:
-	$(MAKE) $(BASH_MAKEFLAGS) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' \
-	      prefix=${prefix} exec_prefix=${exec_prefix} \
-	      DESTDIR=$(DESTDIR) install
+	$(MAKE) $(BASH_MAKEFLAGS) INSTALL_PROGRAM='$(INSTALL_STRIP_PROGRAM)' \
+		prefix=${prefix} exec_prefix=${exec_prefix} \
+		DESTDIR=$(DESTDIR) install
 
 install-headers-dirs:
 	@ ${SHELL} $(SUPPORT_SRC)mkinstalldirs $(DESTDIR)$(headersdir)
@@ -1627,6 +1633,8 @@ y.tab.c y.tab.h y.tab.o: $(srcdir)/parse.y
 
 # XXX   WARNING are TWO alias.o files; one from support/alias.c (generated from
 #	$(BUILTIN_SRCDIR)/alias.def), and one from $(topdir)/alias.c
+
+# shell basics
 
 #alias.o: $(BASHINCDIR)/ansi_stdlib.h
 alias.o: $(BASHINCDIR)/chartypes.h
@@ -2002,7 +2010,7 @@ braces.o: $(topdir)/variables.h
 braces.o: $(topdir)/xmalloc.h
 braces.o: config.h
 braces.o: pathnames.h
-braces.o: stdckdint.h
+#braces.o: stdckdint.h
 #builtins/bind.o: $(LIBINTL_H)
 copy_cmd.o: $(BASHINCDIR)/chartypes.h
 copy_cmd.o: $(BASHINCDIR)/maxpath.h
@@ -2242,6 +2250,7 @@ expr.o: $(BASHINCDIR)/stdc.h
 expr.o: $(BASHINCDIR)/typemax.h
 expr.o: $(BASHINCDIR)/unlocked-io.h
 #expr.o: $(LIBINTL_H)
+expr.o: $(BUILTIN_SRCDIR)/common.h
 expr.o: $(srcdir)/expr.c
 expr.o: $(topdir)/array.h
 expr.o: $(topdir)/arrayfunc.h
@@ -2270,6 +2279,7 @@ expr.o: $(topdir)/syntax.h
 expr.o: $(topdir)/unwind_prot.h
 expr.o: $(topdir)/variables.h
 expr.o: $(topdir)/xmalloc.h
+expr.o: builtins/builtext.h
 expr.o: config.h
 expr.o: pathnames.h
 #findcmd.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -2992,7 +3002,7 @@ print_cmd.o: $(BASHINCDIR)/shmbutil.h
 print_cmd.o: $(BASHINCDIR)/stdc.h
 print_cmd.o: $(BASHINCDIR)/unlocked-io.h
 print_cmd.o: $(BUILTIN_SRCDIR)/common.h
-#print_cmd.o: $(GRAM_H)
+print_cmd.o: $(GRAM_H)
 #print_cmd.o: $(LIBINTL_H)
 print_cmd.o: $(srcdir)/print_cmd.c
 print_cmd.o: $(topdir)/array.h
@@ -3528,7 +3538,7 @@ xmalloc.o: $(topdir)/config-bot.h
 xmalloc.o: $(topdir)/config-top.h
 xmalloc.o: $(topdir)/error.h
 xmalloc.o: config.h
-xmalloc.o: stdckdint.h
+#xmalloc.o: stdckdint.h
 y.tab.c: $(srcdir)/parse.y
 y.tab.h: $(srcdir)/parse.y
 #y.tab.o: $(BASHINCDIR)/ansi_stdlib.h
@@ -3556,7 +3566,7 @@ y.tab.o: $(RL_LIBSRC)/readline.h
 y.tab.o: $(RL_LIBSRC)/rlstdc.h
 y.tab.o: $(RL_LIBSRC)/rltypedefs.h
 y.tab.o: $(TILDE_LIBSRC)/tilde.h
-y.tab.o: $(srcdir)/parse.y
+#y.tab.o: $(srcdir)/parse.y
 y.tab.o: $(topdir)/alias.h
 y.tab.o: $(topdir)/array.h
 y.tab.o: $(topdir)/arrayfunc.h
@@ -3611,7 +3621,7 @@ y.tab.o: y.tab.c
 # TODO signames.o is built from $(topdir)/support/signames.c, which should be
 #      moved to $(srcdir) and then symlinked back into support
 
-buildsignames.o: $(BASHINCDIR)/ansi_stdlib.h
+#buildsignames.o: $(BASHINCDIR)/ansi_stdlib.h
 buildsignames.o: $(topdir)/bashansi.h
 buildsignames.o: $(topdir)/config-bot.h
 buildsignames.o: $(topdir)/config-top.h
@@ -3623,7 +3633,7 @@ mksignames.o: $(topdir)/config-top.h
 mksignames.o: $(topdir)/support/mksignames.c
 mksignames.o: config.h
 
-signames.o: $(BASHINCDIR)/ansi_stdlib.h
+#signames.o: $(BASHINCDIR)/ansi_stdlib.h
 signames.o: $(topdir)/bashansi.h
 signames.o: config.h
 
@@ -4993,7 +5003,7 @@ builtins/printf.o: $(topdir)/variables.h
 builtins/printf.o: $(topdir)/xmalloc.h
 builtins/printf.o: config.h
 builtins/printf.o: pathnames.h
-builtins/printf.o: stdckdint.h
+#builtins/printf.o: stdckdint.h
 builtins/psize-posix.o: $(BUILTIN_SRCDIR)/psize-posix.c
 builtins/psize.o: $(BUILTIN_SRCDIR)/psize.c
 builtins/psize.o: $(topdir)/config-bot.h

@@ -1,6 +1,6 @@
 /* variables.c -- Functions for hacking shell variables. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -186,7 +186,7 @@ static int winsize_assignment;	/* currently assigning to LINES or COLUMNS */
 SHELL_VAR nameref_invalid_value;
 static SHELL_VAR nameref_maxloop_value;
 
-static HASH_TABLE *last_table_searched;	/* hash_lookup sets this */
+static HASH_TABLE *last_table_searched;	/* hash_lookup sets this, not checked right now */
 static VAR_CONTEXT *last_context_searched;
 
 /* Some forward declarations. */
@@ -285,6 +285,7 @@ static SHELL_VAR *new_shell_variable (const char *);
 static SHELL_VAR *make_new_variable (const char *, HASH_TABLE *);
 static SHELL_VAR *bind_variable_internal (const char *, const char *, HASH_TABLE *, int, int);
 
+static void init_variable (SHELL_VAR *);
 static void init_shell_variable (SHELL_VAR *);
 
 static void dispose_variable_value (SHELL_VAR *);
@@ -820,7 +821,7 @@ get_bash_name (void)
 	      tname = make_absolute (shell_name, get_string_value ("PWD"));
 	      if (*shell_name == '.')
 		{
-		  name = sh_canonpath (tname, PATH_CHECKDOTDOT | PATH_CHECKEXISTS);
+		  name = sh_realpath (tname, 0);
 		  if (name == 0)
 		    name = tname;
 		  else
@@ -2014,6 +2015,7 @@ find_variable_nameref (SHELL_VAR *v)
   int level, flags;
   char *newname;
   SHELL_VAR *orig, *oldv;
+  HASH_TABLE *savelast;
 
   level = 0;
   orig = v;
@@ -2033,7 +2035,9 @@ find_variable_nameref (SHELL_VAR *v)
       v = find_variable_internal (newname, flags);
       if (v == orig || v == oldv)
 	{
+	  savelast = last_table_searched;
 	  internal_warning (_("%s: circular name reference"), orig->name);
+	  last_table_searched = savelast;
 #if 1
 	  /* XXX - provisional change - circular refs go to
 	     global scope for resolution, without namerefs. */
@@ -2610,10 +2614,14 @@ make_local_variable (const char *name, int flags)
      (which results in duplicate names in the same VAR_CONTEXT->table */
   /* We can't just test tmpvar_p because variables in the temporary env given
      to a shell function appear in the function's local variable VAR_CONTEXT
-     but retain their tempvar attribute.  We want temporary variables that are
-     found in temporary_env, hence the test for last_table_searched, which is
-     set in hash_lookup and only (so far) checked here. */
-  if (was_tmpvar && old_var->context == variable_context && last_table_searched != temporary_env)
+     but retain their tempvar attribute. We want to handle temporary
+     variables that are not found in temporary_env, hence the test that
+     temporary_env exists and it's where we found the variable.
+     If the variable appears in the temporary environment passed to
+     local/declare, declare_internal will handle it. */
+  /* This definitely bears rethinking. */
+  if (was_tmpvar && old_var->context == variable_context && temporary_env &&
+      (new_var = hash_lookup (name, temporary_env)) && new_var != old_var)
     {
       VUNSETATTR (old_var, att_invisible);	/* XXX */
       /* We still want to flag this variable as local, though, and set things
@@ -2625,8 +2633,6 @@ make_local_variable (const char *name, int flags)
 	if (vc_isfuncenv (vc) && vc->scope == variable_context)
 	  break;
       goto set_local_var_flags;
-
-      return (old_var);
     }
 
   /* If we want to change to "inherit the old variable's value" semantics,
@@ -2668,24 +2674,17 @@ make_local_variable (const char *name, int flags)
 
   if (old_var == 0)
     new_var = make_new_variable (name, vc->table);
-  else
+  else if (was_tmpvar && (new_var = hash_lookup (name, vc->table)) && new_var == old_var)
     {
-#if 0
       /* This handles the case where a variable is found in both the temporary
 	 environment *and* declared as a local variable. If we want to avoid
 	 multiple entries with the same name in VC->table (that might mess up
-	 unset), we need to use the existing variable entry and destroy the
-	 current value. Currently disabled because it doesn't matter -- the
-	 right things happen. */
-      new_var = 0;
-      if (was_tmpvar && (new_var = hash_lookup (name, vc->table)))
-	{
-	  dispose_variable_value (new_var);
-	  init_variable (new_var);
-	}
-      if (new_var == 0)
-#endif
-	new_var = make_new_variable (name, vc->table);
+	 unset), we need to use the existing variable entry. declare_internal
+	 will do the remaining work. */
+    }
+  else
+    {
+      new_var = make_new_variable (name, vc->table);
 
       /* If we found this variable in one of the temporary environments,
 	 inherit its value.  Watch to see if this causes problems with
@@ -2726,6 +2725,9 @@ make_local_variable (const char *name, int flags)
       else
 	/* We inherit the export attribute, but no others. */
 	new_var->attributes = exported_p (old_var) ? att_exported : 0;
+
+      if (exported_p (new_var))
+	array_needs_making = 1;
     }
 
 set_local_var_flags:
@@ -2825,6 +2827,13 @@ make_local_array_variable (const char *name, int flags)
   if (var == 0 || array_p (var) || (assoc_ok && assoc_p (var)))
     return var;
 
+  /* array variables cannot be namerefs */
+  if (var && nameref_p (var) /* && invisible_p (var)*/)
+    {
+      internal_warning (_("%s: removing nameref attribute"), name);
+      VUNSETATTR (var, att_nameref);
+    }
+
   /* Validate any value we inherited from a variable instance at a previous
      scope and discard anything that's invalid. */
   if (localvar_inherit && assoc_p (var))
@@ -2843,6 +2852,11 @@ make_local_array_variable (const char *name, int flags)
       array = array_create ();
       var_setarray (var, array);
     }
+
+  INVALIDATE_EXPORTSTR (var);
+
+/*itrace("make_local_array_variable: unsetting att_tempvar");*/
+  VUNSETATTR (var, att_tempvar);
 
   VSETATTR (var, att_array);
   return var;
@@ -2878,6 +2892,13 @@ make_local_assoc_variable (const char *name, int flags)
   if (var == 0 || assoc_p (var) || (array_ok && array_p (var)))
     return var;
 
+  /* assoc variables cannot be namerefs */
+  if (var && nameref_p (var) /*&& invisible_p (var)*/)
+    {
+      internal_warning (_("%s: removing nameref attribute"), name);
+      VUNSETATTR (var, att_nameref);
+    }
+
   /* Validate any value we inherited from a variable instance at a previous
      scope and discard anything that's invalid. */
   if (localvar_inherit && array_p (var))
@@ -2896,6 +2917,11 @@ make_local_assoc_variable (const char *name, int flags)
       hash = assoc_create (ASSOC_HASH_BUCKETS);
       var_setassoc (var, hash);
     }
+
+  INVALIDATE_EXPORTSTR (var);
+
+/*itrace("make_local_assoc_variable: unsetting att_tempvar");*/
+  VUNSETATTR (var, att_tempvar);
 
   VSETATTR (var, att_assoc);
   return var;
@@ -2966,7 +2992,7 @@ make_variable_value (SHELL_VAR *var, const char *value, int flags)
 	  if (value)
 	    strcpy (retval + olen, value);
 	}
-      else if (*value)
+      else if (value && *value)
 	retval = savestring (value);
       else
 	{
@@ -3118,13 +3144,19 @@ bind_variable_internal (const char *name, const char *value, HASH_TABLE *table, 
 #endif
 	{
 	  entry = make_new_variable (newval, table);
-	  var_setvalue (entry, make_variable_value (entry, value, aflags));
+	  VSETATTR (entry, att_assigning);
+	  newval = make_variable_value (entry, value, aflags);
+	  VUNSETATTR (entry, att_assigning);
+	  var_setvalue (entry, newval);
 	}
     }
   else if (entry == 0)
     {
       entry = make_new_variable (name, table);
-      var_setvalue (entry, make_variable_value (entry, value, aflags));	/* XXX */
+      VSETATTR (entry, att_assigning);
+      newval = make_variable_value (entry, value, aflags);	/* XXX */
+      VUNSETATTR (entry, att_assigning);
+      var_setvalue (entry, newval);
     }
   else if (entry->assign_func)	/* array vars have assign functions now */
     {
@@ -3136,7 +3168,9 @@ bind_variable_internal (const char *name, const char *value, HASH_TABLE *table, 
 	}
 
       INVALIDATE_EXPORTSTR (entry);
+      VSETATTR (entry, att_assigning);
       newval = (aflags & ASS_APPEND) ? make_variable_value (entry, value, aflags) : (char *)value;
+      VUNSETATTR (entry, att_assigning);
       if (assoc_p (entry))
 	entry = (*(entry->assign_func)) (entry, newval, -1, savestring ("0"));
       else if (array_p (entry))
@@ -3157,9 +3191,6 @@ bind_variable_internal (const char *name, const char *value, HASH_TABLE *table, 
 	  return (entry);
 	}
 
-      /* Variables which are bound are visible. */
-      VUNSETATTR (entry, att_invisible);
-
       /* If we can optimize the assignment, do so and return.  Right now, we
 	 optimize appends to string variables. */
       if (can_optimize_assignment (entry, value, aflags))
@@ -3167,21 +3198,29 @@ bind_variable_internal (const char *name, const char *value, HASH_TABLE *table, 
 	  INVALIDATE_EXPORTSTR (entry);
 	  optimized_assignment (entry, value, aflags);
 
-	  if (mark_modified_vars && !(aflags & ASS_NOMARK))
+	  if (mark_modified_vars && (aflags & ASS_NOEXPORT) == 0)
 	    VSETATTR (entry, att_exported);
 
 	  if (exported_p (entry))
 	    array_needs_making = 1;
 
+	  /* Variables which are bound are visible. */
+	  VUNSETATTR (entry, att_invisible);
+
 	  return (entry);
 	}
 
+      VSETATTR (entry, att_assigning);
 #if defined (ARRAY_VARS)
       if (assoc_p (entry) || array_p (entry))
 	newval = make_array_variable_value (entry, 0, "0", value, aflags);
       else
 #endif
 	newval = make_variable_value (entry, value, aflags);	/* XXX */
+      VUNSETATTR (entry, att_assigning);
+
+      /* Variables which are bound are visible. */
+      VUNSETATTR (entry, att_invisible);
 
       /* Invalidate any cached export string */
       INVALIDATE_EXPORTSTR (entry);
@@ -3209,7 +3248,7 @@ bind_variable_internal (const char *name, const char *value, HASH_TABLE *table, 
 	}
     }
 
-  if (mark_modified_vars && !(aflags & ASS_NOMARK))
+  if (mark_modified_vars && (aflags & ASS_NOEXPORT) == 0)
     VSETATTR (entry, att_exported);
 
   if (exported_p (entry))
@@ -3321,23 +3360,24 @@ SHELL_VAR *
 bind_variable_value (SHELL_VAR *var, char *value, int aflags)
 {
   char *t;
-  int invis;
-
-  invis = invisible_p (var);
-  VUNSETATTR (var, att_invisible);
 
   if (var->assign_func)
     {
       /* If we're appending, we need the old value, so use
 	 make_variable_value */
+      VSETATTR (var, att_assigning);
       t = (aflags & ASS_APPEND) ? make_variable_value (var, value, aflags) : value;
+      VUNSETATTR (var, att_assigning);
+      VUNSETATTR (var, att_invisible);
       (*(var->assign_func)) (var, t, -1, 0);
       if (t != value && t)
 	free (t);
     }
   else
     {
+      VSETATTR (var, att_assigning);
       t = make_variable_value (var, value, aflags);
+      VUNSETATTR (var, att_assigning);
       if ((aflags & (ASS_NAMEREF | ASS_FORCE)) == ASS_NAMEREF && check_selfref (name_cell (var), t, 0))
 	{
 	  if (variable_context)
@@ -3346,25 +3386,22 @@ bind_variable_value (SHELL_VAR *var, char *value, int aflags)
 	    {
 	      internal_error (_("%s: nameref variable self references not allowed"), name_cell (var));
 	      free (t);
-	      if (invis)
-		VSETATTR (var, att_invisible);	/* XXX */
 	      return ((SHELL_VAR *)NULL);
 	    }
 	}
       if ((aflags & ASS_NAMEREF) && (valid_nameref_value (t, 0) == 0))
 	{
 	  free (t);
-	  if (invis)
-	    VSETATTR (var, att_invisible);	/* XXX */
 	  return ((SHELL_VAR *)NULL);
 	}
       FREE (value_cell (var));
       var_setvalue (var, t);
+      VUNSETATTR (var, att_invisible);
     }
 
   INVALIDATE_EXPORTSTR (var);
 
-  if (mark_modified_vars && !(aflags & ASS_NOMARK))
+  if (mark_modified_vars && (aflags & ASS_NOEXPORT) == 0)
     VSETATTR (var, att_exported);
 
   if (exported_p (var))
@@ -3478,7 +3515,7 @@ bind_function (const char *name, COMMAND *value)
 
   VSETATTR (entry, att_function);
 
-  if (mark_modified_vars)	/* TODO: decide whether to check for ASS_NOMARK, and if so, how to accept `flags` */
+  if (mark_modified_vars)	/* TODO: decide whether to check for ASS_NOEXPORT, and if so, how to accept `flags` */
     VSETATTR (entry, att_exported);
 
   VUNSETATTR (entry, att_invisible);	/* Just to be sure */
@@ -3637,8 +3674,8 @@ assign_in_env (const WORD_DESC *word, int flags)
 
   if (flags)
     {
-      if (STREQ (newname, "POSIXLY_CORRECT") || STREQ (newname, "POSIX_PEDANDTIC"))
-	save_posix_options ();	/* XXX one level of saving right now */
+      if (STREQ (newname, "POSIXLY_CORRECT") || STREQ (newname, "POSIX_PEDANTIC"))
+	save_posix_options ();		/* XXX one level of saving right now */
       stupidly_hack_special_variables (newname);
     }
 
@@ -3657,7 +3694,7 @@ assign_in_env (const WORD_DESC *word, int flags)
 /*								    */
 /* **************************************************************** */
 
-#ifdef INCLUDE_UNUSED
+#if defined (INCLUDE_UNUSED)
 /* Copy VAR to a new data structure and return that structure. */
 SHELL_VAR *
 copy_variable (SHELL_VAR *var)
@@ -3995,6 +4032,36 @@ makunbound (const char *name, VAR_CONTEXT * vc)
       VSETATTR (old_var, att_invisible);
       var_setvalue (old_var, (char *)NULL);
       INVALIDATE_EXPORTSTR (old_var);
+
+      new_elt = hash_insert (savestring (old_var->name), v->table, 0);
+      new_elt->data = (PTR_T)old_var;
+      stupidly_hack_special_variables (old_var->name);
+
+      free (elt->key);
+      free (elt);
+      return (0);
+    }
+
+  /* If we are currently assigning this variable, but the evaluation of the
+     value causes it to be unset, we need to make sure pointers to the
+     variable struct remain valid, and insert a cleared-out version of the
+     variable back into the correct hash table. */
+  if (old_var && assigning_p (old_var))
+    {
+      dispose_variable_value (old_var);
+      var_setvalue (old_var, (char *)NULL);
+
+      old_var->attributes = 0;
+      VSETATTR (old_var, att_assigning);
+      VSETATTR (old_var, att_invisible);
+
+      INVALIDATE_EXPORTSTR (old_var);
+
+      old_var->dynamic_value = NULL;
+      old_var->assign_func = NULL;
+
+      /* leave the context unchanged if we're going to be assigning it */
+      /* old_var->context = 0; */
 
       new_elt = hash_insert (savestring (old_var->name), v->table, 0);
       new_elt->data = (PTR_T)old_var;
@@ -4685,6 +4752,31 @@ flush_temporary_env (void)
       temporary_env = (HASH_TABLE *)NULL;
     }
 }
+
+#if defined (INCLUDE_UNUSED)
+void *
+copyvar (void *v)
+{
+  SHELL_VAR *new;
+  new = copy_variable ((SHELL_VAR *)v);
+  return new;
+}
+
+HASH_TABLE *
+copy_vartab (HASH_TABLE *table)
+{
+  HASH_TABLE *newtab;
+
+  newtab = table ? hash_copy (table, copyvar) : NULL;
+  return newtab;
+}
+
+HASH_TABLE *
+copy_temporary_env (void)
+{
+  return copy_vartab (temporary_env);
+}
+#endif
 
 /* **************************************************************** */
 /*								    */

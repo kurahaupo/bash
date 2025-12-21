@@ -59,7 +59,7 @@
 #  define ASS_ONEWORD		0x1000	/* don't check array subscripts, assume higher level has done that */
 #  define ASS_NOTEMPENV		0x2000	/* don't assign into temporary environment */
 #  define ASS_XTRACE		0x4000	/* print trace after compound assignment expansion */
-#  define ASS_NOMARK		0x8000	/* ignore `set -a` */
+#  define ASS_NOEXPORT		0x8000	/* don't export even if allexport is set */
 
 /* Flags for the string extraction functions. */
 #  define SX_NOALLOC		0x0001	/* just skip; don't return substring */
@@ -336,6 +336,7 @@ extern char *cond_expand_word (WORD_DESC *, int);
 #  define SD_HISTEXP		0x200	/* skip_to_delim during history expansion */
 #  define SD_ARITHEXP		0x400	/* skip_to_delim during arithmetic expansion */
 #  define SD_NOERROR		0x800	/* don't print error messages */
+#  define SD_QUOTEDSTR		0x1000	/* skipping a part of a single- or double-quoted string */
 
 extern int skip_to_delim (const char *, int, const char *, int);
 
