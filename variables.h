@@ -1,6 +1,6 @@
 /* variables.h -- data structures for shell variables. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -146,6 +146,11 @@ typedef struct _vlist {
 
 #  define attmask_scope		0x0f00000
 
+/* Internal attributes used for variable state management. */
+#  define att_assigning		0x1000000
+
+#  define attmask_state		0xf000000
+
 #  define exported_p(var)		((((var)->attributes) & (att_exported)))
 #  define readonly_p(var)		((((var)->attributes) & (att_readonly)))
 #  define array_p(var)			((((var)->attributes) & (att_array)))
@@ -169,6 +174,8 @@ typedef struct _vlist {
 
 #  define tempvar_p(var)		((((var)->attributes) & (att_tempvar)))
 #  define propagate_p(var)		((((var)->attributes) & (att_propagate)))
+
+#define assigning_p(var)	((((var)->attributes) & (att_assigning)))
 
 /* Variable names: lvalues */
 #  define name_cell(var)		((var)->name)
@@ -390,8 +397,11 @@ extern void dispose_builtin_env (void);
 extern void merge_temporary_env (void);
 extern void merge_function_temporary_env (void);
 extern void flush_temporary_env (void);
+extern HASH_TABLE *copy_temporary_env (void);
 extern void merge_builtin_env (void);
 extern void kill_all_local_variables (void);
+
+extern HASH_TABLE *copy_vartab (HASH_TABLE *);
 
 extern void set_var_read_only (char *);
 extern void set_func_read_only (const char *);

@@ -18,7 +18,11 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define _POSIX_C_SOURCE 200809L
+
 #include <sys/types.h>
+#include <setjmp.h> /* sigjmp_buf */
+#include <string.h> /* stpcpy */
 
 #include "bashintl.h"
 #include "error.h"
@@ -814,8 +818,8 @@ set_env_from_options (char const *varname, accessor_t why, opt_test_func_t *filt
   *vend = '\0';
 
   /* ASS_FORCE so we don't have to temporarily turn off readonly;
-   * ASS_NOMARK so we don't tickle `set -a`. */
-  SHELL_VAR *var = bind_variable (varname, value, ASS_FORCE | ASS_NOMARK);
+   * ASS_NOEXPORT so we don't tickle `set -a`. */
+  SHELL_VAR *var = bind_variable (varname, value, ASS_FORCE | ASS_NOEXPORT);
   xfree (value);
 
   /* Turn the read-only attribute back on. */

@@ -141,9 +141,8 @@ getlist (char *arg, struct cutpos **opp)
 }
 
 static int
-cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
+cutbytes (SHELL_VAR *v, arrayind_t ind, char *line, struct cutop *ops)
 {
-  arrayind_t ind;
   char *buf, *bmap;
   size_t llen;
   int i, b, n, s, e;
@@ -173,36 +172,31 @@ cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
       buf[b++] = line[i];
   buf[b] = 0;
 
-  if (v)
-    {
-      ind = 0;
 #if defined (ARRAY_VARS)
-      bind_array_element (v, ind, buf, 0);
-#endif
-      ind++;
-    }
+  if (v)
+    bind_array_element (v, ind, buf, 0);
   else
+#endif
     printf ("%s\n", buf);
 
   free (buf);
   free (bmap);
 
-  return ind;
+  return 1;
 }
 
 static int
-cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
+cutchars (SHELL_VAR *v, arrayind_t ind, char *line, struct cutop *ops)
 {
-  arrayind_t ind;
   char *buf, *bmap;
   wchar_t *wbuf, *wb2;
   size_t llen, wlen;
   int i, b, n, s, e;
 
   if (MB_CUR_MAX == 1)
-    return (cutbytes (v, line, ops));
+    return (cutbytes (v, ind, line, ops));
   if (locale_utf8locale && utf8_mbsmbchar (line) == 0)
-    return (cutbytes (v, line, ops));
+    return (cutbytes (v, ind, line, ops));
 
   llen = strlen (line);
   wbuf = (wchar_t *)xmalloc ((llen + 1) * sizeof (wchar_t));
@@ -211,7 +205,7 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
   if (MB_INVALIDCH (wlen))
     {
       free (wbuf);
-      return (cutbytes (v, line, ops));
+      return (cutbytes (v, ind, line, ops));
     }
 
   bmap = xmalloc (llen + 1);
@@ -243,21 +237,17 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
   buf = bmap;
   n = wcstombs (buf, wb2, llen);
 
-  if (v)
-    {
-      ind = 0;
 #if defined (ARRAY_VARS)
-      bind_array_element (v, ind, buf, 0);
-#endif
-      ind++;
-    }
+  if (v)
+    bind_array_element (v, ind, buf, 0);
   else
+#endif
     printf ("%s\n", buf);
 
   free (buf);
   free (wb2);
 
-  return ind;
+  return 1;
 }
 
 /* The basic strategy is to cut the line into fields using strsep, populate
@@ -265,14 +255,11 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
    bitmap approach as cut{bytes,chars} and assign them to the array variable
    V or print them on stdout. This function obeys SFLAG. */
 static int
-cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
+cutfields (SHELL_VAR *v, arrayind_t ind, char *line, struct cutop *ops)
 {
-  arrayind_t ind;
   char *buf, *bmap, *field, **fields, delim[2];
   size_t llen, fsize;
   int i, b, n, s, e, nf;
-
-  ind = 0;
 
   delim[0] = ops->delim;
   delim[1] = '\0';
@@ -300,17 +287,15 @@ cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
     {
       free (fields);
       if (ops->flags & SFLAG)
-	return ind;
-      if (v)
-	{
+	return 0;
 #if defined (ARRAY_VARS)
-	  bind_array_element (v, ind, line, 0);
-#endif
-	  ind++;
-	}
+      if (v)
+	bind_array_element (v, ind, line, 0);
       else
+#endif
 	printf ("%s\n", line);
-      return ind;
+
+      return 1;
     }
 
   bmap = xmalloc (nf + 1);
@@ -330,57 +315,61 @@ cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
 	bmap[i] = 1;
     }
 
-  for (i = 1, b = 0; b < nf; b++)
+  /* build the string and assign or print it all at once */
+  buf = xmalloc (strlen (line) + 1);
+
+  for (i = 1, n = b = 0; b < nf; b++)
     {
       if (bmap[b] == 0)
 	continue;
-#if defined (ARRAY_VARS)
-      if (v)
-	{
-	  bind_array_element (v, ind, fields[b], 0);
-	  ind++;
-	}
-      else
-#endif
-	{
-	  if (i == 0)
-	    putchar (ops->delim);
-	  printf ("%s", fields[b]);
-	}
+      if (i == 0)
+	buf[n++] = ops->delim;
+      strcpy (buf + n, fields[b]);
+      n += STRLEN (fields[b]);
       i = 0;
     }
-  if (v == 0)
-    putchar ('\n');
 
-  return nf;
+#if defined (ARRAY_VARS)
+  if (v)
+    bind_array_element (v, ind, buf, 0);
+  else
+#endif
+    printf ("%s\n", buf);
+
+  free (bmap);
+  free (buf);
+
+  return 1;
 }
 
 static int
-cutline (SHELL_VAR *v, char *line, struct cutop *ops)
+cutline (SHELL_VAR *v, arrayind_t ind, char *line, struct cutop *ops)
 {
   int rval;
 
   if (ops->flags & BFLAG)
-    rval = cutbytes (v, line, ops);
+    rval = cutbytes (v, ind, line, ops);
   else if (ops->flags & CFLAG)
-    rval = cutchars (v, line, ops);
+    rval = cutchars (v, ind, line, ops);
   else
-    rval = cutfields (v, line, ops);
+    rval = cutfields (v, ind, line, ops);
 
-  return (rval >= 0 ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
+  return (rval);
 }
 
 static int
 cutfile (SHELL_VAR *v, WORD_LIST *list, struct cutop *ops)
 {
-  int fd, unbuffered_read;
+  int fd, unbuffered_read, r;
   char *line, *b;
   size_t llen;
   WORD_LIST *l;
   ssize_t n;
+  arrayind_t ind;
 
   line = 0;
   llen = 0;
+  ind = 0;
 
   l = list;
   do
@@ -406,8 +395,9 @@ cutfile (SHELL_VAR *v, WORD_LIST *list, struct cutop *ops)
 	{
 	  QUIT;
 	  if (line[n] == '\n')
-	    line[n] = '\0';	/* cutline expects no newline terminator */
-	  cutline (v, line, ops);	/* can modify line */
+	    line[n] = '\0';		/* cutline expects no newline terminator */
+	  r = cutline (v, ind, line, ops);	/* can modify line */
+	  ind += r;
 	}
       if (fd > 0)
 	close (fd);
@@ -532,7 +522,8 @@ cut_internal (int which, WORD_LIST *list)
 
   /* we implement cut as a builtin with a cutfile() function that opens each
      filename in LIST as a filename (or `-' for stdin) and runs cutline on
-     every line in the file. */
+     every line in the file. lcut just runs cutline on the first string in
+     LIST. */
   if (which == 0)
     {
       cutstring = list->word->word;
@@ -541,7 +532,9 @@ cut_internal (int which, WORD_LIST *list)
 	  free (poslist);
 	  return (EXECUTION_SUCCESS);
 	}
-      rval = cutline (v, cutstring, &op);
+      rval = cutline (v, 0, cutstring, &op);
+      /* Normalize rval, because cutline returns an increment for ind */
+      rval = (rval >= 0 ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
     }
   else
     rval = cutfile (v, list, &op);
@@ -566,8 +559,8 @@ static char const *lcut_doc[] = {
   "Extract selected fields from a string.",
   "",
   "Select portions of LINE (as specified by LIST) and assign them to",
-  "elements of the indexed array ARRAY starting at index 0, or write",
-  "them to the standard output if -a is not specified.",
+  "element 0 of the indexed array ARRAY, or write them to the standard",
+  "output if -a is not specified.",
   "",
   "Items specified by LIST are either column positions or fields delimited",
   "by a special character, and are described more completely in cut(1).",
@@ -575,6 +568,11 @@ static char const *lcut_doc[] = {
   "Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
   "field delimiter is specified by -d (default TAB). Column numbering",
   "starts at 1.",
+  "",
+  "When -a is specified, lcut assigns the selected portions of LINE",
+  "to index 0 of ARRAY. The string lcut assigns to ARRAY is identical",
+  "to the string it would write to the standard output if -a were not",
+  "supplied.",
   (char *)NULL
 };
 
@@ -591,7 +589,8 @@ static char const *cut_doc[] = {
   "Extract selected fields from each line of a file.",
   "",
   "Select portions of each line (as specified by LIST) from each FILE",
-  "and write them to the standard output. cut reads from the standard",
+  "and write them to the standard output, or assign them to the indexed",
+  "array ARRAY starting at index 0. cut reads from the standard",
   "input if no FILE arguments are specified or if a FILE argument is a",
   "single hyphen.",
   "",
@@ -601,6 +600,11 @@ static char const *cut_doc[] = {
   "Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
   "field delimiter is specified by -d (default TAB). Column numbering",
   "starts at 1.",
+  "",
+  "When -a is specified, cut assigns the output from each line it",
+  "processes to successive elements of ARRAY, beginning at 0. The",
+  "strings cut assigns to ARRAY are identical to the strings it would",
+  "write to the standard output if -a were not supplied.",
   NULL
 };
 

@@ -477,9 +477,9 @@ set_shellopts (void)
 
   xfree (tflag);
 
-  /* ASS_FORCE so we don't have to temporarily turn off readonly;
-     ASS_NOMARK so we ignore `set -a`. */
-  SHELL_VAR *var = bind_variable ("SHELLOPTS", value, ASS_FORCE | ASS_NOMARK);
+  /* ASS_FORCE so we don't have to temporarily turn off readonly; ASS_NOEXPORT
+     so we don't have to work around allexport. */
+  SHELL_VAR *var = bind_variable ("SHELLOPTS", value, ASS_FORCE | ASS_NOEXPORT);
   free (value);
 
   /* Turn the read-only attribute back on. */
