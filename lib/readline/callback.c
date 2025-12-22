@@ -29,21 +29,21 @@
 
 #if defined (READLINE_CALLBACKS)
 
-#include <sys/types.h>
+#  include <sys/types.h>
 
-#ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-#else
-#  include "ansi_stdlib.h"
-#endif
+#  ifdef HAVE_STDLIB_H
+#    include <stdlib.h>
+#  else
+#    include "ansi_stdlib.h"
+#  endif
 
-#include <stdio.h>
+#  include <stdio.h>
 
 /* System-specific feature definitions and include files. */
-#include "rldefs.h"
-#include "readline.h"
-#include "rlprivate.h"
-#include "xmalloc.h"
+#  include "rldefs.h"
+#  include "readline.h"
+#  include "rlprivate.h"
+#  include "xmalloc.h"
 
 /* Private data for callback registration functions.  See comments in
    rl_callback_read_char for more details. */
@@ -55,7 +55,7 @@ _rl_callback_generic_arg *_rl_callback_data = 0;
    readline-6.2.  This should be used with care, because it can result in
    readline receiving signals and not handling them until it's called again
    via rl_callback_read_char, thereby stealing them from the application.
-   By default, signal handlers are only active while readline is active. */   
+   By default, signal handlers are only active while readline is active. */
 int rl_persistent_signal_handlers = 0;
 
 /* **************************************************************** */
@@ -75,7 +75,7 @@ int rl_persistent_signal_handlers = 0;
    handlers are only installed when the application calls back into
    readline, so readline doesn't `steal' signals from the application.  */
 
-rl_vcpfunc_t *rl_linefunc;		/* user callback function */
+rl_vcpfunc_t *rl_linefunc;	/* user callback function */
 static int in_handler;		/* terminal_prepped and signals set? */
 
 /* Make sure the terminal is set up, initialize readline, and prompt. */
@@ -91,10 +91,10 @@ _rl_callback_newline (void)
       if (rl_prep_term_function)
 	(*rl_prep_term_function) (_rl_meta_flag);
 
-#if defined (HANDLE_SIGNALS)
+#  if defined (HANDLE_SIGNALS)
       if (rl_persistent_signal_handlers)
 	rl_set_signals ();
-#endif
+#  endif
     }
 
   readline_internal_setup ();
@@ -111,8 +111,8 @@ rl_callback_handler_install (const char *prompt, rl_vcpfunc_t *linefunc)
   _rl_callback_newline ();
 }
 
-#if defined (HANDLE_SIGNALS)
-#define CALLBACK_READ_RETURN() \
+#  if defined (HANDLE_SIGNALS)
+#    define CALLBACK_READ_RETURN() \
   do { \
     if (rl_persistent_signal_handlers == 0) \
       { \
@@ -121,9 +121,9 @@ rl_callback_handler_install (const char *prompt, rl_vcpfunc_t *linefunc)
       } \
     return; \
   } while (0)
-#else
-#define CALLBACK_READ_RETURN() return
-#endif
+#  else
+#    define CALLBACK_READ_RETURN() return
+#  endif
 
 /* Read one character, and dispatch to the handler if it ends the line. */
 void
@@ -141,17 +141,17 @@ rl_callback_read_char (void)
 
   eof = 0;
 
-  memcpy ((void *)olevel, (void *)_rl_top_level, sizeof (procenv_t));
-#if defined (HAVE_POSIX_SIGSETJMP)
+  memcpy ((void *) olevel, (void *) _rl_top_level, sizeof (procenv_t));
+#  if defined (HAVE_POSIX_SIGSETJMP)
   jcode = sigsetjmp (_rl_top_level, 0);
-#else
+#  else
   jcode = setjmp (_rl_top_level);
-#endif
+#  endif
   if (jcode)
     {
       (*rl_redisplay_function) ();
       _rl_want_redisplay = 0;
-      memcpy ((void *)_rl_top_level, (void *)olevel, sizeof (procenv_t));
+      memcpy ((void *) _rl_top_level, (void *) olevel, sizeof (procenv_t));
 
       /* If we longjmped because of a timeout, handle it here. */
       if (RL_ISSTATE (RL_STATE_TIMEOUT))
@@ -163,16 +163,16 @@ rl_callback_read_char (void)
       CALLBACK_READ_RETURN ();
     }
 
-#if defined (HANDLE_SIGNALS)
+#  if defined (HANDLE_SIGNALS)
   /* Install signal handlers only when readline has control. */
   if (rl_persistent_signal_handlers == 0)
     rl_set_signals ();
-#endif
+#  endif
 
   do
     {
       RL_CHECK_SIGNALS ();
-      if  (RL_ISSTATE (RL_STATE_ISEARCH))
+      if (RL_ISSTATE (RL_STATE_ISEARCH))
 	{
 	  eof = _rl_isearch_callback (_rl_iscxt);
 	  if (eof == 0 && (RL_ISSTATE (RL_STATE_ISEARCH) == 0) && RL_ISSTATE (RL_STATE_INPUTPENDING))
@@ -180,15 +180,15 @@ rl_callback_read_char (void)
 
 	  CALLBACK_READ_RETURN ();
 	}
-      else if  (RL_ISSTATE (RL_STATE_NSEARCH))
+      else if (RL_ISSTATE (RL_STATE_NSEARCH))
 	{
 	  eof = _rl_nsearch_callback (_rl_nscxt);
 
 	  CALLBACK_READ_RETURN ();
 	}
-#if defined (VI_MODE)
+#  if defined (VI_MODE)
       /* States that can occur while in state VIMOTION have to be checked
-	 before RL_STATE_VIMOTION */
+         before RL_STATE_VIMOTION */
       else if (RL_ISSTATE (RL_STATE_CHARSEARCH))
 	{
 	  int k;
@@ -198,7 +198,7 @@ rl_callback_read_char (void)
 	  eof = (*_rl_callback_func) (_rl_callback_data);
 	  /* If the function `deregisters' itself, make sure the data is
 	     cleaned up. */
-	  if (_rl_callback_func == 0)	/* XXX - just sanity check */
+	  if (_rl_callback_func == 0) /* XXX - just sanity check */
 	    {
 	      if (_rl_callback_data)
 		{
@@ -212,7 +212,7 @@ rl_callback_read_char (void)
 	    {
 	      _rl_vi_domove_motion_cleanup (k, _rl_vimvcxt);
 	      _rl_internal_char_cleanup ();
-	      CALLBACK_READ_RETURN ();	      
+	      CALLBACK_READ_RETURN ();
 	    }
 
 	  _rl_internal_char_cleanup ();
@@ -227,7 +227,7 @@ rl_callback_read_char (void)
 
 	  CALLBACK_READ_RETURN ();
 	}
-#endif
+#  endif
       else if (RL_ISSTATE (RL_STATE_NUMERICARG))
 	{
 	  eof = _rl_arg_callback (_rl_argcxt);
@@ -241,8 +241,9 @@ rl_callback_read_char (void)
 	}
       else if (RL_ISSTATE (RL_STATE_MULTIKEY))
 	{
-	  eof = _rl_dispatch_callback (_rl_kscxt);	/* For now */
-	  while ((eof == -1 || eof == -2) && RL_ISSTATE (RL_STATE_MULTIKEY) && _rl_kscxt && (_rl_kscxt->flags & KSEQ_DISPATCHED))
+	  eof = _rl_dispatch_callback (_rl_kscxt); /* For now */
+	  while ((eof == -1 || eof == -2) && RL_ISSTATE (RL_STATE_MULTIKEY) && _rl_kscxt
+		 && (_rl_kscxt->flags & KSEQ_DISPATCHED))
 	    eof = _rl_dispatch_callback (_rl_kscxt);
 	  if (RL_ISSTATE (RL_STATE_MULTIKEY) == 0)
 	    {
@@ -263,7 +264,7 @@ rl_callback_read_char (void)
 	     cleaned up. */
 	  if (_rl_callback_func == 0)
 	    {
-	      if (_rl_callback_data) 	
+	      if (_rl_callback_data)
 		{
 		  _rl_callback_data_dispose (_rl_callback_data);
 		  _rl_callback_data = 0;
@@ -285,7 +286,7 @@ rl_callback_read_char (void)
       if (eof > 0)
 	{
 	  rl_eof_found = eof;
-	  RL_SETSTATE(RL_STATE_EOF);
+	  RL_SETSTATE (RL_STATE_EOF);
 	}
 
       if (rl_done)
@@ -294,11 +295,11 @@ rl_callback_read_char (void)
 
 	  if (rl_deprep_term_function)
 	    (*rl_deprep_term_function) ();
-#if defined (HANDLE_SIGNALS)
+#  if defined (HANDLE_SIGNALS)
 	  rl_clear_signals ();
-#endif
+#  endif
 	  in_handler = 0;
-	  if (rl_linefunc)			/* just in case */
+	  if (rl_linefunc)	/* just in case */
 	    (*rl_linefunc) (line);
 
 	  /* If the user did not clear out the line, do it for him. */
@@ -337,9 +338,9 @@ rl_callback_handler_remove (void)
       in_handler = 0;
       if (rl_deprep_term_function)
 	(*rl_deprep_term_function) ();
-#if defined (HANDLE_SIGNALS)
+#  if defined (HANDLE_SIGNALS)
       rl_clear_signals ();
-#endif
+#  endif
     }
 }
 
@@ -348,7 +349,7 @@ _rl_callback_data_alloc (int count)
 {
   _rl_callback_generic_arg *arg;
 
-  arg = (_rl_callback_generic_arg *)xmalloc (sizeof (_rl_callback_generic_arg));
+  arg = (_rl_callback_generic_arg *) xmalloc (sizeof (_rl_callback_generic_arg));
   arg->count = count;
 
   arg->i1 = arg->i2 = 0;

@@ -37,7 +37,7 @@
 #include <errno.h>
 
 #include "shell.h"
-#include "input.h"	/* For bash_input */
+#include "input.h"		/* For bash_input */
 
 #ifndef errno
 extern int errno;
@@ -47,15 +47,15 @@ extern int errno;
 extern const char *locale_charset (void);
 #endif
 
-extern void init_notfound_str (void);	/* from execute_cmd.c */
+extern void init_notfound_str (void); /* from execute_cmd.c */
 
 extern int dump_translatable_strings, dump_po_strings;
 
 int locale_utf8locale;
-int locale_mb_cur_max;	/* value of MB_CUR_MAX for current locale (LC_CTYPE) */
+int locale_mb_cur_max;		/* value of MB_CUR_MAX for current locale (LC_CTYPE) */
 int locale_shiftstates = 0;
 
-int singlequote_translations = 0;	/* single-quote output of $"..." */
+int singlequote_translations = 0; /* single-quote output of $"..." */
 
 /* The current locale when the program begins */
 static char *default_locale;
@@ -90,14 +90,14 @@ set_default_locale (void)
     default_locale = savestring (default_locale);
 #else
   default_locale = savestring ("C");
-#endif /* HAVE_SETLOCALE */
+#endif		/* HAVE_SETLOCALE */
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 
   locale_mb_cur_max = MB_CUR_MAX;
   locale_utf8locale = locale_isutf8 (default_locale);
 #if defined (HANDLE_MULTIBYTE)
-  locale_shiftstates = mblen ((char *)NULL, 0);
+  locale_shiftstates = mblen ((char *) NULL, 0);
 #else
   locale_shiftstates = 0;
 #endif
@@ -123,7 +123,7 @@ set_default_locale_vars (void)
       locale_setblanks ();
 
 #    if defined (HANDLE_MULTIBYTE)
-      locale_shiftstates = mblen ((char *)NULL, 0);
+      locale_shiftstates = mblen ((char *) NULL, 0);
 #    else
       locale_shiftstates = 0;
 #    endif
@@ -136,27 +136,27 @@ set_default_locale_vars (void)
   val = get_string_value ("LC_COLLATE");
   if (val == 0 && lc_all && *lc_all)
     setlocale (LC_COLLATE, lc_all);
-#  endif /* LC_COLLATE */
+#  endif	/* LC_COLLATE */
 
 #  if defined (LC_MESSAGES)
   val = get_string_value ("LC_MESSAGES");
   if (val == 0 && lc_all && *lc_all)
     setlocale (LC_MESSAGES, lc_all);
-#  endif /* LC_MESSAGES */
+#  endif	/* LC_MESSAGES */
 
 #  if defined (LC_NUMERIC)
   val = get_string_value ("LC_NUMERIC");
   if (val == 0 && lc_all && *lc_all)
     setlocale (LC_NUMERIC, lc_all);
-#  endif /* LC_NUMERIC */
+#  endif	/* LC_NUMERIC */
 
 #  if defined (LC_TIME)
   val = get_string_value ("LC_TIME");
   if (val == 0 && lc_all && *lc_all)
     setlocale (LC_TIME, lc_all);
-#  endif /* LC_TIME */
+#  endif	/* LC_TIME */
 
-#endif /* HAVE_SETLOCALE */
+#endif		/* HAVE_SETLOCALE */
 
   val = get_string_value ("TEXTDOMAIN");
   if (val && *val)
@@ -189,18 +189,18 @@ set_locale_var (const char *var, const char *value)
 
   x = "";
   errno = 0;
-  if (var[0] == 'T' && var[10] == 0)		/* TEXTDOMAIN */
+  if (var[0] == 'T' && var[10] == 0) /* TEXTDOMAIN */
     {
       FREE (default_domain);
-      default_domain = value ? savestring (value) : (char *)NULL;
+      default_domain = value ? savestring (value) : (char *) NULL;
       if (default_dir && *default_dir)
 	bindtextdomain (default_domain, default_dir);
       return (1);
     }
-  else if (var[0] == 'T')			/* TEXTDOMAINDIR */
+  else if (var[0] == 'T')	/* TEXTDOMAINDIR */
     {
       FREE (default_dir);
-      default_dir = value ? savestring (value) : (char *)NULL;
+      default_dir = value ? savestring (value) : (char *) NULL;
       if (default_domain && *default_domain)
 	bindtextdomain (default_domain, default_dir);
       return (1);
@@ -208,14 +208,14 @@ set_locale_var (const char *var, const char *value)
 
   /* var[0] == 'L' && var[1] == 'C' && var[2] == '_' */
 
-  else if (var[3] == 'A')			/* LC_ALL */
+  else if (var[3] == 'A')	/* LC_ALL */
     {
       FREE (lc_all);
       if (value)
 	lc_all = savestring (value);
       else
 	{
-	  lc_all = (char *)xmalloc (1);
+	  lc_all = (char *) xmalloc (1);
 	  lc_all[0] = '\0';
 	}
 #if defined (HAVE_SETLOCALE)
@@ -233,7 +233,7 @@ set_locale_var (const char *var, const char *value)
 	locale_utf8locale = locale_isutf8 (lc_all);
       locale_setblanks ();
 #  if defined (HANDLE_MULTIBYTE)
-      locale_shiftstates = mblen ((char *)NULL, 0);
+      locale_shiftstates = mblen ((char *) NULL, 0);
 #  else
       locale_shiftstates = 0;
 #  endif
@@ -245,7 +245,7 @@ set_locale_var (const char *var, const char *value)
     }
 
 #if defined (HAVE_SETLOCALE)
-  else if (var[3] == 'C' && var[4] == 'T')	/* LC_CTYPE */
+  else if (var[3] == 'C' && var[4] == 'T') /* LC_CTYPE */
     {
 #  if defined (LC_CTYPE)
       if (lc_all == 0 || *lc_all == '\0')
@@ -256,51 +256,51 @@ set_locale_var (const char *var, const char *value)
 	  if (x)
 	    locale_utf8locale = locale_isutf8 (x);
 	  locale_setblanks ();
-#if defined (HANDLE_MULTIBYTE)
-	  locale_shiftstates = mblen ((char *)NULL, 0);
-#else
+#    if defined (HANDLE_MULTIBYTE)
+	  locale_shiftstates = mblen ((char *) NULL, 0);
+#    else
 	  locale_shiftstates = 0;
-#endif
+#    endif
 	  u32reset ();
 	}
 #  endif
     }
-  else if (var[3] == 'C' && var[4] == 'O')	/* LC_COLLATE */
+  else if (var[3] == 'C' && var[4] == 'O') /* LC_COLLATE */
     {
 #  if defined (LC_COLLATE)
       if (lc_all == 0 || *lc_all == '\0')
 	x = setlocale (LC_COLLATE, get_locale_var ("LC_COLLATE"));
-#  endif /* LC_COLLATE */
+#  endif	/* LC_COLLATE */
     }
-  else if (var[3] == 'M' && var[4] == 'E')	/* LC_MESSAGES */
+  else if (var[3] == 'M' && var[4] == 'E') /* LC_MESSAGES */
     {
 #  if defined (LC_MESSAGES)
       if (lc_all == 0 || *lc_all == '\0')
 	x = setlocale (LC_MESSAGES, get_locale_var ("LC_MESSAGES"));
-#  endif /* LC_MESSAGES */
+#  endif	/* LC_MESSAGES */
     }
-  else if (var[3] == 'N' && var[4] == 'U')	/* LC_NUMERIC */
+  else if (var[3] == 'N' && var[4] == 'U') /* LC_NUMERIC */
     {
 #  if defined (LC_NUMERIC)
       if (lc_all == 0 || *lc_all == '\0')
 	x = setlocale (LC_NUMERIC, get_locale_var ("LC_NUMERIC"));
-#  endif /* LC_NUMERIC */
+#  endif	/* LC_NUMERIC */
     }
-  else if (var[3] == 'T' && var[4] == 'I')	/* LC_TIME */
+  else if (var[3] == 'T' && var[4] == 'I') /* LC_TIME */
     {
 #  if defined (LC_TIME)
       if (lc_all == 0 || *lc_all == '\0')
 	x = setlocale (LC_TIME, get_locale_var ("LC_TIME"));
-#  endif /* LC_TIME */
+#  endif	/* LC_TIME */
     }
-#endif /* HAVE_SETLOCALE */
-  
+#endif		/* HAVE_SETLOCALE */
+
   if (x == 0)
     {
       if (errno == 0)
-	internal_warning("setlocale: %s: %s (%s)", var, _("cannot change locale"), get_locale_var (var));
+	internal_warning ("setlocale: %s: %s (%s)", var, _("cannot change locale"), get_locale_var (var));
       else
-	internal_warning("setlocale: %s: %s (%s): %s", var, _("cannot change locale"), get_locale_var (var), strerror (errno));
+	internal_warning ("setlocale: %s: %s (%s): %s", var, _("cannot change locale"), get_locale_var (var), strerror (errno));
     }
 
   return (x != 0);
@@ -317,7 +317,7 @@ set_lang (const char *var, const char *value)
     lang = savestring (value);
   else
     {
-      lang = (char *)xmalloc (1);
+      lang = (char *) xmalloc (1);
       lang[0] = '\0';
     }
 
@@ -349,7 +349,7 @@ get_locale_var (const char *var)
   locale = lc_all;
 
   if (locale == 0 || *locale == 0)
-    locale = get_string_value (var);	/* XXX - no mem leak */
+    locale = get_string_value (var); /* XXX - no mem leak */
   if (locale == 0 || *locale == 0)
     locale = lang;
   if (locale == 0 || *locale == 0)
@@ -372,7 +372,7 @@ reset_locale_vars (void)
 
 #if defined (HAVE_SETLOCALE)
   if (lang == 0 || *lang == '\0')
-    maybe_make_export_env ();		/* trust that this will change environment for setlocale */
+    maybe_make_export_env ();	/* trust that this will change environment for setlocale */
   if (setlocale (LC_ALL, lang ? lang : "") == 0)
     return 0;
 
@@ -407,9 +407,9 @@ reset_locale_vars (void)
   locale_mb_cur_max = MB_CUR_MAX;
   if (x)
     locale_utf8locale = locale_isutf8 (x);
-  locale_setblanks ();  
+  locale_setblanks ();
 #  if defined (HANDLE_MULTIBYTE)
-  locale_shiftstates = mblen ((char *)NULL, 0);
+  locale_shiftstates = mblen ((char *) NULL, 0);
 #  else
   locale_shiftstates = 0;
 #  endif
@@ -435,7 +435,7 @@ localetrans (const char *string, int len, size_t *lenp)
     {
       if (lenp)
 	*lenp = 0;
-      return ((char *)NULL);
+      return ((char *) NULL);
     }
 
   locale = get_locale_var ("LC_MESSAGES");
@@ -443,10 +443,9 @@ localetrans (const char *string, int len, size_t *lenp)
   /* If we don't have setlocale() or the current locale is `C' or `POSIX',
      just return the string.  If we don't have gettext(), there's no use
      doing anything else. */
-  if (locale == 0 || locale[0] == '\0' ||
-      (locale[0] == 'C' && locale[1] == '\0') || STREQ (locale, "POSIX"))
+  if (locale == 0 || locale[0] == '\0' || (locale[0] == 'C' && locale[1] == '\0') || STREQ (locale, "POSIX"))
     {
-      t = (char *)xmalloc (len + 1);
+      t = (char *) xmalloc (len + 1);
       strcpy (t, string);
       if (lenp)
 	*lenp = len;
@@ -457,11 +456,11 @@ localetrans (const char *string, int len, size_t *lenp)
   if (default_domain && *default_domain)
     translated = dgettext (default_domain, string);
   else
-    translated = (char *)string;
+    translated = (char *) string;
 
   if (translated == string)	/* gettext returns its argument if untranslatable */
     {
-      t = (char *)xmalloc (len + 1);
+      t = (char *) xmalloc (len + 1);
       strcpy (t, string);
       if (lenp)
 	*lenp = len;
@@ -469,7 +468,7 @@ localetrans (const char *string, int len, size_t *lenp)
   else
     {
       tlen = strlen (translated);
-      t = (char *)xmalloc (tlen + 1);
+      t = (char *) xmalloc (tlen + 1);
       strcpy (t, translated);
       if (lenp)
 	*lenp = tlen;
@@ -493,13 +492,13 @@ mk_msgstr (char *string, int *foundnlp)
       else if (*s == '\n')
 	len += 5;
     }
-  
-  r = result = (char *)xmalloc (len + 3);
+
+  r = result = (char *) xmalloc (len + 3);
   *r++ = '"';
 
   for (s = string; s && (c = *s); s++)
     {
-      if (c == '\n')	/* <NL> -> \n"<NL>" */
+      if (c == '\n')		/* <NL> -> \n"<NL>" */
 	{
 	  *r++ = '\\';
 	  *r++ = 'n';
@@ -535,8 +534,8 @@ locale_expand (const char *string, int start, int end, int lineno, size_t *lenp)
   char *temp, *t, *t2;
   size_t len;
 
-  temp = (char *)xmalloc (end - start + 1);
-  for (tlen = 0, len = start; len < end; )
+  temp = (char *) xmalloc (end - start + 1);
+  for (tlen = 0, len = start; len < end;)
     temp[tlen++] = string[len++];
   temp[tlen] = '\0';
 
@@ -555,8 +554,7 @@ locale_expand (const char *string, int start, int end, int lineno, size_t *lenp)
 	  t = mk_msgstr (temp, &foundnl);
 	  t2 = foundnl ? "\"\"\n" : "";
 
-	  printf ("#: %s:%d\nmsgid %s%s\nmsgstr \"\"\n",
-			yy_input_name (), lineno, t2, t);
+	  printf ("#: %s:%d\nmsgid %s%s\nmsgstr \"\"\n", yy_input_name (), lineno, t2, t);
 	  free (t);
 	}
       else
@@ -599,14 +597,14 @@ locale_setblanks (void)
   for (x = 0; x < sh_syntabsiz; x++)
     {
       if (locale_isblank (x))
-	sh_syntaxtab[x] |= CSHBRK|CBLANK;
+	sh_syntaxtab[x] |= CSHBRK | CBLANK;
       else if (member (x, shell_break_chars))
 	{
 	  sh_syntaxtab[x] |= CSHBRK;
 	  sh_syntaxtab[x] &= ~CBLANK;
 	}
       else
-	sh_syntaxtab[x] &= ~(CSHBRK|CBLANK);
+	sh_syntaxtab[x] &= ~(CSHBRK | CBLANK);
     }
 }
 
@@ -638,8 +636,7 @@ locale_isutf8 (char *lspec)
 	  for (encoding = ++cp; *cp && *cp != '@' && *cp != '+' && *cp != ','; cp++)
 	    ;
 	  /* The encoding (codeset) is the substring between encoding and cp */
-	  if ((cp - encoding == 5 && STREQN (encoding, "UTF-8", 5)) ||
-	      (cp - encoding == 4 && STREQN (encoding, "utf8", 4)))
+	  if ((cp - encoding == 5 && STREQN (encoding, "UTF-8", 5)) || (cp - encoding == 4 && STREQN (encoding, "utf8", 4)))
 	    return 1;
 	  else
 	    return 0;

@@ -19,35 +19,35 @@
 */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdlib.h>
 #include <string.h>
 
 #ifdef _LIBC
-# include <libintl.h>
+#  include <libintl.h>
 #else
-# include "libgnuintl.h"
+#  include "libgnuintl.h"
 #endif
 #include "gettextP.h"
 
 #ifdef _LIBC
 /* We have to handle multi-threaded applications.  */
-# include <bits/libc-lock.h>
+#  include <bits/libc-lock.h>
 #else
 /* Provide dummy implementation if this is outside glibc.  */
-# define __libc_rwlock_define(CLASS, NAME)
-# define __libc_rwlock_wrlock(NAME)
-# define __libc_rwlock_unlock(NAME)
+#  define __libc_rwlock_define(CLASS, NAME)
+#  define __libc_rwlock_wrlock(NAME)
+#  define __libc_rwlock_unlock(NAME)
 #endif
 
 /* The internal variables in the standalone libintl.a must have different
    names than the internal variables in GNU libc, otherwise programs
    using libintl.a cannot be linked statically.  */
 #if !defined _LIBC
-# define _nl_default_default_domain libintl_nl_default_default_domain
-# define _nl_current_default_domain libintl_nl_current_default_domain
+#  define _nl_default_default_domain libintl_nl_default_default_domain
+#  define _nl_current_default_domain libintl_nl_current_default_domain
 #endif
 
 /* @@ end of prolog @@ */
@@ -64,22 +64,20 @@ extern const char *_nl_current_default_domain attribute_hidden;
    code is also used in GNU C Library where the names have a __
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
-# define TEXTDOMAIN __textdomain
-# ifndef strdup
-#  define strdup(str) __strdup (str)
-# endif
+#  define TEXTDOMAIN __textdomain
+#  ifndef strdup
+#    define strdup(str) __strdup (str)
+#  endif
 #else
-# define TEXTDOMAIN libintl_textdomain
+#  define TEXTDOMAIN libintl_textdomain
 #endif
 
 /* Lock variable to protect the global data in the gettext implementation.  */
 __libc_rwlock_define (extern, _nl_state_lock attribute_hidden)
-
 /* Set the current default message catalog to DOMAINNAME.
    If DOMAINNAME is null, return the current default.
    If DOMAINNAME is "", reset to the default of "messages".  */
-char *
-TEXTDOMAIN (domainname)
+     char *TEXTDOMAIN (domainname)
      const char *domainname;
 {
   char *new_domain;
@@ -94,8 +92,7 @@ TEXTDOMAIN (domainname)
   old_domain = (char *) _nl_current_default_domain;
 
   /* If domain name is the null string set to default domain "messages".  */
-  if (domainname[0] == '\0'
-      || strcmp (domainname, _nl_default_default_domain) == 0)
+  if (domainname[0] == '\0' || strcmp (domainname, _nl_default_default_domain) == 0)
     {
       _nl_current_default_domain = _nl_default_default_domain;
       new_domain = (char *) _nl_current_default_domain;
@@ -107,8 +104,8 @@ TEXTDOMAIN (domainname)
   else
     {
       /* If the following malloc fails `_nl_current_default_domain'
-	 will be NULL.  This value will be returned and so signals we
-	 are out of core.  */
+         will be NULL.  This value will be returned and so signals we
+         are out of core.  */
 #if defined _LIBC || defined HAVE_STRDUP
       new_domain = strdup (domainname);
 #else

@@ -32,7 +32,7 @@ extern int locale_utf8locale;
 
 #undef mbschr
 
-extern char *utf8_mbschr (const char *, int);	/* XXX */
+extern char *utf8_mbschr (const char *, int); /* XXX */
 
 /* In some locales, the non-first byte of some multibyte characters have
    the same value as some ascii character.  Faced with these strings, a
@@ -47,16 +47,16 @@ mbschr (const char *s, int c)
   size_t strlength, mblength;
 
   if (locale_utf8locale && c < 0x80)
-    return (utf8_mbschr (s, c));		/* XXX */
+    return (utf8_mbschr (s, c)); /* XXX */
 
   /* The locale encodings with said weird property are BIG5, BIG5-HKSCS,
      GBK, GB18030, SHIFT_JIS, and JOHAB.  They exhibit the problem only
      when c >= 0x30.  We can therefore use the faster bytewise search if
      c <= 0x30. */
-  if ((unsigned char)c >= '0' && locale_mb_cur_max > 1)
+  if ((unsigned char) c >= '0' && locale_mb_cur_max > 1)
     {
-      pos = (char *)s;
-      memset (&state, '\0', sizeof(mbstate_t));
+      pos = (char *) s;
+      memset (&state, '\0', sizeof (mbstate_t));
       strlength = strlen (s);
 
       while (strlength > 0)
@@ -66,20 +66,20 @@ mbschr (const char *s, int c)
 	  else
 	    {
 	      mblength = mbrlen (pos, strlength, &state);
-	      if (mblength == (size_t)-2 || mblength == (size_t)-1 || mblength == (size_t)0)
-	        mblength = 1;
+	      if (mblength == (size_t) -2 || mblength == (size_t) -1 || mblength == (size_t) 0)
+		mblength = 1;
 	    }
 
-	  if (mblength == 1 && c == (unsigned char)*pos)
+	  if (mblength == 1 && c == (unsigned char) *pos)
 	    return pos;
 
 	  strlength -= mblength;
 	  pos += mblength;
 	}
 
-      return ((char *)NULL);
+      return ((char *) NULL);
     }
   else
 #endif
-  return (strchr (s, c));
+    return (strchr (s, c));
 }

@@ -19,7 +19,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stddef.h>
@@ -27,33 +27,33 @@
 #include <string.h>
 
 #ifdef _LIBC
-# include <libintl.h>
+#  include <libintl.h>
 #else
-# include "libgnuintl.h"
+#  include "libgnuintl.h"
 #endif
 #include "gettextP.h"
 
 #ifdef _LIBC
 /* We have to handle multi-threaded applications.  */
-# include <bits/libc-lock.h>
+#  include <bits/libc-lock.h>
 #else
 /* Provide dummy implementation if this is outside glibc.  */
-# define __libc_rwlock_define(CLASS, NAME)
-# define __libc_rwlock_wrlock(NAME)
-# define __libc_rwlock_unlock(NAME)
+#  define __libc_rwlock_define(CLASS, NAME)
+#  define __libc_rwlock_wrlock(NAME)
+#  define __libc_rwlock_unlock(NAME)
 #endif
 
 /* The internal variables in the standalone libintl.a must have different
    names than the internal variables in GNU libc, otherwise programs
    using libintl.a cannot be linked statically.  */
 #if !defined _LIBC
-# define _nl_default_dirname libintl_nl_default_dirname
-# define _nl_domain_bindings libintl_nl_domain_bindings
+#  define _nl_default_dirname libintl_nl_default_dirname
+#  define _nl_domain_bindings libintl_nl_domain_bindings
 #endif
 
 /* Some compilers, like SunOS4 cc, don't have offsetof in <stddef.h>.  */
 #ifndef offsetof
-# define offsetof(type,ident) ((size_t)&(((type*)0)->ident))
+#  define offsetof(type,ident) ((size_t)&(((type*)0)->ident))
 #endif
 
 /* @@ end of prolog @@ */
@@ -63,7 +63,7 @@ extern const char _nl_default_dirname[];
 #ifdef _LIBC
 extern const char _nl_default_dirname_internal[] attribute_hidden;
 #else
-# define INTUSE(name) name
+#  define INTUSE(name) name
 #endif
 
 /* List with bindings of specific domains.  */
@@ -71,27 +71,22 @@ extern struct binding *_nl_domain_bindings;
 
 /* Lock variable to protect the global data in the gettext implementation.  */
 __libc_rwlock_define (extern, _nl_state_lock attribute_hidden)
-
-
 /* Names for the libintl functions are a problem.  They must not clash
    with existing names and they should follow ANSI C.  But this source
    code is also used in GNU C Library where the names have a __
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
-# define BINDTEXTDOMAIN __bindtextdomain
-# define BIND_TEXTDOMAIN_CODESET __bind_textdomain_codeset
-# ifndef strdup
-#  define strdup(str) __strdup (str)
-# endif
+#  define BINDTEXTDOMAIN __bindtextdomain
+#  define BIND_TEXTDOMAIN_CODESET __bind_textdomain_codeset
+#  ifndef strdup
+#    define strdup(str) __strdup (str)
+#  endif
 #else
-# define BINDTEXTDOMAIN libintl_bindtextdomain
-# define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
+#  define BINDTEXTDOMAIN libintl_bindtextdomain
+#  define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
 #endif
-
 /* Prototypes for local functions.  */
-static void set_binding_values (const char *domainname,
-					const char **dirnamep,
-					const char **codesetp);
+     static void set_binding_values (const char *domainname, const char **dirnamep, const char **codesetp);
 
 /* Specifies the directory name *DIRNAMEP and the output codeset *CODESETP
    to be used for the DOMAINNAME message catalog.
@@ -99,8 +94,8 @@ static void set_binding_values (const char *domainname,
    modified, only the current value is returned.
    If DIRNAMEP or CODESETP is NULL, the corresponding attribute is neither
    modified nor returned.  */
-static void
-set_binding_values (domainname, dirnamep, codesetp)
+     static void
+       set_binding_values (domainname, dirnamep, codesetp)
      const char *domainname;
      const char **dirnamep;
      const char **codesetp;
@@ -148,13 +143,13 @@ set_binding_values (domainname, dirnamep, codesetp)
 	  else
 	    {
 	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
+	         one are equal we simply do nothing.  Otherwise replace the
+	         old binding.  */
 	      char *result = binding->dirname;
 	      if (strcmp (dirname, result) != 0)
 		{
-		  if (strcmp (dirname, INTUSE(_nl_default_dirname)) == 0)
-		    result = (char *) INTUSE(_nl_default_dirname);
+		  if (strcmp (dirname, INTUSE (_nl_default_dirname)) == 0)
+		    result = (char *) INTUSE (_nl_default_dirname);
 		  else
 		    {
 #if defined _LIBC || defined HAVE_STRDUP
@@ -169,7 +164,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 
 		  if (__builtin_expect (result != NULL, 1))
 		    {
-		      if (binding->dirname != INTUSE(_nl_default_dirname))
+		      if (binding->dirname != INTUSE (_nl_default_dirname))
 			free (binding->dirname);
 
 		      binding->dirname = result;
@@ -190,8 +185,8 @@ set_binding_values (domainname, dirnamep, codesetp)
 	  else
 	    {
 	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
+	         one are equal we simply do nothing.  Otherwise replace the
+	         old binding.  */
 	      char *result = binding->codeset;
 	      if (result == NULL || strcmp (codeset, result) != 0)
 		{
@@ -218,12 +213,11 @@ set_binding_values (domainname, dirnamep, codesetp)
 	    }
 	}
     }
-  else if ((dirnamep == NULL || *dirnamep == NULL)
-	   && (codesetp == NULL || *codesetp == NULL))
+  else if ((dirnamep == NULL || *dirnamep == NULL) && (codesetp == NULL || *codesetp == NULL))
     {
       /* Simply return the default values.  */
       if (dirnamep)
-	*dirnamep = INTUSE(_nl_default_dirname);
+	*dirnamep = INTUSE (_nl_default_dirname);
       if (codesetp)
 	*codesetp = NULL;
     }
@@ -231,8 +225,7 @@ set_binding_values (domainname, dirnamep, codesetp)
     {
       /* We have to create a new binding.  */
       size_t len = strlen (domainname) + 1;
-      struct binding *new_binding =
-	(struct binding *) malloc (offsetof (struct binding, domainname) + len);
+      struct binding *new_binding = (struct binding *) malloc (offsetof (struct binding, domainname) + len);
 
       if (__builtin_expect (new_binding == NULL, 0))
 	goto failed;
@@ -245,11 +238,11 @@ set_binding_values (domainname, dirnamep, codesetp)
 
 	  if (dirname == NULL)
 	    /* The default value.  */
-	    dirname = INTUSE(_nl_default_dirname);
+	    dirname = INTUSE (_nl_default_dirname);
 	  else
 	    {
-	      if (strcmp (dirname, INTUSE(_nl_default_dirname)) == 0)
-		dirname = INTUSE(_nl_default_dirname);
+	      if (strcmp (dirname, INTUSE (_nl_default_dirname)) == 0)
+		dirname = INTUSE (_nl_default_dirname);
 	      else
 		{
 		  char *result;
@@ -272,7 +265,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 	}
       else
 	/* The default value.  */
-	new_binding->dirname = (char *) INTUSE(_nl_default_dirname);
+	new_binding->dirname = (char *) INTUSE (_nl_default_dirname);
 
       new_binding->codeset_cntr = 0;
 
@@ -305,8 +298,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 	new_binding->codeset = NULL;
 
       /* Now enqueue it.  */
-      if (_nl_domain_bindings == NULL
-	  || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
+      if (_nl_domain_bindings == NULL || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
 	{
 	  new_binding->next = _nl_domain_bindings;
 	  _nl_domain_bindings = new_binding;
@@ -314,8 +306,7 @@ set_binding_values (domainname, dirnamep, codesetp)
       else
 	{
 	  binding = _nl_domain_bindings;
-	  while (binding->next != NULL
-		 && strcmp (domainname, binding->next->domainname) > 0)
+	  while (binding->next != NULL && strcmp (domainname, binding->next->domainname) > 0)
 	    binding = binding->next;
 
 	  new_binding->next = binding->next;
@@ -328,7 +319,7 @@ set_binding_values (domainname, dirnamep, codesetp)
       if (0)
 	{
 	failed_codeset:
-	  if (new_binding->dirname != INTUSE(_nl_default_dirname))
+	  if (new_binding->dirname != INTUSE (_nl_default_dirname))
 	    free (new_binding->dirname);
 	failed_dirname:
 	  free (new_binding);

@@ -43,9 +43,9 @@
 
 #if defined (HAVE_STRING_H)
 #  include <string.h>
-#else /* !HAVE_STRING_H */
+#else		/* !HAVE_STRING_H */
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */
+#endif		/* !HAVE_STRING_H */
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
@@ -101,7 +101,7 @@ COMMAND commands[] = {
   { "rename", com_rename, "Rename FILE to NEWNAME" },
   { "stat", com_stat, "Print out statistics on FILE" },
   { "view", com_view, "View the contents of FILE" },
-  { (char *)NULL, (rl_icpfunc_t *)NULL, (char *)NULL }
+  { (char *) NULL, (rl_icpfunc_t *) NULL, (char *) NULL }
 };
 
 /* Forward declarations. */
@@ -176,7 +176,7 @@ find_command (char *name)
     if (strcmp (name, commands[i].name) == 0)
       return (&commands[i]);
 
-  return ((COMMAND *)NULL);
+  return ((COMMAND *) NULL);
 }
 
 /* Strip whitespace from the start and end of STRING.  Return a pointer
@@ -188,7 +188,7 @@ stripwhite (char *string)
 
   for (s = string; whitespace (*s); s++)
     ;
-    
+
   if (*s == 0)
     return (s);
 
@@ -232,7 +232,7 @@ fileman_completion (const char *text, int start, int end)
 {
   char **matches;
 
-  matches = (char **)NULL;
+  matches = (char **) NULL;
 
   /* If this word is at the start of the line, then it is a command
      to complete.  Otherwise it is the name of a file in the current
@@ -267,11 +267,11 @@ command_generator (const char *text, int state)
       list_index++;
 
       if (strncmp (name, text, len) == 0)
-        return (dupstr(name));
+	return (dupstr (name));
     }
 
   /* If no names matched, then return NULL. */
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 
 /* **************************************************************** */
@@ -335,10 +335,7 @@ com_stat (char *arg)
 
   printf ("%s has %d link%s, and is %lu byte%s in length.\n",
 	  arg,
-          finfo.st_nlink,
-          (finfo.st_nlink == 1) ? "" : "s",
-          (unsigned long)finfo.st_size,
-          (finfo.st_size == 1) ? "" : "s");
+	  finfo.st_nlink, (finfo.st_nlink == 1) ? "" : "s", (unsigned long) finfo.st_size, (finfo.st_size == 1) ? "" : "s");
   printf ("Inode Last Change at: %s", ctime (&finfo.st_ctime));
   printf ("      Last access at: %s", ctime (&finfo.st_atime));
   printf ("    Last modified at: %s", ctime (&finfo.st_mtime));
@@ -363,10 +360,10 @@ com_help (char *arg)
   for (i = 0; commands[i].name; i++)
     {
       if (!*arg || (strcmp (arg, commands[i].name) == 0))
-        {
-          printf ("%s\t\t%s.\n", commands[i].name, commands[i].doc);
-          printed++;
-        }
+	{
+	  printf ("%s\t\t%s.\n", commands[i].name, commands[i].doc);
+	  printed++;
+	}
     }
 
   if (!printed)
@@ -374,20 +371,20 @@ com_help (char *arg)
       printf ("No commands match `%s'.  Possibilities are:\n", arg);
 
       for (i = 0; commands[i].name; i++)
-        {
-          /* Print in six columns. */
-          if (printed == 6)
-            {
-              printed = 0;
-              printf ("\n");
-            }
+	{
+	  /* Print in six columns. */
+	  if (printed == 6)
+	    {
+	      printed = 0;
+	      printf ("\n");
+	    }
 
-          printf ("%s\t", commands[i].name);
-          printed++;
-        }
+	  printf ("%s\t", commands[i].name);
+	  printed++;
+	}
 
       if (printed)
-        printf ("\n");
+	printf ("\n");
     }
   return (0);
 }
@@ -412,7 +409,7 @@ com_pwd (char *ignore)
 {
   char dir[1024], *s;
 
-  s = getcwd (dir, sizeof(dir) - 1);
+  s = getcwd (dir, sizeof (dir) - 1);
   if (s == 0)
     {
       printf ("Error getting pwd: %s\n", dir);
@@ -435,9 +432,7 @@ com_quit (char *arg)
 void
 too_dangerous (char *caller)
 {
-  fprintf (stderr,
-           "%s: Too dangerous for me to distribute.  Write it yourself.\n",
-           caller);
+  fprintf (stderr, "%s: Too dangerous for me to distribute.  Write it yourself.\n", caller);
 }
 
 /* Return non-zero if ARG is a valid argument for CALLER, else print
@@ -464,12 +459,12 @@ main (int argc, char **argv)
   initialize_readline ();	/* Bind our completer. */
 
   /* Loop reading and executing lines until the user quits. */
-  for ( ; done == 0; )
+  for (; done == 0;)
     {
       line = readline ("FileMan: ");
 
       if (!line)
-        break;
+	break;
 
       /* Remove leading and trailing whitespace from the line.
          Then, if there is anything left, add it to the history list
@@ -477,10 +472,10 @@ main (int argc, char **argv)
       s = stripwhite (line);
 
       if (*s)
-        {
-          add_history (s);
-          execute_line (s);
-        }
+	{
+	  add_history (s);
+	  execute_line (s);
+	}
 
       free (line);
     }

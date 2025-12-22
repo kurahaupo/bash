@@ -50,14 +50,14 @@ utf8_mbsmbchar (const char *str)
 {
   char *s;
 
-  for (s = (char *)str; *s; s++)
+  for (s = (char *) str; *s; s++)
     if ((*s & 0xc0) == 0x80)
       return s;
   return (0);
 }
 
 int
-utf8_mbsnlen(const char *src, size_t srclen, int maxlen)
+utf8_mbsnlen (const char *src, size_t srclen, int maxlen)
 {
   int sind, count;
 
@@ -76,28 +76,28 @@ utf8_mblen (const char *s, size_t n)
   unsigned char c, c1, c2, c3;
 
   if (s == 0)
-    return (0);	/* no shift states */
+    return (0);			/* no shift states */
   if (n <= 0)
     return (-1);
 
-  c = (unsigned char)*s;
+  c = (unsigned char) *s;
   if (c < 0x80)
     return (c != 0);
   if (c >= 0xc2)
     {
-      c1 = (unsigned char)s[1];
+      c1 = (unsigned char) s[1];
       if (c < 0xe0)
 	{
 	  if (n == 1)
 	    return -2;
 
 	  /*
-	   *				c	c1
+	   *                            c       c1
 	   *
 	   *    U+0080..U+07FF       C2..DF   80..BF
 	   */
 
-	  if (n >= 2 && (c1 ^ 0x80) < 0x40)		/* 0x80..0xbf */
+	  if (n >= 2 && (c1 ^ 0x80) < 0x40) /* 0x80..0xbf */
 	    return 2;
 	}
       else if (c < 0xf0)
@@ -106,7 +106,7 @@ utf8_mblen (const char *s, size_t n)
 	    return -2;
 
 	  /*
-	   *				c	c1	c2
+	   *                            c       c1      c2
 	   *
 	   *    U+0800..U+0FFF       E0       A0..BF   80..BF
 	   *    U+1000..U+CFFF       E1..EC   80..BF   80..BF
@@ -114,46 +114,42 @@ utf8_mblen (const char *s, size_t n)
 	   *    U+E000..U+FFFF       EE..EF   80..BF   80..BF
 	   */
 
-	  if ((c1 ^ 0x80) < 0x40
-		&& (c >= 0xe1 || c1 >= 0xa0)
-		&& (c != 0xed || c1 < 0xa0))
+	  if ((c1 ^ 0x80) < 0x40 && (c >= 0xe1 || c1 >= 0xa0) && (c != 0xed || c1 < 0xa0))
 	    {
 	      if (n == 2)
-		return -2;		/* incomplete */
+		return -2;	/* incomplete */
 
-	      c2 = (unsigned char)s[2];
+	      c2 = (unsigned char) s[2];
 	      if ((c2 ^ 0x80) < 0x40)
-		 return 3;
+		return 3;
 	    }
 	}
       else if (c <= 0xf4)
 	{
 	  if (n == 1)
 	    return -2;
-	 
+
 	  /*
-	   *				c	c1	c2	c3
+	   *                            c       c1      c2      c3
 	   *
 	   *    U+10000..U+3FFFF     F0       90..BF   80..BF   80..BF
 	   *    U+40000..U+FFFFF     F1..F3   80..BF   80..BF   80..BF
 	   *    U+100000..U+10FFFF   F4       80..8F   80..BF   80..BF
 	   */
-	  if (((c1 ^ 0x80) < 0x40) 
-		&& (c >= 0xf1 || c1 >= 0x90)
-		&& (c < 0xf4 || (c == 0xf4 && c1 < 0x90)))
+	  if (((c1 ^ 0x80) < 0x40) && (c >= 0xf1 || c1 >= 0x90) && (c < 0xf4 || (c == 0xf4 && c1 < 0x90)))
 	    {
 	      if (n == 2)
-		return -2;		/* incomplete */
+		return -2;	/* incomplete */
 
-	      c2 = (unsigned char)s[2];
+	      c2 = (unsigned char) s[2];
 	      if ((c2 ^ 0x80) < 0x40)
 		{
 		  if (n == 3)
 		    return -2;
 
-		  c3 = (unsigned char)s[3];
-	 	  if ((c3 ^ 0x80) < 0x40)
-	  	    return 4;
+		  c3 = (unsigned char) s[3];
+		  if ((c3 ^ 0x80) < 0x40)
+		    return 4;
 		}
 	    }
 	}
@@ -172,10 +168,10 @@ utf8_mbstrlen (const char *s)
 
   nc = 0;
   mb_cur_max = MB_CUR_MAX;
-  while (*s && (clen = (size_t)utf8_mblen(s, mb_cur_max)) != 0)
+  while (*s && (clen = (size_t) utf8_mblen (s, mb_cur_max)) != 0)
     {
-      if (MB_INVALIDCH(clen))
-	clen = 1;	/* assume single byte */
+      if (MB_INVALIDCH (clen))
+	clen = 1;		/* assume single byte */
 
       s += clen;
       nc++;

@@ -48,24 +48,24 @@ main (argc, argv)
 
   progname = argv[0];
 
-  status = dir = (char *)0;
+  status = dir = (char *) 0;
   while (arg_index < argc && argv[arg_index][0] == '-')
     {
       if (strcmp (argv[arg_index], "-dist") == 0)
-        {
+	{
 	  dist++;
 	  dist_inc++;
-        }
+	}
       else if (strcmp (argv[arg_index], "-build") == 0)
-        {
+	{
 	  build++;
 	  build_inc++;
-        }
+	}
       else if (strcmp (argv[arg_index], "-patch") == 0)
-        {
-          patch++;
+	{
+	  patch++;
 	  patch_inc++;
-        }
+	}
       else if (strcmp (argv[arg_index], "-dir") == 0)
 	{
 	  dir = argv[++arg_index];
@@ -86,14 +86,14 @@ main (argc, argv)
 	    }
 	}
       else if (strcmp (argv[arg_index], "-status") == 0)
-        {
-          status = argv[++arg_index];
+	{
+	  status = argv[++arg_index];
 	  if (status == 0)
 	    {
 	      fprintf (stderr, "%s: `-status' requires an argument\n", progname);
 	      exit (1);
 	    }
-        }
+	}
       else
 	{
 	  fprintf (stderr, "%s: unknown option: %s\n", progname, argv[arg_index]);
@@ -119,8 +119,7 @@ main (argc, argv)
   if (dist && arg_index < argc)
     if (sscanf (argv[arg_index], "%f", &distver) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected float value for -dist.\n",
-		 progname, argv[arg_index]);
+	fprintf (stderr, "%s: Bad input `%s'.  Expected float value for -dist.\n", progname, argv[arg_index]);
 	exit (1);
       }
     else
@@ -133,8 +132,7 @@ main (argc, argv)
   if (patch && arg_index < argc)
     if (sscanf (argv[arg_index], "%d", &patchlevel) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -patch.\n",
-		 progname, argv[arg_index]);
+	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -patch.\n", progname, argv[arg_index]);
 	exit (1);
       }
     else
@@ -142,12 +140,11 @@ main (argc, argv)
 	arg_index++;
 	patch_inc = 0;
       }
-    
+
   if (build && arg_index < argc)
     if (sscanf (argv[arg_index], "%d", &buildver) != 1)
       {
-	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -build.\n",
-		 progname, argv[arg_index]);
+	fprintf (stderr, "%s: Bad input `%s'.  Expected int value for -build.\n", progname, argv[arg_index]);
 	exit (1);
       }
     else
@@ -174,8 +171,7 @@ main (argc, argv)
   file = must_open ("newversion.h", "w");
 
   /* Output the leading comment. */
-  fprintf (file, 
-"/* Version control for the shell.  This file gets changed when you say\n\
+  fprintf (file, "/* Version control for the shell.  This file gets changed when you say\n\
    `make newversion' to the Makefile.  It is created by mkversion. */\n");
 
   fprintf (file, "\n/* The distribution version number of this shell. */\n");
@@ -195,11 +191,9 @@ main (argc, argv)
 
   fprintf (file, "\n/* A version string for use by sccs and the what command. */\n\n");
   if (status)
-    fprintf (file, "#define SCCSVERSION \"@(#)Bash version %.2f.%d(%d) %s GNU\"\n\n",
-      distver, patchlevel, buildver, status);
+    fprintf (file, "#define SCCSVERSION \"@(#)Bash version %.2f.%d(%d) %s GNU\"\n\n", distver, patchlevel, buildver, status);
   else
-    fprintf (file, "#define SCCSVERSION \"@(#)Bash version %.2f.%d(%d) GNU\"\n\n",
-      distver, patchlevel, buildver);
+    fprintf (file, "#define SCCSVERSION \"@(#)Bash version %.2f.%d(%d) GNU\"\n\n", distver, patchlevel, buildver);
 
   fclose (file);
 
@@ -234,7 +228,7 @@ makename (fn, from_srcdir)
   int dlen;
 
   dlen = (from_srcdir && dir) ? strlen (dir) + 1 : 0;
-  ret = (char *)malloc (dlen + strlen (fn) + 1);
+  ret = (char *) malloc (dlen + strlen (fn) + 1);
   if (ret == 0)
     {
       fprintf (stderr, "%s: malloc failed\n", progname);
@@ -243,7 +237,7 @@ makename (fn, from_srcdir)
   if (from_srcdir && dir)
     sprintf (ret, "%s/%s", dir, fn);
   else
-    (void)strcpy (ret, fn);
+    (void) strcpy (ret, fn);
 
   return ret;
 }
@@ -260,7 +254,7 @@ get_float_from_file (filename, var, from_srcdir)
   name = makename (filename, from_srcdir);
   stream = fopen (name, "r");
   free (name);
-  if (stream == (FILE *)NULL)
+  if (stream == (FILE *) NULL)
     return (0);
   result = fscanf (stream, "%f\n", var);
   fclose (stream);
@@ -278,7 +272,7 @@ get_int_from_file (filename, var, from_srcdir)
   name = makename (filename, from_srcdir);
   stream = fopen (name, "r");
   free (name);
-  if (stream == (FILE *)NULL)
+  if (stream == (FILE *) NULL)
     return (0);
   result = fscanf (stream, "%d\n", var);
   fclose (stream);
@@ -293,12 +287,10 @@ must_open (name, mode)
 
   if (!temp)
     {
-      fprintf (stderr, "%s: Cannot open `%s' for mode `%s'.\n",
-	       progname, name, mode);
+      fprintf (stderr, "%s: Cannot open `%s' for mode `%s'.\n", progname, name, mode);
       fprintf
 	(stderr,
-	 "Perhaps you don't have %s permission to the file or directory.\n",
-	 (strcmp (mode, "w") == 0) ? "write" : "read");
+	 "Perhaps you don't have %s permission to the file or directory.\n", (strcmp (mode, "w") == 0) ? "write" : "read");
       exit (3);
     }
   return (temp);

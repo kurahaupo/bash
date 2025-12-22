@@ -15,7 +15,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdlib.h>
@@ -23,19 +23,19 @@
 
 #include "gettextP.h"
 #ifdef _LIBC
-# include <libintl.h>
+#  include <libintl.h>
 #else
-# include "libgnuintl.h"
+#  include "libgnuintl.h"
 #endif
 
 /* Handle multi-threaded applications.  */
 #ifdef _LIBC
-# include <bits/libc-lock.h>
-# define gl_rwlock_define __libc_rwlock_define
-# define gl_rwlock_wrlock __libc_rwlock_wrlock
-# define gl_rwlock_unlock __libc_rwlock_unlock
+#  include <bits/libc-lock.h>
+#  define gl_rwlock_define __libc_rwlock_define
+#  define gl_rwlock_wrlock __libc_rwlock_wrlock
+#  define gl_rwlock_unlock __libc_rwlock_unlock
 #else
-# include "lock.h"
+#  include "lock.h"
 #endif
 
 /* @@ end of prolog @@ */
@@ -46,22 +46,20 @@
    code is also used in GNU C Library where the names have a __
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
-# define TEXTDOMAIN __textdomain
-# ifndef strdup
-#  define strdup(str) __strdup (str)
-# endif
+#  define TEXTDOMAIN __textdomain
+#  ifndef strdup
+#    define strdup(str) __strdup (str)
+#  endif
 #else
-# define TEXTDOMAIN libintl_textdomain
+#  define TEXTDOMAIN libintl_textdomain
 #endif
 
 /* Lock variable to protect the global data in the gettext implementation.  */
 gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
-
 /* Set the current default message catalog to DOMAINNAME.
    If DOMAINNAME is null, return the current default.
    If DOMAINNAME is "", reset to the default of "messages".  */
-char *
-TEXTDOMAIN (const char *domainname)
+     char *TEXTDOMAIN (const char *domainname)
 {
   char *new_domain;
   char *old_domain;
@@ -75,8 +73,7 @@ TEXTDOMAIN (const char *domainname)
   old_domain = (char *) _nl_current_default_domain;
 
   /* If domain name is the null string set to default domain "messages".  */
-  if (domainname[0] == '\0'
-      || strcmp (domainname, _nl_default_default_domain) == 0)
+  if (domainname[0] == '\0' || strcmp (domainname, _nl_default_default_domain) == 0)
     {
       _nl_current_default_domain = _nl_default_default_domain;
       new_domain = (char *) _nl_current_default_domain;
@@ -88,8 +85,8 @@ TEXTDOMAIN (const char *domainname)
   else
     {
       /* If the following strdup fails '_nl_current_default_domain'
-	 will be NULL.  This value will be returned and so signals we
-	 are out of memory.  */
+         will be NULL.  This value will be returned and so signals we
+         are out of memory.  */
       new_domain = strdup (domainname);
       if (new_domain != NULL)
 	_nl_current_default_domain = new_domain;

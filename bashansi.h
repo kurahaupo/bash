@@ -19,44 +19,44 @@
 */
 
 #if !defined (_BASHANSI_H_)
-#define _BASHANSI_H_
+#  define _BASHANSI_H_
 
-#if defined (HAVE_STRING_H)
-#  include <string.h>
-#endif /* !HAVE_STRING_H */
+#  if defined (HAVE_STRING_H)
+#    include <string.h>
+#  endif	/* !HAVE_STRING_H */
 
-#if defined (HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* !HAVE_STRINGS_H */
+#  if defined (HAVE_STRINGS_H)
+#    include <strings.h>
+#  endif	/* !HAVE_STRINGS_H */
 
-#if defined (HAVE_STDLIB_H)
-#  include <stdlib.h>
-#else
-#  include "ansi_stdlib.h"
-#endif /* !HAVE_STDLIB_H */
+#  if defined (HAVE_STDLIB_H)
+#    include <stdlib.h>
+#  else
+#    include "ansi_stdlib.h"
+#  endif	/* !HAVE_STDLIB_H */
 
 /* If bool is not a compiler builtin, prefer stdbool.h if we have it */
-#if !defined (HAVE_C_BOOL)
-#  if defined (HAVE_STDBOOL_H)
-#    include <stdbool.h>
-#  else
-#    undef bool
+#  if !defined (HAVE_C_BOOL)
+#    if defined (HAVE_STDBOOL_H)
+#      include <stdbool.h>
+#    else
+#      undef bool
 typedef unsigned char bool;
-#    define true 1
-#    define false 0
+#      define true 1
+#      define false 0
+#    endif
 #  endif
-#endif
 
 /* Include <stddef.h>, or define substitutes (config.h handles ptrdiff_t). */
-#ifdef HAVE_STDDEF_H
-#  include <stddef.h>
-#endif
+#  ifdef HAVE_STDDEF_H
+#    include <stddef.h>
+#  endif
 /* Substitutes for definitions in stddef.h */
-#ifndef NULL
-#  define NULL 0
-#endif
-#ifndef offsetof
-#  define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-#endif
+#  ifndef NULL
+#    define NULL 0
+#  endif
+#  ifndef offsetof
+#    define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#  endif
 
-#endif /* !_BASHANSI_H_ */
+#endif		/* !_BASHANSI_H_ */

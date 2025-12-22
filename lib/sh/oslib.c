@@ -49,7 +49,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 /* Make the functions strchr and strrchr if they do not exist. */
 #if !defined (HAVE_STRCHR)
@@ -75,7 +75,7 @@ strrchr (const char *string, int c)
       t = s;
   return (t);
 }
-#endif /* !HAVE_STRCHR */
+#endif		/* !HAVE_STRCHR */
 
 #if !defined (HAVE_DUP2) || defined (DUP2_BROKEN)
 /* Replacement for dup2 (), for those systems which either don't have it,
@@ -106,15 +106,14 @@ dup2 (int fd1, int fd2)
 
   if (r >= 0)
     errno = saved_errno;
-  else
-    if (errno == EINVAL)
-      errno = EBADF;
+  else if (errno == EINVAL)
+    errno = EBADF;
 
   /* Force the new file descriptor to remain open across exec () calls. */
   SET_OPEN_ON_EXEC (fd2);
   return (r);
 }
-#endif /* !HAVE_DUP2 */
+#endif		/* !HAVE_DUP2 */
 
 /*
  * Return the total number of available file descriptors.
@@ -141,20 +140,20 @@ int
 getdtablesize (void)
 {
 #  if defined (_POSIX_VERSION) && defined (HAVE_SYSCONF) && defined (_SC_OPEN_MAX)
-  return (sysconf(_SC_OPEN_MAX));	/* Posix systems use sysconf */
-#  else /* ! (_POSIX_VERSION && HAVE_SYSCONF && _SC_OPEN_MAX) */
+  return (sysconf (_SC_OPEN_MAX)); /* Posix systems use sysconf */
+#  else		/* ! (_POSIX_VERSION && HAVE_SYSCONF && _SC_OPEN_MAX) */
 #    if defined (ULIMIT_MAXFDS)
   return (ulimit (4, 0L));	/* System V.3 systems use ulimit(4, 0L) */
-#    else /* !ULIMIT_MAXFDS */
+#    else	/* !ULIMIT_MAXFDS */
 #      if defined (NOFILE)	/* Other systems use NOFILE */
   return (NOFILE);
-#      else /* !NOFILE */
+#      else	/* !NOFILE */
   return (20);			/* XXX - traditional value is 20 */
-#      endif /* !NOFILE */
-#    endif /* !ULIMIT_MAXFDS */
-#  endif /* ! (_POSIX_VERSION && _SC_OPEN_MAX) */
+#      endif	/* !NOFILE */
+#    endif	/* !ULIMIT_MAXFDS */
+#  endif	/* ! (_POSIX_VERSION && _SC_OPEN_MAX) */
 }
-#endif /* !HAVE_GETDTABLESIZE */
+#endif		/* !HAVE_GETDTABLESIZE */
 
 #if !defined (HAVE_BCOPY)
 #  if defined (bcopy)
@@ -165,7 +164,7 @@ bcopy (const void *s, void *d, size_t n)
 {
   FASTCOPY (s, d, n);
 }
-#endif /* !HAVE_BCOPY */
+#endif		/* !HAVE_BCOPY */
 
 #if !defined (HAVE_BZERO)
 #  if defined (bzero)
@@ -199,7 +198,7 @@ gethostname (char *name, size_t namelen)
   name[namelen] = '\0';
   return (0);
 }
-#  else /* !HAVE_UNAME */
+#  else		/* !HAVE_UNAME */
 int
 gethostname (char *name, size_t namelen)
 {
@@ -207,8 +206,8 @@ gethostname (char *name, size_t namelen)
   name[namelen] = '\0';
   return 0;
 }
-#  endif /* !HAVE_UNAME */
-#endif /* !HAVE_GETHOSTNAME */
+#  endif	/* !HAVE_UNAME */
+#endif		/* !HAVE_GETHOSTNAME */
 
 #if !defined (HAVE_KILLPG)
 int
@@ -216,19 +215,19 @@ killpg (pid_t pgrp, int sig)
 {
   return (kill (-pgrp, sig));
 }
-#endif /* !HAVE_KILLPG */
+#endif		/* !HAVE_KILLPG */
 
 #if !defined (HAVE_MKFIFO) && defined (PROCESS_SUBSTITUTION)
 int
 mkfifo (char *path, mode_t mode)
 {
-#if defined (S_IFIFO)
+#  if defined (S_IFIFO)
   return (mknod (path, (mode | S_IFIFO), 0));
-#else /* !S_IFIFO */
+#  else		/* !S_IFIFO */
   return (-1);
-#endif /* !S_IFIFO */
+#  endif	/* !S_IFIFO */
 }
-#endif /* !HAVE_MKFIFO && PROCESS_SUBSTITUTION */
+#endif		/* !HAVE_MKFIFO && PROCESS_SUBSTITUTION */
 
 #define DEFAULT_MAXGROUPS 64
 #define MIN_MAXGROUPS 32	/* work around macOS issue */
@@ -248,14 +247,14 @@ getmaxgroups (void)
 #else
 #  if defined (NGROUPS_MAX)
   maxgroups = NGROUPS_MAX;
-#  else /* !NGROUPS_MAX */
+#  else		/* !NGROUPS_MAX */
 #    if defined (NGROUPS)
   maxgroups = NGROUPS;
-#    else /* !NGROUPS */
+#    else	/* !NGROUPS */
   maxgroups = DEFAULT_MAXGROUPS;
-#    endif /* !NGROUPS */
-#  endif /* !NGROUPS_MAX */  
-#endif /* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
+#    endif	/* !NGROUPS */
+#  endif	/* !NGROUPS_MAX */
+#endif		/* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
 
   if (maxgroups <= 0)
     maxgroups = DEFAULT_MAXGROUPS;
@@ -282,9 +281,9 @@ getmaxchild (void)
 #  else
 #    if defined (MAXUPRC)
   maxchild = MAXUPRC;
-#    endif /* MAXUPRC */
-#  endif /* CHILD_MAX */
-#endif /* !HAVE_SYSCONF || !_SC_CHILD_MAX */
+#    endif	/* MAXUPRC */
+#  endif	/* CHILD_MAX */
+#endif		/* !HAVE_SYSCONF || !_SC_CHILD_MAX */
 
   return (maxchild);
 }

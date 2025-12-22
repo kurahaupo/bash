@@ -41,8 +41,8 @@
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-#else 
-extern void exit();
+#else
+extern void exit ();
 #endif
 
 #ifdef HAVE_LOCALE_H
@@ -64,14 +64,14 @@ extern int errno;
 extern int optind;
 extern char *optarg;
 
-static int fcopy(FILE *);
-static int stdcat(int, char **);
+static int fcopy (FILE *);
+static int stdcat (int, char **);
 
 static char *progname;
 static int vflag;
 
 static void
-usage(void)
+usage (void)
 {
   fprintf (stderr, "%s: usage: %s [-vEVN] [filename]\n", progname, progname);
 }
@@ -86,14 +86,14 @@ main (int argc, char **argv)
   setlocale (LC_ALL, "");
 #endif
 
-  progname = strrchr(argv[0], '/');
+  progname = strrchr (argv[0], '/');
   if (progname == 0)
     progname = argv[0];
   else
     progname++;
 
   vflag = Vflag = Nflag = 0;
-  while ((opt = getopt(argc, argv, "vEVN")) != EOF)
+  while ((opt = getopt (argc, argv, "vEVN")) != EOF)
     {
       switch (opt)
 	{
@@ -118,14 +118,14 @@ main (int argc, char **argv)
   argc -= optind;
   argv += optind;
 
-  if (isatty(0) == 0 || argc || Nflag)
-    return stdcat(argc, argv);
+  if (isatty (0) == 0 || argc || Nflag)
+    return stdcat (argc, argv);
 
   rl_variable_bind ("editing-mode", Vflag ? "vi" : "emacs");
   while (temp = readline (""))
     {
       if (*temp)
-        add_history (temp);
+	add_history (temp);
       printf ("%s\n", temp);
     }
 
@@ -133,21 +133,21 @@ main (int argc, char **argv)
 }
 
 static int
-fcopy(FILE *fp)
+fcopy (FILE *fp)
 {
   int c;
   char *x;
 
-  while ((c = getc(fp)) != EOF)
+  while ((c = getc (fp)) != EOF)
     {
-      if (vflag && isascii ((unsigned char)c) && isprint((unsigned char)c) == 0)
+      if (vflag && isascii ((unsigned char) c) && isprint ((unsigned char) c) == 0)
 	{
 	  x = rl_untranslate_keyseq (c);
 	  if (fputs (x, stdout) == EOF)
 	    return 1;
 	}
       else if (putchar (c) == EOF)
-        return 1;
+	return 1;
     }
   return (ferror (stdout));
 }
@@ -155,12 +155,12 @@ fcopy(FILE *fp)
 int
 stdcat (int argc, char **argv)
 {
-  int  i, fd, r;
+  int i, fd, r;
   char *s;
   FILE *fp;
 
   if (argc == 0)
-    return (fcopy(stdin));
+    return (fcopy (stdin));
 
   for (i = 0, r = 1; i < argc; i++)
     {
@@ -171,13 +171,13 @@ stdcat (int argc, char **argv)
 	  fp = fopen (argv[i], "r");
 	  if (fp == 0)
 	    {
-	      fprintf (stderr, "%s: %s: cannot open: %s\n", progname, argv[i], strerror(errno));
+	      fprintf (stderr, "%s: %s: cannot open: %s\n", progname, argv[i], strerror (errno));
 	      continue;
 	    }
-        }
+	}
       r = fcopy (fp);
       if (fp != stdin)
-	fclose(fp);
+	fclose (fp);
     }
   return r;
 }

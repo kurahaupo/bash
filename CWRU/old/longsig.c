@@ -39,8 +39,7 @@ main (argc, argv)
 	}
     }
 
-  printf ("The longest name is %d:\"%s\", which is %d chars in length.\n",
-	  longest, sys_siglist[longest], length);
+  printf ("The longest name is %d:\"%s\", which is %d chars in length.\n", longest, sys_siglist[longest], length);
 }
 
 /*

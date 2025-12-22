@@ -96,7 +96,7 @@ evalfile_internal (const char *filename, int flags)
   char *t, tt[2];
 #endif
 
-  USE_VAR(pflags);
+  USE_VAR (pflags);
 
   errno = 0;
   do
@@ -104,7 +104,7 @@ evalfile_internal (const char *filename, int flags)
       fd = open (filename, O_RDONLY);
       result = errno;
       if (fd < 0 && result == EINTR)
-        QUIT;
+	QUIT;
       errno = result;
     }
   while (fd < 0 && errno == EINTR && (flags & FEVAL_RETRY));
@@ -116,7 +116,7 @@ evalfile_internal (const char *filename, int flags)
 	close (fd);
       errno = result;
 
-file_error_and_exit:
+    file_error_and_exit:
       if (((flags & FEVAL_ENOENTOK) == 0) || errno != ENOENT)
 	file_error (filename);
 
@@ -126,8 +126,7 @@ file_error_and_exit:
 	  jump_to_top_level (EXITPROG);
 	}
 
-      return ((flags & FEVAL_BUILTIN) ? EXECUTION_FAILURE
-      				      : ((errno == ENOENT && (flags & FEVAL_ENOENTOK) != 0) ? 0 : -1));
+      return ((flags & FEVAL_BUILTIN) ? EXECUTION_FAILURE : ((errno == ENOENT && (flags & FEVAL_ENOENTOK) != 0) ? 0 : -1));
     }
 
   errfunc = ((flags & FEVAL_BUILTIN) ? builtin_error : internal_error);
@@ -145,7 +144,7 @@ file_error_and_exit:
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_FAILURE : -1);
     }
 
-  file_size = (size_t)finfo.st_size;
+  file_size = (size_t) finfo.st_size;
   /* Check for overflow with large files. */
   if (file_size != finfo.st_size || file_size + 1 < file_size)
     {
@@ -156,7 +155,7 @@ file_error_and_exit:
 
   if (S_ISREG (finfo.st_mode) && file_size <= SSIZE_MAX)
     {
-      string = (char *)xmalloc (1 + file_size);
+      string = (char *) xmalloc (1 + file_size);
       nr = read (fd, string, file_size);
       if (nr >= 0)
 	string[nr] = '\0';
@@ -172,7 +171,7 @@ file_error_and_exit:
   close (fd);
   errno = return_val;
 
-  if (nr < 0)		/* XXX was != file_size, not < 0 */
+  if (nr < 0)			/* XXX was != file_size, not < 0 */
     {
       free (string);
       goto file_error_and_exit;
@@ -184,8 +183,7 @@ file_error_and_exit:
       return ((flags & FEVAL_BUILTIN) ? EXECUTION_SUCCESS : 1);
     }
 
-  if ((flags & FEVAL_CHECKBINARY) && 
-      check_binary_file (string, (nr > 80) ? 80 : nr))
+  if ((flags & FEVAL_CHECKBINARY) && check_binary_file (string, (nr > 80) ? 80 : nr))
     {
       free (string);
       (*errfunc) ("%s: %s", filename, _("cannot execute binary file"));
@@ -197,8 +195,8 @@ file_error_and_exit:
     {
       for (nnull = i = 0; i < nr; i++)
 	if (string[i] == '\0')
-          {
-	    memmove (string+i, string+i+1, nr - i);
+	  {
+	    memmove (string + i, string + i + 1, nr - i);
 	    nr--;
 	    /* Even if the `check binary' flag is not set, we want to avoid
 	       sourcing files with more than 256 null characters -- that
@@ -209,7 +207,7 @@ file_error_and_exit:
 		(*errfunc) ("%s: %s", filename, _("cannot execute binary file"));
 		return ((flags & FEVAL_BUILTIN) ? EX_BINARY_FILE : -1);
 	      }
-          }
+	  }
     }
 
   if (flags & FEVAL_UNWINDPROT)
@@ -239,7 +237,7 @@ file_error_and_exit:
   if (interactive_shell && shell_compatibility_level <= 52)
     want_job_notifications++;
 
-  retain_fifos++;			/* XXX */
+  retain_fifos++;		/* XXX */
 
 #if defined (ARRAY_VARS)
   GET_ARRAY_FROM_VAR ("FUNCNAME", funcname_v, funcname_a);
@@ -250,13 +248,13 @@ file_error_and_exit:
   GET_ARRAY_FROM_VAR ("BASH_ARGC", bash_argc_v, bash_argc_a);
 #  endif
 
-  push_source (bash_source_a, (char *)filename);
+  push_source (bash_source_a, (char *) filename);
   t = itos (executing_line_number ());
   array_push (bash_lineno_a, t);
   free (t);
-  array_push (funcname_a, "source");	/* not exactly right */
+  array_push (funcname_a, "source"); /* not exactly right */
 
-  fa = (struct func_array_state *)xmalloc (sizeof (struct func_array_state));
+  fa = (struct func_array_state *) xmalloc (sizeof (struct func_array_state));
   fa->source_a = bash_source_a;
   fa->source_v = bash_source_v;
   fa->lineno_a = bash_lineno_a;
@@ -273,8 +271,9 @@ file_error_and_exit:
     {
       if (shell_compatibility_level <= 44)
 	init_bash_argv ();
-      array_push (bash_argv_a, (char *)filename);	/* XXX - unconditionally? */
-      tt[0] = '1'; tt[1] = '\0';
+      array_push (bash_argv_a, (char *) filename); /* XXX - unconditionally? */
+      tt[0] = '1';
+      tt[1] = '\0';
       array_push (bash_argc_a, tt);
       if (flags & FEVAL_UNWINDPROT)
 	add_unwind_protect (uw_pop_args, 0);
@@ -283,7 +282,7 @@ file_error_and_exit:
 #endif
 
   /* set the flags to be passed to parse_and_execute */
-  pflags = SEVAL_RESETLINE|SEVAL_NOOPTIMIZE;
+  pflags = SEVAL_RESETLINE | SEVAL_NOOPTIMIZE;
   pflags |= (flags & FEVAL_HISTORY) ? 0 : SEVAL_NOHIST;
 
   if (flags & FEVAL_BUILTIN)
@@ -342,7 +341,7 @@ maybe_execute_file (const char *fname, int force_noninteractive)
   int result, flags;
 
   filename = bash_tilde_expand (fname, 0);
-  flags = FEVAL_ENOENTOK|FEVAL_RETRY;
+  flags = FEVAL_ENOENTOK | FEVAL_RETRY;
   if (force_noninteractive)
     flags |= FEVAL_NONINT;
   result = evalfile_internal (filename, flags);
@@ -374,17 +373,17 @@ fc_execute_file (const char *filename)
   /* We want these commands to show up in the history list if
      remember_on_history is set.  We use FEVAL_BUILTIN to return
      the result of parse_and_execute. */
-  flags = FEVAL_ENOENTOK|FEVAL_HISTORY|FEVAL_REGFILE|FEVAL_BUILTIN;
+  flags = FEVAL_ENOENTOK | FEVAL_HISTORY | FEVAL_REGFILE | FEVAL_BUILTIN;
   return (evalfile_internal (filename, flags));
 }
-#endif /* HISTORY */
+#endif		/* HISTORY */
 
 int
 source_file (const char *filename, int sflags)
 {
   int flags, rval;
 
-  flags = FEVAL_BUILTIN|FEVAL_UNWINDPROT|FEVAL_NONINT;
+  flags = FEVAL_BUILTIN | FEVAL_UNWINDPROT | FEVAL_NONINT;
   if (sflags)
     flags |= FEVAL_NOPUSHARGS;
   /* POSIX shells exit if non-interactive and file error. */

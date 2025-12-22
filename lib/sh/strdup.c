@@ -36,5 +36,5 @@ strdup (const char *s)
     return NULL;
 
   memcpy (new, s, len);
-  return ((char *)new);
+  return ((char *) new);
 }

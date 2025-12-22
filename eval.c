@@ -61,11 +61,11 @@ int
 reader_loop (void)
 {
   int our_indirection_level;
-  COMMAND * volatile current_command;
+  COMMAND *volatile current_command;
 
-  USE_VAR(current_command);
+  USE_VAR (current_command);
 
-  current_command = (COMMAND *)NULL;
+  current_command = (COMMAND *) NULL;
 
   our_indirection_level = ++indirection_level;
 
@@ -80,10 +80,10 @@ reader_loop (void)
 
 #if defined (PROCESS_SUBSTITUTION)
       unlink_fifo_list ();
-#endif /* PROCESS_SUBSTITUTION */
+#endif		/* PROCESS_SUBSTITUTION */
 
       /* XXX - why do we set this every time through the loop?  And why do
-	 it if SIGINT is trapped in an interactive shell? */
+         it if SIGINT is trapped in an interactive shell? */
       if (interactive_shell && signal_is_ignored (SIGINT) == 0 && signal_is_trapped (SIGINT) == 0)
 	set_signal_handler (SIGINT, sigint_sighandler);
 
@@ -96,27 +96,27 @@ reader_loop (void)
 	      /* Some kind of throw to top_level has occurred. */
 	    case ERREXIT:
 	      /* POSIX says to exit on error "as if by executing the
-		 exit special built-in utility with no arguments," so we
-		 don't reset any local contexts and keep the execution
-		 context in a shell function if we were executing one. */
+	         exit special built-in utility with no arguments," so we
+	         don't reset any local contexts and keep the execution
+	         context in a shell function if we were executing one. */
 	      if (exit_immediately_on_error && posixly_correct == 0)
-		reset_local_contexts ();	/* not in a function */
+		reset_local_contexts (); /* not in a function */
 	    case FORCE_EOF:
 	    case EXITPROG:
 	    case EXITBLTIN:
-	      current_command = (COMMAND *)NULL;
+	      current_command = (COMMAND *) NULL;
 	      EOF_Reached = EOF;
 	      goto exec_done;
 
 	    case DISCARD:
 	      /* Make sure the exit status is reset to a non-zero value, but
-		 leave existing non-zero values (e.g., > 128 on signal)
-		 alone. */
+	         leave existing non-zero values (e.g., > 128 on signal)
+	         alone. */
 	      if (last_command_exit_value == 0)
 		set_exit_status (EXECUTION_FAILURE);
 	      if (subshell_environment)
 		{
-		  current_command = (COMMAND *)NULL;
+		  current_command = (COMMAND *) NULL;
 		  EOF_Reached = EOF;
 		  goto exec_done;
 		}
@@ -124,7 +124,7 @@ reader_loop (void)
 	      if (current_command)
 		{
 		  dispose_command (current_command);
-		  current_command = (COMMAND *)NULL;
+		  current_command = (COMMAND *) NULL;
 		}
 
 	      restore_sigmask ();
@@ -150,14 +150,14 @@ reader_loop (void)
 	    {
 	      set_exit_status (last_command_exit_value);
 	      dispose_command (global_command);
-	      global_command = (COMMAND *)NULL;
+	      global_command = (COMMAND *) NULL;
 	    }
 	  else if (current_command = global_command)
 	    {
-	      global_command = (COMMAND *)NULL;
+	      global_command = (COMMAND *) NULL;
 
 	      /* If the shell is interactive, expand and display $PS0 after reading a
-		 command (possibly a list or pipeline) and before executing it. */
+	         command (possibly a list or pipeline) and before executing it. */
 	      if (interactive && ps0_prompt)
 		{
 		  char *ps0_string;
@@ -188,7 +188,7 @@ reader_loop (void)
 	      if (current_command)
 		{
 		  dispose_command (current_command);
-		  current_command = (COMMAND *)NULL;
+		  current_command = (COMMAND *) NULL;
 		}
 	    }
 	  if (EOF_Reached && interactive && ignoreeof && parse_and_execute_level == 0 && code != EXITBLTIN)
@@ -226,21 +226,21 @@ pretty_print_loop (void)
     {
       code = setjmp_nosigs (top_level);
       if (code)
-        return (EXECUTION_FAILURE);
-      if (read_command() == 0)
+	return (EXECUTION_FAILURE);
+      if (read_command () == 0)
 	{
 	  current_command = global_command;
 	  global_command = 0;
-	  posixly_correct = 1;			/* print posix-conformant */
+	  posixly_correct = 1;	/* print posix-conformant */
 	  if (current_command && (command_to_print = make_command_string (current_command)))
 	    {
-	      printf ("%s\n", command_to_print);	/* for now */
+	      printf ("%s\n", command_to_print); /* for now */
 	      last_was_newline = 0;
 	    }
 	  else if (last_was_newline == 0)
 	    {
-	       printf ("\n");
-	       last_was_newline = 1;
+	      printf ("\n");
+	      last_was_newline = 1;
 	    }
 	  posixly_correct = global_posix_mode;
 	  dispose_command (current_command);
@@ -248,19 +248,19 @@ pretty_print_loop (void)
       else
 	return (EXECUTION_FAILURE);
     }
-    
+
   return (EXECUTION_SUCCESS);
 }
 
 static sighandler
-alrm_catcher(int i)
+alrm_catcher (int i)
 {
   char *msg;
 
   msg = _("\007timed out waiting for input: auto-logout\n");
   write (1, msg, strlen (msg));
 
-  bash_logout ();	/* run ~/.bash_logout if this is a login shell */
+  bash_logout ();		/* run ~/.bash_logout if this is a login shell */
   jump_to_top_level (EXITPROG);
   SIGRETURN (0);
 }
@@ -289,7 +289,7 @@ execute_array_command (ARRAY *a, void *v)
   char **argv;
   int argc, i;
 
-  tag = (char *)v;
+  tag = (char *) v;
   argc = 0;
   argv = array_to_argv (a, &argc);
   for (i = 0; i < argc; i++)
@@ -301,7 +301,7 @@ execute_array_command (ARRAY *a, void *v)
   return 0;
 }
 #endif
-  
+
 static void
 execute_prompt_command (void)
 {
@@ -312,7 +312,7 @@ execute_prompt_command (void)
 #endif
 
   pcv = find_variable ("PROMPT_COMMAND");
-  if (pcv  == 0 || var_isset (pcv) == 0 || invisible_p (pcv))
+  if (pcv == 0 || var_isset (pcv) == 0 || invisible_p (pcv))
     return;
 #if defined (ARRAY_VARS)
   if (array_p (pcv))
@@ -322,7 +322,7 @@ execute_prompt_command (void)
       return;
     }
   else if (assoc_p (pcv))
-    return;	/* currently don't allow associative arrays here */
+    return;			/* currently don't allow associative arrays here */
 #endif
 
   command_to_execute = value_cell (pcv);
@@ -340,7 +340,7 @@ parse_command (void)
   int r, old_parsing;
 
   need_here_doc = 0;
-  if ((parser_state & (PST_CMDSUBST|PST_FUNSUBST)) == 0)
+  if ((parser_state & (PST_CMDSUBST | PST_FUNSUBST)) == 0)
     run_pending_traps ();
 
   /* Allow the execution of a random command just before the printing
@@ -349,7 +349,7 @@ parse_command (void)
   /* The tests are a combination of SHOULD_PROMPT() and prompt_again() 
      from parse.y, which are the conditions under which the prompt is
      actually printed. */
-  if (interactive && bash_input.type != st_string && parser_expanding_alias() == 0)
+  if (interactive && bash_input.type != st_string && parser_expanding_alias () == 0)
     {
 #if defined (JOB_CONTROL)
       notify_and_cleanup (-1);
@@ -357,7 +357,7 @@ parse_command (void)
 #if defined (READLINE)
       if (no_line_editing || (bash_input.type == st_stdin && parser_will_prompt ()))
 #endif
-        execute_prompt_command ();
+	execute_prompt_command ();
 
       if (running_under_emacs == 2)
 	send_pwd_to_eterm ();	/* Yuck */
@@ -386,12 +386,12 @@ read_command (void)
   SigHandler *old_alrm;
 
   set_current_prompt_level (1);
-  global_command = (COMMAND *)NULL;
+  global_command = (COMMAND *) NULL;
 
   /* Only do timeouts if interactive. */
-  tmout_var = (SHELL_VAR *)NULL;
+  tmout_var = (SHELL_VAR *) NULL;
   tmout_len = 0;
-  old_alrm = (SigHandler *)NULL;
+  old_alrm = (SigHandler *) NULL;
 
   if (interactive)
     {
@@ -415,7 +415,7 @@ read_command (void)
 
   if (interactive && tmout_var && (tmout_len > 0))
     {
-      alarm(0);
+      alarm (0);
       set_signal_handler (SIGALRM, old_alrm);
     }
 

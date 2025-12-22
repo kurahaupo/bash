@@ -27,56 +27,56 @@
 
 #if defined (HAVE_NETWORK)
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
 
-#include <stdio.h> 
-#include <sys/types.h>
+#  include <stdio.h>
+#  include <sys/types.h>
 
-#if defined (HAVE_SYS_SOCKET_H)
-#  include <sys/socket.h>
-#endif
+#  if defined (HAVE_SYS_SOCKET_H)
+#    include <sys/socket.h>
+#  endif
 
-#if defined (HAVE_NETINET_IN_H)
-#  include <netinet/in.h>
-#endif
+#  if defined (HAVE_NETINET_IN_H)
+#    include <netinet/in.h>
+#  endif
 
-#if defined (HAVE_NETDB_H)
-#  include <netdb.h>
-#endif
+#  if defined (HAVE_NETDB_H)
+#    include <netdb.h>
+#  endif
 
-#if defined (HAVE_ARPA_INET_H)
-#  include <arpa/inet.h>
-#endif
+#  if defined (HAVE_ARPA_INET_H)
+#    include <arpa/inet.h>
+#  endif
 
-#include <bashansi.h>
-#include <bashintl.h>
+#  include <bashansi.h>
+#  include <bashintl.h>
 
-#include <errno.h>
+#  include <errno.h>
 
-#include <shell.h>
-#include <xmalloc.h>
+#  include <shell.h>
+#  include <xmalloc.h>
 
-#ifndef errno
+#  ifndef errno
 extern int errno;
-#endif
+#  endif
 
-#if !defined (HAVE_INET_ATON)
+#  if !defined (HAVE_INET_ATON)
 extern int inet_aton (const char *, struct in_addr *);
-#endif
+#  endif
 
-#ifndef HAVE_GETADDRINFO
+#  ifndef HAVE_GETADDRINFO
 static int _getaddr (const char *, struct in_addr *);
 static int _getserv (const char *, int, unsigned short *);
 static int _netopen4 (const char *, const char *, int);
-#else /* HAVE_GETADDRINFO */
+#  else		/* HAVE_GETADDRINFO */
 static int _netopen6 (const char *, const char *, int);
-#endif
+#  endif
 
 static int _netopen (const char *, const char *, int);
 
-#ifndef HAVE_GETADDRINFO
+#  ifndef HAVE_GETADDRINFO
 /* Stuff the internet address corresponding to HOST into AP, in network
    byte order.  Return 1 on success, 0 on failure. */
 
@@ -90,27 +90,27 @@ _getaddr (const char *host, struct in_addr *ap)
   if (host[0] >= '0' && host[0] <= '9')
     {
       /* If the first character is a digit, guess that it's an
-	 Internet address and return immediately if inet_aton succeeds. */
+         Internet address and return immediately if inet_aton succeeds. */
       r = inet_aton (host, ap);
       if (r)
 	return r;
     }
-#if !defined (HAVE_GETHOSTBYNAME)
+#    if !defined (HAVE_GETHOSTBYNAME)
   return 0;
-#else
+#    else
   h = gethostbyname (host);
   if (h && h->h_addr)
     {
-      bcopy(h->h_addr, (char *)ap, h->h_length);
+      bcopy (h->h_addr, (char *) ap, h->h_length);
       return 1;
     }
-#endif
+#    endif
   return 0;
-  
+
 }
 
 /* Return 1 if SERV is a valid port number and stuff the converted value into
-   PP in network byte order. */   
+   PP in network byte order. */
 static int
 _getserv (const char *serv, int proto, unsigned short *pp)
 {
@@ -119,7 +119,7 @@ _getserv (const char *serv, int proto, unsigned short *pp)
 
   if (valid_number (serv, &l))
     {
-      s = (unsigned short)(l & 0xFFFF);
+      s = (unsigned short) (l & 0xFFFF);
       if (s != l)
 	return (0);
       s = htons (s);
@@ -128,7 +128,7 @@ _getserv (const char *serv, int proto, unsigned short *pp)
       return 1;
     }
   else
-#if defined (HAVE_GETSERVBYNAME)
+#    if defined (HAVE_GETSERVBYNAME)
     {
       struct servent *se;
 
@@ -139,63 +139,63 @@ _getserv (const char *serv, int proto, unsigned short *pp)
 	*pp = se->s_port;	/* ports returned in network byte order */
       return 1;
     }
-#else /* !HAVE_GETSERVBYNAME */
+#    else	/* !HAVE_GETSERVBYNAME */
     return 0;
-#endif /* !HAVE_GETSERVBYNAME */
+#    endif	/* !HAVE_GETSERVBYNAME */
 }
 
 /*
  * Open a TCP or UDP connection to HOST on port SERV.  Uses the
  * traditional BSD mechanisms.  Returns the connected socket or -1 on error.
  */
-static int 
-_netopen4(const char *host, const char *serv, int typ)
+static int
+_netopen4 (const char *host, const char *serv, int typ)
 {
   struct in_addr ina;
   struct sockaddr_in sin;
   unsigned short p;
   int s, e;
 
-  if (_getaddr(host, &ina) == 0)
+  if (_getaddr (host, &ina) == 0)
     {
       internal_error (_("%s: host unknown"), host);
       errno = EINVAL;
       return -1;
     }
 
-  if (_getserv(serv, typ, &p) == 0)
+  if (_getserv (serv, typ, &p) == 0)
     {
-      internal_error(_("%s: invalid service"), serv);
+      internal_error (_("%s: invalid service"), serv);
       errno = EINVAL;
       return -1;
     }
-	
-  memset ((char *)&sin, 0, sizeof(sin));
+
+  memset ((char *) &sin, 0, sizeof (sin));
   sin.sin_family = AF_INET;
   sin.sin_port = p;
   sin.sin_addr = ina;
 
-  s = socket(AF_INET, (typ == 't') ? SOCK_STREAM : SOCK_DGRAM, 0);
+  s = socket (AF_INET, (typ == 't') ? SOCK_STREAM : SOCK_DGRAM, 0);
   if (s < 0)
     {
       sys_error ("socket");
       return (-1);
     }
 
-  if (connect (s, (struct sockaddr *)&sin, sizeof (sin)) < 0)
+  if (connect (s, (struct sockaddr *) &sin, sizeof (sin)) < 0)
     {
       e = errno;
-      sys_error("connect");
-      close(s);
+      sys_error ("connect");
+      close (s);
       errno = e;
       return (-1);
     }
 
-  return(s);
+  return (s);
 }
-#endif /* ! HAVE_GETADDRINFO */
+#  endif	/* ! HAVE_GETADDRINFO */
 
-#ifdef HAVE_GETADDRINFO
+#  ifdef HAVE_GETADDRINFO
 /*
  * Open a TCP or UDP connection to HOST on port SERV.  Uses getaddrinfo(3)
  * which provides support for IPv6.  Returns the connected socket or -1
@@ -208,13 +208,13 @@ _netopen6 (const char *host, const char *serv, int typ)
   struct addrinfo hints, *res, *res0;
   int gerr;
 
-  memset ((char *)&hints, 0, sizeof (hints));
+  memset ((char *) &hints, 0, sizeof (hints));
   /* XXX -- if problems with IPv6, set to PF_INET for IPv4 only */
-#ifdef DEBUG	/* PF_INET is the one that works for me */
+#    ifdef DEBUG		/* PF_INET is the one that works for me */
   hints.ai_family = PF_INET;
-#else
+#    else
   hints.ai_family = PF_UNSPEC;
-#endif
+#    endif
   hints.ai_socktype = (typ == 't') ? SOCK_STREAM : SOCK_DGRAM;
 
   gerr = getaddrinfo (host, serv, &hints, &res0);
@@ -257,21 +257,21 @@ _netopen6 (const char *host, const char *serv, int typ)
     }
   return s;
 }
-#endif /* HAVE_GETADDRINFO */
+#  endif	/* HAVE_GETADDRINFO */
 
 /*
  * Open a TCP or UDP connection to HOST on port SERV.  Uses getaddrinfo(3)
  * if available, falling back to the traditional BSD mechanisms otherwise.
  * Returns the connected socket or -1 on error.
  */
-static int 
-_netopen(const char *host, const char *serv, int typ)
+static int
+_netopen (const char *host, const char *serv, int typ)
 {
-#ifdef HAVE_GETADDRINFO
+#  ifdef HAVE_GETADDRINFO
   return (_netopen6 (host, serv, typ));
-#else
+#  else
   return (_netopen4 (host, serv, typ));
-#endif
+#  endif
 }
 
 /*
@@ -284,7 +284,7 @@ netopen (char *path)
   char *np, *s, *t;
   int fd;
 
-  np = (char *)xmalloc (strlen (path) + 1);
+  np = (char *) xmalloc (strlen (path) + 1);
   strcpy (np, path);
 
   s = np + 9;
@@ -302,7 +302,7 @@ netopen (char *path)
   return fd;
 }
 
-#if 0
+#  if 0
 /*
  * Open a TCP connection to host `host' on the port defined for service
  * `serv' and return the connected socket.
@@ -322,9 +322,9 @@ udpopen (char *host, char *serv)
 {
   return _netopen (host, serv, 'u');
 }
-#endif
+#  endif
 
-#else /* !HAVE_NETWORK */
+#else		/* !HAVE_NETWORK */
 
 int
 netopen (char *path)
@@ -333,4 +333,4 @@ netopen (char *path)
   return -1;
 }
 
-#endif /* !HAVE_NETWORK */
+#endif		/* !HAVE_NETWORK */

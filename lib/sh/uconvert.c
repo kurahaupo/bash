@@ -26,7 +26,7 @@
 #include "posixtime.h"
 
 #if defined (HAVE_UNISTD_H)
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 
 #include <bashintl.h>
@@ -65,7 +65,7 @@ static int multiplier[7] = { 1, 100000, 10000, 1000, 100, 10, 1 };
    Return 1 if value converted; 0 if invalid integer for either whole or
    fractional parts. */
 int
-uconvert(const char *s, long *ip, long *up, char **ep)
+uconvert (const char *s, long *ip, long *up, char **ep)
 {
   int n, mult;
   long ipart, upart;
@@ -77,22 +77,22 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   if (s && (*s == '-' || *s == '+'))
     {
       mult = (*s == '-') ? -1 : 1;
-      p = (char *)s + 1;
+      p = (char *) s + 1;
     }
   else
-    p = (char *)s;
+    p = (char *) s;
 
-  for ( ; p && *p; p++)
+  for (; p && *p; p++)
     {
       if (ISRADIX (*p))		/* radix character */
 	break;
-      if (DIGIT(*p) == 0)
-	RETURN(0);
+      if (DIGIT (*p) == 0)
+	RETURN (0);
       ipart = (ipart * 10) + (*p - '0');
     }
 
   if (p == 0 || *p == 0)	/* callers ensure p can never be 0; this is to shut up clang */
-    RETURN(1);
+    RETURN (1);
 
   if (ISRADIX (*p))
     p++;
@@ -100,14 +100,14 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   /* Look for up to six digits past a decimal point. */
   for (n = 0; n < 6 && p[n]; n++)
     {
-      if (DIGIT(p[n]) == 0)
+      if (DIGIT (p[n]) == 0)
 	{
 	  if (ep)
 	    {
 	      upart *= multiplier[n];
 	      p += n;		/* To set EP */
 	    }
-	  RETURN(0);
+	  RETURN (0);
 	}
       upart = (upart * 10) + (p[n] - '0');
     }
@@ -121,9 +121,9 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   if (ep)
     {
       p += n;
-      while (DIGIT(*p))
+      while (DIGIT (*p))
 	p++;
     }
 
-  RETURN(1);
+  RETURN (1);
 }

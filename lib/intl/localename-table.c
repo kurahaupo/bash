@@ -21,9 +21,9 @@
 #if HAVE_WORKING_USELOCALE && HAVE_NAMELESS_LOCALES
 
 /* Specification.  */
-#include "localename-table.h"
+#  include "localename-table.h"
 
-#include <stdint.h>
+#  include <stdint.h>
 
 /* A hash function for pointers.  */
 size_t _GL_ATTRIBUTE_CONST
@@ -34,11 +34,10 @@ locale_hash_function (locale_t x)
   return h;
 }
 
-struct locale_hash_node * locale_hash_table[LOCALE_HASH_TABLE_SIZE]
-  /* = { NULL, ..., NULL } */;
+struct locale_hash_node *locale_hash_table[LOCALE_HASH_TABLE_SIZE]
+  /* = { NULL, ..., NULL } */ ;
 
-gl_rwlock_define_initialized(, locale_lock)
-
+gl_rwlock_define_initialized (, locale_lock)
 #else
 
 /* This declaration is solely to ensure that after preprocessing

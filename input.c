@@ -43,7 +43,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #if defined (EAGAIN)
 #  define X_EAGAIN EAGAIN
@@ -112,7 +112,7 @@ stream_getc (FILE *stream)
 	      local_index = local_bufused = 0;
 	      return EOF;
 	    }
-	  else if (interrupt_state || terminating_signal)	/* QUIT; */
+	  else if (interrupt_state || terminating_signal) /* QUIT; */
 	    local_index = local_bufused = 0;
 	}
       local_index = 0;
@@ -149,7 +149,7 @@ stream_setsize (size_t size)
 
 #if !defined (SEEK_CUR)
 #  define SEEK_CUR 1
-#endif /* !SEEK_CUR */
+#endif		/* !SEEK_CUR */
 
 #ifdef max
 #  undef max
@@ -167,7 +167,7 @@ int bash_input_fd_changed;
    way around.  This is needed so that buffers are managed properly
    in constructs like 3<&4.  buffers[x]->b_fd == x -- that is how the
    correspondence is maintained. */
-static BUFFERED_STREAM **buffers = (BUFFERED_STREAM **)NULL;
+static BUFFERED_STREAM **buffers = (BUFFERED_STREAM **) NULL;
 static int nbuffers;
 
 #define ALLOCATE_BUFFERS(n) \
@@ -181,12 +181,11 @@ allocate_buffers (int n)
 
   orig_nbuffers = nbuffers;
   nbuffers = n + 20;
-  buffers = (BUFFERED_STREAM **)xrealloc
-    (buffers, nbuffers * sizeof (BUFFERED_STREAM *));
+  buffers = (BUFFERED_STREAM **) xrealloc (buffers, nbuffers * sizeof (BUFFERED_STREAM *));
 
   /* Zero out the new buffers. */
   for (i = orig_nbuffers; i < nbuffers; i++)
-    buffers[i] = (BUFFERED_STREAM *)NULL;
+    buffers[i] = (BUFFERED_STREAM *) NULL;
 }
 
 /* Construct and return a BUFFERED_STREAM corresponding to file descriptor
@@ -196,7 +195,7 @@ make_buffered_stream (int fd, char *buffer, size_t bufsize)
 {
   BUFFERED_STREAM *bp;
 
-  bp = (BUFFERED_STREAM *)xmalloc (sizeof (BUFFERED_STREAM));
+  bp = (BUFFERED_STREAM *) xmalloc (sizeof (BUFFERED_STREAM));
   ALLOCATE_BUFFERS (fd);
   buffers[fd] = bp;
   bp->b_fd = fd;
@@ -218,10 +217,10 @@ copy_buffered_stream (BUFFERED_STREAM *bp)
   BUFFERED_STREAM *nbp;
 
   if (!bp)
-    return ((BUFFERED_STREAM *)NULL);
+    return ((BUFFERED_STREAM *) NULL);
 
-  nbp = (BUFFERED_STREAM *)xmalloc (sizeof (BUFFERED_STREAM));
-  xbcopy ((char *)bp, (char *)nbp, sizeof (BUFFERED_STREAM));
+  nbp = (BUFFERED_STREAM *) xmalloc (sizeof (BUFFERED_STREAM));
+  xbcopy ((char *) bp, (char *) nbp, sizeof (BUFFERED_STREAM));
   return (nbp);
 }
 
@@ -273,10 +272,10 @@ save_bash_input (int fd, int new_fd)
   if (nfd < nbuffers && buffers[nfd])
     {
       /* What's this?  A stray buffer without an associated open file
-	 descriptor?  Free up the buffer and report the error. */
+         descriptor?  Free up the buffer and report the error. */
       internal_error (_("save_bash_input: buffer already exists for new fd %d"), nfd);
       if (buffers[nfd]->b_flag & B_SHAREDBUF)
-	buffers[nfd]->b_buffer = (char *)NULL;
+	buffers[nfd]->b_buffer = (char *) NULL;
       free_buffered_stream (buffers[nfd]);
     }
 
@@ -323,15 +322,15 @@ check_bash_input (int fd)
     {
       if (fd > 0)
 	{
-	  nfd = save_bash_input (fd, -1);	/* allocates new fd */
+	  nfd = save_bash_input (fd, -1); /* allocates new fd */
 	  return (nfd);
 	}
       else if (fd == 0)
-        return ((sync_buffered_stream (fd) == -1) ? -1 : 0);
+	return ((sync_buffered_stream (fd) == -1) ? -1 : 0);
     }
   return 0;
 }
-      
+
 /* This is the buffered stream analogue of dup2(fd1, fd2).  The
    BUFFERED_STREAM corresponding to fd2 is deallocated, if one exists.
    BUFFERS[fd1] is copied to BUFFERS[fd2].  This is called by the
@@ -351,18 +350,17 @@ duplicate_buffered_stream (int fd1, int fd2)
      we need to do some extra work to make sure that the buffered stream
      actually exists (it might not if fd1 was not active, and the copy
      didn't actually do anything). */
-  is_bash_input = (bash_input.type == st_bstream) &&
-		  (bash_input.location.buffered_fd == fd2);
+  is_bash_input = (bash_input.type == st_bstream) && (bash_input.location.buffered_fd == fd2);
 
   if (buffers[fd2])
     {
       /* If the two objects share the same b_buffer, don't free it. */
       if (buffers[fd1] && buffers[fd1]->b_buffer && buffers[fd1]->b_buffer == buffers[fd2]->b_buffer)
-	buffers[fd2] = (BUFFERED_STREAM *)NULL;
+	buffers[fd2] = (BUFFERED_STREAM *) NULL;
       /* If this buffer is shared with another fd, don't free the buffer */
       else if (buffers[fd2]->b_flag & B_SHAREDBUF)
 	{
-	  buffers[fd2]->b_buffer = (char *)NULL;
+	  buffers[fd2]->b_buffer = (char *) NULL;
 	  free_buffered_stream (buffers[fd2]);
 	}
       else
@@ -401,13 +399,13 @@ fd_to_buffered_stream (int fd)
   if (fstat (fd, &sb) < 0)
     {
       close (fd);
-      return ((BUFFERED_STREAM *)NULL);
+      return ((BUFFERED_STREAM *) NULL);
     }
 
   size = (fd_is_seekable (fd)) ? min (sb.st_size, MAX_INPUT_BUFFER_SIZE) : 1;
   if (size == 0)
     size = 1;
-  buffer = (char *)xmalloc (size);
+  buffer = (char *) xmalloc (size);
 
   return (make_buffered_stream (fd, buffer, size));
 }
@@ -419,7 +417,7 @@ open_buffered_stream (char *file)
   int fd;
 
   fd = open (file, O_RDONLY);
-  return ((fd >= 0) ? fd_to_buffered_stream (fd) : (BUFFERED_STREAM *)NULL);
+  return ((fd >= 0) ? fd_to_buffered_stream (fd) : (BUFFERED_STREAM *) NULL);
 }
 
 /* Deallocate a buffered stream and free up its resources.  Make sure we
@@ -436,7 +434,7 @@ free_buffered_stream (BUFFERED_STREAM *bp)
   if (bp->b_buffer)
     free (bp->b_buffer);
   free (bp);
-  buffers[n] = (BUFFERED_STREAM *)NULL;
+  buffers[n] = (BUFFERED_STREAM *) NULL;
 }
 
 /* Close the file descriptor associated with BP, a buffered stream, and free
@@ -450,7 +448,7 @@ close_buffered_stream (BUFFERED_STREAM *bp)
     return (0);
   fd = bp->b_fd;
   if (bp->b_flag & B_SHAREDBUF)
-    bp->b_buffer = (char *)NULL;
+    bp->b_buffer = (char *) NULL;
   free_buffered_stream (bp);
   return (close (fd));
 }
@@ -486,7 +484,7 @@ set_buffered_stream (int fd, BUFFERED_STREAM *bp)
 BUFFERED_STREAM *
 get_buffered_stream (int fd)
 {
-  return (buffers && fd < nbuffers) ? buffers[fd] : (BUFFERED_STREAM *)0;
+  return (buffers && fd < nbuffers) ? buffers[fd] : (BUFFERED_STREAM *) 0;
 }
 
 int
@@ -513,9 +511,9 @@ b_fill_buffer (BUFFERED_STREAM *bp)
   while (1)			/* loop to handle non-blocking fds */
     {
       /* In an environment where text and binary files are treated differently,
-	 compensate for lseek() on text files returning an offset different from
-	 the count of characters read() returns.  Text-mode streams have to be
-	 treated as unbuffered. */
+         compensate for lseek() on text files returning an offset different from
+         the count of characters read() returns.  Text-mode streams have to be
+         treated as unbuffered. */
       if ((bp->b_flag & (B_TEXT | B_UNBUFF)) == B_TEXT)
 	{
 	  o = lseek (bp->b_fd, 0, SEEK_CUR);
@@ -532,7 +530,7 @@ b_fill_buffer (BUFFERED_STREAM *bp)
 	nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
 
       if (nr > 0)
- 	break;
+	break;
 
       bp->b_used = bp->b_inputp = 0;
       bp->b_buffer[0] = 0;
@@ -572,7 +570,7 @@ b_fill_buffer (BUFFERED_STREAM *bp)
 
 /* Push C back onto buffered stream BP. */
 static int
-bufstream_ungetc(int c, BUFFERED_STREAM *bp)
+bufstream_ungetc (int c, BUFFERED_STREAM *bp)
 {
   if (c == EOF || bp == 0 || bp->b_inputp == 0)
     return (EOF);
@@ -634,6 +632,5 @@ with_input_from_buffered_stream (int bfd, char *name)
   location.buffered_fd = bfd;
   /* Make sure the buffered stream exists. */
   bp = fd_to_buffered_stream (bfd);
-  init_yy_io (bp == 0 ? return_EOF : buffered_getchar,
-	      buffered_ungetchar, st_bstream, name, location);
+  init_yy_io (bp == 0 ? return_EOF : buffered_getchar, buffered_ungetchar, st_bstream, name, location);
 }

@@ -15,13 +15,12 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef STATIC
-#define STATIC static
+#  define STATIC static
 #endif
 
 /* Evaluate the plural expression and return an index value.  */
-STATIC
-unsigned long int
-internal_function
+STATIC unsigned long int
+  internal_function
 plural_eval (const struct expression *pexp, unsigned long int n)
 {
   switch (pexp->nargs)
@@ -42,7 +41,7 @@ plural_eval (const struct expression *pexp, unsigned long int n)
       {
 	/* pexp->operation must be lnot.  */
 	unsigned long int arg = plural_eval (pexp->val.args[0], n);
-	return ! arg;
+	return !arg;
       }
     case 2:
       {

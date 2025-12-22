@@ -19,16 +19,16 @@
 */
 
 #ifndef _MSTATS_H
-#define _MSTATS_H
+#  define _MSTATS_H
 
-#include "imalloc.h"
+#  include "imalloc.h"
 
-#ifdef MALLOC_STATS
+#  ifdef MALLOC_STATS
 
 /* This needs to change if the definition in malloc.c changes */
-#ifndef NBUCKETS
-#  define NBUCKETS 28
-#endif
+#    ifndef NBUCKETS
+#      define NBUCKETS 28
+#    endif
 
 /*
  * NMALLOC[i] is the difference between the number of mallocs and frees
@@ -101,7 +101,7 @@ struct bucket_stats {
   int nlesscore;
   int nsplit;
   int ncoalesce;
-  int nmmap;		/* currently unused */
+  int nmmap;			/* currently unused */
 };
 
 extern struct bucket_stats malloc_bucket_stats (int);
@@ -109,6 +109,6 @@ extern struct _malstats malloc_stats (void);
 extern void print_malloc_stats (char *);
 extern void trace_malloc_stats (char *, char *);
 
-#endif /* MALLOC_STATS */
+#  endif	/* MALLOC_STATS */
 
-#endif /* _MSTATS_H */
+#endif		/* _MSTATS_H */

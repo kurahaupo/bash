@@ -22,44 +22,39 @@
    your main control loop, etc. to force garbage collection.  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 /* If compiling with GCC 2, this file's not needed.  */
 #if !defined (__GNUC__) || __GNUC__ < 2
 
-#include <bashtypes.h>		/* for size_t */
+#  include <bashtypes.h>	/* for size_t */
 
 /* If alloca is defined somewhere, this file is not needed. */
-#ifndef alloca
+#  ifndef alloca
 
-#ifdef emacs
-#ifdef static
+#    ifdef emacs
+#      ifdef static
 /* actually, only want this if static is defined as ""
    -- this is for usg, in which emacs must undefine static
    in order to make unexec workable
    */
-#ifndef STACK_DIRECTION
-you
-lose
--- must know STACK_DIRECTION at compile-time
-#endif /* STACK_DIRECTION undefined */
-#endif /* static */
-#endif /* emacs */
-
+#        ifndef STACK_DIRECTION
+you lose-- must know STACK_DIRECTION at compile - time
+#        endif			/* STACK_DIRECTION undefined */
+#      endif			/* static */
+#    endif			/* emacs */
 /* If your stack is a linked list of frames, you have to
    provide an "address metric" ADDRESS_FUNCTION macro.  */
-
-#if defined (CRAY) && defined (CRAY_STACKSEG_END)
+#    if defined (CRAY) && defined (CRAY_STACKSEG_END)
 long i00afunc ();
-#define ADDRESS_FUNCTION(arg) (char *) i00afunc (&(arg))
-#else
-#define ADDRESS_FUNCTION(arg) &(arg)
-#endif /* CRAY && CRAY_STACKSEG_END */
-
+#      define ADDRESS_FUNCTION(arg) (char *) i00afunc (&(arg))
+#    else
+#      define ADDRESS_FUNCTION(arg) &(arg)
+#    endif			/* CRAY && CRAY_STACKSEG_END */
 typedef void *pointer;
 
-#define	NULL	0
+#    define	NULL	0
 
 /* Different portions of Emacs need to call different versions of
    malloc.  The Emacs executable needs alloca to call xmalloc, because
@@ -71,10 +66,10 @@ typedef void *pointer;
 
    Callers below should use malloc.  */
 
-#ifndef emacs
-#define malloc xmalloc
+#    ifndef emacs
+#      define malloc xmalloc
 extern pointer xmalloc (size_t);
-#endif
+#    endif
 
 /* Define STACK_DIRECTION if you know the direction of stack
    growth for your system; otherwise it will be automatically
@@ -84,18 +79,20 @@ extern pointer xmalloc (size_t);
    STACK_DIRECTION < 0 => grows toward lower addresses
    STACK_DIRECTION = 0 => direction of growth unknown  */
 
-#ifndef STACK_DIRECTION
-#define	STACK_DIRECTION	0	/* Direction unknown.  */
-#endif
+#    ifndef STACK_DIRECTION
+#      define	STACK_DIRECTION	0
+				/* Direction unknown.  */
+#    endif
 
-#if STACK_DIRECTION != 0
+#    if STACK_DIRECTION != 0
 
-#define	STACK_DIR	STACK_DIRECTION	/* Known at compile-time.  */
+#      define	STACK_DIR	STACK_DIRECTION
+					/* Known at compile-time.  */
 
-#else /* STACK_DIRECTION == 0; need run-time code.  */
+#    else	/* STACK_DIRECTION == 0; need run-time code.  */
 
 static int stack_dir;		/* 1 or -1 once known.  */
-#define	STACK_DIR	stack_dir
+#      define	STACK_DIR	stack_dir
 
 static void
 find_stack_direction (void)
@@ -113,13 +110,13 @@ find_stack_direction (void)
     {
       /* Second entry.  */
       if (ADDRESS_FUNCTION (dummy) > addr)
-	stack_dir = 1;		/* Stack grew upward.  */
+	  stack_dir = 1;	/* Stack grew upward.  */
       else
 	stack_dir = -1;		/* Stack grew downward.  */
     }
 }
 
-#endif /* STACK_DIRECTION == 0 */
+#    endif	/* STACK_DIRECTION == 0 */
 
 /* An "alloca header" is used to:
    (a) chain together all alloca'ed blocks;
@@ -128,21 +125,19 @@ find_stack_direction (void)
    It is very important that sizeof(header) agree with malloc
    alignment chunk size.  The following default should work okay.  */
 
-#ifndef	ALIGN_SIZE
-#define	ALIGN_SIZE	sizeof(double)
-#endif
+#    ifndef	ALIGN_SIZE
+#      define	ALIGN_SIZE	sizeof(double)
+#    endif
 
-typedef union hdr
-{
+typedef union hdr {
   char align[ALIGN_SIZE];	/* To force sizeof(header).  */
-  struct
-    {
-      union hdr *next;		/* For chaining headers.  */
-      char *deep;		/* For stack depth measure.  */
-    } h;
+  struct {
+    union hdr *next;		/* For chaining headers.  */
+    char *deep;			/* For stack depth measure.  */
+  } h;
 } header;
 
-static header *last_alloca_header = NULL;	/* -> last alloca header.  */
+static header *last_alloca_header = NULL; /* -> last alloca header.  */
 
 /* Return a pointer to at least SIZE bytes of storage,
    which will be automatically reclaimed upon exit from
@@ -157,10 +152,10 @@ alloca (size_t size)
   auto char probe;		/* Probes stack depth: */
   register char *depth = ADDRESS_FUNCTION (probe);
 
-#if STACK_DIRECTION == 0
+#    if STACK_DIRECTION == 0
   if (STACK_DIR == 0)		/* Unknown growth direction.  */
     find_stack_direction ();
-#endif
+#    endif
 
   /* Reclaim garbage, defined as all alloca'd storage that
      was allocated from deeper in the stack than currently. */
@@ -169,8 +164,7 @@ alloca (size_t size)
     register header *hp;	/* Traverses linked list.  */
 
     for (hp = last_alloca_header; hp != NULL;)
-      if ((STACK_DIR > 0 && hp->h.deep > depth)
-	  || (STACK_DIR < 0 && hp->h.deep < depth))
+      if ((STACK_DIR > 0 && hp->h.deep > depth) || (STACK_DIR < 0 && hp->h.deep < depth))
 	{
 	  register header *np = hp->h.next;
 
@@ -204,23 +198,22 @@ alloca (size_t size)
   }
 }
 
-#if defined (CRAY) && defined (CRAY_STACKSEG_END)
+#    if defined (CRAY) && defined (CRAY_STACKSEG_END)
 
-#ifdef DEBUG_I00AFUNC
-#include <stdio.h>
-#endif
+#      ifdef DEBUG_I00AFUNC
+#        include <stdio.h>
+#      endif
 
-#ifndef CRAY_STACK
-#define CRAY_STACK
-#ifndef CRAY2
+#      ifndef CRAY_STACK
+#        define CRAY_STACK
+#        ifndef CRAY2
 /* Stack structures for CRAY-1, CRAY X-MP, and CRAY Y-MP */
-struct stack_control_header
-  {
-    long shgrow:32;		/* Number of times stack has grown.  */
-    long shaseg:32;		/* Size of increments to stack.  */
-    long shhwm:32;		/* High water mark of stack.  */
-    long shsize:32;		/* Current size of stack (all segments).  */
-  };
+struct stack_control_header {
+  long shgrow:32;		/* Number of times stack has grown.  */
+  long shaseg:32;		/* Size of increments to stack.  */
+  long shhwm:32;		/* High water mark of stack.  */
+  long shsize:32;		/* Current size of stack (all segments).  */
+};
 
 /* The stack segment linkage control information occurs at
    the high-address end of a stack segment.  (The stack
@@ -229,98 +222,95 @@ struct stack_control_header
    0200 (octal) words.  This provides for register storage
    for the routine which overflows the stack.  */
 
-struct stack_segment_linkage
-  {
-    long ss[0200];		/* 0200 overflow words.  */
-    long sssize:32;		/* Number of words in this segment.  */
-    long ssbase:32;		/* Offset to stack base.  */
-    long:32;
-    long sspseg:32;		/* Offset to linkage control of previous
+struct stack_segment_linkage {
+  long ss[0200];		/* 0200 overflow words.  */
+  long sssize:32;		/* Number of words in this segment.  */
+  long ssbase:32;		/* Offset to stack base.  */
+  long:32;
+  long sspseg:32;		/* Offset to linkage control of previous
 				   segment of stack.  */
-    long:32;
-    long sstcpt:32;		/* Pointer to task common address block.  */
-    long sscsnm;		/* Private control structure number for
+  long:32;
+  long sstcpt:32;		/* Pointer to task common address block.  */
+  long sscsnm;			/* Private control structure number for
 				   microtasking.  */
-    long ssusr1;		/* Reserved for user.  */
-    long ssusr2;		/* Reserved for user.  */
-    long sstpid;		/* Process ID for pid based multi-tasking.  */
-    long ssgvup;		/* Pointer to multitasking thread giveup.  */
-    long sscray[7];		/* Reserved for Cray Research.  */
-    long ssa0;
-    long ssa1;
-    long ssa2;
-    long ssa3;
-    long ssa4;
-    long ssa5;
-    long ssa6;
-    long ssa7;
-    long sss0;
-    long sss1;
-    long sss2;
-    long sss3;
-    long sss4;
-    long sss5;
-    long sss6;
-    long sss7;
-  };
+  long ssusr1;			/* Reserved for user.  */
+  long ssusr2;			/* Reserved for user.  */
+  long sstpid;			/* Process ID for pid based multi-tasking.  */
+  long ssgvup;			/* Pointer to multitasking thread giveup.  */
+  long sscray[7];		/* Reserved for Cray Research.  */
+  long ssa0;
+  long ssa1;
+  long ssa2;
+  long ssa3;
+  long ssa4;
+  long ssa5;
+  long ssa6;
+  long ssa7;
+  long sss0;
+  long sss1;
+  long sss2;
+  long sss3;
+  long sss4;
+  long sss5;
+  long sss6;
+  long sss7;
+};
 
-#else /* CRAY2 */
+#        else	/* CRAY2 */
 /* The following structure defines the vector of words
    returned by the STKSTAT library routine.  */
-struct stk_stat
-  {
-    long now;			/* Current total stack size.  */
-    long maxc;			/* Amount of contiguous space which would
+struct stk_stat {
+  long now;			/* Current total stack size.  */
+  long maxc;			/* Amount of contiguous space which would
 				   be required to satisfy the maximum
 				   stack demand to date.  */
-    long high_water;		/* Stack high-water mark.  */
-    long overflows;		/* Number of stack overflow ($STKOFEN) calls.  */
-    long hits;			/* Number of internal buffer hits.  */
-    long extends;		/* Number of block extensions.  */
-    long stko_mallocs;		/* Block allocations by $STKOFEN.  */
-    long underflows;		/* Number of stack underflow calls ($STKRETN).  */
-    long stko_free;		/* Number of deallocations by $STKRETN.  */
-    long stkm_free;		/* Number of deallocations by $STKMRET.  */
-    long segments;		/* Current number of stack segments.  */
-    long maxs;			/* Maximum number of stack segments so far.  */
-    long pad_size;		/* Stack pad size.  */
-    long current_address;	/* Current stack segment address.  */
-    long current_size;		/* Current stack segment size.  This
+  long high_water;		/* Stack high-water mark.  */
+  long overflows;		/* Number of stack overflow ($STKOFEN) calls.  */
+  long hits;			/* Number of internal buffer hits.  */
+  long extends;			/* Number of block extensions.  */
+  long stko_mallocs;		/* Block allocations by $STKOFEN.  */
+  long underflows;		/* Number of stack underflow calls ($STKRETN).  */
+  long stko_free;		/* Number of deallocations by $STKRETN.  */
+  long stkm_free;		/* Number of deallocations by $STKMRET.  */
+  long segments;		/* Current number of stack segments.  */
+  long maxs;			/* Maximum number of stack segments so far.  */
+  long pad_size;		/* Stack pad size.  */
+  long current_address;		/* Current stack segment address.  */
+  long current_size;		/* Current stack segment size.  This
 				   number is actually corrupted by STKSTAT to
 				   include the fifteen word trailer area.  */
-    long initial_address;	/* Address of initial segment.  */
-    long initial_size;		/* Size of initial segment.  */
-  };
+  long initial_address;		/* Address of initial segment.  */
+  long initial_size;		/* Size of initial segment.  */
+};
 
 /* The following structure describes the data structure which trails
    any stack segment.  I think that the description in 'asdef' is
    out of date.  I only describe the parts that I am sure about.  */
 
-struct stk_trailer
-  {
-    long this_address;		/* Address of this block.  */
-    long this_size;		/* Size of this block (does not include
+struct stk_trailer {
+  long this_address;		/* Address of this block.  */
+  long this_size;		/* Size of this block (does not include
 				   this trailer).  */
-    long unknown2;
-    long unknown3;
-    long link;			/* Address of trailer block of previous
+  long unknown2;
+  long unknown3;
+  long link;			/* Address of trailer block of previous
 				   segment.  */
-    long unknown5;
-    long unknown6;
-    long unknown7;
-    long unknown8;
-    long unknown9;
-    long unknown10;
-    long unknown11;
-    long unknown12;
-    long unknown13;
-    long unknown14;
-  };
+  long unknown5;
+  long unknown6;
+  long unknown7;
+  long unknown8;
+  long unknown9;
+  long unknown10;
+  long unknown11;
+  long unknown12;
+  long unknown13;
+  long unknown14;
+};
 
-#endif /* CRAY2 */
-#endif /* not CRAY_STACK */
+#        endif	/* CRAY2 */
+#      endif	/* not CRAY_STACK */
 
-#ifdef CRAY2
+#      ifdef CRAY2
 /* Determine a "stack measure" for an arbitrary ADDRESS.
    I doubt that "lint" will like this much. */
 
@@ -341,9 +331,7 @@ i00afunc (long *address)
 
   /* Set up the iteration.  */
 
-  trailer = (struct stk_trailer *) (status.current_address
-				    + status.current_size
-				    - 15);
+  trailer = (struct stk_trailer *) (status.current_address + status.current_size - 15);
 
   /* There must be at least one stack segment.  Therefore it is
      a fatal error if "trailer" is null.  */
@@ -391,7 +379,7 @@ i00afunc (long *address)
   return (result);
 }
 
-#else /* not CRAY2 */
+#      else	/* not CRAY2 */
 /* Stack address function for a CRAY-1, CRAY X-MP, or CRAY Y-MP.
    Determine the number of the cell within the stack,
    given the address of the cell.  The purpose of this
@@ -437,9 +425,9 @@ i00afunc (long address)
 
   while (!(this_segment <= address && address <= stkl))
     {
-#ifdef DEBUG_I00AFUNC
+#        ifdef DEBUG_I00AFUNC
       fprintf (stderr, "%011o %011o %011o\n", this_segment, address, stkl);
-#endif
+#        endif
       if (pseg == 0)
 	break;
       stkl = stkl - pseg;
@@ -458,9 +446,9 @@ i00afunc (long address)
 
   while (pseg != 0)
     {
-#ifdef DEBUG_I00AFUNC
+#        ifdef DEBUG_I00AFUNC
       fprintf (stderr, "%011o %011o\n", pseg, size);
-#endif
+#        endif
       stkl = stkl - pseg;
       ssptr = (struct stack_segment_linkage *) stkl;
       size = ssptr->sssize;
@@ -470,8 +458,8 @@ i00afunc (long address)
   return (result);
 }
 
-#endif /* not CRAY2 */
-#endif /* CRAY && CRAY_STACKSEG_END */
+#      endif	/* not CRAY2 */
+#    endif	/* CRAY && CRAY_STACKSEG_END */
 
-#endif /* no alloca */
-#endif /* !__GNUC__ || __GNUC__ < 2 */
+#  endif	/* no alloca */
+#endif		/* !__GNUC__ || __GNUC__ < 2 */

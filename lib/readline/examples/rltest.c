@@ -24,7 +24,7 @@
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdio.h>
@@ -32,8 +32,8 @@
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-#else 
-extern void exit();
+#else
+extern void exit ();
 #endif
 
 #ifdef HAVE_LOCALE_H
@@ -58,7 +58,7 @@ main (int c, char **v)
   setlocale (LC_ALL, "");
 #endif
 
-  temp = (char *)NULL;
+  temp = (char *) NULL;
   prompt = "readline$ ";
   done = 0;
 

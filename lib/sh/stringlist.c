@@ -42,17 +42,17 @@ strlist_create (size_t n)
   STRINGLIST *ret;
   int i;
 
-  ret = (STRINGLIST *)xmalloc (sizeof (STRINGLIST));
+  ret = (STRINGLIST *) xmalloc (sizeof (STRINGLIST));
   if (n)
     {
-      ret->list = strvec_create (n+1);
+      ret->list = strvec_create (n + 1);
       ret->list_size = n;
       for (i = 0; i < n; i++)
-	ret->list[i] = (char *)NULL;
+	ret->list[i] = (char *) NULL;
     }
   else
     {
-      ret->list = (char **)NULL;
+      ret->list = (char **) NULL;
       ret->list_size = 0;
     }
   ret->list_len = 0;
@@ -71,7 +71,7 @@ strlist_resize (STRINGLIST *sl, size_t n)
     {
       sl->list = strvec_resize (sl->list, n + 1);
       for (i = sl->list_size; i <= n; i++)
-	sl->list[i] = (char *)NULL;
+	sl->list[i] = (char *) NULL;
       sl->list_size = n;
     }
   return sl;
@@ -85,7 +85,7 @@ strlist_flush (STRINGLIST *sl)
   strvec_flush (sl->list);
   sl->list_len = 0;
 }
-  
+
 void
 strlist_dispose (STRINGLIST *sl)
 {
@@ -117,7 +117,7 @@ strlist_copy (STRINGLIST *sl)
   int i;
 
   if (sl == 0)
-    return ((STRINGLIST *)0);
+    return ((STRINGLIST *) 0);
   new = strlist_create (sl->list_size);
   /* I'd like to use strvec_copy, but that doesn't copy everything. */
   if (sl->list)
@@ -129,7 +129,7 @@ strlist_copy (STRINGLIST *sl)
   new->list_len = sl->list_len;
   /* just being careful */
   if (new->list)
-    new->list[new->list_len] = (char *)NULL;
+    new->list[new->list_len] = (char *) NULL;
   return new;
 }
 
@@ -150,7 +150,7 @@ strlist_merge (STRINGLIST *m1, STRINGLIST *m2)
   for (i = 0; i < l2; i++, n++)
     sl->list[n] = STRDUP (m2->list[i]);
   sl->list_len = n;
-  sl->list[n] = (char *)NULL;
+  sl->list[n] = (char *) NULL;
   return (sl);
 }
 
@@ -161,7 +161,7 @@ strlist_append (STRINGLIST *m1, STRINGLIST *m2)
   size_t i, n, len1, len2;
 
   if (m1 == 0)
-    return (m2 ? strlist_copy (m2) : (STRINGLIST *)0);
+    return (m2 ? strlist_copy (m2) : (STRINGLIST *) 0);
 
   len1 = m1->list_len;
   len2 = m2 ? m2->list_len : 0;
@@ -171,7 +171,7 @@ strlist_append (STRINGLIST *m1, STRINGLIST *m2)
       m1 = strlist_resize (m1, len1 + len2 + 1);
       for (i = 0, n = len1; i < len2; i++, n++)
 	m1->list[n] = STRDUP (m2->list[i]);
-      m1->list[n] = (char *)NULL;
+      m1->list[n] = (char *) NULL;
       m1->list_len = n;
     }
 
@@ -197,7 +197,7 @@ strlist_prefix_suffix (STRINGLIST *sl, const char *prefix, const char *suffix)
     {
       llen = STRLEN (sl->list[i]);
       tlen = plen + llen + slen + 1;
-      t = (char *)xmalloc (tlen + 1);
+      t = (char *) xmalloc (tlen + 1);
       if (plen)
 	strcpy (t, prefix);
       strcpy (t + plen, sl->list[i]);
@@ -207,9 +207,9 @@ strlist_prefix_suffix (STRINGLIST *sl, const char *prefix, const char *suffix)
       sl->list[i] = t;
     }
 
-  return (sl);	 
+  return (sl);
 }
-   
+
 void
 strlist_print (STRINGLIST *sl, const char *prefix)
 {
@@ -229,10 +229,10 @@ strlist_walk (STRINGLIST *sl, sh_strlist_map_func_t *func)
   if (sl == 0)
     return;
   for (i = 0; i < sl->list_len; i++)
-    if ((*func)(sl->list[i]) < 0)
+    if ((*func) (sl->list[i]) < 0)
       break;
-} 
-     
+}
+
 void
 strlist_sort (STRINGLIST *sl)
 {
@@ -250,11 +250,11 @@ strlist_from_word_list (WORD_LIST *list, int alloc, int starting_index, int *ip)
   if (list == 0)
     {
       if (ip)
-        *ip = 0;
-      return ((STRINGLIST *)0);
+	*ip = 0;
+      return ((STRINGLIST *) 0);
     }
-  slen = list_length ((GENERIC_LIST *)list);
-  ret = (STRINGLIST *)xmalloc (sizeof (STRINGLIST));
+  slen = list_length ((GENERIC_LIST *) list);
+  ret = (STRINGLIST *) xmalloc (sizeof (STRINGLIST));
   ret->list = strvec_from_word_list (list, alloc, starting_index, &len);
   ret->list_size = slen + starting_index;
   ret->list_len = len;
@@ -269,7 +269,7 @@ strlist_to_word_list (STRINGLIST *sl, int alloc, int starting_index)
   WORD_LIST *list;
 
   if (sl == 0 || sl->list == 0)
-    return ((WORD_LIST *)NULL);
+    return ((WORD_LIST *) NULL);
 
   list = strvec_to_word_list (sl->list, alloc, starting_index);
   return list;

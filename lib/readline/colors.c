@@ -41,8 +41,8 @@
 
 #include <stdio.h>
 
-#include "posixstat.h" // stat related macros (S_ISREG, ...)
-#include <fcntl.h> // S_ISUID
+#include "posixstat.h"		// stat related macros (S_ISREG, ...)
+#include <fcntl.h>		// S_ISUID
 
 #ifndef S_ISDIR
 #  define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
@@ -51,29 +51,29 @@
 // strlen()
 #if defined (HAVE_STRING_H)
 #  include <string.h>
-#else /* !HAVE_STRING_H */
+#else		/* !HAVE_STRING_H */
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */
+#endif		/* !HAVE_STRING_H */
 
 // abort()
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include "readline.h"
 #include "rldefs.h"
 
 #ifdef COLOR_SUPPORT
 
-#include "xmalloc.h"
-#include "colors.h"
+#  include "xmalloc.h"
+#  include "colors.h"
 
 static bool is_colored (enum indicator_no type);
 static void restore_default_color (void);
 
-#define RL_COLOR_PREFIX_EXTENSION	"readline-colored-completion-prefix"
+#  define RL_COLOR_PREFIX_EXTENSION	"readline-colored-completion-prefix"
 
 COLOR_EXT_TYPE *_rl_color_ext_list = 0;
 
@@ -89,9 +89,7 @@ is_colored (enum indicator_no colored_filetype)
 {
   size_t len = _rl_color_indicator[colored_filetype].len;
   char const *s = _rl_color_indicator[colored_filetype].string;
-  return ! (len == 0
-            || (len == 1 && strncmp (s, "0", 1) == 0)
-            || (len == 2 && strncmp (s, "00", 2) == 0));
+  return !(len == 0 || (len == 1 && strncmp (s, "0", 1) == 0) || (len == 2 && strncmp (s, "00", 2) == 0));
 }
 
 static void
@@ -146,20 +144,20 @@ _rl_print_prefix_color (void)
   else
     return 1;
 }
-  
+
 /* Returns whether any color sequence was printed. */
 bool
 _rl_print_color_indicator (const char *f)
 {
   enum indicator_no colored_filetype;
-  COLOR_EXT_TYPE *ext;	/* Color extension */
-  size_t len;		/* Length of name */
+  COLOR_EXT_TYPE *ext;		/* Color extension */
+  size_t len;			/* Length of name */
 
-  const char* name;
+  const char *name;
   char *filename;
   struct stat astat, linkstat;
   mode_t mode;
-  int linkok;	/* 1 == ok, 0 == dangling symlink, -1 == missing */
+  int linkok;			/* 1 == ok, 0 == dangling symlink, -1 == missing */
   int stat_ok;
 
   name = f;
@@ -173,15 +171,15 @@ _rl_print_color_indicator (const char *f)
       name = filename;
     }
 
-#if defined (HAVE_LSTAT)
-  stat_ok = lstat(name, &astat);
-#else
-  stat_ok = stat(name, &astat);
-#endif
+#  if defined (HAVE_LSTAT)
+  stat_ok = lstat (name, &astat);
+#  else
+  stat_ok = stat (name, &astat);
+#  endif
   if (stat_ok == 0)
     {
       mode = astat.st_mode;
-#if defined (HAVE_LSTAT)
+#  if defined (HAVE_LSTAT)
       if (S_ISLNK (mode))
 	{
 	  linkok = stat (name, &linkstat) == 0;
@@ -189,7 +187,7 @@ _rl_print_color_indicator (const char *f)
 	    mode = linkstat.st_mode;
 	}
       else
-#endif
+#  endif
 	linkok = 1;
     }
   else
@@ -200,8 +198,8 @@ _rl_print_color_indicator (const char *f)
   if (linkok == -1 && _rl_color_indicator[C_MISSING].string != NULL)
     colored_filetype = C_MISSING;
   else if (linkok == 0 && _rl_color_indicator[C_ORPHAN].string != NULL)
-    colored_filetype = C_ORPHAN;	/* dangling symlink */
-  else if(stat_ok != 0)
+    colored_filetype = C_ORPHAN; /* dangling symlink */
+  else if (stat_ok != 0)
     {
       static enum indicator_no filetype_indicator[] = FILETYPE_INDICATORS;
       colored_filetype = filetype_indicator[normal]; //f->filetype];
@@ -209,64 +207,63 @@ _rl_print_color_indicator (const char *f)
   else
     {
       if (S_ISREG (mode))
-        {
-          colored_filetype = C_FILE;
+	{
+	  colored_filetype = C_FILE;
 
-#if defined (S_ISUID)
-          if ((mode & S_ISUID) != 0 && is_colored (C_SETUID))
-            colored_filetype = C_SETUID;
-          else
-#endif
-#if defined (S_ISGID)
-          if ((mode & S_ISGID) != 0 && is_colored (C_SETGID))
-            colored_filetype = C_SETGID;
-          else
-#endif
-          if (is_colored (C_CAP) && 0) //f->has_capability)
-            colored_filetype = C_CAP;
-          else if ((mode & S_IXUGO) != 0 && is_colored (C_EXEC))
-            colored_filetype = C_EXEC;
-          else if ((1 < astat.st_nlink) && is_colored (C_MULTIHARDLINK))
-            colored_filetype = C_MULTIHARDLINK;
-        }
+#  if defined (S_ISUID)
+	  if ((mode & S_ISUID) != 0 && is_colored (C_SETUID))
+	    colored_filetype = C_SETUID;
+	  else
+#  endif
+#  if defined (S_ISGID)
+	  if ((mode & S_ISGID) != 0 && is_colored (C_SETGID))
+	    colored_filetype = C_SETGID;
+	  else
+#  endif
+	  if (is_colored (C_CAP) && 0) //f->has_capability)
+	    colored_filetype = C_CAP;
+	  else if ((mode & S_IXUGO) != 0 && is_colored (C_EXEC))
+	    colored_filetype = C_EXEC;
+	  else if ((1 < astat.st_nlink) && is_colored (C_MULTIHARDLINK))
+	    colored_filetype = C_MULTIHARDLINK;
+	}
       else if (S_ISDIR (mode))
-        {
-          colored_filetype = C_DIR;
+	{
+	  colored_filetype = C_DIR;
 
-#if defined (S_ISVTX)
-          if ((mode & S_ISVTX) && (mode & S_IWOTH)
-              && is_colored (C_STICKY_OTHER_WRITABLE))
-            colored_filetype = C_STICKY_OTHER_WRITABLE;
-          else
-#endif
-          if ((mode & S_IWOTH) != 0 && is_colored (C_OTHER_WRITABLE))
-            colored_filetype = C_OTHER_WRITABLE;
-#if defined (S_ISVTX)
-          else if ((mode & S_ISVTX) != 0 && is_colored (C_STICKY))
-            colored_filetype = C_STICKY;
-#endif
-        }
-#if defined (S_ISLNK)
+#  if defined (S_ISVTX)
+	  if ((mode & S_ISVTX) && (mode & S_IWOTH) && is_colored (C_STICKY_OTHER_WRITABLE))
+	    colored_filetype = C_STICKY_OTHER_WRITABLE;
+	  else
+#  endif
+	  if ((mode & S_IWOTH) != 0 && is_colored (C_OTHER_WRITABLE))
+	    colored_filetype = C_OTHER_WRITABLE;
+#  if defined (S_ISVTX)
+	  else if ((mode & S_ISVTX) != 0 && is_colored (C_STICKY))
+	    colored_filetype = C_STICKY;
+#  endif
+	}
+#  if defined (S_ISLNK)
       else if (S_ISLNK (mode))
-        colored_filetype = C_LINK;
-#endif
+	colored_filetype = C_LINK;
+#  endif
       else if (S_ISFIFO (mode))
-        colored_filetype = C_FIFO;
-#if defined (S_ISSOCK)
+	colored_filetype = C_FIFO;
+#  if defined (S_ISSOCK)
       else if (S_ISSOCK (mode))
-        colored_filetype = C_SOCK;
-#endif
-#if defined (S_ISBLK)
+	colored_filetype = C_SOCK;
+#  endif
+#  if defined (S_ISBLK)
       else if (S_ISBLK (mode))
-        colored_filetype = C_BLK;
-#endif
+	colored_filetype = C_BLK;
+#  endif
       else if (S_ISCHR (mode))
-        colored_filetype = C_CHR;
+	colored_filetype = C_CHR;
       else
-        {
-          /* Classify a file of some other type as C_ORPHAN.  */
-          colored_filetype = C_ORPHAN;
-        }
+	{
+	  /* Classify a file of some other type as C_ORPHAN.  */
+	  colored_filetype = C_ORPHAN;
+	}
     }
 
   /* Check the file's suffix only if still classified as C_FILE.  */
@@ -277,28 +274,25 @@ _rl_print_color_indicator (const char *f)
       len = strlen (name);
       name += len;		/* Pointer to final \0.  */
       for (ext = _rl_color_ext_list; ext != NULL; ext = ext->next)
-        {
-          if (ext->ext.len <= len
-              && strncmp (name - ext->ext.len, ext->ext.string,
-                          ext->ext.len) == 0)
-            break;
-        }
+	{
+	  if (ext->ext.len <= len && strncmp (name - ext->ext.len, ext->ext.string, ext->ext.len) == 0)
+	    break;
+	}
     }
 
-  free (filename);	/* NULL or savestring return value */
+  free (filename);		/* NULL or savestring return value */
 
   {
-    const struct bin_str *const s
-      = ext ? &(ext->seq) : &_rl_color_indicator[colored_filetype];
+    const struct bin_str *const s = ext ? &(ext->seq) : &_rl_color_indicator[colored_filetype];
     if (s->string != NULL)
       {
-        /* Need to reset so not dealing with attribute combinations */
-        if (is_colored (C_NORM))
+	/* Need to reset so not dealing with attribute combinations */
+	if (is_colored (C_NORM))
 	  restore_default_color ();
-        _rl_put_indicator (&_rl_color_indicator[C_LEFT]);
-        _rl_put_indicator (s);
-        _rl_put_indicator (&_rl_color_indicator[C_RIGHT]);
-        return 0;
+	_rl_put_indicator (&_rl_color_indicator[C_LEFT]);
+	_rl_put_indicator (s);
+	_rl_put_indicator (&_rl_color_indicator[C_RIGHT]);
+	return 0;
       }
     else
       return 1;
@@ -317,4 +311,4 @@ _rl_prep_non_filename_text (void)
       _rl_put_indicator (&_rl_color_indicator[C_RIGHT]);
     }
 }
-#endif /* COLOR_SUPPORT */
+#endif		/* COLOR_SUPPORT */

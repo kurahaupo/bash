@@ -18,7 +18,7 @@
 /* Written by Bruno Haible <bruno@clisp.org>, 2020.  */
 
 #ifndef _THREAD_OPTIM_H
-#define _THREAD_OPTIM_H
+#  define _THREAD_OPTIM_H
 
 /* This file defines a way to optimize multithreaded code for the single-thread
    case, based on the variable '__libc_single_threaded', defined in
@@ -50,11 +50,11 @@
    same optimization cannot be applied to locks that synchronize different
    processes (e.g. through shared memory mappings).  */
 
-#if HAVE_SYS_SINGLE_THREADED_H /* glibc >= 2.32 */
-# include <sys/single_threaded.h>
-# define gl_multithreaded()  !__libc_single_threaded
-#else
-# define gl_multithreaded()  1
-#endif
+#  if HAVE_SYS_SINGLE_THREADED_H/* glibc >= 2.32 */
+#    include <sys/single_threaded.h>
+#    define gl_multithreaded()  !__libc_single_threaded
+#  else
+#    define gl_multithreaded()  1
+#  endif
 
-#endif /* _THREAD_OPTIM_H */
+#endif		/* _THREAD_OPTIM_H */

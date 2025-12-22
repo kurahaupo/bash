@@ -15,7 +15,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _PRINTF_ARGS_H
-#define _PRINTF_ARGS_H
+#  define _PRINTF_ARGS_H
 
 /* This file can be parametrized with the following macros:
      ENABLE_UNISTDIO    Set to 1 to enable the unistdio extensions.
@@ -23,30 +23,29 @@
      STATIC             Set to 'static' to declare the function static.  */
 
 /* Default parameters.  */
-#ifndef PRINTF_FETCHARGS
-# define PRINTF_FETCHARGS printf_fetchargs
-#endif
+#  ifndef PRINTF_FETCHARGS
+#    define PRINTF_FETCHARGS printf_fetchargs
+#  endif
 
 /* Get size_t.  */
-#include <stddef.h>
+#  include <stddef.h>
 
 /* Get wchar_t.  */
-#if HAVE_WCHAR_T
-# include <stddef.h>
-#endif
+#  if HAVE_WCHAR_T
+#    include <stddef.h>
+#  endif
 
 /* Get wint_t.  */
-#if HAVE_WINT_T
-# include <wchar.h>
-#endif
+#  if HAVE_WINT_T
+#    include <wchar.h>
+#  endif
 
 /* Get va_list.  */
-#include <stdarg.h>
+#  include <stdarg.h>
 
 
 /* Argument types */
-typedef enum
-{
+typedef enum {
   TYPE_NONE,
   TYPE_SCHAR,
   TYPE_UCHAR,
@@ -56,102 +55,94 @@ typedef enum
   TYPE_UINT,
   TYPE_LONGINT,
   TYPE_ULONGINT,
-#if HAVE_LONG_LONG_INT
+#  if HAVE_LONG_LONG_INT
   TYPE_LONGLONGINT,
   TYPE_ULONGLONGINT,
-#endif
+#  endif
   TYPE_DOUBLE,
   TYPE_LONGDOUBLE,
   TYPE_CHAR,
-#if HAVE_WINT_T
+#  if HAVE_WINT_T
   TYPE_WIDE_CHAR,
-#endif
+#  endif
   TYPE_STRING,
-#if HAVE_WCHAR_T
+#  if HAVE_WCHAR_T
   TYPE_WIDE_STRING,
-#endif
+#  endif
   TYPE_POINTER,
   TYPE_COUNT_SCHAR_POINTER,
   TYPE_COUNT_SHORT_POINTER,
   TYPE_COUNT_INT_POINTER,
   TYPE_COUNT_LONGINT_POINTER
-#if HAVE_LONG_LONG_INT
-, TYPE_COUNT_LONGLONGINT_POINTER
-#endif
-#if ENABLE_UNISTDIO
-  /* The unistdio extensions.  */
-, TYPE_U8_STRING
-, TYPE_U16_STRING
-, TYPE_U32_STRING
-#endif
+#  if HAVE_LONG_LONG_INT
+    , TYPE_COUNT_LONGLONGINT_POINTER
+#  endif
+#  if ENABLE_UNISTDIO
+    /* The unistdio extensions.  */
+    , TYPE_U8_STRING, TYPE_U16_STRING, TYPE_U32_STRING
+#  endif
 } arg_type;
 
 /* Polymorphic argument */
-typedef struct
-{
+typedef struct {
   arg_type type;
-  union
-  {
-    signed char                 a_schar;
-    unsigned char               a_uchar;
-    short                       a_short;
-    unsigned short              a_ushort;
-    int                         a_int;
-    unsigned int                a_uint;
-    long int                    a_longint;
-    unsigned long int           a_ulongint;
-#if HAVE_LONG_LONG_INT
-    long long int               a_longlongint;
-    unsigned long long int      a_ulonglongint;
-#endif
-    float                       a_float;
-    double                      a_double;
-    long double                 a_longdouble;
-    int                         a_char;
-#if HAVE_WINT_T
-    wint_t                      a_wide_char;
-#endif
-    const char*                 a_string;
-#if HAVE_WCHAR_T
-    const wchar_t*              a_wide_string;
-#endif
-    void*                       a_pointer;
-    signed char *               a_count_schar_pointer;
-    short *                     a_count_short_pointer;
-    int *                       a_count_int_pointer;
-    long int *                  a_count_longint_pointer;
-#if HAVE_LONG_LONG_INT
-    long long int *             a_count_longlongint_pointer;
-#endif
-#if ENABLE_UNISTDIO
+  union {
+    signed char a_schar;
+    unsigned char a_uchar;
+    short a_short;
+    unsigned short a_ushort;
+    int a_int;
+    unsigned int a_uint;
+    long int a_longint;
+    unsigned long int a_ulongint;
+#  if HAVE_LONG_LONG_INT
+    long long int a_longlongint;
+    unsigned long long int a_ulonglongint;
+#  endif
+    float a_float;
+    double a_double;
+    long double a_longdouble;
+    int a_char;
+#  if HAVE_WINT_T
+    wint_t a_wide_char;
+#  endif
+    const char *a_string;
+#  if HAVE_WCHAR_T
+    const wchar_t *a_wide_string;
+#  endif
+    void *a_pointer;
+    signed char *a_count_schar_pointer;
+    short *a_count_short_pointer;
+    int *a_count_int_pointer;
+    long int *a_count_longint_pointer;
+#  if HAVE_LONG_LONG_INT
+    long long int *a_count_longlongint_pointer;
+#  endif
+#  if ENABLE_UNISTDIO
     /* The unistdio extensions.  */
-    const uint8_t *             a_u8_string;
-    const uint16_t *            a_u16_string;
-    const uint32_t *            a_u32_string;
-#endif
-  }
-  a;
-}
-argument;
+    const uint8_t *a_u8_string;
+    const uint16_t *a_u16_string;
+    const uint32_t *a_u32_string;
+#  endif
+  } a;
+} argument;
 
 /* Number of directly allocated arguments (no malloc() needed).  */
-#define N_DIRECT_ALLOC_ARGUMENTS 7
+#  define N_DIRECT_ALLOC_ARGUMENTS 7
 
-typedef struct
-{
+typedef struct {
   size_t count;
   argument *arg;
   argument direct_alloc_arg[N_DIRECT_ALLOC_ARGUMENTS];
-}
-arguments;
+} arguments;
 
 
 /* Fetch the arguments, putting them into a. */
-#ifdef STATIC
+#  ifdef STATIC
 STATIC
-#else
+#  else
 extern
-#endif
-int PRINTF_FETCHARGS (va_list args, arguments *a);
+#  endif
+int PRINTF_FETCHARGS (va_list args, arguments * a);
 
-#endif /* _PRINTF_ARGS_H */
+#endif		/* _PRINTF_ARGS_H */

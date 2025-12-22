@@ -44,22 +44,22 @@ sh_setlinebuf (FILE *stream)
 #if defined (HAVE_SETVBUF)
   char *local_linebuf;
 
-#if defined (USING_BASH_MALLOC)
+#  if defined (USING_BASH_MALLOC)
   if (stream == stdout && stdoutbuf == 0)
-    local_linebuf = stdoutbuf = (char *)xmalloc (LBUF_BUFSIZE);
+    local_linebuf = stdoutbuf = (char *) xmalloc (LBUF_BUFSIZE);
   else if (stream == stderr && stderrbuf == 0)
-    local_linebuf = stderrbuf = (char *)xmalloc (LBUF_BUFSIZE);
+    local_linebuf = stderrbuf = (char *) xmalloc (LBUF_BUFSIZE);
   else
-    local_linebuf = (char *)NULL;	/* let stdio handle it */
-#else
-  local_linebuf = (char *)NULL;
-#endif
+    local_linebuf = (char *) NULL; /* let stdio handle it */
+#  else
+  local_linebuf = (char *) NULL;
+#  endif
 
   return (setvbuf (stream, local_linebuf, _IOLBF, LBUF_BUFSIZE));
-#else /* !HAVE_SETVBUF */
+#else		/* !HAVE_SETVBUF */
 
   setlinebuf (stream);
   return (0);
 
-#endif /* !HAVE_SETVBUF */
+#endif		/* !HAVE_SETVBUF */
 }

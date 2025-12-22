@@ -17,6 +17,6 @@
 */
 
 void
-bash_malloc_stub()
+bash_malloc_stub ()
 {
 }

@@ -16,7 +16,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <ctype.h>
@@ -29,35 +29,29 @@
 
 /* These structs are the constant expression for the germanic plural
    form determination.  It represents the expression  "n != 1".  */
-static const struct expression plvar =
-{
+static const struct expression plvar = {
   .nargs = 0,
   .operation = var,
 };
-static const struct expression plone =
-{
+
+static const struct expression plone = {
   .nargs = 0,
   .operation = num,
-  .val =
-  {
-    .num = 1
-  }
-};
-const struct expression GERMANIC_PLURAL =
-{
-  .nargs = 2,
-  .operation = not_equal,
-  .val =
-  {
-    .args =
-    {
-      [0] = (struct expression *) &plvar,
-      [1] = (struct expression *) &plone
-    }
-  }
+  .val = {
+	  .num = 1 }
 };
 
-# define INIT_GERMANIC_PLURAL()
+const struct expression GERMANIC_PLURAL = {
+  .nargs = 2,
+  .operation = not_equal,
+  .val = {
+	  .args = {
+		   [0] = (struct expression *) &plvar,
+		   [1] = (struct expression *) &plone}
+	   }
+};
+
+#  define INIT_GERMANIC_PLURAL()
 
 #else
 
@@ -87,15 +81,13 @@ init_germanic_plural (void)
     }
 }
 
-# define INIT_GERMANIC_PLURAL() init_germanic_plural ()
+#  define INIT_GERMANIC_PLURAL() init_germanic_plural ()
 
 #endif
 
 void
-internal_function
-EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
-			   const struct expression **pluralp,
-			   unsigned long int *npluralsp)
+  internal_function
+EXTRACT_PLURAL_EXPRESSION (const char *nullentry, const struct expression **pluralp, unsigned long int *npluralsp)
 {
   if (nullentry != NULL)
     {

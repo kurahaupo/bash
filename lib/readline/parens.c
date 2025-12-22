@@ -43,9 +43,9 @@
 
 #if defined (HAVE_STRING_H)
 #  include <string.h>
-#else /* !HAVE_STRING_H */
+#else		/* !HAVE_STRING_H */
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */
+#endif		/* !HAVE_STRING_H */
 
 #include "readline.h"
 #include "rlprivate.h"
@@ -118,8 +118,7 @@ rl_insert_close (int count, int invoking_key)
 
       _rl_insert_char (1, invoking_key);
       (*rl_redisplay_function) ();
-      match_point =
-	find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
+      match_point = find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
 
       /* Emacs might message or ring the bell here, but I don't. */
       if (match_point < 0)
@@ -133,14 +132,14 @@ rl_insert_close (int count, int invoking_key)
       rl_point = match_point;
       (*rl_redisplay_function) ();
 #  if defined (RL_TIMEOUT_USE_SELECT)
-      ready = _rl_timeout_select (1, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timer, NULL);
+      ready = _rl_timeout_select (1, &readfds, (fd_set *) NULL, (fd_set *) NULL, &timer, NULL);
 #  else
-      ready = select (1, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timer);
+      ready = select (1, &readfds, (fd_set *) NULL, (fd_set *) NULL, &timer);
 #  endif
       rl_point = orig_point;
-#else /* !HAVE_SELECT */
+#else		/* !HAVE_SELECT */
       _rl_insert_char (count, invoking_key);
-#endif /* !HAVE_SELECT */
+#endif		/* !HAVE_SELECT */
     }
   return 0;
 }
@@ -153,9 +152,15 @@ find_matching_open (char *string, int from, int closer)
 
   switch (closer)
     {
-    case ']': opener = '['; break;
-    case '}': opener = '{'; break;
-    case ')': opener = '('; break;
+    case ']':
+      opener = '[';
+      break;
+    case '}':
+      opener = '{';
+      break;
+    case ')':
+      opener = '(';
+      break;
     default:
       return (-1);
     }

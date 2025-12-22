@@ -51,11 +51,11 @@ extern struct group *getgrgid (gid_t);
 #include "common.h"
 #include "bashgetopt.h"
 
-#define ID_ALLGROUPS	0x001		/* -G */
-#define ID_GIDONLY	0x002		/* -g */
-#define ID_USENAME	0x004		/* -n */
-#define ID_USEREAL	0x008		/* -r */
-#define ID_USERONLY	0x010		/* -u */
+#define ID_ALLGROUPS	0x001	/* -G */
+#define ID_GIDONLY	0x002	/* -g */
+#define ID_USENAME	0x004	/* -n */
+#define ID_USEREAL	0x008	/* -r */
+#define ID_USERONLY	0x010	/* -u */
 
 #define ID_FLAGSET(s)	((id_flags & (s)) != 0)
 
@@ -85,12 +85,22 @@ id_builtin (WORD_LIST *list)
     {
       switch (opt)
 	{
-	case 'G': id_flags |= ID_ALLGROUPS; break;
-	case 'g': id_flags |= ID_GIDONLY; break;
-	case 'n': id_flags |= ID_USENAME; break;
-	case 'r': id_flags |= ID_USEREAL; break;
-	case 'u': id_flags |= ID_USERONLY; break;
-	CASE_HELPOPT;
+	case 'G':
+	  id_flags |= ID_ALLGROUPS;
+	  break;
+	case 'g':
+	  id_flags |= ID_GIDONLY;
+	  break;
+	case 'n':
+	  id_flags |= ID_USENAME;
+	  break;
+	case 'r':
+	  id_flags |= ID_USEREAL;
+	  break;
+	case 'u':
+	  id_flags |= ID_USERONLY;
+	  break;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -98,11 +108,11 @@ id_builtin (WORD_LIST *list)
     }
   list = loptend;
 
-  user = list ? list->word->word : (char *)NULL;
+  user = list ? list->word->word : (char *) NULL;
 
   /* Check for some invalid option combinations */
   opt = ID_FLAGSET (ID_ALLGROUPS) + ID_FLAGSET (ID_GIDONLY) + ID_FLAGSET (ID_USERONLY);
-  if (opt > 1 || (opt == 0 && ((id_flags & (ID_USEREAL|ID_USENAME)) != 0)))
+  if (opt > 1 || (opt == 0 && ((id_flags & (ID_USEREAL | ID_USENAME)) != 0)))
     {
       builtin_usage ();
       return (EX_USAGE);
@@ -170,13 +180,13 @@ id_pruser (int uid)
     {
       pwd = getpwuid (uid);
       if (pwd == NULL)
-        r = 1;
+	r = 1;
     }
   if (pwd)
     printf ("%s", pwd->pw_name);
   else
     printf ("%u", (unsigned) uid);
-      
+
   return r;
 }
 
@@ -220,7 +230,7 @@ id_prgroups (char *uname)
   if (uname)
     {
       builtin_error ("supplementary groups for other users not yet implemented");
-      glist = (int *)NULL;
+      glist = (int *) NULL;
       ng = 0;
       r = 1;
     }
@@ -233,7 +243,7 @@ id_prgroups (char *uname)
 	putchar (' ');
 	id_prgrp (glist[i]);
       }
-  
+
   return r;
 }
 
@@ -260,16 +270,16 @@ id_prall (char *uname)
     printf ("(%s)", grp->gr_name);
 
   if (euid != ruid)
-    { 
+    {
       printf (" euid=%u", (unsigned) euid);
       pwd = getpwuid (euid);
       if (pwd == NULL)
 	r = 1;
-      else 
+      else
 	printf ("(%s)", pwd->pw_name);
     }
 
-  if (egid != rgid) 
+  if (egid != rgid)
     {
       printf (" egid=%u", (unsigned) egid);
       grp = getgrgid (egid);
@@ -282,7 +292,7 @@ id_prall (char *uname)
   if (uname)
     {
       builtin_error ("supplementary groups for other users not yet implemented");
-      glist = (int *)NULL;
+      glist = (int *) NULL;
       ng = 0;
       r = 1;
     }
@@ -307,17 +317,16 @@ id_prall (char *uname)
 }
 
 char *id_doc[] = {
-	"Display information about user."
-	"",
-	"Return information about user identity",
-	(char *)NULL
+  "Display information about user." "",
+  "Return information about user identity",
+  (char *) NULL
 };
 
 struct builtin id_struct = {
-	"id",
-	id_builtin,
-	BUILTIN_ENABLED,
-	id_doc,
-	"id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
-	0
+  "id",
+  id_builtin,
+  BUILTIN_ENABLED,
+  id_doc,
+  "id [user]\n\tid -G [-n] [user]\n\tid -g [-nr] [user]\n\tid -u [-nr] [user]",
+  0
 };

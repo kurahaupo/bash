@@ -40,15 +40,15 @@
 #include "unwind_prot.h"
 #include "sig.h"
 #include "quit.h"
-#include "bashintl.h"	/* for _() */
-#include "error.h"	/* for internal_warning */
+#include "bashintl.h"		/* for _() */
+#include "error.h"		/* for internal_warning */
 #include "ocache.h"
 
 /* Structure describing a saved variable and the value to restore it to.  */
 typedef struct {
   char *variable;
   int size;
-  char desired_setting[1]; /* actual size is `size' */
+  char desired_setting[1];	/* actual size is `size' */
 } SAVED_VAR;
 
 /* If HEAD.CLEANUP is null, then ARG.V contains a tag to throw back to.
@@ -78,19 +78,19 @@ static void clear_unwind_protects_internal (int);
 static inline void restore_variable (void *);
 static void unwind_protect_mem_internal (void *, int);
 
-static UNWIND_ELT *unwind_protect_list = (UNWIND_ELT *)NULL;
+static UNWIND_ELT *unwind_protect_list = (UNWIND_ELT *) NULL;
 
 /* Allocating from a cache of unwind-protect elements */
 #define UWCACHESIZE	128
 
-sh_obj_cache_t uwcache = {0, 0, 0};
+sh_obj_cache_t uwcache = { 0, 0, 0 };
 
 #if 0
-#define uwpalloc(elt)	(elt) = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT))
-#define uwpfree(elt)	free(elt)
+#  define uwpalloc(elt)	(elt) = (UNWIND_ELT *)xmalloc (sizeof (UNWIND_ELT))
+#  define uwpfree(elt)	free(elt)
 #else
-#define uwpalloc(elt)	ocache_alloc (uwcache, UNWIND_ELT, elt)
-#define uwpfree(elt)	ocache_free (uwcache, UNWIND_ELT, elt)
+#  define uwpalloc(elt)	ocache_alloc (uwcache, UNWIND_ELT, elt)
+#  define uwpfree(elt)	ocache_free (uwcache, UNWIND_ELT, elt)
 #endif
 
 void
@@ -219,7 +219,7 @@ clear_unwind_protects_internal (int flag)
       while (unwind_protect_list)
 	remove_unwind_protect_internal ();
     }
-  unwind_protect_list = (UNWIND_ELT *)NULL;
+  unwind_protect_list = (UNWIND_ELT *) NULL;
 }
 
 static void
@@ -301,7 +301,7 @@ unwind_protect_mem_internal (void *var, int size)
   allocated = size + offsetof (UNWIND_ELT, sv.v.desired_setting[0]);
   if (allocated < sizeof (UNWIND_ELT))
     allocated = sizeof (UNWIND_ELT);
-  elt = (UNWIND_ELT *)xmalloc (allocated);
+  elt = (UNWIND_ELT *) xmalloc (allocated);
   elt->head.next = unwind_protect_list;
   elt->head.cleanup = restore_variable;
   elt->sv.v.variable = var;
@@ -320,7 +320,7 @@ unwind_protect_mem (char *var, int size)
 }
 
 #if defined (DEBUG)
-#include <stdio.h>
+#  include <stdio.h>
 
 void
 print_unwind_protect_tags (void)
@@ -331,7 +331,7 @@ print_unwind_protect_tags (void)
   while (elt)
     {
       if (elt->head.cleanup == 0)
-        fprintf(stderr, "tag: %s\n", (char *)elt->arg.v);
+	fprintf (stderr, "tag: %s\n", (char *) elt->arg.v);
       elt = elt->head.next;
     }
 }

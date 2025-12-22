@@ -46,7 +46,7 @@ static int glob_name_is_acceptable (const char *);
 static void ignore_globbed_names (char **, sh_ignore_func_t *);
 static char *split_ignorespec (char *, int *);
 static void sh_sortglob (char **);
-	       
+
 #include <glob/glob.h>
 
 /* Control whether * matches .files in globbing. */
@@ -99,7 +99,7 @@ unquoted_glob_pattern_p (char *string)
 	case '+':
 	case '@':
 	case '!':
-	  if (extended_glob && *string == '(')	/*)*/
+	  if (extended_glob && *string == '(') /*) */
 	    return (1);
 	  continue;
 
@@ -108,19 +108,18 @@ unquoted_glob_pattern_p (char *string)
 	    {
 	      string++;
 	      /* If the CTLESC was quoting a CTLESC, skip it so that it's not
-		 treated as a quoting character */
+	         treated as a quoting character */
 	      if (*string == CTLESC)
 		string++;
 	    }
 	  else
-	  /*FALLTHROUGH*/
-   	case CTLESC:
-	  if (*string++ == '\0')
-	    return (0);
+	/*FALLTHROUGH*/ case CTLESC:
+	    if (*string++ == '\0')
+	      return (0);
 	}
 
       /* Advance one fewer byte than an entire multibyte character to
-	 account for the auto-increment in the loop above. */
+         account for the auto-increment in the loop above. */
 #ifdef HANDLE_MULTIBYTE
       string--;
       ADVANCE_CHAR_P (string, send - string);
@@ -153,7 +152,7 @@ ere_char (int c)
     case '^':
     case '$':
       return 1;
-    default: 
+    default:
       return 0;
     }
   return (0);
@@ -168,7 +167,7 @@ glob_char_p (const char *s)
 #if defined (EXTENDED_GLOB)
     case '+':
     case '@':
-      return (s[1] == '('); /*)*/
+      return (s[1] == '(');	/*) */
     case '(':
     case '|':
     case ')':
@@ -217,7 +216,7 @@ quote_string_for_globbing (const char *pathname, int qflags)
   int savei, savej;
   unsigned char cc;
 
-  temp = (char *)xmalloc (2 * strlen (pathname) + 1);
+  temp = (char *) xmalloc (2 * strlen (pathname) + 1);
 
   if ((qflags & QGLOB_CVTNULL) && QUOTED_NULL (pathname))
     {
@@ -229,14 +228,15 @@ quote_string_for_globbing (const char *pathname, int qflags)
   for (i = j = 0; pathname[i]; i++)
     {
       /* Fix for CTLESC at the end of the string? */
-      if (pathname[i] == CTLESC && pathname[i+1] == '\0')
+      if (pathname[i] == CTLESC && pathname[i + 1] == '\0')
 	{
 	  temp[j++] = pathname[i++];
 	  break;
 	}
       /* If we are parsing regexp, turn CTLESC CTLESC into CTLESC. It's not an
-	 ERE special character, so we should just be able to pass it through. */
-      else if ((qflags & (QGLOB_REGEXP|QGLOB_CTLESC)) && pathname[i] == CTLESC && (pathname[i+1] == CTLESC || pathname[i+1] == CTLNUL))
+         ERE special character, so we should just be able to pass it through. */
+      else if ((qflags & (QGLOB_REGEXP | QGLOB_CTLESC)) && pathname[i] == CTLESC
+	       && (pathname[i + 1] == CTLESC || pathname[i + 1] == CTLNUL))
 	{
 	  i++;
 	  temp[j++] = pathname[i];
@@ -244,10 +244,10 @@ quote_string_for_globbing (const char *pathname, int qflags)
 	}
       else if (pathname[i] == CTLESC)
 	{
-convert_to_backslash:
-	  cc = pathname[i+1];
+	convert_to_backslash:
+	  cc = pathname[i + 1];
 
-	  if ((qflags & QGLOB_FILENAME) && pathname[i+1] == '/')
+	  if ((qflags & QGLOB_FILENAME) && pathname[i + 1] == '/')
 	    continue;
 
 	  /* What to do if preceding char is backslash? */
@@ -259,23 +259,23 @@ convert_to_backslash:
 
 	  /* We don't have to backslash-quote non-special BRE characters if
 	     we're quoting a glob pattern. */
-	  if (cc != CTLESC && (qflags & QGLOB_REGEXP) == 0 && glob_quote_char (pathname+i+1) == 0)
+	  if (cc != CTLESC && (qflags & QGLOB_REGEXP) == 0 && glob_quote_char (pathname + i + 1) == 0)
 	    continue;
 
 	  /* If we're in a multibyte locale, don't bother quoting multibyte
 	     characters. It matters if we're going to convert NFD to NFC on
 	     macOS, and doesn't make a difference on other systems. */
 	  if (cc != CTLESC && locale_utf8locale && UTF8_SINGLEBYTE (cc) == 0)
-	    continue;	/* probably don't need to check for UTF-8 locale */
+	    continue;		/* probably don't need to check for UTF-8 locale */
 
 	  temp[j++] = '\\';
 	  i++;
 	  if (pathname[i] == '\0')
 	    break;
 	}
-      else if ((qflags & QGLOB_REGEXP) && (i == 0 || pathname[i-1] != CTLESC) && pathname[i] == '[')	/*]*/
+      else if ((qflags & QGLOB_REGEXP) && (i == 0 || pathname[i - 1] != CTLESC) && pathname[i] == '[') /*] */
 	{
-	  temp[j++] = pathname[i++];	/* open bracket */
+	  temp[j++] = pathname[i++]; /* open bracket */
 	  savej = j;
 	  savei = i;
 	  c = pathname[i++];	/* c == char after open bracket */
@@ -318,7 +318,7 @@ convert_to_backslash:
 		  temp[j++] = c;
 		  temp[j++] = pathname[i++];
 		  if (pathname[i] == ']')
-		    temp[j++] = pathname[i++];		/* right brack can be in equiv */
+		    temp[j++] = pathname[i++]; /* right brack can be in equiv */
 		  equiv = 1;
 		}
 	      else if (equiv && c == '=' && pathname[i] == ']')
@@ -332,7 +332,7 @@ convert_to_backslash:
 		  temp[j++] = c;
 		  temp[j++] = pathname[i++];
 		  if (pathname[i] == ']')
-		    temp[j++] = pathname[i++];		/* right brack can be in collsym */
+		    temp[j++] = pathname[i++]; /* right brack can be in collsym */
 		  collsym = 1;
 		}
 	      else if (collsym && c == '.' && pathname[i] == ']')
@@ -376,8 +376,8 @@ convert_to_backslash:
 	    break;
 	  /* If we are turning CTLESC CTLESC into CTLESC, we need to do that
 	     even when the first CTLESC is preceded by a backslash. */
-	  if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC && (pathname[i+1] == CTLESC || pathname[i+1] == CTLNUL))
-	    i++;	/* skip over the CTLESC */
+	  if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC && (pathname[i + 1] == CTLESC || pathname[i + 1] == CTLNUL))
+	    i++;		/* skip over the CTLESC */
 	  else if ((qflags & QGLOB_CTLESC) && pathname[i] == CTLESC)
 	    /* A little more general: if there is an unquoted backslash in the
 	       pattern and we are handling quoted characters in the pattern,
@@ -390,9 +390,8 @@ convert_to_backslash:
 	    goto convert_to_backslash;
 	}
       else if (pathname[i] == '\\' && (qflags & QGLOB_REGEXP))
-        last_was_backslash = 1;
-      else if (pathname[i] == CTLNUL && (qflags & QGLOB_CVTNULL)
-				     && (qflags & QGLOB_CTLESC))
+	last_was_backslash = 1;
+      else if (pathname[i] == CTLNUL && (qflags & QGLOB_CVTNULL) && (qflags & QGLOB_CTLESC))
 	/* If we have an unescaped CTLNUL in the string, and QFLAGS says
 	   we want to remove those (QGLOB_CVTNULL) but the string is quoted
 	   (QGLOB_CVTNULL and QGLOB_CTLESC), we need to remove it. This can
@@ -419,14 +418,14 @@ quote_globbing_chars (const char *string)
   slen = strlen (string);
   send = string + slen;
 
-  temp = (char *)xmalloc (slen * 2 + 1);
-  for (t = temp, s = string; *s; )
+  temp = (char *) xmalloc (slen * 2 + 1);
+  for (t = temp, s = string; *s;)
     {
       if (glob_char_p (s))
 	*t++ = '\\';
 
       /* Copy a single (possibly multibyte) character from s to t,
-	 incrementing both. */
+         incrementing both. */
       COPY_CHAR_P (t, s, send);
     }
   *t = '\0';
@@ -443,7 +442,7 @@ shell_glob_filename (const char *pathname, int qflags)
 
   noglob_dot_filenames = glob_dot_filenames == 0;
 
-  temp = quote_string_for_globbing (pathname, QGLOB_FILENAME|qflags);
+  temp = quote_string_for_globbing (pathname, QGLOB_FILENAME | qflags);
   gflags = glob_star ? GX_GLOBSTAR : 0;
   results = glob_filename (temp, gflags);
   free (temp);
@@ -453,11 +452,11 @@ shell_glob_filename (const char *pathname, int qflags)
       if (should_ignore_glob_matches ())
 	ignore_glob_matches (results);
       if (results && results[0])
-        sh_sortglob (results);
+	sh_sortglob (results);
       else
 	{
 	  FREE (results);
-	  results = (char **)&glob_error_return;
+	  results = (char **) &glob_error_return;
 	}
     }
 
@@ -477,7 +476,7 @@ noquote_glob_filename (char *pathname)
   results = glob_filename (pathname, gflags);
 
   if (results && GLOB_FAILED (results))
-    results = (char **)NULL;
+    results = (char **) NULL;
 
   if (results && results[0])
     sh_sortglob (results);
@@ -488,13 +487,12 @@ noquote_glob_filename (char *pathname)
 
 /* Stuff for GLOBIGNORE. */
 
-static struct ignorevar globignore =
-{
+static struct ignorevar globignore = {
   "GLOBIGNORE",
-  (struct ign *)0,
+  (struct ign *) 0,
   0,
-  (char *)0,
-  (sh_iv_item_func_t *)0,
+  (char *) 0,
+  (sh_iv_item_func_t *) 0,
 };
 
 /* Set up to ignore some glob matches because the value of GLOBIGNORE
@@ -532,7 +530,7 @@ glob_name_is_acceptable (const char *name)
      pathname. */
   n = strrchr (name, '/');
   if (n == 0 || n[1] == 0)
-    n = (char *)name;
+    n = (char *) name;
   else
     n++;
 
@@ -542,7 +540,7 @@ glob_name_is_acceptable (const char *name)
   flags = FNM_PATHNAME | FNMATCH_EXTFLAG | FNMATCH_NOCASEGLOB;
   for (p = globignore.ignores; p->val; p++)
     {
-      if (strmatch (p->val, (char *)name, flags) != FNM_NOMATCH)
+      if (strmatch (p->val, (char *) name, flags) != FNM_NOMATCH)
 	return (0);
     }
   return (1);
@@ -572,11 +570,11 @@ ignore_globbed_names (char **names, sh_ignore_func_t *name_func)
 	free (names[i]);
     }
 
-  newnames[n] = (char *)NULL;
+  newnames[n] = (char *) NULL;
 
   if (n == 0)
     {
-      names[0] = (char *)NULL;
+      names[0] = (char *) NULL;
       free (newnames);
       return;
     }
@@ -585,7 +583,7 @@ ignore_globbed_names (char **names, sh_ignore_func_t *name_func)
      new array end. */
   for (n = 0; newnames[n]; n++)
     names[n] = newnames[n];
-  names[n] = (char *)NULL;
+  names[n] = (char *) NULL;
   free (newnames);
 }
 
@@ -611,15 +609,15 @@ split_ignorespec (char *s, int *ip)
   if (s[i] == 0)
     return 0;
 
-  n = skip_to_delim (s, i, ":", SD_NOJMP|SD_EXTGLOB|SD_GLOB);
+  n = skip_to_delim (s, i, ":", SD_NOJMP | SD_EXTGLOB | SD_GLOB);
   t = substring (s, i, n);
 
   if (s[n] == ':')
-    n++;  
-  *ip = n;  
+    n++;
+  *ip = n;
   return t;
 }
-  
+
 void
 setup_ignore_patterns (struct ignorevar *ivp)
 {
@@ -640,15 +638,15 @@ setup_ignore_patterns (struct ignorevar *ivp)
   if (ivp->ignores)
     {
       for (p = ivp->ignores; p->val; p++)
-	free(p->val);
+	free (p->val);
       free (ivp->ignores);
-      ivp->ignores = (struct ign *)NULL;
+      ivp->ignores = (struct ign *) NULL;
     }
 
   if (ivp->last_ignoreval)
     {
       free (ivp->last_ignoreval);
-      ivp->last_ignoreval = (char *)NULL;
+      ivp->last_ignoreval = (char *) NULL;
     }
 
   if (this_ignoreval == 0 || *this_ignoreval == '\0')
@@ -663,7 +661,7 @@ setup_ignore_patterns (struct ignorevar *ivp)
       if (numitems + 1 >= maxitems)
 	{
 	  maxitems += 10;
-	  ivp->ignores = (struct ign *)xrealloc (ivp->ignores, maxitems * sizeof (struct ign));
+	  ivp->ignores = (struct ign *) xrealloc (ivp->ignores, maxitems * sizeof (struct ign));
 	}
       ivp->ignores[numitems].val = colon_bit;
       ivp->ignores[numitems].len = strlen (colon_bit);
@@ -672,7 +670,7 @@ setup_ignore_patterns (struct ignorevar *ivp)
 	(*ivp->item_func) (&ivp->ignores[numitems]);
       numitems++;
     }
-  ivp->ignores[numitems].val = (char *)NULL;
+  ivp->ignores[numitems].val = (char *) NULL;
   ivp->num_ignores = numitems;
 }
 
@@ -682,15 +680,15 @@ setup_ignore_patterns (struct ignorevar *ivp)
 static int glob_sorttype = SORT_NONE;
 
 static STRING_INT_ALIST sorttypes[] = {
-  { "name",	SORT_NAME },
-  { "size",	SORT_SIZE },
-  { "mtime",	SORT_MTIME },
-  { "atime",	SORT_ATIME },
-  { "ctime",	SORT_CTIME },
-  { "blocks",	SORT_BLOCKS },
-  { "numeric",	SORT_NUMERIC },
-  { "nosort",	SORT_NOSORT },
-  { (char *)NULL,	-1 }
+  { "name", SORT_NAME },
+  { "size", SORT_SIZE },
+  { "mtime", SORT_MTIME },
+  { "atime", SORT_ATIME },
+  { "ctime", SORT_CTIME },
+  { "blocks", SORT_BLOCKS },
+  { "numeric", SORT_NUMERIC },
+  { "nosort", SORT_NOSORT },
+  { (char *) NULL, -1 }
 };
 
 /* A subset of the fields in the posix stat struct -- the ones we need --
@@ -702,7 +700,7 @@ struct globstat {
   struct timespec ctime;
   int blocks;
 };
-  
+
 struct globsort_t {
   char *name;
   struct globstat st;
@@ -770,7 +768,7 @@ globsort_sizecmp (struct globsort_t *g1, struct globsort_t *g2)
 {
   int x;
 
-  x = (glob_sorttype < SORT_REVERSE) ? GENCMP(g1->st.size, g2->st.size) : GENCMP(g2->st.size, g1->st.size);
+  x = (glob_sorttype < SORT_REVERSE) ? GENCMP (g1->st.size, g2->st.size) : GENCMP (g2->st.size, g1->st.size);
   return (x == 0) ? (globsort_namecmp (&g1->name, &g2->name)) : x;
 }
 
@@ -806,7 +804,7 @@ globsort_blockscmp (struct globsort_t *g1, struct globsort_t *g2)
 {
   int x;
 
-  x = (glob_sorttype < SORT_REVERSE) ? GENCMP(g1->st.blocks, g2->st.blocks) : GENCMP(g2->st.blocks, g1->st.blocks);
+  x = (glob_sorttype < SORT_REVERSE) ? GENCMP (g1->st.blocks, g2->st.blocks) : GENCMP (g2->st.blocks, g1->st.blocks);
   return (x == 0) ? (globsort_namecmp (&g1->name, &g2->name)) : x;
 }
 
@@ -818,7 +816,7 @@ gs_checknum (char *string, intmax_t *val)
 
   v = all_digits (string);
   if (v)
-    *val = strtoimax (string, (char **)NULL, 10);
+    *val = strtoimax (string, (char **) NULL, 10);
   return v;
 }
 
@@ -832,9 +830,9 @@ globsort_numericcmp (struct globsort_t *g1, struct globsort_t *g2)
   v1 = gs_checknum (g1->name, &i1);
   v2 = gs_checknum (g2->name, &i2);
 
-  if (v1 && v2)		/* both valid numbers */
+  if (v1 && v2)			/* both valid numbers */
     /* Don't need to fall back to name comparison here */
-    return (glob_sorttype < SORT_REVERSE) ? GENCMP(i1, i2) : GENCMP(i2, i1);
+    return (glob_sorttype < SORT_REVERSE) ? GENCMP (i1, i2) : GENCMP (i2, i1);
   else if (v1 == 0 && v2 == 0)	/* neither valid numbers */
     return (globsort_namecmp (&g1->name, &g2->name));
   else if (v1 != 0 && v2 == 0)
@@ -852,30 +850,30 @@ globsort_buildarray (char **array, size_t len)
   int i;
   struct stat st;
 
-  ret = (struct globsort_t *)xmalloc (len * sizeof (struct globsort_t));
+  ret = (struct globsort_t *) xmalloc (len * sizeof (struct globsort_t));
 
   for (i = 0; i < len; i++)
     {
       ret[i].name = array[i];
       if (stat (array[i], &st) != 0)
-        ret[i].st = glob_nullstat;
+	ret[i].st = glob_nullstat;
       else
-        {
-          ret[i].st.size = st.st_size;
-          ret[i].st.mtime = get_stat_mtime (&st);
-          ret[i].st.atime = get_stat_atime (&st);
-          ret[i].st.ctime = get_stat_ctime (&st);
-          ret[i].st.blocks = st.st_blocks;
-        }
+	{
+	  ret[i].st.size = st.st_size;
+	  ret[i].st.mtime = get_stat_mtime (&st);
+	  ret[i].st.atime = get_stat_atime (&st);
+	  ret[i].st.ctime = get_stat_ctime (&st);
+	  ret[i].st.blocks = st.st_blocks;
+	}
     }
 
   return ret;
-}  
-          
+}
+
 static inline void
 globsort_sortbyname (char **results)
 {
-  qsort (results, strvec_len (results), sizeof (char *), (QSFUNC *)globsort_namecmp);
+  qsort (results, strvec_len (results), sizeof (char *), (QSFUNC *) globsort_namecmp);
 }
 
 static void
@@ -889,22 +887,22 @@ globsort_sortarray (struct globsort_t *garray, size_t len)
   switch (t)
     {
     case SORT_SIZE:
-      sortfunc = (QSFUNC *)globsort_sizecmp;
+      sortfunc = (QSFUNC *) globsort_sizecmp;
       break;
     case SORT_ATIME:
     case SORT_MTIME:
     case SORT_CTIME:
-      sortfunc = (QSFUNC *)globsort_timecmp;
+      sortfunc = (QSFUNC *) globsort_timecmp;
       break;
     case SORT_BLOCKS:
-      sortfunc = (QSFUNC *)globsort_blockscmp;
+      sortfunc = (QSFUNC *) globsort_blockscmp;
       break;
     case SORT_NUMERIC:
-      sortfunc = (QSFUNC *)globsort_numericcmp;
+      sortfunc = (QSFUNC *) globsort_numericcmp;
       break;
     default:
       internal_error (_("invalid glob sort type"));
-      sortfunc = (QSFUNC *)globsort_namecmp;
+      sortfunc = (QSFUNC *) globsort_namecmp;
       break;
     }
 
@@ -917,24 +915,24 @@ sh_sortglob (char **results)
   size_t rlen;
   struct globsort_t *garray;
 
-  if (glob_sorttype == SORT_NOSORT || glob_sorttype == (SORT_NOSORT|SORT_REVERSE))
+  if (glob_sorttype == SORT_NOSORT || glob_sorttype == (SORT_NOSORT | SORT_REVERSE))
     return;
 
   if (glob_sorttype == SORT_NONE || glob_sorttype == SORT_NAME)
-    globsort_sortbyname (results);	/* posix sort */
-  else if (glob_sorttype == (SORT_NAME|SORT_REVERSE))
-    globsort_sortbyname (results);	/* posix sort reverse order */
+    globsort_sortbyname (results); /* posix sort */
+  else if (glob_sorttype == (SORT_NAME | SORT_REVERSE))
+    globsort_sortbyname (results); /* posix sort reverse order */
   else
     {
       int i;
 
       rlen = strvec_len (results);
       /* populate an array of name/statinfo, sort it appropriately, copy the
-	 names from the sorted array back to RESULTS, and free the array */
+         names from the sorted array back to RESULTS, and free the array */
       garray = globsort_buildarray (results, rlen);
       globsort_sortarray (garray, rlen);
       for (i = 0; i < rlen; i++)
-        results[i] = garray[i].name;
+	results[i] = garray[i].name;
       free (garray);
     }
 }

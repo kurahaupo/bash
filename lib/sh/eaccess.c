@@ -35,22 +35,22 @@
 #include <errno.h>
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #if !defined (_POSIX_VERSION) && defined (HAVE_SYS_FILE_H)
 #  include <sys/file.h>
-#endif /* !_POSIX_VERSION */
+#endif		/* !_POSIX_VERSION */
 #include "posixstat.h"
 #include "filecntl.h"
 
 #include "shell.h"
 
 #if !defined (R_OK)
-#define R_OK 4
-#define W_OK 2
-#define X_OK 1
-#define F_OK 0
-#endif /* R_OK */
+#  define R_OK 4
+#  define W_OK 2
+#  define X_OK 1
+#  define F_OK 0
+#endif		/* R_OK */
 
 static int path_is_devfd (const char *);
 static int sh_stataccess (const char *, int);
@@ -65,7 +65,7 @@ path_is_devfd (const char *path)
     return 1;
   else if (STREQN (path, "/dev/std", 8))
     {
-      if (STREQ (path+8, "in") || STREQ (path+8, "out") || STREQ (path+8, "err"))
+      if (STREQ (path + 8, "in") || STREQ (path + 8, "out") || STREQ (path + 8, "err"))
 	return 1;
       else
 	return 0;
@@ -89,43 +89,43 @@ sh_stat (const char *path, struct stat *finfo)
   if (path[0] == '/' && path[1] == 'd' && strncmp (path, "/dev/fd/", 8) == 0)
     {
       /* If stating /dev/fd/n doesn't produce the same results as fstat of
-	 FD N, then define DEV_FD_STAT_BROKEN */
+         FD N, then define DEV_FD_STAT_BROKEN */
 #if !defined (HAVE_DEV_FD) || defined (DEV_FD_STAT_BROKEN)
       intmax_t fd;
       int r;
 
-      if (valid_number (path + 8, &fd) && fd == (int)fd)
-        {
-          r = fstat ((int)fd, finfo);
-          if (r == 0 || errno != EBADF)
-            return (r);
-        }
+      if (valid_number (path + 8, &fd) && fd == (int) fd)
+	{
+	  r = fstat ((int) fd, finfo);
+	  if (r == 0 || errno != EBADF)
+	    return (r);
+	}
       errno = ENOENT;
       return (-1);
 #else
-  /* If HAVE_DEV_FD is defined, DEV_FD_PREFIX is defined also, and has a
-     trailing slash.  Make sure /dev/fd/xx really uses DEV_FD_PREFIX/xx.
-     On most systems, with the notable exception of linux, this is
-     effectively a no-op. */
+      /* If HAVE_DEV_FD is defined, DEV_FD_PREFIX is defined also, and has a
+         trailing slash.  Make sure /dev/fd/xx really uses DEV_FD_PREFIX/xx.
+         On most systems, with the notable exception of linux, this is
+         effectively a no-op. */
       pbuf = xrealloc (pbuf, sizeof (DEV_FD_PREFIX) + strlen (path + 8));
       strcpy (pbuf, DEV_FD_PREFIX);
       strcpy (pbuf + sizeof (DEV_FD_PREFIX) - 1, path + 8);
       return (stat (pbuf, finfo));
-#endif /* !HAVE_DEV_FD */
+#endif		/* !HAVE_DEV_FD */
     }
 #if !defined (HAVE_DEV_STDIN)
   else if (STREQN (path, "/dev/std", 8))
     {
-      if (STREQ (path+8, "in"))
+      if (STREQ (path + 8, "in"))
 	return (fstat (0, finfo));
-      else if (STREQ (path+8, "out"))
+      else if (STREQ (path + 8, "out"))
 	return (fstat (1, finfo));
-      else if (STREQ (path+8, "err"))
+      else if (STREQ (path + 8, "err"))
 	return (fstat (2, finfo));
       else
 	return (stat (path, finfo));
     }
-#endif /* !HAVE_DEV_STDIN */
+#endif		/* !HAVE_DEV_STDIN */
   return (stat (path, finfo));
 }
 
@@ -147,12 +147,12 @@ sh_stataccess (const char *path, int mode)
 	return (0);
 
       /* Root can execute any file that has any one of the execute
-	 bits set. */
+         bits set. */
       if (st.st_mode & S_IXUGO)
 	return (0);
     }
 
-  if (st.st_uid == current_user.euid)	/* owner */
+  if (st.st_uid == current_user.euid) /* owner */
     mode <<= 6;
   else if (group_member (st.st_gid))
     mode <<= 3;
@@ -186,7 +186,7 @@ sh_euidaccess (const char *path, int mode)
     setregid (current_user.gid, current_user.egid);
 
   errno = e;
-  return r;  
+  return r;
 }
 #endif
 
@@ -201,7 +201,7 @@ sh_eaccess (const char *path, int mode)
 #if (defined (HAVE_FACCESSAT) && defined (AT_EACCESS)) || defined (HAVE_EACCESS)
 #  if defined (HAVE_FACCESSAT) && defined (AT_EACCESS)
   ret = faccessat (AT_FDCWD, path, mode, AT_EACCESS);
-#  else		/* HAVE_EACCESS */	/* FreeBSD */
+#  else		/* HAVE_EACCESS */ /* FreeBSD */
   ret = eaccess (path, mode);	/* XXX -- not always correct for X_OK */
 #  endif	/* HAVE_EACCESS */
 #  if defined (__FreeBSD__) || defined (SOLARIS) || defined (_AIX)
@@ -209,12 +209,12 @@ sh_eaccess (const char *path, int mode)
     return (sh_stataccess (path, mode));
 #  endif	/* __FreeBSD__ || SOLARIS || _AIX */
   return ret;
-#elif defined (EFF_ONLY_OK)		/* SVR4(?), SVR4.2 */
-  return access (path, mode|EFF_ONLY_OK);
+#elif defined (EFF_ONLY_OK)	/* SVR4(?), SVR4.2 */
+  return access (path, mode | EFF_ONLY_OK);
 #else
   if (mode == F_OK)
     return (sh_stataccess (path, mode));
-    
+
 #  if HAVE_DECL_SETREGID
   if (current_user.uid != current_user.euid || current_user.gid != current_user.egid)
     return (sh_euidaccess (path, mode));
@@ -223,10 +223,10 @@ sh_eaccess (const char *path, int mode)
   if (current_user.uid == current_user.euid && current_user.gid == current_user.egid)
     {
       ret = access (path, mode);
-#if defined (__FreeBSD__) || defined (SOLARIS)
+#  if defined (__FreeBSD__) || defined (SOLARIS)
       if (ret == 0 && current_user.euid == 0 && mode == X_OK)
 	return (sh_stataccess (path, mode));
-#endif
+#  endif
       return ret;
     }
 

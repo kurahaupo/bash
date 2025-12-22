@@ -22,9 +22,9 @@
 
 #ifndef HAVE_STRTOUL
 
-#define	UNSIGNED	1
-#undef HAVE_STRTOL
+#  define	UNSIGNED	1
+#  undef HAVE_STRTOL
 
-#include <strtol.c>
+#  include <strtol.c>
 
-#endif /* !HAVE_STRTOUL */
+#endif		/* !HAVE_STRTOUL */

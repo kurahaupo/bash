@@ -68,7 +68,7 @@ setpgid_builtin (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-      
+
   if (valid_number (pidstr, &pid_arg) == 0)
     {
       builtin_error ("%s: pid argument must be numeric", pidstr);
@@ -76,7 +76,7 @@ setpgid_builtin (WORD_LIST *list)
     }
   if (pid_arg < 0)
     {
-      builtin_error("%s: negative pid  values not allowed", pidstr);
+      builtin_error ("%s: negative pid  values not allowed", pidstr);
       return (EXECUTION_FAILURE);
     }
   pid = pid_arg;
@@ -94,29 +94,29 @@ setpgid_builtin (WORD_LIST *list)
   pgid = pgid_arg;
 
   errno = 0;
-  if (setpgid(pid, pgid) < 0)
+  if (setpgid (pid, pgid) < 0)
     {
-      builtin_error("setpgid failed: %s", strerror (errno));
-      return (EXECUTION_FAILURE);     
+      builtin_error ("setpgid failed: %s", strerror (errno));
+      return (EXECUTION_FAILURE);
     }
-  return (EXECUTION_SUCCESS);     
+  return (EXECUTION_SUCCESS);
 }
 
 const char *setpgid_doc[] = {
-	"invoke the setpgid(2) system call",
-	"",
-	"Arguments:",
-	"   pid : numeric process identifier, >= 0",
-	"   pgrpid: numeric process group identifier, >=0",
-	"See the setpgid(2) manual page.",
-	(const char *)NULL
+  "invoke the setpgid(2) system call",
+  "",
+  "Arguments:",
+  "   pid : numeric process identifier, >= 0",
+  "   pgrpid: numeric process group identifier, >=0",
+  "See the setpgid(2) manual page.",
+  (const char *) NULL
 };
 
 struct builtin setpgid_struct = {
-	"setpgid",
-	setpgid_builtin,
-	BUILTIN_ENABLED,
-	(char **)setpgid_doc,
-	"setpgid pid pgrpid",
-	0
+  "setpgid",
+  setpgid_builtin,
+  BUILTIN_ENABLED,
+  (char **) setpgid_doc,
+  "setpgid pid pgrpid",
+  0
 };

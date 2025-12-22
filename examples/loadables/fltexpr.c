@@ -104,22 +104,22 @@ typedef double sh_float_t;
 
 /* The Tokens.  Singing "The Lion Sleeps Tonight". */
 
-#define EQEQ	1	/* "==" */
-#define NEQ	2	/* "!=" */
-#define LEQ	3	/* "<=" */
-#define GEQ	4	/* ">=" */
-#define STR	5	/* string */
-#define NUM	6	/* number */
-#define LAND	7	/* "&&" Logical AND */
-#define LOR	8	/* "||" Logical OR */
-#define OP_ASSIGN 11	/* op= expassign as in Posix.2 */
-#define COND	12	/* exp1 ? exp2 : exp3 */
-#define POWER	13	/* exp1**exp2 */
-#define PREINC	14	/* ++var */
-#define PREDEC	15	/* --var */
-#define POSTINC	16	/* var++ */
-#define POSTDEC	17	/* var-- */
-#define FUNC	18	/* function call */
+#define EQEQ	1		/* "==" */
+#define NEQ	2		/* "!=" */
+#define LEQ	3		/* "<=" */
+#define GEQ	4		/* ">=" */
+#define STR	5		/* string */
+#define NUM	6		/* number */
+#define LAND	7		/* "&&" Logical AND */
+#define LOR	8		/* "||" Logical OR */
+#define OP_ASSIGN 11		/* op= expassign as in Posix.2 */
+#define COND	12		/* exp1 ? exp2 : exp3 */
+#define POWER	13		/* exp1**exp2 */
+#define PREINC	14		/* ++var */
+#define PREDEC	15		/* --var */
+#define POSTINC	16		/* var++ */
+#define POSTDEC	17		/* var-- */
+#define FUNC	18		/* function call */
 #define EQ	'='
 #define GT	'>'
 #define LT	'<'
@@ -138,7 +138,7 @@ typedef double sh_float_t;
    lowest precedence. */
 #define EXP_LOWEST	expcomma
 
-#define SHFLOAT_STRLEN_BOUND	63		/* For now */
+#define SHFLOAT_STRLEN_BOUND	63 /* For now */
 #define SHFLOAT_BUFSIZE_BOUND	(SHFLOAT_STRLEN_BOUND+1)
 
 /* These are valid when sh_float_t == double */
@@ -151,20 +151,18 @@ typedef double sh_float_t;
 #define SHFLOAT_HUGE_VAL	HUGE_VAL
 
 #ifndef M_EGAMMA
-#define M_EGAMMA 0.57721566490153286060651209008240243
+#  define M_EGAMMA 0.57721566490153286060651209008240243
 #endif
 
-struct lvalue
-{
-  char *tokstr;		/* possibly-rewritten lvalue if not NULL */
-  sh_float_t tokval;	/* expression evaluated value */
-  SHELL_VAR *tokvar;	/* variable described by array or var reference */
-  arrayind_t ind;	/* array index if not -1 */
+struct lvalue {
+  char *tokstr;			/* possibly-rewritten lvalue if not NULL */
+  sh_float_t tokval;		/* expression evaluated value */
+  SHELL_VAR *tokvar;		/* variable described by array or var reference */
+  arrayind_t ind;		/* array index if not -1 */
 };
 
 /* A structure defining a single expression context. */
-typedef struct
-{
+typedef struct {
   int curtok, lasttok;
   char *expression, *tp, *lasttp;
   sh_float_t tokval;
@@ -173,176 +171,278 @@ typedef struct
   struct lvalue lval;
 } FLTEXPR_CONTEXT;
 
-static char	*expression;	/* The current expression */
-static char	*tp;		/* token lexical position */
-static char	*lasttp;	/* pointer to last token position */
-static int	curtok;		/* the current token */
-static int	lasttok;	/* the previous token */
-static int	assigntok;	/* the OP in OP= */
-static char	*tokstr;	/* current token string */
-static sh_float_t	tokval;		/* current token value */
-static int	noeval;		/* set to 1 if no assignment to be done */
+static char *expression;	/* The current expression */
+static char *tp;		/* token lexical position */
+static char *lasttp;		/* pointer to last token position */
+static int curtok;		/* the current token */
+static int lasttok;		/* the previous token */
+static int assigntok;		/* the OP in OP= */
+static char *tokstr;		/* current token string */
+static sh_float_t tokval;	/* current token value */
+static int noeval;		/* set to 1 if no assignment to be done */
 static procenv_t evalbuf;
 
 /* set to 1 if the expression has already been run through word expansion */
-static int	already_expanded;
+static int already_expanded;
 
-static struct lvalue curlval = {0, 0, 0, -1};
-static struct lvalue lastlval = {0, 0, 0, -1};
+static struct lvalue curlval = { 0, 0, 0, -1 };
+static struct lvalue lastlval = { 0, 0, 0, -1 };
 
 /* Function equivalents for POSIX math.h macros. */
-static int xfpclassify(sh_float_t d) { return fpclassify(d); }
-static int xisinf(sh_float_t d) { return isinf(d); }
-static int xisnan(sh_float_t d) { return isnan(d); }
-static int xisnormal(sh_float_t d) { return isnormal(d); }
-static int xisfinite(sh_float_t d) { return isfinite(d); }
-static int xsignbit(sh_float_t d) { return signbit(d); }
+static int
+xfpclassify (sh_float_t d)
+{
+  return fpclassify (d);
+}
 
-static int xisgreater(sh_float_t d1, sh_float_t d2) { return isgreater(d1, d2); }
-static int xisgreaterequal(sh_float_t d1, sh_float_t d2) { return isgreaterequal(d1, d2); }
-static int xisless(sh_float_t d1, sh_float_t d2) { return isless(d1, d2); }
-static int xislessequal(sh_float_t d1, sh_float_t d2) { return islessequal(d1, d2); }
-static int xislessgreater(sh_float_t d1, sh_float_t d2) { return islessgreater(d1, d2); }
-static int xisunordered(sh_float_t d1, sh_float_t d2) { return isunordered(d1, d2); }
+static int
+xisinf (sh_float_t d)
+{
+  return isinf (d);
+}
 
-static int xisinfinite(sh_float_t d) { return (fpclassify(d) == FP_INFINITE); }
-static int xissubnormal(sh_float_t d) { return (fpclassify(d) == FP_SUBNORMAL); }
-static int xiszero(sh_float_t d) { return (fpclassify(d) == FP_ZERO); }
+static int
+xisnan (sh_float_t d)
+{
+  return isnan (d);
+}
+
+static int
+xisnormal (sh_float_t d)
+{
+  return isnormal (d);
+}
+
+static int
+xisfinite (sh_float_t d)
+{
+  return isfinite (d);
+}
+
+static int
+xsignbit (sh_float_t d)
+{
+  return signbit (d);
+}
+
+static int
+xisgreater (sh_float_t d1, sh_float_t d2)
+{
+  return isgreater (d1, d2);
+}
+
+static int
+xisgreaterequal (sh_float_t d1, sh_float_t d2)
+{
+  return isgreaterequal (d1, d2);
+}
+
+static int
+xisless (sh_float_t d1, sh_float_t d2)
+{
+  return isless (d1, d2);
+}
+
+static int
+xislessequal (sh_float_t d1, sh_float_t d2)
+{
+  return islessequal (d1, d2);
+}
+
+static int
+xislessgreater (sh_float_t d1, sh_float_t d2)
+{
+  return islessgreater (d1, d2);
+}
+
+static int
+xisunordered (sh_float_t d1, sh_float_t d2)
+{
+  return isunordered (d1, d2);
+}
+
+static int
+xisinfinite (sh_float_t d)
+{
+  return (fpclassify (d) == FP_INFINITE);
+}
+
+static int
+xissubnormal (sh_float_t d)
+{
+  return (fpclassify (d) == FP_SUBNORMAL);
+}
+
+static int
+xiszero (sh_float_t d)
+{
+  return (fpclassify (d) == FP_ZERO);
+}
 
 /* Function replacements for some math functions that don't conform to the
    supported prototypes. */
-static sh_float_t xscalbn(sh_float_t d1, sh_float_t d2) { int x = d2; return (scalbn (d1, x)); }
-static sh_float_t xjn(sh_float_t d1, sh_float_t d2) { int x = d1; return (jn (x, d2)); }
-static sh_float_t xyn(sh_float_t d1, sh_float_t d2) { int x = d1; return (yn (x, d2)); }
-static sh_float_t xldexp(sh_float_t d1, sh_float_t d2) { int x = d2; return (ldexp (d1, x)); }
+static sh_float_t
+xscalbn (sh_float_t d1, sh_float_t d2)
+{
+  int x = d2;
+  return (scalbn (d1, x));
+}
+
+static sh_float_t
+xjn (sh_float_t d1, sh_float_t d2)
+{
+  int x = d1;
+  return (jn (x, d2));
+}
+
+static sh_float_t
+xyn (sh_float_t d1, sh_float_t d2)
+{
+  int x = d1;
+  return (yn (x, d2));
+}
+
+static sh_float_t
+xldexp (sh_float_t d1, sh_float_t d2)
+{
+  int x = d2;
+  return (ldexp (d1, x));
+}
 
 /* Some additional math functions that aren't in libm */
-static sh_float_t xcot(sh_float_t d) { return (1.0 / tan(d)); }
-static sh_float_t xcoth(sh_float_t d) { return (cosh(d) / sinh(d)); }
+static sh_float_t
+xcot (sh_float_t d)
+{
+  return (1.0 / tan (d));
+}
 
-static sh_float_t xroundp(sh_float_t d1, sh_float_t d2)
+static sh_float_t
+xcoth (sh_float_t d)
+{
+  return (cosh (d) / sinh (d));
+}
+
+static sh_float_t
+xroundp (sh_float_t d1, sh_float_t d2)
 {
   sh_float_t m, r;
   int prec = d2;
 
-  m = pow(10.0, prec);
-  r = round(d1 * m) / m;
+  m = pow (10.0, prec);
+  r = round (d1 * m) / m;
   return r;
 }
 
-typedef int imathfunc1(sh_float_t);
-typedef int imathfunc2(sh_float_t, sh_float_t);
-typedef sh_float_t mathfunc1(sh_float_t);
-typedef sh_float_t mathfunc2(sh_float_t, sh_float_t);
-typedef sh_float_t mathfunc3(sh_float_t, sh_float_t, sh_float_t);
+typedef int imathfunc1 (sh_float_t);
+typedef int imathfunc2 (sh_float_t, sh_float_t);
+typedef sh_float_t mathfunc1 (sh_float_t);
+typedef sh_float_t mathfunc2 (sh_float_t, sh_float_t);
+typedef sh_float_t mathfunc3 (sh_float_t, sh_float_t, sh_float_t);
 
-typedef struct
-{
+typedef struct {
   char *name;
-  int nargs;		/* > 0, function returns double; < 0, function returns int */
-  union
-    {
-      mathfunc1 *func1;
-      mathfunc2 *func2;
-      mathfunc3 *func3;
-      imathfunc1 *ifunc1;
-      imathfunc2 *ifunc2;
-    } f;
+  int nargs;			/* > 0, function returns double; < 0, function returns int */
+  union {
+    mathfunc1 *func1;
+    mathfunc2 *func2;
+    mathfunc3 *func3;
+    imathfunc1 *ifunc1;
+    imathfunc2 *ifunc2;
+  } f;
 } FLTEXPR_MATHFUN;
 
 /* Not implemented yet: functions that don't fit one of the supported
    calling prototypes, with a couple of exceptions */
-FLTEXPR_MATHFUN mathfuncs[] =
-{
-  { "abs",	1,	{ .func1 = fabs }	},
-  { "acos",	1,	{ .func1 = acos }	},
-  { "acosh",	1,	{ .func1 = acosh }	},
-  { "asin",	1,	{ .func1 = asin }	},
-  { "asinh",	1,	{ .func1 = asinh }	},
-  { "atan",	1,	{ .func1 = atan }	},
-  { "atanh",	1,	{ .func1 = atanh }	},
-  { "cbrt",	1,	{ .func1 = cbrt }	},
-  { "ceil",	1,	{ .func1 = ceil }	},
-  { "cos",	1,	{ .func1 = cos }	},  
-  { "cosh",	1,	{ .func1 = cosh }	},
-  { "cot",	1,	{ .func1 = xcot }	},
-  { "coth",	1,	{ .func1 = xcoth }	},
-  { "erf",	1,	{ .func1 = erf }	},
-  { "erfc",	1,	{ .func1 = erfc }	},
-  { "exp",	1,	{ .func1 = exp }	},
-  { "exp2",	1,	{ .func1 = exp2 }	},
-  { "expm1",	1,	{ .func1 = expm1 }	},
-  { "fabs",	1,	{ .func1 = fabs }	},
-  { "floor",	1,	{ .func1 = floor }	},
-  { "j0",	1,	{ .func1 = j0 }		},
-  { "j1",	1,	{ .func1 = j1 }		},
-  { "lgamma",	1,	{ .func1 = lgamma }	},
-  { "log",	1,	{ .func1 = log }	},
-  { "log10",	1,	{ .func1 = log10 }	},
-  { "log1p",	1,	{ .func1 = log1p }	},
-  { "log2",	1,	{ .func1 = log2 }	},
-  { "logb",	1,	{ .func1 = logb }	},
-  { "nearbyint",1,	{ .func1 = nearbyint }	},
-  { "rint",	1,	{ .func1 = rint }	},
-  { "round",	1,	{ .func1 = round }	},
-  { "sin",	1,	{ .func1 = sin }	},
-  { "sinh",	1,	{ .func1 = sinh }	},
-  { "sqrt",	1,	{ .func1 = sqrt }	},
-  { "tan",	1,	{ .func1 = tan }	},
-  { "tanh",	1,	{ .func1 = tanh }	},
-  { "tgamma",	1,	{ .func1 = tgamma }	},
-  { "trunc",	1,	{ .func1 = trunc }	},
-  { "y0",	1,	{ .func1 = y0 }		},
-  { "y1",	1,	{ .func1 = y1 }		},
+FLTEXPR_MATHFUN mathfuncs[] = {
+  { "abs", 1, {.func1 = fabs} },
+  { "acos", 1, {.func1 = acos} },
+  { "acosh", 1, {.func1 = acosh} },
+  { "asin", 1, {.func1 = asin} },
+  { "asinh", 1, {.func1 = asinh} },
+  { "atan", 1, {.func1 = atan} },
+  { "atanh", 1, {.func1 = atanh} },
+  { "cbrt", 1, {.func1 = cbrt} },
+  { "ceil", 1, {.func1 = ceil} },
+  { "cos", 1, {.func1 = cos} },
+  { "cosh", 1, {.func1 = cosh} },
+  { "cot", 1, {.func1 = xcot} },
+  { "coth", 1, {.func1 = xcoth} },
+  { "erf", 1, {.func1 = erf} },
+  { "erfc", 1, {.func1 = erfc} },
+  { "exp", 1, {.func1 = exp} },
+  { "exp2", 1, {.func1 = exp2} },
+  { "expm1", 1, {.func1 = expm1} },
+  { "fabs", 1, {.func1 = fabs} },
+  { "floor", 1, {.func1 = floor} },
+  { "j0", 1, {.func1 = j0} },
+  { "j1", 1, {.func1 = j1} },
+  { "lgamma", 1, {.func1 = lgamma} },
+  { "log", 1, {.func1 = log} },
+  { "log10", 1, {.func1 = log10} },
+  { "log1p", 1, {.func1 = log1p} },
+  { "log2", 1, {.func1 = log2} },
+  { "logb", 1, {.func1 = logb} },
+  { "nearbyint", 1, {.func1 = nearbyint} },
+  { "rint", 1, {.func1 = rint} },
+  { "round", 1, {.func1 = round} },
+  { "sin", 1, {.func1 = sin} },
+  { "sinh", 1, {.func1 = sinh} },
+  { "sqrt", 1, {.func1 = sqrt} },
+  { "tan", 1, {.func1 = tan} },
+  { "tanh", 1, {.func1 = tanh} },
+  { "tgamma", 1, {.func1 = tgamma} },
+  { "trunc", 1, {.func1 = trunc} },
+  { "y0", 1, {.func1 = y0} },
+  { "y1", 1, {.func1 = y1} },
 
-  { "atan2",	2,	{ .func2 = atan2 }	},
-  { "copysign",	2,	{ .func2 = copysign }	},
-  { "fdim",	2,	{ .func2 = fdim }	},
-  { "fmax",	2,	{ .func2 = fmax }	},
-  { "fmin",	2,	{ .func2 = fmin }	},
-  { "fmod",	2,	{ .func2 = fmod }	},
-  { "hypot",	2,	{ .func2 = hypot }	},
-  { "nextafter",2,	{ .func2 = nextafter }	},
-  { "pow",	2,	{ .func2 = pow }	},
-  { "remainder",2,	{ .func2 = remainder }	},
-  { "roundp",	2,	{ .func2 = xroundp }	},
-  { "ldexp",	2,	{ .func2 = xldexp }	},
-  { "jn",	2,	{ .func2 = xjn }	},
-  { "scalbn",	2,	{ .func2 = xscalbn }	},
-  { "yn",	2,	{ .func2 = xyn }	},
+  { "atan2", 2, {.func2 = atan2} },
+  { "copysign", 2, {.func2 = copysign} },
+  { "fdim", 2, {.func2 = fdim} },
+  { "fmax", 2, {.func2 = fmax} },
+  { "fmin", 2, {.func2 = fmin} },
+  { "fmod", 2, {.func2 = fmod} },
+  { "hypot", 2, {.func2 = hypot} },
+  { "nextafter", 2, {.func2 = nextafter} },
+  { "pow", 2, {.func2 = pow} },
+  { "remainder", 2, {.func2 = remainder} },
+  { "roundp", 2, {.func2 = xroundp} },
+  { "ldexp", 2, {.func2 = xldexp} },
+  { "jn", 2, {.func2 = xjn} },
+  { "scalbn", 2, {.func2 = xscalbn} },
+  { "yn", 2, {.func2 = xyn} },
 
-  { "fma",	3,	{ .func3 = fma }	},
- 
-  { "fpclassify",-1,	{ .ifunc1 = xfpclassify }	},
-  { "isfinite",	-1,	{ .ifunc1 = xisfinite }		},
-  { "isinf",	-1,	{ .ifunc1 = xisinf }		},
-  { "isinfinite",-1,	{ .ifunc1 = xisinfinite }	},
-  { "isnan",	-1,	{ .ifunc1 = xisnan }		},
-  { "isnormal",	-1,	{ .ifunc1 = xisnormal }		},
-  { "issubnormal",-1,	{ .ifunc1 = xissubnormal }	},
-  { "iszero",	-1,	{ .ifunc1 = xiszero }		},
-  { "ilogb",	-1,	{ .ifunc1 = ilogb }		},
-  { "signbit",	-1,	{ .ifunc1 = xsignbit }		},
- 
-  { "isgreater",-2,	{ .ifunc2 = xisgreater }	},
-  { "isgreaterequal",-2,{ .ifunc2 = xisgreaterequal }	},
-  { "isless",	-2,	{ .ifunc2 = xisless }		},
-  { "islessequal", -2,	{ .ifunc2 = xislessequal }	},
-  { "islessgreater",-2,	{ .ifunc2 = xislessgreater }	},
-  { "isunordered",-2,	{ .ifunc2 = xisunordered }	},
+  { "fma", 3, {.func3 = fma} },
 
-  { NULL, 	0,	NULL	}
+  { "fpclassify", -1, {.ifunc1 = xfpclassify} },
+  { "isfinite", -1, {.ifunc1 = xisfinite} },
+  { "isinf", -1, {.ifunc1 = xisinf} },
+  { "isinfinite", -1, {.ifunc1 = xisinfinite} },
+  { "isnan", -1, {.ifunc1 = xisnan} },
+  { "isnormal", -1, {.ifunc1 = xisnormal} },
+  { "issubnormal", -1, {.ifunc1 = xissubnormal} },
+  { "iszero", -1, {.ifunc1 = xiszero} },
+  { "ilogb", -1, {.ifunc1 = ilogb} },
+  { "signbit", -1, {.ifunc1 = xsignbit} },
+
+  { "isgreater", -2, {.ifunc2 = xisgreater} },
+  { "isgreaterequal", -2, {.ifunc2 = xisgreaterequal} },
+  { "isless", -2, {.ifunc2 = xisless} },
+  { "islessequal", -2, {.ifunc2 = xislessequal} },
+  { "islessgreater", -2, {.ifunc2 = xislessgreater} },
+  { "isunordered", -2, {.ifunc2 = xisunordered} },
+
+  { NULL, 0, NULL }
 };
 
 static sh_float_t nanval, infval;
 
-static int	is_arithop (int);
-static int	is_multiop (int);
-static void	readtok (void);	/* lexical analyzer */
+static int is_arithop (int);
+static int is_multiop (int);
+static void readtok (void);	/* lexical analyzer */
 
-static void	init_lvalue (struct lvalue *);
+static void init_lvalue (struct lvalue *);
 static struct lvalue *alloc_lvalue (void);
-static void	free_lvalue (struct lvalue *);
+static void free_lvalue (struct lvalue *);
 
 static sh_float_t fltexpr_streval (char *, int, struct lvalue *);
 
@@ -350,21 +450,21 @@ static int fltexpr_findfunc (char *);
 static sh_float_t fltexpr_funeval (char *, struct lvalue *);
 static sh_float_t expfunc (int);
 
-static void	evalerror (const char *);
+static void evalerror (const char *);
 
 static sh_float_t fltexpr_strtod (const char *, char **);
-static char	*fltexpr_format (sh_float_t);
+static char *fltexpr_format (sh_float_t);
 
 #if defined (ARRAYS)
-static int	fltexpr_skipsubscript (char *, char *);
+static int fltexpr_skipsubscript (char *, char *);
 #endif
 
-static void	pushexp (void);
-static void	popexp (void);
-static void	fltexpr_unwind (void);
-static void	fltexpr_bind_variable (char *, char *);
+static void pushexp (void);
+static void popexp (void);
+static void fltexpr_unwind (void);
+static void fltexpr_bind_variable (char *, char *);
 #if defined (ARRAY_VARS)
-static void	fltexpr_bind_array_element (char *, arrayind_t, char *);
+static void fltexpr_bind_array_element (char *, arrayind_t, char *);
 #endif
 
 static sh_float_t fltexp_subexpr (const char *);
@@ -385,11 +485,11 @@ static sh_float_t exp0 (void);
 
 /* Global var which contains the stack of expression contexts. */
 static FLTEXPR_CONTEXT **expr_stack;
-static int expr_depth;		   /* Location in the stack. */
-static size_t expr_stack_size;	   /* Number of slots already allocated. */
+static int expr_depth;		/* Location in the stack. */
+static size_t expr_stack_size;	/* Number of slots already allocated. */
 
 #if defined (ARRAY_VARS)
-extern const char * const bash_badsub_errmsg;
+extern const char *const bash_badsub_errmsg;
 #endif
 
 #define SAVETOK(X) \
@@ -429,13 +529,13 @@ pushexp (void)
   if (expr_depth >= expr_stack_size)
     {
       expr_stack_size += EXPR_STACK_GROW_SIZE;
-      expr_stack = (FLTEXPR_CONTEXT **)xrealloc (expr_stack, expr_stack_size * sizeof (FLTEXPR_CONTEXT *));
+      expr_stack = (FLTEXPR_CONTEXT **) xrealloc (expr_stack, expr_stack_size * sizeof (FLTEXPR_CONTEXT *));
     }
 
-  context = (FLTEXPR_CONTEXT *)xmalloc (sizeof (FLTEXPR_CONTEXT));
+  context = (FLTEXPR_CONTEXT *) xmalloc (sizeof (FLTEXPR_CONTEXT));
 
   context->expression = expression;
-  SAVETOK(context);
+  SAVETOK (context);
 
   expr_stack[expr_depth++] = context;
 }
@@ -450,7 +550,7 @@ popexp (void)
   if (expr_depth <= 0)
     {
       /* See the comment at the top of evalexp() for an explanation of why
-	 this is done. */
+         this is done. */
       expression = lasttp = 0;
       evalerror (_("recursion stack underflow"));
     }
@@ -477,9 +577,9 @@ fltexpr_unwind (void)
       free (expr_stack[expr_depth]);
     }
   if (expr_depth == 0)
-    free (expr_stack[expr_depth]);	/* free the allocated FLTEXPR_CONTEXT */
+    free (expr_stack[expr_depth]); /* free the allocated FLTEXPR_CONTEXT */
 
-  noeval = 0;	/* XXX */
+  noeval = 0;			/* XXX */
 }
 
 static sh_float_t
@@ -503,12 +603,12 @@ fltexpr_strtod (const char *nptr, char **ep)
 
 /* Convert from internal format (double) to external format (char *).
    Code adapted from gnulib. */
-   
+
 static char *
 fltexpr_format (sh_float_t val)
 {
   int r;
-  char ret[SHFLOAT_BUFSIZE_BOUND];	/* XXX */
+  char ret[SHFLOAT_BUFSIZE_BOUND]; /* XXX */
   char format[8], *p;
   size_t retsize;
   int prec, n;
@@ -532,15 +632,13 @@ fltexpr_format (sh_float_t val)
 
   /* Use a loop to get the minimal representation but make sure we have the
      minimum number of digits required to round-trip a sh_float_t. */
-  for (prec = abs_val < SHFLOAT_MIN ? 1 : SHFLOAT_DIG; ; prec++)
+  for (prec = abs_val < SHFLOAT_MIN ? 1 : SHFLOAT_DIG;; prec++)
     {
       n = snprintf (ret, retsize, format, prec, val);
-      if (n < 0 ||
-	  prec >= SHFLOAT_MANT_DIG ||
-	  (n < retsize && SHFLOAT_STRTOD (ret, NULL) == val))
+      if (n < 0 || prec >= SHFLOAT_MANT_DIG || (n < retsize && SHFLOAT_STRTOD (ret, NULL) == val))
 	break;
     }
-    
+
   return savestring (ret);
 }
 
@@ -551,10 +649,10 @@ fltexpr_bind_variable (char *lhs, char *rhs)
   int aflags;
 
   if (lhs == 0 || *lhs == 0)
-    return;		/* XXX */
+    return;			/* XXX */
 
 #if defined (ARRAY_VARS)
-  aflags = ASS_NOEXPAND|ASS_ALLOWALLSUB;		/* allow assoc[@]=value */;
+  aflags = ASS_NOEXPAND | ASS_ALLOWALLSUB; /* allow assoc[@]=value */ ;
 #else
   aflags = 0;
 #endif
@@ -578,7 +676,7 @@ fltexpr_skipsubscript (char *vp, char *cp)
 
   *cp = '\0';
   isassoc = valid_identifier (vp) && (entry = find_variable (vp)) && assoc_p (entry);
-  *cp = '[';	/* ] */
+  *cp = '[';			/* ] */
 
   /* We're not doing any evaluation here, we should suppress expansion when
      skipping over the subscript */
@@ -596,19 +694,19 @@ fltexpr_bind_array_element (char *tok, arrayind_t ind, char *rhs)
   char ibuf[INT_STRLEN_BOUND (arrayind_t) + 1], *istr;
 
   istr = fmtumax (ind, 10, ibuf, sizeof (ibuf), 0);
-  vname = array_variable_name (tok, 0, (char **)NULL, (int *)NULL);
+  vname = array_variable_name (tok, 0, (char **) NULL, (int *) NULL);
 
   llen = strlen (vname) + sizeof (ibuf) + 3;
   lhs = xmalloc (llen);
 
-  sprintf (lhs, "%s[%s]", vname, istr);		/* XXX */
+  sprintf (lhs, "%s[%s]", vname, istr);	/* XXX */
 
 /*itrace("expr_bind_array_element: %s=%s", lhs, rhs);*/
   fltexpr_bind_variable (lhs, rhs);
   free (vname);
   free (lhs);
 }
-#endif /* ARRAY_VARS */
+#endif		/* ARRAY_VARS */
 
 /* Evaluate EXPR, and return the arithmetic result.  If VALIDP is
    non-null, a zero is stored into the location to which it points
@@ -632,7 +730,7 @@ fltexpr_evalexp (const char *expr, int flags, int *validp)
 
   val = 0;
   noeval = 0;
-  already_expanded = (flags&EXP_EXPANDED);
+  already_expanded = (flags & EXP_EXPANDED);
 
   FASTCOPY (evalbuf, oevalbuf, sizeof (evalbuf));
 
@@ -642,10 +740,10 @@ fltexpr_evalexp (const char *expr, int flags, int *validp)
     {
       FREE (tokstr);
       FREE (expression);
-      tokstr = expression = (char *)NULL;
+      tokstr = expression = (char *) NULL;
 
       fltexpr_unwind ();
-      expr_depth = 0;	/* XXX - make sure */
+      expr_depth = 0;		/* XXX - make sure */
 
       /* We copy in case we've called evalexp recursively */
       FASTCOPY (oevalbuf, evalbuf, sizeof (evalbuf));
@@ -682,7 +780,7 @@ fltexp_subexpr (const char *expr)
   tp = expression;
 
   curtok = lasttok = 0;
-  tokstr = (char *)NULL;
+  tokstr = (char *) NULL;
   tokval = 0;
   init_lvalue (&curlval);
   lastlval = curlval;
@@ -716,7 +814,7 @@ expcomma (void)
 
   return value;
 }
-  
+
 static sh_float_t
 expassign (void)
 {
@@ -740,7 +838,7 @@ expassign (void)
 
       if (special)
 	{
-	  op = assigntok;		/* a OP= b */
+	  op = assigntok;	/* a OP= b */
 	  lvalue = value;
 	}
 
@@ -761,7 +859,7 @@ expassign (void)
 	      if (noeval == 0)
 		evalerror (_("division by 0"));
 	      else
-	        value = 1;
+		value = 1;
 	    }
 
 	  switch (op)
@@ -802,7 +900,7 @@ expassign (void)
       free (rhs);
       free (lhs);
       FREE (tokstr);
-      tokstr = (char *)NULL;		/* For freeing on errors. */
+      tokstr = (char *) NULL;	/* For freeing on errors. */
     }
 
   return (value);
@@ -838,10 +936,10 @@ expcond (void)
 
       set_noeval = 0;
       if (cval)
- 	{
- 	  set_noeval = 1;
+	{
+	  set_noeval = 1;
 	  noeval++;
- 	}
+	}
 
       readtok ();
       if (curtok == 0)
@@ -940,10 +1038,7 @@ expcompare (void)
   register sh_float_t val1, val2;
 
   val1 = expaddsub ();
-  while ((curtok == LEQ) ||
-	 (curtok == GEQ) ||
-	 (curtok == LT) ||
-	 (curtok == GT))
+  while ((curtok == LEQ) || (curtok == GEQ) || (curtok == LT) || (curtok == GT))
     {
       int op = curtok;
 
@@ -1065,7 +1160,7 @@ expunary (void)
   else if (curtok == MINUS)
     {
       readtok ();
-      val = - expunary ();
+      val = -expunary ();
       lasttok = NUM;
     }
   else if (curtok == PLUS)
@@ -1090,7 +1185,7 @@ exp0 (void)
 
   val = 0;
   /* XXX - might need additional logic here to decide whether or not
-	   pre-increment or pre-decrement is legal at this point. */
+     pre-increment or pre-decrement is legal at this point. */
   if (curtok == PREINC || curtok == PREDEC)
     {
       stok = lasttok = curtok;
@@ -1108,13 +1203,13 @@ exp0 (void)
 	    fltexpr_bind_array_element (curlval.tokstr, curlval.ind, vincdec);
 	  else
 #endif
-	    if (tokstr)
-	      fltexpr_bind_variable (tokstr, vincdec);
+	  if (tokstr)
+	    fltexpr_bind_variable (tokstr, vincdec);
 	}
       free (vincdec);
       val = v2;
 
-      curtok = NUM;	/* make sure --x=7 is flagged as an error */
+      curtok = NUM;		/* make sure --x=7 is flagged as an error */
       readtok ();
     }
   else if (curtok == LPAR)
@@ -1123,7 +1218,7 @@ exp0 (void)
       readtok ();
       val = EXP_LOWEST ();
 
-      if (curtok != RPAR) /* ( */
+      if (curtok != RPAR)	/* ( */
 	evalerror (_("missing `)'"));
 
       /* Skip over closing paren. */
@@ -1138,7 +1233,7 @@ exp0 (void)
     {
       val = tokval;
       SAVETOK (&ec);
-      tokstr = (char *)NULL;	/* keep it from being freed */
+      tokstr = (char *) NULL;	/* keep it from being freed */
       noeval = 1;
       readtok ();
       stok = curtok;
@@ -1146,11 +1241,11 @@ exp0 (void)
       /* post-increment or post-decrement */
       if (stok == POSTINC || stok == POSTDEC)
 	{
- 	  /* restore certain portions of EC */
- 	  tokstr = ec.tokstr;
- 	  noeval = ec.noeval;
- 	  curlval = ec.lval;
- 	  lasttok = STR;	/* ec.curtok */
+	  /* restore certain portions of EC */
+	  tokstr = ec.tokstr;
+	  noeval = ec.noeval;
+	  curlval = ec.lval;
+	  lasttok = STR;	/* ec.curtok */
 
 	  v2 = val + ((stok == POSTINC) ? 1 : -1);
 	  vincdec = fltexpr_format (v2);
@@ -1163,8 +1258,8 @@ exp0 (void)
 #endif
 		fltexpr_bind_variable (tokstr, vincdec);
 	    }
-          free (vincdec);
-          curtok = NUM;	/* make sure x++=7 is flagged as an error */
+	  free (vincdec);
+	  curtok = NUM;		/* make sure x++=7 is flagged as an error */
 	}
       else
 	{
@@ -1172,7 +1267,7 @@ exp0 (void)
 	  if (stok == STR)	/* free new tokstr before old one is restored */
 	    FREE (tokstr);
 	  RESTORETOK (&ec);
- 	}
+	}
 
       readtok ();
     }
@@ -1182,7 +1277,7 @@ exp0 (void)
       lasttok = FUNC;
       curtok = NUM;
 
-      readtok ();	/* skip over closing right paren, expfunc checks syntax */
+      readtok ();		/* skip over closing right paren, expfunc checks syntax */
     }
   else
     evalerror (_("arithmetic syntax error: operand expected"));
@@ -1203,7 +1298,7 @@ expfunc (int ind)
      if func.nargs < 0, the function returns int and takes -func.nargs arguments. */
   nargs = (func.nargs > 0) ? func.nargs : -func.nargs;
 
-  readtok();
+  readtok ();
   if (curtok != LPAR)
     evalerror (_("function call: expected left paren"));
 
@@ -1230,15 +1325,22 @@ expfunc (int ind)
   switch (func.nargs)
     {
     case 1:
-      val = (*func.f.func1) (arg1); break;
+      val = (*func.f.func1) (arg1);
+      break;
     case 2:
-      val = (*func.f.func2) (arg1, arg2); break;
+      val = (*func.f.func2) (arg1, arg2);
+      break;
     case 3:
-      val = (*func.f.func3) (arg1, arg2, arg3); break;
+      val = (*func.f.func3) (arg1, arg2, arg3);
+      break;
     case -1:
-      ival = (*func.f.ifunc1) (arg1); val = ival; break;
+      ival = (*func.f.ifunc1) (arg1);
+      val = ival;
+      break;
     case -2:
-      ival = (*func.f.ifunc2) (arg1, arg2); val = ival; break;
+      ival = (*func.f.ifunc2) (arg1, arg2);
+      val = ival;
+      break;
     }
 
   return val;
@@ -1266,7 +1368,7 @@ alloc_lvalue (void)
 static void
 free_lvalue (struct lvalue *lv)
 {
-  free (lv);		/* should be inlined */
+  free (lv);			/* should be inlined */
 }
 
 static int
@@ -1302,25 +1404,25 @@ fltexpr_streval (char *tok, int e, struct lvalue *lvalue)
   initial_depth = expr_depth;
 
 #if defined (ARRAY_VARS)
-  tflag = AV_NOEXPAND;	/* for a start */
+  tflag = AV_NOEXPAND;		/* for a start */
 #endif
 
   /* [[[[[ */
 #if defined (ARRAY_VARS)
-  aflag = tflag;	/* use a different variable for now */
+  aflag = tflag;		/* use a different variable for now */
   if (shell_compatibility_level > 51)
     aflag |= AV_ATSTARKEYS;
-  v = (e == ']') ? array_variable_part (tok, tflag, (char **)0, (int *)0) : find_variable (tok);
+  v = (e == ']') ? array_variable_part (tok, tflag, (char **) 0, (int *) 0) : find_variable (tok);
 #else
   v = find_variable (tok);
 #endif
   if (v == 0 && e != ']')
-    v = find_variable_last_nameref (tok, 0);  
+    v = find_variable_last_nameref (tok, 0);
 
   if ((v == 0 || invisible_p (v)) && unbound_vars_is_error)
     {
 #if defined (ARRAY_VARS)
-      value = (e == ']') ? array_variable_name (tok, tflag, (char **)0, (int *)0) : tok;
+      value = (e == ']') ? array_variable_name (tok, tflag, (char **) 0, (int *) 0) : tok;
 #else
       value = tok;
 #endif
@@ -1330,7 +1432,7 @@ fltexpr_streval (char *tok, int e, struct lvalue *lvalue)
 
 #if defined (ARRAY_VARS)
       if (e == ']')
-	FREE (value);	/* array_variable_name returns new memory */
+	FREE (value);		/* array_variable_name returns new memory */
 #endif
 
       if (no_longjmp_on_fatal_error && interactive_shell)
@@ -1381,7 +1483,7 @@ fltexpr_streval (char *tok, int e, struct lvalue *lvalue)
       lvalue->ind = -1;
 #endif
     }
-	  
+
   return (tval);
 }
 
@@ -1424,13 +1526,13 @@ is_arithop (int c)
     case NOT:
     case LPAR:
     case RPAR:
-      return 1;		/* operator tokens */
+      return 1;			/* operator tokens */
     case QUES:
     case COL:
     case COMMA:
-      return 1;		/* questionable */
+      return 1;			/* questionable */
     default:
-      return 0;		/* anything else is invalid */
+      return 0;			/* anything else is invalid */
     }
 }
 
@@ -1529,7 +1631,7 @@ readtok (void)
 #if defined (ARRAY_VARS)
       if (c == '[')
 	{
-	  e = fltexpr_skipsubscript (tp, cp);		/* XXX - was skipsubscript */
+	  e = fltexpr_skipsubscript (tp, cp); /* XXX - was skipsubscript */
 	  if (cp[e] == ']')
 	    {
 	      cp += e + 1;
@@ -1539,7 +1641,7 @@ readtok (void)
 	  else
 	    evalerror (_(bash_badsub_errmsg));
 	}
-#endif /* ARRAY_VARS */
+#endif		/* ARRAY_VARS */
 
       *cp = '\0';
       /* XXX - watch out for pointer aliasing issues here */
@@ -1552,7 +1654,7 @@ readtok (void)
 
       /* XXX - make peektok part of saved token state? */
       SAVETOK (&ec);
-      tokstr = (char *)NULL;	/* keep it from being freed */
+      tokstr = (char *) NULL;	/* keep it from being freed */
       tp = savecp = cp;
       noeval = 1;
       curtok = STR;
@@ -1574,14 +1676,14 @@ readtok (void)
 	}
       else if (ind == -1 && peektok == LPAR)
 	evalerror (_("unrecognized function name"));
-	
+
       /* The tests for PREINC and PREDEC aren't strictly correct, but they
-	 preserve old behavior if a construct like --x=9 is given. */
+         preserve old behavior if a construct like --x=9 is given. */
       if (lasttok == PREINC || lasttok == PREDEC || peektok != EQ)
-        {
-          lastlval = curlval;
+	{
+	  lastlval = curlval;
 	  tokval = fltexpr_streval (tokstr, e, &curlval);
-        }
+	}
       else
 	tokval = 0;
 
@@ -1591,7 +1693,7 @@ readtok (void)
   else if (DIGIT (c) || (c == locale_decpoint () && DIGIT (*cp)))
     {
       /* Let strtod figure out where to end the floating-point value and let
-	 the parser figure out what's valid. */
+         the parser figure out what's valid. */
       tokval = fltexpr_strtod (tp, &cp);
       lasttok = curtok;
       curtok = NUM;
@@ -1630,12 +1732,12 @@ readtok (void)
 	  xp = cp;
 	  while (xp && *xp && cr_whitespace (*xp))
 	    xp++;
-	  if (legal_variable_starter ((unsigned char)*xp))
+	  if (legal_variable_starter ((unsigned char) *xp))
 	    c = (c == '-') ? PREDEC : PREINC;
 	  else
 	    {
 	      /* Posix says unary plus and minus have higher priority than
-		 preinc and predec. */
+	         preinc and predec. */
 	      /* This catches something like --4++ */
 	      if (c == '-')
 		evalerror (_("--: assignment requires lvalue"));
@@ -1661,9 +1763,9 @@ readtok (void)
 	cp--;			/* `unget' the character */
 
       /* Should check here to make sure that the current character is one
-	 of the recognized operators and flag an error if not.  Could create
-	 a character map the first time through and check it on subsequent
-	 calls. */
+         of the recognized operators and flag an error if not.  Could create
+         a character map the first time through and check it on subsequent
+         calls. */
       lasttok = curtok;
       curtok = c;
     }
@@ -1679,8 +1781,7 @@ evalerror (const char *msg)
   for (t = expression; t && whitespace (*t); t++)
     ;
   internal_error (_("%s%s%s: %s (error token is \"%s\")"),
-		   name ? name : "", name ? ": " : "",
-		   t ? t : "", msg, (lasttp && *lasttp) ? lasttp : "");
+		  name ? name : "", name ? ": " : "", t ? t : "", msg, (lasttp && *lasttp) ? lasttp : "");
   sh_longjmp (evalbuf, 1);
 }
 
@@ -1697,15 +1798,15 @@ fltexpr_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "p")) != -1)
     {
       switch (opt)
-        {
-          case 'p':
-	    pflag = 1;
-	    break;
+	{
+	case 'p':
+	  pflag = 1;
+	  break;
 	  CASE_HELPOPT;
-	  default:
-	    builtin_usage ();
-	    return (EX_USAGE);
-        }
+	default:
+	  builtin_usage ();
+	  return (EX_USAGE);
+	}
     }
 
   list = loptend;
@@ -1715,7 +1816,7 @@ fltexpr_builtin (WORD_LIST *list)
       builtin_error (_("expression expected"));
       return (EXECUTION_FAILURE);
     }
-             	                
+
   ret = fltexpr_evalexp (list->word->word, EXP_EXPANDED, &expok);
 
   if (expok == 0)
@@ -1746,8 +1847,7 @@ fltexpr_builtin_unload (char *s)
 {
 }
 
-char *fltexpr_doc[] =
-{
+char *fltexpr_doc[] = {
   "Evaluate a floating-point arithmetic expression.",
   "",
   "Evaluate EXPRESSION as a floating-point arithmetic expression and,",
@@ -1759,15 +1859,14 @@ char *fltexpr_doc[] =
   "",
   "Exit Status:",
   "If the EXPRESSION evaluates to 0, the return status is 1; 0 otherwise.",
-  (char *)NULL
+  (char *) NULL
 };
 
-struct builtin fltexpr_struct =
-{
-  "fltexpr",		/* builtin name */
-  fltexpr_builtin,	/* function implementing the builtin */
-  BUILTIN_ENABLED,	/* initial flags for builtin */
-  fltexpr_doc,		/* array of long documentation strings. */
+struct builtin fltexpr_struct = {
+  "fltexpr",			/* builtin name */
+  fltexpr_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  fltexpr_doc,			/* array of long documentation strings. */
   "fltexpr [-p] expression",	/* usage synopsis; becomes short_doc */
-  0			/* reserved for internal use */
+  0				/* reserved for internal use */
 };

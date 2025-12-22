@@ -22,16 +22,16 @@
    the long_doc members of each struct builtin element and writes those to
    the file named by the `handle' member of the struct builtin element. */
 
-#if !defined (CROSS_COMPILING) 
+#if !defined (CROSS_COMPILING)
 #  include <config.h>
-#else	/* CROSS_COMPILING */
+#else		/* CROSS_COMPILING */
 /* A conservative set of defines based on POSIX/SUS3/XPG6 */
 #  define HAVE_UNISTD_H
 #  define HAVE_STRING_H
 #  define HAVE_STDLIB_H
 
 #  define HAVE_RENAME
-#endif /* CROSS_COMPILING */
+#endif		/* CROSS_COMPILING */
 
 #if defined (HAVE_UNISTD_H)
 #  ifdef _MINIX
@@ -60,12 +60,12 @@
 #include "tmpbuiltins.h"
 
 #if defined (USING_BASH_MALLOC)
-#undef xmalloc
-#undef xrealloc
-#undef xfree
+#  undef xmalloc
+#  undef xrealloc
+#  undef xfree
 
-#undef malloc
-#undef free		/* defined in xmalloc.h */
+#  undef malloc
+#  undef free			/* defined in xmalloc.h */
 #endif
 
 #ifndef errno
@@ -122,7 +122,7 @@ main (int argc, char **argv)
 	}
     }
 
-  write_helpfiles(shell_builtins);
+  write_helpfiles (shell_builtins);
 
   exit (0);
 }
@@ -161,8 +161,8 @@ write_helpfiles (struct builtin *builtins)
     {
       b = builtins[i];
 
-      fname = (char *)b.handle;
-      helpfile = (char *)malloc (hdlen + strlen (fname) + 1);
+      fname = (char *) b.handle;
+      helpfile = (char *) malloc (hdlen + strlen (fname) + 1);
       if (helpfile == 0)
 	{
 	  fprintf (stderr, "gen-helpfiles: cannot allocate memory\n");

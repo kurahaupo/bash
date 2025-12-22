@@ -27,13 +27,13 @@
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #if defined (HAVE_LOCALE_H)
 #  include <locale.h>
@@ -83,7 +83,7 @@ _rl_arg_overflow (void)
       rl_ding ();
       rl_restore_prompt ();
       rl_clear_message ();
-      RL_UNSETSTATE(RL_STATE_NUMERICARG);
+      RL_UNSETSTATE (RL_STATE_NUMERICARG);
       return 1;
     }
   return 0;
@@ -94,7 +94,7 @@ _rl_arg_init (void)
 {
   rl_save_prompt ();
   _rl_argcxt = 0;
-  RL_SETSTATE(RL_STATE_NUMERICARG);
+  RL_SETSTATE (RL_STATE_NUMERICARG);
 }
 
 int
@@ -103,9 +103,9 @@ _rl_arg_getchar (void)
   int c;
 
   rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
-  RL_SETSTATE(RL_STATE_MOREINPUT);
+  RL_SETSTATE (RL_STATE_MOREINPUT);
   c = rl_read_key ();
-  RL_UNSETSTATE(RL_STATE_MOREINPUT);
+  RL_UNSETSTATE (RL_STATE_MOREINPUT);
 
   return c;
 }
@@ -121,7 +121,7 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
   key = c;
 
   /* If we see a key bound to `universal-argument' after seeing digits,
-      it ends the argument but is otherwise ignored. */
+     it ends the argument but is otherwise ignored. */
   if (c >= 0 && _rl_keymap[c].type == ISFUNC && _rl_keymap[c].function == rl_universal_argument)
     {
       if ((cxt & NUM_SAWDIGITS) == 0)
@@ -130,17 +130,17 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
 	  return 1;
 	}
       else if (RL_ISSTATE (RL_STATE_CALLBACK))
-        {
-          _rl_argcxt |= NUM_READONE;
-          return 0;	/* XXX */
-        }
+	{
+	  _rl_argcxt |= NUM_READONE;
+	  return 0;		/* XXX */
+	}
       else
 	{
 	  key = _rl_bracketed_read_key ();
 	  /* XXX - add to macro def? */
 	  rl_restore_prompt ();
 	  rl_clear_message ();
-	  RL_UNSETSTATE(RL_STATE_NUMERICARG);
+	  RL_UNSETSTATE (RL_STATE_NUMERICARG);
 	  if (key < 0)
 	    return -1;
 	  return (_rl_dispatch (key, _rl_keymap));
@@ -152,8 +152,8 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
   if (_rl_digit_p (c))
     {
       _rl_add_executing_keyseq (key);
-      r = _rl_digit_value (c);    	
-      rl_numeric_arg = rl_explicit_arg ? (rl_numeric_arg * 10) +  r : r;
+      r = _rl_digit_value (c);
+      rl_numeric_arg = rl_explicit_arg ? (rl_numeric_arg * 10) + r : r;
       rl_explicit_arg = 1;
       _rl_argcxt |= NUM_SAWDIGITS;
     }
@@ -171,7 +171,7 @@ _rl_arg_dispatch (_rl_arg_cxt cxt, int c)
 	rl_explicit_arg = 1;
       rl_restore_prompt ();
       rl_clear_message ();
-      RL_UNSETSTATE(RL_STATE_NUMERICARG);
+      RL_UNSETSTATE (RL_STATE_NUMERICARG);
 
       r = _rl_dispatch (key, _rl_keymap);
       if (RL_ISSTATE (RL_STATE_CALLBACK))
@@ -209,7 +209,7 @@ rl_digit_loop (void)
 
       r = _rl_arg_dispatch (_rl_argcxt, c);
       if (r <= 0 || (RL_ISSTATE (RL_STATE_NUMERICARG) == 0))
-        break;
+	break;
     }
 
   return r;
@@ -262,14 +262,14 @@ _rl_arg_callback (_rl_arg_cxt cxt)
 
   c = _rl_arg_getchar ();
   if (c < 0)
-    return (1);		/* EOF */
+    return (1);			/* EOF */
 
   if (_rl_argcxt & NUM_READONE)
     {
       _rl_argcxt &= ~NUM_READONE;
       rl_restore_prompt ();
       rl_clear_message ();
-      RL_UNSETSTATE(RL_STATE_NUMERICARG);
+      RL_UNSETSTATE (RL_STATE_NUMERICARG);
       rl_execute_next (c);
       return 0;
     }
@@ -303,7 +303,7 @@ rl_discard_argument (void)
 
 /* While we are editing the history, this is the saved
    version of the original line. */
-HIST_ENTRY *_rl_saved_line_for_history = (HIST_ENTRY *)NULL;
+HIST_ENTRY *_rl_saved_line_for_history = (HIST_ENTRY *) NULL;
 
 /* Set the history pointer back to the last entry in the history. */
 void
@@ -312,10 +312,10 @@ _rl_start_using_history (void)
   using_history ();
 #if 1
   if (_rl_saved_line_for_history && _rl_saved_line_for_history->data)
-    _rl_free_undo_list ((UNDO_LIST *)_rl_saved_line_for_history->data);
+    _rl_free_undo_list ((UNDO_LIST *) _rl_saved_line_for_history->data);
 #endif
   _rl_free_saved_history_line ();
-  _rl_history_search_pos = -99;		/* some random invalid history position */
+  _rl_history_search_pos = -99;	/* some random invalid history position */
 }
 
 /* Free the contents (and containing structure) of a HIST_ENTRY. */
@@ -339,19 +339,19 @@ _rl_maybe_replace_line (int clear_undo)
 
   temp = current_history ();
   /* If the current line has changed, save the changes. */
-  if (temp && ((UNDO_LIST *)(temp->data) != rl_undo_list))
+  if (temp && ((UNDO_LIST *) (temp->data) != rl_undo_list))
     {
-      temp = replace_history_entry (where_history (), rl_line_buffer, (histdata_t)rl_undo_list);
+      temp = replace_history_entry (where_history (), rl_line_buffer, (histdata_t) rl_undo_list);
       xfree (temp->line);
       FREE (temp->timestamp);
       xfree (temp);
       /* What about _rl_saved_line_for_history? if the saved undo list is
-	 rl_undo_list, and we just put that into a history entry, should
-	 we set the saved undo list to NULL? */
-      if (_rl_saved_line_for_history && (UNDO_LIST *)_rl_saved_line_for_history->data == rl_undo_list)
+         rl_undo_list, and we just put that into a history entry, should
+         we set the saved undo list to NULL? */
+      if (_rl_saved_line_for_history && (UNDO_LIST *) _rl_saved_line_for_history->data == rl_undo_list)
 	_rl_saved_line_for_history->data = 0;
       /* Do we want to set rl_undo_list = 0 here since we just saved it into
-	 a history entry? We let the caller decide. */
+         a history entry? We let the caller decide. */
       if (clear_undo)
 	rl_undo_list = 0;
     }
@@ -370,12 +370,12 @@ _rl_unsave_line (HIST_ENTRY *entry)
   /* Can't call with `1' because rl_undo_list might point to an undo
      list from a history entry, as in rl_replace_from_history() below. */
   rl_replace_line (entry->line, 0);
-  rl_undo_list = (UNDO_LIST *)entry->data;
+  rl_undo_list = (UNDO_LIST *) entry->data;
 
   /* Doesn't free `data'. */
   _rl_free_history_entry (entry);
 
-  rl_point = rl_end;	/* rl_replace_line sets rl_end */
+  rl_point = rl_end;		/* rl_replace_line sets rl_end */
 }
 
 /* Restore the _rl_saved_line_for_history if there is one. */
@@ -385,7 +385,7 @@ rl_maybe_unsave_line (void)
   if (_rl_saved_line_for_history)
     {
       _rl_unsave_line (_rl_saved_line_for_history);
-      _rl_saved_line_for_history = (HIST_ENTRY *)NULL;
+      _rl_saved_line_for_history = (HIST_ENTRY *) NULL;
     }
   else
     rl_ding ();
@@ -397,11 +397,11 @@ _rl_alloc_saved_line (void)
 {
   HIST_ENTRY *ret;
 
-  ret = (HIST_ENTRY *)xmalloc (sizeof (HIST_ENTRY));
+  ret = (HIST_ENTRY *) xmalloc (sizeof (HIST_ENTRY));
 
   ret->line = savestring (rl_line_buffer);
-  ret->timestamp = (char *)NULL;
-  ret->data = (char *)rl_undo_list;
+  ret->timestamp = (char *) NULL;
+  ret->data = (char *) rl_undo_list;
 
   return ret;
 }
@@ -427,7 +427,7 @@ int
 _rl_free_saved_history_line (void)
 {
   _rl_free_saved_line (_rl_saved_line_for_history);
-  _rl_saved_line_for_history = (HIST_ENTRY *)NULL;
+  _rl_saved_line_for_history = (HIST_ENTRY *) NULL;
 
   return 0;
 }
@@ -435,16 +435,14 @@ _rl_free_saved_history_line (void)
 static void
 _rl_history_set_point (void)
 {
-  rl_point = (_rl_history_preserve_point && _rl_history_saved_point != -1)
-		? _rl_history_saved_point
-		: rl_end;
+  rl_point = (_rl_history_preserve_point && _rl_history_saved_point != -1) ? _rl_history_saved_point : rl_end;
   if (rl_point > rl_end)
     rl_point = rl_end;
 
 #if defined (VI_MODE)
   if (rl_editing_mode == vi_mode && _rl_keymap != vi_insertion_keymap)
     rl_point = 0;
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
   if (rl_editing_mode == emacs_mode)
     rl_mark = (rl_point == rl_end ? 0 : rl_end);
@@ -456,7 +454,7 @@ rl_replace_from_history (HIST_ENTRY *entry, int flags)
   /* Can't call with `1' because rl_undo_list might point to an undo list
      from a history entry, just like we're setting up here. */
   rl_replace_line (entry->line, 0);
-  rl_undo_list = (UNDO_LIST *)entry->data;
+  rl_undo_list = (UNDO_LIST *) entry->data;
   rl_point = rl_end;
   rl_mark = 0;
 
@@ -489,13 +487,13 @@ _rl_revert_previous_lines (void)
   entry = (hpos == history_length) ? previous_history () : current_history ();
   while (entry)
     {
-      if (ul = (UNDO_LIST *)entry->data)
+      if (ul = (UNDO_LIST *) entry->data)
 	{
 	  if (ul == saved_undo_list)
 	    saved_undo_list = 0;
 	  /* Set up rl_line_buffer and other variables from history entry */
-	  rl_replace_from_history (entry, 0);	/* entry->line is now current */
-	  entry->data = 0;			/* entry->data is now current undo list */
+	  rl_replace_from_history (entry, 0); /* entry->line is now current */
+	  entry->data = 0;	/* entry->data is now current undo list */
 	  /* Undo all changes to this history entry */
 	  while (rl_undo_list)
 	    rl_do_undo ();
@@ -508,16 +506,16 @@ _rl_revert_previous_lines (void)
     }
 
   /* Restore history state */
-  rl_undo_list = saved_undo_list;	/* may have been set to null */
+  rl_undo_list = saved_undo_list; /* may have been set to null */
   history_set_pos (hpos);
-  
+
   /* reset the line buffer */
   rl_replace_line (lbuf, 0);
   _rl_set_the_line ();
 
   /* and clean up */
   xfree (lbuf);
-}  
+}
 
 /* Revert all lines in the history by making sure we are at the end of the
    history before calling _rl_revert_previous_lines() */
@@ -544,12 +542,12 @@ rl_clear_history (void)
   UNDO_LIST *ul, *saved_undo_list;
 
   saved_undo_list = rl_undo_list;
-  hlist = history_list ();		/* direct pointer, not copy */
+  hlist = history_list ();	/* direct pointer, not copy */
 
   for (i = 0; i < history_length; i++)
     {
       hent = hlist[i];
-      if (ul = (UNDO_LIST *)hent->data)
+      if (ul = (UNDO_LIST *) hent->data)
 	{
 	  if (ul == saved_undo_list)
 	    saved_undo_list = 0;
@@ -560,7 +558,7 @@ rl_clear_history (void)
     }
 
   history_offset = history_length = 0;
-  rl_undo_list = saved_undo_list;	/* should be NULL */
+  rl_undo_list = saved_undo_list; /* should be NULL */
 }
 
 /* **************************************************************** */
@@ -595,7 +593,7 @@ _rl_next_history_internal (int count)
   if (_rl_history_saved_point == -1 && (rl_point || rl_end))
     _rl_history_saved_point = (rl_point == rl_end) ? -1 : rl_point;
 
-  temp = (HIST_ENTRY *)NULL;
+  temp = (HIST_ENTRY *) NULL;
   while (count)
     {
       temp = next_history ();
@@ -627,7 +625,7 @@ rl_get_next_history (int count, int key)
     return 0;
 
   /* If the current line has changed, save the changes. */
-#if 0	/* XXX old code can leak or corrupt rl_undo_list */
+#if 0				/* XXX old code can leak or corrupt rl_undo_list */
   rl_maybe_replace_line ();
 #else
   _rl_maybe_replace_line (1);
@@ -646,7 +644,7 @@ _rl_previous_history_internal (int count)
 {
   HIST_ENTRY *old_temp, *temp;
 
-  temp = old_temp = (HIST_ENTRY *)NULL;
+  temp = old_temp = (HIST_ENTRY *) NULL;
 
   /* either not saved by rl_newline or at end of line, so set appropriately. */
   if (_rl_history_saved_point == -1 && (rl_point || rl_end))
@@ -679,7 +677,7 @@ _rl_previous_history_internal (int count)
       return 1;
     }
 }
-	
+
 /* Get the previous item out of our interactive history, making it the current
    line.  If there is no previous history, just ding. */
 int
@@ -703,7 +701,7 @@ rl_get_previous_history (int count, int key)
   rl_maybe_save_line ();
 
   /* If the current line has changed, save the changes. */
-#if 0	/* XXX old code can leak or corrupt rl_undo_list */
+#if 0				/* XXX old code can leak or corrupt rl_undo_list */
   rl_maybe_replace_line ();
 #else
   _rl_maybe_replace_line (1);
@@ -711,7 +709,7 @@ rl_get_previous_history (int count, int key)
 
   r = _rl_previous_history_internal (count);
 
-  if (r == 0 && had_saved_line == 0)	/* failed to find previous history */
+  if (r == 0 && had_saved_line == 0) /* failed to find previous history */
     _rl_free_saved_history_line ();
 
   return 0;
@@ -745,7 +743,7 @@ rl_fetch_history (int count, int c)
 	    rl_beginning_of_history (0, 0);
 	}
       else
-        rl_get_previous_history (wanted, c);
+	rl_get_previous_history (wanted, c);
     }
   else
     rl_beginning_of_history (count, 0);
@@ -803,10 +801,10 @@ int
 rl_vi_editing_mode (int count, int key)
 {
 #if defined (VI_MODE)
-  _rl_set_insert_mode (RL_IM_INSERT, 1);	/* vi mode ignores insert mode */
+  _rl_set_insert_mode (RL_IM_INSERT, 1); /* vi mode ignores insert mode */
   rl_editing_mode = vi_mode;
   rl_vi_insert_mode (1, key);
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
   return 0;
 }

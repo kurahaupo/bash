@@ -22,46 +22,46 @@
  */
 
 #ifndef __SH_TTY_H_
-#define __SH_TTY_H_
+#  define __SH_TTY_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
-#if defined (_POSIX_VERSION) && defined (HAVE_TERMIOS_H) && defined (HAVE_TCGETATTR) && !defined (TERMIOS_MISSING)
-#  define TERMIOS_TTY_DRIVER
-#else
-#  if defined (HAVE_TERMIO_H)
-#    define TERMIO_TTY_DRIVER
+#  if defined (_POSIX_VERSION) && defined (HAVE_TERMIOS_H) && defined (HAVE_TCGETATTR) && !defined (TERMIOS_MISSING)
+#    define TERMIOS_TTY_DRIVER
 #  else
-#    define NEW_TTY_DRIVER
+#    if defined (HAVE_TERMIO_H)
+#      define TERMIO_TTY_DRIVER
+#    else
+#      define NEW_TTY_DRIVER
+#    endif
 #  endif
-#endif
 
 /*
  * The _POSIX_SOURCE define is to avoid multiple symbol definitions
  * between sys/ioctl.h and termios.h.  Ditto for the test against SunOS4
  * and the undefining of several symbols.
  */
-      
-#ifdef TERMIOS_TTY_DRIVER
-#  if (defined (SunOS4) || defined (SunOS5)) && !defined (_POSIX_SOURCE)
-#    define _POSIX_SOURCE
+
+#  ifdef TERMIOS_TTY_DRIVER
+#    if (defined (SunOS4) || defined (SunOS5)) && !defined (_POSIX_SOURCE)
+#      define _POSIX_SOURCE
+#    endif
+#    if defined (SunOS4)
+#      undef ECHO
+#      undef NOFLSH
+#      undef TOSTOP
+#    endif	/* SunOS4 */
+#    include <termios.h>
+#    define TTYSTRUCT struct termios
+#  else
+#    ifdef TERMIO_TTY_DRIVER
+#      include <termio.h>
+#      define TTYSTRUCT struct termio
+#    else	/* NEW_TTY_DRIVER */
+#      include <sgtty.h>
+#      define TTYSTRUCT struct sgttyb
+#    endif
 #  endif
-#  if defined (SunOS4)
-#    undef ECHO
-#    undef NOFLSH
-#    undef TOSTOP
-#  endif /* SunOS4 */
-#  include <termios.h>
-#  define TTYSTRUCT struct termios
-#else
-#  ifdef TERMIO_TTY_DRIVER
-#    include <termio.h>
-#    define TTYSTRUCT struct termio
-#  else	/* NEW_TTY_DRIVER */
-#    include <sgtty.h>
-#    define TTYSTRUCT struct sgttyb
-#  endif
-#endif
 
 /* Functions imported from lib/sh/shtty.c */
 

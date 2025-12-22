@@ -21,12 +21,12 @@
 */
 
 #if !defined (_RL_PRIVATE_H_)
-#define _RL_PRIVATE_H_
+#  define _RL_PRIVATE_H_
 
-#include "rlconf.h"	/* for VISIBLE_STATS */
-#include "rlstdc.h"
-#include "posixjmp.h"	/* defines procenv_t */
-#include "rlmbutil.h"	/* for HANDLE_MULTIBYTE */
+#  include "rlconf.h"		/* for VISIBLE_STATS */
+#  include "rlstdc.h"
+#  include "posixjmp.h"		/* defines procenv_t */
+#  include "rlmbutil.h"		/* for HANDLE_MULTIBYTE */
 
 /*************************************************************************
  *									 *
@@ -34,21 +34,21 @@
  *									 *
  *************************************************************************/
 
-#define EMACS_MODE()		(rl_editing_mode == emacs_mode)
-#define VI_COMMAND_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap)
-#define VI_INSERT_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_insertion_keymap)
+#  define EMACS_MODE()		(rl_editing_mode == emacs_mode)
+#  define VI_COMMAND_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_movement_keymap)
+#  define VI_INSERT_MODE()	(rl_editing_mode == vi_mode && _rl_keymap == vi_insertion_keymap)
 
-#define RL_CHECK_SIGNALS() \
+#  define RL_CHECK_SIGNALS() \
 	do { \
 	  if (_rl_caught_signal) _rl_signal_handler (_rl_caught_signal); \
 	} while (0)
 
-#define RL_SIG_RECEIVED() (_rl_caught_signal != 0)
-#define RL_SIGINT_RECEIVED() (_rl_caught_signal == SIGINT)
-#define RL_SIGWINCH_RECEIVED() (_rl_caught_signal == SIGWINCH)
+#  define RL_SIG_RECEIVED() (_rl_caught_signal != 0)
+#  define RL_SIGINT_RECEIVED() (_rl_caught_signal == SIGINT)
+#  define RL_SIGWINCH_RECEIVED() (_rl_caught_signal == SIGWINCH)
 
-#define CUSTOM_REDISPLAY_FUNC() (rl_redisplay_function != rl_redisplay)
-#define CUSTOM_INPUT_FUNC() (rl_getc_function != rl_getc)
+#  define CUSTOM_REDISPLAY_FUNC() (rl_redisplay_function != rl_redisplay)
+#  define CUSTOM_INPUT_FUNC() (rl_getc_function != rl_getc)
 
 /*************************************************************************
  *									 *
@@ -56,21 +56,20 @@
  *									 *
  *************************************************************************/
 /* search types */
-#define RL_SEARCH_ISEARCH	0x01		/* incremental search */
-#define RL_SEARCH_NSEARCH	0x02		/* non-incremental search */
-#define RL_SEARCH_CSEARCH	0x04		/* intra-line char search */
+#  define RL_SEARCH_ISEARCH	0x01 /* incremental search */
+#  define RL_SEARCH_NSEARCH	0x02 /* non-incremental search */
+#  define RL_SEARCH_CSEARCH	0x04 /* intra-line char search */
 
 /* search flags */
-#define SF_REVERSE		0x01
-#define SF_FOUND		0x02
-#define SF_FAILED		0x04
-#define SF_CHGKMAP		0x08
-#define SF_PATTERN		0x10
-#define SF_NOCASE		0x20		/* unused so far */
-#define SF_FREEPMT		0x40		/* saved prompt separately, need to free it */
+#  define SF_REVERSE		0x01
+#  define SF_FOUND		0x02
+#  define SF_FAILED		0x04
+#  define SF_CHGKMAP		0x08
+#  define SF_PATTERN		0x10
+#  define SF_NOCASE		0x20 /* unused so far */
+#  define SF_FREEPMT		0x40 /* saved prompt separately, need to free it */
 
-typedef struct  __rl_search_context
-{
+typedef struct __rl_search_context {
   int type;
   int sflags;
 
@@ -91,40 +90,41 @@ typedef struct  __rl_search_context
 
   UNDO_LIST *save_undo_list;
 
-  Keymap keymap;	/* used when dispatching commands in search string */
-  Keymap okeymap;	/* original keymap */
+  Keymap keymap;		/* used when dispatching commands in search string */
+  Keymap okeymap;		/* original keymap */
 
   int history_pos;
   int direction;
 
   int prevc;
   int lastc;
-#if defined (HANDLE_MULTIBYTE)
+#  if defined (HANDLE_MULTIBYTE)
   char mb[MB_LEN_MAX];
   char pmb[MB_LEN_MAX];
-#endif
+#  endif
 
   char *sline;
   int sline_len;
   int sline_index;
 
-  char  *search_terminators;
+  char *search_terminators;
 } _rl_search_cxt;
 
 /* readstr flags */
-#define READSTR_NOSPACE	0x01	/* don't insert space, use for completion */
-#define READSTR_FREEPMT	0x02	/* called rl_save_prompt, need to free it ourselves */
+#  define READSTR_NOSPACE	0x01
+				/* don't insert space, use for completion */
+#  define READSTR_FREEPMT	0x02
+				/* called rl_save_prompt, need to free it ourselves */
 
-typedef struct  __rl_readstr_context
-{
+typedef struct __rl_readstr_context {
   int flags;
 
   int prevc;
   int lastc;
-#if defined (HANDLE_MULTIBYTE)
+#  if defined (HANDLE_MULTIBYTE)
   char mb[MB_LEN_MAX];
   char pmb[MB_LEN_MAX];
-#endif
+#  endif
 
   int save_point;
   int save_mark;
@@ -143,20 +143,19 @@ extern struct _rl_cmd _rl_pending_command;
 extern struct _rl_cmd *_rl_command_to_execute;
 
 /* Callback data for reading numeric arguments */
-#define NUM_SAWMINUS	0x01
-#define NUM_SAWDIGITS	0x02
-#define NUM_READONE	0x04
+#  define NUM_SAWMINUS	0x01
+#  define NUM_SAWDIGITS	0x02
+#  define NUM_READONE	0x04
 
 typedef int _rl_arg_cxt;
 
 /* A context for reading key sequences longer than a single character when
    using the callback interface. */
-#define KSEQ_DISPATCHED	0x01
-#define KSEQ_SUBSEQ	0x02
-#define KSEQ_RECURSIVE	0x04
+#  define KSEQ_DISPATCHED	0x01
+#  define KSEQ_SUBSEQ	0x02
+#  define KSEQ_RECURSIVE	0x04
 
-typedef struct __rl_keyseq_context
-{
+typedef struct __rl_keyseq_context {
   int flags;
   int subseq_arg;
   int subseq_retval;		/* XXX */
@@ -170,30 +169,28 @@ typedef struct __rl_keyseq_context
 } _rl_keyseq_cxt;
 
 /* vi-mode commands that use result of motion command to define boundaries */
-#define VIM_DELETE	0x01
-#define VIM_CHANGE	0x02
-#define VIM_YANK	0x04
+#  define VIM_DELETE	0x01
+#  define VIM_CHANGE	0x02
+#  define VIM_YANK	0x04
 
 /* various states for vi-mode commands that use motion commands.  reflects
    RL_READLINE_STATE */
-#define VMSTATE_READ	0x01
-#define VMSTATE_NUMARG	0x02
+#  define VMSTATE_READ	0x01
+#  define VMSTATE_NUMARG	0x02
 
-typedef struct __rl_vimotion_context
-{
+typedef struct __rl_vimotion_context {
   int op;
   int state;
-  int flags;		/* reserved */
+  int flags;			/* reserved */
   _rl_arg_cxt ncxt;
   int numeric_arg;
-  int start, end;	/* rl_point, rl_end */
-  int key, motion;	/* initial key, motion command */
+  int start, end;		/* rl_point, rl_end */
+  int key, motion;		/* initial key, motion command */
 } _rl_vimotion_cxt;
 
 /* fill in more as needed */
 /* `Generic' callback data and functions */
-typedef struct __rl_callback_generic_arg
-{
+typedef struct __rl_callback_generic_arg {
   int count;
   int i1, i2;
   /* add here as needed */
@@ -217,13 +214,13 @@ typedef void _rl_sigcleanup_func_t (int, void *);
 
 /* complete.c */
 extern int rl_complete_with_tilde_expansion;
-#if defined (VISIBLE_STATS)
+#  if defined (VISIBLE_STATS)
 extern int rl_visible_stats;
-#endif /* VISIBLE_STATS */
-#if defined (COLOR_SUPPORT)
+#  endif	/* VISIBLE_STATS */
+#  if defined (COLOR_SUPPORT)
 extern int _rl_colored_stats;
 extern int _rl_colored_completion_prefix;
-#endif
+#  endif
 
 /* readline.c */
 extern int rl_line_buffer_len;
@@ -270,7 +267,7 @@ extern char *_rl_savestring (const char *);
  * Undocumented private functions					 *
  *************************************************************************/
 
-#if defined (READLINE_CALLBACKS)
+#  if defined (READLINE_CALLBACKS)
 
 /* readline.c */
 extern void readline_internal_setup (void);
@@ -288,7 +285,7 @@ extern int _rl_dispatch_callback (_rl_keyseq_cxt *);
 extern _rl_callback_generic_arg *_rl_callback_data_alloc (int);
 extern void _rl_callback_data_dispose (_rl_callback_generic_arg *);
 
-#endif /* READLINE_CALLBACKS */
+#  endif	/* READLINE_CALLBACKS */
 
 /* bind.c */
 extern char *_rl_untranslate_macro_value (char *, int);
@@ -328,24 +325,24 @@ extern int _rl_pushed_input_available (void);
 extern int _rl_timeout_init (void);
 extern int _rl_timeout_handle_sigalrm (void);
 
-#if defined (_POSIXSELECT_H_)
+#  if defined (_POSIXSELECT_H_)
 /* use as a sentinel for fd_set, struct timeval,  and sigset_t definitions */
 
-#if defined (__MINGW32__)
+#    if defined (__MINGW32__)
 /* still doesn't work; no alarm() so we provide a non-working stub. */
-#  define RL_TIMEOUT_USE_SIGALRM
-#elif defined (HAVE_SELECT) || defined (HAVE_PSELECT)
-#  define RL_TIMEOUT_USE_SELECT
-#elif defined (_MSC_VER)
+#      define RL_TIMEOUT_USE_SIGALRM
+#    elif defined (HAVE_SELECT) || defined (HAVE_PSELECT)
+#      define RL_TIMEOUT_USE_SELECT
+#    elif defined (_MSC_VER)
 /* can't use select/pselect or SIGALRM, so no timeouts */
-#else
-#  define RL_TIMEOUT_USE_SIGALRM
-#endif
+#    else
+#      define RL_TIMEOUT_USE_SIGALRM
+#    endif
 
-#endif
-#if defined (RL_TIMEOUT_USE_SELECT)
+#  endif
+#  if defined (RL_TIMEOUT_USE_SELECT)
 extern int _rl_timeout_select (int, fd_set *, fd_set *, fd_set *, const struct timeval *, const sigset_t *);
-#endif
+#  endif
 
 /* isearch.c */
 extern _rl_search_cxt *_rl_scxt_alloc (int, int);
@@ -358,18 +355,19 @@ extern int _rl_isearch_cleanup (_rl_search_cxt *, int);
 extern int _rl_search_getchar (_rl_search_cxt *);
 
 /* kill.c */
-#ifndef BRACKETED_PASTE_DEFAULT
-#  define BRACKETED_PASTE_DEFAULT	1	/* XXX - for now */
-#endif
+#  ifndef BRACKETED_PASTE_DEFAULT
+#    define BRACKETED_PASTE_DEFAULT	1
+				  /* XXX - for now */
+#  endif
 
-#define BRACK_PASTE_PREF	"\033[200~"
-#define BRACK_PASTE_SUFF	"\033[201~"
+#  define BRACK_PASTE_PREF	"\033[200~"
+#  define BRACK_PASTE_SUFF	"\033[201~"
 
-#define BRACK_PASTE_LAST	'~'
-#define BRACK_PASTE_SLEN	6
+#  define BRACK_PASTE_LAST	'~'
+#  define BRACK_PASTE_SLEN	6
 
-#define BRACK_PASTE_INIT	"\033[?2004h"
-#define BRACK_PASTE_FINI	"\033[?2004l\r"
+#  define BRACK_PASTE_INIT	"\033[?2004h"
+#  define BRACK_PASTE_FINI	"\033[?2004l\r"
 
 extern int _rl_read_bracketed_paste_prefix (int);
 extern char *_rl_bracketed_text (size_t *);
@@ -394,11 +392,11 @@ extern int _rl_arg_callback (_rl_arg_cxt);
 extern void _rl_reset_argument (void);
 
 extern void _rl_start_using_history (void);
-#if defined (HIST_ENTRY_DEFINED)
+#  if defined (HIST_ENTRY_DEFINED)
 extern HIST_ENTRY *_rl_alloc_saved_line (void);
 extern void _rl_free_saved_line (HIST_ENTRY *);
 extern void _rl_unsave_line (HIST_ENTRY *);
-#endif
+#  endif
 extern int _rl_free_saved_history_line (void);
 extern int _rl_maybe_replace_line (int);
 
@@ -457,11 +455,11 @@ extern void _rl_state_sigcleanup (void);
 extern void _rl_get_screen_size (int, int);
 extern void _rl_sigwinch_resize_terminal (void);
 extern int _rl_init_terminal_io (const char *);
-#ifdef _MINIX
+#  ifdef _MINIX
 extern void _rl_output_character_function (int);
-#else
+#  else
 extern int _rl_output_character_function (int);
-#endif
+#  endif
 extern void _rl_cr (void);
 extern void _rl_output_some_chars (const char *, int);
 extern int _rl_backspace (int);
@@ -485,11 +483,11 @@ extern int _rl_insert_char (int, int);
 extern int _rl_overwrite_char (int, int);
 extern int _rl_overwrite_rubout (int, int);
 extern int _rl_rubout_char (int, int);
-#if defined (HANDLE_MULTIBYTE)
+#  if defined (HANDLE_MULTIBYTE)
 extern int _rl_char_search_internal (int, int, char *, int);
-#else
+#  else
 extern int _rl_char_search_internal (int, int, int);
-#endif
+#  endif
 extern int _rl_set_mark_at_pos (int);
 
 extern _rl_readstr_cxt *_rl_rscxt_alloc (int);
@@ -509,9 +507,9 @@ extern UNDO_LIST *_rl_copy_undo_list (UNDO_LIST *);
 extern void _rl_free_undo_list (UNDO_LIST *);
 
 /* util.c */
-extern void _rl_ttymsg (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-extern void _rl_errmsg (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
-extern void _rl_trace (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
+extern void _rl_ttymsg (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
+extern void _rl_errmsg (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
+extern void _rl_trace (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 extern void _rl_audit_tty (char *);
 
 extern int _rl_tropen (void);
@@ -542,17 +540,17 @@ extern int _rl_vi_domove_motion_cleanup (int, _rl_vimotion_cxt *);
 
 /* Use HS_HISTORY_VERSION as the sentinel to see if we've included history.h
    and so can use HIST_ENTRY */
-#if defined (HS_HISTORY_VERSION)
+#  if defined (HS_HISTORY_VERSION)
 extern void _rl_free_history_entry (HIST_ENTRY *);
-#endif
+#  endif
 
 /*************************************************************************
  * Undocumented private variables					 *
  *************************************************************************/
 
 /* bind.c */
-extern const char * const _rl_possible_control_prefixes[];
-extern const char * const _rl_possible_meta_prefixes[];
+extern const char *const _rl_possible_control_prefixes[];
+extern const char *const _rl_possible_meta_prefixes[];
 
 /* callback.c */
 extern _rl_callback_func_t *_rl_callback_func;
@@ -691,8 +689,8 @@ extern _rl_vimotion_cxt *_rl_vimvcxt;
 
 /* Use HS_HISTORY_VERSION as the sentinel to see if we've included history.h
    and so can use HIST_ENTRY */
-#if defined (HS_HISTORY_VERSION)
+#  if defined (HS_HISTORY_VERSION)
 extern HIST_ENTRY *_rl_saved_line_for_history;
-#endif
+#  endif
 
-#endif /* _RL_PRIVATE_H_ */
+#endif		/* _RL_PRIVATE_H_ */

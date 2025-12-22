@@ -15,21 +15,21 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #ifdef _LIBC
-# define __need_NULL
-# include <stddef.h>
+#  define __need_NULL
+#  include <stddef.h>
 #else
-# include <stdlib.h>		/* Just for NULL.  */
+#  include <stdlib.h>		/* Just for NULL.  */
 #endif
 
 #include "gettextP.h"
 #ifdef _LIBC
-# include <libintl.h>
+#  include <libintl.h>
 #else
-# include "libgnuintl.h"
+#  include "libgnuintl.h"
 #endif
 
 /* @@ end of prolog @@ */
@@ -39,11 +39,11 @@
    code is also used in GNU C Library where the names have a __
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
-# define GETTEXT __gettext
-# define DCGETTEXT __dcgettext
+#  define GETTEXT __gettext
+#  define DCGETTEXT __dcgettext
 #else
-# define GETTEXT libintl_gettext
-# define DCGETTEXT libintl_dcgettext
+#  define GETTEXT libintl_gettext
+#  define DCGETTEXT libintl_dcgettext
 #endif
 
 /* Look up MSGID in the current default message catalog for the current

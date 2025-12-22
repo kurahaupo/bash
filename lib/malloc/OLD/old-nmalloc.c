@@ -67,7 +67,7 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #if defined (HAVE_CONFIG_H)
 #  include <config.h>
-#endif /* HAVE_CONFIG_H */
+#endif		/* HAVE_CONFIG_H */
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -89,7 +89,7 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #if defined (MALLOC_STATS) || !defined (botch)
 #  include <stdio.h>
-#endif /* MALLOC_STATS || !botch */
+#endif		/* MALLOC_STATS || !botch */
 
 /* Define getpagesize () if the system does not.  */
 #ifndef HAVE_GETPAGESIZE
@@ -98,17 +98,17 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #if __GNUC__ > 1
 #  define FASTCOPY(s, d, n)  __builtin_memcpy (d, s, n)
-#else /* !__GNUC__ */
+#else		/* !__GNUC__ */
 #  if !defined (HAVE_BCOPY)
 #    if !defined (HAVE_MEMMOVE)
 #      define FASTCOPY(s, d, n)  memcpy (d, s, n)
 #    else
 #      define FASTCOPY(s, d, n)  memmove (d, s, n)
-#    endif /* !HAVE_MEMMOVE */
-#  else /* HAVE_BCOPY */
+#    endif	/* !HAVE_MEMMOVE */
+#  else		/* HAVE_BCOPY */
 #    define FASTCOPY(s, d, n)  bcopy (s, d, n)
-#  endif /* HAVE_BCOPY */
-#endif /* !__GNUC__ */
+#  endif	/* HAVE_BCOPY */
+#endif		/* !__GNUC__ */
 
 #if !defined (NULL)
 #  define NULL 0
@@ -119,14 +119,14 @@ what you give them.   Help stamp out software-hoarding!  */
 #define ISALLOC ((char) 0xf7)	/* magic byte that implies allocation */
 #define ISFREE ((char) 0x54)	/* magic byte that implies free block */
 				/* this is for error checking only */
-#define ISMEMALIGN ((char) 0xd6)  /* Stored before the value returned by
-				     memalign, with the rest of the word
-				     being the distance to the true
-				     beginning of the block.  */
+#define ISMEMALIGN ((char) 0xd6) /* Stored before the value returned by
+				    memalign, with the rest of the word
+				    being the distance to the true
+				    beginning of the block.  */
 
 #if !defined (SBRK_DECLARED)
 extern char *sbrk ();
-#endif /* !SBRK_DECLARED */
+#endif		/* !SBRK_DECLARED */
 
 #ifdef MALLOC_STATS
 /*
@@ -178,7 +178,7 @@ struct bucket_stats {
   int nmal;
   int nmorecore;
 };
-#endif /* MALLOC_STATS */
+#endif		/* MALLOC_STATS */
 
 /* We have a flag indicating whether memory is allocated, an index in
    nextf[], a size field, and a sentinel value to determine whether or
@@ -187,11 +187,11 @@ struct bucket_stats {
    enough room in the block for the new size.  Range checking is always
    done. */
 struct mhead {
-  char     mh_alloc;	/* ISALLOC or ISFREE */		/* 1 */
-  char     mh_index;	/* index in nextf[] */		/* 1 */
+  char mh_alloc;		/* ISALLOC or ISFREE *//* 1 */
+  char mh_index;		/* index in nextf[] *//* 1 */
 /* Remainder are valid only when block is allocated */
-  u_bits32_t mh_nbytes;  /* # of bytes allocated */	/* 4 */
-  u_bits16_t mh_magic2;/* should be == MAGIC2 */	/* 2 */
+  u_bits32_t mh_nbytes;		/* # of bytes allocated *//* 4 */
+  u_bits16_t mh_magic2;		/* should be == MAGIC2 *//* 2 */
 };
 
 /* Access free-list pointer of a block.
@@ -212,10 +212,10 @@ botch (s)
      char *s;
 {
   fprintf (stderr, "\r\nmalloc: assertion botched: %s\r\n", s);
-  (void)fflush (stderr);
+  (void) fflush (stderr);
   abort ();
 }
-#endif /* !botch */
+#endif		/* !botch */
 
 #if !defined (__STRING)
 #  if defined (__STDC__)
@@ -223,7 +223,7 @@ botch (s)
 #  else
 #    define __STRING(x) "x"
 #  endif
-#endif /* !__STRING */
+#endif		/* !__STRING */
 
 /* To implement range checking, we write magic values in at the beginning
    and end of each allocated block, and make sure they are undisturbed
@@ -256,8 +256,8 @@ static struct mhead *nextf[NBUCKETS];
 
 static char busy[NBUCKETS];
 
-static int pagesz;	/* system page size. */
-static int pagebucket;	/* bucket for requests a page in size */
+static int pagesz;		/* system page size. */
+static int pagebucket;		/* bucket for requests a page in size */
 
 #if 0
 /* Coalesce two adjacent free blocks off the free list for size NU - 1,
@@ -279,7 +279,7 @@ bcoalesce (nu)
   nfree = 1;
   mp1 = nextf[nbuck];
   mp = CHAIN (mp1);
-  mp2 = (struct mhead *)0;
+  mp2 = (struct mhead *) 0;
   while (CHAIN (mp))
     {
       mp2 = mp1;
@@ -287,22 +287,22 @@ bcoalesce (nu)
       mp = CHAIN (mp);
       nfree++;
       /* We may not want to run all the way through the free list here;
-	 if we do not, we need to check a threshold value here and break
-	 if nfree exceeds it. */
+         if we do not, we need to check a threshold value here and break
+         if nfree exceeds it. */
     }
   if (nfree < MIN_COMBINE_FREE)
     return;
   /* OK, now we have mp1 pointing to the block we want to add to nextf[NU].
      CHAIN(mp2) must equal mp1.  Check that mp1 and mp are adjacent. */
-  if (CHAIN(mp2) != mp1)
+  if (CHAIN (mp2) != mp1)
     botch ("bcoalesce: CHAIN(mp2) != mp1");
   siz = 1 << (nbuck + 3);
-  if (CHAIN (mp1) != (struct mhead *)((char *)mp1 + siz))
-    return;	/* not adjacent */
+  if (CHAIN (mp1) != (struct mhead *) ((char *) mp1 + siz))
+    return;			/* not adjacent */
 
-#ifdef MALLOC_STATS
+#  ifdef MALLOC_STATS
   _mstats.nbcoalesce++;
-#endif
+#  endif
 
   /* Since they are adjacent, remove them from the free list */
   CHAIN (mp2) = CHAIN (mp);
@@ -370,9 +370,10 @@ bsplit (nu)
     {
       mp->mh_alloc = ISFREE;
       mp->mh_index = nu;
-      if (--nblks <= 0) break;
-      CHAIN (mp) = (struct mhead *)((char *)mp + siz);
-      mp = (struct mhead *)((char *)mp + siz);
+      if (--nblks <= 0)
+	break;
+      CHAIN (mp) = (struct mhead *) ((char *) mp + siz);
+      mp = (struct mhead *) ((char *) mp + siz);
     }
   CHAIN (mp) = 0;
 }
@@ -396,13 +397,13 @@ morecore (nu)			/* ask system for more memory */
   sigfillset (&set);
   sigemptyset (&oset);
   sigprocmask (SIG_BLOCK, &set, &oset);
-#  endif /* HAVE_POSIX_SIGNALS */
-#endif /* HAVE_BSD_SIGNALS */
+#  endif	/* HAVE_POSIX_SIGNALS */
+#endif		/* HAVE_BSD_SIGNALS */
 
-  siz = 1 << (nu + 3);	/* size of desired block for nextf[nu] */
+  siz = 1 << (nu + 3);		/* size of desired block for nextf[nu] */
 
   if (siz < 0)
-    return;		/* oops */
+    return;			/* oops */
 
 #ifdef MALLOC_STATS
   _mstats.nmorecore[nu]++;
@@ -424,7 +425,7 @@ morecore (nu)			/* ask system for more memory */
     {
       bcoalesce (nu);
       if (nextf[nu] != 0)
-        goto morecore_done;
+	goto morecore_done;
     }
 #endif
 
@@ -438,10 +439,10 @@ morecore (nu)			/* ask system for more memory */
   else
     {
       /* We always want to request an integral multiple of the page size
-	 from the kernel, so let's compute whether or not `siz' is such
-	 an amount.  If it is, we can just request it.  If not, we want
-	 the smallest integral multiple of pagesize that is larger than
-	 `siz' and will satisfy the request. */
+         from the kernel, so let's compute whether or not `siz' is such
+         an amount.  If it is, we can just request it.  If not, we want
+         the smallest integral multiple of pagesize that is larger than
+         `siz' and will satisfy the request. */
       sbrk_amt = siz % pagesz;
       if (sbrk_amt == 0)
 	sbrk_amt = siz;
@@ -458,13 +459,13 @@ morecore (nu)			/* ask system for more memory */
   mp = (struct mhead *) sbrk (sbrk_amt);
 
   /* Totally out of memory. */
-  if ((long)mp == -1)
+  if ((long) mp == -1)
     return;
 
   /* shouldn't happen, but just in case */
-  if ((long)mp & 7)
+  if ((long) mp & 7)
     {
-      mp = (struct mhead *) (((long)mp + 8) & ~7);
+      mp = (struct mhead *) (((long) mp + 8) & ~7);
       nblks--;
     }
 
@@ -474,9 +475,10 @@ morecore (nu)			/* ask system for more memory */
     {
       mp->mh_alloc = ISFREE;
       mp->mh_index = nu;
-      if (--nblks <= 0) break;
-      CHAIN (mp) = (struct mhead *)((char *)mp + siz);
-      mp = (struct mhead *)((char *)mp + siz);
+      if (--nblks <= 0)
+	break;
+      CHAIN (mp) = (struct mhead *) ((char *) mp + siz);
+      mp = (struct mhead *) ((char *) mp + siz);
     }
   CHAIN (mp) = 0;
 
@@ -485,9 +487,9 @@ morecore_done:
   sigsetmask (oldmask);
 #else
 #  if defined (HAVE_POSIX_SIGNALS)
-  sigprocmask (SIG_SETMASK, &oset, (sigset_t *)NULL);
+  sigprocmask (SIG_SETMASK, &oset, (sigset_t *) NULL);
 #  endif
-#endif /* HAVE_BSD_SIGNALS */
+#endif		/* HAVE_BSD_SIGNALS */
 }
 
 #if defined (MEMSCRAMBLE) || !defined (NO_CALLOC)
@@ -504,7 +506,7 @@ zmemset (s, c, n)
     *sp++ = c;
   return (s);
 }
-#endif /* MEMSCRAMBLE || !NO_CALLOC */
+#endif		/* MEMSCRAMBLE || !NO_CALLOC */
 
 static void
 malloc_debug_dummy ()
@@ -513,7 +515,7 @@ malloc_debug_dummy ()
 }
 
 char *
-malloc (n)		/* get a block */
+malloc (n)			/* get a block */
      size_t n;
 {
   register struct mhead *p;
@@ -529,33 +531,33 @@ malloc (n)		/* get a block */
 
       pagesz = getpagesize ();
       if (pagesz < 1024)
-        pagesz = 1024;
+	pagesz = 1024;
       /* OK, how much do we need to allocate to make things page-aligned?
          This partial page is wasted space.  Once we figure out how much
          to advance the break pointer, go ahead and do it. */
-      sbrk_needed = pagesz - ((long)sbrk (0) & (pagesz - 1));	/* sbrk(0) % pagesz */
+      sbrk_needed = pagesz - ((long) sbrk (0) & (pagesz - 1)); /* sbrk(0) % pagesz */
       if (sbrk_needed < 0)
-        sbrk_needed += pagesz;
+	sbrk_needed += pagesz;
       /* Now allocate the wasted space. */
       if (sbrk_needed)
-        {
+	{
 #ifdef MALLOC_STATS
 	  _mstats.nsbrk++;
 	  _mstats.tsbrk += sbrk_needed;
 #endif
-          if ((long)sbrk (sbrk_needed) == -1)
-            return (NULL);
-        }
+	  if ((long) sbrk (sbrk_needed) == -1)
+	    return (NULL);
+	}
       nunits = 0;
       nbytes = 8;
       while (pagesz > nbytes)
-        {
-          nbytes <<= 1;
-          nunits++;
-        }
+	{
+	  nbytes <<= 1;
+	  nunits++;
+	}
       pagebucket = nunits;
     }
- 
+
   /* Figure out how many bytes are required, rounding up to the nearest
      multiple of 4, then figure out which nextf[] area to use.  Try to
      be smart about where to start searching -- if the number of bytes
@@ -566,8 +568,8 @@ malloc (n)		/* get a block */
     {
       register unsigned int shiftr;
 
-      shiftr = (nbytes - 1) >> 2;	/* == (nbytes - 1) / 4 */
-      while (shiftr >>= 1)		/* == (nbytes - 1) / {8,16,32,...} */
+      shiftr = (nbytes - 1) >> 2; /* == (nbytes - 1) / 4 */
+      while (shiftr >>= 1)	/* == (nbytes - 1) / {8,16,32,...} */
 	nunits++;
     }
   else
@@ -577,10 +579,10 @@ malloc (n)		/* get a block */
       nunits = pagebucket;
       amt = pagesz;
       while (nbytes > amt)
-        {
-          amt <<= 1;
-          nunits++;
-        }
+	{
+	  amt <<= 1;
+	  nunits++;
+	}
     }
 
   /* In case this is reentrant use of malloc from signal handler,
@@ -588,9 +590,11 @@ malloc (n)		/* get a block */
      trying to allocate.  That's the easiest harmless way not to
      interfere with the other level of execution.  */
 #ifdef MALLOC_STATS
-  if (busy[nunits]) _mstats.nrecurse++;
+  if (busy[nunits])
+    _mstats.nrecurse++;
 #endif
-  while (busy[nunits]) nunits++;
+  while (busy[nunits])
+    nunits++;
   busy[nunits] = 1;
 
   /* If there are no blocks of the appropriate size, go get some */
@@ -617,19 +621,19 @@ malloc (n)		/* get a block */
   p->mh_nbytes = n;
   p->mh_magic2 = MAGIC2;
   {
-    register char  *m = (char *) (p + 1) + n;
+    register char *m = (char *) (p + 1) + n;
 
     *m++ = MAGIC1, *m++ = MAGIC1, *m++ = MAGIC1, *m = MAGIC1;
   }
 
 #ifdef MEMSCRAMBLE
-  zmemset ((char *)(p + 1), 0xdf, n);	/* scramble previous contents */
+  zmemset ((char *) (p + 1), 0xdf, n); /* scramble previous contents */
 #endif
 #ifdef MALLOC_STATS
   _mstats.nmalloc[nunits]++;
   _mstats.tmalloc[nunits]++;
   _mstats.nmal++;
-#endif /* MALLOC_STATS */
+#endif		/* MALLOC_STATS */
   return (char *) (p + 1);
 }
 
@@ -662,8 +666,10 @@ free (mem)
 
   ASSERT (p->mh_magic2 == MAGIC2);
   ap += p->mh_nbytes;
-  ASSERT (*ap++ == MAGIC1); ASSERT (*ap++ == MAGIC1);
-  ASSERT (*ap++ == MAGIC1); ASSERT (*ap   == MAGIC1);
+  ASSERT (*ap++ == MAGIC1);
+  ASSERT (*ap++ == MAGIC1);
+  ASSERT (*ap++ == MAGIC1);
+  ASSERT (*ap == MAGIC1);
 
 #ifdef MEMSCRAMBLE
   zmemset (mem, 0xcf, p->mh_nbytes);
@@ -684,7 +690,7 @@ free (mem)
 #ifdef MALLOC_STATS
   _mstats.nmalloc[nunits]--;
   _mstats.nfre++;
-#endif /* MALLOC_STATS */
+#endif		/* MALLOC_STATS */
 }
 
 char *
@@ -715,8 +721,10 @@ realloc (mem, n)
   ASSERT (p->mh_magic2 == MAGIC2);
 
   m = mem + (tocopy = p->mh_nbytes);
-  ASSERT (*m++ == MAGIC1); ASSERT (*m++ == MAGIC1);
-  ASSERT (*m++ == MAGIC1); ASSERT (*m   == MAGIC1);
+  ASSERT (*m++ == MAGIC1);
+  ASSERT (*m++ == MAGIC1);
+  ASSERT (*m++ == MAGIC1);
+  ASSERT (*m == MAGIC1);
 
   /* See if desired size rounds to same power of 2 as actual size. */
   nbytes = (n + sizeof *p + MSLOP + 7) & ~7;
@@ -725,10 +733,16 @@ realloc (mem, n)
   if (nbytes > (4 << nunits) && nbytes <= (8 << nunits))
     {
       m = mem + tocopy;
-      *m++ = 0;  *m++ = 0;  *m++ = 0;  *m++ = 0;
+      *m++ = 0;
+      *m++ = 0;
+      *m++ = 0;
+      *m++ = 0;
       p->mh_nbytes = n;
       m = mem + n;
-      *m++ = MAGIC1;  *m++ = MAGIC1;  *m++ = MAGIC1;  *m++ = MAGIC1;
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
       return mem;
     }
 
@@ -776,17 +790,17 @@ memalign (alignment, size)
 #if !defined (HPUX)
 /* This runs into trouble with getpagesize on HPUX, and Multimax machines.
    Patching out seems cleaner than the ugly fix needed.  */
-#if defined (__STDC__)
+#  if defined (__STDC__)
 void *
-#else
+#  else
 char *
-#endif
+#  endif
 valloc (size)
      size_t size;
 {
   return memalign (getpagesize (), size);
 }
-#endif /* !HPUX */
+#endif		/* !HPUX */
 
 #ifndef NO_CALLOC
 char *
@@ -800,7 +814,7 @@ calloc (n, s)
   result = malloc (total);
   if (result)
     zmemset (result, 0, total);
-  return result;  
+  return result;
 }
 
 void
@@ -809,7 +823,7 @@ cfree (p)
 {
   free (p);
 }
-#endif /* !NO_CALLOC */
+#endif		/* !NO_CALLOC */
 
 #ifdef MALLOC_STATS
 
@@ -878,13 +892,10 @@ print_malloc_stats (s)
       totfree += v.nfree * v.blocksize;
       totused += v.nused * v.blocksize;
     }
-  fprintf (stderr, "\nTotal bytes in use: %d, total bytes free: %d\n",
-	   totused, totfree);
+  fprintf (stderr, "\nTotal bytes in use: %d, total bytes free: %d\n", totused, totfree);
   fprintf (stderr, "Total mallocs: %d, total frees: %d, total reallocs: %d (%d copies)\n",
 	   _mstats.nmal, _mstats.nfre, _mstats.nrealloc, _mstats.nrcopy);
-  fprintf (stderr, "Total sbrks: %d, total bytes via sbrk: %d\n",
-  	   _mstats.nsbrk, _mstats.tsbrk);
-  fprintf (stderr, "Total blocks split: %d, total block coalesces: %d\n",
-  	   _mstats.nbsplit, _mstats.nbcoalesce);
+  fprintf (stderr, "Total sbrks: %d, total bytes via sbrk: %d\n", _mstats.nsbrk, _mstats.tsbrk);
+  fprintf (stderr, "Total blocks split: %d, total block coalesces: %d\n", _mstats.nbsplit, _mstats.nbcoalesce);
 }
-#endif /* MALLOC_STATS */
+#endif		/* MALLOC_STATS */

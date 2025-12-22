@@ -36,50 +36,48 @@
    private implementation details that can be changed or removed.  */
 
 #ifndef YY__GETTEXT_PLURAL_TAB_H_INCLUDED
-# define YY__GETTEXT_PLURAL_TAB_H_INCLUDED
+#  define YY__GETTEXT_PLURAL_TAB_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
+#  ifndef YYDEBUG
+#    define YYDEBUG 0
+#  endif
+#  if YYDEBUG
 extern int __gettextdebug;
-#endif
+#  endif
 
 /* Token kinds.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    EQUOP2 = 258,                  /* EQUOP2  */
-    CMPOP2 = 259,                  /* CMPOP2  */
-    ADDOP2 = 260,                  /* ADDOP2  */
-    MULOP2 = 261,                  /* MULOP2  */
-    NUMBER = 262                   /* NUMBER  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
-#endif
+#  ifndef YYTOKENTYPE
+#    define YYTOKENTYPE
+enum yytokentype {
+  YYEMPTY = -2,
+  YYEOF = 0,			/* "end of file"  */
+  YYerror = 256,		/* error  */
+  YYUNDEF = 257,		/* "invalid token"  */
+  EQUOP2 = 258,			/* EQUOP2  */
+  CMPOP2 = 259,			/* CMPOP2  */
+  ADDOP2 = 260,			/* ADDOP2  */
+  MULOP2 = 261,			/* MULOP2  */
+  NUMBER = 262			/* NUMBER  */
+};
+typedef enum yytokentype yytoken_kind_t;
+#  endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 42 "plural.y"
+#  if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+union YYSTYPE {
+#    line 42 "plural.y"
 
   unsigned long int num;
   enum expression_operator op;
   struct expression *exp;
 
-#line 77 "plural.h"
+#    line 77 "plural.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
+#    define YYSTYPE_IS_TRIVIAL 1
+#    define YYSTYPE_IS_DECLARED 1
+#  endif
 
 
 
@@ -87,4 +85,4 @@ typedef union YYSTYPE YYSTYPE;
 int __gettextparse (struct parse_args *arg);
 
 
-#endif /* !YY__GETTEXT_PLURAL_TAB_H_INCLUDED  */
+#endif		/* !YY__GETTEXT_PLURAL_TAB_H_INCLUDED  */

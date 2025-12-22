@@ -16,50 +16,49 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _RELOCATABLE_H
-#define _RELOCATABLE_H
+#  define _RELOCATABLE_H
 
-#include <stdlib.h>
+#  include <stdlib.h>
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 extern "C" {
-#endif
+#  endif
 
 
 /* This can be enabled through the configure --enable-relocatable option.  */
-#if ENABLE_RELOCATABLE
+#  if ENABLE_RELOCATABLE
 
 /* When building a DLL, we must export some functions.  Note that because
    this is a private .h file, we don't need to use __declspec(dllimport)
    in any case.  */
-#if HAVE_VISIBILITY && BUILDING_DLL
-# define RELOCATABLE_DLL_EXPORTED __attribute__((__visibility__("default")))
-#elif defined _MSC_VER && BUILDING_DLL
-# define RELOCATABLE_DLL_EXPORTED __declspec(dllexport)
-#else
-# define RELOCATABLE_DLL_EXPORTED
-#endif
+#    if HAVE_VISIBILITY && BUILDING_DLL
+#      define RELOCATABLE_DLL_EXPORTED __attribute__((__visibility__("default")))
+#    elif defined _MSC_VER && BUILDING_DLL
+#      define RELOCATABLE_DLL_EXPORTED __declspec(dllexport)
+#    else
+#      define RELOCATABLE_DLL_EXPORTED
+#    endif
 
 /* Sets the original and the current installation prefix of the package.
    Relocation simply replaces a pathname starting with the original prefix
    by the corresponding pathname with the current prefix instead.  Both
    prefixes should be directory names without trailing slash (i.e. use ""
    instead of "/").  */
-extern RELOCATABLE_DLL_EXPORTED void
-       set_relocation_prefix (const char *orig_prefix,
-                              const char *curr_prefix);
+  extern RELOCATABLE_DLL_EXPORTED void
+    set_relocation_prefix (const char *orig_prefix, const char *curr_prefix);
 
 /* Returns the pathname, relocated according to the current installation
    directory.
    The returned string is either PATHNAME unmodified or a freshly allocated
    string that you can free with free() after casting it to 'char *'.  */
-extern const char * relocate (const char *pathname);
+  extern const char *relocate (const char *pathname);
 
 /* Returns the pathname, relocated according to the current installation
    directory.
    This function sets *ALLOCATEDP to the allocated memory, or to NULL if
    no memory allocation occurs.  So that, after you're done with the return
    value, to reclaim allocated memory, you can do: free (*ALLOCATEDP).  */
-extern const char * relocate2 (const char *pathname, char **allocatedp);
+  extern const char *relocate2 (const char *pathname, char **allocatedp);
 
 /* Memory management: relocate() potentially allocates memory, because it has
    to construct a fresh pathname.  If this is a problem because your program
@@ -83,22 +82,20 @@ extern const char * relocate2 (const char *pathname, char **allocatedp);
    installation prefix, the original installation directory of a particular
    file, and the current pathname of this file.
    Returns it, freshly allocated.  Returns NULL upon failure.  */
-extern char * compute_curr_prefix (const char *orig_installprefix,
-                                   const char *orig_installdir,
-                                   const char *curr_pathname)
-  _GL_ATTRIBUTE_MALLOC _GL_ATTRIBUTE_DEALLOC_FREE;
+  extern char *compute_curr_prefix (const char *orig_installprefix,
+				    const char *orig_installdir,
+				    const char *curr_pathname) _GL_ATTRIBUTE_MALLOC _GL_ATTRIBUTE_DEALLOC_FREE;
 
-#else
+#  else
 
 /* By default, we use the hardwired pathnames.  */
-#define relocate(pathname) (pathname)
-#define relocate2(pathname,allocatedp) (*(allocatedp) = NULL, (pathname))
+#    define relocate(pathname) (pathname)
+#    define relocate2(pathname,allocatedp) (*(allocatedp) = NULL, (pathname))
 
-#endif
+#  endif
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 }
-#endif
-
-#endif /* _RELOCATABLE_H */
+#  endif
+#endif				/* _RELOCATABLE_H */

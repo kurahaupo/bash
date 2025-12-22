@@ -24,7 +24,7 @@
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #include <stdc.h>
 
@@ -65,7 +65,7 @@
 #define CASE_UPFIRST	0x0040
 #define CASE_LOWFIRST	0x0080
 
-#define CASE_USEWORDS	0x1000		/* modify behavior to act on words in passed string */
+#define CASE_USEWORDS	0x1000	/* modify behavior to act on words in passed string */
 
 extern char *substring (char *, size_t, size_t);
 
@@ -79,17 +79,17 @@ cval (char *s, int i, int l)
 {
   size_t tmp;
   wchar_t wc;
-  mbstate_t mps;  
+  mbstate_t mps;
 
   if (MB_CUR_MAX == 1 || is_basic (s[i]))
-    return ((wchar_t)s[i]);
+    return ((wchar_t) s[i]);
   if (i >= (l - 1))
-    return ((wchar_t)s[i]);
+    return ((wchar_t) s[i]);
   memset (&mps, 0, sizeof (mbstate_t));
   tmp = mbrtowc (&wc, s + i, l - i, &mps);
   if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))
-    return ((wchar_t)s[i]);
-  return wc;  
+    return ((wchar_t) s[i]);
+  return wc;
 }
 #endif
 
@@ -105,14 +105,14 @@ sh_modcase (const char *string, char *pat, int flags)
   int mb_cur_max;
 #if defined (HANDLE_MULTIBYTE)
   wchar_t nwc;
-  char mb[MB_LEN_MAX+1];
+  char mb[MB_LEN_MAX + 1];
   size_t m, mlen;
   mbstate_t state;
 #endif
 
   if (string == 0 || *string == 0)
     {
-      ret = (char *)xmalloc (1);
+      ret = (char *) xmalloc (1);
       ret[0] = '\0';
       return ret;
     }
@@ -125,7 +125,7 @@ sh_modcase (const char *string, char *pat, int flags)
   end = strlen (string);
   mb_cur_max = MB_CUR_MAX;
 
-  ret = (char *)xmalloc (2*end + 1);
+  ret = (char *) xmalloc (2 * end + 1);
   retind = 0;
 
   /* See if we are supposed to split on alphanumerics and operate on each word */
@@ -135,7 +135,7 @@ sh_modcase (const char *string, char *pat, int flags)
   inword = 0;
   while (start < end)
     {
-      wc = cval ((char *)string, start, end);
+      wc = cval ((char *) string, start, end);
 
       if (iswalnum (wc) == 0)
 	inword = 0;
@@ -144,23 +144,23 @@ sh_modcase (const char *string, char *pat, int flags)
 	{
 	  next = start;
 	  ADVANCE_CHAR (string, end, next);
-	  s = substring ((char *)string, start, next);
+	  s = substring ((char *) string, start, next);
 	  match = strmatch (pat, s, FNM_EXTMATCH) != FNM_NOMATCH;
 	  free (s);
 	  if (match == 0)
-            {
-              /* copy unmatched portion */
-              memcpy (ret + retind, string + start, next - start);
-              retind += next - start;
-              start = next;
-              inword = 1;
-              continue;
-            }
+	    {
+	      /* copy unmatched portion */
+	      memcpy (ret + retind, string + start, next - start);
+	      retind += next - start;
+	      start = next;
+	      inword = 1;
+	      continue;
+	    }
 	}
 
       /* XXX - for now, the toggling operators work on the individual
-	 words in the string, breaking on alphanumerics.  Should I
-	 leave the capitalization operators to do that also? */
+         words in the string, breaking on alphanumerics.  Should I
+         leave the capitalization operators to do that also? */
       if (flags == CASE_CAPITALIZE)
 	{
 	  if (usewords)
@@ -178,21 +178,21 @@ sh_modcase (const char *string, char *pat, int flags)
 	  inword = 1;
 	}
       else if (flags == CASE_UPFIRST)
- 	{
- 	  if (usewords)
+	{
+	  if (usewords)
 	    nop = inword ? CASE_NOOP : CASE_UPPER;
 	  else
 	    nop = (start > 0) ? CASE_NOOP : CASE_UPPER;
- 	  inword = 1;
- 	}
+	  inword = 1;
+	}
       else if (flags == CASE_LOWFIRST)
- 	{
- 	  if (usewords)
+	{
+	  if (usewords)
 	    nop = inword ? CASE_NOOP : CASE_LOWER;
 	  else
 	    nop = (start > 0) ? CASE_NOOP : CASE_LOWER;
- 	  inword = 1;
- 	}
+	  inword = 1;
+	}
       else if (flags == CASE_TOGGLE)
 	{
 	  nop = inword ? CASE_NOOP : CASE_TOGGLE;
@@ -202,18 +202,26 @@ sh_modcase (const char *string, char *pat, int flags)
 	nop = flags;
 
       /* Can't short-circuit, some locales have multibyte upper and lower
-	 case equivalents of single-byte ascii characters (e.g., Turkish) */
+         case equivalents of single-byte ascii characters (e.g., Turkish) */
       if (mb_cur_max == 1)
 	{
-singlebyte:
+	singlebyte:
 	  switch (nop)
 	    {
 	    default:
-	    case CASE_NOOP:  nc = wc; break;
-	    case CASE_UPPER:  nc = TOUPPER (wc); break;
-	    case CASE_LOWER:  nc = TOLOWER (wc); break;
+	    case CASE_NOOP:
+	      nc = wc;
+	      break;
+	    case CASE_UPPER:
+	      nc = TOUPPER (wc);
+	      break;
+	    case CASE_LOWER:
+	      nc = TOLOWER (wc);
+	      break;
 	    case CASE_TOGGLEALL:
-	    case CASE_TOGGLE: nc = TOGGLE (wc); break;
+	    case CASE_TOGGLE:
+	      nc = TOGGLE (wc);
+	      break;
 	    }
 	  ret[retind++] = nc;
 	}
@@ -226,7 +234,7 @@ singlebyte:
 	     corresponding upper or lower case equivalent is multibyte. */
 	  if (MB_INVALIDCH (m))
 	    {
-	      wc = (unsigned char)string[start];
+	      wc = (unsigned char) string[start];
 	      goto singlebyte;
 	    }
 	  else if (MB_NULLWCH (m))
@@ -234,22 +242,30 @@ singlebyte:
 	  switch (nop)
 	    {
 	    default:
-	    case CASE_NOOP:  nwc = wc; break;
-	    case CASE_UPPER:  nwc = _to_wupper (wc); break;
-	    case CASE_LOWER:  nwc = _to_wlower (wc); break;
+	    case CASE_NOOP:
+	      nwc = wc;
+	      break;
+	    case CASE_UPPER:
+	      nwc = _to_wupper (wc);
+	      break;
+	    case CASE_LOWER:
+	      nwc = _to_wlower (wc);
+	      break;
 	    case CASE_TOGGLEALL:
-	    case CASE_TOGGLE: nwc = TOGGLE (wc); break;
+	    case CASE_TOGGLE:
+	      nwc = TOGGLE (wc);
+	      break;
 	    }
 
 	  /* We don't have to convert `wide' characters that are in the
 	     unsigned char range back to single-byte `multibyte' characters. */
-	  if ((int)nwc <= UCHAR_MAX && is_basic ((int)nwc))
+	  if ((int) nwc <= UCHAR_MAX && is_basic ((int) nwc))
 	    ret[retind++] = nwc;
 	  else
 	    {
 	      mlen = wcrtomb (mb, nwc, &state);
 	      if (MB_INVALIDCH (mlen))
-		strncpy (mb, string + start, mlen = m);			
+		strncpy (mb, string + start, mlen = m);
 	      mb[mlen] = '\0';
 	      /* Don't assume the same width */
 	      strncpy (ret + retind, mb, mlen);

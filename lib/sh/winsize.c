@@ -37,21 +37,21 @@
 
 #if defined (STRUCT_WINSIZE_IN_TERMIOS) && !defined (STRUCT_WINSIZE_IN_SYS_IOCTL) && !defined (HAVE_TCGETWINSIZE)
 #  include <termios.h>
-#endif /* STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
+#endif		/* STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
 
 /* Not in either of the standard places, look around. */
 #if !defined (STRUCT_WINSIZE_IN_TERMIOS) && !defined (STRUCT_WINSIZE_IN_SYS_IOCTL) && !defined (HAVE_TCGETWINSIZE)
 #  if defined (HAVE_SYS_STREAM_H)
 #    include <sys/stream.h>
-#  endif /* HAVE_SYS_STREAM_H */
-#  if defined (HAVE_SYS_PTEM_H) /* SVR4.2, at least, has it here */
+#  endif	/* HAVE_SYS_STREAM_H */
+#  if defined (HAVE_SYS_PTEM_H)	/* SVR4.2, at least, has it here */
 #    include <sys/ptem.h>
-#    define _IO_PTEM_H          /* work around SVR4.2 1.1.4 bug */
-#  endif /* HAVE_SYS_PTEM_H */
-#  if defined (HAVE_SYS_PTE_H)  /* ??? */
+#    define _IO_PTEM_H		/* work around SVR4.2 1.1.4 bug */
+#  endif	/* HAVE_SYS_PTEM_H */
+#  if defined (HAVE_SYS_PTE_H)	/* ??? */
 #    include <sys/pte.h>
-#  endif /* HAVE_SYS_PTE_H */
-#endif /* !STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
+#  endif	/* HAVE_SYS_PTE_H */
+#endif		/* !STRUCT_WINSIZE_IN_TERMIOS && !STRUCT_WINSIZE_IN_SYS_IOCTL */
 
 #include <errno.h>
 #include <stdio.h>
@@ -61,7 +61,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 extern int shell_tty;
 
@@ -79,12 +79,12 @@ extern void sh_set_lines_and_columns (int, int);
 int
 tcgetwinsize (int fd, struct winsize *wp)
 {
-#if defined (TIOCGWINSZ)
+#  if defined (TIOCGWINSZ)
   return (ioctl (fd, TIOCGWINSZ, wp));
-#else
+#  else
   errno = EINVAL;
   return -1;
-#endif
+#  endif
 }
 #endif
 
@@ -99,10 +99,10 @@ get_new_window_size (int from_sig, int *rp, int *cp)
   if (tty >= 0 && (tcgetwinsize (tty, &win) == 0) && win.ws_row > 0 && win.ws_col > 0)
     {
       sh_set_lines_and_columns (win.ws_row, win.ws_col);
-#if defined (READLINE)
+#  if defined (READLINE)
       if ((interactive_shell && no_line_editing == 0) || bash_readline_initialized)
 	rl_set_screen_size (win.ws_row, win.ws_col);
-#endif
+#  endif
       if (rp)
 	*rp = win.ws_row;
       if (cp)

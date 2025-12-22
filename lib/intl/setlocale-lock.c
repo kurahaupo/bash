@@ -33,27 +33,27 @@ typedef int dummy;
    present when linking statically.  */
 
 /* Prohibit renaming this symbol.  */
-# undef gl_get_setlocale_null_lock
+#  undef gl_get_setlocale_null_lock
 
 /* Macro for exporting a symbol (function, not variable) defined in this file,
    when compiled into a shared library.  */
-# ifndef DLL_EXPORTED
-#  if HAVE_VISIBILITY
+#  ifndef DLL_EXPORTED
+#    if HAVE_VISIBILITY
   /* Override the effect of the compiler option '-fvisibility=hidden'.  */
-#   define DLL_EXPORTED __attribute__((__visibility__("default")))
-#  elif defined _WIN32 || defined __CYGWIN__
-#   define DLL_EXPORTED __declspec(dllexport)
-#  else
-#   define DLL_EXPORTED
+#      define DLL_EXPORTED __attribute__((__visibility__("default")))
+#    elif defined _WIN32 || defined __CYGWIN__
+#      define DLL_EXPORTED __declspec(dllexport)
+#    else
+#      define DLL_EXPORTED
+#    endif
 #  endif
-# endif
 
-# if defined _WIN32 && !defined __CYGWIN__
+#  if defined _WIN32 && !defined __CYGWIN__
 
-#  define WIN32_LEAN_AND_MEAN  /* avoid including junk */
-#  include <windows.h>
+#    define WIN32_LEAN_AND_MEAN	/* avoid including junk */
+#    include <windows.h>
 
-#  include "windows-initguard.h"
+#    include "windows-initguard.h"
 
 /* The return type is a 'CRITICAL_SECTION *', not a 'glwthread_mutex_t *',
    because the latter is not guaranteed to be a stable ABI in the future.  */
@@ -71,27 +71,27 @@ gl_get_setlocale_null_lock (void)
   if (!guard.done)
     {
       if (InterlockedIncrement (&guard.started) == 0)
-        {
-          /* This thread is the first one to need the lock.  Initialize it.  */
-          InitializeCriticalSection (&lock);
-          guard.done = 1;
-        }
+	{
+	  /* This thread is the first one to need the lock.  Initialize it.  */
+	  InitializeCriticalSection (&lock);
+	  guard.done = 1;
+	}
       else
-        {
-          /* Don't let guard.started grow and wrap around.  */
-          InterlockedDecrement (&guard.started);
-          /* Yield the CPU while waiting for another thread to finish
-             initializing this mutex.  */
-          while (!guard.done)
-            Sleep (0);
-        }
+	{
+	  /* Don't let guard.started grow and wrap around.  */
+	  InterlockedDecrement (&guard.started);
+	  /* Yield the CPU while waiting for another thread to finish
+	     initializing this mutex.  */
+	  while (!guard.done)
+	    Sleep (0);
+	}
     }
   return &lock;
 }
 
-# elif HAVE_PTHREAD_API
+#  elif HAVE_PTHREAD_API
 
-#  include <pthread.h>
+#    include <pthread.h>
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -105,10 +105,10 @@ gl_get_setlocale_null_lock (void)
   return &mutex;
 }
 
-# elif HAVE_THREADS_H
+#  elif HAVE_THREADS_H
 
-#  include <threads.h>
-#  include <stdlib.h>
+#    include <threads.h>
+#    include <stdlib.h>
 
 static int volatile init_needed = 1;
 static once_flag init_once = ONCE_FLAG_INIT;
@@ -134,17 +134,17 @@ gl_get_setlocale_null_lock (void)
   return &mutex;
 }
 
-# endif
+#  endif
 
-# if (defined _WIN32 || defined __CYGWIN__) && !defined _MSC_VER
+#  if (defined _WIN32 || defined __CYGWIN__) && !defined _MSC_VER
 /* Make sure the '__declspec(dllimport)' in setlocale_null.c does not cause
    a link failure when no DLLs are involved.  */
-#  if defined _WIN64 || defined _LP64
-#   define IMP(x) __imp_##x
-#  else
-#   define IMP(x) _imp__##x
+#    if defined _WIN64 || defined _LP64
+#      define IMP(x) __imp_##x
+#    else
+#      define IMP(x) _imp__##x
+#    endif
+void *IMP (gl_get_setlocale_null_lock) = &gl_get_setlocale_null_lock;
 #  endif
-void * IMP(gl_get_setlocale_null_lock) = &gl_get_setlocale_null_lock;
-# endif
 
 #endif

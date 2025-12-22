@@ -21,12 +21,12 @@
 #include "stdc.h"
 #include "hashlib.h"
 
-#define FILENAME_HASH_BUCKETS 256	/* must be power of two */
+#define FILENAME_HASH_BUCKETS 256 /* must be power of two */
 
 extern HASH_TABLE *hashed_filenames;
 
 typedef struct _pathdata {
-  char *path;		/* The full pathname of the file. */
+  char *path;			/* The full pathname of the file. */
   int flags;
 } PATH_DATA;
 

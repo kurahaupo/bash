@@ -29,9 +29,9 @@
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
-#include <stdio.h>	/* for FILE * definition for readline.h */
+#include <stdio.h>		/* for FILE * definition for readline.h */
 
 #include "readline.h"
 #include "rlconf.h"
@@ -39,7 +39,7 @@
 #include "emacs_keymap.c"
 
 #if defined (VI_MODE)
-#include "vi_keymap.c"
+#  include "vi_keymap.c"
 #endif
 
 #include "xmalloc.h"
@@ -59,11 +59,11 @@ rl_make_bare_keymap (void)
   register int i;
   Keymap keymap;
 
-  keymap = (Keymap)xmalloc (KEYMAP_SIZE * sizeof (KEYMAP_ENTRY));
+  keymap = (Keymap) xmalloc (KEYMAP_SIZE * sizeof (KEYMAP_ENTRY));
   for (i = 0; i < KEYMAP_SIZE; i++)
     {
       keymap[i].type = ISFUNC;
-      keymap[i].function = (rl_command_func_t *)NULL;
+      keymap[i].function = (rl_command_func_t *) NULL;
     }
 
 #if 0
@@ -125,14 +125,14 @@ rl_make_keymap (void)
     newmap[i].function = rl_insert;
 
   newmap[TAB].function = rl_insert;
-  newmap[RUBOUT].function = rl_rubout;	/* RUBOUT == 127 */
-  newmap[CTRL('H')].function = rl_rubout;
+  newmap[RUBOUT].function = rl_rubout; /* RUBOUT == 127 */
+  newmap[CTRL ('H')].function = rl_rubout;
 
 #if KEYMAP_SIZE > 128
   /* Printing characters in ISO Latin-1 and some 8-bit character sets. */
   for (i = 128; i < 256; i++)
     newmap[i].function = rl_insert;
-#endif /* KEYMAP_SIZE > 128 */
+#endif		/* KEYMAP_SIZE > 128 */
 
   return (newmap);
 }
@@ -154,12 +154,12 @@ rl_discard_keymap (Keymap map)
 	  break;
 
 	case ISKMAP:
-	  rl_discard_keymap ((Keymap)map[i].function);
-	  xfree ((char *)map[i].function);
+	  rl_discard_keymap ((Keymap) map[i].function);
+	  xfree ((char *) map[i].function);
 	  break;
 
 	case ISMACR:
-	  xfree ((char *)map[i].function);
+	  xfree ((char *) map[i].function);
 	  break;
 	}
     }
@@ -170,5 +170,5 @@ void
 rl_free_keymap (Keymap map)
 {
   rl_discard_keymap (map);
-  xfree ((char *)map);
+  xfree ((char *) map);
 }

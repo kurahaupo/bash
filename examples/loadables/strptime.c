@@ -36,28 +36,25 @@
 #include "bashgetopt.h"
 #include "common.h"
 
-struct date_modifier
-{
+struct date_modifier {
   char *shorthand;
   int incr;
 };
 
-static struct date_modifier date_time_modifiers[] =
-{
-  { "now",	0 },
-  { "today",	0 },
-  { "tomorrow",	24*60*60 },
-  { "yesterday", -24*60*60 },
-  { "day after tomorrow", 48*60*60 },
-  { "two days ago", -48*60*60 },
-  { "next week", 7*24*60*60 },
-  { "last week", -7*24*60*60 },
-  { "the day after tomorrow", 48*60*60 },
+static struct date_modifier date_time_modifiers[] = {
+  { "now", 0 },
+  { "today", 0 },
+  { "tomorrow", 24 * 60 * 60 },
+  { "yesterday", -24 * 60 * 60 },
+  { "day after tomorrow", 48 * 60 * 60 },
+  { "two days ago", -48 * 60 * 60 },
+  { "next week", 7 * 24 * 60 * 60 },
+  { "last week", -7 * 24 * 60 * 60 },
+  { "the day after tomorrow", 48 * 60 * 60 },
   { 0, 0 }
 };
 
-static char * const date_time_formats[] =
-{
+static char *const date_time_formats[] = {
   "%a %b %d %T %Z %Y",		/* Unix date */
   "%a %b %d %T %Y",		/* Wkd Mon DD HH:MM:SS YYYY */
   "%FT%T%z",			/* ISO8601 time YYYY-mm-ddTHH:MM:SSzone */
@@ -138,7 +135,7 @@ static char * const date_time_formats[] =
   "%d-%m-%Y",			/* dd-mm-YYYY */
   "%d-%m-%Y %T",		/* dd-mm-YYYY HH:MM:SS */
   "%d-%m-%Y %R",		/* dd-mm-YYYY HH:MM */
-  "%d-%m-%Y %r",		/* dd-mm-YYYY HH:MM:SS a.m. */    
+  "%d-%m-%Y %r",		/* dd-mm-YYYY HH:MM:SS a.m. */
   "%d-%m-%Y %I:%M %p",		/* dd-mm-YYYY HH:MM p.m. */
   "%d/%m/%Y %T",		/* dd/mm/YYYY HH:MM:SS */
   "%d/%m/%Y %R",		/* dd/mm/YYYY HH:MM */
@@ -152,7 +149,7 @@ static char * const date_time_formats[] =
   "%d-%m-%Y %I:%M %p",		/* dd-mm-YYYY HH:MM p.m. */
   "%d.%m.%Y %T",		/* dd.mm.YYYY HH:MM:SS */
   "%d.%m.%Y %R",		/* dd.mm.YYYY HH:MM */
-  "%d.%m.%Y %r",		/* dd.mm.YYYY HH:MM:SS a.m. */    
+  "%d.%m.%Y %r",		/* dd.mm.YYYY HH:MM:SS a.m. */
   "%d.%m.%Y %I:%M %p",		/* dd.mm.YYYY HH:MM p.m. */
   /* Some fallbacks */
   "%F",				/* YYYY-mm-dd ISO8601 time */
@@ -198,15 +195,15 @@ strptime_builtin (WORD_LIST *list)
   while ((opt = internal_getopt (list, "f:")) != -1)
     {
       switch (opt)
-        {
-          case 'f':
-	    format = list_optarg;
-	    break;
+	{
+	case 'f':
+	  format = list_optarg;
+	  break;
 	  CASE_HELPOPT;
-	  default:
-	    builtin_usage ();
-	    return (EX_USAGE);
-        }
+	default:
+	  builtin_usage ();
+	  return (EX_USAGE);
+	}
     }
 
   list = loptend;
@@ -228,7 +225,7 @@ strptime_builtin (WORD_LIST *list)
       if (STREQ (datestr, date_time_modifiers[i].shorthand))
 	{
 	  secs = now + date_time_modifiers[i].incr;
-	  printf ("%jd\n", secs);    
+	  printf ("%jd\n", secs);
 	  return (EXECUTION_SUCCESS);
 	}
     }
@@ -252,7 +249,7 @@ strptime_builtin (WORD_LIST *list)
 	  if (s == 0 || s == datestr)
 	    continue;
 	  break;
-        }
+	}
       if (date_time_formats[i] == 0)
 	{
 	  builtin_error ("%s: unrecognized format", datestr);
@@ -264,32 +261,32 @@ strptime_builtin (WORD_LIST *list)
   /* Found something. */
   secs = mktime (&t);
   if (s && *s)
-    builtin_warning("%s: not completely converted (%s)", datestr, s);
+    builtin_warning ("%s: not completely converted (%s)", datestr, s);
 
-  printf ("%jd\n", secs);    
+  printf ("%jd\n", secs);
   return (EXECUTION_SUCCESS);
 }
 
 char *strptime_doc[] = {
-	"Convert a date-time string to seconds since the epoch.",
-	"",
-	"Take DATE-TIME, a date-time string, and parse it using FORMAT, a",
-	"date and time format accepted by strptime(3). If FORMAT is not supplied,",
-	"attempt to parse DATE-TIME against a set of common date-time formats,",
-	"not all of which may be acceptable to strptime(3).",
-	"If the string matches one of the formats, convert it into seconds",
-	"since the epoch and display the result.",
-	(char *)NULL
+  "Convert a date-time string to seconds since the epoch.",
+  "",
+  "Take DATE-TIME, a date-time string, and parse it using FORMAT, a",
+  "date and time format accepted by strptime(3). If FORMAT is not supplied,",
+  "attempt to parse DATE-TIME against a set of common date-time formats,",
+  "not all of which may be acceptable to strptime(3).",
+  "If the string matches one of the formats, convert it into seconds",
+  "since the epoch and display the result.",
+  (char *) NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures.  The flags must include BUILTIN_ENABLED so the
    builtin can be used. */
 struct builtin strptime_struct = {
-	"strptime",		/* builtin name */
-	strptime_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	strptime_doc,		/* array of long documentation strings. */
-	"strptime [-f format] date-time",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "strptime",			/* builtin name */
+  strptime_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  strptime_doc,			/* array of long documentation strings. */
+  "strptime [-f format] date-time", /* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

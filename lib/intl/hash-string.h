@@ -21,11 +21,11 @@
 
 
 #ifndef _LIBC
-# ifdef IN_LIBINTL
-#  define __hash_string libintl_hash_string
-# else
-#  define __hash_string hash_string
-# endif
+#  ifdef IN_LIBINTL
+#    define __hash_string libintl_hash_string
+#  else
+#    define __hash_string hash_string
+#  endif
 #endif
 
 /* Defines the so called `hashpjw' function by P.J. Weinberger

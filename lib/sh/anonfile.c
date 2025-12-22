@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if defined (HAVE_UNISTD_H)
@@ -65,7 +65,7 @@ anonshmopen (const char *name, int flags, char **fn)
   else
     free (fname);
 
-  return fd;  
+  return fd;
 }
 #endif
 
@@ -94,10 +94,10 @@ anonopen (const char *name, int flags, char **fn)
 #if defined (HAVE_SHM_MKSTEMP)
   fd = anonshmopen (name, flag, fn);
   if (fd >= 0)
-    return fd;		/* anonshmopen sets *FN appropriately */
+    return fd;			/* anonshmopen sets *FN appropriately */
 #endif
 
-  fd = sh_mktmpfd (name, flag|MT_USERANDOM|MT_READWRITE|MT_UNLINK, fn);
+  fd = sh_mktmpfd (name, flag | MT_USERANDOM | MT_READWRITE | MT_UNLINK, fn);
   return fd;
 }
 

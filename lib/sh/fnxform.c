@@ -41,10 +41,10 @@ extern char *get_locale_var (char *);
 #endif
 
 #if defined (HAVE_ICONV)
-static iconv_t conv_fromfs = (iconv_t)-1;
-static iconv_t conv_tofs = (iconv_t)-1;
+static iconv_t conv_fromfs = (iconv_t) -1;
+static iconv_t conv_tofs = (iconv_t) -1;
 
-#define OUTLEN_MAX 4096
+#  define OUTLEN_MAX 4096
 
 static char *outbuf = 0;
 static size_t outlen = 0;
@@ -57,10 +57,10 @@ static char *
 curencoding (void)
 {
   char *loc;
-#if defined (HAVE_LOCALE_CHARSET)
-  loc = (char *)locale_charset ();
+#  if defined (HAVE_LOCALE_CHARSET)
+  loc = (char *) locale_charset ();
   return loc;
-#else
+#  else
   char *dot, *mod;
 
   loc = get_locale_var ("LC_CTYPE");
@@ -73,8 +73,8 @@ curencoding (void)
   if (mod)
     *mod = '\0';
   return ++dot;
-#endif
-}  
+#  endif
+}
 
 static void
 init_tofs (void)
@@ -97,14 +97,14 @@ init_fromfs (void)
 char *
 fnx_tofs (char *string, size_t len)
 {
-#ifdef MACOSX
+#  ifdef MACOSX
   ICONV_CONST char *inbuf;
   char *tempbuf;
   size_t templen;
-  
-  if (conv_tofs == (iconv_t)-1)
+
+  if (conv_tofs == (iconv_t) -1)
     init_tofs ();
-  if (conv_tofs == (iconv_t)-1)
+  if (conv_tofs == (iconv_t) -1)
     return string;
 
   /* Free and reallocate outbuf if it's *too* big */
@@ -126,27 +126,27 @@ fnx_tofs (char *string, size_t len)
 
   iconv (conv_tofs, NULL, NULL, NULL, NULL);
 
-  if (iconv (conv_tofs, &inbuf, &len, &tempbuf, &templen) == (size_t)-1)
+  if (iconv (conv_tofs, &inbuf, &len, &tempbuf, &templen) == (size_t) -1)
     return string;
 
   *tempbuf = '\0';
   return outbuf;
-#else
+#  else
   return string;
-#endif
+#  endif
 }
 
 char *
 fnx_fromfs (char *string, size_t len)
 {
-#ifdef MACOSX
+#  ifdef MACOSX
   ICONV_CONST char *inbuf;
   char *tempbuf;
   size_t templen;
 
-  if (conv_fromfs == (iconv_t)-1)
+  if (conv_fromfs == (iconv_t) -1)
     init_fromfs ();
-  if (conv_fromfs == (iconv_t)-1)
+  if (conv_fromfs == (iconv_t) -1)
     return string;
 
   /* Free and reallocate outbuf if it's *too* big */
@@ -168,14 +168,14 @@ fnx_fromfs (char *string, size_t len)
 
   iconv (conv_fromfs, NULL, NULL, NULL, NULL);
 
-  if (iconv (conv_fromfs, &inbuf, &len, &tempbuf, &templen) == (size_t)-1)
+  if (iconv (conv_fromfs, &inbuf, &len, &tempbuf, &templen) == (size_t) -1)
     return string;
 
   *tempbuf = '\0';
   return outbuf;
-#else
+#  else
   return string;
-#endif
+#  endif
 }
 
 #else

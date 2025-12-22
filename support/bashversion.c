@@ -53,9 +53,9 @@ char *shell_name = "bash";
 char *progname;
 
 static void
-usage(void)
+usage (void)
 {
-  fprintf(stderr, "%s: usage: %s [-hrvpmlsx]\n", progname, progname);
+  fprintf (stderr, "%s: usage: %s [-hrvpmlsx]\n", progname, progname);
 }
 
 int
@@ -70,7 +70,7 @@ main (int argc, char **argv)
     progname = argv[0];
 
   oflags = 0;
-  while ((opt = getopt(argc, argv, "hrvmpslx")) != EOF)
+  while ((opt = getopt (argc, argv, "hrvmpslx")) != EOF)
     {
       switch (opt)
 	{
@@ -113,18 +113,18 @@ main (int argc, char **argv)
       exit (2);
     }
 
-  /* default behavior */  
+  /* default behavior */
   if (oflags == 0)
     oflags = SFLAG;
 
-  if (oflags & (RFLAG|VFLAG))
+  if (oflags & (RFLAG | VFLAG))
     {
       strcpy (dv, dist_version);
       rv = strchr (dv, '.');
       if (rv)
-        *rv++ = '\0';
+	*rv++ = '\0';
       else
-        rv = "00";
+	rv = "00";
     }
   if (oflags & RFLAG)
     printf ("%s\n", dv);

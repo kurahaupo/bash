@@ -17,16 +17,16 @@
 /* Written by Bruno Haible <bruno@clisp.org>, 2019.  */
 
 #ifndef _SETLOCALE_NULL_H
-#define _SETLOCALE_NULL_H
+#  define _SETLOCALE_NULL_H
 
-#include <stddef.h>
+#  include <stddef.h>
 
-#include "arg-nonnull.h"
+#  include "arg-nonnull.h"
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 extern "C" {
-#endif
+#  endif
 
 
 /* Recommended size of a buffer for a locale name for a single category.
@@ -34,7 +34,7 @@ extern "C" {
    assume a maximum length 256.
    In native Windows, in 2018 the longest locale name was of length 58
    ("FYRO Macedonian_Former Yugoslav Republic of Macedonia.1251").  */
-#define SETLOCALE_NULL_MAX (256+1)
+#  define SETLOCALE_NULL_MAX (256+1)
 
 /* Recommended size of a buffer for a locale name with all categories.
    On glibc systems, you can have locale names that are relative file names;
@@ -42,7 +42,7 @@ extern "C" {
    maximum total length is 148+12*256.
    In native Windows, there are 5 categories, and the maximum total length is
    55+5*58.  */
-#define SETLOCALE_NULL_ALL_MAX (148+12*256+1)
+#  define SETLOCALE_NULL_ALL_MAX (148+12*256+1)
 
 /* setlocale_null_r (CATEGORY, BUF, BUFSIZE) is like setlocale (CATEGORY, NULL),
    except that
@@ -61,8 +61,7 @@ extern "C" {
    to use setlocale_null_r or setlocale_null as well, and the other threads
    must not make other setlocale invocations (since changing the global locale
    has side effects on all threads).  */
-extern int setlocale_null_r (int category, char *buf, size_t bufsize)
-  _GL_ARG_NONNULL ((2));
+  extern int setlocale_null_r (int category, char *buf, size_t bufsize) _GL_ARG_NONNULL ((2));
 
 /* setlocale_null (CATEGORY) is like setlocale (CATEGORY, NULL), except that
    it is guaranteed to be multithread-safe.
@@ -72,11 +71,10 @@ extern int setlocale_null_r (int category, char *buf, size_t bufsize)
    to use setlocale_null_r or setlocale_null as well, and the other threads
    must not make other setlocale invocations (since changing the global locale
    has side effects on all threads).  */
-extern const char *setlocale_null (int category);
+  extern const char *setlocale_null (int category);
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 }
-#endif
-
-#endif /* _SETLOCALE_NULL_H */
+#  endif
+#endif				/* _SETLOCALE_NULL_H */

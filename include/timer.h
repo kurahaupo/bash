@@ -19,29 +19,28 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#  include "config.h"
 #endif
 
 #include "bashjmp.h"
-typedef struct _shtimer
-{
+typedef struct _shtimer {
   struct timeval tmout;
 
   int fd;
   int flags;
 
-  int alrmflag;					/* should be set by alrm_handler */
+  int alrmflag;			/* should be set by alrm_handler */
 
   SigHandler *alrm_handler;
   SigHandler *old_handler;
 
   procenv_t jmpenv;
 
-  int (*tm_handler) (struct _shtimer *);	/* called on timeout if set */
-  PTR_T	*data;					/* reserved */
+  int (*tm_handler) (struct _shtimer *); /* called on timeout if set */
+  PTR_T *data;			/* reserved */
 } sh_timer;
 
-#define SHTIMER_ALARM	0x01			/* mutually exclusive */
+#define SHTIMER_ALARM	0x01	/* mutually exclusive */
 #define SHTIMER_SELECT	0x02
 #define SHTIMER_LONGJMP	0x04
 

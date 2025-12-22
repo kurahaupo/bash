@@ -17,34 +17,34 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if !defined (HAVE_STRERROR)
 
-#include <bashtypes.h>
-#if defined (HAVE_SYS_PARAM_H)
-#  include <sys/param.h>
-#endif
+#  include <bashtypes.h>
+#  if defined (HAVE_SYS_PARAM_H)
+#    include <sys/param.h>
+#  endif
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
 
-#include <stdio.h>
-#include <errno.h>
+#  include <stdio.h>
+#  include <errno.h>
 
-#include <shell.h>
+#  include <shell.h>
 
-#if !defined (errno)
+#  if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#  endif	/* !errno */
 
 /* Return a string corresponding to the error number E.  From
    the ANSI C spec. */
-#if defined (strerror)
-#  undef strerror
-#endif
+#  if defined (strerror)
+#    undef strerror
+#  endif
 
 static char *errbase = "Unknown system error ";
 
@@ -52,14 +52,14 @@ char *
 strerror (int e)
 {
   static char emsg[40];
-#if defined (HAVE_SYS_ERRLIST)
+#  if defined (HAVE_SYS_ERRLIST)
   extern int sys_nerr;
   extern char *sys_errlist[];
 
   if (e > 0 && e < sys_nerr)
     return (sys_errlist[e]);
   else
-#endif /* HAVE_SYS_ERRLIST */
+#  endif	/* HAVE_SYS_ERRLIST */
     {
       char *z;
 
@@ -70,4 +70,4 @@ strerror (int e)
       return (&emsg[0]);
     }
 }
-#endif /* HAVE_STRERROR */
+#endif		/* HAVE_STRERROR */

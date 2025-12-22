@@ -28,7 +28,7 @@
        declaration; then they apply to that entity only.  */
 
 #ifndef _GL_ATTRIBUTE_H
-#define _GL_ATTRIBUTE_H
+#  define _GL_ATTRIBUTE_H
 
 
 /* This file defines two types of attributes:
@@ -52,29 +52,29 @@
      - enumeration, enumeration item,
      - typedef,
    in C++ also: namespace, class, template specialization.  */
-#define DEPRECATED _GL_ATTRIBUTE_DEPRECATED
+#  define DEPRECATED _GL_ATTRIBUTE_DEPRECATED
 
 /* If a function call is not optimized way, warn with MSG.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_WARNING(msg) _GL_ATTRIBUTE_WARNING (msg)
+#  define ATTRIBUTE_WARNING(msg) _GL_ATTRIBUTE_WARNING (msg)
 
 /* If a function call is not optimized way, report an error with MSG.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_ERROR(msg) _GL_ATTRIBUTE_ERROR (msg)
+#  define ATTRIBUTE_ERROR(msg) _GL_ATTRIBUTE_ERROR (msg)
 
 
 /* Attributes for memory-allocating functions.  */
 
 /* The function returns a pointer to freshly allocated memory.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_MALLOC _GL_ATTRIBUTE_MALLOC
+#  define ATTRIBUTE_MALLOC _GL_ATTRIBUTE_MALLOC
 
 /* ATTRIBUTE_ALLOC_SIZE ((N)) - The Nth argument of the function
    is the size of the returned memory block.
    ATTRIBUTE_ALLOC_SIZE ((M, N)) - Multiply the Mth and Nth arguments
    to determine the size of the returned memory block.  */
 /* Applies to: function, pointer to function, function types.  */
-#define ATTRIBUTE_ALLOC_SIZE(args) _GL_ATTRIBUTE_ALLOC_SIZE (args)
+#  define ATTRIBUTE_ALLOC_SIZE(args) _GL_ATTRIBUTE_ALLOC_SIZE (args)
 
 /* ATTRIBUTE_DEALLOC (F, I) declares that the function returns pointers
    that can be freed by passing them as the Ith argument to the
@@ -82,8 +82,8 @@
    ATTRIBUTE_DEALLOC_FREE declares that the function returns pointers that
    can be freed via 'free'; it can be used only after declaring 'free'.  */
 /* Applies to: functions.  Cannot be used on inline functions.  */
-#define ATTRIBUTE_DEALLOC(f, i) _GL_ATTRIBUTE_DEALLOC(f, i)
-#define ATTRIBUTE_DEALLOC_FREE _GL_ATTRIBUTE_DEALLOC_FREE
+#  define ATTRIBUTE_DEALLOC(f, i) _GL_ATTRIBUTE_DEALLOC(f, i)
+#  define ATTRIBUTE_DEALLOC_FREE _GL_ATTRIBUTE_DEALLOC_FREE
 
 /* Attributes for variadic functions.  */
 
@@ -91,7 +91,7 @@
    ATTRIBUTE_SENTINEL () - The last argument is NULL (requires C99).
    ATTRIBUTE_SENTINEL ((N)) - The (N+1)st argument from the end is NULL.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_SENTINEL(pos) _GL_ATTRIBUTE_SENTINEL (pos)
+#  define ATTRIBUTE_SENTINEL(pos) _GL_ATTRIBUTE_SENTINEL (pos)
 
 
 /* ================== Attributes for compiler diagnostics ================== */
@@ -110,21 +110,21 @@
    If FIRST-TO-CHECK is not 0, arguments starting at FIRST-TO_CHECK
    are suitable for the format string.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_FORMAT(spec) _GL_ATTRIBUTE_FORMAT (spec)
+#  define ATTRIBUTE_FORMAT(spec) _GL_ATTRIBUTE_FORMAT (spec)
 
 /* ATTRIBUTE_NONNULL ((N1, N2,...)) - Arguments N1, N2,... must not be NULL.
    ATTRIBUTE_NONNULL () - All pointer arguments must not be null.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_NONNULL(args) _GL_ATTRIBUTE_NONNULL (args)
+#  define ATTRIBUTE_NONNULL(args) _GL_ATTRIBUTE_NONNULL (args)
 
 /* The function's return value is a non-NULL pointer.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_RETURNS_NONNULL _GL_ATTRIBUTE_RETURNS_NONNULL
+#  define ATTRIBUTE_RETURNS_NONNULL _GL_ATTRIBUTE_RETURNS_NONNULL
 
 /* Warn if the caller does not use the return value,
    unless the caller uses something like ignore_value.  */
 /* Applies to: function, enumeration, class.  */
-#define NODISCARD _GL_ATTRIBUTE_NODISCARD
+#  define NODISCARD _GL_ATTRIBUTE_NODISCARD
 
 
 /* Attributes that disable false alarms when the compiler diagnoses
@@ -137,17 +137,17 @@
      - enumeration, enumeration item,
      - typedef,
    in C++ also: class.  */
-#define MAYBE_UNUSED _GL_ATTRIBUTE_MAYBE_UNUSED
+#  define MAYBE_UNUSED _GL_ATTRIBUTE_MAYBE_UNUSED
 
 /* The contents of a character array is not meant to be NUL-terminated.  */
 /* Applies to: struct/union members and variables that are arrays of element
    type '[[un]signed] char'.  */
-#define ATTRIBUTE_NONSTRING _GL_ATTRIBUTE_NONSTRING
+#  define ATTRIBUTE_NONSTRING _GL_ATTRIBUTE_NONSTRING
 
 /* Do not warn if control flow falls through to the immediately
    following 'case' or 'default' label.  */
 /* Applies to: Empty statement (;), inside a 'switch' statement.  */
-#define FALLTHROUGH _GL_ATTRIBUTE_FALLTHROUGH
+#  define FALLTHROUGH _GL_ATTRIBUTE_FALLTHROUGH
 
 
 /* ================== Attributes for debugging information ================== */
@@ -156,27 +156,27 @@
 
 /* Omit the function from stack traces when debugging.  */
 /* Applies to: function.  */
-#define ATTRIBUTE_ARTIFICIAL _GL_ATTRIBUTE_ARTIFICIAL
+#  define ATTRIBUTE_ARTIFICIAL _GL_ATTRIBUTE_ARTIFICIAL
 
 /* Make the entity visible to debuggers etc., even with '-fwhole-program'.  */
 /* Applies to: functions, variables.  */
-#define ATTRIBUTE_EXTERNALLY_VISIBLE _GL_ATTRIBUTE_EXTERNALLY_VISIBLE
+#  define ATTRIBUTE_EXTERNALLY_VISIBLE _GL_ATTRIBUTE_EXTERNALLY_VISIBLE
 
 
 /* ========== Attributes that mainly direct compiler optimizations ========== */
 
 /* The function does not throw exceptions.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_NOTHROW _GL_ATTRIBUTE_NOTHROW
+#  define ATTRIBUTE_NOTHROW _GL_ATTRIBUTE_NOTHROW
 
 /* Do not inline the function.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_NOINLINE _GL_ATTRIBUTE_NOINLINE
+#  define ATTRIBUTE_NOINLINE _GL_ATTRIBUTE_NOINLINE
 
 /* Always inline the function, and report an error if the compiler
    cannot inline.  */
 /* Applies to: function.  */
-#define ATTRIBUTE_ALWAYS_INLINE _GL_ATTRIBUTE_ALWAYS_INLINE
+#  define ATTRIBUTE_ALWAYS_INLINE _GL_ATTRIBUTE_ALWAYS_INLINE
 
 /* It is OK for a compiler to omit duplicate calls with the same arguments.
    This attribute is safe for a function that neither depends on
@@ -184,7 +184,7 @@
    e.g., does not loop forever, and does not call longjmp.
    (This attribute is stricter than ATTRIBUTE_PURE.)  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_CONST _GL_ATTRIBUTE_CONST
+#  define ATTRIBUTE_CONST _GL_ATTRIBUTE_CONST
 
 /* It is OK for a compiler to omit duplicate calls with the same
    arguments if observable state is not changed between calls.
@@ -192,24 +192,24 @@
    observable state, and always returns exactly once.
    (This attribute is looser than ATTRIBUTE_CONST.)  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_PURE _GL_ATTRIBUTE_PURE
+#  define ATTRIBUTE_PURE _GL_ATTRIBUTE_PURE
 
 /* The function is rarely executed.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_COLD _GL_ATTRIBUTE_COLD
+#  define ATTRIBUTE_COLD _GL_ATTRIBUTE_COLD
 
 /* If called from some other compilation unit, the function executes
    code from that unit only by return or by exception handling,
    letting the compiler optimize that unit more aggressively.  */
 /* Applies to: functions.  */
-#define ATTRIBUTE_LEAF _GL_ATTRIBUTE_LEAF
+#  define ATTRIBUTE_LEAF _GL_ATTRIBUTE_LEAF
 
 /* For struct members: The member has the smallest possible alignment.
    For struct, union, class: All members have the smallest possible alignment,
    minimizing the memory required.  */
 /* Applies to: struct members, struct, union,
    in C++ also: class.  */
-#define ATTRIBUTE_PACKED _GL_ATTRIBUTE_PACKED
+#  define ATTRIBUTE_PACKED _GL_ATTRIBUTE_PACKED
 
 
 /* ================ Attributes that make invalid code valid ================ */
@@ -220,7 +220,7 @@
 /* Pointers to the type may point to the same storage as pointers to
    other types, thus disabling strict aliasing optimization.  */
 /* Applies to: types.  */
-#define ATTRIBUTE_MAY_ALIAS _GL_ATTRIBUTE_MAY_ALIAS
+#  define ATTRIBUTE_MAY_ALIAS _GL_ATTRIBUTE_MAY_ALIAS
 
 
-#endif /* _GL_ATTRIBUTE_H */
+#endif		/* _GL_ATTRIBUTE_H */

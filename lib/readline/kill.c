@@ -28,14 +28,14 @@
 #include <sys/types.h>
 
 #if defined (HAVE_UNISTD_H)
-#  include <unistd.h>           /* for _POSIX_VERSION */
-#endif /* HAVE_UNISTD_H */
+#  include <unistd.h>		/* for _POSIX_VERSION */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include <stdio.h>
 
@@ -59,10 +59,10 @@
 #define DEFAULT_MAX_KILLS 10
 
 /* The real variable to look at to find out when to flush kills. */
-static int rl_max_kills =  DEFAULT_MAX_KILLS;
+static int rl_max_kills = DEFAULT_MAX_KILLS;
 
 /* Where to store killed text. */
-static char **rl_kill_ring = (char **)NULL;
+static char **rl_kill_ring = (char **) NULL;
 
 /* Where we are in the kill ring. */
 static int rl_kill_index;
@@ -100,9 +100,8 @@ _rl_copy_to_kill_ring (char *text, int append)
       if (rl_kill_ring == 0)
 	{
 	  /* If we don't have any defined, then make one. */
-	  rl_kill_ring = (char **)
-	    xmalloc (((rl_kill_ring_length = 1) + 1) * sizeof (char *));
-	  rl_kill_ring[slot = 0] = (char *)NULL;
+	  rl_kill_ring = (char **) xmalloc (((rl_kill_ring_length = 1) + 1) * sizeof (char *));
+	  rl_kill_ring[slot = 0] = (char *) NULL;
 	}
       else
 	{
@@ -119,9 +118,9 @@ _rl_copy_to_kill_ring (char *text, int append)
 	  else
 	    {
 	      slot = rl_kill_ring_length += 1;
-	      rl_kill_ring = (char **)xrealloc (rl_kill_ring, (slot + 1) * sizeof (char *));
+	      rl_kill_ring = (char **) xrealloc (rl_kill_ring, (slot + 1) * sizeof (char *));
 	    }
-	  rl_kill_ring[--slot] = (char *)NULL;
+	  rl_kill_ring[--slot] = (char *) NULL;
 	}
     }
   else
@@ -131,7 +130,7 @@ _rl_copy_to_kill_ring (char *text, int append)
   if (_rl_last_command_was_kill && rl_kill_ring[slot] && rl_editing_mode != vi_mode)
     {
       old = rl_kill_ring[slot];
-      new = (char *)xmalloc (1 + strlen (old) + strlen (text));
+      new = (char *) xmalloc (1 + strlen (old) + strlen (text));
 
       if (append)
 	{
@@ -504,7 +503,7 @@ rl_copy_backward_word (int count, int key)
 
   return (_rl_copy_word_as_kill (count, -1));
 }
-  
+
 /* Yank back the last killed text.  This ignores arguments. */
 int
 rl_yank (int count, int key)
@@ -529,8 +528,7 @@ rl_yank_pop (int count, int key)
 {
   int l, n;
 
-  if (((rl_last_func != rl_yank_pop) && (rl_last_func != rl_yank)) ||
-      !rl_kill_ring)
+  if (((rl_last_func != rl_yank_pop) && (rl_last_func != rl_yank)) || !rl_kill_ring)
     {
       _rl_abort_internal ();
       return 1;
@@ -561,29 +559,28 @@ rl_vi_yank_pop (int count, int key)
 {
   int l, n, origpoint;
 
-  if (((rl_last_func != rl_vi_yank_pop) && (rl_last_func != rl_vi_put)) ||
-      !rl_kill_ring)
+  if (((rl_last_func != rl_vi_yank_pop) && (rl_last_func != rl_vi_put)) || !rl_kill_ring)
     {
       _rl_abort_internal ();
       return 1;
     }
 
   l = strlen (rl_kill_ring[rl_kill_index]);
-#if 1
+#  if 1
   origpoint = rl_point;
   n = rl_point - l + 1;
-#else
+#  else
   n = rl_point - l;
-#endif
+#  endif
   if (n >= 0 && STREQN (rl_line_buffer + n, rl_kill_ring[rl_kill_index], l))
     {
-#if 1
-      rl_delete_text (n, n + l);		/* remember vi cursor positioning */
+#  if 1
+      rl_delete_text (n, n + l); /* remember vi cursor positioning */
       rl_point = origpoint - l;
-#else
+#  else
       rl_delete_text (n, rl_point);
       rl_point = n;
-#endif
+#  endif
       rl_kill_index--;
       if (rl_kill_index < 0)
 	rl_kill_index = rl_kill_ring_length - 1;
@@ -596,7 +593,7 @@ rl_vi_yank_pop (int count, int key)
       return 1;
     }
 }
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
 /* Yank the COUNTh argument from the previous history line, skipping
    HISTORY_SKIP lines before looking for the `previous line'. */
@@ -645,7 +642,7 @@ rl_yank_nth_arg_internal (int count, int key, int history_skip)
       rl_vi_append_mode (1, key);
       rl_insert_text (" ");
     }
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
   rl_insert_text (arg);
   xfree (arg);
@@ -686,12 +683,12 @@ rl_yank_last_arg (int count, int key)
       if (undo_needed)
 	rl_do_undo ();
       if (count < 0)		/* XXX - was < 1 */
-        direction = -direction;
+	direction = -direction;
       history_skip += direction;
       if (history_skip < 0)
 	history_skip = 0;
     }
- 
+
   if (explicit_arg_p)
     retval = rl_yank_nth_arg_internal (count_passed, key, history_skip);
   else
@@ -736,7 +733,7 @@ _rl_bracketed_text (size_t *lenp)
 	}
     }
   RL_UNSETSTATE (RL_STATE_MOREINPUT);
-  if (c < 0)		/* read error */
+  if (c < 0)			/* read error */
     {
       free (buf);
       _rl_abort_internal ();
@@ -774,27 +771,26 @@ rl_bracketed_paste_begin (int count, int key)
 int
 _rl_read_bracketed_paste_prefix (int c)
 {
-  char pbuf[BRACK_PASTE_SLEN+1], *pbpref;
+  char pbuf[BRACK_PASTE_SLEN + 1], *pbpref;
   int key, ind;
 
-  pbpref = BRACK_PASTE_PREF;		/* XXX - debugging */
+  pbpref = BRACK_PASTE_PREF;	/* XXX - debugging */
   if (c != pbpref[0])
     return (0);
   pbuf[ind = 0] = key = c;
-  while (ind < BRACK_PASTE_SLEN-1 &&
-	 (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
-         _rl_pushed_input_available () == 0 &&
-         _rl_input_queued (0))
+  while (ind < BRACK_PASTE_SLEN - 1 &&
+	 (RL_ISSTATE (RL_STATE_INPUTPENDING | RL_STATE_MACROINPUT) == 0) &&
+	 _rl_pushed_input_available () == 0 && _rl_input_queued (0))
     {
-      key = rl_read_key ();		/* XXX - for now */
+      key = rl_read_key ();	/* XXX - for now */
       if (key < 0)
 	break;
       pbuf[++ind] = key;
       if (pbuf[ind] != pbpref[ind])
-        break;
+	break;
     }
 
-  if (ind < BRACK_PASTE_SLEN-1 || key != BRACK_PASTE_LAST)	/* read incomplete sequence */
+  if (ind < BRACK_PASTE_SLEN - 1 || key != BRACK_PASTE_LAST) /* read incomplete sequence */
     {
       while (ind >= 0)
 	_rl_unget_char (pbuf[ind--]);
@@ -813,9 +809,9 @@ _rl_bracketed_read_key ()
   char *pbuf;
   size_t pblen;
 
-  RL_SETSTATE(RL_STATE_MOREINPUT);
+  RL_SETSTATE (RL_STATE_MOREINPUT);
   c = rl_read_key ();
-  RL_UNSETSTATE(RL_STATE_MOREINPUT);
+  RL_UNSETSTATE (RL_STATE_MOREINPUT);
 
   if (c < 0)
     return -1;
@@ -829,11 +825,11 @@ _rl_bracketed_read_key ()
 	  xfree (pbuf);
 	  return 0;		/* XXX */
 	}
-      c = (unsigned char)pbuf[0];
+      c = (unsigned char) pbuf[0];
       if (pblen > 1)
 	{
 	  while (--pblen > 0)
-	    _rl_unget_char ((unsigned char)pbuf[pblen]);
+	    _rl_unget_char ((unsigned char) pbuf[pblen]);
 	}
       xfree (pbuf);
     }
@@ -866,9 +862,9 @@ _rl_bracketed_read_mbstring (char *mb, int mlen)
 
 /* A special paste command for Windows users. */
 #if defined (_WIN32)
-#define WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
 
-#include <windows.h>
+#  include <windows.h>
 
 int
 rl_paste_from_clipboard (int count, int key)
@@ -879,19 +875,19 @@ rl_paste_from_clipboard (int count, int key)
   if (OpenClipboard (NULL) == 0)
     return (0);
 
-  data = (char *)GetClipboardData (CF_TEXT);
+  data = (char *) GetClipboardData (CF_TEXT);
   if (data)
     {
       ptr = strchr (data, '\r');
       if (ptr)
 	{
 	  len = ptr - data;
-	  ptr = (char *)xmalloc (len + 1);
+	  ptr = (char *) xmalloc (len + 1);
 	  ptr[len] = '\0';
 	  strncpy (ptr, data, len);
 	}
       else
-        ptr = data;
+	ptr = data;
       _rl_set_mark_at_pos (rl_point);
       rl_insert_text (ptr);
       if (ptr != data)
@@ -900,4 +896,4 @@ rl_paste_from_clipboard (int count, int key)
     }
   return (0);
 }
-#endif /* _WIN32 */
+#endif		/* _WIN32 */

@@ -67,7 +67,7 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #if defined (emacs) || defined (HAVE_CONFIG_H)
 #  include <config.h>
-#endif /* emacs */
+#endif		/* emacs */
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -89,7 +89,7 @@ what you give them.   Help stamp out software-hoarding!  */
 #if defined (HAVE_RESOURCE)
 #  include <sys/time.h>
 #  include <sys/resource.h>
-#endif /* HAVE_RESOURCE */
+#endif		/* HAVE_RESOURCE */
 
 /* Check for the needed symbols.  If they aren't present, this
    system's <sys/resource.h> isn't very useful to us. */
@@ -99,17 +99,17 @@ what you give them.   Help stamp out software-hoarding!  */
 
 #if __GNUC__ > 1
 #  define FASTCOPY(s, d, n)  __builtin_memcpy (d, s, n)
-#else /* !__GNUC__ */
+#else		/* !__GNUC__ */
 #  if !defined (HAVE_BCOPY)
 #    if !defined (HAVE_MEMMOVE)
 #      define FASTCOPY(s, d, n)  memcpy (d, s, n)
 #    else
 #      define FASTCOPY(s, d, n)  memmove (d, s, n)
-#    endif /* !HAVE_MEMMOVE */
-#  else /* HAVE_BCOPY */
+#    endif	/* !HAVE_MEMMOVE */
+#  else		/* HAVE_BCOPY */
 #    define FASTCOPY(s, d, n)  bcopy (s, d, n)
-#  endif /* HAVE_BCOPY */
-#endif /* !__GNUC__ */
+#  endif	/* HAVE_BCOPY */
+#endif		/* !__GNUC__ */
 
 #if !defined (NULL)
 #  define NULL 0
@@ -120,19 +120,19 @@ what you give them.   Help stamp out software-hoarding!  */
 #define ISALLOC ((char) 0xf7)	/* magic byte that implies allocation */
 #define ISFREE ((char) 0x54)	/* magic byte that implies free block */
 				/* this is for error checking only */
-#define ISMEMALIGN ((char) 0xd6)  /* Stored before the value returned by
-				     memalign, with the rest of the word
-				     being the distance to the true
-				     beginning of the block.  */
+#define ISMEMALIGN ((char) 0xd6) /* Stored before the value returned by
+				    memalign, with the rest of the word
+				    being the distance to the true
+				    beginning of the block.  */
 extern char etext;
 
 #if !defined (SBRK_DECLARED)
 extern char *sbrk ();
-#endif /* !SBRK_DECLARED */
+#endif		/* !SBRK_DECLARED */
 
 /* These two are for user programs to look at, when they are interested.  */
-unsigned int malloc_sbrk_used;       /* amount of data space used now */
-unsigned int malloc_sbrk_unused;     /* amount more we can have */
+unsigned int malloc_sbrk_used;	/* amount of data space used now */
+unsigned int malloc_sbrk_unused; /* amount more we can have */
 
 /* start of data space; can be changed by calling init_malloc */
 static char *data_space_start;
@@ -142,7 +142,7 @@ static void get_lim_data ();
 #ifdef MSTATS
 static int nmalloc[30];
 static int nmal, nfre;
-#endif /* MSTATS */
+#endif		/* MSTATS */
 
 /* If range checking is not turned on, all we have is a flag indicating
    whether memory is allocated, an index in nextf[], and a size field; to
@@ -152,14 +152,14 @@ static int nmal, nfre;
    is allocated, so the 'size' field is never used. */
 
 struct mhead {
-	char     mh_alloc;	/* ISALLOC or ISFREE */
-	char     mh_index;	/* index in nextf[] */
+  char mh_alloc;		/* ISALLOC or ISFREE */
+  char mh_index;		/* index in nextf[] */
 /* Remainder are valid only when block is allocated */
-	unsigned short mh_size;	/* size, if < 0x10000 */
+  unsigned short mh_size;	/* size, if < 0x10000 */
 #ifdef RCHECK
-	unsigned int mh_nbytes;	/* number of bytes allocated */
-	int      mh_magic4;	/* should be == MAGIC4 */
-#endif /* RCHECK */
+  unsigned int mh_nbytes;	/* number of bytes allocated */
+  int mh_magic4;		/* should be == MAGIC4 */
+#endif				/* RCHECK */
 };
 
 /* Access free-list pointer of a block.
@@ -177,8 +177,8 @@ struct mhead {
 #  if !defined (botch)
 #    define botch(x) abort ()
 #  else
-extern void botch();
-#  endif /* botch */
+extern void botch ();
+#  endif	/* botch */
 
 #  if !defined (__STRING)
 #    if defined (__STDC__)
@@ -198,10 +198,10 @@ extern void botch();
 #  define MAGIC4 0x55555555
 #  define ASSERT(p) if (!(p)) botch(__STRING(p)); else
 #  define EXTRA  4		/* 4 bytes extra for MAGIC1s */
-#else /* !RCHECK */
+#else		/* !RCHECK */
 #  define ASSERT(p)
 #  define EXTRA  0
-#endif /* RCHECK */
+#endif		/* RCHECK */
 
 /* nextf[i] is free list of blocks of size 2**(i + 3)  */
 
@@ -253,7 +253,7 @@ int
 malloc_usable_size (mem)
      char *mem;
 {
-  int blocksize = 8 << (((struct mhead *) mem) - 1) -> mh_index;
+  int blocksize = 8 << (((struct mhead *) mem) - 1)->mh_index;
 
   return blocksize - sizeof (struct mhead) - EXTRA;
 }
@@ -276,8 +276,8 @@ morecore (nu)			/* ask system for more memory */
   sigfillset (&set);
   sigemptyset (&oset);
   sigprocmask (SIG_BLOCK, &set, &oset);
-#  endif /* HAVE_POSIX_SIGNALS */
-#endif /* HAVE_BSD_SIGNALS */
+#  endif	/* HAVE_POSIX_SIGNALS */
+#endif		/* HAVE_BSD_SIGNALS */
 
   if (!data_space_start)
     {
@@ -287,9 +287,13 @@ morecore (nu)			/* ask system for more memory */
   if (lim_data == 0)
     get_lim_data ();
 
- /* On initial startup, get two blocks of each size up to 1k bytes */
+  /* On initial startup, get two blocks of each size up to 1k bytes */
   if (!gotpool)
-    { getpool (); getpool (); gotpool = 1; }
+    {
+      getpool ();
+      getpool ();
+      gotpool = 1;
+    }
 
   /* Find current end of memory and issue warning if getting near max */
 
@@ -301,21 +305,21 @@ morecore (nu)			/* ask system for more memory */
   if (warnfunction)
     switch (warnlevel)
       {
-      case 0: 
+      case 0:
 	if (siz > (lim_data / 4) * 3)
 	  {
 	    warnlevel++;
 	    (*warnfunction) ("Warning: past 75% of memory limit");
 	  }
 	break;
-      case 1: 
+      case 1:
 	if (siz > (lim_data / 20) * 17)
 	  {
 	    warnlevel++;
 	    (*warnfunction) ("Warning: past 85% of memory limit");
 	  }
 	break;
-      case 2: 
+      case 2:
 	if (siz > (lim_data / 20) * 19)
 	  {
 	    warnlevel++;
@@ -324,11 +328,11 @@ morecore (nu)			/* ask system for more memory */
 	break;
       }
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
+  if ((int) cp & 0x3ff)		/* land on 1K boundaries */
     sbrk (1024 - ((int) cp & 0x3ff));
 
- /* Take at least 2k, and figure out how many blocks of the desired size
-    we're about to get */
+  /* Take at least 2k, and figure out how many blocks of the desired size
+     we're about to get */
   nblks = 1;
   if ((siz = nu) < 8)
     nblks = 1 << ((siz = 8) - nu);
@@ -337,19 +341,20 @@ morecore (nu)			/* ask system for more memory */
     return;			/* no more room! */
 
   if ((int) cp & 7)
-    {		/* shouldn't happen, but just in case */
+    {				/* shouldn't happen, but just in case */
       cp = (char *) (((int) cp + 8) & ~7);
       nblks--;
     }
 
- /* save new header and link the nblks blocks together */
+  /* save new header and link the nblks blocks together */
   nextf[nu] = (struct mhead *) cp;
   siz = 1 << (nu + 3);
   while (1)
     {
-      ((struct mhead *) cp) -> mh_alloc = ISFREE;
-      ((struct mhead *) cp) -> mh_index = nu;
-      if (--nblks <= 0) break;
+      ((struct mhead *) cp)->mh_alloc = ISFREE;
+      ((struct mhead *) cp)->mh_index = nu;
+      if (--nblks <= 0)
+	break;
       CHAIN ((struct mhead *) cp) = (struct mhead *) (cp + siz);
       cp += siz;
     }
@@ -359,9 +364,9 @@ morecore (nu)			/* ask system for more memory */
   sigsetmask (oldmask);
 #else
 #  if defined (HAVE_POSIX_SIGNALS)
-  sigprocmask (SIG_SETMASK, &oset, (sigset_t *)NULL);
+  sigprocmask (SIG_SETMASK, &oset, (sigset_t *) NULL);
 #  endif
-#endif /* HAVE_BSD_SIGNALS */
+#endif		/* HAVE_BSD_SIGNALS */
 }
 
 static void
@@ -370,7 +375,7 @@ getpool ()
   register int nu;
   register char *cp = sbrk (0);
 
-  if ((int) cp & 0x3ff)	/* land on 1K boundaries */
+  if ((int) cp & 0x3ff)		/* land on 1K boundaries */
     sbrk (1024 - ((int) cp & 0x3ff));
 
   /* Record address of start of space allocated by malloc.  */
@@ -388,16 +393,16 @@ getpool ()
 
   CHAIN (cp) = nextf[0];
   nextf[0] = (struct mhead *) cp;
-  ((struct mhead *) cp) -> mh_alloc = ISFREE;
-  ((struct mhead *) cp) -> mh_index = 0;
+  ((struct mhead *) cp)->mh_alloc = ISFREE;
+  ((struct mhead *) cp)->mh_index = 0;
   cp += 8;
 
   for (nu = 0; nu < 7; nu++)
     {
       CHAIN (cp) = nextf[nu];
       nextf[nu] = (struct mhead *) cp;
-      ((struct mhead *) cp) -> mh_alloc = ISFREE;
-      ((struct mhead *) cp) -> mh_index = nu;
+      ((struct mhead *) cp)->mh_alloc = ISFREE;
+      ((struct mhead *) cp)->mh_index = nu;
       cp += 8 << nu;
     }
 }
@@ -416,10 +421,10 @@ zmemset (s, c, n)
     *sp++ = c;
   return (s);
 }
-#endif /* MEMSCRAMBLE || !NO_CALLOC */
+#endif		/* MEMSCRAMBLE || !NO_CALLOC */
 
 char *
-malloc (n)		/* get a block */
+malloc (n)			/* get a block */
      unsigned int n;
 {
   register struct mhead *p;
@@ -430,7 +435,7 @@ malloc (n)		/* get a block */
      multiple of 4, then figure out which nextf[] area to use */
   nbytes = (n + sizeof *p + EXTRA + 3) & ~3;
   {
-    register unsigned int   shiftr = (nbytes - 1) >> 2;
+    register unsigned int shiftr = (nbytes - 1) >> 2;
 
     while (shiftr >>= 1)
       nunits++;
@@ -440,7 +445,8 @@ malloc (n)		/* get a block */
      pick a block size that no other malloc level is currently
      trying to allocate.  That's the easiest harmless way not to
      interfere with the other level of execution.  */
-  while (busy[nunits]) nunits++;
+  while (busy[nunits])
+    nunits++;
   busy[nunits] = 1;
 
   /* If there are no blocks of the appropriate size, go get some */
@@ -460,33 +466,33 @@ malloc (n)		/* get a block */
   /* Check for free block clobbered */
   /* If not for this check, we would gobble a clobbered free chain ptr */
   /* and bomb out on the NEXT allocate of this size block */
-  if (p -> mh_alloc != ISFREE || p -> mh_index != nunits)
+  if (p->mh_alloc != ISFREE || p->mh_index != nunits)
 #ifdef RCHECK
     botch ("block on free list clobbered");
-#else /* not RCHECK */
+#else		/* not RCHECK */
     abort ();
-#endif /* not RCHECK */
+#endif		/* not RCHECK */
 
   /* Fill in the info, and if range checking, set up the magic numbers */
-  p -> mh_alloc = ISALLOC;
+  p->mh_alloc = ISALLOC;
 #ifdef RCHECK
-  p -> mh_nbytes = n;
-  p -> mh_magic4 = MAGIC4;
+  p->mh_nbytes = n;
+  p->mh_magic4 = MAGIC4;
   {
-    register char  *m = (char *) (p + 1) + n;
+    register char *m = (char *) (p + 1) + n;
 
     *m++ = MAGIC1, *m++ = MAGIC1, *m++ = MAGIC1, *m = MAGIC1;
   }
-#else /* not RCHECK */
-  p -> mh_size = n;
-#endif /* not RCHECK */
+#else		/* not RCHECK */
+  p->mh_size = n;
+#endif		/* not RCHECK */
 #ifdef MEMSCRAMBLE
-  zmemset ((char *)(p + 1), 0xdf, n);	/* scramble previous contents */
+  zmemset ((char *) (p + 1), 0xdf, n); /* scramble previous contents */
 #endif
 #ifdef MSTATS
   nmalloc[nunits]++;
   nmal++;
-#endif /* MSTATS */
+#endif		/* MSTATS */
   return (char *) (p + 1);
 }
 
@@ -503,7 +509,7 @@ free (mem)
 
     p = (struct mhead *) ap - 1;
 
-    if (p -> mh_alloc == ISMEMALIGN)
+    if (p->mh_alloc == ISMEMALIGN)
       {
 #ifdef RCHECK
 	ap -= p->mh_nbytes;
@@ -514,41 +520,43 @@ free (mem)
       }
 
 #ifndef RCHECK
-    if (p -> mh_alloc != ISALLOC)
+    if (p->mh_alloc != ISALLOC)
       abort ();
 
-#else /* RCHECK */
-    if (p -> mh_alloc != ISALLOC)
+#else		/* RCHECK */
+    if (p->mh_alloc != ISALLOC)
       {
-	if (p -> mh_alloc == ISFREE)
+	if (p->mh_alloc == ISFREE)
 	  botch ("free: Called with already freed block argument\n");
 	else
 	  botch ("free: Called with unallocated block argument\n");
       }
 
-    ASSERT (p -> mh_magic4 == MAGIC4);
-    ap += p -> mh_nbytes;
-    ASSERT (*ap++ == MAGIC1); ASSERT (*ap++ == MAGIC1);
-    ASSERT (*ap++ == MAGIC1); ASSERT (*ap   == MAGIC1);
-#endif /* RCHECK */
+    ASSERT (p->mh_magic4 == MAGIC4);
+    ap += p->mh_nbytes;
+    ASSERT (*ap++ == MAGIC1);
+    ASSERT (*ap++ == MAGIC1);
+    ASSERT (*ap++ == MAGIC1);
+    ASSERT (*ap == MAGIC1);
+#endif		/* RCHECK */
   }
 #ifdef MEMSCRAMBLE
   {
     register int n;
-    
-#ifdef RCHECK
+
+#  ifdef RCHECK
     n = p->mh_nbytes;
-#else /* not RCHECK */
+#  else		/* not RCHECK */
     n = p->mh_size;
-#endif /* not RCHECK */
+#  endif	/* not RCHECK */
     zmemset (mem, 0xcf, n);
   }
 #endif
   {
-    register int nunits = p -> mh_index;
+    register int nunits = p->mh_index;
 
     ASSERT (nunits <= 29);
-    p -> mh_alloc = ISFREE;
+    p->mh_alloc = ISFREE;
 
     /* Protect against signal handlers calling malloc.  */
     busy[nunits] = 1;
@@ -560,7 +568,7 @@ free (mem)
 #ifdef MSTATS
     nmalloc[nunits]--;
     nfre++;
-#endif /* MSTATS */
+#endif		/* MSTATS */
   }
 }
 
@@ -577,21 +585,23 @@ realloc (mem, n)
   if ((p = (struct mhead *) mem) == 0)
     return malloc (n);
   p--;
-  nunits = p -> mh_index;
-  ASSERT (p -> mh_alloc == ISALLOC);
+  nunits = p->mh_index;
+  ASSERT (p->mh_alloc == ISALLOC);
 #ifdef RCHECK
-  ASSERT (p -> mh_magic4 == MAGIC4);
+  ASSERT (p->mh_magic4 == MAGIC4);
   {
-    register char *m = mem + (tocopy = p -> mh_nbytes);
-    ASSERT (*m++ == MAGIC1); ASSERT (*m++ == MAGIC1);
-    ASSERT (*m++ == MAGIC1); ASSERT (*m   == MAGIC1);
+    register char *m = mem + (tocopy = p->mh_nbytes);
+    ASSERT (*m++ == MAGIC1);
+    ASSERT (*m++ == MAGIC1);
+    ASSERT (*m++ == MAGIC1);
+    ASSERT (*m == MAGIC1);
   }
-#else /* not RCHECK */
-  if (p -> mh_index >= 13)
-    tocopy = (1 << (p -> mh_index + 3)) - sizeof *p;
+#else		/* not RCHECK */
+  if (p->mh_index >= 13)
+    tocopy = (1 << (p->mh_index + 3)) - sizeof *p;
   else
-    tocopy = p -> mh_size;
-#endif /* not RCHECK */
+    tocopy = p->mh_size;
+#endif		/* not RCHECK */
 
   /* See if desired size rounds to same power of 2 as actual size. */
   nbytes = (n + sizeof *p + EXTRA + 7) & ~7;
@@ -601,13 +611,19 @@ realloc (mem, n)
     {
 #ifdef RCHECK
       register char *m = mem + tocopy;
-      *m++ = 0;  *m++ = 0;  *m++ = 0;  *m++ = 0;
-      p-> mh_nbytes = n;
+      *m++ = 0;
+      *m++ = 0;
+      *m++ = 0;
+      *m++ = 0;
+      p->mh_nbytes = n;
       m = mem + n;
-      *m++ = MAGIC1;  *m++ = MAGIC1;  *m++ = MAGIC1;  *m++ = MAGIC1;
-#else /* not RCHECK */
-      p -> mh_size = n;
-#endif /* not RCHECK */
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
+      *m++ = MAGIC1;
+#else		/* not RCHECK */
+      p->mh_size = n;
+#endif		/* not RCHECK */
       return mem;
     }
 
@@ -645,25 +661,25 @@ memalign (alignment, size)
   /* Store a suitable indication of how to free the block,
      so that free can find the true beginning of it.  */
   p = (struct mhead *) aligned - 1;
-  p -> mh_size = aligned - ptr;
-  p -> mh_alloc = ISMEMALIGN;
+  p->mh_size = aligned - ptr;
+  p->mh_alloc = ISMEMALIGN;
   return aligned;
 }
 
 #if !defined (HPUX)
 /* This runs into trouble with getpagesize on HPUX, and Multimax machines.
    Patching out seems cleaner than the ugly fix needed.  */
-#if defined (__STDC__)
+#  if defined (__STDC__)
 void *
-#else
+#  else
 char *
-#endif
+#  endif
 valloc (size)
      size_t size;
 {
   return memalign (getpagesize (), size);
 }
-#endif /* !HPUX */
+#endif		/* !HPUX */
 
 #ifndef NO_CALLOC
 char *
@@ -677,7 +693,7 @@ calloc (n, s)
   result = malloc (total);
   if (result)
     zmemset (result, 0, total);
-  return result;  
+  return result;
 }
 
 void
@@ -686,17 +702,16 @@ cfree (p)
 {
   free (p);
 }
-#endif /* !NO_CALLOC */
+#endif		/* !NO_CALLOC */
 
 #ifdef MSTATS
 /* Return statistics describing allocation of blocks of size 2**n. */
 
-struct mstats_value
-  {
-    int blocksize;
-    int nfree;
-    int nused;
-  };
+struct mstats_value {
+  int blocksize;
+  int nfree;
+  int nused;
+};
 
 struct mstats_value
 malloc_stats (size)
@@ -723,7 +738,7 @@ malloc_stats (size)
 
   return v;
 }
-#endif /* MSTATS */
+#endif		/* MSTATS */
 
 /*
  *	This function returns the total number of bytes that the process
@@ -737,23 +752,23 @@ extern long ulimit ();
 
 static void
 get_lim_data ()
-{    
+{
   lim_data = ulimit (3, 0);
   lim_data -= (long) data_space_start;
 }
 
-#else /* HAVE_RESOURCE */
+#else		/* HAVE_RESOURCE */
 static void
 get_lim_data ()
 {
   struct rlimit XXrlimit;
 
   getrlimit (RLIMIT_DATA, &XXrlimit);
-#ifdef RLIM_INFINITY
-  lim_data = XXrlimit.rlim_cur & RLIM_INFINITY; /* soft limit */
-#else
+#  ifdef RLIM_INFINITY
+  lim_data = XXrlimit.rlim_cur & RLIM_INFINITY;	/* soft limit */
+#  else
   lim_data = XXrlimit.rlim_cur;	/* soft limit */
-#endif
+#  endif
 }
 
-#endif /* HAVE_RESOURCE */
+#endif		/* HAVE_RESOURCE */

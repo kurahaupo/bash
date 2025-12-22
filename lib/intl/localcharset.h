@@ -16,12 +16,12 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _LOCALCHARSET_H
-#define _LOCALCHARSET_H
+#  define _LOCALCHARSET_H
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 extern "C" {
-#endif
+#  endif
 
 
 /* Determine the current locale's character encoding, and canonicalize it
@@ -32,7 +32,7 @@ extern "C" {
    is changed; threads in multithreaded programs should not do this.
    If the canonical name cannot be determined, the result is a non-canonical
    name.  */
-extern const char * locale_charset (void);
+  extern const char *locale_charset (void);
 
 /* About GNU canonical names for character encodings:
 
@@ -129,9 +129,7 @@ extern const char * locale_charset (void);
  */
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 }
-#endif
-
-
-#endif /* _LOCALCHARSET_H */
+#  endif
+#endif				/* _LOCALCHARSET_H */

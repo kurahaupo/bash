@@ -21,59 +21,59 @@
 /* Emacs config.h may rename various library functions such as malloc.  */
 #ifdef HAVE_CONFIG_H
 
-#include <config.h>
+#  include <config.h>
 
 /* Get the O_* definitions for open et al.  */
-#if !defined (_MINIX) && defined (HAVE_SYS_FILE_H)
-#  include <sys/file.h>
-#endif
+#  if !defined (_MINIX) && defined (HAVE_SYS_FILE_H)
+#    include <sys/file.h>
+#  endif
 
-#include <fcntl.h>
+#  include <fcntl.h>
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#  ifdef HAVE_UNISTD_H
+#    include <unistd.h>
+#  endif
 
-#ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-#else
+#  ifdef HAVE_STDLIB_H
+#    include <stdlib.h>
+#  else
 extern char *getenv ();
 extern char *malloc ();
 extern char *realloc ();
-#endif
+#  endif
 
-#if defined (HAVE_STRING_H)
-#include <string.h>
-#endif
+#  if defined (HAVE_STRING_H)
+#    include <string.h>
+#  endif
 
-#else /* not HAVE_CONFIG_H */
+#else		/* not HAVE_CONFIG_H */
 
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#else
+#  ifdef HAVE_STDLIB_H
+#    include <stdlib.h>
+#  else
 char *getenv ();
 char *malloc ();
 char *realloc ();
-#endif
+#  endif
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
+#  ifdef HAVE_STRING_H
+#    include <string.h>
+#  endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#  ifdef HAVE_UNISTD_H
+#    include <unistd.h>
+#  endif
 
-#include <fcntl.h>
+#  include <fcntl.h>
 
-#endif /* not HAVE_CONFIG_H */
+#endif		/* not HAVE_CONFIG_H */
 
 #ifndef NULL
-#define NULL (char *) 0
+#  define NULL (char *) 0
 #endif
 
 #ifndef O_RDONLY
-#define O_RDONLY 0
+#  define O_RDONLY 0
 #endif
 
 /* BUFSIZE is the initial size allocated for the buffer
@@ -84,19 +84,19 @@ char *realloc ();
    increasing the space dynamically.  */
 
 #ifndef BUFSIZE
-#ifdef DEBUG
-#define BUFSIZE bufsize
+#  ifdef DEBUG
+#    define BUFSIZE bufsize
 
 int bufsize = 128;
-#else
-#define BUFSIZE 2048
-#endif
+#  else
+#    define BUFSIZE 2048
+#  endif
 #endif
 
 #include "ltcap.h"
 
 #ifndef TERMCAP_FILE
-#define TERMCAP_FILE "/etc/termcap"
+#  define TERMCAP_FILE "/etc/termcap"
 #endif
 
 #ifndef emacs
@@ -130,7 +130,7 @@ xrealloc (void *ptr, size_t size)
     memory_out ();
   return tem;
 }
-#endif /* not emacs */
+#endif		/* not emacs */
 
 /* Looking up capabilities in the entry already found.  */
 
@@ -149,15 +149,12 @@ static char *
 find_capability (char *bp, char *cap)
 {
   for (; *bp; bp++)
-    if (bp[0] == ':'
-	&& bp[1] == cap[0]
-	&& bp[2] == cap[1])
+    if (bp[0] == ':' && bp[1] == cap[0] && bp[2] == cap[1])
       return &bp[4];
   return NULL;
 }
 
-__private_extern__
-int
+__private_extern__ int
 tgetnum (char *cap)
 {
   register char *ptr = find_capability (term_entry, cap);
@@ -166,8 +163,7 @@ tgetnum (char *cap)
   return atoi (ptr);
 }
 
-__private_extern__
-int
+__private_extern__ int
 tgetflag (char *cap)
 {
   register char *ptr = find_capability (term_entry, cap);
@@ -179,8 +175,7 @@ tgetflag (char *cap)
    to store the string.  That pointer is advanced over the space used.
    If AREA is null, space is allocated with `malloc'.  */
 
-__private_extern__
-char *
+__private_extern__ char *
 tgetstr (char *cap, char **area)
 {
   register char *ptr = find_capability (term_entry, cap);
@@ -193,8 +188,7 @@ tgetstr (char *cap, char **area)
    gives meaning of character following \, or a space if no special meaning.
    Eight characters per line within the string.  */
 
-static char esctab[]
-  = " \007\010  \033\014 \
+static char esctab[] = " \007\010  \033\014 \
       \012 \
   \015 \011 \013 \
         ";
@@ -285,20 +279,18 @@ __private_extern__ char PC = '\0';
 /* Actual baud rate if positive;
    - baud rate / 100 if negative.  */
 
-static int speeds[] =
-  {
+static int speeds[] = {
 #ifdef VMS
-    0, 50, 75, 110, 134, 150, -3, -6, -12, -18,
-    -20, -24, -36, -48, -72, -96, -192
-#else /* not VMS */
-    0, 50, 75, 110, 135, 150, -2, -3, -6, -12,
-    -18, -24, -48, -96, -192, -288, -384, -576, -1152
-#endif /* not VMS */
-  };
+  0, 50, 75, 110, 134, 150, -3, -6, -12, -18,
+  -20, -24, -36, -48, -72, -96, -192
+#else		/* not VMS */
+  0, 50, 75, 110, 135, 150, -2, -3, -6, -12,
+  -18, -24, -48, -96, -192, -288, -384, -576, -1152
+#endif		/* not VMS */
+};
 
-__private_extern__
-int
-tputs (char *str, int nlines, int (*outfun)(int))
+__private_extern__ int
+tputs (char *str, int nlines, int (*outfun) (int))
 {
   register int padcount = 0;
   register int speed;
@@ -309,7 +301,7 @@ tputs (char *str, int nlines, int (*outfun)(int))
   /* For quite high speeds, convert to the smaller
      units to avoid overflow.  */
   if (speed > 10000)
-    speed = - speed / 100;
+    speed = -speed / 100;
 #else
   if (ospeed == 0)
     speed = tputs_baud_rate;
@@ -363,14 +355,13 @@ tputs (char *str, int nlines, int (*outfun)(int))
 
 /* Finding the termcap entry in the termcap data base.  */
 
-struct buffer
-  {
-    char *beg;
-    int size;
-    char *ptr;
-    int ateof;
-    int full;
-  };
+struct buffer {
+  char *beg;
+  int size;
+  char *ptr;
+  int ateof;
+  int full;
+};
 
 /* Forward declarations of static functions.  */
 
@@ -381,9 +372,9 @@ static int name_match (char *, char *);
 
 #ifdef VMS
 
-#include <rmsdef.h>
-#include <fab.h>
-#include <nam.h>
+#  include <rmsdef.h>
+#  include <fab.h>
+#  include <nam.h>
 
 static int
 valid_filename_p (fn)
@@ -394,31 +385,30 @@ valid_filename_p (fn)
   char esa[NAM$C_MAXRSS];
 
   fab.fab$l_fna = fn;
-  fab.fab$b_fns = strlen(fn);
+  fab.fab$b_fns = strlen (fn);
   fab.fab$l_nam = &nam;
   fab.fab$l_fop = FAB$M_NAM;
 
   nam.nam$l_esa = esa;
   nam.nam$b_ess = sizeof esa;
 
-  return SYS$PARSE(&fab, 0, 0) == RMS$_NORMAL;
+  return SYS$PARSE (&fab, 0, 0) == RMS$_NORMAL;
 }
 
-#else /* !VMS */
+#else		/* !VMS */
 
-#ifdef MSDOS /* MW, May 1993 */
+#  ifdef MSDOS			/* MW, May 1993 */
 static int
 valid_filename_p (fn)
      char *fn;
 {
-  return *fn == '\\' || *fn == '/' ||
-    (*fn >= 'A' && *fn <= 'z' && fn[1] == ':');
+  return *fn == '\\' || *fn == '/' || (*fn >= 'A' && *fn <= 'z' && fn[1] == ':');
 }
-#else
-#define valid_filename_p(fn) (*(fn) == '/')
-#endif
+#  else
+#    define valid_filename_p(fn) (*(fn) == '/')
+#  endif
 
-#endif /* !VMS */
+#endif		/* !VMS */
 
 /* Find the termcap entry data for terminal type NAME
    and store it in the block that BP points to.
@@ -431,8 +421,7 @@ valid_filename_p (fn)
    0 if the data base is accessible but the type NAME is not defined
    in it, and some other value otherwise.  */
 
-__private_extern__
-int
+__private_extern__ int
 tgetent (char *bp, char *name)
 {
   register char *termcap_name;
@@ -461,7 +450,7 @@ tgetent (char *bp, char *name)
       strcpy (bp, term);
       goto ret;
     }
-#endif /* INTERNAL_TERMINAL */
+#endif		/* INTERNAL_TERMINAL */
 
   /* For compatibility with programs like `less' that want to
      put data in the termcap buffer themselves as a fallback.  */
@@ -472,12 +461,10 @@ tgetent (char *bp, char *name)
   if (termcap_name && *termcap_name == '\0')
     termcap_name = NULL;
 #if 0
-#if defined (MSDOS) && !defined (TEST)
-  if (termcap_name && (*termcap_name == '\\'
-		       || *termcap_name == '/'
-		       || termcap_name[1] == ':'))
-    dostounix_filename(termcap_name);
-#endif
+#  if defined (MSDOS) && !defined (TEST)
+  if (termcap_name && (*termcap_name == '\\' || *termcap_name == '/' || termcap_name[1] == ':'))
+    dostounix_filename (termcap_name);
+#  endif
 #endif
 
   filep = termcap_name && valid_filename_p (termcap_name);
@@ -502,7 +489,7 @@ tgetent (char *bp, char *name)
       else
 	{			/* It has tc=.  Need to read /etc/termcap.  */
 	  tcenv = termcap_name;
- 	  termcap_name = NULL;
+	  termcap_name = NULL;
 	}
     }
 
@@ -512,7 +499,7 @@ tgetent (char *bp, char *name)
   /* Here we know we must search a file and termcap_name has its name.  */
 
 #ifdef MSDOS
-  fd = open (termcap_name, O_RDONLY|O_TEXT, 0);
+  fd = open (termcap_name, O_RDONLY | O_TEXT, 0);
 #else
   fd = open (termcap_name, O_RDONLY, 0);
 #endif
@@ -580,7 +567,7 @@ tgetent (char *bp, char *name)
       *bp1 = '\0';
 
       /* Does this entry refer to another terminal type's entry?
-	 If something is found, copy it into heap and null-terminate it.  */
+         If something is found, copy it into heap and null-terminate it.  */
       term = tgetst1 (find_capability (bp2, "tc"), (char **) 0);
     }
 
@@ -590,7 +577,7 @@ tgetent (char *bp, char *name)
   if (malloc_size)
     bp = (char *) xrealloc (bp, bp1 - bp + 1);
 
- ret:
+ret:
   term_entry = bp;
   return 1;
 }
@@ -625,8 +612,7 @@ scan_file (char *str, int fd, struct buffer *bufp)
 	}
       while (!bufp->ateof && end[-2] == '\\');
 
-      if (*bufp->ptr != '#'
-	  && name_match (bufp->ptr, str))
+      if (*bufp->ptr != '#' && name_match (bufp->ptr, str))
 	return 1;
 
       /* Discard the line just processed.  */
@@ -674,7 +660,7 @@ compare_contin (char *str1, char *str2)
 	    return 0;
 	  else
 	    return 1;
-        }
+	}
       else if (c1 != c2)
 	return 1;
     }
@@ -707,9 +693,10 @@ gobble_line (int fd, struct buffer *bufp, char *append_end)
   while (1)
     {
       end = append_end;
-      while (*end && *end != '\n') end++;
+      while (*end && *end != '\n')
+	end++;
       if (*end)
-        break;
+	break;
       if (bufp->ateof)
 	return buf + bufp->full;
       if (bufp->ptr == buf)
@@ -740,11 +727,11 @@ gobble_line (int fd, struct buffer *bufp, char *append_end)
 
 #ifdef TEST
 
-#ifdef NULL
-#undef NULL
-#endif
+#  ifdef NULL
+#    undef NULL
+#  endif
 
-#include <stdio.h>
+#  include <stdio.h>
 
 main (argc, argv)
      int argc;
@@ -792,4 +779,4 @@ tprint (char *cap)
   putchar ('\n');
 }
 
-#endif /* TEST */
+#endif		/* TEST */

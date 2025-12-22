@@ -31,14 +31,14 @@
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 /* System-specific feature definitions and include files. */
 #include "rldefs.h"
 
 #if defined (GWINSZ_IN_SYS_IOCTL)
 #  include <sys/ioctl.h>
-#endif /* GWINSZ_IN_SYS_IOCTL */
+#endif		/* GWINSZ_IN_SYS_IOCTL */
 
 /* Some standard library routines. */
 #include "readline.h"
@@ -48,23 +48,26 @@
 
 #if defined (HANDLE_SIGNALS)
 
-#define SIGHANDLER_RETURN return
+#  define SIGHANDLER_RETURN return
 
 /* This typedef is equivalent to the one for Function; it allows us
    to say SigHandler *foo = signal (SIGKILL, SIG_IGN); */
 typedef void SigHandler (int);
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
 typedef struct sigaction sighandler_cxt;
-#  define rl_sigaction(s, nh, oh)	sigaction(s, nh, oh)
-#else
-typedef struct { SigHandler *sa_handler; int sa_mask, sa_flags; } sighandler_cxt;
-#  define sigemptyset(m)
-#endif /* !HAVE_POSIX_SIGNALS */
+#    define rl_sigaction(s, nh, oh)	sigaction(s, nh, oh)
+#  else
+typedef struct {
+  SigHandler *sa_handler;
+  int sa_mask, sa_flags;
+} sighandler_cxt;
+#    define sigemptyset(m)
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
-#ifndef SA_RESTART
-#  define SA_RESTART 0
-#endif
+#  ifndef SA_RESTART
+#    define SA_RESTART 0
+#  endif
 
 static SigHandler *rl_set_sighandler (int, SigHandler *, sighandler_cxt *);
 static void rl_maybe_set_sighandler (int, SigHandler *, sighandler_cxt *);
@@ -72,7 +75,7 @@ static void rl_maybe_restore_sighandler (int, sighandler_cxt *);
 
 static void rl_signal_handler (int);
 static void _rl_handle_signal (int);
-     
+
 /* Exported variables for use by applications. */
 
 /* If non-zero, readline will install its own signal handlers for
@@ -80,14 +83,14 @@ static void _rl_handle_signal (int);
 int rl_catch_signals = 1;
 
 /* If non-zero, readline will install a signal handler for SIGWINCH. */
-#ifdef SIGWINCH
+#  ifdef SIGWINCH
 int rl_catch_sigwinch = 1;
-#else
+#  else
 int rl_catch_sigwinch = 0;	/* for the readline state struct in readline.c */
-#endif
+#  endif
 
 /* Private variables. */
-int volatile _rl_caught_signal = 0;	/* should be sig_atomic_t, but that requires including <signal.h> everywhere */
+int volatile _rl_caught_signal = 0; /* should be sig_atomic_t, but that requires including <signal.h> everywhere */
 int volatile _rl_handling_signal = 0;
 
 /* If non-zero, print characters corresponding to received signals as long as
@@ -101,9 +104,9 @@ int _rl_susp_char = 0;
 static int signals_set_flag;
 static int sigwinch_set_flag;
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
 sigset_t _rl_orig_sigset;
-#endif /* !HAVE_POSIX_SIGNALS */
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
 /* **************************************************************** */
 /*					        		    */
@@ -112,12 +115,12 @@ sigset_t _rl_orig_sigset;
 /* **************************************************************** */
 
 static sighandler_cxt old_int, old_term, old_hup, old_alrm, old_quit;
-#if defined (SIGTSTP)
+#  if defined (SIGTSTP)
 static sighandler_cxt old_tstp, old_ttou, old_ttin;
-#endif
-#if defined (SIGWINCH)
+#  endif
+#  if defined (SIGWINCH)
 static sighandler_cxt old_winch;
-#endif
+#  endif
 
 _rl_sigcleanup_func_t *_rl_sigcleanup;
 void *_rl_sigcleanarg;
@@ -130,25 +133,25 @@ _rl_signal_handler (int sig)
 {
   _rl_caught_signal = 0;	/* XXX */
 
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
   if (sig == SIGWINCH)
     {
-      RL_SETSTATE(RL_STATE_SIGHANDLER);
+      RL_SETSTATE (RL_STATE_SIGHANDLER);
       _rl_handling_signal = SIGWINCH;
 
       rl_resize_terminal ();
       /* XXX - experimental for now */
       /* Call a signal hook because though we called the original signal handler
-	 in rl_sigwinch_handler below, we will not resend the signal to
-	 ourselves. */
+         in rl_sigwinch_handler below, we will not resend the signal to
+         ourselves. */
       if (rl_signal_event_hook)
 	(*rl_signal_event_hook) ();
 
       _rl_handling_signal = 0;
-      RL_UNSETSTATE(RL_STATE_SIGHANDLER);
+      RL_UNSETSTATE (RL_STATE_SIGHANDLER);
     }
   else
-#endif
+#  endif
     _rl_handle_signal (sig);
 
   SIGHANDLER_RETURN;
@@ -169,29 +172,29 @@ _rl_handle_signal (int sig)
 {
   int block_sig;
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   sigset_t set, oset;
-#else /* !HAVE_POSIX_SIGNALS */
-#  if defined (HAVE_BSD_SIGNALS)
+#  else		/* !HAVE_POSIX_SIGNALS */
+#    if defined (HAVE_BSD_SIGNALS)
   long omask;
-#  else /* !HAVE_BSD_SIGNALS */
+#    else	/* !HAVE_BSD_SIGNALS */
   sighandler_cxt dummy_cxt;	/* needed for rl_set_sighandler call */
-#  endif /* !HAVE_BSD_SIGNALS */
-#endif /* !HAVE_POSIX_SIGNALS */
+#    endif	/* !HAVE_BSD_SIGNALS */
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
-  RL_SETSTATE(RL_STATE_SIGHANDLER);
+  RL_SETSTATE (RL_STATE_SIGHANDLER);
   _rl_handling_signal = sig;
 
-#if !defined (HAVE_BSD_SIGNALS) && !defined (HAVE_POSIX_SIGNALS)
+#  if !defined (HAVE_BSD_SIGNALS) && !defined (HAVE_POSIX_SIGNALS)
   /* Since the signal will not be blocked while we are in the signal
      handler, ignore it until rl_clear_signals resets the catcher. */
-#  if defined (SIGALRM)
+#    if defined (SIGALRM)
   if (sig == SIGINT || sig == SIGALRM)
-#  else
+#    else
   if (sig == SIGINT)
-#  endif
+#    endif
     rl_set_sighandler (sig, SIG_IGN, &dummy_cxt);
-#endif /* !HAVE_BSD_SIGNALS && !HAVE_POSIX_SIGNALS */
+#  endif	/* !HAVE_BSD_SIGNALS && !HAVE_POSIX_SIGNALS */
 
   /* If there's a sig cleanup function registered, call it and `deregister'
      the cleanup function to avoid multiple calls */
@@ -202,121 +205,121 @@ _rl_handle_signal (int sig)
       _rl_sigcleanarg = 0;
     }
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   /* Get the current set of blocked signals. If we want to block a signal for
      the duration of the cleanup functions, make sure to add it to SET and
      set block_sig = 1 (see the SIGHUP case below). */
-  block_sig = 0;	/* sentinel to block signals with sigprocmask */
+  block_sig = 0;		/* sentinel to block signals with sigprocmask */
   sigemptyset (&set);
-  sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &set);
-#endif
+  sigprocmask (SIG_BLOCK, (sigset_t *) NULL, &set);
+#  endif
 
   switch (sig)
     {
     case SIGINT:
       /* We will end up blocking SIGTTOU while we are resetting the tty, so
-	 watch out for this if it causes problems. We could prevent this by
-	 setting block_sig to 1 without modifying SET. */
+         watch out for this if it causes problems. We could prevent this by
+         setting block_sig to 1 without modifying SET. */
       _rl_reset_completion_state ();
       rl_free_line_state ();
-#if defined (READLINE_CALLBACKS)
+#  if defined (READLINE_CALLBACKS)
       rl_callback_sigcleanup ();
-#endif
+#  endif
 
       /* FALLTHROUGH */
 
-#if defined (SIGTSTP)
+#  if defined (SIGTSTP)
     case SIGTSTP:
     case SIGTTIN:
     case SIGTTOU:
-#  if defined (HAVE_POSIX_SIGNALS)
+#    if defined (HAVE_POSIX_SIGNALS)
       /* Block SIGTTOU so we can restore the terminal settings to something
-	 sane without stopping on SIGTTOU if we have been placed into the
-	 background.  Even trying to get the current terminal pgrp with
-	 tcgetpgrp() will generate SIGTTOU, so we don't bother.  We still do
-	 this even if we've been stopped on SIGTTOU, since we handle signals
-	 when we have returned from the signal handler and the signal is no
-	 longer blocked. */
+         sane without stopping on SIGTTOU if we have been placed into the
+         background.  Even trying to get the current terminal pgrp with
+         tcgetpgrp() will generate SIGTTOU, so we don't bother.  We still do
+         this even if we've been stopped on SIGTTOU, since we handle signals
+         when we have returned from the signal handler and the signal is no
+         longer blocked. */
       if (block_sig == 0)
 	{
 	  sigaddset (&set, SIGTTOU);
 	  block_sig = 1;
 	}
-#  endif
-#endif /* SIGTSTP */
-   /* Any signals that should be blocked during cleanup should go here. */
-#if defined (SIGHUP)
+#    endif
+#  endif	/* SIGTSTP */
+      /* Any signals that should be blocked during cleanup should go here. */
+#  if defined (SIGHUP)
     case SIGHUP:
-#  if defined (_AIX)
+#    if defined (_AIX)
       if (block_sig == 0)
 	{
 	  sigaddset (&set, sig);
 	  block_sig = 1;
 	}
-#  endif // _AIX
-#endif
-    /* Signals that don't require blocking during cleanup should go here. */
+#    endif	// _AIX
+#  endif
+      /* Signals that don't require blocking during cleanup should go here. */
     case SIGTERM:
-#if defined (SIGALRM)
+#  if defined (SIGALRM)
     case SIGALRM:
       if (sig == SIGALRM)
 	_rl_timeout_handle_sigalrm ();
-#endif
-#if defined (SIGQUIT)
+#  endif
+#  if defined (SIGQUIT)
     case SIGQUIT:
-#endif
+#  endif
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
       if (block_sig)
 	sigprocmask (SIG_BLOCK, &set, &oset);
-#endif
+#  endif
 
-#if defined (READLINE_CALLBACKS)
+#  if defined (READLINE_CALLBACKS)
       if (RL_ISSTATE (RL_STATE_CALLBACK) == 0 || rl_persistent_signal_handlers)
-#endif
-      rl_echo_signal_char (sig);
+#  endif
+	rl_echo_signal_char (sig);
       rl_cleanup_after_signal ();
 
       /* At this point, the application's signal handler, if any, is the
-	 current handler. */
+         current handler. */
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
       /* Unblock any signal(s) blocked above */
       if (block_sig)
 	sigprocmask (SIG_UNBLOCK, &set, &oset);
-#endif
+#  endif
 
       /* We don't have to bother unblocking the signal because we are not
-	 running in a signal handler context. */
+         running in a signal handler context. */
 
-#if defined (__EMX__)
+#  if defined (__EMX__)
       signal (sig, SIG_ACK);
-#endif
+#  endif
 
-#if defined (HAVE_KILL)
+#  if defined (HAVE_KILL)
       kill (getpid (), sig);
-#else
+#  else
       raise (sig);		/* assume we have raise */
-#endif
+#  endif
 
       /* We don't need to modify the signal mask now that this is not run in
-	 a signal handler context. */
+         a signal handler context. */
 
-      rl_reset_after_signal ();      
+      rl_reset_after_signal ();
     }
 
   _rl_handling_signal = 0;
-  RL_UNSETSTATE(RL_STATE_SIGHANDLER);
+  RL_UNSETSTATE (RL_STATE_SIGHANDLER);
   SIGHANDLER_RETURN;
 }
 
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
 static void
 rl_sigwinch_handler (int sig)
 {
   SigHandler *oh;
 
-#if defined (MUST_REINSTALL_SIGHANDLERS)
+#    if defined (MUST_REINSTALL_SIGHANDLERS)
   sighandler_cxt dummy_winch;
 
   /* We don't want to change old_winch -- it holds the state of SIGWINCH
@@ -324,31 +327,31 @@ rl_sigwinch_handler (int sig)
      because we call the application's SIGWINCH handler after updating
      our own idea of the screen size. */
   rl_set_sighandler (SIGWINCH, rl_sigwinch_handler, &dummy_winch);
-#endif
+#    endif
 
-  RL_SETSTATE(RL_STATE_SIGHANDLER);
+  RL_SETSTATE (RL_STATE_SIGHANDLER);
   _rl_caught_signal = sig;
 
   /* If another sigwinch handler has been installed, call it. */
-  oh = (SigHandler *)old_winch.sa_handler;
-  if (oh &&  oh != (SigHandler *)SIG_IGN && oh != (SigHandler *)SIG_DFL)
+  oh = (SigHandler *) old_winch.sa_handler;
+  if (oh && oh != (SigHandler *) SIG_IGN && oh != (SigHandler *) SIG_DFL)
     (*oh) (sig);
 
-  RL_UNSETSTATE(RL_STATE_SIGHANDLER);
+  RL_UNSETSTATE (RL_STATE_SIGHANDLER);
   SIGHANDLER_RETURN;
 }
-#endif  /* SIGWINCH */
+#  endif	/* SIGWINCH */
 
 /* Functions to manage signal handling. */
 
-#if !defined (HAVE_POSIX_SIGNALS)
+#  if !defined (HAVE_POSIX_SIGNALS)
 static int
 rl_sigaction (int sig, sighandler_cxt *nh, sighandler_cxt *oh)
 {
   oh->sa_handler = signal (sig, nh->sa_handler);
   return 0;
 }
-#endif /* !HAVE_POSIX_SIGNALS */
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
 /* Set up a readline-specific signal handler, saving the old signal
    information in OHANDLER.  Return the old signal handler, like
@@ -357,21 +360,21 @@ static SigHandler *
 rl_set_sighandler (int sig, SigHandler *handler, sighandler_cxt *ohandler)
 {
   sighandler_cxt old_handler;
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   struct sigaction act;
 
   act.sa_handler = handler;
-#  if defined (SIGWINCH)
+#    if defined (SIGWINCH)
   act.sa_flags = (sig == SIGWINCH) ? SA_RESTART : 0;
-#  else
+#    else
   act.sa_flags = 0;
-#  endif /* SIGWINCH */
+#    endif	/* SIGWINCH */
   sigemptyset (&act.sa_mask);
   sigemptyset (&ohandler->sa_mask);
   sigaction (sig, &act, &old_handler);
-#else
-  old_handler.sa_handler = (SigHandler *)signal (sig, handler);
-#endif /* !HAVE_POSIX_SIGNALS */
+#  else
+  old_handler.sa_handler = (SigHandler *) signal (sig, handler);
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
   /* XXX -- assume we have memcpy */
   /* If rl_set_signals is called twice in a row, don't set the old handler to
@@ -393,7 +396,7 @@ rl_maybe_set_sighandler (int sig, SigHandler *handler, sighandler_cxt *ohandler)
   sigemptyset (&dummy.sa_mask);
   dummy.sa_flags = 0;
   oh = rl_set_sighandler (sig, handler, ohandler);
-  if (oh == (SigHandler *)SIG_IGN)
+  if (oh == (SigHandler *) SIG_IGN)
     rl_sigaction (sig, ohandler, &dummy);
 }
 
@@ -417,103 +420,103 @@ rl_set_signals (void)
 {
   sighandler_cxt dummy;
   SigHandler *oh;
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   static int sigmask_set = 0;
   static sigset_t bset, oset;
-#endif
+#  endif
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   if (rl_catch_signals && sigmask_set == 0)
     {
       sigemptyset (&bset);
 
       sigaddset (&bset, SIGINT);
       sigaddset (&bset, SIGTERM);
-#if defined (SIGHUP)
+#    if defined (SIGHUP)
       sigaddset (&bset, SIGHUP);
-#endif
-#if defined (SIGQUIT)
+#    endif
+#    if defined (SIGQUIT)
       sigaddset (&bset, SIGQUIT);
-#endif
-#if defined (SIGALRM)
+#    endif
+#    if defined (SIGALRM)
       sigaddset (&bset, SIGALRM);
-#endif
-#if defined (SIGTSTP)
+#    endif
+#    if defined (SIGTSTP)
       sigaddset (&bset, SIGTSTP);
-#endif
-#if defined (SIGTTIN)
+#    endif
+#    if defined (SIGTTIN)
       sigaddset (&bset, SIGTTIN);
-#endif
-#if defined (SIGTTOU)
+#    endif
+#    if defined (SIGTTOU)
       sigaddset (&bset, SIGTTOU);
-#endif
+#    endif
       sigmask_set = 1;
-    }      
-#endif /* HAVE_POSIX_SIGNALS */
+    }
+#  endif	/* HAVE_POSIX_SIGNALS */
 
   if (rl_catch_signals && signals_set_flag == 0)
     {
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
       sigemptyset (&_rl_orig_sigset);
       sigprocmask (SIG_BLOCK, &bset, &_rl_orig_sigset);
-#endif
+#  endif
 
       rl_maybe_set_sighandler (SIGINT, rl_signal_handler, &old_int);
       rl_maybe_set_sighandler (SIGTERM, rl_signal_handler, &old_term);
-#if defined (SIGHUP)
+#  if defined (SIGHUP)
       rl_maybe_set_sighandler (SIGHUP, rl_signal_handler, &old_hup);
-#endif
-#if defined (SIGQUIT)
+#  endif
+#  if defined (SIGQUIT)
       rl_maybe_set_sighandler (SIGQUIT, rl_signal_handler, &old_quit);
-#endif
+#  endif
 
-#if defined (SIGALRM)
+#  if defined (SIGALRM)
       oh = rl_set_sighandler (SIGALRM, rl_signal_handler, &old_alrm);
-      if (oh == (SigHandler *)SIG_IGN)
+      if (oh == (SigHandler *) SIG_IGN)
 	rl_sigaction (SIGALRM, &old_alrm, &dummy);
-#if defined (HAVE_POSIX_SIGNALS) && defined (SA_RESTART)
+#    if defined (HAVE_POSIX_SIGNALS) && defined (SA_RESTART)
       /* If the application using readline has already installed a signal
-	 handler with SA_RESTART, SIGALRM will cause reads to be restarted
-	 automatically, so readline should just get out of the way.  Since
-	 we tested for SIG_IGN above, we can just test for SIG_DFL here. */
-      if (oh != (SigHandler *)SIG_DFL && (old_alrm.sa_flags & SA_RESTART))
+         handler with SA_RESTART, SIGALRM will cause reads to be restarted
+         automatically, so readline should just get out of the way.  Since
+         we tested for SIG_IGN above, we can just test for SIG_DFL here. */
+      if (oh != (SigHandler *) SIG_DFL && (old_alrm.sa_flags & SA_RESTART))
 	rl_sigaction (SIGALRM, &old_alrm, &dummy);
-#endif /* HAVE_POSIX_SIGNALS */
-#endif /* SIGALRM */
+#    endif	/* HAVE_POSIX_SIGNALS */
+#  endif	/* SIGALRM */
 
-#if defined (SIGTSTP)
+#  if defined (SIGTSTP)
       rl_maybe_set_sighandler (SIGTSTP, rl_signal_handler, &old_tstp);
-#endif /* SIGTSTP */
+#  endif	/* SIGTSTP */
 
-#if defined (SIGTTOU)
+#  if defined (SIGTTOU)
       rl_maybe_set_sighandler (SIGTTOU, rl_signal_handler, &old_ttou);
-#endif /* SIGTTOU */
+#  endif	/* SIGTTOU */
 
-#if defined (SIGTTIN)
+#  if defined (SIGTTIN)
       rl_maybe_set_sighandler (SIGTTIN, rl_signal_handler, &old_ttin);
-#endif /* SIGTTIN */
+#  endif	/* SIGTTIN */
 
       signals_set_flag = 1;
 
-#if defined (HAVE_POSIX_SIGNALS)
-      sigprocmask (SIG_SETMASK, &_rl_orig_sigset, (sigset_t *)NULL);
-#endif
+#  if defined (HAVE_POSIX_SIGNALS)
+      sigprocmask (SIG_SETMASK, &_rl_orig_sigset, (sigset_t *) NULL);
+#  endif
     }
   else if (rl_catch_signals == 0)
     {
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
       sigemptyset (&_rl_orig_sigset);
-      sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &_rl_orig_sigset);
-#endif
+      sigprocmask (SIG_BLOCK, (sigset_t *) NULL, &_rl_orig_sigset);
+#  endif
     }
 
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
   if (rl_catch_sigwinch && sigwinch_set_flag == 0)
     {
       rl_maybe_set_sighandler (SIGWINCH, rl_sigwinch_handler, &old_winch);
       sigwinch_set_flag = 1;
     }
-#endif /* SIGWINCH */
+#  endif	/* SIGWINCH */
 
   return 0;
 }
@@ -526,45 +529,45 @@ rl_clear_signals (void)
   if (rl_catch_signals && signals_set_flag == 1)
     {
       /* Since rl_maybe_set_sighandler doesn't override a SIG_IGN handler,
-	 we should in theory not have to restore a handler where
-	 old_xxx.sa_handler == SIG_IGN.  That's what rl_maybe_restore_sighandler
-	 does.  Fewer system calls should reduce readline's per-line
-	 overhead */
+         we should in theory not have to restore a handler where
+         old_xxx.sa_handler == SIG_IGN.  That's what rl_maybe_restore_sighandler
+         does.  Fewer system calls should reduce readline's per-line
+         overhead */
       rl_maybe_restore_sighandler (SIGINT, &old_int);
       rl_maybe_restore_sighandler (SIGTERM, &old_term);
-#if defined (SIGHUP)
+#  if defined (SIGHUP)
       rl_maybe_restore_sighandler (SIGHUP, &old_hup);
-#endif
-#if defined (SIGQUIT)
+#  endif
+#  if defined (SIGQUIT)
       rl_maybe_restore_sighandler (SIGQUIT, &old_quit);
-#endif
-#if defined (SIGALRM)
+#  endif
+#  if defined (SIGALRM)
       rl_maybe_restore_sighandler (SIGALRM, &old_alrm);
-#endif
+#  endif
 
-#if defined (SIGTSTP)
+#  if defined (SIGTSTP)
       rl_maybe_restore_sighandler (SIGTSTP, &old_tstp);
-#endif /* SIGTSTP */
+#  endif	/* SIGTSTP */
 
-#if defined (SIGTTOU)
+#  if defined (SIGTTOU)
       rl_maybe_restore_sighandler (SIGTTOU, &old_ttou);
-#endif /* SIGTTOU */
+#  endif	/* SIGTTOU */
 
-#if defined (SIGTTIN)
+#  if defined (SIGTTIN)
       rl_maybe_restore_sighandler (SIGTTIN, &old_ttin);
-#endif /* SIGTTIN */
+#  endif	/* SIGTTIN */
 
       signals_set_flag = 0;
     }
 
-#if defined (SIGWINCH)
+#  if defined (SIGWINCH)
   if (rl_catch_sigwinch && sigwinch_set_flag == 1)
     {
       sigemptyset (&dummy.sa_mask);
       rl_sigaction (SIGWINCH, &old_winch, &dummy);
       sigwinch_set_flag = 0;
     }
-#endif
+#  endif
 
   return 0;
 }
@@ -595,18 +598,18 @@ rl_reset_after_signal (void)
 void
 _rl_state_sigcleanup (void)
 {
-  if (RL_ISSTATE (RL_STATE_ISEARCH))		/* incremental search */
+  if (RL_ISSTATE (RL_STATE_ISEARCH)) /* incremental search */
     _rl_isearch_cleanup (_rl_iscxt, 0);
-  else if (RL_ISSTATE (RL_STATE_NSEARCH))	/* non-incremental search */
+  else if (RL_ISSTATE (RL_STATE_NSEARCH)) /* non-incremental search */
     _rl_nsearch_sigcleanup (_rl_nscxt, 0);
-  else if (RL_ISSTATE (RL_STATE_READSTR))	/* reading a string */
+  else if (RL_ISSTATE (RL_STATE_READSTR)) /* reading a string */
     _rl_readstr_sigcleanup (_rl_rscxt, 0);
 }
 
 /* Free up the readline variable line state for the current line (undo list,
    any partial history entry, any keyboard macros in progress, and any
    numeric arguments in process) after catching a signal, before calling
-   rl_cleanup_after_signal(). */ 
+   rl_cleanup_after_signal(). */
 void
 rl_free_line_state (void)
 {
@@ -619,7 +622,7 @@ rl_free_line_state (void)
 
   entry = current_history ();
   if (entry)
-    entry->data = (char *)NULL;
+    entry->data = (char *) NULL;
 
   _rl_kill_kbd_macro ();
   rl_clear_message ();
@@ -637,7 +640,7 @@ rl_check_signals (void)
 {
   RL_CHECK_SIGNALS ();
 }
-#endif  /* HANDLE_SIGNALS */
+#endif		/* HANDLE_SIGNALS */
 
 /* **************************************************************** */
 /*								    */
@@ -647,12 +650,12 @@ rl_check_signals (void)
 
 #if defined (HAVE_POSIX_SIGNALS)
 static sigset_t sigwinch_set, sigwinch_oset;
-#else /* !HAVE_POSIX_SIGNALS */
+#else		/* !HAVE_POSIX_SIGNALS */
 #  if defined (HAVE_BSD_SIGNALS)
 static int sigint_oldmask;
 static int sigwinch_oldmask;
-#  endif /* HAVE_BSD_SIGNALS */
-#endif /* !HAVE_POSIX_SIGNALS */
+#  endif	/* HAVE_BSD_SIGNALS */
+#endif		/* !HAVE_POSIX_SIGNALS */
 
 static int sigint_blocked;
 static int sigwinch_blocked;
@@ -683,7 +686,8 @@ _rl_release_sigint (void)
   if (RL_ISSTATE (RL_STATE_SIGHANDLER) == 0)
     RL_CHECK_SIGNALS ();
   /* These are basically all the places that call rl_message() */
-  if (osig == SIGINT && (ostate & (RL_STATE_ISEARCH|RL_STATE_NSEARCH|RL_STATE_NUMERICARG|RL_STATE_MOREINPUT|RL_STATE_READSTR)))
+  if (osig == SIGINT
+      && (ostate & (RL_STATE_ISEARCH | RL_STATE_NSEARCH | RL_STATE_NUMERICARG | RL_STATE_MOREINPUT | RL_STATE_READSTR)))
     _rl_abort_internal ();
 }
 
@@ -703,22 +707,22 @@ _rl_block_sigwinch (void)
 
 #if defined (SIGWINCH)
 
-#if defined (HAVE_POSIX_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
   sigemptyset (&sigwinch_set);
   sigemptyset (&sigwinch_oset);
   sigaddset (&sigwinch_set, SIGWINCH);
   sigprocmask (SIG_BLOCK, &sigwinch_set, &sigwinch_oset);
-#else /* !HAVE_POSIX_SIGNALS */
-#  if defined (HAVE_BSD_SIGNALS)
+#  else		/* !HAVE_POSIX_SIGNALS */
+#    if defined (HAVE_BSD_SIGNALS)
   sigwinch_oldmask = sigblock (sigmask (SIGWINCH));
-#  else /* !HAVE_BSD_SIGNALS */
-#    if defined (HAVE_USG_SIGHOLD)
+#    else	/* !HAVE_BSD_SIGNALS */
+#      if defined (HAVE_USG_SIGHOLD)
   sighold (SIGWINCH);
-#    endif /* HAVE_USG_SIGHOLD */
-#  endif /* !HAVE_BSD_SIGNALS */
-#endif /* !HAVE_POSIX_SIGNALS */
+#      endif	/* HAVE_USG_SIGHOLD */
+#    endif	/* !HAVE_BSD_SIGNALS */
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
-#endif /* SIGWINCH */
+#endif		/* SIGWINCH */
 
   sigwinch_blocked = 1;
 }
@@ -732,19 +736,19 @@ _rl_release_sigwinch (void)
 
 #if defined (SIGWINCH)
 
-#if defined (HAVE_POSIX_SIGNALS)
-  sigprocmask (SIG_SETMASK, &sigwinch_oset, (sigset_t *)NULL);
-#else
-#  if defined (HAVE_BSD_SIGNALS)
+#  if defined (HAVE_POSIX_SIGNALS)
+  sigprocmask (SIG_SETMASK, &sigwinch_oset, (sigset_t *) NULL);
+#  else
+#    if defined (HAVE_BSD_SIGNALS)
   sigsetmask (sigwinch_oldmask);
-#  else /* !HAVE_BSD_SIGNALS */
-#    if defined (HAVE_USG_SIGHOLD)
+#    else	/* !HAVE_BSD_SIGNALS */
+#      if defined (HAVE_USG_SIGHOLD)
   sigrelse (SIGWINCH);
-#    endif /* HAVE_USG_SIGHOLD */
-#  endif /* !HAVE_BSD_SIGNALS */
-#endif /* !HAVE_POSIX_SIGNALS */
+#      endif	/* HAVE_USG_SIGHOLD */
+#    endif	/* !HAVE_BSD_SIGNALS */
+#  endif	/* !HAVE_POSIX_SIGNALS */
 
-#endif /* SIGWINCH */
+#endif		/* SIGWINCH */
 
   sigwinch_blocked = 0;
 }
@@ -771,14 +775,21 @@ rl_echo_signal_char (int sig)
 
   switch (sig)
     {
-    case SIGINT:  c = _rl_intr_char; break;
+    case SIGINT:
+      c = _rl_intr_char;
+      break;
 #if defined (SIGQUIT)
-    case SIGQUIT: c = _rl_quit_char; break;
+    case SIGQUIT:
+      c = _rl_quit_char;
+      break;
 #endif
 #if defined (SIGTSTP)
-    case SIGTSTP: c = _rl_susp_char; break;
+    case SIGTSTP:
+      c = _rl_susp_char;
+      break;
 #endif
-    default: return;
+    default:
+      return;
     }
 
   if (CTRL_CHAR (c) || c == RUBOUT)

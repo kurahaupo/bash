@@ -24,23 +24,23 @@
 
 #if !defined (HAVE_GETTIMEOFDAY)
 
-#include "posixtime.h"
+#  include "posixtime.h"
 
-#if defined _WIN32 && ! defined __CYGWIN__
-# define WINDOWS_NATIVE
-# include <windows.h>
-#endif
+#  if defined _WIN32 && ! defined __CYGWIN__
+#    define WINDOWS_NATIVE
+#    include <windows.h>
+#  endif
 
-#ifdef WINDOWS_NATIVE
+#  ifdef WINDOWS_NATIVE
 
-# if !(_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+#    if !(_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
 /* Avoid warnings from gcc -Wcast-function-type.  */
-#  define GetProcAddress \
+#      define GetProcAddress \
     (void *) GetProcAddress
 
 /* GetSystemTimePreciseAsFileTime was introduced only in Windows 8.  */
-typedef void (WINAPI * GetSystemTimePreciseAsFileTimeFuncType) (FILETIME *lpTime);
+typedef void (WINAPI *GetSystemTimePreciseAsFileTimeFuncType) (FILETIME * lpTime);
 static GetSystemTimePreciseAsFileTimeFuncType GetSystemTimePreciseAsFileTimeFunc = NULL;
 static BOOL initialized = FALSE;
 
@@ -51,18 +51,18 @@ initialize (void)
   if (kernel32 != NULL)
     {
       GetSystemTimePreciseAsFileTimeFunc =
-        (GetSystemTimePreciseAsFileTimeFuncType) GetProcAddress (kernel32, "GetSystemTimePreciseAsFileTime");
+	(GetSystemTimePreciseAsFileTimeFuncType) GetProcAddress (kernel32, "GetSystemTimePreciseAsFileTime");
     }
   initialized = TRUE;
 }
 
-# else /* !(_WIN32_WINNT >= _WIN32_WINNT_WIN8) */
+#    else	/* !(_WIN32_WINNT >= _WIN32_WINNT_WIN8) */
 
-#  define GetSystemTimePreciseAsFileTimeFunc GetSystemTimePreciseAsFileTime
+#      define GetSystemTimePreciseAsFileTimeFunc GetSystemTimePreciseAsFileTime
 
-# endif /* !(_WIN32_WINNT >= _WIN32_WINNT_WIN8) */
+#    endif	/* !(_WIN32_WINNT >= _WIN32_WINNT_WIN8) */
 
-#endif /* WINDOWS_NATIVE */
+#  endif	/* WINDOWS_NATIVE */
 
 /* This is a wrapper for gettimeofday.  It is used only on systems
    that lack this function, or whose implementation of this function
@@ -75,8 +75,8 @@ initialize (void)
 int
 gettimeofday (struct timeval *restrict tv, void *restrict tz)
 {
-#undef gettimeofday
-#ifdef WINDOWS_NATIVE
+#  undef gettimeofday
+#  ifdef WINDOWS_NATIVE
 
   /* On native Windows, there are two ways to get the current time:
      GetSystemTimeAsFileTime
@@ -92,10 +92,10 @@ gettimeofday (struct timeval *restrict tv, void *restrict tz)
      <http://www.windowstimestamp.com/description>.  */
   FILETIME current_time;
 
-# if !(_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+#    if !(_WIN32_WINNT >= _WIN32_WINNT_WIN8)
   if (!initialized)
     initialize ();
-# endif
+#    endif
   if (GetSystemTimePreciseAsFileTimeFunc != NULL)
     GetSystemTimePreciseAsFileTimeFunc (&current_time);
   else
@@ -103,40 +103,38 @@ gettimeofday (struct timeval *restrict tv, void *restrict tz)
 
   /* Convert from FILETIME to 'struct timeval'.  */
   /* FILETIME: <https://docs.microsoft.com/en-us/windows/desktop/api/minwinbase/ns-minwinbase-filetime> */
-  ULONGLONG since_1601 =
-    ((ULONGLONG) current_time.dwHighDateTime << 32)
-    | (ULONGLONG) current_time.dwLowDateTime;
+  ULONGLONG since_1601 = ((ULONGLONG) current_time.dwHighDateTime << 32) | (ULONGLONG) current_time.dwLowDateTime;
   /* Between 1601-01-01 and 1970-01-01 there were 280 normal years and 89 leap
      years, in total 134774 days.  */
-  ULONGLONG since_1970 =
-    since_1601 - (ULONGLONG) 134774 * (ULONGLONG) 86400 * (ULONGLONG) 10000000;
+  ULONGLONG since_1970 = since_1601 - (ULONGLONG) 134774 * (ULONGLONG) 86400 * (ULONGLONG) 10000000;
   ULONGLONG microseconds_since_1970 = since_1970 / (ULONGLONG) 10;
-  *tv = (struct timeval) {
-    .tv_sec  = microseconds_since_1970 / (ULONGLONG) 1000000,
+  *tv = (struct timeval)
+  {
+    .tv_sec = microseconds_since_1970 / (ULONGLONG) 1000000,
     .tv_usec = microseconds_since_1970 % (ULONGLONG) 1000000
   };
 
   return 0;
 
-#else /* !WINDOWS_NATIVE */
-#  if defined (HAVE_CLOCK_GETTIME) && defined (CLOCK_REALTIME)
+#  else		/* !WINDOWS_NATIVE */
+#    if defined (HAVE_CLOCK_GETTIME) && defined (CLOCK_REALTIME)
   struct timespec ts;
   int r;
 
   r = clock_gettime (CLOCK_REALTIME, &ts);
   if (r == 0)
     {
-      TIMESPEC_TO_TIMEVAL(tv, &ts);
+      TIMESPEC_TO_TIMEVAL (tv, &ts);
       return 0;
     }
-#  endif /* !CLOCK_GETTIME */
+#    endif	/* !CLOCK_GETTIME */
 
-  tv->tv_sec = (time_t) time ((time_t *)0);
+  tv->tv_sec = (time_t) time ((time_t *) 0);
   tv->tv_usec = 0;
 
   return 0;
 
-#endif /* !WINDOWS_NATIVE */
+#  endif	/* !WINDOWS_NATIVE */
 }
 
-#endif /* !HAVE_GETTIMEOFDAY */
+#endif		/* !HAVE_GETTIMEOFDAY */

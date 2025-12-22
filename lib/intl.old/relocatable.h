@@ -20,19 +20,19 @@
 */
 
 #ifndef _RELOCATABLE_H
-#define _RELOCATABLE_H
+#  define _RELOCATABLE_H
 
 /* This can be enabled through the configure --enable-relocatable option.  */
-#if ENABLE_RELOCATABLE
+#  if ENABLE_RELOCATABLE
 
 /* When building a DLL, we must export some functions.  Note that because
    this is a private .h file, we don't need to use __declspec(dllimport)
    in any case.  */
-#if defined _MSC_VER && BUILDING_DLL
-# define RELOCATABLE_DLL_EXPORTED __declspec(dllexport)
-#else
-# define RELOCATABLE_DLL_EXPORTED
-#endif
+#    if defined _MSC_VER && BUILDING_DLL
+#      define RELOCATABLE_DLL_EXPORTED __declspec(dllexport)
+#    else
+#      define RELOCATABLE_DLL_EXPORTED
+#    endif
 
 /* Sets the original and the current installation prefix of the package.
    Relocation simply replaces a pathname starting with the original prefix
@@ -40,12 +40,11 @@
    prefixes should be directory names without trailing slash (i.e. use ""
    instead of "/").  */
 extern RELOCATABLE_DLL_EXPORTED void
-       set_relocation_prefix (const char *orig_prefix,
-			      const char *curr_prefix);
+  set_relocation_prefix (const char *orig_prefix, const char *curr_prefix);
 
 /* Returns the pathname, relocated according to the current installation
    directory.  */
-extern const char * relocate (const char *pathname);
+extern const char *relocate (const char *pathname);
 
 /* Memory management: relocate() leaks memory, because it has to construct
    a fresh pathname.  If this is a problem because your program calls
@@ -55,15 +54,13 @@ extern const char * relocate (const char *pathname);
    Computes the current installation prefix, based on the original
    installation prefix, the original installation directory of a particular
    file, and the current pathname of this file.  Returns NULL upon failure.  */
-extern const char * compute_curr_prefix (const char *orig_installprefix,
-					 const char *orig_installdir,
-					 const char *curr_pathname);
+extern const char *compute_curr_prefix (const char *orig_installprefix, const char *orig_installdir, const char *curr_pathname);
 
-#else
+#  else
 
 /* By default, we use the hardwired pathnames.  */
-#define relocate(pathname) (pathname)
+#    define relocate(pathname) (pathname)
 
-#endif
+#  endif
 
-#endif /* _RELOCATABLE_H */
+#endif		/* _RELOCATABLE_H */

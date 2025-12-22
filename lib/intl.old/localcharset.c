@@ -21,75 +21,75 @@
 /* Written by Bruno Haible <bruno@clisp.org>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 /* Specification.  */
 #include "localcharset.h"
 
 #if HAVE_STDDEF_H
-# include <stddef.h>
+#  include <stddef.h>
 #endif
 
 #include <stdio.h>
 #if HAVE_STRING_H
-# include <string.h>
+#  include <string.h>
 #else
-# include <strings.h>
+#  include <strings.h>
 #endif
 #if HAVE_STDLIB_H
-# include <stdlib.h>
+#  include <stdlib.h>
 #endif
 
 #if defined _WIN32 || defined __WIN32__
-# undef WIN32   /* avoid warning on mingw32 */
-# define WIN32
+#  undef WIN32			/* avoid warning on mingw32 */
+#  define WIN32
 #endif
 
 #if defined __EMX__
 /* Assume EMX program runs on OS/2, even if compiled under DOS.  */
-# define OS2
+#  define OS2
 #endif
 
 #if !defined WIN32
-# if HAVE_LANGINFO_CODESET
-#  include <langinfo.h>
-# else
-#  if HAVE_SETLOCALE
-#   include <locale.h>
+#  if HAVE_LANGINFO_CODESET
+#    include <langinfo.h>
+#  else
+#    if HAVE_SETLOCALE
+#      include <locale.h>
+#    endif
 #  endif
-# endif
 #elif defined WIN32
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
 #endif
 #if defined OS2
-# define INCL_DOS
-# include <os2.h>
+#  define INCL_DOS
+#  include <os2.h>
 #endif
 
 #if ENABLE_RELOCATABLE
-# include "relocatable.h"
+#  include "relocatable.h"
 #else
-# define relocate(pathname) (pathname)
+#  define relocate(pathname) (pathname)
 #endif
 
 #if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */
-# define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#  define ISSLASH(C) ((C) == '/' || (C) == '\\')
 #endif
 
 #ifndef DIRECTORY_SEPARATOR
-# define DIRECTORY_SEPARATOR '/'
+#  define DIRECTORY_SEPARATOR '/'
 #endif
 
 #ifndef ISSLASH
-# define ISSLASH(C) ((C) == DIRECTORY_SEPARATOR)
+#  define ISSLASH(C) ((C) == DIRECTORY_SEPARATOR)
 #endif
 
 #ifdef HAVE_GETC_UNLOCKED
-# undef getc
-# define getc getc_unlocked
+#  undef getc
+#  define getc getc_unlocked
 #endif
 
 /* The following static variable is declared 'volatile' to avoid a
@@ -99,12 +99,12 @@
    and everything will be ok if the two assignments to 'charset_aliases'
    are atomic. But I don't know what will happen if the two assignments mix.  */
 #if __STDC__ != 1
-# define volatile /* empty */
+#  define volatile		/* empty */
 #endif
 /* Pointer to the contents of the charset.alias file, if it has already been
    read, else NULL.  Its format is:
    ALIAS_1 '\0' CANONICAL_1 '\0' ... ALIAS_n '\0' CANONICAL_n '\0' '\0'  */
-static const char * volatile charset_aliases;
+static const char *volatile charset_aliases;
 
 /* Return a pointer to the contents of the charset.alias file.  */
 static const char *
@@ -143,8 +143,8 @@ get_charset_aliases ()
 	{
 	  /* Parse the file's contents.  */
 	  int c;
-	  char buf1[50+1];
-	  char buf2[50+1];
+	  char buf1[50 + 1];
+	  char buf2[50 + 1];
 	  char *res_ptr = NULL;
 	  size_t res_size = 0;
 	  size_t l1, l2;
@@ -205,52 +205,43 @@ get_charset_aliases ()
 
 #else
 
-# if defined VMS
+#  if defined VMS
       /* To avoid the troubles of an extra file charset.alias_vms in the
-	 sources of many GNU packages, simply inline the aliases here.  */
+         sources of many GNU packages, simply inline the aliases here.  */
       /* The list of encodings is taken from the OpenVMS 7.3-1 documentation
-	 "Compaq C Run-Time Library Reference Manual for OpenVMS systems"
-	 section 10.7 "Handling Different Character Sets".  */
+         "Compaq C Run-Time Library Reference Manual for OpenVMS systems"
+         section 10.7 "Handling Different Character Sets".  */
       cp = "ISO8859-1" "\0" "ISO-8859-1" "\0"
-	   "ISO8859-2" "\0" "ISO-8859-2" "\0"
-	   "ISO8859-5" "\0" "ISO-8859-5" "\0"
-	   "ISO8859-7" "\0" "ISO-8859-7" "\0"
-	   "ISO8859-8" "\0" "ISO-8859-8" "\0"
-	   "ISO8859-9" "\0" "ISO-8859-9" "\0"
-	   /* Japanese */
-	   "eucJP" "\0" "EUC-JP" "\0"
-	   "SJIS" "\0" "SHIFT_JIS" "\0"
-	   "DECKANJI" "\0" "DEC-KANJI" "\0"
-	   "SDECKANJI" "\0" "EUC-JP" "\0"
-	   /* Chinese */
-	   "eucTW" "\0" "EUC-TW" "\0"
-	   "DECHANYU" "\0" "DEC-HANYU" "\0"
-	   "DECHANZI" "\0" "GB2312" "\0"
-	   /* Korean */
-	   "DECKOREAN" "\0" "EUC-KR" "\0";
-# endif
+	"ISO8859-2" "\0" "ISO-8859-2" "\0"
+	"ISO8859-5" "\0" "ISO-8859-5" "\0"
+	"ISO8859-7" "\0" "ISO-8859-7" "\0" "ISO8859-8" "\0" "ISO-8859-8" "\0" "ISO8859-9" "\0" "ISO-8859-9" "\0"
+	/* Japanese */
+	"eucJP" "\0" "EUC-JP" "\0" "SJIS" "\0" "SHIFT_JIS" "\0" "DECKANJI" "\0" "DEC-KANJI" "\0" "SDECKANJI" "\0" "EUC-JP" "\0"
+	/* Chinese */
+	"eucTW" "\0" "EUC-TW" "\0" "DECHANYU" "\0" "DEC-HANYU" "\0" "DECHANZI" "\0" "GB2312" "\0"
+	/* Korean */
+	"DECKOREAN" "\0" "EUC-KR" "\0";
+#  endif
 
-# if defined WIN32
+#  if defined WIN32
       /* To avoid the troubles of installing a separate file in the same
-	 directory as the DLL and of retrieving the DLL's directory at
-	 runtime, simply inline the aliases here.  */
+         directory as the DLL and of retrieving the DLL's directory at
+         runtime, simply inline the aliases here.  */
 
       cp = "CP936" "\0" "GBK" "\0"
-	   "CP1361" "\0" "JOHAB" "\0"
-	   "CP20127" "\0" "ASCII" "\0"
-	   "CP20866" "\0" "KOI8-R" "\0"
-	   "CP21866" "\0" "KOI8-RU" "\0"
-	   "CP28591" "\0" "ISO-8859-1" "\0"
-	   "CP28592" "\0" "ISO-8859-2" "\0"
-	   "CP28593" "\0" "ISO-8859-3" "\0"
-	   "CP28594" "\0" "ISO-8859-4" "\0"
-	   "CP28595" "\0" "ISO-8859-5" "\0"
-	   "CP28596" "\0" "ISO-8859-6" "\0"
-	   "CP28597" "\0" "ISO-8859-7" "\0"
-	   "CP28598" "\0" "ISO-8859-8" "\0"
-	   "CP28599" "\0" "ISO-8859-9" "\0"
-	   "CP28605" "\0" "ISO-8859-15" "\0";
-# endif
+	"CP1361" "\0" "JOHAB" "\0"
+	"CP20127" "\0" "ASCII" "\0"
+	"CP20866" "\0" "KOI8-R" "\0"
+	"CP21866" "\0" "KOI8-RU" "\0"
+	"CP28591" "\0" "ISO-8859-1" "\0"
+	"CP28592" "\0" "ISO-8859-2" "\0"
+	"CP28593" "\0" "ISO-8859-3" "\0"
+	"CP28594" "\0" "ISO-8859-4" "\0"
+	"CP28595" "\0" "ISO-8859-5" "\0"
+	"CP28596" "\0" "ISO-8859-6" "\0"
+	"CP28597" "\0" "ISO-8859-7" "\0"
+	"CP28598" "\0" "ISO-8859-8" "\0" "CP28599" "\0" "ISO-8859-9" "\0" "CP28605" "\0" "ISO-8859-15" "\0";
+#  endif
 #endif
 
       charset_aliases = cp;
@@ -276,12 +267,12 @@ locale_charset ()
 
 #if !(defined WIN32 || defined OS2)
 
-# if HAVE_LANGINFO_CODESET
+#  if HAVE_LANGINFO_CODESET
 
   /* Most systems support nl_langinfo (CODESET) nowadays.  */
   codeset = nl_langinfo (CODESET);
 
-# else
+#  else
 
   /* On old systems which lack it, use setlocale or getenv.  */
   const char *locale = NULL;
@@ -290,9 +281,9 @@ locale_charset ()
      (like SunOS 4 or DJGPP) have only the C locale.  Therefore we don't
      use setlocale here; it would return "C" when it doesn't support the
      locale name the user has set.  */
-#  if HAVE_SETLOCALE && 0
+#    if HAVE_SETLOCALE && 0
   locale = setlocale (LC_CTYPE, NULL);
-#  endif
+#    endif
   if (locale == NULL || locale[0] == '\0')
     {
       locale = getenv ("LC_ALL");
@@ -309,7 +300,7 @@ locale_charset ()
      through the charset.alias file.  */
   codeset = locale;
 
-# endif
+#  endif
 
 #elif defined WIN32
 
@@ -352,7 +343,7 @@ locale_charset ()
 	  if (modifier - dot < sizeof (buf))
 	    {
 	      memcpy (buf, dot, modifier - dot);
-	      buf [modifier - dot] = '\0';
+	      buf[modifier - dot] = '\0';
 	      return buf;
 	    }
 	}
@@ -379,11 +370,8 @@ locale_charset ()
     codeset = "";
 
   /* Resolve alias. */
-  for (aliases = get_charset_aliases ();
-       *aliases != '\0';
-       aliases += strlen (aliases) + 1, aliases += strlen (aliases) + 1)
-    if (strcmp (codeset, aliases) == 0
-	|| (aliases[0] == '*' && aliases[1] == '\0'))
+  for (aliases = get_charset_aliases (); *aliases != '\0'; aliases += strlen (aliases) + 1, aliases += strlen (aliases) + 1)
+    if (strcmp (codeset, aliases) == 0 || (aliases[0] == '*' && aliases[1] == '\0'))
       {
 	codeset = aliases + strlen (aliases) + 1;
 	break;

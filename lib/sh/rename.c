@@ -24,19 +24,19 @@
 
 #if !defined (HAVE_RENAME)
 
-#include <bashtypes.h>
-#include <posixstat.h>
+#  include <bashtypes.h>
+#  include <posixstat.h>
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
-#include <errno.h>
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
+#  include <errno.h>
 
-#include <stdc.h>
+#  include <stdc.h>
 
-#ifndef errno
+#  ifndef errno
 extern int errno;
-#endif
+#  endif
 
 int
 rename (const char *from, const char *to)
@@ -44,7 +44,7 @@ rename (const char *from, const char *to)
   struct stat fb, tb;
 
   if (stat (from, &fb) < 0)
-    return -1;  
+    return -1;
 
   if (stat (to, &tb) < 0)
     {
@@ -54,9 +54,9 @@ rename (const char *from, const char *to)
   else
     {
       if (fb.st_dev == tb.st_dev && fb.st_ino == tb.st_ino)
-        return 0;		/* same file */
+	return 0;		/* same file */
       if (unlink (to) < 0 && errno != ENOENT)
-        return -1;
+	return -1;
     }
 
   if (link (from, to) < 0)
@@ -72,4 +72,4 @@ rename (const char *from, const char *to)
 
   return (0);
 }
-#endif /* !HAVE_RENAME */
+#endif		/* !HAVE_RENAME */

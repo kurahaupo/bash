@@ -17,17 +17,17 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #include <bashansi.h>
 
 size_t
-strlcpy(char *dest, const char *src, size_t size)
+strlcpy (char *dest, const char *src, size_t size)
 {
   size_t ret;
 
-  ret = strlen(src);
+  ret = strlen (src);
   if (size)
     {
       size_t len;

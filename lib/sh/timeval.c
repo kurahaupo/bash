@@ -22,17 +22,17 @@
 
 #if defined (HAVE_TIMEVAL)
 
-#include <sys/types.h>
-#include <posixtime.h>
+#  include <sys/types.h>
+#  include <posixtime.h>
 
-#include <bashintl.h>
-#include <stdc.h>
+#  include <bashintl.h>
+#  include <stdc.h>
 
-#ifndef locale_decpoint
+#  ifndef locale_decpoint
 extern int locale_decpoint (void);
-#endif
+#  endif
 
-#include <stdio.h>
+#  include <stdio.h>
 
 struct timeval *
 difftimeval (struct timeval *d, struct timeval *t1, struct timeval *t2)
@@ -43,7 +43,7 @@ difftimeval (struct timeval *d, struct timeval *t1, struct timeval *t2)
     {
       d->tv_usec += 1000000;
       d->tv_sec -= 1;
-      if (d->tv_sec < 0)		/* ??? -- BSD/OS does this */
+      if (d->tv_sec < 0)	/* ??? -- BSD/OS does this */
 	{
 	  d->tv_sec = 0;
 	  d->tv_usec = 0;
@@ -86,7 +86,7 @@ divtimeval (struct timeval *d, int m)
   d->tv_usec = (d->tv_usec + 1000000 * (t % m)) / m;
   return d;
 }
-  
+
 /* Do "cpu = ((user + sys) * 10000) / real;" with timevals.
    Barely-tested code from Deven T. Corzine <deven@ties.org>. */
 int
@@ -121,7 +121,7 @@ timeval_to_cpu (struct timeval *rt, struct timeval *ut, struct timeval *st)
     }
 
   return ((t2.tv_sec == 0) ? 0 : t1.tv_sec / t2.tv_sec);
-}  
+}
 
 /* Convert a pointer to a struct timeval to seconds and fractions of a
    second, returning the values in *SP and *SFP, respectively.  The precision
@@ -135,12 +135,12 @@ timeval_to_secs (struct timeval *tvp, time_t *sp, long *sfp, int maxval)
 
   *sp = tvp->tv_sec;
 
-  *sfp = tvp->tv_usec % 1000000;	/* pretty much a no-op */
-  if (maxval < 1000000)			/* don't bother otherwise */
+  *sfp = tvp->tv_usec % 1000000; /* pretty much a no-op */
+  if (maxval < 1000000)		/* don't bother otherwise */
     {
       rest = *sfp % maxval;
       *sfp = (*sfp * maxval) / 1000000;
-      if (rest >= maxval/2)
+      if (rest >= maxval / 2)
 	*sfp += 1;
     }
 
@@ -151,7 +151,7 @@ timeval_to_secs (struct timeval *tvp, time_t *sp, long *sfp, int maxval)
       *sfp -= maxval;
     }
 }
-  
+
 /* Print the contents of a struct timeval * in a standard way to stdio
    stream FP.  */
 void
@@ -167,7 +167,7 @@ print_timeval (FILE *fp, struct timeval *tvp)
   minutes = timestamp / 60;
   seconds = timestamp % 60;
 
-  fprintf (fp, "%ldm%d%c%03lds",  minutes, seconds, locale_decpoint (), seconds_fraction);
+  fprintf (fp, "%ldm%d%c%03lds", minutes, seconds, locale_decpoint (), seconds_fraction);
 }
 
-#endif /* HAVE_TIMEVAL */
+#endif		/* HAVE_TIMEVAL */

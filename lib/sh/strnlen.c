@@ -19,18 +19,18 @@
 */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #if !defined (HAVE_STRNLEN)
 
-#include <sys/types.h>
+#  include <sys/types.h>
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
 
-#include <stdc.h>
+#  include <stdc.h>
 
 /* Find the length of S, but scan at most MAXLEN characters.  If no '\0'
    terminator is found within the first MAXLEN characters, return MAXLEN. */

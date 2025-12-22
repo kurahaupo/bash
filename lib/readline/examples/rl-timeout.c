@@ -96,7 +96,7 @@ rltest_timeout_readline2 ()
     printf ("no input line\n");
   else
     printf ("input line: %s\n", temp);
-  free ((void *)temp);
+  free ((void *) temp);
 }
 
 /* **************************************************************** */
@@ -118,8 +118,8 @@ cb_linehandler (char *line)
 	printf ("\n");
       printf ("exit\n");
       /* This function needs to be called to reset the terminal settings,
-	 and calling it from the line handler keeps one extra prompt from
-	 being displayed. */
+         and calling it from the line handler keeps one extra prompt from
+         being displayed. */
       rl_callback_handler_remove ();
 
       running = 0;
@@ -150,7 +150,7 @@ rltest_timeout_callback1 ()
       r = rl_timeout_remaining (&sec, &usec);
       if (r == 1)
 	{
-	  struct timeval timeout = {sec, usec};
+	  struct timeval timeout = { sec, usec };
 	  r = select (FD_SETSIZE, &fds, NULL, NULL, &timeout);
 	}
       if (r < 0 && errno != EINTR)

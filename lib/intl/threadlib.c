@@ -24,13 +24,14 @@
 
 /* Use the POSIX threads library.  */
 
-# include <errno.h>
-# include <pthread.h>
-# include <stdlib.h>
+#  include <errno.h>
+#  include <pthread.h>
+#  include <stdlib.h>
 
-# if PTHREAD_IN_USE_DETECTION_HARD
+#  if PTHREAD_IN_USE_DETECTION_HARD
 
-#  if defined __FreeBSD__ || defined __DragonFly__                 /* FreeBSD */
+#    if defined __FreeBSD__ || defined __DragonFly__
+						 /* FreeBSD */
 
 /* Test using pthread_key_create.  */
 
@@ -38,7 +39,7 @@ int
 glthread_in_use (void)
 {
   static int tested;
-  static int result; /* 1: linked with -lpthread, 0: only with libc */
+  static int result;		/* 1: linked with -lpthread, 0: only with libc */
 
   if (!tested)
     {
@@ -46,19 +47,19 @@ glthread_in_use (void)
       int err = pthread_key_create (&key, NULL);
 
       if (err == ENOSYS)
-        result = 0;
+	result = 0;
       else
-        {
-          result = 1;
-          if (err == 0)
-            pthread_key_delete (key);
-        }
+	{
+	  result = 1;
+	  if (err == 0)
+	    pthread_key_delete (key);
+	}
       tested = 1;
     }
   return result;
 }
 
-#  else                                                     /* Solaris, HP-UX */
+#    else	/* Solaris, HP-UX */
 
 /* Test using pthread_create.  */
 
@@ -73,31 +74,31 @@ int
 glthread_in_use (void)
 {
   static int tested;
-  static int result; /* 1: linked with -lpthread, 0: only with libc */
+  static int result;		/* 1: linked with -lpthread, 0: only with libc */
 
   if (!tested)
     {
       pthread_t thread;
 
       if (pthread_create (&thread, NULL, dummy_thread_func, NULL) != 0)
-        /* Thread creation failed.  */
-        result = 0;
+	/* Thread creation failed.  */
+	result = 0;
       else
-        {
-          /* Thread creation works.  */
-          void *retval;
-          if (pthread_join (thread, &retval) != 0)
-            abort ();
-          result = 1;
-        }
+	{
+	  /* Thread creation works.  */
+	  void *retval;
+	  if (pthread_join (thread, &retval) != 0)
+	    abort ();
+	  result = 1;
+	}
       tested = 1;
     }
   return result;
 }
 
-#  endif
+#    endif
 
-# endif
+#  endif
 
 #endif
 

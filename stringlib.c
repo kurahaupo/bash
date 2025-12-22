@@ -81,7 +81,7 @@ find_token_in_alist (int token, STRING_INT_ALIST *alist, int flags)
   for (i = 0; alist[i].word; i++)
     {
       if (alist[i].token == token)
-        return (flags ? alist[i].word : savestring (alist[i].word));
+	return (flags ? alist[i].word : savestring (alist[i].word));
     }
   return (NULL);
 }
@@ -123,7 +123,7 @@ substring (const char *string, size_t start, size_t end)
   char *result;
 
   len = end - start;
-  result = (char *)xmalloc (len + 1);
+  result = (char *) xmalloc (len + 1);
   memcpy (result, string + start, len);
   result[len] = '\0';
   return (result);
@@ -141,7 +141,7 @@ strsub (const char *string, const char *pat, const char *rep, int global)
 
   patlen = strlen (pat);
   replen = strlen (rep);
-  for (temp = NULL, i = templen = tempsize = 0, repl = 1; string[i]; )
+  for (temp = NULL, i = templen = tempsize = 0, repl = 1; string[i];)
     {
       if (repl && STREQN (string + i, pat, patlen))
 	{
@@ -149,15 +149,15 @@ strsub (const char *string, const char *pat, const char *rep, int global)
 	    RESIZE_MALLOCED_BUFFER (temp, templen, replen, tempsize, (replen * 2));
 
 #if 0
-	  for (r = (char *)rep; *r; )	/* can rep == "" */
+	  for (r = (char *) rep; *r;) /* can rep == "" */
 	    temp[templen++] = *r++;
 #else
 	  memcpy (temp + templen, rep, replen);
 	  templen += replen;
 #endif
 
-	  i += patlen ? patlen : 1;	/* avoid infinite recursion */
-	  repl = global != 0;
+	  i += patlen ? patlen : 1; /* avoid infinite recursion */
+	  repl = global !=0;
 	}
       else
 	{
@@ -189,9 +189,9 @@ strcreplace (const char *string, int c, const char *text, int flags)
 
   len = STRLEN (text);
   rlen = len + strlen (string) + 2;
-  ret = (char *)xmalloc (rlen);
+  ret = (char *) xmalloc (rlen);
 
-  for (p = string, r = ret; p && *p; )
+  for (p = string, r = ret; p && *p;)
     {
       if (*p == c)
 	{
@@ -203,7 +203,7 @@ strcreplace (const char *string, int c, const char *text, int flags)
 		  t = quote_globbing_chars (text);
 		  tlen = strlen (t);
 		  RESIZE_MALLOCED_BUFFER (ret, ind, tlen, rlen, rlen);
-		  r = ret + ind;	/* in case reallocated */
+		  r = ret + ind; /* in case reallocated */
 		  strcpy (r, t);
 		  r += tlen;
 		  free (t);
@@ -211,7 +211,7 @@ strcreplace (const char *string, int c, const char *text, int flags)
 	      else
 		{
 		  RESIZE_MALLOCED_BUFFER (ret, ind, len, rlen, rlen);
-		  r = ret + ind;	/* in case reallocated */
+		  r = ret + ind; /* in case reallocated */
 		  strcpy (r, text);
 		  r += len;
 		}
@@ -227,7 +227,7 @@ strcreplace (const char *string, int c, const char *text, int flags)
 
       ind = r - ret;
       RESIZE_MALLOCED_BUFFER (ret, ind, 2, rlen, rlen);
-      r = ret + ind;			/* in case reallocated */
+      r = ret + ind;		/* in case reallocated */
       *r++ = *p++;
     }
   *r = '\0';
@@ -263,8 +263,7 @@ strip_trailing (char *string, int len, int newlines_only)
 {
   while (len >= 0)
     {
-      if ((newlines_only && string[len] == '\n') ||
-	  (!newlines_only && whitespace (string[len])))
+      if ((newlines_only && string[len] == '\n') || (!newlines_only && whitespace (string[len])))
 	{
 	  len--;
 #ifdef __MSYS__
@@ -297,7 +296,7 @@ str_lastsame (const char *old, const char *new)
   const char *o, *n;
 
   if (old == 0 || *old == '\0' || new == 0 || *new == '\0')
-    return 0;	/* XXX */
+    return 0;			/* XXX */
 
   o = old + STRLEN (old) - 1;
   n = new + STRLEN (new) - 1;

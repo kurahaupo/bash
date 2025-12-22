@@ -19,7 +19,7 @@
 */
 
 #include <config.h>
- 
+
 #include <stdio.h>
 #include <errno.h>
 
@@ -52,7 +52,7 @@
  */
 
 int
-mailstat(const char *path, struct stat *st)
+mailstat (const char *path, struct stat *st)
 {
   static struct stat st_new_last, st_ret_last;
   struct stat st_ret, st_tmp;
@@ -65,10 +65,10 @@ mailstat(const char *path, struct stat *st)
   atime = mtime = 0;
 
   /* First see if it's a directory. */
-  if ((i = stat(path, st)) != 0 || S_ISDIR(st->st_mode) == 0)
+  if ((i = stat (path, st)) != 0 || S_ISDIR (st->st_mode) == 0)
     return i;
 
-  if (strlen(path) > sizeof(dir) - 5)
+  if (strlen (path) > sizeof (dir) - 5)
     {
 #ifdef ENAMETOOLONG
       errno = ENAMETOOLONG;
@@ -80,38 +80,36 @@ mailstat(const char *path, struct stat *st)
 
   st_ret = *st;
   st_ret.st_nlink = 1;
-  st_ret.st_size  = 0;
+  st_ret.st_size = 0;
 #ifdef HAVE_STRUCT_STAT_ST_BLOCKS
-  st_ret.st_blocks  = 0;
+  st_ret.st_blocks = 0;
 #else
   st_ret.st_nlink = 0;
 #endif
-  st_ret.st_mode  &= ~S_IFDIR;
-  st_ret.st_mode  |= S_IFREG;
+  st_ret.st_mode &= ~S_IFDIR;
+  st_ret.st_mode |= S_IFREG;
 
   /* See if cur/ is present */
-  sprintf(dir, "%s/cur", path);
-  if (stat(dir, &st_tmp) || S_ISDIR(st_tmp.st_mode) == 0)
+  sprintf (dir, "%s/cur", path);
+  if (stat (dir, &st_tmp) || S_ISDIR (st_tmp.st_mode) == 0)
     return 0;
   st_ret.st_atime = st_tmp.st_atime;
 
   /* See if tmp/ is present */
-  sprintf(dir, "%s/tmp", path);
-  if (stat(dir, &st_tmp) || S_ISDIR(st_tmp.st_mode) == 0)
+  sprintf (dir, "%s/tmp", path);
+  if (stat (dir, &st_tmp) || S_ISDIR (st_tmp.st_mode) == 0)
     return 0;
   st_ret.st_mtime = st_tmp.st_mtime;
 
   /* And new/ */
-  sprintf(dir, "%s/new", path);
-  if (stat(dir, &st_tmp) || S_ISDIR(st_tmp.st_mode) == 0)
+  sprintf (dir, "%s/new", path);
+  if (stat (dir, &st_tmp) || S_ISDIR (st_tmp.st_mode) == 0)
     return 0;
   st_ret.st_mtime = st_tmp.st_mtime;
 
   /* Optimization - if new/ didn't change, nothing else did. */
   if (st_tmp.st_dev == st_new_last.st_dev &&
-      st_tmp.st_ino == st_new_last.st_ino &&
-      st_tmp.st_atime == st_new_last.st_atime &&
-      st_tmp.st_mtime == st_new_last.st_mtime)
+      st_tmp.st_ino == st_new_last.st_ino && st_tmp.st_atime == st_new_last.st_atime && st_tmp.st_mtime == st_new_last.st_mtime)
     {
       *st = st_ret_last;
       return 0;
@@ -121,17 +119,17 @@ mailstat(const char *path, struct stat *st)
   /* Loop over new/ and cur/ */
   for (i = 0; i < 2; i++)
     {
-      sprintf(dir, "%s/%s", path, i ? "cur" : "new");
-      sprintf(file, "%s/", dir);
-      l = strlen(file);
-      if ((dd = opendir(dir)) == NULL)
+      sprintf (dir, "%s/%s", path, i ? "cur" : "new");
+      sprintf (file, "%s/", dir);
+      l = strlen (file);
+      if ((dd = opendir (dir)) == NULL)
 	return 0;
-      while ((fn = readdir(dd)) != NULL)
+      while ((fn = readdir (dd)) != NULL)
 	{
-	  if (fn->d_name[0] == '.' || strlen(fn->d_name) + l >= sizeof(file))
+	  if (fn->d_name[0] == '.' || strlen (fn->d_name) + l >= sizeof (file))
 	    continue;
-	  strcpy(file + l, fn->d_name);
-	  if (stat(file, &st_tmp) != 0)
+	  strcpy (file + l, fn->d_name);
+	  if (stat (file, &st_tmp) != 0)
 	    continue;
 	  st_ret.st_size += st_tmp.st_size;
 #ifdef HAVE_STRUCT_STAT_ST_BLOCKS
@@ -144,14 +142,14 @@ mailstat(const char *path, struct stat *st)
 	  if (st_tmp.st_mtime > mtime)
 	    mtime = st_tmp.st_mtime;
 	}
-      closedir(dd);
+      closedir (dd);
     }
 
-/*  if (atime) */	/* Set atime even if cur/ is empty */
-      st_ret.st_atime = atime;
-    if (mtime)
-      st_ret.st_mtime = mtime;
+  /*  if (atime) *//* Set atime even if cur/ is empty */
+  st_ret.st_atime = atime;
+  if (mtime)
+    st_ret.st_mtime = mtime;
 
-    *st = st_ret_last = st_ret;
-    return 0;
+  *st = st_ret_last = st_ret;
+  return 0;
 }

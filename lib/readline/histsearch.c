@@ -30,7 +30,7 @@
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #if defined (HAVE_UNISTD_H)
 #  ifdef _MINIX
@@ -51,7 +51,7 @@
 
 /* The list of alternate characters that can delimit a history search
    string. */
-char *history_search_delimiter_chars = (char *)NULL;
+char *history_search_delimiter_chars = (char *) NULL;
 
 static int history_search_internal (const char *, int, int, int);
 
@@ -79,7 +79,7 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
   int line_index;		/* can't be unsigned */
   int anchored, patsearch, igncase;
   int found, mb_cur_max;
-  HIST_ENTRY **the_history; 	/* local */
+  HIST_ENTRY **the_history;	/* local */
 
   i = history_offset;
   reverse = (listdir < 0);
@@ -137,10 +137,8 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
 	  if (igncase)
 	    {
 #if defined (HANDLE_MULTIBYTE)
-	      if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		found = _rl_mb_strcaseeqn (string, string_len,
-					   line, line_len,
-					   string_len, 0);
+	      if (mb_cur_max > 1) /* no rl_byte_oriented equivalent */
+		found = _rl_mb_strcaseeqn (string, string_len, line, line_len, string_len, 0);
 	      else
 #endif
 		found = strncasecmp (string, line, string_len) == 0;
@@ -177,16 +175,14 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
 	      if (igncase)
 		{
 #if defined (HANDLE_MULTIBYTE)
-		  if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		    found = _rl_mb_strcaseeqn (string, string_len,
-					       line + line_index, ll,
-					       string_len, 0);
+		  if (mb_cur_max > 1) /* no rl_byte_oriented equivalent */
+		    found = _rl_mb_strcaseeqn (string, string_len, line + line_index, ll, string_len, 0);
 		  else
 #endif
-		  found = strncasecmp (string, line + line_index, string_len) == 0;
+		    found = strncasecmp (string, line + line_index, string_len) == 0;
 		}
 	      else
-	        found = STREQN (string, line + line_index, string_len);
+		found = STREQN (string, line + line_index, string_len);
 
 	      if (found)
 		{
@@ -217,13 +213,11 @@ history_search_internal (const char *string, int listdir, int linedir, int flags
 	      if (igncase)
 		{
 #if defined (HANDLE_MULTIBYTE)
-		  if (mb_cur_max > 1)	/* no rl_byte_oriented equivalent */
-		    found = _rl_mb_strcaseeqn (string, string_len,
-					       line + line_index, ll,
-					       string_len, 0);
+		  if (mb_cur_max > 1) /* no rl_byte_oriented equivalent */
+		    found = _rl_mb_strcaseeqn (string, string_len, line + line_index, ll, string_len, 0);
 		  else
 #endif
-		  found = strncasecmp (string, line + line_index, string_len) == 0;
+		    found = strncasecmp (string, line + line_index, string_len) == 0;
 		}
 	      else
 		found = STREQN (string, line + line_index, string_len);
@@ -262,7 +256,7 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
     }
   if (unescaped_backslash)
     return -1;
-  pat = (char *)xmalloc (len + 3);
+  pat = (char *) xmalloc (len + 3);
   /* If the search string is not anchored, we'll be calling fnmatch (assuming
      we have it). Prefix a `*' to the front of the search string so we search
      anywhere in the line. */
@@ -285,19 +279,19 @@ _hs_history_patsearch (const char *string, int listdir, int linedir, int flags)
   if (pat[len - 1] != '*')
     {
       pat[len] = '*';		/* XXX */
-      pat[len+1] = '\0';
+      pat[len + 1] = '\0';
     }
 #else
   pat = string;
 #endif
 
-  ret = history_search_internal (pat, listdir, linedir, flags|PATTERN_SEARCH);
+  ret = history_search_internal (pat, listdir, linedir, flags | PATTERN_SEARCH);
 
   if (pat != string)
     xfree (pat);
   return ret;
 }
-	
+
 /* Do a non-anchored search for STRING through the history list in direction
    LISTDIR. */
 int

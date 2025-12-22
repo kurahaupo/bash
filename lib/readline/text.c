@@ -27,13 +27,13 @@
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #if defined (HAVE_LOCALE_H)
 #  include <locale.h>
@@ -49,7 +49,7 @@
 #if defined (__EMX__)
 #  define INCL_DOSPROCESS
 #  include <os2.h>
-#endif /* __EMX__ */
+#endif		/* __EMX__ */
 
 /* Some standard library routines. */
 #include "readline.h"
@@ -108,11 +108,10 @@ rl_insert_text (const char *string)
       if ((l == 1) &&
 	  rl_undo_list &&
 	  (rl_undo_list->what == UNDO_INSERT) &&
-	  (rl_undo_list->end == rl_point) &&
-	  (rl_undo_list->end - rl_undo_list->start < 20))
+	  (rl_undo_list->end == rl_point) && (rl_undo_list->end - rl_undo_list->start < 20))
 	rl_undo_list->end++;
       else
-	rl_add_undo (UNDO_INSERT, rl_point, rl_point + l, (char *)NULL);
+	rl_add_undo (UNDO_INSERT, rl_point, rl_point + l, (char *) NULL);
     }
   rl_point += l;
   rl_end += l;
@@ -186,6 +185,7 @@ _rl_fix_mark (void)
 {
   _RL_FIX_POINT (rl_mark);
 }
+
 #undef _RL_FIX_POINT
 
 /* Replace the contents of the line buffer between START and END with
@@ -273,7 +273,7 @@ rl_forward_byte (int count, int key)
 
       end = rl_point + count;
 #if defined (VI_MODE)
-      lend = rl_end > 0 ? rl_end - (VI_COMMAND_MODE()) : rl_end;
+      lend = rl_end > 0 ? rl_end - (VI_COMMAND_MODE ()) : rl_end;
 #else
       lend = rl_end;
 #endif
@@ -301,13 +301,13 @@ _rl_forward_char_internal (int count)
 #if defined (HANDLE_MULTIBYTE)
   point = _rl_find_next_mbchar (rl_line_buffer, rl_point, count, MB_FIND_NONZERO);
 
-#if defined (VI_MODE)
-  if (point >= rl_end && VI_COMMAND_MODE())
+#  if defined (VI_MODE)
+  if (point >= rl_end && VI_COMMAND_MODE ())
     point = _rl_find_prev_mbchar (rl_line_buffer, rl_end, MB_FIND_NONZERO);
-#endif
+#  endif
 
-    if (rl_end < 0)
-      rl_end = 0;
+  if (rl_end < 0)
+    rl_end = 0;
 #else
   point = rl_point + count;
 #endif
@@ -332,7 +332,7 @@ _rl_backward_char_internal (int count)
 	  count--;
 	}
       if (count > 0)
-        return 0;	/* XXX - rl_ding() here? */
+	return 0;		/* XXX - rl_ding() here? */
     }
 #else
   if (count > 0)
@@ -359,7 +359,7 @@ rl_forward_char (int count, int key)
 
   if (count > 0)
     {
-      if (rl_point == rl_end && EMACS_MODE())
+      if (rl_point == rl_end && EMACS_MODE ())
 	{
 	  rl_ding ();
 	  return 0;
@@ -375,14 +375,14 @@ rl_forward_char (int count, int key)
 
   return 0;
 }
-#else /* !HANDLE_MULTIBYTE */
+#else		/* !HANDLE_MULTIBYTE */
 int
 rl_forward_char (int count, int key)
 {
   return (rl_forward_byte (count, key));
 }
-#endif /* !HANDLE_MULTIBYTE */
-  
+#endif		/* !HANDLE_MULTIBYTE */
+
 /* Backwards compatibility. */
 int
 rl_forward (int count, int key)
@@ -442,7 +442,7 @@ rl_backward_char (int count, int key)
 	  rl_ding ();
 	}
       else
-        rl_point = point;
+	rl_point = point;
     }
 
   return 0;
@@ -495,7 +495,7 @@ rl_forward_word (int count, int key)
 	return 0;
 
       /* If we are not in a word, move forward until we are in one.
-	 Then, move forward until we hit a non-alphabetic character. */
+         Then, move forward until we hit a non-alphabetic character. */
       c = _rl_char_value (rl_line_buffer, rl_point);
 
       if (_rl_walphabetic (c) == 0)
@@ -545,7 +545,7 @@ rl_backward_word (int count, int key)
 	return 0;
 
       /* Like rl_forward_word (), except that we look at the characters
-	 just before point. */
+         just before point. */
 
       p = MB_PREVCHAR (rl_line_buffer, rl_point, MB_FIND_NONZERO);
       c = _rl_char_value (rl_line_buffer, p);
@@ -566,7 +566,7 @@ rl_backward_word (int count, int key)
       while (rl_point)
 	{
 	  p = MB_PREVCHAR (rl_line_buffer, rl_point, MB_FIND_NONZERO);
-	  c = _rl_char_value (rl_line_buffer, p);	  
+	  c = _rl_char_value (rl_line_buffer, p);
 	  if (_rl_walphabetic (c) == 0)
 	    break;
 	  else
@@ -655,9 +655,9 @@ rl_arrow_keys (int count, int key)
 {
   int ch;
 
-  RL_SETSTATE(RL_STATE_MOREINPUT);
+  RL_SETSTATE (RL_STATE_MOREINPUT);
   ch = rl_read_key ();
-  RL_UNSETSTATE(RL_STATE_MOREINPUT);
+  RL_UNSETSTATE (RL_STATE_MOREINPUT);
   if (ch < 0)
     return (1);
 
@@ -701,7 +701,7 @@ rl_arrow_keys (int count, int key)
 #ifdef HANDLE_MULTIBYTE
 static char pending_bytes[MB_LEN_MAX];
 static int pending_bytes_length = 0;
-static mbstate_t ps = {0};
+static mbstate_t ps = { 0 };
 #endif
 
 /* Insert the character C at the current location, moving point forward.
@@ -774,7 +774,7 @@ _rl_insert_char (int count, int c)
       pending_bytes[pending_bytes_length++] = c;
       ret = MBRTOWC (&wc, pending_bytes, pending_bytes_length, &ps);
 
-      if (ret == (size_t)-2)
+      if (ret == (size_t) -2)
 	{
 	  /* Bytes too short to compose character, try to wait for next byte.
 	     Restore the state of the byte sequence, because in this case the
@@ -782,7 +782,7 @@ _rl_insert_char (int count, int c)
 	  ps = ps_back;
 	  return 1;
 	}
-      else if (ret == (size_t)-1)
+      else if (ret == (size_t) -1)
 	{
 	  /* Invalid byte sequence for the current locale.  Treat first byte
 	     as a single character. */
@@ -796,7 +796,7 @@ _rl_insert_char (int count, int c)
 	     effect of mbstate is undefined. */
 	  memset (&ps, 0, sizeof (mbstate_t));
 	}
-      else if (ret == (size_t)0)
+      else if (ret == (size_t) 0)
 	{
 	  incoming[0] = '\0';
 	  incoming_length = 0;
@@ -820,15 +820,15 @@ _rl_insert_char (int count, int c)
 	  pending_bytes_length = 0;
 	}
     }
-#endif /* HANDLE_MULTIBYTE */
-	  
+#endif		/* HANDLE_MULTIBYTE */
+
   /* If we can optimize, then do it.  But don't let people crash
      readline because of extra large arguments. */
   if (count > 1 && count <= TEXT_COUNT_MAX)
     {
 #if defined (HANDLE_MULTIBYTE)
       string_size = count * incoming_length;
-      string = (char *)xmalloc (1 + string_size);
+      string = (char *) xmalloc (1 + string_size);
 
       i = 0;
       while (i < string_size)
@@ -843,12 +843,12 @@ _rl_insert_char (int count, int c)
 	}
       incoming_length = 0;
       stored_count = 0;
-#else /* !HANDLE_MULTIBYTE */
-      string = (char *)xmalloc (1 + count);
+#else		/* !HANDLE_MULTIBYTE */
+      string = (char *) xmalloc (1 + count);
 
       for (i = 0; i < count; i++)
 	string[i] = c;
-#endif /* !HANDLE_MULTIBYTE */
+#endif		/* !HANDLE_MULTIBYTE */
 
       string[i] = '\0';
       rl_insert_text (string);
@@ -866,7 +866,7 @@ _rl_insert_char (int count, int c)
       int decreaser;
 #if defined (HANDLE_MULTIBYTE)
       string_size = incoming_length * TEXT_COUNT_MAX;
-      string = (char *)xmalloc (1 + string_size);
+      string = (char *) xmalloc (1 + string_size);
 
       i = 0;
       while (i < string_size)
@@ -883,7 +883,7 @@ _rl_insert_char (int count, int c)
       while (count)
 	{
 	  decreaser = (count > TEXT_COUNT_MAX) ? TEXT_COUNT_MAX : count;
-	  string[decreaser*incoming_length] = '\0';
+	  string[decreaser * incoming_length] = '\0';
 	  rl_insert_text (string);
 	  count -= decreaser;
 	}
@@ -893,8 +893,8 @@ _rl_insert_char (int count, int c)
       stored_count = 0;
 
       return (pending_bytes_length != 0);
-#else /* !HANDLE_MULTIBYTE */
-      char str[TEXT_COUNT_MAX+1];
+#else		/* !HANDLE_MULTIBYTE */
+      char str[TEXT_COUNT_MAX + 1];
 
       for (i = 0; i < TEXT_COUNT_MAX; i++)
 	str[i] = c;
@@ -908,16 +908,16 @@ _rl_insert_char (int count, int c)
 	}
 
       return 0;
-#endif /* !HANDLE_MULTIBYTE */
+#endif		/* !HANDLE_MULTIBYTE */
     }
 
   if (MB_CUR_MAX == 1 || rl_byte_oriented)
     {
       /* We are inserting a single character.
-	 If there is pending input, then make a string of all of the
-	 pending characters that are bound to rl_insert, and insert
-	 them all.  Don't do this if we're current reading input from
-	 a macro. */
+         If there is pending input, then make a string of all of the
+         pending characters that are bound to rl_insert, and insert
+         them all.  Don't do this if we're current reading input from
+         a macro. */
       if ((RL_ISSTATE (RL_STATE_MACROINPUT) == 0) && _rl_pushed_input_available ())
 	_rl_insert_typein (c);
       else
@@ -936,7 +936,7 @@ _rl_insert_char (int count, int c)
       rl_insert_text (incoming);
       stored_count = 0;
     }
-  
+
   return (pending_bytes_length != 0);
 #else
   return 0;
@@ -991,28 +991,27 @@ rl_insert (int count, int c)
 
   /* XXX -- attempt to batch-insert pending input that maps to self-insert */
   x = 0;
-  n = (unsigned short)-2;
+  n = (unsigned short) -2;
   while (_rl_optimize_typeahead &&
 	 rl_num_chars_to_read == 0 &&
-	 (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT|RL_STATE_MACRODEF) == 0) &&
+	 (RL_ISSTATE (RL_STATE_INPUTPENDING | RL_STATE_MACROINPUT | RL_STATE_MACRODEF) == 0) &&
 	 _rl_pushed_input_available () == 0 &&
 	 _rl_input_queued (0) &&
 	 (n = rl_read_key ()) > 0 &&
-	 _rl_keymap[(unsigned char)n].type == ISFUNC &&
-	 _rl_keymap[(unsigned char)n].function == rl_insert)
+	 _rl_keymap[(unsigned char) n].type == ISFUNC && _rl_keymap[(unsigned char) n].function == rl_insert)
     {
       r = (rl_insert_mode == RL_IM_INSERT) ? _rl_insert_char (1, n) : _rl_overwrite_char (1, n);
       /* _rl_insert_char keeps its own set of pending characters to compose a
-	 complete multibyte character, and only returns 1 if it sees a character
-	 that's part of a multibyte character but too short to complete one.  We
-	 can try to read another character in the hopes that we will get the
-	 next one or just punt.  Right now we try to read another character.
-	 We don't want to call rl_insert_next if _rl_insert_char has already
-	 stored the character in the pending_bytes array because that will
-	 result in doubled input. */
-      n = (unsigned short)-2;
-      x++;		/* count of bytes of typeahead read, currently unused */
-      if (r == 1)	/* read partial multibyte character */
+         complete multibyte character, and only returns 1 if it sees a character
+         that's part of a multibyte character but too short to complete one.  We
+         can try to read another character in the hopes that we will get the
+         next one or just punt.  Right now we try to read another character.
+         We don't want to call rl_insert_next if _rl_insert_char has already
+         stored the character in the pending_bytes array because that will
+         result in doubled input. */
+      n = (unsigned short) -2;
+      x++;			/* count of bytes of typeahead read, currently unused */
+      if (r == 1)		/* read partial multibyte character */
 	continue;
       if (rl_done || r != 0)
 	break;
@@ -1021,13 +1020,13 @@ rl_insert (int count, int c)
   /* If we didn't insert n and there are pending bytes, we need to insert
      them if _rl_insert_char didn't do that on its own. */
   if (r == 1 && rl_insert_mode == RL_IM_INSERT)
-    r = _rl_insert_char (0, 0);		/* flush partial multibyte char */
+    r = _rl_insert_char (0, 0);	/* flush partial multibyte char */
 
-  if (n != (unsigned short)-2)		/* -2 = sentinel value for having inserted N */
+  if (n != (unsigned short) -2)	/* -2 = sentinel value for having inserted N */
     {
       /* setting rl_pending_input inhibits setting rl_last_func so we do it
-	 ourselves here */
-      rl_last_func = rl_insert; 
+         ourselves here */
+      rl_last_func = rl_insert;
       _rl_reset_argument ();
       rl_executing_keyseq[rl_key_sequence_length = 0] = '\0';
       r = rl_execute_next (n);
@@ -1041,9 +1040,9 @@ _rl_insert_next (int count)
 {
   int c;
 
-  RL_SETSTATE(RL_STATE_MOREINPUT);
+  RL_SETSTATE (RL_STATE_MOREINPUT);
   c = rl_read_key ();
-  RL_UNSETSTATE(RL_STATE_MOREINPUT);
+  RL_UNSETSTATE (RL_STATE_MOREINPUT);
 
   if (c < 0)
     return 1;
@@ -1056,7 +1055,7 @@ _rl_insert_next (int count)
     _rl_restore_tty_signals ();
 #endif
 
-  return (_rl_insert_char (count, c));  
+  return (_rl_insert_char (count, c));
 }
 
 #if defined (READLINE_CALLBACKS)
@@ -1076,7 +1075,7 @@ _rl_insert_next_callback (_rl_callback_generic_arg *data)
       /* If we should keep going, leave the callback function installed */
       if (data->count < 0 && r == 0)
 	return r;
-      count = 0;	/* data->count == 0 || r != 0; force break below */
+      count = 0;		/* data->count == 0 || r != 0; force break below */
     }
 
   /* Deregister function, let rl_callback_read_char deallocate data */
@@ -1089,7 +1088,7 @@ _rl_insert_next_callback (_rl_callback_generic_arg *data)
   return _rl_insert_next (count);
 }
 #endif
-  
+
 int
 rl_quoted_insert (int count, int key)
 {
@@ -1151,16 +1150,16 @@ rl_newline (int count, int key)
   if (_rl_history_preserve_point)
     _rl_history_saved_point = (rl_point == rl_end) ? -1 : rl_point;
 
-  RL_SETSTATE(RL_STATE_DONE);
+  RL_SETSTATE (RL_STATE_DONE);
 
 #if defined (VI_MODE)
   if (rl_editing_mode == vi_mode)
     {
       _rl_vi_done_inserting ();
-      if (_rl_vi_textmod_command (_rl_vi_last_command) == 0)	/* XXX */
+      if (_rl_vi_textmod_command (_rl_vi_last_command) == 0) /* XXX */
 	_rl_vi_reset_last ();
     }
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
   /* If we've been asked to erase empty lines, suppress the final update,
      since _rl_update_final calls rl_crlf(). */
@@ -1179,7 +1178,7 @@ rl_newline (int count, int key)
 int
 rl_do_lowercase_version (int ignore1, int ignore2)
 {
-  return 99999;		/* prevent from being combined with _rl_null_function */
+  return 99999;			/* prevent from being combined with _rl_null_function */
 }
 
 /* This is different from what vi does, so the code's not shared.  Emacs
@@ -1203,7 +1202,7 @@ _rl_overwrite_rubout (int count, int key)
   for (i = l = 0; i < count; i++)
     {
       rl_backward_char (1, key);
-      l += rl_character_len (rl_line_buffer[rl_point], rl_point);	/* not exactly right */
+      l += rl_character_len (rl_line_buffer[rl_point], rl_point); /* not exactly right */
     }
 
   rl_begin_undo_group ();
@@ -1225,7 +1224,7 @@ _rl_overwrite_rubout (int count, int key)
 
   return 0;
 }
-  
+
 /* Rubout the character behind point. */
 int
 rl_rubout (int count, int key)
@@ -1272,7 +1271,7 @@ _rl_rubout_char (int count, int key)
       c = rl_line_buffer[--rl_point];
       rl_delete_text (rl_point, orig_point);
       /* The erase-at-end-of-line hack is of questionable merit now. */
-      if (rl_point == rl_end && ISPRINT ((unsigned char)c) && _rl_last_c_pos && _rl_last_v_pos == 0)
+      if (rl_point == rl_end && ISPRINT ((unsigned char) c) && _rl_last_c_pos && _rl_last_v_pos == 0)
 	{
 	  int l;
 	  l = rl_character_len (c, rl_point);
@@ -1327,7 +1326,7 @@ rl_delete (int count, int key)
 /* Delete the character under the cursor, unless the insertion
    point is at the end of the line, in which case the character
    behind the cursor is deleted.  COUNT is obeyed and may be used
-   to delete forward or backward that many characters. */      
+   to delete forward or backward that many characters. */
 int
 rl_rubout_or_delete (int count, int key)
 {
@@ -1335,7 +1334,7 @@ rl_rubout_or_delete (int count, int key)
     return (_rl_rubout_char (count, key));
   else
     return (rl_delete (count, key));
-}  
+}
 
 /* Delete all spaces and tabs around point. */
 int
@@ -1376,7 +1375,7 @@ rl_delete_or_show_completions (int count, int key)
 }
 
 #ifndef RL_COMMENT_BEGIN_DEFAULT
-#define RL_COMMENT_BEGIN_DEFAULT "#"
+#  define RL_COMMENT_BEGIN_DEFAULT "#"
 #endif
 
 /* Turn the current line into a comment in shell history.
@@ -1436,7 +1435,7 @@ rl_downcase_word (int count, int key)
 int
 rl_capitalize_word (int count, int key)
 {
- return (rl_change_case (count, CapCase));
+  return (rl_change_case (count, CapCase));
 }
 
 /* The meaty function.
@@ -1453,7 +1452,7 @@ rl_change_case (int count, int op)
   unsigned char uc;
 #if defined (HANDLE_MULTIBYTE)
   WCHAR_T wc, nwc;
-  char mb[MB_LEN_MAX+1];
+  char mb[MB_LEN_MAX + 1];
   size_t m, mlen;
   mbstate_t mps;
 #endif
@@ -1500,11 +1499,11 @@ rl_change_case (int count, int op)
       else
 	nop = op;
       /* Can't check isascii here; some languages (e.g, Turkish) have
-	 multibyte upper and lower case equivalents of single-byte ascii
-	 characters */
+         multibyte upper and lower case equivalents of single-byte ascii
+         characters */
       if (MB_CUR_MAX == 1 || rl_byte_oriented)
 	{
-change_singlebyte:
+	change_singlebyte:
 	  uc = c;
 	  nc = (nop == UpCase) ? _rl_to_upper (uc) : _rl_to_lower (uc);
 	  rl_line_buffer[start] = nc;
@@ -1516,7 +1515,7 @@ change_singlebyte:
 	  if (MB_INVALIDCH (m))
 	    {
 	      c = rl_line_buffer[start];
-	      next = start + 1;		/* potentially redundant */
+	      next = start + 1;	/* potentially redundant */
 	      goto change_singlebyte;
 	    }
 	  else if (MB_NULLWCH (m))
@@ -1525,20 +1524,20 @@ change_singlebyte:
 	      continue;
 	    }
 	  nwc = (nop == UpCase) ? _rl_to_wupper (wc) : _rl_to_wlower (wc);
-	  if  (nwc != wc)	/*  just skip unchanged characters */
+	  if (nwc != wc)	/*  just skip unchanged characters */
 	    {
 	      char *s, *e;
 	      mbstate_t ts;
 
 	      memset (&ts, 0, sizeof (mbstate_t));
 	      mlen = WCRTOMB (mb, nwc, &ts);
-	      
+
 	      if (MB_INVALIDCH (mlen))
 		{
 		  nwc = wc;
 		  memset (&ts, 0, sizeof (mbstate_t));
 		  mlen = WCRTOMB (mb, nwc, &ts);
-		  if (MB_INVALIDCH (mlen))		/* should not happen */
+		  if (MB_INVALIDCH (mlen)) /* should not happen */
 		    strncpy (mb, rl_line_buffer + start, mlen = m);
 		}
 	      if (mlen > 0)
@@ -1553,21 +1552,21 @@ change_singlebyte:
 		{
 		  memcpy (s, mb, mlen);
 		  memmove (s + mlen, s + m, (e - s) - m);
-		  next -= m - mlen;	/* next char changes */
-		  end -= m - mlen;	/* end of word changes */
-		  rl_end -= m - mlen;	/* end of line changes */
+		  next -= m - mlen; /* next char changes */
+		  end -= m - mlen; /* end of word changes */
+		  rl_end -= m - mlen; /* end of line changes */
 		  rl_line_buffer[rl_end] = 0;
 		}
 	      else if (m < mlen)
 		{
 		  rl_extend_line_buffer (rl_end + mlen + (e - s) - m + 2);
-		  s = rl_line_buffer + start;	/* have to redo this */
+		  s = rl_line_buffer + start; /* have to redo this */
 		  e = rl_line_buffer + rl_end;
 		  memmove (s + mlen, s + m, (e - s) - m);
 		  memcpy (s, mb, mlen);
-		  next += mlen - m;	/* next char changes */
-		  end += mlen - m;	/* end of word changes */
-		  rl_end += mlen - m;	/* end of line changes */
+		  next += mlen - m; /* next char changes */
+		  end += mlen - m; /* end of word changes */
+		  rl_end += mlen - m; /* end of line changes */
 		  rl_line_buffer[rl_end] = 0;
 		}
 	    }
@@ -1686,7 +1685,7 @@ rl_transpose_chars (int count, int key)
 
 #if defined (HANDLE_MULTIBYTE)
   char_length = prev_point - rl_point;
-  dummy = (char *)xmalloc (char_length + 1);
+  dummy = (char *) xmalloc (char_length + 1);
   for (i = 0; i < char_length; i++)
     dummy[i] = rl_line_buffer[rl_point + i];
   dummy[i] = '\0';
@@ -1743,7 +1742,7 @@ _rl_char_search_internal (int count, int dir, int schar)
 
 #if defined (HANDLE_MULTIBYTE)
       pos = (inc > 0) ? _rl_find_next_mbchar (rl_line_buffer, pos, 1, MB_FIND_ANY)
-		      : _rl_find_prev_mbchar (rl_line_buffer, pos, MB_FIND_ANY);
+	: _rl_find_prev_mbchar (rl_line_buffer, pos, MB_FIND_ANY);
 #else
       pos += inc;
 #endif
@@ -1757,11 +1756,9 @@ _rl_char_search_internal (int count, int dir, int schar)
 	    {
 	      count--;
 	      if (dir < 0)
-	        rl_point = (dir == BTO) ? _rl_find_next_mbchar (rl_line_buffer, pos, 1, MB_FIND_ANY)
-					: pos;
+		rl_point = (dir == BTO) ? _rl_find_next_mbchar (rl_line_buffer, pos, 1, MB_FIND_ANY) : pos;
 	      else
-		rl_point = (dir == FTO) ? _rl_find_prev_mbchar (rl_line_buffer, pos, MB_FIND_ANY)
-					: pos;
+		rl_point = (dir == FTO) ? _rl_find_prev_mbchar (rl_line_buffer, pos, MB_FIND_ANY) : pos;
 	      break;
 	    }
 #if defined (HANDLE_MULTIBYTE)
@@ -1770,7 +1767,7 @@ _rl_char_search_internal (int count, int dir, int schar)
 	}
 #if defined (HANDLE_MULTIBYTE)
       while ((dir < 0) ? (pos = _rl_find_prev_mbchar (rl_line_buffer, pos, MB_FIND_ANY)) != prepos
-		       : (pos = _rl_find_next_mbchar (rl_line_buffer, pos, 1, MB_FIND_ANY)) != prepos);
+	     : (pos = _rl_find_next_mbchar (rl_line_buffer, pos, 1, MB_FIND_ANY)) != prepos);
 #else
       while ((dir < 0) ? pos-- : ++pos < rl_end);
 #endif
@@ -1803,7 +1800,7 @@ _rl_char_search (int count, int fdir, int bdir)
   else
     return (_rl_char_search_internal (count, fdir, mbchar, mb_len));
 }
-#else /* !HANDLE_MULTIBYTE */
+#else		/* !HANDLE_MULTIBYTE */
 static int
 _rl_char_search (int count, int fdir, int bdir)
 {
@@ -1822,7 +1819,7 @@ _rl_char_search (int count, int fdir, int bdir)
   else
     return (_rl_char_search_internal (count, fdir, c));
 }
-#endif /* !HANDLE_MULTIBYTE */
+#endif		/* !HANDLE_MULTIBYTE */
 
 #if defined (READLINE_CALLBACKS)
 static int
@@ -1848,7 +1845,7 @@ rl_char_search (int count, int key)
       return (0);
     }
 #endif
-  
+
   return (_rl_char_search (count, FFIND, BFIND));
 }
 
@@ -1969,7 +1966,7 @@ _rl_rscxt_alloc (int flags)
 {
   _rl_readstr_cxt *cxt;
 
-  cxt = (_rl_readstr_cxt *)xmalloc (sizeof (_rl_readstr_cxt));
+  cxt = (_rl_readstr_cxt *) xmalloc (sizeof (_rl_readstr_cxt));
 
   cxt->flags = flags;
 
@@ -1998,7 +1995,7 @@ _rl_free_saved_readstr_line ()
     /* This doesn't free any saved undo list, if it needs to,
        rl_clear_history shows how to do it. */
     _rl_free_saved_line (_rl_saved_line_for_readstr);
-  _rl_saved_line_for_readstr = (HIST_ENTRY *)NULL;
+  _rl_saved_line_for_readstr = (HIST_ENTRY *) NULL;
 }
 
 void
@@ -2007,16 +2004,16 @@ _rl_unsave_saved_readstr_line ()
   if (_rl_saved_line_for_readstr)
     {
       _rl_free_undo_list (rl_undo_list);
-      _rl_unsave_line (_rl_saved_line_for_readstr);	/* restores rl_undo_list */
+      _rl_unsave_line (_rl_saved_line_for_readstr); /* restores rl_undo_list */
     }
-  _rl_saved_line_for_readstr = (HIST_ENTRY *)NULL;
+  _rl_saved_line_for_readstr = (HIST_ENTRY *) NULL;
 }
 
 _rl_readstr_cxt *
 _rl_readstr_init (int pchar, int flags)
 {
   _rl_readstr_cxt *cxt;
-  char *p;  
+  char *p;
 
   cxt = _rl_rscxt_alloc (flags);
 
@@ -2030,7 +2027,7 @@ _rl_readstr_init (int pchar, int flags)
 
   RL_SETSTATE (RL_STATE_READSTR);
   cxt->flags |= READSTR_FREEPMT;
-  _rl_rscxt = cxt;  
+  _rl_rscxt = cxt;
 
   rl_message ("%s", p);
   xfree (p);
@@ -2052,11 +2049,11 @@ _rl_readstr_cleanup (_rl_readstr_cxt *cxt, int r)
 void
 _rl_readstr_restore (_rl_readstr_cxt *cxt)
 {
-  _rl_unsave_saved_readstr_line ();	/* restores rl_undo_list */
+  _rl_unsave_saved_readstr_line (); /* restores rl_undo_list */
   rl_point = cxt->save_point;
   rl_mark = cxt->save_mark;
   if (cxt->flags & READSTR_FREEPMT)
-    rl_restore_prompt ();		/* _rl_make_prompt_for_search saved it */
+    rl_restore_prompt ();	/* _rl_make_prompt_for_search saved it */
   cxt->flags &= ~READSTR_FREEPMT;
   rl_clear_message ();
   _rl_fix_point (1);
@@ -2066,22 +2063,22 @@ int
 _rl_readstr_sigcleanup (_rl_readstr_cxt *cxt, int r)
 {
   if (cxt->flags & READSTR_FREEPMT)
-    rl_restore_prompt ();		/* _rl_make_prompt_for_search saved it */
+    rl_restore_prompt ();	/* _rl_make_prompt_for_search saved it */
   cxt->flags &= ~READSTR_FREEPMT;
   return (_rl_readstr_cleanup (cxt, r));
 }
-  
-int   
+
+int
 _rl_readstr_getchar (_rl_readstr_cxt *cxt)
 {
-  int c;   
+  int c;
 
-  cxt->prevc = cxt->lastc;	   
+  cxt->prevc = cxt->lastc;
 
   /* Read a key and decide how to proceed. */
-  RL_SETSTATE(RL_STATE_MOREINPUT);
+  RL_SETSTATE (RL_STATE_MOREINPUT);
   c = cxt->lastc = rl_read_key ();
-  RL_UNSETSTATE(RL_STATE_MOREINPUT);
+  RL_UNSETSTATE (RL_STATE_MOREINPUT);
 
 #if defined (HANDLE_MULTIBYTE)
   /* This ends up with C (and LASTC) being set to the last byte of the
@@ -2090,7 +2087,7 @@ _rl_readstr_getchar (_rl_readstr_cxt *cxt)
     c = cxt->lastc = _rl_read_mbstring (cxt->lastc, cxt->mb, MB_LEN_MAX);
 #endif
 
-  if (_rl_caught_signal == SIGINT)	/* XXX maybe more signals here */
+  if (_rl_caught_signal == SIGINT) /* XXX maybe more signals here */
     c = -1;
 
   RL_CHECK_SIGNALS ();
@@ -2111,37 +2108,37 @@ _rl_readstr_dispatch (_rl_readstr_cxt *cxt, int c)
   int n;
 
   if (c < 0)
-    c = CTRL ('C');  
+    c = CTRL ('C');
 
   /* could consider looking up the function bound to they key and dispatching
      off that, but you want most characters inserted by default without having
      to quote. */
   switch (c)
     {
-    case CTRL('W'):
+    case CTRL ('W'):
       rl_unix_word_rubout (1, c);
       break;
 
-    case CTRL('U'):
+    case CTRL ('U'):
       rl_unix_line_discard (1, c);
       break;
 
-    case CTRL('Q'):
-    case CTRL('V'):
+    case CTRL ('Q'):
+    case CTRL ('V'):
       n = rl_quoted_insert (1, c);
       if (n < 0)
 	{
 	  _rl_readstr_restore (cxt);
 	  return -1;
 	}
-      cxt->lastc = (rl_point > 0) ? rl_line_buffer[rl_point - 1] : rl_line_buffer[0];	/* preserve prevc */
+      cxt->lastc = (rl_point > 0) ? rl_line_buffer[rl_point - 1] : rl_line_buffer[0]; /* preserve prevc */
       break;
 
     case RETURN:
     case NEWLINE:
       return 0;
 
-    case CTRL('H'):
+    case CTRL ('H'):
     case RUBOUT:
       if (rl_point == 0)
 	{
@@ -2151,27 +2148,27 @@ _rl_readstr_dispatch (_rl_readstr_cxt *cxt, int c)
       _rl_rubout_char (1, c);
       break;
 
-    case CTRL('C'):
-    case CTRL('G'):
+    case CTRL ('C'):
+    case CTRL ('G'):
       rl_ding ();
       _rl_readstr_restore (cxt);
       return -1;
 
     case ESC:
       /* Allow users to bracketed-paste text into the string.
-	 Similar code is in search.c:_rl_nsearch_dispatch(). */
-      if (_rl_enable_bracketed_paste && ((n = _rl_nchars_available ()) >= (BRACK_PASTE_SLEN-1)))
+         Similar code is in search.c:_rl_nsearch_dispatch(). */
+      if (_rl_enable_bracketed_paste && ((n = _rl_nchars_available ()) >= (BRACK_PASTE_SLEN - 1)))
 	{
 	  if (_rl_read_bracketed_paste_prefix (c) == 1)
 	    rl_bracketed_paste_begin (1, c);
 	  else
 	    {
-	      c = rl_read_key ();	/* get the ESC that got pushed back */
+	      c = rl_read_key (); /* get the ESC that got pushed back */
 	      _rl_insert_char (1, c);
 	    }
-        }
+	}
       else
-        _rl_insert_char (1, c);
+	_rl_insert_char (1, c);
       break;
 
     case ' ':
@@ -2180,7 +2177,7 @@ _rl_readstr_dispatch (_rl_readstr_cxt *cxt, int c)
 	  _rl_insert_char (1, c);
 	  break;
 	}
-    /* FALLTHROUGH */
+      /* FALLTHROUGH */
     case TAB:
       /* Perform completion if the caller has set a completion function. */
       n = (cxt->compfunc) ? (*cxt->compfunc) (cxt, c) : _rl_insert_char (1, c);
@@ -2192,7 +2189,7 @@ _rl_readstr_dispatch (_rl_readstr_cxt *cxt, int c)
       break;
 
 #if 0
-    case CTRL('_'):
+    case CTRL ('_'):
       rl_do_undo ();
       break;
 #endif
@@ -2236,7 +2233,7 @@ readcmd_completion_function (const char *text, int state)
       nlen = RL_STRLEN (text);
     }
   if (cmdlist == 0 || cmdlist[lind] == 0)
-    return (char *)NULL;
+    return (char *) NULL;
 
   while (cmdlist[lind])
     {
@@ -2244,7 +2241,7 @@ readcmd_completion_function (const char *text, int state)
       if (STREQN (text, cmdname, nlen))
 	return (savestring (cmdname));
     }
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 
 static void
@@ -2283,7 +2280,7 @@ _rl_readcmd_complete (_rl_readstr_cxt *cxt, int c)
 
   matches = rl_completion_matches (rl_line_buffer, readcmd_completion_function);
 
-  if (RL_SIG_RECEIVED())
+  if (RL_SIG_RECEIVED ())
     {
       _rl_free_match_list (matches);
       matches = 0;
@@ -2302,11 +2299,11 @@ _rl_readcmd_complete (_rl_readstr_cxt *cxt, int c)
       plen = strlen (prefix);
 
       if (plen > rl_end)
-        {
-          size_t n;
-          for (n = rl_end; n < plen && prefix[n]; n++)
-            _rl_insert_char (1, prefix[n]);
-        }
+	{
+	  size_t n;
+	  for (n = rl_end; n < plen && prefix[n]; n++)
+	    _rl_insert_char (1, prefix[n]);
+	}
       else if (matches[1])
 	_rl_display_cmdname_matches (matches);
       _rl_free_match_list (matches);
@@ -2335,7 +2332,7 @@ _rl_read_command_name ()
 
       if (c < 0)
 	{
-	  if (_rl_rscxt == 0)		/* signal */
+	  if (_rl_rscxt == 0)	/* signal */
 	    _rl_abort_internal ();
 	  _rl_readstr_restore (cxt);
 	  _rl_readstr_cleanup (cxt, r);
@@ -2390,10 +2387,10 @@ rl_execute_named_command (int count, int key)
       prev = rl_dispatching;
       ostate = RL_ISSTATE (RL_STATE_DISPATCHING);
       rl_dispatching = 1;
-      RL_SETSTATE (RL_STATE_DISPATCHING);	/* make sure it's set */
+      RL_SETSTATE (RL_STATE_DISPATCHING); /* make sure it's set */
       r = (*func) (count, key);
       if (ostate == 0)
-	RL_UNSETSTATE (RL_STATE_DISPATCHING);	/* unset it if it wasn't set */
+	RL_UNSETSTATE (RL_STATE_DISPATCHING); /* unset it if it wasn't set */
       rl_dispatching = prev;
     }
   else

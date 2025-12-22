@@ -32,15 +32,15 @@
 
 #if defined (ARRAY_VARS)
 
-#define DSV_ARRAY_DEFAULT	"DSV"
+#  define DSV_ARRAY_DEFAULT	"DSV"
 
-#define NQUOTE	0
-#define DQUOTE	1
-#define SQUOTE	2
+#  define NQUOTE	0
+#  define DQUOTE	1
+#  define SQUOTE	2
 
-#define F_SHELLQUOTE	0x01
-#define F_GREEDY	0x02
-#define F_PRESERVE	0x04
+#  define F_SHELLQUOTE	0x01
+#  define F_GREEDY	0x02
+#  define F_PRESERVE	0x04
 
 /* Split LINE into delimiter-separated fields, storing each field into a
    separate element of array variable DSV, starting at index 0. The format
@@ -87,9 +87,10 @@ dsvsplit (SHELL_VAR *dsv, char *line, char *dstring, int flags)
 	  for (field = ++prev; *field; field++)
 	    {
 	      if (qstate == DQUOTE && *field == '"' && field[1] == '"' && (flags & F_SHELLQUOTE) == 0)
-		buf[b++] = *field++;	/* skip double quote */
-	      else if (qstate == DQUOTE && (flags & F_SHELLQUOTE) && *field == '\\' && strchr (slashify_in_quotes, field[1]) != 0)
-		buf[b++] = *++field;	/* backslash quoted double quote */
+		buf[b++] = *field++; /* skip double quote */
+	      else if (qstate == DQUOTE && (flags & F_SHELLQUOTE) && *field == '\\'
+		       && strchr (slashify_in_quotes, field[1]) != 0)
+		buf[b++] = *++field; /* backslash quoted double quote */
 	      else if (qstate == DQUOTE && *field == '"')
 		{
 		  qstate = NQUOTE;
@@ -120,7 +121,7 @@ dsvsplit (SHELL_VAR *dsv, char *line, char *dstring, int flags)
 	      if (qstate == SQUOTE && *field == '\'')
 		{
 		  qstate = NQUOTE;
-	  	  if (flags & F_PRESERVE)
+		  if (flags & F_PRESERVE)
 		    buf[b++] = *field;
 		}
 	      else if (qstate == NQUOTE && *field == *dstring)
@@ -158,7 +159,7 @@ dsvsplit (SHELL_VAR *dsv, char *line, char *dstring, int flags)
   if (xbuf)
     free (xbuf);
 
-  return (rval = ind);				/* number of fields */
+  return (rval = ind);		/* number of fields */
 }
 #endif
 
@@ -196,7 +197,7 @@ dsv_builtin (WORD_LIST *list)
 	case 'p':
 	  flags |= F_PRESERVE;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -265,38 +266,38 @@ dsv_builtin_unload (char *name)
 }
 
 char *dsv_doc[] = {
-	"Read delimiter-separated fields from STRING.",
-	"",	
-	"Parse STRING, a line of delimiter-separated values, into individual",
-	"fields, and store them into the indexed array ARRAYNAME starting at",
-	"index 0. The parsing understands and skips over double-quoted strings. ",
-	"If ARRAYNAME is not supplied, \"DSV\" is the default array name.",
-	"If the delimiter is a comma, the default, this parses comma-",
-	"separated values as specified in RFC 4180.",
-	"",
-	"The -d option specifies the delimiter. The delimiter is the first",
-	"character of the DELIMS argument. Specifying a DELIMS argument that",
-	"contains more than one character is not supported and will produce",
-	"unexpected results. The -S option enables shell-like quoting: double-",
-	"quoted strings can contain backslashes preceding special characters,",
-	"and the backslash will be removed; and single-quoted strings are",
-	"processed as the shell would process them. The -g option enables a",
-	"greedy split: sequences of the delimiter are skipped at the beginning",
-	"and end of STRING, and consecutive instances of the delimiter in STRING",
-	"do not generate empty fields. If the -p option is supplied, dsv leaves",
-	"quote characters as part of the generated field; otherwise they are",
-	"removed.",
-	"",
-	"The return value is 0 unless an invalid option is supplied or the ARRAYNAME",
-	"argument is invalid or readonly.",
-	(char *)NULL
+  "Read delimiter-separated fields from STRING.",
+  "",
+  "Parse STRING, a line of delimiter-separated values, into individual",
+  "fields, and store them into the indexed array ARRAYNAME starting at",
+  "index 0. The parsing understands and skips over double-quoted strings. ",
+  "If ARRAYNAME is not supplied, \"DSV\" is the default array name.",
+  "If the delimiter is a comma, the default, this parses comma-",
+  "separated values as specified in RFC 4180.",
+  "",
+  "The -d option specifies the delimiter. The delimiter is the first",
+  "character of the DELIMS argument. Specifying a DELIMS argument that",
+  "contains more than one character is not supported and will produce",
+  "unexpected results. The -S option enables shell-like quoting: double-",
+  "quoted strings can contain backslashes preceding special characters,",
+  "and the backslash will be removed; and single-quoted strings are",
+  "processed as the shell would process them. The -g option enables a",
+  "greedy split: sequences of the delimiter are skipped at the beginning",
+  "and end of STRING, and consecutive instances of the delimiter in STRING",
+  "do not generate empty fields. If the -p option is supplied, dsv leaves",
+  "quote characters as part of the generated field; otherwise they are",
+  "removed.",
+  "",
+  "The return value is 0 unless an invalid option is supplied or the ARRAYNAME",
+  "argument is invalid or readonly.",
+  (char *) NULL
 };
 
 struct builtin dsv_struct = {
-	"dsv",			/* builtin name */
-	dsv_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	dsv_doc,		/* array of long documentation strings. */
-	"dsv [-a ARRAYNAME] [-d DELIMS] [-Sgp] string",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "dsv",			/* builtin name */
+  dsv_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  dsv_doc,			/* array of long documentation strings. */
+  "dsv [-a ARRAYNAME] [-d DELIMS] [-Sgp] string", /* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

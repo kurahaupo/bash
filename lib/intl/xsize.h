@@ -16,28 +16,27 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _XSIZE_H
-#define _XSIZE_H
+#  define _XSIZE_H
 
 /* Get size_t.  */
-#include <stddef.h>
+#  include <stddef.h>
 
 /* Get SIZE_MAX.  */
-#include <limits.h>
-#if HAVE_STDINT_H
-# include <stdint.h>
-#endif
+#  include <limits.h>
+#  if HAVE_STDINT_H
+#    include <stdint.h>
+#  endif
 
 /* Get ATTRIBUTE_PURE.  */
-#include "attribute.h"
+#  include "attribute.h"
 
-#ifndef _GL_INLINE_HEADER_BEGIN
- #error "Please include config.h first."
-#endif
+#  ifndef _GL_INLINE_HEADER_BEGIN
+#    error "Please include config.h first."
+#  endif
 _GL_INLINE_HEADER_BEGIN
-#ifndef XSIZE_INLINE
-# define XSIZE_INLINE _GL_INLINE
-#endif
-
+#  ifndef XSIZE_INLINE
+#    define XSIZE_INLINE _GL_INLINE
+#  endif
 /* The size of memory objects is often computed through expressions of
    type size_t. Example:
       void* p = malloc (header_size + n * element_size).
@@ -53,11 +52,9 @@ _GL_INLINE_HEADER_BEGIN
       size_t size = xsum (header_size, xtimes (n, element_size));
       void *p = (size_in_bounds_p (size) ? malloc (size) : NULL);
 */
-
 /* Convert an arbitrary value >= 0 to type size_t.  */
-#define xcast_size_t(N) \
+#  define xcast_size_t(N) \
   ((N) <= SIZE_MAX ? (size_t) (N) : SIZE_MAX)
-
 /* Sum of two sizes, with overflow check.  */
 XSIZE_INLINE size_t ATTRIBUTE_PURE
 xsum (size_t size1, size_t size2)
@@ -93,16 +90,15 @@ xmax (size_t size1, size_t size2)
    The count must be >= 0 and the element size must be > 0.
    This is a macro, not a function, so that it works correctly even
    when N is of a wider type and N > SIZE_MAX.  */
-#define xtimes(N, ELSIZE) \
+#  define xtimes(N, ELSIZE) \
   ((N) <= SIZE_MAX / (ELSIZE) ? (size_t) (N) * (ELSIZE) : SIZE_MAX)
 
 /* Check for overflow.  */
-#define size_overflow_p(SIZE) \
+#  define size_overflow_p(SIZE) \
   ((SIZE) == SIZE_MAX)
 /* Check against overflow.  */
-#define size_in_bounds_p(SIZE) \
+#  define size_in_bounds_p(SIZE) \
   ((SIZE) != SIZE_MAX)
 
 _GL_INLINE_HEADER_END
-
-#endif /* _XSIZE_H */
+#endif		/* _XSIZE_H */

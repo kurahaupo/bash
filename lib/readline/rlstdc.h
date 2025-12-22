@@ -20,7 +20,7 @@
 */
 
 #if !defined (_RL_STDC_H_)
-#define _RL_STDC_H_
+#  define _RL_STDC_H_
 
 /* Adapted from BSD /usr/include/sys/cdefs.h. */
 
@@ -28,18 +28,18 @@
    and traditional C compilers with something like this:
 	extern char *func PARAMS((char *, char *, int)); */
 
-#if !defined (PARAMS)
-#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus)
-#    define PARAMS(protos) protos
-#  else
-#    define PARAMS(protos) ()
+#  if !defined (PARAMS)
+#    if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus)
+#      define PARAMS(protos) protos
+#    else
+#      define PARAMS(protos) ()
+#    endif
 #  endif
-#endif
 
-#ifndef __attribute__
-#  if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)
-#    define __attribute__(x)
+#  ifndef __attribute__
+#    if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)
+#      define __attribute__(x)
+#    endif
 #  endif
-#endif
 
-#endif /* !_RL_STDC_H_ */
+#endif		/* !_RL_STDC_H_ */

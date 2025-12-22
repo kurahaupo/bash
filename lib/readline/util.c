@@ -30,14 +30,14 @@
 #include "posixjmp.h"
 
 #if defined (HAVE_UNISTD_H)
-#  include <unistd.h>           /* for _POSIX_VERSION */
-#endif /* HAVE_UNISTD_H */
+#  include <unistd.h>		/* for _POSIX_VERSION */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -48,7 +48,7 @@
 
 #if defined (TIOCSTAT_IN_SYS_IOCTL)
 #  include <sys/ioctl.h>
-#endif /* TIOCSTAT_IN_SYS_IOCTL */
+#endif		/* TIOCSTAT_IN_SYS_IOCTL */
 
 /* Some standard library routines. */
 #include "readline.h"
@@ -67,7 +67,7 @@
    in words, or 1 if it is. */
 
 int _rl_allow_pathname_alphabetic_chars = 0;
-static const char * const pathname_alphabetic_chars = "/-_=~.#$";
+static const char *const pathname_alphabetic_chars = "/-_=~.#$";
 
 int
 rl_alphabetic (int c)
@@ -75,8 +75,7 @@ rl_alphabetic (int c)
   if (_rl_alphabetic_p (c))
     return (1);
 
-  return (_rl_allow_pathname_alphabetic_chars &&
-	    strchr (pathname_alphabetic_chars, c) != NULL);
+  return (_rl_allow_pathname_alphabetic_chars && strchr (pathname_alphabetic_chars, c) != NULL);
 }
 
 #if defined (HANDLE_MULTIBYTE)
@@ -86,11 +85,10 @@ _rl_walphabetic (WCHAR_T wc)
   int c;
 
   if (iswalnum (wc))
-    return (1);     
+    return (1);
 
   c = wc & 0177;
-  return (_rl_allow_pathname_alphabetic_chars &&
-	    strchr (pathname_alphabetic_chars, c) != NULL);
+  return (_rl_allow_pathname_alphabetic_chars && strchr (pathname_alphabetic_chars, c) != NULL);
 }
 #endif
 
@@ -109,9 +107,9 @@ _rl_abort_internal (void)
     _rl_pop_executing_macro ();
   _rl_kill_kbd_macro ();
 
-  RL_UNSETSTATE (RL_STATE_MULTIKEY);	/* XXX */
+  RL_UNSETSTATE (RL_STATE_MULTIKEY); /* XXX */
 
-  rl_last_func = (rl_command_func_t *)NULL;
+  rl_last_func = (rl_command_func_t *) NULL;
   _rl_command_to_execute = 0;
 
   _rl_longjmp (_rl_top_level, 1);
@@ -134,7 +132,7 @@ int
 rl_tty_status (int count, int key)
 {
 #if defined (TIOCSTAT)
-  ioctl (1, TIOCSTAT, (char *)0);
+  ioctl (1, TIOCSTAT, (char *) 0);
   rl_refresh_line (count, key);
 #else
   rl_ding ();
@@ -155,7 +153,7 @@ rl_copy_text (int from, int to)
     SWAP (from, to);
 
   length = to - from;
-  copy = (char *)xmalloc (1 + length);
+  copy = (char *) xmalloc (1 + length);
   strncpy (copy, rl_line_buffer + from, length);
   copy[length] = '\0';
   return (copy);
@@ -169,7 +167,7 @@ rl_extend_line_buffer (int len)
   while (len >= rl_line_buffer_len)
     {
       rl_line_buffer_len += DEFAULT_BUFFER_SIZE;
-      rl_line_buffer = (char *)xrealloc (rl_line_buffer, rl_line_buffer_len);
+      rl_line_buffer = (char *) xrealloc (rl_line_buffer, rl_line_buffer_len);
     }
 
   _rl_set_the_line ();
@@ -197,7 +195,7 @@ rl_tilde_expand (int ignore, int key)
   else if (start >= 0 && rl_line_buffer[start] != '~')
     {
       for (; start >= 0 && !whitespace (rl_line_buffer[start]); start--)
-        ;
+	;
       start++;
     }
   else if (start < 0)
@@ -217,7 +215,7 @@ rl_tilde_expand (int ignore, int key)
   if (rl_line_buffer[start] == '~')
     {
       len = end - start + 1;
-      temp = (char *)xmalloc (len + 1);
+      temp = (char *) xmalloc (len + 1);
       strncpy (temp, rl_line_buffer + start, len);
       temp[len] = '\0';
       homedir = tilde_expand (temp);
@@ -279,7 +277,7 @@ _rl_strindex (const char *s1, const char *s2)
   for (i = 0, l = strlen (s2), len = strlen (s1); (len - i) >= l; i++)
     if (_rl_strnicmp (s1 + i, s2, l) == 0)
       return ((char *) (s1 + i));
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 
 #if !defined (HAVE_STRPBRK) || defined (HANDLE_MULTIBYTE)
@@ -290,30 +288,30 @@ char *
 _rl_strpbrk (const char *string1, const char *string2)
 {
   register const char *scan;
-#if defined (HANDLE_MULTIBYTE)
+#  if defined (HANDLE_MULTIBYTE)
   mbstate_t ps;
   int v;
 
   memset (&ps, 0, sizeof (mbstate_t));
-#endif
+#  endif
 
   for (; *string1; string1++)
     {
       for (scan = string2; *scan; scan++)
 	{
 	  if (*string1 == *scan)
-	    return ((char *)string1);
+	    return ((char *) string1);
 	}
-#if defined (HANDLE_MULTIBYTE)
+#  if defined (HANDLE_MULTIBYTE)
       if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
 	{
 	  v = _rl_get_char_len (string1, &ps);
 	  if (v > 1)
 	    string1 += v - 1;	/* -1 to account for auto-increment in loop */
 	}
-#endif
+#  endif
     }
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 #endif
 
@@ -334,11 +332,11 @@ _rl_strnicmp (const char *string1, const char *string2, int count)
   s2 = string2;
   do
     {
-      d = _rl_to_lower (*s1) - _rl_to_lower (*s2);	/* XXX - cast to unsigned char? */
+      d = _rl_to_lower (*s1) - _rl_to_lower (*s2); /* XXX - cast to unsigned char? */
       if (d != 0)
 	return d;
       if (*s1++ == '\0')
-        break;
+	break;
       s2++;
     }
   while (--count != 0);
@@ -363,19 +361,19 @@ _rl_stricmp (const char *string1, const char *string2)
   while ((d = _rl_to_lower (*s1) - _rl_to_lower (*s2)) == 0)
     {
       if (*s1++ == '\0')
-        return 0;
+	return 0;
       s2++;
     }
 
   return (d);
 }
-#endif /* !HAVE_STRCASECMP */
+#endif		/* !HAVE_STRCASECMP */
 
 /* Compare the first N characters of S1 and S2 without regard to case. If
    FLAGS&1, apply the mapping specified by completion-map-case and make
    `-' and `_' equivalent. Returns 1 if the strings are equal. */
 int
-_rl_strcaseeqn(const char *s1, const char *s2, size_t n, int flags)
+_rl_strcaseeqn (const char *s1, const char *s2, size_t n, int flags)
 {
   int c1, c2;
   int d;
@@ -390,7 +388,7 @@ _rl_strcaseeqn(const char *s1, const char *s2, size_t n, int flags)
 
       d = c1 - c2;
       if ((*s1 == '-' || *s1 == '_') && (*s2 == '-' || *s2 == '_'))
-	d = 0;		/* case insensitive character mapping */
+	d = 0;			/* case insensitive character mapping */
       if (d != 0)
 	return 0;
       s1++;
@@ -410,7 +408,7 @@ _rl_charcasecmp (int c1, int c2, int flags)
 {
   if ((flags & 1) && (c1 == '-' || c1 == '_') && (c2 == '-' || c2 == '_'))
     return 1;
-  return ( _rl_to_lower (c1) == _rl_to_lower (c2));
+  return (_rl_to_lower (c1) == _rl_to_lower (c2));
 }
 
 /* Stupid comparison routine for qsort () ing strings. */
@@ -437,14 +435,11 @@ FUNCTION_FOR_MACRO (_rl_digit_p)
 FUNCTION_FOR_MACRO (_rl_digit_value)
 FUNCTION_FOR_MACRO (_rl_lowercase_p)
 FUNCTION_FOR_MACRO (_rl_pure_alphabetic)
-FUNCTION_FOR_MACRO (_rl_to_lower)
-FUNCTION_FOR_MACRO (_rl_to_upper)
-FUNCTION_FOR_MACRO (_rl_uppercase_p)
-
+FUNCTION_FOR_MACRO (_rl_to_lower) FUNCTION_FOR_MACRO (_rl_to_upper) FUNCTION_FOR_MACRO (_rl_uppercase_p)
 /* A convenience function, to force memory deallocation to be performed
    by readline.  DLLs on Windows apparently require this. */
-void
-rl_free (void *mem)
+     void
+     rl_free (void *mem)
 {
   if (mem)
     free (mem);
@@ -456,7 +451,7 @@ rl_free (void *mem)
 char *
 _rl_savestring (const char *s)
 {
-  return (strcpy ((char *)xmalloc (1 + (int)strlen (s)), (s)));
+  return (strcpy ((char *) xmalloc (1 + (int) strlen (s)), (s)));
 }
 
 #if defined (DEBUG)
@@ -485,15 +480,15 @@ _rl_tropen (void)
 
   if (_rl_tracefp)
     fclose (_rl_tracefp);
-#if defined (_WIN32) && !defined (__CYGWIN__)
+#  if defined (_WIN32) && !defined (__CYGWIN__)
   x = sh_get_env_value ("TEMP");
   if (x == 0)
     x = ".";
-#else
+#  else
   x = "/var/tmp";
-#endif
-  snprintf (fnbuf, sizeof (fnbuf), "%s/rltrace.%ld", x, (long)getpid());
-  unlink(fnbuf);
+#  endif
+  snprintf (fnbuf, sizeof (fnbuf), "%s/rltrace.%ld", x, (long) getpid ());
+  unlink (fnbuf);
   _rl_tracefp = fopen (fnbuf, "w+");
   return _rl_tracefp != 0;
 }
@@ -513,14 +508,14 @@ _rl_settracefp (FILE *fp)
 {
   _rl_tracefp = fp;
 }
-#endif /* DEBUG */
+#endif		/* DEBUG */
 
 
 #if HAVE_DECL_AUDIT_USER_TTY && defined (HAVE_LIBAUDIT_H) && defined (ENABLE_TTY_AUDIT_SUPPORT)
-#include <sys/socket.h>
-#include <libaudit.h>
-#include <linux/audit.h>
-#include <linux/netlink.h>
+#  include <sys/socket.h>
+#  include <libaudit.h>
+#  include <linux/audit.h>
+#  include <linux/netlink.h>
 
 /* Report STRING to the audit system. */
 void
@@ -542,20 +537,20 @@ _rl_audit_tty (char *string)
       return;
     }
 
-  memset (&req, 0, sizeof(req));
+  memset (&req, 0, sizeof (req));
   req.nlh.nlmsg_len = NLMSG_SPACE (size);
   req.nlh.nlmsg_type = AUDIT_USER_TTY;
   req.nlh.nlmsg_flags = NLM_F_REQUEST;
   req.nlh.nlmsg_seq = 0;
   if (size && string)
-    memcpy (NLMSG_DATA(&req.nlh), string, size);
-  memset (&addr, 0, sizeof(addr));
+    memcpy (NLMSG_DATA (&req.nlh), string, size);
+  memset (&addr, 0, sizeof (addr));
 
   addr.nl_family = AF_NETLINK;
   addr.nl_pid = 0;
   addr.nl_groups = 0;
 
-  sendto (fd, &req, req.nlh.nlmsg_len, 0, (struct sockaddr*)&addr, sizeof(addr));
+  sendto (fd, &req, req.nlh.nlmsg_len, 0, (struct sockaddr *) &addr, sizeof (addr));
   close (fd);
 }
 #endif

@@ -31,13 +31,13 @@
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #if defined (HAVE_LOCALE_H)
 #  include <locale.h>
@@ -60,30 +60,29 @@ static int utf8locale (char *);
 #define RL_DEFAULT_LOCALE "C"
 static char *_rl_current_locale = 0;
 
-#if !defined (HAVE_SETLOCALE)    
+#if !defined (HAVE_SETLOCALE)
 /* A list of legal values for the LANG or LC_CTYPE environment variables.
    If a locale name in this list is the value for the LC_ALL, LC_CTYPE,
    or LANG environment variable (using the first of those with a value),
    readline eight-bit mode is enabled. */
-static char *legal_lang_values[] =
-{
- "iso88591",
- "iso88592",
- "iso88593",
- "iso88594",
- "iso88595",
- "iso88596",
- "iso88597",
- "iso88598",
- "iso88599",
- "iso885910",
- "koi8r",
- "utf8",
+static char *legal_lang_values[] = {
+  "iso88591",
+  "iso88592",
+  "iso88593",
+  "iso88594",
+  "iso88595",
+  "iso88596",
+  "iso88597",
+  "iso88598",
+  "iso88599",
+  "iso885910",
+  "koi8r",
+  "utf8",
   0
 };
 
 static char *normalize_codeset (char *);
-#endif /* !HAVE_SETLOCALE */
+#endif		/* !HAVE_SETLOCALE */
 
 static char *find_codeset (char *, size_t *);
 
@@ -138,12 +137,12 @@ _rl_init_locale (void)
      environment. */
 #if defined (HAVE_SETLOCALE)
   if (lspec == 0 || *lspec == 0)
-    lspec = setlocale (LC_CTYPE, (char *)NULL);
+    lspec = setlocale (LC_CTYPE, (char *) NULL);
   if (lspec == 0)
     lspec = "";
-  ret = setlocale (LC_CTYPE, lspec);	/* ok, since it does not change locale */
+  ret = setlocale (LC_CTYPE, lspec); /* ok, since it does not change locale */
   if (ret == 0 || *ret == 0)
-    ret = setlocale (LC_CTYPE, (char *)NULL);
+    ret = setlocale (LC_CTYPE, (char *) NULL);
   if (ret == 0 || *ret == 0)
     ret = RL_DEFAULT_LOCALE;
 #else
@@ -187,7 +186,7 @@ _rl_set_localevars (char *localestr, int force)
   else
     return (0);
 
-#else /* !HAVE_SETLOCALE */
+#else		/* !HAVE_SETLOCALE */
   char *t;
   int i;
 
@@ -205,7 +204,7 @@ _rl_set_localevars (char *localestr, int force)
 	break;
       }
 
-  if (force && legal_lang_values[i] == 0)	/* didn't find it */
+  if (force && legal_lang_values[i] == 0) /* didn't find it */
     {
       /* Default "C" locale settings. */
       _rl_meta_flag = 0;
@@ -217,7 +216,7 @@ _rl_set_localevars (char *localestr, int force)
 
   xfree (t);
   return (legal_lang_values[i] ? 1 : 0);
-#endif /* !HAVE_SETLOCALE */
+#endif		/* !HAVE_SETLOCALE */
 }
 
 /* Check for LC_ALL, LC_CTYPE, and LANG and use the first with a value
@@ -251,16 +250,16 @@ normalize_codeset (char *codeset)
   all_digits = 1;
   for (len = 0, i = 0; i < namelen; i++)
     {
-      if (ISALNUM ((unsigned char)codeset[i]))
+      if (ISALNUM ((unsigned char) codeset[i]))
 	{
 	  len++;
 	  all_digits &= _rl_digit_p (codeset[i]);
 	}
     }
 
-  retval = (char *)malloc ((all_digits ? 3 : 0) + len + 1);
+  retval = (char *) malloc ((all_digits ? 3 : 0) + len + 1);
   if (retval == 0)
-    return ((char *)0);
+    return ((char *) 0);
 
   wp = retval;
   /* Add `iso' to beginning of an all-digit codeset */
@@ -272,7 +271,7 @@ normalize_codeset (char *codeset)
     }
 
   for (i = 0; i < namelen; i++)
-    if (ISALPHA ((unsigned char)codeset[i]))
+    if (ISALPHA ((unsigned char) codeset[i]))
       *wp++ = _rl_to_lower (codeset[i]);
     else if (_rl_digit_p (codeset[i]))
       *wp++ = codeset[i];
@@ -280,7 +279,7 @@ normalize_codeset (char *codeset)
 
   return retval;
 }
-#endif /* !HAVE_SETLOCALE */
+#endif		/* !HAVE_SETLOCALE */
 
 /* Isolate codeset portion of locale specification. */
 static char *
@@ -289,7 +288,7 @@ find_codeset (char *name, size_t *lenp)
   char *cp, *language, *result;
 
   cp = language = name;
-  result = (char *)0;
+  result = (char *) 0;
 
   while (*cp && *cp != '_' && *cp != '@' && *cp != '+' && *cp != ',')
     cp++;
@@ -297,7 +296,7 @@ find_codeset (char *name, size_t *lenp)
   /* This does not make sense: language has to be specified.  As
      an exception we allow the variable to contain only the codeset
      name.  Perhaps there are funny codeset names.  */
-  if (language == cp) 
+  if (language == cp)
     {
       *lenp = strlen (language);
       result = language;
@@ -340,10 +339,10 @@ _rl_reset_locale (void)
   /* This should not be NULL; _rl_init_eightbit sets it on the first call to
      readline() or rl_initialize(). */
   ol = _rl_current_locale;
-  nl = _rl_init_locale ();		/* resets _rl_current_locale */
+  nl = _rl_init_locale ();	/* resets _rl_current_locale */
 
   if ((ol == 0 && nl) || (ol && nl && (STREQ (ol, nl) == 0)))
-    (void)_rl_set_localevars (nl, 1);
+    (void) _rl_set_localevars (nl, 1);
 
   xfree (ol);
 }

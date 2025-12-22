@@ -32,7 +32,7 @@ initbrk (void)
       void *b;
 
       b = brk (NULL);
-      if (b == (void *)-1)
+      if (b == (void *) -1)
 	return -1;
       initialbrk = curbrk = b;
     }
@@ -48,7 +48,7 @@ sbrk (intptr_t incr)
   if (initialbrk == 0 && initbrk () == -1)
     {
       errno = ENOMEM;
-      return (void *)-1;
+      return (void *) -1;
     }
 
   if (incr == 0)
@@ -59,22 +59,22 @@ sbrk (intptr_t incr)
       (incr < 0 && (uintptr_t) curbrk + incr > (uintptr_t) curbrk))
     {
       errno = ENOMEM;
-      return (void *)-1;
+      return (void *) -1;
     }
 
-  newbrk = curbrk + incr;  
+  newbrk = curbrk + incr;
   if (newbrk < initialbrk)
     {
       errno = EINVAL;
-      return (void *)-1;
+      return (void *) -1;
     }
 
-  if (brk (newbrk) == (void *)-1)
-    return (void *)-1;		/* preserve errno */
+  if (brk (newbrk) == (void *) -1)
+    return (void *) -1;		/* preserve errno */
 
   oldbrk = curbrk;
   curbrk = newbrk;
 
   return (oldbrk);
 }
-#endif /* HAVE_BRK && !HAVE_SBRK */
+#endif		/* HAVE_BRK && !HAVE_SBRK */

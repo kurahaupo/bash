@@ -26,20 +26,20 @@
 
 #if defined (BRACE_EXPANSION) && defined (READLINE)
 
-#include <stdio.h>
+#  include <stdio.h>
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include "bashansi.h"
-#include "shmbutil.h"
+#  include "bashansi.h"
+#  include "shmbutil.h"
 
-#include "shell.h"
-#include <readline/readline.h>
+#  include "shell.h"
+#  include <readline/readline.h>
 
 static int _strcompare (const char **, const char **);
 
@@ -73,12 +73,11 @@ really_munge_braces (char **array, int real_start, int real_end, int gcd_zero)
 
   if (real_start == real_end)
     {
-      x = array[real_start] ? sh_backslash_quote (array[real_start] + gcd_zero, 0, 0)
- 			    : sh_backslash_quote (array[0], 0, 0);
+      x = array[real_start] ? sh_backslash_quote (array[real_start] + gcd_zero, 0, 0) : sh_backslash_quote (array[0], 0, 0);
       return x;
     }
 
-  result = (char *)xmalloc (result_size = 16);
+  result = (char *) xmalloc (result_size = 16);
   *result = '\0';
 
   for (start = real_start; start < real_end; start = end + 1)
@@ -102,14 +101,15 @@ really_munge_braces (char **array, int real_start, int real_end, int gcd_zero)
 	  /* In this case, add in a leading '{', because we are at
 	     top level, and there isn't a consistent prefix. */
 	  result_size += 1;
-	  result = (char *)xrealloc (result, result_size);
-	  result[0] = '{'; result[1] = '\0';
+	  result = (char *) xrealloc (result, result_size);
+	  result[0] = '{';
+	  result[1] = '\0';
 	  flag++;
 	}
 
       /* Make sure we backslash quote every substring we insert into the
-	 resultant brace expression.  This is so the default filename
-	 quoting function won't inappropriately quote the braces. */
+         resultant brace expression.  This is so the default filename
+         quoting function won't inappropriately quote the braces. */
       if (start == end)
 	{
 	  x = savestring (array[start] + gcd_zero);
@@ -121,13 +121,13 @@ really_munge_braces (char **array, int real_start, int real_end, int gcd_zero)
 	  /* If there is more than one element in the subarray,
 	     insert the (quoted) prefix and an opening brace. */
 	  tlen = gcd - gcd_zero;
-	  x = (char *)xmalloc (tlen + 1);
+	  x = (char *) xmalloc (tlen + 1);
 	  strncpy (x, array[start] + gcd_zero, tlen);
 	  x[tlen] = '\0';
 	  subterm = sh_backslash_quote (x, 0, 0);
 	  free (x);
 	  result_size += strlen (subterm) + 1;
-	  result = (char *)xrealloc (result, result_size);
+	  result = (char *) xrealloc (result, result_size);
 	  strcat (result, subterm);
 	  free (subterm);
 	  strcat (result, "{");
@@ -136,7 +136,7 @@ really_munge_braces (char **array, int real_start, int real_end, int gcd_zero)
 	}
 
       result_size += strlen (subterm) + 1;
-      result = (char *)xrealloc (result, result_size);
+      result = (char *) xrealloc (result, result_size);
       strcat (result, subterm);
       strcat (result, ",");
       free (subterm);
@@ -167,8 +167,8 @@ hack_braces_completion (char **names)
 
   i = strvec_len (names);
   if (MB_CUR_MAX > 1 && i > 2)
-    qsort (names+1, i-1, sizeof (char *), (QSFUNC *)_strcompare);
-      
+    qsort (names + 1, i - 1, sizeof (char *), (QSFUNC *) _strcompare);
+
   temp = really_munge_braces (names, 1, i, 0);
 
   for (i = 0; names[i]; ++i)
@@ -198,9 +198,9 @@ bash_brace_completion (int count, int ignore)
   orig_quoting_desired = rl_filename_quoting_desired;
 
   rl_completion_entry_function = rl_filename_completion_function;
-  rl_attempted_completion_function = (rl_completion_func_t *)NULL;
+  rl_attempted_completion_function = (rl_completion_func_t *) NULL;
   rl_ignore_some_completions_function = hack_braces_completion;
-  rl_filename_quoting_function = (rl_quote_func_t *)NULL;
+  rl_filename_quoting_function = (rl_quote_func_t *) NULL;
   rl_filename_quoting_desired = 0;
 
   r = rl_complete_internal (TAB);
@@ -213,4 +213,4 @@ bash_brace_completion (int count, int ignore)
 
   return r;
 }
-#endif /* BRACE_EXPANSION && READLINE */
+#endif		/* BRACE_EXPANSION && READLINE */

@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if defined (HAVE_UNISTD_H)
@@ -32,10 +32,10 @@ strscpy (char *d, const char *s, size_t len)
 
   for (i = 0; i < len; i++)
     if ((d[i] = s[i]) == 0)
-      return ((ssize_t)i);
+      return ((ssize_t) i);
 
   if (i != 0)
     d[--i] = '\0';
 
-  return (-1);		/* strlen (s) > len */
+  return (-1);			/* strlen (s) > len */
 }

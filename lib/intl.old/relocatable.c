@@ -23,11 +23,11 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE	1
+#  define _GNU_SOURCE	1
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#  include "config.h"
 #endif
 
 /* Specification.  */
@@ -35,54 +35,54 @@
 
 #if ENABLE_RELOCATABLE
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#  include <stddef.h>
+#  include <stdio.h>
+#  include <stdlib.h>
+#  include <string.h>
 
-#ifdef NO_XMALLOC
-# define xmalloc malloc
-#else
-# include "xmalloc.h"
-#endif
+#  ifdef NO_XMALLOC
+#    define xmalloc malloc
+#  else
+#    include "xmalloc.h"
+#  endif
 
-#if DEPENDS_ON_LIBCHARSET
-# include <libcharset.h>
-#endif
-#if DEPENDS_ON_LIBICONV && HAVE_ICONV
-# include <iconv.h>
-#endif
-#if DEPENDS_ON_LIBINTL && ENABLE_NLS
-# include <libintl.h>
-#endif
+#  if DEPENDS_ON_LIBCHARSET
+#    include <libcharset.h>
+#  endif
+#  if DEPENDS_ON_LIBICONV && HAVE_ICONV
+#    include <iconv.h>
+#  endif
+#  if DEPENDS_ON_LIBINTL && ENABLE_NLS
+#    include <libintl.h>
+#  endif
 
 /* Faked cheap 'bool'.  */
-#undef bool
-#undef false
-#undef true
-#define bool int
-#define false 0
-#define true 1
+#  undef bool
+#  undef false
+#  undef true
+#  define bool int
+#  define false 0
+#  define true 1
 
 /* Pathname support.
    ISSLASH(C)           tests whether C is a directory separator character.
    IS_PATH_WITH_DIR(P)  tests whether P contains a directory specification.
  */
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
+#  if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */
-# define ISSLASH(C) ((C) == '/' || (C) == '\\')
-# define HAS_DEVICE(P) \
+#    define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#    define HAS_DEVICE(P) \
     ((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
      && (P)[1] == ':')
-# define IS_PATH_WITH_DIR(P) \
+#    define IS_PATH_WITH_DIR(P) \
     (strchr (P, '/') != NULL || strchr (P, '\\') != NULL || HAS_DEVICE (P))
-# define FILESYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
-#else
+#    define FILESYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
+#  else
   /* Unix */
-# define ISSLASH(C) ((C) == '/')
-# define IS_PATH_WITH_DIR(P) (strchr (P, '/') != NULL)
-# define FILESYSTEM_PREFIX_LEN(P) 0
-#endif
+#    define ISSLASH(C) ((C) == '/')
+#    define IS_PATH_WITH_DIR(P) (strchr (P, '/') != NULL)
+#    define FILESYSTEM_PREFIX_LEN(P) 0
+#  endif
 
 /* Original installation prefix.  */
 static char *orig_prefix;
@@ -99,12 +99,11 @@ static size_t curr_prefix_len;
    prefixes should be directory names without trailing slash (i.e. use ""
    instead of "/").  */
 static void
-set_this_relocation_prefix (const char *orig_prefix_arg,
-			    const char *curr_prefix_arg)
+set_this_relocation_prefix (const char *orig_prefix_arg, const char *curr_prefix_arg)
 {
   if (orig_prefix_arg != NULL && curr_prefix_arg != NULL
       /* Optimization: if orig_prefix and curr_prefix are equal, the
-	 relocation is a nop.  */
+         relocation is a nop.  */
       && strcmp (orig_prefix_arg, curr_prefix_arg) != 0)
     {
       /* Duplicate the argument strings.  */
@@ -113,9 +112,9 @@ set_this_relocation_prefix (const char *orig_prefix_arg,
       orig_prefix_len = strlen (orig_prefix_arg);
       curr_prefix_len = strlen (curr_prefix_arg);
       memory = (char *) xmalloc (orig_prefix_len + 1 + curr_prefix_len + 1);
-#ifdef NO_XMALLOC
+#  ifdef NO_XMALLOC
       if (memory != NULL)
-#endif
+#  endif
 	{
 	  memcpy (memory, orig_prefix_arg, orig_prefix_len + 1);
 	  orig_prefix = memory;
@@ -142,29 +141,27 @@ set_relocation_prefix (const char *orig_prefix_arg, const char *curr_prefix_arg)
   set_this_relocation_prefix (orig_prefix_arg, curr_prefix_arg);
 
   /* Now notify all dependent libraries.  */
-#if DEPENDS_ON_LIBCHARSET
+#  if DEPENDS_ON_LIBCHARSET
   libcharset_set_relocation_prefix (orig_prefix_arg, curr_prefix_arg);
-#endif
-#if DEPENDS_ON_LIBICONV && HAVE_ICONV && _LIBICONV_VERSION >= 0x0109
+#  endif
+#  if DEPENDS_ON_LIBICONV && HAVE_ICONV && _LIBICONV_VERSION >= 0x0109
   libiconv_set_relocation_prefix (orig_prefix_arg, curr_prefix_arg);
-#endif
-#if DEPENDS_ON_LIBINTL && ENABLE_NLS && defined libintl_set_relocation_prefix
+#  endif
+#  if DEPENDS_ON_LIBINTL && ENABLE_NLS && defined libintl_set_relocation_prefix
   libintl_set_relocation_prefix (orig_prefix_arg, curr_prefix_arg);
-#endif
+#  endif
 }
 
 /* Convenience function:
    Computes the current installation prefix, based on the original
    installation prefix, the original installation directory of a particular
    file, and the current pathname of this file.  Returns NULL upon failure.  */
-#ifdef IN_LIBRARY
-#define compute_curr_prefix local_compute_curr_prefix
+#  ifdef IN_LIBRARY
+#    define compute_curr_prefix local_compute_curr_prefix
 static
-#endif
+#  endif
 const char *
-compute_curr_prefix (const char *orig_installprefix,
-		     const char *orig_installdir,
-		     const char *curr_pathname)
+compute_curr_prefix (const char *orig_installprefix, const char *orig_installdir, const char *curr_pathname)
 {
   const char *curr_installdir;
   const char *rel_installdir;
@@ -175,8 +172,7 @@ compute_curr_prefix (const char *orig_installprefix,
   /* Determine the relative installation directory, relative to the prefix.
      This is simply the difference between orig_installprefix and
      orig_installdir.  */
-  if (strncmp (orig_installprefix, orig_installdir, strlen (orig_installprefix))
-      != 0)
+  if (strncmp (orig_installprefix, orig_installdir, strlen (orig_installprefix)) != 0)
     /* Shouldn't happen - nothing should be installed outside $(prefix).  */
     return NULL;
   rel_installdir = orig_installdir + strlen (orig_installprefix);
@@ -195,10 +191,10 @@ compute_curr_prefix (const char *orig_installprefix,
       }
 
     q = (char *) xmalloc (p - curr_pathname + 1);
-#ifdef NO_XMALLOC
+#  ifdef NO_XMALLOC
     if (q == NULL)
       return NULL;
-#endif
+#  endif
     memcpy (q, curr_pathname, p - curr_pathname);
     q[p - curr_pathname] = '\0';
     curr_installdir = q;
@@ -209,8 +205,7 @@ compute_curr_prefix (const char *orig_installprefix,
   {
     const char *rp = rel_installdir + strlen (rel_installdir);
     const char *cp = curr_installdir + strlen (curr_installdir);
-    const char *cp_base =
-      curr_installdir + FILESYSTEM_PREFIX_LEN (curr_installdir);
+    const char *cp_base = curr_installdir + FILESYSTEM_PREFIX_LEN (curr_installdir);
 
     while (rp > rel_installdir && cp > cp_base)
       {
@@ -228,15 +223,15 @@ compute_curr_prefix (const char *orig_installprefix,
 		  same = true;
 		break;
 	      }
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
+#  if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
 	    /* Win32, OS/2, DOS - case insignificant filesystem */
 	    if ((*rpi >= 'a' && *rpi <= 'z' ? *rpi - 'a' + 'A' : *rpi)
 		!= (*cpi >= 'a' && *cpi <= 'z' ? *cpi - 'a' + 'A' : *cpi))
 	      break;
-#else
+#  else
 	    if (*rpi != *cpi)
 	      break;
-#endif
+#  endif
 	  }
 	if (!same)
 	  break;
@@ -255,10 +250,10 @@ compute_curr_prefix (const char *orig_installprefix,
       char *curr_prefix;
 
       curr_prefix = (char *) xmalloc (curr_prefix_len + 1);
-#ifdef NO_XMALLOC
+#  ifdef NO_XMALLOC
       if (curr_prefix == NULL)
 	return NULL;
-#endif
+#  endif
       memcpy (curr_prefix, curr_installdir, curr_prefix_len);
       curr_prefix[curr_prefix_len] = '\0';
 
@@ -267,12 +262,12 @@ compute_curr_prefix (const char *orig_installprefix,
   }
 }
 
-#if defined PIC && defined INSTALLDIR
+#  if defined PIC && defined INSTALLDIR
 
 /* Full pathname of shared library, or NULL.  */
 static char *shared_library_fullname;
 
-#if defined _WIN32 || defined __WIN32__
+#    if defined _WIN32 || defined __WIN32__
 
 /* Determine the full pathname of the shared library when it is loaded.  */
 
@@ -300,12 +295,12 @@ DllMain (HINSTANCE module_handle, DWORD event, LPVOID reserved)
   return TRUE;
 }
 
-#else /* Unix */
+#    else	/* Unix */
 
 static void
 find_shared_library_fullname ()
 {
-#ifdef __linux__
+#      ifdef __linux__
   FILE *fp;
 
   /* Open the current process' maps file.  It describes one VMA per line.  */
@@ -331,7 +326,8 @@ find_shared_library_fullname ()
 		  int len;
 
 		  ungetc (c, fp);
-		  shared_library_fullname = NULL; size = 0;
+		  shared_library_fullname = NULL;
+		  size = 0;
 		  len = getline (&shared_library_fullname, &size, fp);
 		  if (len >= 0)
 		    {
@@ -347,10 +343,10 @@ find_shared_library_fullname ()
 	}
       fclose (fp);
     }
-#endif
+#      endif
 }
 
-#endif /* WIN32 / Unix */
+#    endif	/* WIN32 / Unix */
 
 /* Return the full pathname of the current shared library.
    Return NULL if unknown.
@@ -358,45 +354,43 @@ find_shared_library_fullname ()
 static char *
 get_shared_library_fullname ()
 {
-#if !(defined _WIN32 || defined __WIN32__)
+#    if !(defined _WIN32 || defined __WIN32__)
   static bool tried_find_shared_library_fullname;
   if (!tried_find_shared_library_fullname)
     {
       find_shared_library_fullname ();
       tried_find_shared_library_fullname = true;
     }
-#endif
+#    endif
   return shared_library_fullname;
 }
 
-#endif /* PIC */
+#  endif	/* PIC */
 
 /* Returns the pathname, relocated according to the current installation
    directory.  */
 const char *
 relocate (const char *pathname)
 {
-#if defined PIC && defined INSTALLDIR
+#  if defined PIC && defined INSTALLDIR
   static int initialized;
 
   /* Initialization code for a shared library.  */
   if (!initialized)
     {
       /* At this point, orig_prefix and curr_prefix likely have already been
-	 set through the main program's set_program_name_and_installdir
-	 function.  This is sufficient in the case that the library has
-	 initially been installed in the same orig_prefix.  But we can do
-	 better, to also cover the cases that 1. it has been installed
-	 in a different prefix before being moved to orig_prefix and (later)
-	 to curr_prefix, 2. unlike the program, it has not moved away from
-	 orig_prefix.  */
+         set through the main program's set_program_name_and_installdir
+         function.  This is sufficient in the case that the library has
+         initially been installed in the same orig_prefix.  But we can do
+         better, to also cover the cases that 1. it has been installed
+         in a different prefix before being moved to orig_prefix and (later)
+         to curr_prefix, 2. unlike the program, it has not moved away from
+         orig_prefix.  */
       const char *orig_installprefix = INSTALLPREFIX;
       const char *orig_installdir = INSTALLDIR;
       const char *curr_prefix_better;
 
-      curr_prefix_better =
-	compute_curr_prefix (orig_installprefix, orig_installdir,
-			     get_shared_library_fullname ());
+      curr_prefix_better = compute_curr_prefix (orig_installprefix, orig_installdir, get_shared_library_fullname ());
       if (curr_prefix_better == NULL)
 	curr_prefix_better = curr_prefix;
 
@@ -404,14 +398,13 @@ relocate (const char *pathname)
 
       initialized = 1;
     }
-#endif
+#  endif
 
   /* Note: It is not necessary to perform case insensitive comparison here,
      even for DOS-like filesystems, because the pathname argument was
      typically created from the same Makefile variable as orig_prefix came
      from.  */
-  if (orig_prefix != NULL && curr_prefix != NULL
-      && strncmp (pathname, orig_prefix, orig_prefix_len) == 0)
+  if (orig_prefix != NULL && curr_prefix != NULL && strncmp (pathname, orig_prefix, orig_prefix_len) == 0)
     {
       if (pathname[orig_prefix_len] == '\0')
 	/* pathname equals orig_prefix.  */
@@ -420,12 +413,11 @@ relocate (const char *pathname)
 	{
 	  /* pathname starts with orig_prefix.  */
 	  const char *pathname_tail = &pathname[orig_prefix_len];
-	  char *result =
-	    (char *) xmalloc (curr_prefix_len + strlen (pathname_tail) + 1);
+	  char *result = (char *) xmalloc (curr_prefix_len + strlen (pathname_tail) + 1);
 
-#ifdef NO_XMALLOC
+#  ifdef NO_XMALLOC
 	  if (result != NULL)
-#endif
+#  endif
 	    {
 	      memcpy (result, curr_prefix, curr_prefix_len);
 	      strcpy (result + curr_prefix_len, pathname_tail);

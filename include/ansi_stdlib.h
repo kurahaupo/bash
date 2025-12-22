@@ -21,7 +21,7 @@
 */
 
 #if !defined (_STDLIB_H_)
-#define	_STDLIB_H_ 1
+#  define	_STDLIB_H_ 1
 
 /* String conversion functions. */
 extern int atoi ();
@@ -31,9 +31,9 @@ extern double strtod ();
 
 /* Memory allocation functions. */
 /* Generic pointer type. */
-#ifndef PTR_T
-#  define PTR_T	void *
-#endif /* PTR_T */
+#  ifndef PTR_T
+#    define PTR_T	void *
+#  endif	/* PTR_T */
 
 extern PTR_T malloc ();
 extern PTR_T realloc ();
@@ -45,4 +45,4 @@ extern void exit ();
 extern char *getenv ();
 extern void qsort ();
 
-#endif /* _STDLIB_H  */
+#endif		/* _STDLIB_H  */

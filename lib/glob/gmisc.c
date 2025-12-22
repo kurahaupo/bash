@@ -51,27 +51,27 @@ extern char *glob_patscan (char *, char *, int, int);
 	? TOLOWER ((unsigned char)c) \
 	: ((unsigned char)c))
 #ifndef LPAREN
-#define LPAREN '('
-#define RPAREN ')'
+#  define LPAREN '('
+#  define RPAREN ')'
 #endif
 #include "gm_loop.c"
 
 /* Compile `gm_loop.c' again for multibyte characters. */
 #if HANDLE_MULTIBYTE
 
-#define CHAR	wchar_t
-#define INT	wint_t
-#define L(CS)	L##CS
-#define EXTGLOB_PATTERN_P wextglob_pattern_p
-#define MATCH_PATTERN_CHAR match_pattern_wchar
-#define MATCHLEN wmatchlen
+#  define CHAR	wchar_t
+#  define INT	wint_t
+#  define L(CS)	L##CS
+#  define EXTGLOB_PATTERN_P wextglob_pattern_p
+#  define MATCH_PATTERN_CHAR match_pattern_wchar
+#  define MATCHLEN wmatchlen
 
-#define FOLD(c) ((flags & FNM_CASEFOLD) && iswupper (c) ? towlower (c) : (c))
-#define LPAREN L'('
-#define RPAREN L')'
-#include "gm_loop.c"
+#  define FOLD(c) ((flags & FNM_CASEFOLD) && iswupper (c) ? towlower (c) : (c))
+#  define LPAREN L'('
+#  define RPAREN L')'
+#  include "gm_loop.c"
 
-#endif /* HANDLE_MULTIBYTE */
+#endif		/* HANDLE_MULTIBYTE */
 
 
 #if defined (EXTENDED_GLOB)
@@ -95,12 +95,12 @@ glob_dirscan (char *pat, int dirsep)
 	    continue;
 	  else if (*pe == 0)
 	    break;
-	  p = pe - 1;	/* will do increment above */
+	  p = pe - 1;		/* will do increment above */
 	  continue;
 	}
-      if (*p ==  dirsep)
+      if (*p == dirsep)
 	d = p;
     }
   return d;
 }
-#endif /* EXTENDED_GLOB */
+#endif		/* EXTENDED_GLOB */

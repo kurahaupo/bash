@@ -17,33 +17,32 @@
 #include <config.h>
 
 #if defined (HANDLE_MULTIBYTE)
-#include <stdlib.h>
-#include <limits.h>
+#  include <stdlib.h>
+#  include <limits.h>
 
-#include <errno.h>
+#  include <errno.h>
 
-#include <shmbutil.h>
-#include <shmbchar.h>
+#  include <shmbutil.h>
+#  include <shmbchar.h>
 
-#ifndef errno
+#  ifndef errno
 extern int errno;
-#endif
+#  endif
 
-#if IS_BASIC_ASCII
+#  if IS_BASIC_ASCII
 
 /* Bit table of characters in the POSIX "portable character set", which
    POSIX guarantees to be single-byte and in practice are safe to treat
    like the ISO C "basic character set".  */
-const unsigned int is_basic_table [UCHAR_MAX / 32 + 1] =
-{
-  0x00003f81,           /* '\0' '\007' '\010' '\t' '\n' '\v' '\f' '\r' */
-  0xffffffff,           /* ' '......'?' */
-  0xffffffff,           /* '@' 'A'...'Z' '[' '\\' ']' '^' '_' */
-  0x7fffffff            /* '`' 'a'...'z' '{' '|' '}' '~' */
-  /* The remaining bits are 0.  */
+const unsigned int is_basic_table[UCHAR_MAX / 32 + 1] = {
+  0x00003f81,			/* '\0' '\007' '\010' '\t' '\n' '\v' '\f' '\r' */
+  0xffffffff,			/* ' '......'?' */
+  0xffffffff,			/* '@' 'A'...'Z' '[' '\\' ']' '^' '_' */
+  0x7fffffff			/* '`' 'a'...'z' '{' '|' '}' '~' */
+    /* The remaining bits are 0.  */
 };
-	
-#endif /* IS_BASIC_ASCII */
+
+#  endif	/* IS_BASIC_ASCII */
 
 extern int locale_utf8locale;
 
@@ -61,11 +60,11 @@ mbstrlen (const char *s)
 
   nc = 0;
   mb_cur_max = MB_CUR_MAX;
-  while (*s && (clen = (f = is_basic (*s)) ? 1 : mbrlen(s, mb_cur_max, &mbs)) != 0)
+  while (*s && (clen = (f = is_basic (*s)) ? 1 : mbrlen (s, mb_cur_max, &mbs)) != 0)
     {
-      if (MB_INVALIDCH(clen))
+      if (MB_INVALIDCH (clen))
 	{
-	  clen = 1;	/* assume single byte */
+	  clen = 1;		/* assume single byte */
 	  mbs = mbsbak;
 	}
 
@@ -90,22 +89,22 @@ mbsmbchar (const char *s)
   int mb_cur_max;
 
   if (locale_utf8locale)
-    return (utf8_mbsmbchar (s));	/* XXX */
+    return (utf8_mbsmbchar (s)); /* XXX */
 
   mb_cur_max = MB_CUR_MAX;
-  for (t = (char *)s; *t; t++)
+  for (t = (char *) s; *t; t++)
     {
       if (is_basic (*t))
 	continue;
 
-      if (locale_utf8locale)		/* not used if above code active */
+      if (locale_utf8locale)	/* not used if above code active */
 	clen = utf8_mblen (t, mb_cur_max);
       else
 	clen = mbrlen (t, mb_cur_max, &mbs);
 
       if (clen == 0)
-        return 0;
-      if (MB_INVALIDCH(clen))
+	return 0;
+      if (MB_INVALIDCH (clen))
 	continue;
 
       if (clen > 1)
@@ -115,18 +114,18 @@ mbsmbchar (const char *s)
 }
 
 int
-sh_mbsnlen(const char *src, size_t srclen, int maxlen)
+sh_mbsnlen (const char *src, size_t srclen, int maxlen)
 {
   int count;
   int sind;
   DECLARE_MBSTATE;
 
-  for (sind = count = 0; src[sind]; )
+  for (sind = count = 0; src[sind];)
     {
-      count++;		/* number of multibyte characters */
+      count++;			/* number of multibyte characters */
       ADVANCE_CHAR (src, srclen, sind);
       if (sind > maxlen)
-        break;
+	break;
     }
 
   return count;

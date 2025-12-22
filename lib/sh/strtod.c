@@ -19,35 +19,35 @@
 */
 
 #if HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #ifndef HAVE_STRTOD
 
-#include <errno.h>
-#ifndef errno
+#  include <errno.h>
+#  ifndef errno
 extern int errno;
-#endif
+#  endif
 
-#include <chartypes.h>
-#include <math.h>
+#  include <chartypes.h>
+#  include <math.h>
 
-#if HAVE_FLOAT_H
-# include <float.h>
-#else
-# define DBL_MAX 1.7976931348623159e+308
-# define DBL_MIN 2.2250738585072010e-308
-#endif
+#  if HAVE_FLOAT_H
+#    include <float.h>
+#  else
+#    define DBL_MAX 1.7976931348623159e+308
+#    define DBL_MIN 2.2250738585072010e-308
+#  endif
 
-#include <bashansi.h>
+#  include <bashansi.h>
 
-#ifndef HUGE_VAL
-#  define HUGE_VAL HUGE
-#endif
+#  ifndef HUGE_VAL
+#    define HUGE_VAL HUGE
+#  endif
 
-#ifndef locale_decpoint
+#  ifndef locale_decpoint
 extern int locale_decpoint (void);
-#endif
+#  endif
 
 /* Convert NPTR to a double.  If ENDPTR is not NULL, a pointer to the
    character after the last one used in the number is put in *ENDPTR.  */
@@ -76,7 +76,7 @@ strtod (const char *nptr, char **endptr)
   s = nptr;
 
   /* Eat whitespace.  */
-  while (ISSPACE ((unsigned char)*s))
+  while (ISSPACE ((unsigned char) *s))
     ++s;
 
   /* Get the sign.  */
@@ -124,7 +124,7 @@ strtod (const char *nptr, char **endptr)
   if (!got_digit)
     goto noconv;
 
-  if (TOLOWER ((unsigned char)*s) == 'e')
+  if (TOLOWER ((unsigned char) *s) == 'e')
     {
       /* Get the exponent specified after the `e' or `E'.  */
       int save = errno;
@@ -198,4 +198,4 @@ noconv:
   return 0.0;
 }
 
-#endif /* !HAVE_STRTOD */
+#endif		/* !HAVE_STRTOD */

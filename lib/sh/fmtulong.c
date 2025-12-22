@@ -54,7 +54,7 @@ extern int errno;
 static char const x_digs[16] = "0123456789abcdef";
 static char const X_digs[16] = "0123456789ABCDEF";
 
-static char * const all_digs = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@_";
+static char *const all_digs = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@_";
 
 #define FMTCHAR(x) all_digs[(x)]
 
@@ -88,7 +88,7 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
 #if 1
       /* XXX - truncation possible with long translation */
       strncpy (buf, _("invalid base"), len - 1);
-      buf[len-1] = '\0';
+      buf[len - 1] = '\0';
       errno = EINVAL;
       return (p = buf);
 #else
@@ -97,7 +97,7 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
     }
 
   sign = 0;
-  if ((flags & FL_UNSIGNED) == 0 && (LONG)ui < 0)
+  if ((flags & FL_UNSIGNED) == 0 && (LONG) ui < 0)
     {
       ui = -ui;
       sign = '-';
@@ -116,14 +116,14 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
 	  break;
 	}
       /* Favor signed arithmetic over unsigned arithmetic; it is faster on
-	 many machines. */
-      if ((LONG)ui < 0)
+         many machines. */
+      if ((LONG) ui < 0)
 	{
 	  *p-- = TOCHAR (ui % 10);
 	  si = ui / 10;
 	}
       else
-        si = ui;
+	si = ui;
       do
 	*p-- = TOCHAR (si % 10);
       while (si /= 10);
@@ -169,7 +169,7 @@ fmtulong (UNSIGNED_LONG ui, int base, char *buf, size_t len, int flags)
       *p-- = '#';
       *p-- = TOCHAR (base % 10);
       if (base > 10)
-        *p-- = TOCHAR (base / 10);
+	*p-- = TOCHAR (base / 10);
     }
 
   if (sign)

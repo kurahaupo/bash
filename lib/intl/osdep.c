@@ -15,9 +15,9 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #if defined __CYGWIN__ || defined __MINGW32__
-# include "intl-exports.c"
+#  include "intl-exports.c"
 #elif defined __EMX__ && !defined __KLIBC__
-# include "os2compat.c"
+#  include "os2compat.c"
 #else
 /* Avoid AIX compiler warning.  */
 typedef int dummy;

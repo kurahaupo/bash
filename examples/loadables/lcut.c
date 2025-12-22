@@ -35,7 +35,7 @@
 
 #define NOPOS	-2		/* sentinel for unset startpos/endpos */
 
-#define BOL	0		
+#define BOL	0
 #define EOL	INT_MAX
 #define NORANGE	-1		/* just a position, no range */
 
@@ -45,13 +45,11 @@
 #define FFLAG	(1 << 3)
 #define SFLAG	(1 << 4)
 
-struct cutpos
-{
+struct cutpos {
   int startpos, endpos;		/* zero-based, correction done in getlist() */
 };
 
-struct cutop
-{
+struct cutop {
   int flags;
   int delim;
   int npos;
@@ -63,8 +61,8 @@ poscmp (const void *a, const void *b)
 {
   struct cutpos *p1, *p2;
 
-  p1 = (struct cutpos *)a;
-  p2 = (struct cutpos *)b;
+  p1 = (struct cutpos *) a;
+  p2 = (struct cutpos *) b;
   return (p1->startpos - p2->startpos);
 }
 
@@ -84,21 +82,21 @@ getlist (char *arg, struct cutpos **opp)
   while (ltok = strsep (&larg, ","))
     {
       if (*ltok == 0)
-        continue;
+	continue;
 
       ntok = strsep (&ltok, "-");
       if (*ntok == 0)
-        s = BOL;
+	s = BOL;
       else
 	{
-	  if (valid_number (ntok, &num) == 0 || (int)num != num || num <= 0)
+	  if (valid_number (ntok, &num) == 0 || (int) num != num || num <= 0)
 	    {
 	      builtin_error ("%s: invalid list value", ntok);
 	      *opp = poslist;
 	      return -1;
 	    }
 	  s = num;
-	  s--;		/* fields are 1-based */
+	  s--;			/* fields are 1-based */
 	}
       if (ltok == 0)
 	e = NORANGE;
@@ -106,7 +104,7 @@ getlist (char *arg, struct cutpos **opp)
 	e = EOL;
       else
 	{
-	  if (valid_number (ltok, &num) == 0 || (int)num != num || num <= 0)
+	  if (valid_number (ltok, &num) == 0 || (int) num != num || num <= 0)
 	    {
 	      builtin_error ("%s: invalid list value", ltok);
 	      *opp = poslist;
@@ -121,10 +119,10 @@ getlist (char *arg, struct cutpos **opp)
       if (npos == nsize)
 	{
 	  nsize += 4;
-	  poslist = (struct cutpos *)xrealloc (poslist, nsize * sizeof (struct cutpos));
+	  poslist = (struct cutpos *) xrealloc (poslist, nsize * sizeof (struct cutpos));
 	}
       poslist[npos].startpos = s;
-      poslist[npos].endpos = e; 
+      poslist[npos].endpos = e;
       npos++;
     }
   if (npos == 0)
@@ -134,7 +132,7 @@ getlist (char *arg, struct cutpos **opp)
       return -1;
     }
 
-  qsort (poslist, npos, sizeof(poslist[0]), poscmp);
+  qsort (poslist, npos, sizeof (poslist[0]), poscmp);
   *opp = poslist;
 
   return npos;
@@ -155,10 +153,10 @@ cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
 
   for (n = 0; n < ops->npos; n++)
     {
-      s = ops->poslist[n].startpos;		/* no translation needed yet */
+      s = ops->poslist[n].startpos; /* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= llen)
 	e = llen - 1;
       /* even if a column is specified multiple times, it will only be printed
@@ -171,7 +169,7 @@ cutbytes (SHELL_VAR *v, char *line, struct cutop *ops)
   for (i = 0; i < llen; i++)
     if (bmap[i])
       buf[b++] = line[i];
-  buf[b] = 0; 
+  buf[b] = 0;
 
   if (v)
     {
@@ -203,7 +201,7 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
     return (cutbytes (v, line, ops));
 
   llen = strlen (line);
-  wbuf = (wchar_t *)xmalloc ((llen + 1) * sizeof (wchar_t));
+  wbuf = (wchar_t *) xmalloc ((llen + 1) * sizeof (wchar_t));
 
   wlen = mbstowcs (wbuf, line, llen);
   if (MB_INVALIDCH (wlen))
@@ -214,13 +212,13 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
 
   bmap = xmalloc (llen + 1);
   memset (bmap, 0, llen);
-  
+
   for (n = 0; n < ops->npos; n++)
     {
-      s = ops->poslist[n].startpos;		/* no translation needed yet */
+      s = ops->poslist[n].startpos; /* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= wlen)
 	e = wlen - 1;
       /* even if a column is specified multiple times, it will only be printed
@@ -229,7 +227,7 @@ cutchars (SHELL_VAR *v, char *line, struct cutop *ops)
 	bmap[i] = 1;
     }
 
-  wb2 = (wchar_t *)xmalloc ((wlen + 1) * sizeof (wchar_t));
+  wb2 = (wchar_t *) xmalloc ((wlen + 1) * sizeof (wchar_t));
   b = 0;
   for (i = 0; i < wlen; i++)
     if (bmap[i])
@@ -280,7 +278,7 @@ cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
   field = buf = line;
   do
     {
-      field = strsep (&buf, delim);	/* destructive */
+      field = strsep (&buf, delim); /* destructive */
       if (nf == fsize)
 	{
 	  fsize += 8;
@@ -312,10 +310,10 @@ cutfields (SHELL_VAR *v, char *line, struct cutop *ops)
 
   for (n = 0; n < ops->npos; n++)
     {
-      s = ops->poslist[n].startpos;		/* no translation needed yet */
+      s = ops->poslist[n].startpos; /* no translation needed yet */
       e = ops->poslist[n].endpos;
       if (e == NORANGE)
-        e = s;
+	e = s;
       else if (e == EOL || e >= nf)
 	e = nf - 1;
       /* even if a column is specified multiple times, it will only be printed
@@ -420,7 +418,7 @@ cut_internal (int which, WORD_LIST *list)
 	case 's':
 	  cutflags |= SFLAG;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -454,7 +452,7 @@ cut_internal (int which, WORD_LIST *list)
     }
 
   if (array_name)
-    {      
+    {
       v = find_or_make_array_variable (array_name, 1);
       if (v == 0 || readonly_p (v) || noassign_p (v))
 	{
@@ -498,26 +496,26 @@ lcut_builtin (WORD_LIST *list)
 }
 
 char *lcut_doc[] = {
-	"Extract selected fields from a string.",
-	"",
-        "Select portions of LINE (as specified by LIST) and assign them to",
-        "elements of the indexed array ARRAY starting at index 0, or write",
-        "them to the standard output if -a is not specified.",
-        "",
-	"Items specified by LIST are either column positions or fields delimited",
-	"by a special character, and are described more completely in cut(1).",
-	"",
-	"Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
-	"field delimiter is specified by -d (default TAB). Column numbering",
-	"starts at 1.",
-	(char *)NULL
+  "Extract selected fields from a string.",
+  "",
+  "Select portions of LINE (as specified by LIST) and assign them to",
+  "elements of the indexed array ARRAY starting at index 0, or write",
+  "them to the standard output if -a is not specified.",
+  "",
+  "Items specified by LIST are either column positions or fields delimited",
+  "by a special character, and are described more completely in cut(1).",
+  "",
+  "Columns correspond to bytes (-b), characters (-c), or fields (-f). The",
+  "field delimiter is specified by -d (default TAB). Column numbering",
+  "starts at 1.",
+  (char *) NULL
 };
 
 struct builtin lcut_struct = {
-	"lcut",			/* builtin name */
-	lcut_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	lcut_doc,		/* array of long documentation strings. */
-	"lcut [-a ARRAY] [-b LIST] [-c LIST] [-f LIST] [-d CHAR] [-sn] line",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "lcut",			/* builtin name */
+  lcut_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  lcut_doc,			/* array of long documentation strings. */
+  "lcut [-a ARRAY] [-b LIST] [-c LIST] [-f LIST] [-d CHAR] [-sn] line",	/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

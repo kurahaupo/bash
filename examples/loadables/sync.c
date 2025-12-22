@@ -21,7 +21,7 @@
 #include <config.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 #include <errno.h>
 #include <fcntl.h>
@@ -47,8 +47,8 @@ sync_builtin (WORD_LIST *list)
   list = loptend;
 
   if (list == 0)
-    {  
-      sync();
+    {
+      sync ();
       return (EXECUTION_SUCCESS);
     }
 
@@ -79,21 +79,21 @@ sync_builtin (WORD_LIST *list)
 }
 
 char *sync_doc[] = {
-	"Sync disks or specified files.",
-	"",
-	"If one or more FILEs is supplied, force completion of pending writes",
-	"to those files. Otherwise, force completion of any pending disk",
-	"writes.",
-	"",
-	"Exit Status: zero unless any FILE could not be synced.",
-	(char *)NULL
+  "Sync disks or specified files.",
+  "",
+  "If one or more FILEs is supplied, force completion of pending writes",
+  "to those files. Otherwise, force completion of any pending disk",
+  "writes.",
+  "",
+  "Exit Status: zero unless any FILE could not be synced.",
+  (char *) NULL
 };
 
 struct builtin sync_struct = {
-	"sync",			/* builtin name */
-	sync_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	sync_doc,		/* array of long documentation strings. */
-	"sync [file ...]",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "sync",			/* builtin name */
+  sync_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  sync_doc,			/* array of long documentation strings. */
+  "sync [file ...]",		/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

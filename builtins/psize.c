@@ -32,7 +32,7 @@
 
 #include <stdio.h>
 #ifndef _MINIX
-#include "../bashtypes.h"
+#  include "../bashtypes.h"
 #endif
 #include <signal.h>
 #include <errno.h>

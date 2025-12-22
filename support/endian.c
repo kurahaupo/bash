@@ -43,11 +43,11 @@ int
 main (int argc, char **argv)
 {
   register size_t i;
-  FILE *stream = (FILE *)NULL;
+  FILE *stream = (FILE *) NULL;
   char *stream_name = "stdout";
   union {
-      unsigned long l;
-      char s[sizeof (long)];
+    unsigned long l;
+    char s[sizeof (long)];
   } u;
 
   progname = argv[0];
@@ -87,8 +87,7 @@ main (int argc, char **argv)
 
   if (!stream)
     {
-      fprintf (stderr, "%s: %s Cannot be opened or written to.\n",
-	       progname, stream_name);
+      fprintf (stderr, "%s: %s Cannot be opened or written to.\n", progname, stream_name);
       exit (2);
     }
 
@@ -107,14 +106,12 @@ main (int argc, char **argv)
       u.l = fake_out_gcc | 0x04030201L;
 #else
       u.l = (0x08070605L << 32) | 0x04030201L;
-#endif /* !__GNUC__ */
+#endif		/* !__GNUC__ */
       (void) strcpy (string, "87654321");
     }
   else
     {
-      fprintf (stderr,
-	       "%s: sizeof (long int) = %d, which isn't handled here.\n",
-	       progname, sizeof (long int));
+      fprintf (stderr, "%s: sizeof (long int) = %d, which isn't handled here.\n", progname, sizeof (long int));
       exit (2);
     }
 
@@ -128,11 +125,9 @@ main (int argc, char **argv)
     endian_define = "LITTLE_ENDIAN";
 
   fprintf (stream, "/* %s - Define BIG or LITTLE endian. */\n\n", stream_name);
-  fprintf (stream,
-"/* This file was automatically created by `%s'.  You shouldn't\n\
+  fprintf (stream, "/* This file was automatically created by `%s'.  You shouldn't\n\
    edit this file, because your changes will be overwritten.  Instead,\n\
-   edit the source code file `%s'. */\n\n",
-	   progname, source_name);
+   edit the source code file `%s'. */\n\n", progname, source_name);
 
   fprintf (stream, "#if !defined (%s)\n", endian_define);
   fprintf (stream, "#  define %s\n", endian_define);

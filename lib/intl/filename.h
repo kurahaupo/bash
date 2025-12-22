@@ -17,13 +17,13 @@
 /* From Paul Eggert and Jim Meyering.  */
 
 #ifndef _FILENAME_H
-#define _FILENAME_H
+#  define _FILENAME_H
 
-#include <string.h>
+#  include <string.h>
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 extern "C" {
-#endif
+#  endif
 
 
 /* Filename support.
@@ -53,58 +53,57 @@ extern "C" {
    IS_FILE_NAME_WITH_DIR(Filename)  tests whether Filename contains a device
                                     or directory specification.
  */
-#if defined _WIN32 || defined __CYGWIN__ \
+#  if defined _WIN32 || defined __CYGWIN__ \
     || defined __EMX__ || defined __MSDOS__ || defined __DJGPP__
   /* Native Windows, Cygwin, OS/2, DOS */
-# define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#    define ISSLASH(C) ((C) == '/' || (C) == '\\')
   /* Internal macro: Tests whether a character is a drive letter.  */
-# define _IS_DRIVE_LETTER(C) \
+#    define _IS_DRIVE_LETTER(C) \
     (((C) >= 'A' && (C) <= 'Z') || ((C) >= 'a' && (C) <= 'z'))
   /* Help the compiler optimizing it.  This assumes ASCII.  */
-# undef _IS_DRIVE_LETTER
-# define _IS_DRIVE_LETTER(C) \
+#    undef _IS_DRIVE_LETTER
+#    define _IS_DRIVE_LETTER(C) \
     (((unsigned int) (C) | ('a' - 'A')) - 'a' <= 'z' - 'a')
-# define HAS_DEVICE(Filename) \
+#    define HAS_DEVICE(Filename) \
     (_IS_DRIVE_LETTER ((Filename)[0]) && (Filename)[1] == ':')
-# define FILE_SYSTEM_PREFIX_LEN(Filename) (HAS_DEVICE (Filename) ? 2 : 0)
-# ifdef __CYGWIN__
-#  define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 0
-# else
-   /* On native Windows, OS/2, DOS, the system has the notion of a
-      "current directory" on each drive.  */
-#  define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 1
-# endif
-# if FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
-#  define IS_ABSOLUTE_FILE_NAME(Filename) \
+#    define FILE_SYSTEM_PREFIX_LEN(Filename) (HAS_DEVICE (Filename) ? 2 : 0)
+#    ifdef __CYGWIN__
+#      define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 0
+#    else
+  /* On native Windows, OS/2, DOS, the system has the notion of a
+     "current directory" on each drive.  */
+#      define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 1
+#    endif
+#    if FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
+#      define IS_ABSOLUTE_FILE_NAME(Filename) \
      ISSLASH ((Filename)[FILE_SYSTEM_PREFIX_LEN (Filename)])
-# else
-#  define IS_ABSOLUTE_FILE_NAME(Filename) \
+#    else
+#      define IS_ABSOLUTE_FILE_NAME(Filename) \
      (ISSLASH ((Filename)[0]) || HAS_DEVICE (Filename))
-# endif
-# define IS_RELATIVE_FILE_NAME(Filename) \
+#    endif
+#    define IS_RELATIVE_FILE_NAME(Filename) \
     (! (ISSLASH ((Filename)[0]) || HAS_DEVICE (Filename)))
-# define IS_FILE_NAME_WITH_DIR(Filename) \
+#    define IS_FILE_NAME_WITH_DIR(Filename) \
     (strchr ((Filename), '/') != NULL || strchr ((Filename), '\\') != NULL \
      || HAS_DEVICE (Filename))
-#else
+#  else
   /* Unix */
-# define ISSLASH(C) ((C) == '/')
-# define HAS_DEVICE(Filename) ((void) (Filename), 0)
-# define FILE_SYSTEM_PREFIX_LEN(Filename) ((void) (Filename), 0)
-# define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 0
-# define IS_ABSOLUTE_FILE_NAME(Filename) ISSLASH ((Filename)[0])
-# define IS_RELATIVE_FILE_NAME(Filename) (! ISSLASH ((Filename)[0]))
-# define IS_FILE_NAME_WITH_DIR(Filename) (strchr ((Filename), '/') != NULL)
-#endif
+#    define ISSLASH(C) ((C) == '/')
+#    define HAS_DEVICE(Filename) ((void) (Filename), 0)
+#    define FILE_SYSTEM_PREFIX_LEN(Filename) ((void) (Filename), 0)
+#    define FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE 0
+#    define IS_ABSOLUTE_FILE_NAME(Filename) ISSLASH ((Filename)[0])
+#    define IS_RELATIVE_FILE_NAME(Filename) (! ISSLASH ((Filename)[0]))
+#    define IS_FILE_NAME_WITH_DIR(Filename) (strchr ((Filename), '/') != NULL)
+#  endif
 
 /* Deprecated macros.  For backward compatibility with old users of the
    'filename' module.  */
-#define IS_ABSOLUTE_PATH IS_ABSOLUTE_FILE_NAME
-#define IS_PATH_WITH_DIR IS_FILE_NAME_WITH_DIR
+#  define IS_ABSOLUTE_PATH IS_ABSOLUTE_FILE_NAME
+#  define IS_PATH_WITH_DIR IS_FILE_NAME_WITH_DIR
 
 
-#ifdef __cplusplus
+#  ifdef __cplusplus
 }
-#endif
-
-#endif /* _FILENAME_H */
+#  endif
+#endif				/* _FILENAME_H */

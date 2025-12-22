@@ -36,7 +36,7 @@ ot, write to the Free Software Foundation, Inc.,
 */
 
 #ifdef	HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #if defined (HAVE_STRING_H)
@@ -79,7 +79,7 @@ extern int errno;
 #else
 #  undef  genptr_t
 #  define genptr_t	char *
-#endif /* !__STDC__ */
+#endif		/* !__STDC__ */
 
 #if !defined (HAVE_MEMSET)
 #  define	memset(s, zero, n)	bzero ((s), (n))
@@ -95,55 +95,52 @@ static void malloc_safe_bcopy __P ((genptr_t, genptr_t, size_t));
 #endif
 
 #ifndef	NULL
-#define	NULL	0
+#  define	NULL	0
 #endif
 
 #ifndef min
-#define min(A, B) ((A) < (B) ? (A) : (B))
+#  define min(A, B) ((A) < (B) ? (A) : (B))
 #endif
 
 /* Return values for `mprobe': these are the kinds of inconsistencies that
    `mcheck' enables detection of.  */
-enum mcheck_status
-  {
-    MCHECK_DISABLED = -1,	/* Consistency checking is not turned on.  */
-    MCHECK_OK,			/* Block is fine.  */
-    MCHECK_FREE,		/* Block freed twice.  */
-    MCHECK_HEAD,		/* Memory before the block was clobbered.  */
-    MCHECK_TAIL			/* Memory after the block was clobbered.  */
-  };
+enum mcheck_status {
+  MCHECK_DISABLED = -1,		/* Consistency checking is not turned on.  */
+  MCHECK_OK,			/* Block is fine.  */
+  MCHECK_FREE,			/* Block freed twice.  */
+  MCHECK_HEAD,			/* Memory before the block was clobbered.  */
+  MCHECK_TAIL			/* Memory after the block was clobbered.  */
+};
 
 /* Statistics available to the user.  */
-struct mstats
-  {
-    size_t bytes_total; /* Total size of the heap. */
-    size_t chunks_used; /* Chunks allocated by the user. */
-    size_t bytes_used;	/* Byte total of user-allocated chunks. */
-    size_t chunks_free; /* Chunks in the free list. */
-    size_t bytes_free;	/* Byte total of chunks in the free list. */
-    int nmalloc;	/* Total number of calls to malloc. */
-    int nfree;		/* Total number of calls to free. */
-    int nrealloc;	/* Total number of calls to realloc. */
-    int nsbrk;		/* Total number of calls to sbrk. */
-    size_t tsbrk;	/* Total number of bytes allocated via sbrk. */
-    int negsbrk;	/* Total number of calls to sbrk with a negative arg */
-    size_t tnegsbrk;	/* Total number of bytes returned to the kernel. */
-  };
+struct mstats {
+  size_t bytes_total;		/* Total size of the heap. */
+  size_t chunks_used;		/* Chunks allocated by the user. */
+  size_t bytes_used;		/* Byte total of user-allocated chunks. */
+  size_t chunks_free;		/* Chunks in the free list. */
+  size_t bytes_free;		/* Byte total of chunks in the free list. */
+  int nmalloc;			/* Total number of calls to malloc. */
+  int nfree;			/* Total number of calls to free. */
+  int nrealloc;			/* Total number of calls to realloc. */
+  int nsbrk;			/* Total number of calls to sbrk. */
+  size_t tsbrk;			/* Total number of bytes allocated via sbrk. */
+  int negsbrk;			/* Total number of calls to sbrk with a negative arg */
+  size_t tnegsbrk;		/* Total number of bytes returned to the kernel. */
+};
 
 #ifdef RCHECK
 /* Arbitrary magical numbers.  */
-#define MAGICWORD	0xfedabeeb
-#define MAGICFREE	0xd8675309
-#define MAGICBYTE	((char) 0xd7)
-#define MALLOCFLOOD	((char) 0x93)
-#define FREEFLOOD	((char) 0x95)
+#  define MAGICWORD	0xfedabeeb
+#  define MAGICFREE	0xd8675309
+#  define MAGICBYTE	((char) 0xd7)
+#  define MALLOCFLOOD	((char) 0x93)
+#  define FREEFLOOD	((char) 0x95)
 
-struct hdr
-  {
-    size_t size;		/* Exact size requested by user.  */
-    u_bits32_t magic;		/* Magic number to check header integrity.  */
-  };
-#endif /* RCHECK */
+struct hdr {
+  size_t size;			/* Exact size requested by user.  */
+  u_bits32_t magic;		/* Magic number to check header integrity.  */
+};
+#endif		/* RCHECK */
 
 /* Functions exported by this library. */
 /* Allocate SIZE bytes of memory.  */
@@ -166,7 +163,7 @@ extern genptr_t memalign __P ((size_t __alignment, size_t __size));
 extern struct mstats mstats __P ((void));
 
 #ifdef RCHECK
-extern enum mcheck_status mprobe __P((genptr_t ptr));
+extern enum mcheck_status mprobe __P ((genptr_t ptr));
 #endif
 
 /* End of exported functions. */
@@ -177,48 +174,43 @@ extern enum mcheck_status mprobe __P((genptr_t ptr));
    and all fragments of a block are the same size.  When all the
    fragments in a block have been freed, the block itself is freed.  */
 #define BLOCKLOG	12
-#define BLOCKSIZE	4096		/* 1 << BLOCKLOG */
+#define BLOCKSIZE	4096	/* 1 << BLOCKLOG */
 #define BLOCKIFY(SIZE)	(((SIZE) + BLOCKSIZE - 1) / BLOCKSIZE)
 
 /* Determine the amount of memory spanned by the initial heap table
    (not an absolute limit).  */
-#define HEAP		4194304		/* 1 << 22 */
+#define HEAP		4194304	/* 1 << 22 */
 
 /* Number of contiguous free blocks allowed to build up at the end of
    memory before they will be returned to the system.  */
 #define FINAL_FREE_BLOCKS	8
 
 /* Data structure giving per-block information.  */
-typedef union
-  {
-    /* Heap information for a busy block.  */
-    struct
-      {
-	/* Zero for a large (multiblock) object, or positive giving the
-	   logarithm to the base two of the fragment size.  */
-	int type;
-	union
-	  {
-	    struct
-	      {
-		size_t nfree; /* Free frags in a fragmented block.  */
-		size_t first; /* First free fragment of the block.  */
-	      } frag;
-	    /* For a large object, in its first block, this has the number
-	       of blocks in the object.  In the other blocks, this has a
-	       negative number which says how far back the first block is.  */
-	    ptrdiff_t size;
-	  } info;
-      } busy;
-    /* Heap information for a free block (that may be the first of a
-       free cluster).  */
-    struct
-      {
-	size_t size;	/* Size (in blocks) of a free cluster.  */
-	size_t next;	/* Index of next free cluster.  */
-	size_t prev;	/* Index of previous free cluster.  */
-      } free;
-  } malloc_info;
+typedef union {
+  /* Heap information for a busy block.  */
+  struct {
+    /* Zero for a large (multiblock) object, or positive giving the
+       logarithm to the base two of the fragment size.  */
+    int type;
+    union {
+      struct {
+	size_t nfree;		/* Free frags in a fragmented block.  */
+	size_t first;		/* First free fragment of the block.  */
+      } frag;
+      /* For a large object, in its first block, this has the number
+         of blocks in the object.  In the other blocks, this has a
+         negative number which says how far back the first block is.  */
+      ptrdiff_t size;
+    } info;
+  } busy;
+  /* Heap information for a free block (that may be the first of a
+     free cluster).  */
+  struct {
+    size_t size;		/* Size (in blocks) of a free cluster.  */
+    size_t next;		/* Index of next free cluster.  */
+    size_t prev;		/* Index of previous free cluster.  */
+  } free;
+} malloc_info;
 
 /* Pointer to first block of the heap.  */
 static char *_heapbase;
@@ -240,22 +232,20 @@ static size_t _heapindex;
 static size_t _heaplimit;
 
 /* Doubly linked lists of free fragments.  */
-struct list
-  {
-    struct list *next;
-    struct list *prev;
-  };
+struct list {
+  struct list *next;
+  struct list *prev;
+};
 
 /* Free list headers for each fragment size.  */
 static struct list _fraghead[BLOCKLOG];
 
 /* List of blocks allocated with `memalign'.  */
-struct alignlist
-  {
-    struct alignlist *next;
-    genptr_t aligned;		/* The address that memaligned returned.  */
-    genptr_t exact;		/* The address that malloc returned.  */
-  };
+struct alignlist {
+  struct alignlist *next;
+  genptr_t aligned;		/* The address that memaligned returned.  */
+  genptr_t exact;		/* The address that malloc returned.  */
+};
 
 /* List of blocks allocated by memalign.  */
 static struct alignlist *_aligned_blocks = NULL;
@@ -284,9 +274,9 @@ static int malloc_initialized;
 static int malloc_initialize __P ((void));
 
 #ifdef RCHECK
-static void zmemset __P((genptr_t, int, size_t));
-static enum mcheck_status checkhdr __P((const struct hdr *));
-static void mabort __P((enum mcheck_status));
+static void zmemset __P ((genptr_t, int, size_t));
+static enum mcheck_status checkhdr __P ((const struct hdr *));
+static void mabort __P ((enum mcheck_status));
 #endif
 
 /* Instrumentation.  */
@@ -309,8 +299,7 @@ align (size)
   unsigned long int adj;
 
   result = default_morecore (size);
-  adj = (unsigned long int) ((unsigned long int) ((char *) result -
-						  (char *) NULL)) % BLOCKSIZE;
+  adj = (unsigned long int) ((unsigned long int) ((char *) result - (char *) NULL)) % BLOCKSIZE;
   if (adj != 0)
     {
       genptr_t new;
@@ -347,7 +336,7 @@ get_contiguous_space (size, position)
   /* It was not contiguous--reject it.  */
   if (after != position)
     {
-      default_morecore (- size);
+      default_morecore (-size);
       return 0;
     }
 
@@ -418,7 +407,7 @@ default_morecore (increment)
       tnegsbrk += -increment;
     }
   result = (genptr_t) sbrk (increment);
-  if ((long)result == -1L)
+  if ((long) result == -1L)
     return NULL;
   return result;
 }
@@ -447,19 +436,19 @@ morecore (size)
   if ((size_t) BLOCK ((char *) result + size) > heapsize)
     {
       /* Calculate the new _heapinfo table size.  We do not account for the
-	 added blocks in the table itself, as we hope to place them in
-	 existing free space, which is already covered by part of the
-	 existing table.  */
+         added blocks in the table itself, as we hope to place them in
+         existing free space, which is already covered by part of the
+         existing table.  */
       newsize = heapsize;
       do
 	newsize <<= 1;
       while ((size_t) BLOCK ((char *) result + size) > newsize);
 
       /* We must not reuse existing core for the new info table when called
-	 from realloc in the case of growing a large block, because the
-	 block being grown is momentarily marked as free.  In this case
-	 _heaplimit is zero so we know not to reuse space for internal
-	 allocation.  */
+         from realloc in the case of growing a large block, because the
+         block being grown is momentarily marked as free.  In this case
+         _heaplimit is zero so we know not to reuse space for internal
+         allocation.  */
       if (_heaplimit != 0)
 	{
 	  /* First try to allocate the new info table in core we already
@@ -476,8 +465,8 @@ morecore (size)
 	  else
 	    {
 	      /* We found some space in core, and realloc has put the old
-		 table's blocks on the free list.  Now zero the new part
-		 of the table and install the new table location.  */
+	         table's blocks on the free list.  Now zero the new part
+	         of the table and install the new table location.  */
 	      memset (&newinfo[heapsize], 0, (newsize - heapsize) * sizeof (malloc_info));
 	      _heapinfo = newinfo;
 	      heapsize = newsize;
@@ -487,28 +476,28 @@ morecore (size)
 
       /* Allocate new space for the malloc info table.  */
       while (1)
-  	{
- 	  newinfo = (malloc_info *) align (newsize * sizeof (malloc_info));
+	{
+	  newinfo = (malloc_info *) align (newsize * sizeof (malloc_info));
 
- 	  /* Did it fail?  */
- 	  if (newinfo == NULL)
- 	    {
- 	      default_morecore (-size);
- 	      return NULL;
- 	    }
+	  /* Did it fail?  */
+	  if (newinfo == NULL)
+	    {
+	      default_morecore (-size);
+	      return NULL;
+	    }
 
- 	  /* Is it big enough to record status for its own space?
- 	     If so, we win.  */
- 	  if ((size_t) BLOCK ((char *) newinfo + newsize * sizeof (malloc_info)) < newsize)
- 	    break;
+	  /* Is it big enough to record status for its own space?
+	     If so, we win.  */
+	  if ((size_t) BLOCK ((char *) newinfo + newsize * sizeof (malloc_info)) < newsize)
+	    break;
 
- 	  /* Must try again.  First give back most of what we just got.  */
- 	  default_morecore (- newsize * sizeof (malloc_info));
- 	  newsize *= 2;
-  	}
+	  /* Must try again.  First give back most of what we just got.  */
+	  default_morecore (-newsize * sizeof (malloc_info));
+	  newsize *= 2;
+	}
 
       /* Copy the old table to the beginning of the new,
-	 and zero the rest of the new table.  */
+         and zero the rest of the new table.  */
       memcpy (newinfo, _heapinfo, heapsize * sizeof (malloc_info));
       memset (&newinfo[heapsize], 0, (newsize - heapsize) * sizeof (malloc_info));
       oldinfo = _heapinfo;
@@ -518,7 +507,7 @@ morecore (size)
       register_heapinfo ();
 
       /* Reset _heaplimit so ifree never decides
-	 it can relocate or resize the info table.  */
+         it can relocate or resize the info table.  */
       _heaplimit = 0;
       ifree (oldinfo);
 
@@ -527,7 +516,7 @@ morecore (size)
       return result;
     }
 
- got_heap:
+got_heap:
   _heaplimit = BLOCK ((char *) result + size);
   return result;
 }
@@ -566,14 +555,14 @@ imalloc (size)
   if (size <= BLOCKSIZE / 2)
     {
       /* Small allocation to receive a fragment of a block.
-	 Determine the logarithm to base two of the fragment size. */
+         Determine the logarithm to base two of the fragment size. */
       register size_t log = 1;
       --size;
       while ((size /= 2) != 0)
 	++log;
 
       /* Look in the fragment lists for a
-	 free fragment of the desired size. */
+         free fragment of the desired size. */
       next = _fraghead[log].next;
       if (next != NULL)
 	{
@@ -587,8 +576,7 @@ imalloc (size)
 	  block = BLOCK (result);
 	  if (--_heapinfo[block].busy.info.frag.nfree != 0)
 	    _heapinfo[block].busy.info.frag.first = (unsigned long int)
-	      ((unsigned long int) ((char *) next->next - (char *) NULL)
-	       % BLOCKSIZE) >> log;
+	      ((unsigned long int) ((char *) next->next - (char *) NULL) % BLOCKSIZE) >> log;
 
 	  /* Update the statistics.  */
 	  ++chunks_used;
@@ -633,9 +621,9 @@ imalloc (size)
   else
     {
       /* Large allocation to receive one or more blocks.
-	 Search the free list in a circle starting at the last place visited.
-	 If we loop completely around without finding a large enough
-	 space we will have to get more memory from the system.  */
+         Search the free list in a circle starting at the last place visited.
+         If we loop completely around without finding a large enough
+         space we will have to get more memory from the system.  */
       blocks = BLOCKIFY (size);
       start = block = _heapindex;
       while (_heapinfo[block].free.size < blocks)
@@ -648,21 +636,20 @@ imalloc (size)
 	      block = _heapinfo[0].free.prev;
 	      lastblocks = _heapinfo[block].free.size;
 	      /* Check to see if the new core will be contiguous with the
-		 final free block; if so we don't need to get as much.  */
+	         final free block; if so we don't need to get as much.  */
 	      if (_heaplimit != 0 && block + lastblocks == _heaplimit &&
 		  /* We can't do this if we will have to make the heap info
 		     table bigger to accomodate the new space.  */
 		  block + wantblocks <= heapsize &&
-		  get_contiguous_space ((wantblocks - lastblocks) * BLOCKSIZE,
-					ADDRESS (block + lastblocks)))
+		  get_contiguous_space ((wantblocks - lastblocks) * BLOCKSIZE, ADDRESS (block + lastblocks)))
 		{
- 		  /* We got it contiguously.  Which block we are extending
+		  /* We got it contiguously.  Which block we are extending
 		     (the `final free block' referred to above) might have
 		     changed, if it got combined with a freed info table.  */
- 		  block = _heapinfo[0].free.prev;
-  		  _heapinfo[block].free.size += (wantblocks - lastblocks);
+		  block = _heapinfo[0].free.prev;
+		  _heapinfo[block].free.size += (wantblocks - lastblocks);
 		  bytes_free += (wantblocks - lastblocks) * BLOCKSIZE;
- 		  _heaplimit += wantblocks - lastblocks;
+		  _heaplimit += wantblocks - lastblocks;
 		  continue;
 		}
 	      result = morecore (wantblocks * BLOCKSIZE);
@@ -682,30 +669,24 @@ imalloc (size)
 	}
 
       /* At this point we have found a suitable free list entry.
-	 Figure out how to remove what we need from the list. */
+         Figure out how to remove what we need from the list. */
       result = ADDRESS (block);
       if (_heapinfo[block].free.size > blocks)
 	{
 	  /* The block we found has a bit left over,
 	     so relink the tail end back into the free list. */
-	  _heapinfo[block + blocks].free.size
-	    = _heapinfo[block].free.size - blocks;
-	  _heapinfo[block + blocks].free.next
-	    = _heapinfo[block].free.next;
-	  _heapinfo[block + blocks].free.prev
-	    = _heapinfo[block].free.prev;
+	  _heapinfo[block + blocks].free.size = _heapinfo[block].free.size - blocks;
+	  _heapinfo[block + blocks].free.next = _heapinfo[block].free.next;
+	  _heapinfo[block + blocks].free.prev = _heapinfo[block].free.prev;
 	  _heapinfo[_heapinfo[block].free.prev].free.next
-	    = _heapinfo[_heapinfo[block].free.next].free.prev
-	    = _heapindex = block + blocks;
+	    = _heapinfo[_heapinfo[block].free.next].free.prev = _heapindex = block + blocks;
 	}
       else
 	{
 	  /* The block exactly matches our requirements,
 	     so just remove it from the list. */
-	  _heapinfo[_heapinfo[block].free.next].free.prev
-	    = _heapinfo[block].free.prev;
-	  _heapinfo[_heapinfo[block].free.prev].free.next
-	    = _heapindex = _heapinfo[block].free.next;
+	  _heapinfo[_heapinfo[block].free.next].free.prev = _heapinfo[block].free.prev;
+	  _heapinfo[_heapinfo[block].free.prev].free.next = _heapindex = _heapinfo[block].free.next;
 	  --chunks_free;
 	}
 
@@ -716,8 +697,8 @@ imalloc (size)
       bytes_free -= blocks * BLOCKSIZE;
 
       /* Mark all the blocks of the object just allocated except for the
-	 first with a negative number so you can find the first block by
-	 adding that adjustment.  */
+         first with a negative number so you can find the first block by
+         adding that adjustment.  */
       while (--blocks > 0)
 	_heapinfo[block + blocks].busy.info.size = -blocks;
     }
@@ -794,8 +775,8 @@ ifree (ptr)
       bytes_free += _heapinfo[block].busy.info.size * BLOCKSIZE;
 
       /* Find the free cluster previous to this one in the free list.
-	 Start searching at the last block referenced; this may benefit
-	 programs with locality of allocation.  */
+         Start searching at the last block referenced; this may benefit
+         programs with locality of allocation.  */
       i = _heapindex;
       if (i > block)
 	while (i > block)
@@ -827,14 +808,12 @@ ifree (ptr)
 	}
 
       /* Now that the block is linked in, see if we can coalesce it
-	 with its successor (by deleting its successor from the list
-	 and adding in its size).  */
+         with its successor (by deleting its successor from the list
+         and adding in its size).  */
       if (block + _heapinfo[block].free.size == _heapinfo[block].free.next)
 	{
-	  _heapinfo[block].free.size
-	    += _heapinfo[_heapinfo[block].free.next].free.size;
-	  _heapinfo[block].free.next
-	    = _heapinfo[_heapinfo[block].free.next].free.next;
+	  _heapinfo[block].free.size += _heapinfo[_heapinfo[block].free.next].free.size;
+	  _heapinfo[block].free.next = _heapinfo[_heapinfo[block].free.next].free.next;
 	  _heapinfo[_heapinfo[block].free.next].free.prev = block;
 	  --chunks_free;
 	}
@@ -851,61 +830,57 @@ ifree (ptr)
 	     It's possible that moving _heapinfo will allow us to
 	     return some space to the system.  */
 
- 	  size_t info_block = BLOCK (_heapinfo);
- 	  size_t info_blocks = _heapinfo[info_block].busy.info.size;
- 	  size_t prev_block = _heapinfo[block].free.prev;
- 	  size_t prev_blocks = _heapinfo[prev_block].free.size;
- 	  size_t next_block = _heapinfo[block].free.next;
- 	  size_t next_blocks = _heapinfo[next_block].free.size;
+	  size_t info_block = BLOCK (_heapinfo);
+	  size_t info_blocks = _heapinfo[info_block].busy.info.size;
+	  size_t prev_block = _heapinfo[block].free.prev;
+	  size_t prev_blocks = _heapinfo[prev_block].free.size;
+	  size_t next_block = _heapinfo[block].free.next;
+	  size_t next_blocks = _heapinfo[next_block].free.size;
 
-	  if (/* Win if this block being freed is last in core, the info table
-		 is just before it, the previous free block is just before the
-		 info table, and the two free blocks together form a useful
-		 amount to return to the system.  */
-	      (block + blocks == _heaplimit &&
-	       info_block + info_blocks == block &&
-	       prev_block != 0 && prev_block + prev_blocks == info_block &&
-	       blocks + prev_blocks >= lesscore_threshold) ||
-	      /* Nope, not the case.  We can also win if this block being
-		 freed is just before the info table, and the table extends
-		 to the end of core or is followed only by a free block,
-		 and the total free space is worth returning to the system.  */
-	      (block + blocks == info_block &&
-	       ((info_block + info_blocks == _heaplimit &&
-		 blocks >= lesscore_threshold) ||
-		(info_block + info_blocks == next_block &&
-		 next_block + next_blocks == _heaplimit &&
-		 blocks + next_blocks >= lesscore_threshold)))
-	      )
+	  if (			/* Win if this block being freed is last in core, the info table
+				   is just before it, the previous free block is just before the
+				   info table, and the two free blocks together form a useful
+				   amount to return to the system.  */
+	       (block + blocks == _heaplimit &&
+		info_block + info_blocks == block &&
+		prev_block != 0 && prev_block + prev_blocks == info_block && blocks + prev_blocks >= lesscore_threshold) ||
+	       /* Nope, not the case.  We can also win if this block being
+	          freed is just before the info table, and the table extends
+	          to the end of core or is followed only by a free block,
+	          and the total free space is worth returning to the system.  */
+	       (block + blocks == info_block &&
+		((info_block + info_blocks == _heaplimit &&
+		  blocks >= lesscore_threshold) ||
+		 (info_block + info_blocks == next_block &&
+		  next_block + next_blocks == _heaplimit && blocks + next_blocks >= lesscore_threshold))))
 	    {
 	      malloc_info *newinfo;
 	      size_t oldlimit = _heaplimit;
 
 	      /* Free the old info table, clearing _heaplimit to avoid
-		 recursion into this code.  We don't want to return the
-		 table's blocks to the system before we have copied them to
-		 the new location.  */
+	         recursion into this code.  We don't want to return the
+	         table's blocks to the system before we have copied them to
+	         the new location.  */
 	      _heaplimit = 0;
 	      ifree (_heapinfo);
 	      _heaplimit = oldlimit;
 
 	      /* Tell malloc to search from the beginning of the heap for
-		 free blocks, so it doesn't reuse the ones just freed.  */
+	         free blocks, so it doesn't reuse the ones just freed.  */
 	      _heapindex = 0;
 
 	      /* Allocate new space for the info table and move its data.  */
-	      newinfo = (malloc_info *) imalloc (info_blocks
-							  * BLOCKSIZE);
+	      newinfo = (malloc_info *) imalloc (info_blocks * BLOCKSIZE);
 	      memmove (newinfo, _heapinfo, info_blocks * BLOCKSIZE);
 	      _heapinfo = newinfo;
 
 	      /* We should now have coalesced the free block with the
-		 blocks freed from the old info table.  Examine the entire
-		 trailing free block to decide below whether to return some
-		 to the system.  */
+	         blocks freed from the old info table.  Examine the entire
+	         trailing free block to decide below whether to return some
+	         to the system.  */
 	      block = _heapinfo[0].free.prev;
 	      blocks = _heapinfo[block].free.size;
- 	    }
+	    }
 
 	  /* Now see if we can return stuff to the system.  */
 	  if (block + blocks == _heaplimit && blocks >= lesscore_threshold)
@@ -913,10 +888,8 @@ ifree (ptr)
 	      register size_t bytes = blocks * BLOCKSIZE;
 	      _heaplimit -= blocks;
 	      default_morecore (-bytes);
-	      _heapinfo[_heapinfo[block].free.prev].free.next
-		= _heapinfo[block].free.next;
-	      _heapinfo[_heapinfo[block].free.next].free.prev
-		= _heapinfo[block].free.prev;
+	      _heapinfo[_heapinfo[block].free.prev].free.next = _heapinfo[block].free.next;
+	      _heapinfo[_heapinfo[block].free.next].free.prev = _heapinfo[block].free.prev;
 	      block = _heapinfo[block].free.prev;
 	      --chunks_free;
 	      bytes_free -= bytes;
@@ -935,8 +908,7 @@ ifree (ptr)
       bytes_free += 1 << type;
 
       /* Get the address of the first free fragment in this block.  */
-      prev = (struct list *) ((char *) ADDRESS (block) +
-			      (_heapinfo[block].busy.info.frag.first << type));
+      prev = (struct list *) ((char *) ADDRESS (block) + (_heapinfo[block].busy.info.frag.first << type));
 
       if (_heapinfo[block].busy.info.frag.nfree == (BLOCKSIZE >> type) - 1)
 	{
@@ -980,8 +952,7 @@ ifree (ptr)
 	  prev = (struct list *) ptr;
 	  _heapinfo[block].busy.info.frag.nfree = 1;
 	  _heapinfo[block].busy.info.frag.first = (unsigned long int)
-	    ((unsigned long int) ((char *) ptr - (char *) NULL)
-	     % BLOCKSIZE >> type);
+	    ((unsigned long int) ((char *) ptr - (char *) NULL) % BLOCKSIZE >> type);
 	  prev->next = _fraghead[type].next;
 	  prev->prev = &_fraghead[type];
 	  prev->prev->next = prev;
@@ -1051,11 +1022,11 @@ malloc_safe_bcopy (afrom, ato, size)
       register char *endt = to + size;
 
       /* If TO - FROM is large, then we should break the copy into
-	 nonoverlapping chunks of TO - FROM bytes each.  However, if
-	 TO - FROM is small, then the bcopy function call overhead
-	 makes this not worth it.  The crossover point could be about
-	 anywhere.  Since I don't think the obvious copy loop is too
-	 bad, I'm trying to err in its favor.  */
+         nonoverlapping chunks of TO - FROM bytes each.  However, if
+         TO - FROM is small, then the bcopy function call overhead
+         makes this not worth it.  The crossover point could be about
+         anywhere.  Since I don't think the obvious copy loop is too
+         bad, I'm trying to err in its favor.  */
       if (to - from < 64)
 	{
 	  do
@@ -1082,7 +1053,7 @@ malloc_safe_bcopy (afrom, ato, size)
 	}
     }
 }
-#endif /* !HAVE_MEMMOVE */
+#endif		/* !HAVE_MEMMOVE */
 
 /* Resize the given region to the new size, returning a pointer
    to the (possibly moved) region.  This is optimized for speed;
@@ -1126,15 +1097,14 @@ irealloc (ptr, size)
 	}
 
       /* The new size is a large allocation as well;
-	 see if we can hold it in place. */
+         see if we can hold it in place. */
       blocks = BLOCKIFY (size);
       if (blocks < _heapinfo[block].busy.info.size)
 	{
 	  /* The new size is smaller; return
 	     excess memory to the free list. */
 	  _heapinfo[block + blocks].busy.type = 0;
-	  _heapinfo[block + blocks].busy.info.size
-	    = _heapinfo[block].busy.info.size - blocks;
+	  _heapinfo[block + blocks].busy.info.size = _heapinfo[block].busy.info.size - blocks;
 	  _heapinfo[block].busy.info.size = blocks;
 	  /* We have just created a new chunk by splitting a chunk in two.
 	     Now we will free this chunk; increment the statistics counter
@@ -1162,14 +1132,14 @@ irealloc (ptr, size)
 	  if (result == NULL)
 	    {
 	      /* Now we're really in trouble.  We have to unfree
-		 the thing we just freed.  Unfortunately it might
-		 have been coalesced with its neighbors.  */
+	         the thing we just freed.  Unfortunately it might
+	         have been coalesced with its neighbors.  */
 	      if (_heapindex == block)
 		(void) imalloc (blocks * BLOCKSIZE);
 	      else
 		{
 		  genptr_t previous;
-		  previous  = imalloc ((block - _heapindex) * BLOCKSIZE);
+		  previous = imalloc ((block - _heapindex) * BLOCKSIZE);
 		  (void) imalloc (blocks * BLOCKSIZE);
 		  ifree (previous);
 		}
@@ -1182,9 +1152,8 @@ irealloc (ptr, size)
 
     default:
       /* Old size is a fragment; type is logarithm
-	 to base two of the fragment size.  */
-      if (size > (size_t) (1 << (type - 1)) &&
-	  size <= (size_t) (1 << type))
+         to base two of the fragment size.  */
+      if (size > (size_t) (1 << (type - 1)) && size <= (size_t) (1 << type))
 	/* The new size is the same kind of fragment.  */
 	result = ptr;
       else
@@ -1293,16 +1262,17 @@ memalign (alignment, size)
       lastadj = adj;
       adj = (unsigned long int) ((char *) result - (char *) NULL) % alignment;
       /* It's conceivable we might have been so unlucky as to get a
-	 different block with weaker alignment.  If so, this block is too
-	 short to contain SIZE after alignment correction.  So we must
-	 try again and get another block, slightly larger.  */
-    } while (adj > lastadj);
+         different block with weaker alignment.  If so, this block is too
+         short to contain SIZE after alignment correction.  So we must
+         try again and get another block, slightly larger.  */
+    }
+  while (adj > lastadj);
 
   if (adj != 0)
     {
       /* Record this block in the list of aligned blocks, so that `free'
-	 can identify the pointer it is passed, which will be in the middle
-	 of an allocated block.  */
+         can identify the pointer it is passed, which will be in the middle
+         of an allocated block.  */
 
       struct alignlist *l;
       for (l = _aligned_blocks; l != NULL; l = l->next)
@@ -1356,7 +1326,7 @@ struct mstats
 mstats ()
 {
   struct mstats result;
-	  
+
   result.bytes_total = (char *) default_morecore (0) - _heapbase;
   result.chunks_used = chunks_used;
   result.bytes_used = bytes_used;
@@ -1414,7 +1384,7 @@ checkhdr (hdr)
   return status;
 }
 
-#ifndef botch
+#  ifndef botch
 botch (msg)
      char *msg;
 {
@@ -1422,7 +1392,7 @@ botch (msg)
   fflush (stderr);
   abort ();
 }
-#endif
+#  endif
 
 static void
 mabort (status)
@@ -1456,12 +1426,12 @@ enum mcheck_status
 mprobe (ptr)
      genptr_t ptr;
 {
-  return checkhdr ((struct hdr *)ptr);
+  return checkhdr ((struct hdr *) ptr);
 }
 
-#ifndef STDIO_H_INCLUDED
-#  include <stdio.h>
-#endif
+#  ifndef STDIO_H_INCLUDED
+#    include <stdio.h>
+#  endif
 
 void
 print_malloc_stats (s)
@@ -1471,16 +1441,11 @@ print_malloc_stats (s)
 
   ms = mstats ();
   fprintf (stderr, "Memory allocation statistics: %s\n", s ? s : "");
-  fprintf (stderr, "\nTotal chunks in use: %d, total chunks free: %d\n",
-	   ms.chunks_used, ms.chunks_free);
-  fprintf (stderr, "Total bytes in use: %u, total bytes free: %u\n",
-	   ms.bytes_used, ms.bytes_free);
+  fprintf (stderr, "\nTotal chunks in use: %d, total chunks free: %d\n", ms.chunks_used, ms.chunks_free);
+  fprintf (stderr, "Total bytes in use: %u, total bytes free: %u\n", ms.bytes_used, ms.bytes_free);
   fprintf (stderr, "Total bytes (from heapbase): %d\n", ms.bytes_total);
-  fprintf (stderr, "Total mallocs: %d, total frees: %d, total reallocs: %d\n",
-	   ms.nmalloc, ms.nfree, ms.nrealloc);
-  fprintf (stderr, "Total sbrks: %d, total bytes via sbrk: %d\n",
-  	   ms.nsbrk, ms.tsbrk);
-  fprintf (stderr, "Total negative sbrks: %d, total bytes returned to kernel: %d\n",
-  	   ms.negsbrk, ms.tnegsbrk);
+  fprintf (stderr, "Total mallocs: %d, total frees: %d, total reallocs: %d\n", ms.nmalloc, ms.nfree, ms.nrealloc);
+  fprintf (stderr, "Total sbrks: %d, total bytes via sbrk: %d\n", ms.nsbrk, ms.tsbrk);
+  fprintf (stderr, "Total negative sbrks: %d, total bytes returned to kernel: %d\n", ms.negsbrk, ms.tnegsbrk);
 }
-#endif /* RCHECK */
+#endif		/* RCHECK */

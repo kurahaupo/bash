@@ -19,11 +19,9 @@
 */
 
 /* Evaluate the plural expression and return an index value.  */
-static inline unsigned long int plural_eval (struct expression *pexp,
-					      unsigned long int n);
+static inline unsigned long int plural_eval (struct expression *pexp, unsigned long int n);
 
-static inline
-unsigned long int
+static inline unsigned long int
 plural_eval (pexp, n)
      struct expression *pexp;
      unsigned long int n;
@@ -46,7 +44,7 @@ plural_eval (pexp, n)
       {
 	/* pexp->operation must be lnot.  */
 	unsigned long int arg = plural_eval (pexp->val.args[0], n);
-	return ! arg;
+	return !arg;
       }
     case 2:
       {

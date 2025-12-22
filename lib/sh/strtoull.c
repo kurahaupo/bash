@@ -22,10 +22,10 @@
 
 #if defined (HAVE_UNSIGNED_LONG_LONG_INT) && !HAVE_STRTOULL
 
-#define QUAD		1
-#define	UNSIGNED	1
-#undef HAVE_STRTOL
+#  define QUAD		1
+#  define	UNSIGNED	1
+#  undef HAVE_STRTOL
 
-#include "strtol.c"
+#  include "strtol.c"
 
-#endif /* HAVE_UNSIGNED_LONG_LONG_INT && !HAVE_STRTOULL */
+#endif		/* HAVE_UNSIGNED_LONG_LONG_INT && !HAVE_STRTOULL */

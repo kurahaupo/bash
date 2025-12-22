@@ -15,7 +15,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stddef.h>
@@ -24,47 +24,44 @@
 
 #include "gettextP.h"
 #ifdef _LIBC
-# include <libintl.h>
+#  include <libintl.h>
 #else
-# include "libgnuintl.h"
+#  include "libgnuintl.h"
 #endif
 
 /* Handle multi-threaded applications.  */
 #ifdef _LIBC
-# include <bits/libc-lock.h>
-# define gl_rwlock_define __libc_rwlock_define
-# define gl_rwlock_wrlock __libc_rwlock_wrlock
-# define gl_rwlock_unlock __libc_rwlock_unlock
+#  include <bits/libc-lock.h>
+#  define gl_rwlock_define __libc_rwlock_define
+#  define gl_rwlock_wrlock __libc_rwlock_wrlock
+#  define gl_rwlock_unlock __libc_rwlock_unlock
 #else
-# include "lock.h"
+#  include "lock.h"
 #endif
 
 /* Some compilers, like SunOS4 cc, don't have offsetof in <stddef.h>.  */
 #ifndef offsetof
-# define offsetof(type,ident) ((size_t)&(((type*)0)->ident))
+#  define offsetof(type,ident) ((size_t)&(((type*)0)->ident))
 #endif
 
 /* @@ end of prolog @@ */
 
 /* Lock variable to protect the global data in the gettext implementation.  */
 gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
-
-
 /* Names for the libintl functions are a problem.  They must not clash
    with existing names and they should follow ANSI C.  But this source
    code is also used in GNU C Library where the names have a __
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
-# define BINDTEXTDOMAIN __bindtextdomain
-# define BIND_TEXTDOMAIN_CODESET __bind_textdomain_codeset
-# ifndef strdup
-#  define strdup(str) __strdup (str)
-# endif
+#  define BINDTEXTDOMAIN __bindtextdomain
+#  define BIND_TEXTDOMAIN_CODESET __bind_textdomain_codeset
+#  ifndef strdup
+#    define strdup(str) __strdup (str)
+#  endif
 #else
-# define BINDTEXTDOMAIN libintl_bindtextdomain
-# define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
+#  define BINDTEXTDOMAIN libintl_bindtextdomain
+#  define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
 #endif
-
 /* Specifies the directory name *DIRNAMEP, the directory name *WDIRNAMEP
    (only on native Windows), and the output codeset *CODESETP to be used
    for the DOMAINNAME message catalog.
@@ -73,10 +70,8 @@ gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
    If DIRNAMEP or WDIRNAMEP or CODESETP is NULL, the corresponding attribute is
    neither modified nor returned, except that setting WDIRNAME erases DIRNAME
    and vice versa.  */
-static void
-set_binding_values (const char *domainname,
-		    const char **dirnamep, const wchar_t **wdirnamep,
-		    const char **codesetp)
+     static void
+       set_binding_values (const char *domainname, const char **dirnamep, const wchar_t **wdirnamep, const char **codesetp)
 {
   struct binding *binding;
   int modified;
@@ -125,8 +120,8 @@ set_binding_values (const char *domainname,
 	  else
 	    {
 	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
+	         one are equal we simply do nothing.  Otherwise replace the
+	         old binding.  */
 	      char *result = binding->dirname;
 	      if (result == NULL || strcmp (dirname, result) != 0)
 		{
@@ -164,8 +159,8 @@ set_binding_values (const char *domainname,
 	  else
 	    {
 	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
+	         one are equal we simply do nothing.  Otherwise replace the
+	         old binding.  */
 	      wchar_t *result = binding->wdirname;
 	      if (result == NULL || wcscmp (wdirname, result) != 0)
 		{
@@ -198,8 +193,8 @@ set_binding_values (const char *domainname,
 	  else
 	    {
 	      /* The domain is already bound.  If the new value and the old
-		 one are equal we simply do nothing.  Otherwise replace the
-		 old binding.  */
+	         one are equal we simply do nothing.  Otherwise replace the
+	         old binding.  */
 	      char *result = binding->codeset;
 	      if (result == NULL || strcmp (codeset, result) != 0)
 		{
@@ -236,8 +231,7 @@ set_binding_values (const char *domainname,
     {
       /* We have to create a new binding.  */
       size_t len = strlen (domainname) + 1;
-      struct binding *new_binding =
-	(struct binding *) malloc (offsetof (struct binding, domainname) + len);
+      struct binding *new_binding = (struct binding *) malloc (offsetof (struct binding, domainname) + len);
 
       if (__builtin_expect (new_binding == NULL, 0))
 	goto failed;
@@ -321,8 +315,7 @@ set_binding_values (const char *domainname,
 	new_binding->codeset = NULL;
 
       /* Now enqueue it.  */
-      if (_nl_domain_bindings == NULL
-	  || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
+      if (_nl_domain_bindings == NULL || strcmp (domainname, _nl_domain_bindings->domainname) < 0)
 	{
 	  new_binding->next = _nl_domain_bindings;
 	  _nl_domain_bindings = new_binding;
@@ -330,8 +323,7 @@ set_binding_values (const char *domainname,
       else
 	{
 	  binding = _nl_domain_bindings;
-	  while (binding->next != NULL
-		 && strcmp (domainname, binding->next->domainname) > 0)
+	  while (binding->next != NULL && strcmp (domainname, binding->next->domainname) > 0)
 	    binding = binding->next;
 
 	  new_binding->next = binding->next;
@@ -380,29 +372,24 @@ BINDTEXTDOMAIN (const char *domainname, const char *dirname)
   const char *saved_dirname = dirname;
   char dirname_with_drive[_MAX_PATH];
 
-# ifdef __KLIBC__
-  if (dirname && strncmp (dirname, "/@unixroot", 10) == 0
-      && (dirname[10] == '\0' || dirname[10] == '/' || dirname[10] == '\\'))
-    /* kLIBC itself processes /@unixroot prefix */;
+#  ifdef __KLIBC__
+  if (dirname && strncmp (dirname, "/@unixroot", 10) == 0 && (dirname[10] == '\0' || dirname[10] == '/' || dirname[10] == '\\'))
+    /* kLIBC itself processes /@unixroot prefix */ ;
   else
-# endif
-  /* Resolve UNIXROOT into dirname if it is not resolved by os2compat.[ch]. */
-  if (dirname && (dirname[0] == '/' || dirname[0] == '\\' ))
+#  endif
+    /* Resolve UNIXROOT into dirname if it is not resolved by os2compat.[ch]. */
+  if (dirname && (dirname[0] == '/' || dirname[0] == '\\'))
     {
       const char *unixroot = getenv ("UNIXROOT");
       size_t len = strlen (dirname) + 1;
 
-      if (unixroot
-          && unixroot[0] != '\0'
-          && unixroot[1] == ':'
-          && unixroot[2] == '\0'
-          && 2 + len <= _MAX_PATH)
-        {
-          memcpy (dirname_with_drive, unixroot, 2);
-          memcpy (dirname_with_drive + 2, dirname, len);
+      if (unixroot && unixroot[0] != '\0' && unixroot[1] == ':' && unixroot[2] == '\0' && 2 + len <= _MAX_PATH)
+	{
+	  memcpy (dirname_with_drive, unixroot, 2);
+	  memcpy (dirname_with_drive + 2, dirname, len);
 
-          dirname = dirname_with_drive;
-        }
+	  dirname = dirname_with_drive;
+	}
     }
 #endif
   set_binding_values (domainname, &dirname, NULL, NULL);

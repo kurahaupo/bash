@@ -47,11 +47,9 @@ mtrace_alloc (const char *tag, PTR_T mem, size_t size, const char *file, int lin
     _mtrace_fp = stderr;
 
   if (_mtrace_verbose)
-    fprintf (_mtrace_fp, "alloc: %s: %p (%zu bytes) from '%s:%d'\n",
-		tag, mem, size, file ? file : "unknown", line);
+    fprintf (_mtrace_fp, "alloc: %s: %p (%zu bytes) from '%s:%d'\n", tag, mem, size, file ? file : "unknown", line);
   else
-    fprintf (_mtrace_fp, "alloc:%p:%zu:%s:%d\n",
-		mem, size, file ? file : "unknown", line);
+    fprintf (_mtrace_fp, "alloc:%p:%zu:%s:%d\n", mem, size, file ? file : "unknown", line);
 }
 
 void
@@ -61,13 +59,11 @@ mtrace_free (PTR_T mem, int size, const char *file, int line)
     _mtrace_fp = stderr;
 
   if (_mtrace_verbose)
-    fprintf (_mtrace_fp, "free: %p (%d bytes) from '%s:%d'\n",
-		mem, size, file ? file : "unknown", line);
+    fprintf (_mtrace_fp, "free: %p (%d bytes) from '%s:%d'\n", mem, size, file ? file : "unknown", line);
   else
-    fprintf (_mtrace_fp, "free:%p:%d:%s:%d\n",
-		mem, size, file ? file : "unknown", line);
+    fprintf (_mtrace_fp, "free:%p:%d:%s:%d\n", mem, size, file ? file : "unknown", line);
 }
-#endif /* MALLOC_TRACE */
+#endif		/* MALLOC_TRACE */
 
 int
 malloc_set_trace (int n)

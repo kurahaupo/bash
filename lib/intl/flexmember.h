@@ -25,9 +25,9 @@
    On newer platforms, use _Alignof to get a tighter bound.  */
 
 #if !defined __STDC_VERSION__ || __STDC_VERSION__ < 201112
-# define FLEXALIGNOF(type) (sizeof (type) & ~ (sizeof (type) - 1))
+#  define FLEXALIGNOF(type) (sizeof (type) & ~ (sizeof (type) - 1))
 #else
-# define FLEXALIGNOF(type) _Alignof (type)
+#  define FLEXALIGNOF(type) _Alignof (type)
 #endif
 
 /* Yield a properly aligned upper bound on the size of a struct of

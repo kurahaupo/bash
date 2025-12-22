@@ -61,9 +61,9 @@ cb_readline (void)
   rl_callback_handler_install (prompt, cb_linehandler);
 
   if (RL_ISSTATE (RL_STATE_ISEARCH))
-    fprintf(stderr, "cb_readline: after handler install, state (ISEARCH) = %lu", rl_readline_state);
+    fprintf (stderr, "cb_readline: after handler install, state (ISEARCH) = %lu", rl_readline_state);
   else if (RL_ISSTATE (RL_STATE_NSEARCH))
-    fprintf(stderr, "cb_readline: after handler install, state (NSEARCH) = %lu", rl_readline_state);
+    fprintf (stderr, "cb_readline: after handler install, state (NSEARCH) = %lu", rl_readline_state);
   /* MULTIKEY VIMOTION NUMERICARG _rl_callback_func */
 
   FD_ZERO (&fds);
@@ -75,12 +75,12 @@ cb_readline (void)
     {
       r = err = 0;
       /* Enter a simple event loop.  This waits until something is available
-	 to read on readline's input stream (defaults to standard input) and
-	 calls the builtin character read callback to read it.  It does not
-	 have to modify the user's terminal settings. */
+         to read on readline's input stream (defaults to standard input) and
+         calls the builtin character read callback to read it.  It does not
+         have to modify the user's terminal settings. */
       while (r == 0)
 	{
-	  struct timeval timeout = {0, 100000};
+	  struct timeval timeout = { 0, 100000 };
 	  struct timeval *timeoutp = NULL;
 
 	  timeoutp = &timeout;
@@ -90,7 +90,7 @@ cb_readline (void)
 	}
 
       if (saw_signal)
-        sigint_handler (saw_signal);
+	sigint_handler (saw_signal);
 
       if (r < 0)
 	{
@@ -120,7 +120,7 @@ sigint_handler (int s)
   rl_cleanup_after_signal ();
   rl_callback_handler_remove ();
   saw_signal = 0;
-  return s;  
+  return s;
 }
 
 int
@@ -141,7 +141,7 @@ main (int c, char **v)
     {
       p = cb_readline ();
       if (p == 0 || strcmp (p, "exit") == 0)
-        break;
+	break;
     }
   printf ("rl-callbacktest2: Event loop has exited\n");
   return 0;

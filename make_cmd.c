@@ -41,7 +41,7 @@
 #include "input.h"
 
 #if defined (JOB_CONTROL)
-#include "jobs.h"
+#  include "jobs.h"
 #endif
 
 #include "shmbutil.h"
@@ -49,8 +49,8 @@
 int here_doc_first_line = 0;
 
 /* Object caching */
-sh_obj_cache_t wdcache = {0, 0, 0};
-sh_obj_cache_t wlcache = {0, 0, 0};
+sh_obj_cache_t wdcache = { 0, 0, 0 };
+sh_obj_cache_t wlcache = { 0, 0, 0 };
 
 #define WDCACHESIZE	128
 #define WLCACHESIZE	128
@@ -90,7 +90,7 @@ make_bare_word (const char *string)
     temp->word = savestring (string);
   else
     {
-      temp->word = (char *)xmalloc (1);
+      temp->word = (char *) xmalloc (1);
       temp->word[0] = '\0';
     }
 
@@ -114,7 +114,7 @@ make_word_flags (WORD_DESC *w, const char *string)
 	  w->flags |= W_HASDOLLAR;
 	  break;
 	case '\\':
-	  break;	/* continue the loop */
+	  break;		/* continue the loop */
 	case '\'':
 	case '`':
 	case '"':
@@ -165,11 +165,11 @@ make_command (enum command_type type, SIMPLE_COM *pointer)
 {
   COMMAND *temp;
 
-  temp = (COMMAND *)xmalloc (sizeof (COMMAND));
+  temp = (COMMAND *) xmalloc (sizeof (COMMAND));
   temp->type = type;
   temp->value.Simple = pointer;
   temp->value.Simple->flags = temp->flags = 0;
-  temp->redirects = (REDIRECT *)NULL;
+  temp->redirects = (REDIRECT *) NULL;
   return (temp);
 }
 
@@ -178,11 +178,11 @@ command_connect (COMMAND *com1, COMMAND *com2, int connector)
 {
   CONNECTION *temp;
 
-  temp = (CONNECTION *)xmalloc (sizeof (CONNECTION));
+  temp = (CONNECTION *) xmalloc (sizeof (CONNECTION));
   temp->connector = connector;
   temp->first = com1;
   temp->second = com2;
-  return (make_command (cm_connection, (SIMPLE_COM *)temp));
+  return (make_command (cm_connection, (SIMPLE_COM *) temp));
 }
 
 static COMMAND *
@@ -190,13 +190,13 @@ make_for_or_select (enum command_type type, WORD_DESC *name, WORD_LIST *map_list
 {
   FOR_COM *temp;
 
-  temp = (FOR_COM *)xmalloc (sizeof (FOR_COM));
+  temp = (FOR_COM *) xmalloc (sizeof (FOR_COM));
   temp->flags = 0;
   temp->name = name;
   temp->line = lineno;
   temp->map_list = map_list;
   temp->action = action;
-  return (make_command (type, (SIMPLE_COM *)temp));
+  return (make_command (type, (SIMPLE_COM *) temp));
 }
 
 COMMAND *
@@ -212,7 +212,7 @@ make_select_command (WORD_DESC *name, WORD_LIST *map_list, COMMAND *action, int 
   return (make_for_or_select (cm_select, name, map_list, action, lineno));
 #else
   set_exit_status (2);
-  return ((COMMAND *)NULL);
+  return ((COMMAND *) NULL);
 #endif
 }
 
@@ -224,10 +224,10 @@ make_arith_for_expr (char *s)
   WORD_DESC *wd;
 
   if (s == 0 || *s == '\0')
-    return ((WORD_LIST *)NULL);
+    return ((WORD_LIST *) NULL);
   wd = make_word (s);
-  wd->flags |= W_NOGLOB|W_NOSPLIT|W_QUOTED|W_NOTILDE|W_NOPROCSUB;	/* no word splitting or globbing */
-  result = make_word_list (wd, (WORD_LIST *)NULL);
+  wd->flags |= W_NOGLOB | W_NOSPLIT | W_QUOTED | W_NOTILDE | W_NOPROCSUB; /* no word splitting or globbing */
+  result = make_word_list (wd, (WORD_LIST *) NULL);
   return result;
 }
 #endif
@@ -245,20 +245,20 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
   char *s, *t, *start;
   int nsemi, i;
 
-  init = test = step = (WORD_LIST *)NULL;
+  init = test = step = (WORD_LIST *) NULL;
   /* Parse the string into the three component sub-expressions. */
   start = t = s = exprs->word->word;
-  for (nsemi = 0; ;)
+  for (nsemi = 0;;)
     {
       /* skip whitespace at the start of each sub-expression. */
       while (whitespace (*s))
 	s++;
       start = s;
       /* skip to the semicolon or EOS */
-      i = skip_to_delim (start, 0, ";", SD_NOJMP|SD_NOPROCSUB);
+      i = skip_to_delim (start, 0, ";", SD_NOJMP | SD_NOPROCSUB);
       s = start + i;
 
-      t = (i > 0) ? substring (start, 0, i) : (char *)NULL;
+      t = (i > 0) ? substring (start, 0, i) : (char *) NULL;
 
       nsemi++;
       switch (nsemi)
@@ -277,7 +277,7 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
       FREE (t);
       if (*s == '\0')
 	break;
-      s++;	/* skip over semicolon */
+      s++;			/* skip over semicolon */
     }
 
   if (nsemi != 3)
@@ -291,10 +291,10 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
       free (test);
       free (step);
       set_exit_status (2);
-      return ((COMMAND *)NULL);
+      return ((COMMAND *) NULL);
     }
 
-  temp = (ARITH_FOR_COM *)xmalloc (sizeof (ARITH_FOR_COM));
+  temp = (ARITH_FOR_COM *) xmalloc (sizeof (ARITH_FOR_COM));
   temp->flags = 0;
   temp->line = lineno;
   temp->init = init ? init : make_arith_for_expr ("1");
@@ -303,12 +303,12 @@ make_arith_for_command (WORD_LIST *exprs, COMMAND *action, int lineno)
   temp->action = action;
 
   dispose_words (exprs);
-  return (make_command (cm_arith_for, (SIMPLE_COM *)temp));
+  return (make_command (cm_arith_for, (SIMPLE_COM *) temp));
 #else
   dispose_words (exprs);
   set_exit_status (2);
-  return ((COMMAND *)NULL);
-#endif /* ARITH_FOR_COMMAND */
+  return ((COMMAND *) NULL);
+#endif		/* ARITH_FOR_COMMAND */
 }
 
 COMMAND *
@@ -316,9 +316,9 @@ make_group_command (COMMAND *command)
 {
   GROUP_COM *temp;
 
-  temp = (GROUP_COM *)xmalloc (sizeof (GROUP_COM));
+  temp = (GROUP_COM *) xmalloc (sizeof (GROUP_COM));
   temp->command = command;
-  return (make_command (cm_group, (SIMPLE_COM *)temp));
+  return (make_command (cm_group, (SIMPLE_COM *) temp));
 }
 
 COMMAND *
@@ -326,12 +326,12 @@ make_case_command (WORD_DESC *word, PATTERN_LIST *clauses, int lineno)
 {
   CASE_COM *temp;
 
-  temp = (CASE_COM *)xmalloc (sizeof (CASE_COM));
+  temp = (CASE_COM *) xmalloc (sizeof (CASE_COM));
   temp->flags = 0;
   temp->line = lineno;
   temp->word = word;
   temp->clauses = REVERSE_LIST (clauses, PATTERN_LIST *);
-  return (make_command (cm_case, (SIMPLE_COM *)temp));
+  return (make_command (cm_case, (SIMPLE_COM *) temp));
 }
 
 PATTERN_LIST *
@@ -339,7 +339,7 @@ make_pattern_list (WORD_LIST *patterns, COMMAND *action)
 {
   PATTERN_LIST *temp;
 
-  temp = (PATTERN_LIST *)xmalloc (sizeof (PATTERN_LIST));
+  temp = (PATTERN_LIST *) xmalloc (sizeof (PATTERN_LIST));
   temp->patterns = REVERSE_LIST (patterns, WORD_LIST *);
   temp->action = action;
   temp->next = NULL;
@@ -352,12 +352,12 @@ make_if_command (COMMAND *test, COMMAND *true_case, COMMAND *false_case)
 {
   IF_COM *temp;
 
-  temp = (IF_COM *)xmalloc (sizeof (IF_COM));
+  temp = (IF_COM *) xmalloc (sizeof (IF_COM));
   temp->flags = 0;
   temp->test = test;
   temp->true_case = true_case;
   temp->false_case = false_case;
-  return (make_command (cm_if, (SIMPLE_COM *)temp));
+  return (make_command (cm_if, (SIMPLE_COM *) temp));
 }
 
 static COMMAND *
@@ -365,11 +365,11 @@ make_until_or_while (enum command_type which, COMMAND *test, COMMAND *action)
 {
   WHILE_COM *temp;
 
-  temp = (WHILE_COM *)xmalloc (sizeof (WHILE_COM));
+  temp = (WHILE_COM *) xmalloc (sizeof (WHILE_COM));
   temp->flags = 0;
   temp->test = test;
   temp->action = action;
-  return (make_command (which, (SIMPLE_COM *)temp));
+  return (make_command (which, (SIMPLE_COM *) temp));
 }
 
 COMMAND *
@@ -391,21 +391,21 @@ make_arith_command (WORD_LIST *exp)
   COMMAND *command;
   ARITH_COM *temp;
 
-  command = (COMMAND *)xmalloc (sizeof (COMMAND));
-  command->value.Arith = temp = (ARITH_COM *)xmalloc (sizeof (ARITH_COM));
+  command = (COMMAND *) xmalloc (sizeof (COMMAND));
+  command->value.Arith = temp = (ARITH_COM *) xmalloc (sizeof (ARITH_COM));
 
   temp->flags = 0;
   temp->line = line_number;
   temp->exp = exp;
 
   command->type = cm_arith;
-  command->redirects = (REDIRECT *)NULL;
+  command->redirects = (REDIRECT *) NULL;
   command->flags = 0;
 
   return (command);
 #else
   set_exit_status (2);
-  return ((COMMAND *)NULL);
+  return ((COMMAND *) NULL);
 #endif
 }
 
@@ -415,7 +415,7 @@ make_cond_node (int type, WORD_DESC *op, struct cond_com *left, struct cond_com 
 {
   COND_COM *temp;
 
-  temp = (COND_COM *)xmalloc (sizeof (COND_COM));
+  temp = (COND_COM *) xmalloc (sizeof (COND_COM));
   temp->flags = 0;
   temp->line = line_number;
   temp->type = type;
@@ -433,18 +433,18 @@ make_cond_command (COND_COM *cond_node)
 #if defined (COND_COMMAND)
   COMMAND *command;
 
-  command = (COMMAND *)xmalloc (sizeof (COMMAND));
+  command = (COMMAND *) xmalloc (sizeof (COMMAND));
   command->value.Cond = cond_node;
 
   command->type = cm_cond;
-  command->redirects = (REDIRECT *)NULL;
+  command->redirects = (REDIRECT *) NULL;
   command->flags = 0;
   command->line = cond_node ? cond_node->line : 0;
 
   return (command);
 #else
   set_exit_status (2);
-  return ((COMMAND *)NULL);
+  return ((COMMAND *) NULL);
 #endif
 }
 
@@ -454,16 +454,16 @@ make_bare_simple_command (int line)
   COMMAND *command;
   SIMPLE_COM *temp;
 
-  command = (COMMAND *)xmalloc (sizeof (COMMAND));
-  command->value.Simple = temp = (SIMPLE_COM *)xmalloc (sizeof (SIMPLE_COM));
+  command = (COMMAND *) xmalloc (sizeof (COMMAND));
+  command->value.Simple = temp = (SIMPLE_COM *) xmalloc (sizeof (SIMPLE_COM));
 
   temp->flags = 0;
   temp->line = line;
-  temp->words = (WORD_LIST *)NULL;
-  temp->redirects = (REDIRECT *)NULL;
+  temp->words = (WORD_LIST *) NULL;
+  temp->redirects = (REDIRECT *) NULL;
 
   command->type = cm_simple;
-  command->redirects = (REDIRECT *)NULL;
+  command->redirects = (REDIRECT *) NULL;
   command->flags = 0;
 
   return (command);
@@ -492,8 +492,8 @@ make_simple_command (ELEMENT element, COMMAND *command, int line)
     {
       REDIRECT *r = element.redirect;
       /* Due to the way <> is implemented, there may be more than a single
-	 redirection in element.redirect.  We just follow the chain as far
-	 as it goes, and hook onto the end. */
+         redirection in element.redirect.  We just follow the chain as far
+         as it goes, and hook onto the end. */
       while (r->next)
 	r = r->next;
       r->next = command->value.Simple->redirects;
@@ -517,8 +517,7 @@ make_here_document (REDIRECT *temp, int lineno)
   int document_index, delim_unquoted;
   size_t document_size;
 
-  if (temp->instruction != r_deblank_reading_until &&
-      temp->instruction != r_reading_until)
+  if (temp->instruction != r_deblank_reading_until && temp->instruction != r_reading_until)
     {
       internal_error (_("make_here_document: bad instruction type %d"), temp->instruction);
       return;
@@ -526,7 +525,7 @@ make_here_document (REDIRECT *temp, int lineno)
 
   kill_leading = temp->instruction == r_deblank_reading_until;
 
-  full_line = document = (char *)NULL;
+  full_line = document = (char *) NULL;
   document_index = 0;
   document_size = 0;
 
@@ -548,7 +547,7 @@ make_here_document (REDIRECT *temp, int lineno)
     redir_len = strlen (redir_word);
   else
     {
-      temp->here_doc_eof = (char *)xmalloc (1);
+      temp->here_doc_eof = (char *) xmalloc (1);
       temp->here_doc_eof[0] = '\0';
       goto document_done;
     }
@@ -575,12 +574,12 @@ make_here_document (REDIRECT *temp, int lineno)
       line = full_line;
 
       /* if read_secondary_line uses shell_getc, that handles incrementing
-	 line_number where necessary. */
+         line_number where necessary. */
       if (heredoc_string == 0)
 	line_number++;
 
       /* If set -v is in effect, echo the line read.  read_secondary_line/
-	 read_a_line leaves the newline at the end, so don't print another. */
+         read_a_line leaves the newline at the end, so don't print another. */
       if (echo_input_at_read)
 	fprintf (stderr, "%s", line);
 
@@ -603,7 +602,8 @@ make_here_document (REDIRECT *temp, int lineno)
 	break;
 
       /* Backwards compatibility here */
-      if (STREQN (line, redir_word, redir_len) && (parser_state & PST_EOFTOKEN) && shell_eof_token && strchr (line+redir_len, shell_eof_token))
+      if (STREQN (line, redir_word, redir_len) && (parser_state & PST_EOFTOKEN) && shell_eof_token
+	  && strchr (line + redir_len, shell_eof_token))
 	{
 	  shell_ungets (line + redir_len);
 	  full_line = 0;
@@ -614,11 +614,11 @@ make_here_document (REDIRECT *temp, int lineno)
       if (len + document_index >= document_size)
 	{
 	  document_size = document_size ? 2 * (document_size + len) : len + 2;
-	  document = (char *)xrealloc (document, document_size);
+	  document = (char *) xrealloc (document, document_size);
 	}
 
       /* len is guaranteed to be > 0 because of the check for line
-	 being an empty string before the call to strlen. */
+         being an empty string before the call to strlen. */
       FASTCOPY (line, document + document_index, len);
       document_index += len;
     }
@@ -631,7 +631,7 @@ document_done:
     document[document_index] = '\0';
   else
     {
-      document = (char *)xmalloc (1);
+      document = (char *) xmalloc (1);
       document[0] = '\0';
     }
   temp->redirectee.filename->word = document;
@@ -649,7 +649,7 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
   size_t wlen;
   intmax_t lfd;
 
-  temp = (REDIRECT *)xmalloc (sizeof (REDIRECT));
+  temp = (REDIRECT *) xmalloc (sizeof (REDIRECT));
 
   /* First do the common cases. */
   temp->redirector = source;
@@ -658,55 +658,55 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
   temp->instruction = instruction;
   temp->flags = 0;
   temp->rflags = flags;
-  temp->next = (REDIRECT *)NULL;
+  temp->next = (REDIRECT *) NULL;
 
   switch (instruction)
     {
 
-    case r_output_direction:		/* >foo */
-    case r_output_force:		/* >| foo */
-    case r_err_and_out:			/* &>filename */
+    case r_output_direction:	/* >foo */
+    case r_output_force:	/* >| foo */
+    case r_err_and_out:	/* &>filename */
       temp->flags = O_TRUNC | O_WRONLY | O_CREAT;
       break;
 
-    case r_appending_to:		/* >>foo */
-    case r_append_err_and_out:		/* &>> filename */
+    case r_appending_to:	/* >>foo */
+    case r_append_err_and_out:	/* &>> filename */
       temp->flags = O_APPEND | O_WRONLY | O_CREAT;
       break;
 
-    case r_input_direction:		/* <foo */
-    case r_inputa_direction:		/* foo & makes this. */
+    case r_input_direction:	/* <foo */
+    case r_inputa_direction:	/* foo & makes this. */
       temp->flags = O_RDONLY;
       break;
 
-    case r_input_output:		/* <>foo */
+    case r_input_output:	/* <>foo */
       temp->flags = O_RDWR | O_CREAT;
       break;
 
-    case r_deblank_reading_until: 	/* <<-foo */
-    case r_reading_until:		/* << foo */
-    case r_reading_string:		/* <<< foo */
-    case r_close_this:			/* <&- */
-    case r_duplicating_input:		/* 1<&2 */
-    case r_duplicating_output:		/* 1>&2 */
+    case r_deblank_reading_until: /* <<-foo */
+    case r_reading_until:	/* << foo */
+    case r_reading_string:	/* <<< foo */
+    case r_close_this:		/* <&- */
+    case r_duplicating_input:	/* 1<&2 */
+    case r_duplicating_output:	/* 1>&2 */
       break;
 
-    /* the parser doesn't pass these. */
-    case r_move_input:			/* 1<&2- */
-    case r_move_output:			/* 1>&2- */
-    case r_move_input_word:		/* 1<&$foo- */
-    case r_move_output_word:		/* 1>&$foo- */
+      /* the parser doesn't pass these. */
+    case r_move_input:		/* 1<&2- */
+    case r_move_output:	/* 1>&2- */
+    case r_move_input_word:	/* 1<&$foo- */
+    case r_move_output_word:	/* 1>&$foo- */
       break;
 
-    /* The way the lexer works we have to do this here. */
-    case r_duplicating_input_word:	/* 1<&$foo */
-    case r_duplicating_output_word:	/* 1>&$foo */
+      /* The way the lexer works we have to do this here. */
+    case r_duplicating_input_word: /* 1<&$foo */
+    case r_duplicating_output_word: /* 1>&$foo */
       w = dest_and_filename.filename;
       wlen = strlen (w->word) - 1;
-      if (w->word[wlen] == '-')		/* Yuck */
-        {
-          w->word[wlen] = '\0';
-	  if (all_digits (w->word) && valid_number (w->word, &lfd) && lfd == (int)lfd)
+      if (w->word[wlen] == '-')	/* Yuck */
+	{
+	  w->word[wlen] = '\0';
+	  if (all_digits (w->word) && valid_number (w->word, &lfd) && lfd == (int) lfd)
 	    {
 	      dispose_word (w);
 	      temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input : r_move_output;
@@ -714,8 +714,8 @@ make_redirection (REDIRECTEE source, enum r_instruction instruction, REDIRECTEE 
 	    }
 	  else
 	    temp->instruction = (instruction == r_duplicating_input_word) ? r_move_input_word : r_move_output_word;
-        }
-          
+	}
+
       break;
 
     default:
@@ -735,7 +735,7 @@ make_function_def (WORD_DESC *name, COMMAND *command, int lineno, int lstart)
   ARRAY *bash_source_a;
 #endif
 
-  temp = (FUNCTION_DEF *)xmalloc (sizeof (FUNCTION_DEF));
+  temp = (FUNCTION_DEF *) xmalloc (sizeof (FUNCTION_DEF));
   temp->command = command;
   temp->name = name;
   temp->line = lineno;
@@ -758,7 +758,7 @@ make_function_def (WORD_DESC *name, COMMAND *command, int lineno, int lstart)
 	temp->source_file = "environment";
       else if (interactive_shell)
 	temp->source_file = "main";
-      else if (interactive == 0)	/* assume -c command */
+      else if (interactive == 0) /* assume -c command */
 	temp->source_file = dollar_vars[0];
       else
 	temp->source_file = shell_name;	/* this clause is never hit */
@@ -770,7 +770,7 @@ make_function_def (WORD_DESC *name, COMMAND *command, int lineno, int lstart)
 
   temp->source_file = temp->source_file ? savestring (temp->source_file) : 0;
 
-  return (make_command (cm_function_def, (SIMPLE_COM *)temp));
+  return (make_command (cm_function_def, (SIMPLE_COM *) temp));
 }
 
 COMMAND *
@@ -778,11 +778,11 @@ make_subshell_command (COMMAND *command)
 {
   SUBSHELL_COM *temp;
 
-  temp = (SUBSHELL_COM *)xmalloc (sizeof (SUBSHELL_COM));
+  temp = (SUBSHELL_COM *) xmalloc (sizeof (SUBSHELL_COM));
   temp->command = command;
   temp->flags = CMD_WANT_SUBSHELL;
   temp->line = line_number;
-  return (make_command (cm_subshell, (SIMPLE_COM *)temp));
+  return (make_command (cm_subshell, (SIMPLE_COM *) temp));
 }
 
 COMMAND *
@@ -790,11 +790,11 @@ make_coproc_command (char *name, COMMAND *command)
 {
   COPROC_COM *temp;
 
-  temp = (COPROC_COM *)xmalloc (sizeof (COPROC_COM));
+  temp = (COPROC_COM *) xmalloc (sizeof (COPROC_COM));
   temp->name = savestring (name);
   temp->command = command;
-  temp->flags = CMD_WANT_SUBSHELL|CMD_COPROC_SUBSHELL;
-  return (make_command (cm_coproc, (SIMPLE_COM *)temp));
+  temp->flags = CMD_WANT_SUBSHELL | CMD_COPROC_SUBSHELL;
+  return (make_command (cm_coproc, (SIMPLE_COM *) temp));
 }
 
 /* Reverse the word list and redirection list in the simple command
@@ -807,10 +807,8 @@ clean_simple_command (COMMAND *command)
     command_error ("clean_simple_command", CMDERR_BADTYPE, command->type, 0);
   else
     {
-      command->value.Simple->words =
-	REVERSE_LIST (command->value.Simple->words, WORD_LIST *);
-      command->value.Simple->redirects =
-	REVERSE_LIST (command->value.Simple->redirects, REDIRECT *);
+      command->value.Simple->words = REVERSE_LIST (command->value.Simple->words, WORD_LIST *);
+      command->value.Simple->redirects = REVERSE_LIST (command->value.Simple->redirects, REDIRECT *);
     }
 
   parser_state &= ~PST_REDIRLIST;
@@ -834,8 +832,7 @@ connect_async_list (COMMAND *command, COMMAND *command2, int connector)
   t1 = command;
   t = command->value.Connection->second;
 
-  if (!t || (command->flags & CMD_WANT_SUBSHELL) ||
-      command->value.Connection->connector != ';')
+  if (!t || (command->flags & CMD_WANT_SUBSHELL) || command->value.Connection->connector != ';')
     {
       t = command_connect (command, command2, connector);
       return t;
@@ -848,8 +845,7 @@ connect_async_list (COMMAND *command, COMMAND *command2, int connector)
      this if the list is not being executed as a unit in the background
      with `( ... )', so we have to check for CMD_WANT_SUBSHELL.  That's
      the only way to tell. */
-  while (((t->flags & CMD_WANT_SUBSHELL) == 0) && t->type == cm_connection &&
-	 t->value.Connection->connector == ';')
+  while (((t->flags & CMD_WANT_SUBSHELL) == 0) && t->type == cm_connection && t->value.Connection->connector == ';')
     {
       t1 = t;
       t = t->value.Connection->second;

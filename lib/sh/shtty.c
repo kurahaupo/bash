@@ -34,45 +34,45 @@ static TTYSTRUCT ttin, ttout;
 static int ttsaved = 0;
 
 int
-ttgetattr(int fd, TTYSTRUCT *ttp)
+ttgetattr (int fd, TTYSTRUCT *ttp)
 {
 #ifdef TERMIOS_TTY_DRIVER
-  return tcgetattr(fd, ttp);
+  return tcgetattr (fd, ttp);
 #else
 #  ifdef TERMIO_TTY_DRIVER
-  return ioctl(fd, TCGETA, ttp);
+  return ioctl (fd, TCGETA, ttp);
 #  else
-  return ioctl(fd, TIOCGETP, ttp);
+  return ioctl (fd, TIOCGETP, ttp);
 #  endif
 #endif
 }
 
 int
-ttsetattr(int fd, TTYSTRUCT *ttp)
+ttsetattr (int fd, TTYSTRUCT *ttp)
 {
 #ifdef TERMIOS_TTY_DRIVER
-  return tcsetattr(fd, TCSADRAIN, ttp);
+  return tcsetattr (fd, TCSADRAIN, ttp);
 #else
 #  ifdef TERMIO_TTY_DRIVER
-  return ioctl(fd, TCSETAW, ttp);
+  return ioctl (fd, TCSETAW, ttp);
 #  else
-  return ioctl(fd, TIOCSETN, ttp);
+  return ioctl (fd, TIOCSETN, ttp);
 #  endif
 #endif
 }
 
 void
-ttsave(void)
+ttsave (void)
 {
   if (ttsaved)
-   return;
+    return;
   ttgetattr (0, &ttin);
   ttgetattr (1, &ttout);
   ttsaved = 1;
 }
 
 void
-ttrestore(void)
+ttrestore (void)
 {
   if (ttsaved == 0)
     return;
@@ -86,13 +86,13 @@ TTYSTRUCT *
 ttattr (int fd)
 {
   if (ttsaved == 0)
-    return ((TTYSTRUCT *)0);
+    return ((TTYSTRUCT *) 0);
   if (fd == 0)
     return &ttin;
   else if (fd == 1)
     return &ttout;
   else
-    return ((TTYSTRUCT *)0);
+    return ((TTYSTRUCT *) 0);
 }
 
 /*
@@ -100,7 +100,7 @@ ttattr (int fd)
  * ttsetattr, the terminal will be in one-char-at-a-time mode.
  */
 int
-tt_setonechar(TTYSTRUCT *ttp)
+tt_setonechar (TTYSTRUCT *ttp)
 {
 #if defined (TERMIOS_TTY_DRIVER) || defined (TERMIO_TTY_DRIVER)
 
@@ -147,7 +147,7 @@ tt_setonechar(TTYSTRUCT *ttp)
 int
 ttfd_onechar (int fd, TTYSTRUCT *ttp)
 {
-  if (tt_setonechar(ttp) < 0)
+  if (tt_setonechar (ttp) < 0)
     return -1;
   return (ttsetattr (fd, ttp));
 }
@@ -169,10 +169,10 @@ ttonechar (void)
  * ttsetattr, the terminal will be in no-echo mode.
  */
 int
-tt_setnoecho(TTYSTRUCT *ttp)
+tt_setnoecho (TTYSTRUCT *ttp)
 {
 #if defined (TERMIOS_TTY_DRIVER) || defined (TERMIO_TTY_DRIVER)
-  ttp->c_lflag &= ~(ECHO|ECHOK|ECHONL);
+  ttp->c_lflag &= ~(ECHO | ECHOK | ECHONL);
 #else
   ttp->sg_flags &= ~ECHO;
 #endif
@@ -280,7 +280,7 @@ ttnocanon (void)
  * ttsetattr, the terminal will be in cbreak, no-echo mode.
  */
 int
-tt_setcbreak(TTYSTRUCT *ttp)
+tt_setcbreak (TTYSTRUCT *ttp)
 {
   if (tt_setonechar (ttp) < 0)
     return -1;

@@ -16,7 +16,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _LOADINFO_H
-#define _LOADINFO_H	1
+#  define _LOADINFO_H	1
 
 /* Declarations of locale dependent catalog lookup functions.
    Implemented in
@@ -30,42 +30,41 @@
    in gettextP.h.
  */
 
-#ifndef internal_function
-# define internal_function
-#endif
+#  ifndef internal_function
+#    define internal_function
+#  endif
 
-#ifndef LIBINTL_DLL_EXPORTED
-# define LIBINTL_DLL_EXPORTED
-#endif
+#  ifndef LIBINTL_DLL_EXPORTED
+#    define LIBINTL_DLL_EXPORTED
+#  endif
 
 /* Tell the compiler when a conditional or integer expression is
    almost always true or almost always false.  */
-#ifndef HAVE_BUILTIN_EXPECT
-# define __builtin_expect(expr, val) (expr)
-#endif
+#  ifndef HAVE_BUILTIN_EXPECT
+#    define __builtin_expect(expr, val) (expr)
+#  endif
 
 /* Separator in PATH like lists of pathnames.  */
-#if (defined _WIN32 && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
+#  if (defined _WIN32 && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */
-# define PATH_SEPARATOR ';'
-#else
+#    define PATH_SEPARATOR ';'
+#  else
   /* Unix */
-# define PATH_SEPARATOR ':'
-#endif
+#    define PATH_SEPARATOR ':'
+#  endif
 
 /* Encoding of locale name parts.  */
-#define XPG_NORM_CODESET	1
-#define XPG_CODESET		2
-#define XPG_TERRITORY		4
-#define XPG_MODIFIER		8
+#  define XPG_NORM_CODESET	1
+#  define XPG_CODESET		2
+#  define XPG_TERRITORY		4
+#  define XPG_MODIFIER		8
 
 
-struct loaded_l10nfile
-{
+struct loaded_l10nfile {
   const char *filename;
-#if defined _WIN32 && !defined __CYGWIN__
+#  if defined _WIN32 && !defined __CYGWIN__
   const wchar_t *wfilename;
-#endif
+#  endif
   int decided;
 
   const void *data;
@@ -79,8 +78,7 @@ struct loaded_l10nfile
    names.  Normalization allows the user to use any of the common
    names.  The return value is dynamically allocated and has to be
    freed by the caller.  */
-extern const char *_nl_normalize_codeset (const char *codeset,
-					  size_t name_len);
+extern const char *_nl_normalize_codeset (const char *codeset, size_t name_len);
 
 /* Lookup a locale dependent file.
    *L10NFILE_LIST denotes a pool of lookup results of locale dependent
@@ -107,17 +105,15 @@ extern const char *_nl_normalize_codeset (const char *codeset,
    its ->next field denotes the chaining inside *L10NFILE_LIST, and
    furthermore its ->successor[] field contains a list of other lookup
    results from which this lookup result inherits.  */
-extern struct loaded_l10nfile *
-_nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
-		    const char *dirlist, size_t dirlist_len,
-#if defined _WIN32 && !defined __CYGWIN__
-		    const wchar_t *wdirlist, size_t wdirlist_len,
-#endif
-		    int mask,
-		    const char *language, const char *territory,
-		    const char *codeset, const char *normalized_codeset,
-		    const char *modifier,
-		    const char *filename, int do_allocate);
+extern struct loaded_l10nfile *_nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
+						   const char *dirlist, size_t dirlist_len,
+#  if defined _WIN32 && !defined __CYGWIN__
+						   const wchar_t *wdirlist, size_t wdirlist_len,
+#  endif
+						   int mask,
+						   const char *language, const char *territory,
+						   const char *codeset, const char *normalized_codeset,
+						   const char *modifier, const char *filename, int do_allocate);
 
 /* Lookup the real locale name for a locale alias NAME, or NULL if
    NAME is not a locale alias (but possibly a real locale name).
@@ -142,7 +138,6 @@ extern LIBINTL_DLL_EXPORTED const char *_nl_expand_alias (const char *name);
  */
 extern int _nl_explode_name (char *name, const char **language,
 			     const char **modifier, const char **territory,
-			     const char **codeset,
-			     const char **normalized_codeset);
+			     const char **codeset, const char **normalized_codeset);
 
-#endif	/* loadinfo.h */
+#endif		/* loadinfo.h */

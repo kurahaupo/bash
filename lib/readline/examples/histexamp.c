@@ -96,13 +96,13 @@ main (int argc, char **argv)
 	  if (the_list)
 	    for (i = 0; the_list[i]; i++)
 	      {
-	      	tt = history_get_time (the_list[i]);
-	      	tm = tt ? localtime (&tt) : 0;
+		tt = history_get_time (the_list[i]);
+		tm = tt ? localtime (&tt) : 0;
 		if (tm)
 		  strftime (timestr, sizeof (timestr), "%a %R", tm);
 		else
 		  strcpy (timestr, "??");
-	        printf ("%d: %s: %s\n", i + history_base, timestr, the_list[i]->line);
+		printf ("%d: %s: %s\n", i + history_base, timestr, the_list[i]->line);
 	      }
 	}
       else if (strncmp (line, "delete", 6) == 0)

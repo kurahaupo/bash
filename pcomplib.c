@@ -22,26 +22,26 @@
 
 #if defined (PROGRAMMABLE_COMPLETION)
 
-#include "bashansi.h"
-#include <stdio.h>
+#  include "bashansi.h"
+#  include <stdio.h>
 
-#if defined (HAVE_UNISTD_H)
-#  ifdef _MINIX
-#    include <sys/types.h>
+#  if defined (HAVE_UNISTD_H)
+#    ifdef _MINIX
+#      include <sys/types.h>
+#    endif
+#    include <unistd.h>
 #  endif
-#  include <unistd.h>
-#endif
 
-#include "bashintl.h"
+#  include "bashintl.h"
 
-#include "shell.h"
-#include "pcomplete.h"
+#  include "shell.h"
+#  include "pcomplete.h"
 
-#define COMPLETE_HASH_BUCKETS	512	/* must be power of two */
+#  define COMPLETE_HASH_BUCKETS	512 /* must be power of two */
 
-#define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
+#  define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
 
-HASH_TABLE *prog_completes = (HASH_TABLE *)NULL;
+HASH_TABLE *prog_completes = (HASH_TABLE *) NULL;
 
 static void free_progcomp (PTR_T);
 
@@ -50,20 +50,20 @@ compspec_create (void)
 {
   COMPSPEC *ret;
 
-  ret = (COMPSPEC *)xmalloc (sizeof (COMPSPEC));
+  ret = (COMPSPEC *) xmalloc (sizeof (COMPSPEC));
   ret->refcount = 0;
 
-  ret->actions = (unsigned long)0;
-  ret->options = (unsigned long)0;
+  ret->actions = (unsigned long) 0;
+  ret->options = (unsigned long) 0;
 
-  ret->globpat = (char *)NULL;
-  ret->words = (char *)NULL;
-  ret->prefix = (char *)NULL;
-  ret->suffix = (char *)NULL;
-  ret->funcname = (char *)NULL;
-  ret->command = (char *)NULL;
-  ret->lcommand = (char *)NULL;
-  ret->filterpat = (char *)NULL;
+  ret->globpat = (char *) NULL;
+  ret->words = (char *) NULL;
+  ret->prefix = (char *) NULL;
+  ret->suffix = (char *) NULL;
+  ret->funcname = (char *) NULL;
+  ret->command = (char *) NULL;
+  ret->lcommand = (char *) NULL;
+  ret->filterpat = (char *) NULL;
 
   return ret;
 }
@@ -92,9 +92,9 @@ compspec_copy (COMPSPEC *cs)
 {
   COMPSPEC *new;
 
-  new = (COMPSPEC *)xmalloc (sizeof (COMPSPEC));
+  new = (COMPSPEC *) xmalloc (sizeof (COMPSPEC));
 
-  new->refcount = 1; 	/* was cs->refcount, but this is a fresh copy */
+  new->refcount = 1;		/* was cs->refcount, but this is a fresh copy */
   new->actions = cs->actions;
   new->options = cs->options;
 
@@ -128,10 +128,10 @@ free_progcomp (PTR_T data)
 {
   COMPSPEC *cs;
 
-  cs = (COMPSPEC *)data;
+  cs = (COMPSPEC *) data;
   compspec_dispose (cs);
 }
-  
+
 void
 progcomp_flush (void)
 {
@@ -144,7 +144,7 @@ progcomp_dispose (void)
 {
   if (prog_completes)
     hash_dispose (prog_completes);
-  prog_completes = (HASH_TABLE *)NULL;
+  prog_completes = (HASH_TABLE *) NULL;
 }
 
 int
@@ -196,14 +196,14 @@ progcomp_search (const char *cmd)
   COMPSPEC *cs;
 
   if (prog_completes == 0)
-    return ((COMPSPEC *)NULL);
+    return ((COMPSPEC *) NULL);
 
   item = hash_search (cmd, prog_completes, 0);
 
   if (item == NULL)
-    return ((COMPSPEC *)NULL);
+    return ((COMPSPEC *) NULL);
 
-  cs = (COMPSPEC *)item->data;
+  cs = (COMPSPEC *) item->data;
 
   return (cs);
 }
@@ -217,4 +217,4 @@ progcomp_walk (hash_wfunc *pfunc)
   hash_walk (prog_completes, pfunc);
 }
 
-#endif /* PROGRAMMABLE_COMPLETION */
+#endif		/* PROGRAMMABLE_COMPLETION */

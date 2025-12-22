@@ -22,7 +22,7 @@
 #define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdio.h>
@@ -31,7 +31,7 @@
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include "xmalloc.h"
 
@@ -42,7 +42,7 @@
 /* **************************************************************** */
 
 static void
-memory_error_and_abort (const char * const fname)
+memory_error_and_abort (const char *const fname)
 {
   fprintf (stderr, "%s: out of virtual memory\n", fname);
   exit (2);

@@ -20,65 +20,65 @@
 */
 
 #if !defined (_HISTLIB_H_)
-#define _HISTLIB_H_
+#  define _HISTLIB_H_
 
-#if defined (HAVE_STRING_H)
-#  include <string.h>
-#else
-#  include <strings.h>
-#endif /* !HAVE_STRING_H */
+#  if defined (HAVE_STRING_H)
+#    include <string.h>
+#  else
+#    include <strings.h>
+#  endif	/* !HAVE_STRING_H */
 
-#if !defined (STREQ)
-#define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
-#define STREQN(a, b, n) (((n) == 0) ? (1) \
+#  if !defined (STREQ)
+#    define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
+#    define STREQN(a, b, n) (((n) == 0) ? (1) \
 				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
-#endif
+#  endif
 
-#if !defined (HAVE_STRCASECMP)
-#define strcasecmp(a,b)	strcmp ((a), (b))
-#define strncasecmp(a, b, n)	strncmp ((a), (b), (n))
-#endif
+#  if !defined (HAVE_STRCASECMP)
+#    define strcasecmp(a,b)	strcmp ((a), (b))
+#    define strncasecmp(a, b, n)	strncmp ((a), (b), (n))
+#  endif
 
-#ifndef savestring
-#define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
-#endif
+#  ifndef savestring
+#    define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
+#  endif
 
-#ifndef whitespace
-#define whitespace(c) (((c) == ' ') || ((c) == '\t'))
-#endif
+#  ifndef whitespace
+#    define whitespace(c) (((c) == ' ') || ((c) == '\t'))
+#  endif
 
-#ifndef _rl_digit_p
-#define _rl_digit_p(c)  ((c) >= '0' && (c) <= '9')
-#endif
+#  ifndef _rl_digit_p
+#    define _rl_digit_p(c)  ((c) >= '0' && (c) <= '9')
+#  endif
 
-#ifndef _rl_digit_value
-#define _rl_digit_value(c) ((c) - '0')
-#endif
+#  ifndef _rl_digit_value
+#    define _rl_digit_value(c) ((c) - '0')
+#  endif
 
-#ifndef member
-#define member(c, s) ((c) ? ((char *)strchr ((s), (c)) != (char *)NULL) : 0)
-#endif
+#  ifndef member
+#    define member(c, s) ((c) ? ((char *)strchr ((s), (c)) != (char *)NULL) : 0)
+#  endif
 
-#ifndef FREE
-#  define FREE(x)	if (x) free (x)
-#endif
+#  ifndef FREE
+#    define FREE(x)	if (x) free (x)
+#  endif
 
 /* Possible history errors passed to hist_error. */
-#define EVENT_NOT_FOUND 0
-#define BAD_WORD_SPEC	1
-#define SUBST_FAILED	2
-#define BAD_MODIFIER	3
-#define NO_PREV_SUBST	4
+#  define EVENT_NOT_FOUND 0
+#  define BAD_WORD_SPEC	1
+#  define SUBST_FAILED	2
+#  define BAD_MODIFIER	3
+#  define NO_PREV_SUBST	4
 
 /* Possible definitions for history starting point specification. */
-#define NON_ANCHORED_SEARCH	0
-#define ANCHORED_SEARCH		0x01
-#define PATTERN_SEARCH		0x02
-#define CASEFOLD_SEARCH		0x04
+#  define NON_ANCHORED_SEARCH	0
+#  define ANCHORED_SEARCH		0x01
+#  define PATTERN_SEARCH		0x02
+#  define CASEFOLD_SEARCH		0x04
 
 /* Possible definitions for what style of writing the history file we want. */
-#define HISTORY_APPEND 0
-#define HISTORY_OVERWRITE 1
+#  define HISTORY_APPEND 0
+#  define HISTORY_OVERWRITE 1
 
 /* internal extern function declarations used by other parts of the library */
 
@@ -94,4 +94,4 @@ extern int _hs_at_end_of_history (void);
 /* histfile.c */
 extern void _hs_append_history_line (int, const char *);
 
-#endif /* !_HISTLIB_H_ */
+#endif		/* !_HISTLIB_H_ */

@@ -17,9 +17,9 @@
 
  /* IMP(x) is a symbol that contains the address of x.  */
 #if defined _WIN64 || defined _LP64
-# define IMP(x) __imp_##x
+#  define IMP(x) __imp_##x
 #else
-# define IMP(x) _imp__##x
+#  define IMP(x) _imp__##x
 #endif
 
  /* Ensure that the variable x is exported from the library, and that a
@@ -35,4 +35,4 @@
  extern int x;                                                          \
  void * IMP(x) = &x;
 
-VARIABLE(libintl_version)
+VARIABLE (libintl_version)

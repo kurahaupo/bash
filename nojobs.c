@@ -53,31 +53,31 @@
 
 #if defined (_POSIX_VERSION) || !defined (HAVE_KILLPG)
 #  define killpg(pg, sig)		kill(-(pg),(sig))
-#endif /* USG || _POSIX_VERSION */
+#endif		/* USG || _POSIX_VERSION */
 
 #if !defined (HAVE_SIGINTERRUPT) && !defined (HAVE_POSIX_SIGNALS)
 #  define siginterrupt(sig, code)
-#endif /* !HAVE_SIGINTERRUPT && !HAVE_POSIX_SIGNALS */
+#endif		/* !HAVE_SIGINTERRUPT && !HAVE_POSIX_SIGNALS */
 
 #if defined (HAVE_WAITPID)
 #  define WAITPID(pid, statusp, options) waitpid (pid, statusp, options)
 #else
 #  define WAITPID(pid, statusp, options) wait (statusp)
-#endif /* !HAVE_WAITPID */
+#endif		/* !HAVE_WAITPID */
 
 /* Return the fd from which we are actually getting input. */
 #define input_tty() (shell_tty != -1) ? shell_tty : fileno (stderr)
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 extern void set_original_signal (int, SigHandler *);
 
 volatile pid_t last_made_pid = NO_PID;
 volatile pid_t last_asynchronous_pid = NO_PID;
 
-static int queue_sigchld;		/* dummy declaration */
+static int queue_sigchld;	/* dummy declaration */
 int waiting_for_child;
 
 /* Call this when you start making children. */
@@ -102,7 +102,7 @@ int running_in_background = 0;	/* can't tell without job control */
    STATUS is only valid if (flags & PROC_RUNNING) == 0 */
 struct proc_status {
   pid_t pid;
-  int status;	/* Exit status of PID or 128 + fatal signal number */
+  int status;			/* Exit status of PID or 128 + fatal signal number */
   int flags;
 };
 
@@ -116,7 +116,7 @@ struct proc_status {
 #define PROC_BAD	 -1
 #define PROC_STILL_ALIVE -2
 
-static struct proc_status *pid_list = (struct proc_status *)NULL;
+static struct proc_status *pid_list = (struct proc_status *) NULL;
 static int pid_list_size;
 static int wait_sigint_received;
 
@@ -156,7 +156,7 @@ alloc_pid_list (void)
   int old = pid_list_size;
 
   pid_list_size += 10;
-  pid_list = (struct proc_status *)xrealloc (pid_list, pid_list_size * sizeof (struct proc_status));
+  pid_list = (struct proc_status *) xrealloc (pid_list, pid_list_size * sizeof (struct proc_status));
 
   /* None of the newly allocated slots have process id's yet. */
   for (i = old; i < pid_list_size; i++)
@@ -233,7 +233,7 @@ find_termsig_by_pid (pid_t pid)
     return (0);
   if (pid_list[i].flags & PROC_RUNNING)
     return (0);
-  return (get_termsig ((WAIT)pid_list[i].status));
+  return (get_termsig ((WAIT) pid_list[i].status));
 }
 
 /* Set LAST_COMMAND_EXIT_SIGNAL depending on STATUS.  If STATUS is -1, look
@@ -261,7 +261,7 @@ set_pid_status (pid_t pid, WAIT status)
 #if defined (PROCESS_SUBSTITUTION)
   if ((slot = find_procsub_child (pid)) >= 0)
     set_procsub_status (slot, pid, WSTATUS (status));
-    /* XXX - also saving in list below */
+  /* XXX - also saving in list below */
 #endif
 
   slot = find_index_by_pid (pid);
@@ -341,8 +341,7 @@ mark_dead_jobs_as_notified (int force)
     {
       if (pid_list[i].pid == NO_PID)
 	continue;
-      if (((pid_list[i].flags & PROC_RUNNING) == 0) &&
-	   (pid_list[i].flags & PROC_ASYNC))
+      if (((pid_list[i].flags & PROC_RUNNING) == 0) && (pid_list[i].flags & PROC_ASYNC))
 	ndead++;
     }
 
@@ -360,8 +359,7 @@ mark_dead_jobs_as_notified (int force)
     {
       if (pid_list[i].pid == NO_PID)
 	continue;
-      if (((pid_list[i].flags & PROC_RUNNING) == 0) &&
-	   pid_list[i].pid != last_asynchronous_pid)
+      if (((pid_list[i].flags & PROC_RUNNING) == 0) && pid_list[i].pid != last_asynchronous_pid)
 	{
 	  pid_list[i].flags |= PROC_NOTIFIED;
 	  if (force == 0 && (pid_list[i].flags & PROC_ASYNC) && --ndead <= child_max)
@@ -382,9 +380,7 @@ cleanup_dead_jobs (void)
 
   for (i = 0; i < pid_list_size; i++)
     {
-      if (pid_list[i].pid != NO_PID &&
-	    (pid_list[i].flags & PROC_RUNNING) == 0 &&
-	    (pid_list[i].flags & PROC_NOTIFIED))
+      if (pid_list[i].pid != NO_PID && (pid_list[i].flags & PROC_RUNNING) == 0 && (pid_list[i].flags & PROC_NOTIFIED))
 	pid_list[i].pid = NO_PID;
     }
 
@@ -437,35 +433,35 @@ reap_zombie_children (void)
 
   CHECK_TERMSIG;
   CHECK_WAIT_INTR;
-  while ((pid = waitpid (-1, (int *)&status, WNOHANG)) > 0)
+  while ((pid = waitpid (-1, (int *) &status, WNOHANG)) > 0)
     set_pid_status (pid, status);
-#  endif /* WNOHANG */
+#  endif	/* WNOHANG */
   CHECK_TERMSIG;
   CHECK_WAIT_INTR;
 }
-#endif /* WAITPID */
+#endif		/* WAITPID */
 
 #if !defined (HAVE_SIGINTERRUPT) && defined (HAVE_POSIX_SIGNALS)
 
-#if !defined (SA_RESTART)
-#  define SA_RESTART 0
-#endif
+#  if !defined (SA_RESTART)
+#    define SA_RESTART 0
+#  endif
 
 static int
 siginterrupt (int sig, int flag)
 {
   struct sigaction act;
 
-  sigaction (sig, (struct sigaction *)NULL, &act);
+  sigaction (sig, (struct sigaction *) NULL, &act);
 
   if (flag)
     act.sa_flags &= ~SA_RESTART;
   else
     act.sa_flags |= SA_RESTART;
 
-  return (sigaction (sig, &act, (struct sigaction *)NULL));
+  return (sigaction (sig, &act, (struct sigaction *) NULL));
 }
-#endif /* !HAVE_SIGINTERRUPT && HAVE_POSIX_SIGNALS */
+#endif		/* !HAVE_SIGINTERRUPT && HAVE_POSIX_SIGNALS */
 
 /* Fork, handling errors.  Returns the pid of the newly made child, or 0.
    COMMAND is just for remembering the name of the command; we don't do
@@ -511,14 +507,14 @@ make_child (char *command, int flags)
 
 #if defined (HAVE_WAITPID)
       /* Posix systems with a non-blocking waitpid () system call available
-	 get another chance after zombies are reaped. */
+         get another chance after zombies are reaped. */
       reap_zombie_children ();
       if (forksleep > 1 && sleep (forksleep) != 0)
-        break;
+	break;
 #else
       if (sleep (forksleep) != 0)
 	break;
-#endif /* HAVE_WAITPID */
+#endif		/* HAVE_WAITPID */
       forksleep <<= 1;
     }
 
@@ -526,7 +522,7 @@ make_child (char *command, int flags)
     if (interactive_shell)
       {
 	set_signal_handler (SIGTERM, SIG_IGN);
-	sigprocmask (SIG_SETMASK, &oset, (sigset_t *)NULL);
+	sigprocmask (SIG_SETMASK, &oset, (sigset_t *) NULL);
       }
 
   if (pid < 0)
@@ -540,7 +536,7 @@ make_child (char *command, int flags)
     {
       unset_bash_input (0);
 
-      CLRINTERRUPT;	/* XXX - children have their own interrupt state */
+      CLRINTERRUPT;		/* XXX - children have their own interrupt state */
 
       /* Restore top-level signal mask. */
       restore_sigmask ();
@@ -637,7 +633,7 @@ wait_for_single_pid (pid_t pid, int flags)
 
   if (pstatus == PROC_BAD)
     {
-      internal_error (_("wait: pid %ld is not a child of this shell"), (long)pid);
+      internal_error (_("wait: pid %ld is not a child of this shell"), (long) pid);
       return (257);
     }
 
@@ -716,7 +712,7 @@ wait_for_background_pids (struct procstat *ps)
   if (errno != EINTR && errno != ECHILD)
     {
       siginterrupt (SIGINT, 0);
-      sys_error("wait");
+      sys_error ("wait");
     }
 
   siginterrupt (SIGINT, 0);
@@ -759,10 +755,9 @@ wait_sigint_handler (int sig)
   /* If we got a SIGINT while in `wait', and SIGINT is trapped, do
      what POSIX.2 says (see builtins/wait.def for more info). */
   if (this_shell_builtin && this_shell_builtin == wait_builtin &&
-      signal_is_trapped (SIGINT) &&
-      ((sigint_handler = trap_to_sighandler (SIGINT)) == trap_handler))
+      signal_is_trapped (SIGINT) && ((sigint_handler = trap_to_sighandler (SIGINT)) == trap_handler))
     {
-      last_command_exit_value = 128+SIGINT;
+      last_command_exit_value = 128 + SIGINT;
       restore_sigint_handler ();
       trap_handler (SIGINT);	/* set pending_traps[SIGINT] */
       wait_signal_received = SIGINT;
@@ -816,7 +811,7 @@ wait_for (pid_t pid, int flags)
   if (interactive_shell == 0)
     old_sigint_handler = set_signal_handler (SIGINT, wait_sigint_handler);
 
-  waiting_for_child = 1;  
+  waiting_for_child = 1;
   CHECK_WAIT_INTR;
   while ((got_pid = WAITPID (-1, &status, 0)) != pid) /* XXX was pid now -1 */
     {
@@ -829,11 +824,11 @@ wait_for (pid_t pid, int flags)
 	  status.w_termsig = status.w_retcode = 0;
 #else
 	  status = 0;
-#endif /* _POSIX_VERSION */
+#endif		/* _POSIX_VERSION */
 	  break;
 	}
       else if (got_pid < 0 && errno != EINTR)
-	programming_error ("wait_for(%ld): %s", (long)pid, strerror(errno));
+	programming_error ("wait_for(%ld): %s", (long) pid, strerror (errno));
       else if (got_pid > 0)
 	set_pid_status (got_pid, status);
       waiting_for_child = 1;
@@ -846,7 +841,7 @@ wait_for (pid_t pid, int flags)
 #if defined (HAVE_WAITPID)
   if (got_pid >= 0)
     reap_zombie_children ();
-#endif /* HAVE_WAITPID */
+#endif		/* HAVE_WAITPID */
 
   CHECK_TERMSIG;
   CHECK_WAIT_INTR;
@@ -859,7 +854,7 @@ wait_for (pid_t pid, int flags)
       restore_sigint_handler ();
 
       /* If the job exited because of SIGINT, make sure the shell acts as if
-	 it had received one also. */
+         it had received one also. */
       if (WIFSIGNALED (status) && (WTERMSIG (status) == SIGINT))
 	{
 
@@ -888,7 +883,7 @@ wait_for (pid_t pid, int flags)
 #  define REPORTSIG(x) ((x) != SIGINT && (x) != SIGTERM)
 #endif
 
-  if ((WIFSTOPPED (status) == 0) && WIFSIGNALED (status) && REPORTSIG(WTERMSIG (status)))
+  if ((WIFSTOPPED (status) == 0) && WIFSIGNALED (status) && REPORTSIG (WTERMSIG (status)))
     {
       fprintf (stderr, "%s", j_strsignal (WTERMSIG (status)));
       if (WIFCORED (status))
@@ -904,7 +899,7 @@ wait_for (pid_t pid, int flags)
 	get_tty_state ();
     }
   else if (interactive_shell == 0 && subshell_environment == 0 && check_window_size)
-    get_new_window_size (0, (int *)0, (int *)0);
+    get_new_window_size (0, (int *) 0, (int *) 0);
 
   return (return_val);
 }
@@ -940,7 +935,7 @@ get_tty_state (void)
       ttgetattr (tty, &shell_tty_info);
       got_tty_state = 1;
       if (check_window_size)
-	get_new_window_size (0, (int *)0, (int *)0);
+	get_new_window_size (0, (int *) 0, (int *) 0);
     }
   return 0;
 }

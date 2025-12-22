@@ -31,7 +31,7 @@
 #include <posixdir.h>
 #include <posixstat.h>
 #if defined (HAVE_SYS_PARAM_H)
-#include <sys/param.h>
+#  include <sys/param.h>
 #endif
 
 #include <stdio.h>
@@ -59,7 +59,7 @@ static int spdist (char *, char *);
  *	Stores corrected name in `newname'.
  */
 int
-spname(char *oldname, char *newname)
+spname (char *oldname, char *newname)
 {
   char *op, *np, *p;
   char guess[PATH_MAX + 1], best[PATH_MAX + 1];
@@ -68,17 +68,16 @@ spname(char *oldname, char *newname)
   np = newname;
   for (;;)
     {
-      while (*op == '/')    /* Skip slashes */
+      while (*op == '/')	/* Skip slashes */
 	*np++ = *op++;
       *np = '\0';
 
-      if (*op == '\0')    /* Exact or corrected */
+      if (*op == '\0')		/* Exact or corrected */
 	{
 	  /* `.' is rarely the right thing. */
-	  if (oldname[1] == '\0' && newname[1] == '\0' &&
-		oldname[0] != '.' && newname[0] == '.')
+	  if (oldname[1] == '\0' && newname[1] == '\0' && oldname[0] != '.' && newname[0] == '.')
 	    return -1;
-	  return strcmp(oldname, newname) != 0;
+	  return strcmp (oldname, newname) != 0;
 	}
 
       /* Copy next component into guess */
@@ -87,8 +86,8 @@ spname(char *oldname, char *newname)
 	  *p++ = *op;
       *p = '\0';
 
-      if (mindist(newname, guess, best) >= 3)
-	return -1;  /* Hopeless */
+      if (mindist (newname, guess, best) >= 3)
+	return -1;		/* Hopeless */
 
       /*
        *  Add to end of newname
@@ -102,20 +101,20 @@ spname(char *oldname, char *newname)
  *  Search directory for a guess
  */
 static int
-mindist(const char *dir, char *guess, char *best)
+mindist (const char *dir, char *guess, char *best)
 {
   DIR *fd;
   struct dirent *dp;
   int dist, x;
 
-  dist = 3;    /* Worst distance */
+  dist = 3;			/* Worst distance */
   if (*dir == '\0')
     dir = ".";
 
-  if ((fd = opendir(dir)) == NULL)
+  if ((fd = opendir (dir)) == NULL)
     return dist;
 
-  while ((dp = readdir(fd)) != NULL)
+  while ((dp = readdir (fd)) != NULL)
     {
       /*
        *  Look for a better guess.  If the new guess is as
@@ -123,16 +122,16 @@ mindist(const char *dir, char *guess, char *best)
        *  any single character match will be a better match
        *  than ".".
        */
-      x = spdist(dp->d_name, guess);
+      x = spdist (dp->d_name, guess);
       if (x <= dist && x != 3)
 	{
-	  strcpy(best, dp->d_name);
+	  strcpy (best, dp->d_name);
 	  dist = x;
-	  if (dist == 0)    /* Exact match */
+	  if (dist == 0)	/* Exact match */
 	    break;
 	}
     }
-  (void)closedir(fd);
+  (void) closedir (fd);
 
   /* Don't return `.' */
   if (dist != 3 && best[0] == '.' && best[1] == '\0')
@@ -150,12 +149,12 @@ mindist(const char *dir, char *guess, char *best)
  *      3 otherwise
  */
 static int
-spdist(char *cur, char *new)
+spdist (char *cur, char *new)
 {
   while (*cur == *new)
     {
       if (*cur == '\0')
-	return 0;    /* Exact match */
+	return 0;		/* Exact match */
       cur++;
       new++;
     }
@@ -165,18 +164,18 @@ spdist(char *cur, char *new)
       if (*new)
 	{
 	  if (cur[1] && new[1] && cur[0] == new[1] && cur[1] == new[0] && strcmp (cur + 2, new + 2) == 0)
-	    return 1;  /* Transposition */
+	    return 1;		/* Transposition */
 
 	  if (strcmp (cur + 1, new + 1) == 0)
-	    return 2;  /* One character mismatch */
+	    return 2;		/* One character mismatch */
 	}
 
-      if (strcmp(&cur[1], &new[0]) == 0)
-	return 2;    /* Extra character */
+      if (strcmp (&cur[1], &new[0]) == 0)
+	return 2;		/* Extra character */
     }
 
-  if (*new && strcmp(cur, new + 1) == 0)
-    return 2;      /* Missing character */
+  if (*new && strcmp (cur, new + 1) == 0)
+    return 2;			/* Missing character */
 
   return 3;
 }
@@ -188,7 +187,7 @@ dirspell (char *dirname)
   char *guess;
 
   n = (strlen (dirname) * 3 + 1) / 2 + 1;
-  guess = (char *)malloc (n);
+  guess = (char *) malloc (n);
   if (guess == 0)
     return 0;
 
@@ -197,7 +196,7 @@ dirspell (char *dirname)
     case -1:
     default:
       free (guess);
-      return (char *)NULL;
+      return (char *) NULL;
     case 0:
     case 1:
       return guess;

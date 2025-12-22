@@ -28,30 +28,30 @@
 #    include <sys/types.h>
 #  endif
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #if defined (HAVE_STRING_H)
 #  include <string.h>
 #else
 #  include <strings.h>
-#endif /* !HAVE_STRING_H */
+#endif		/* !HAVE_STRING_H */
 
 #include <pwd.h>
 
 #if !defined (HAVE_GETPW_DECLS)
 extern struct passwd *getpwuid (uid_t);
-#endif /* !HAVE_GETPW_DECLS */
+#endif		/* !HAVE_GETPW_DECLS */
 
 char *
 get_env_value (char *varname)
 {
-  return ((char *)getenv (varname));
+  return ((char *) getenv (varname));
 }
 
 /* If we're not using $HOME, assume that the passwd file information won't
@@ -59,7 +59,7 @@ get_env_value (char *varname)
 char *
 get_home_dir (void)
 {
-  static char *home_dir = (char *)NULL;
+  static char *home_dir = (char *) NULL;
   struct passwd *entry;
 
   if (home_dir)
@@ -72,7 +72,7 @@ get_home_dir (void)
 #endif
 
 #if defined (HAVE_GETPWENT)
-  endpwent ();		/* some systems need this */
+  endpwent ();			/* some systems need this */
 #endif
 
   return (home_dir);

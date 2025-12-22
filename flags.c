@@ -120,7 +120,7 @@ int hashing_enabled = 1;
    This means !22 gets the 22nd line of history. */
 int history_expansion = HISTEXPAND_DEFAULT;
 int histexp_flag = 0;
-#endif /* BANG_HISTORY */
+#endif		/* BANG_HISTORY */
 
 /* Non-zero means that we allow comments to appear in interactive commands. */
 int interactive_comments = 1;
@@ -132,7 +132,7 @@ int interactive_comments = 1;
    output redirection. */
 int restricted = 0;		/* currently restricted */
 int restricted_shell = 0;	/* shell was started in restricted mode. */
-#endif /* RESTRICTED_SHELL */
+#endif		/* RESTRICTED_SHELL */
 
 /* Non-zero means that this shell is running in `privileged' mode.  This
    is required if the shell is to run setuid.  If the `-p' option is
@@ -167,7 +167,7 @@ const struct flags_alist shell_flags[] = {
   { 'a', &mark_modified_vars },
 #if defined (JOB_CONTROL)
   { 'b', &asynchronous_notification },
-#endif /* JOB_CONTROL */
+#endif		/* JOB_CONTROL */
   { 'e', &errexit_flag },
   { 'f', &disallow_filename_globbing },
   { 'h', &hashing_enabled },
@@ -175,12 +175,12 @@ const struct flags_alist shell_flags[] = {
   { 'k', &place_keywords_in_env },
 #if defined (JOB_CONTROL)
   { 'm', &jobs_m_flag },
-#endif /* JOB_CONTROL */
+#endif		/* JOB_CONTROL */
   { 'n', &read_but_dont_execute },
   { 'p', &privileged_mode },
 #if defined (RESTRICTED_SHELL)
   { 'r', &restricted },
-#endif /* RESTRICTED_SHELL */
+#endif		/* RESTRICTED_SHELL */
   { 't', &just_one_command },
   { 'u', &unbound_vars_is_error },
   { 'v', &verbose_flag },
@@ -197,15 +197,15 @@ const struct flags_alist shell_flags[] = {
   { 'E', &error_trace_mode },
 #if defined (BANG_HISTORY)
   { 'H', &histexp_flag },
-#endif /* BANG_HISTORY */
+#endif		/* BANG_HISTORY */
   { 'P', &no_symbolic_links },
   { 'T', &function_trace_mode },
-  {0, (int *)NULL}
+  { 0, (int *) NULL }
 };
 
 #define NUM_SHELL_FLAGS (sizeof (shell_flags) / sizeof (struct flags_alist))
 
-char optflags[NUM_SHELL_FLAGS+4] = { '+' };
+char optflags[NUM_SHELL_FLAGS + 4] = { '+' };
 
 int *
 find_flag (int name)
@@ -231,11 +231,11 @@ change_flag (int flag, int on_or_off)
   /* Don't allow "set +r" in a shell which is `restricted'. */
   if (restricted && flag == 'r' && on_or_off == FLAG_OFF)
     return (FLAG_ERROR);
-#endif /* RESTRICTED_SHELL */
+#endif		/* RESTRICTED_SHELL */
 
   value = find_flag (flag);
 
-  if ((value == (int *)FLAG_UNKNOWN) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
+  if ((value == (int *) FLAG_UNKNOWN) || (on_or_off != FLAG_ON && on_or_off != FLAG_OFF))
     return (FLAG_ERROR);
 
   old_value = *value;
@@ -256,7 +256,7 @@ change_flag (int flag, int on_or_off)
     case 'm':
       set_job_control (on_or_off == FLAG_ON);
       break;
-#endif /* JOB_CONTROL */
+#endif		/* JOB_CONTROL */
 
     case 'e':
       if (builtin_ignoring_errexit == 0)
@@ -296,7 +296,7 @@ which_set_flags (void)
   char *temp;
   int i, string_index;
 
-  temp = (char *)xmalloc (1 + NUM_SHELL_FLAGS + read_from_stdin + want_pending_command);
+  temp = (char *) xmalloc (1 + NUM_SHELL_FLAGS + read_from_stdin + want_pending_command);
   for (i = string_index = 0; shell_flags[i].name; i++)
     if (*(shell_flags[i].value))
       temp[string_index++] = shell_flags[i].name;
@@ -316,7 +316,7 @@ get_current_flags (void)
   char *temp;
   int i;
 
-  temp = (char *)xmalloc (1 + NUM_SHELL_FLAGS);
+  temp = (char *) xmalloc (1 + NUM_SHELL_FLAGS);
   for (i = 0; shell_flags[i].name; i++)
     temp[i] = *(shell_flags[i].value);
   temp[i] = '\0';
@@ -374,8 +374,8 @@ initialize_flags (void)
   register int i;
 
   for (i = 0; shell_flags[i].name; i++)
-    optflags[i+1] = shell_flags[i].name;
+    optflags[i + 1] = shell_flags[i].name;
   optflags[++i] = 'o';
   optflags[++i] = ';';
-  optflags[i+1] = '\0';
+  optflags[i + 1] = '\0';
 }

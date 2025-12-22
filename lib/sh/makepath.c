@@ -80,26 +80,25 @@ sh_makepath (const char *path, const char *dir, int flags)
 		xpath = savestring (ret);
 	    }
 	  if (xpath == 0)
-	    MAKEDOT();
+	    MAKEDOT ();
 	  else
 	    pathlen = strlen (xpath);
 	}
       else
-	MAKEDOT();
+	MAKEDOT ();
     }
-  else if ((flags & MP_IGNDOT) && path[0] == '.' && (path[1] == '\0' ||
-						     (path[1] == '/' && path[2] == '\0')))
+  else if ((flags & MP_IGNDOT) && path[0] == '.' && (path[1] == '\0' || (path[1] == '/' && path[2] == '\0')))
     {
       xpath = nullpath;
       pathlen = 0;
     }
   else
     {
-      xpath = ((flags & MP_DOTILDE) && *path == '~') ? bash_tilde_expand (path, 0) : (char *)path;
+      xpath = ((flags & MP_DOTILDE) && *path == '~') ? bash_tilde_expand (path, 0) : (char *) path;
       pathlen = strlen (xpath);
     }
 
-  xdir = (char *)dir;
+  xdir = (char *) dir;
   dirlen = strlen (xdir);
   if ((flags & MP_RMDOT) && dir[0] == '.' && dir[1] == '/')
     {
@@ -107,12 +106,12 @@ sh_makepath (const char *path, const char *dir, int flags)
       dirlen -= 2;
     }
 
-  r = ret = (char *)xmalloc (2 + dirlen + pathlen);
+  r = ret = (char *) xmalloc (2 + dirlen + pathlen);
   s = xpath;
   while (*s)
     *r++ = *s++;
   if (s > xpath && s[-1] != '/')
-    *r++ = '/';      
+    *r++ = '/';
   s = xdir;
   while (*r++ = *s++)
     ;

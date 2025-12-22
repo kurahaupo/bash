@@ -19,13 +19,13 @@
 */
 
 #if !defined (_OCACHE_H_)
-#define	_OCACHE_H_ 1
+#  define	_OCACHE_H_ 1
 
-#ifndef PTR_T
-#  define PTR_T void *
-#endif /* PTR_T */
+#  ifndef PTR_T
+#    define PTR_T void *
+#  endif	/* PTR_T */
 
-#define OC_MEMSET(memp, xch, nbytes)					\
+#  define OC_MEMSET(memp, xch, nbytes)					\
 do {									\
   if ((nbytes) <= 32) {							\
     register char * mzp = (char *)(memp);				\
@@ -47,13 +47,13 @@ do {									\
 } while(0)
 
 typedef struct objcache {
-	PTR_T	data;
-	int	cs;		/* cache size, number of objects */
-	int	nc;		/* number of cache entries */
+  PTR_T data;
+  int cs;			/* cache size, number of objects */
+  int nc;			/* number of cache entries */
 } sh_obj_cache_t;
 
 /* Create an object cache C of N pointers to OTYPE. */
-#define ocache_create(c, otype, n) \
+#  define ocache_create(c, otype, n) \
 	do { \
 		(c).data = xmalloc((n) * sizeof (otype *)); \
 		(c).cs = (n); \
@@ -61,7 +61,7 @@ typedef struct objcache {
 	} while (0)
 
 /* Destroy an object cache C. */
-#define ocache_destroy(c) \
+#  define ocache_destroy(c) \
 	do { \
 		if ((c).data) \
 			xfree ((c).data); \
@@ -70,7 +70,7 @@ typedef struct objcache {
 	} while (0)
 
 /* Free all cached items, which are pointers to OTYPE, in object cache C. */
-#define ocache_flush(c, otype) \
+#  define ocache_flush(c, otype) \
 	do { \
 		while ((c).nc > 0) \
 			xfree (((otype **)((c).data))[--(c).nc]); \
@@ -81,7 +81,7 @@ typedef struct objcache {
  * cache C if any cached items exist, otherwise calling xmalloc.  Return
  * the object in R.
  */
-#define ocache_alloc(c, otype, r) \
+#  define ocache_alloc(c, otype, r) \
 	do { \
 		if ((c).nc > 0) { \
 			(r) = (otype *)((otype **)((c).data))[--(c).nc]; \
@@ -94,7 +94,7 @@ typedef struct objcache {
  * there is room and calling xfree if the cache is full.  If R is added
  * to the object cache, the contents are scrambled.
  */
-#define ocache_free(c, otype, r) \
+#  define ocache_free(c, otype, r) \
 	do { \
 		if ((c).nc < (c).cs) { \
 			OC_MEMSET ((r), 0xdf, sizeof(otype)); \
@@ -124,4 +124,4 @@ typedef struct objcache {
  * The use is almost arbitrary.
  */
 
-#endif /* _OCACHE_H  */
+#endif		/* _OCACHE_H  */

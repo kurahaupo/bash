@@ -117,7 +117,7 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
 
   sh_optarg = 0;
 
-  if (sh_optind >= argc || sh_optind < 0)	/* XXX was sh_optind > argc */
+  if (sh_optind >= argc || sh_optind < 0) /* XXX was sh_optind > argc */
     {
       sh_optind = argc;
       return (EOF);
@@ -131,7 +131,7 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
   if (sh_optind == 0)
     {
       sh_optind = 1;
-      nextchar = (char *)NULL;
+      nextchar = (char *) NULL;
     }
 
   if (nextchar == 0 || *nextchar == '\0')
@@ -143,7 +143,7 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
       temp = argv[sh_optind];
 
       /* Special ARGV-element `--' means premature end of options.
-	 Skip it like a null option, and return EOF. */
+         Skip it like a null option, and return EOF. */
       if (temp[0] == '-' && temp[1] == '-' && temp[2] == '\0')
 	{
 	  sh_optind++;
@@ -151,20 +151,21 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
 	}
 
       /* If we have come to a non-option, either stop the scan or describe
-	 it to the caller and pass it by.  This makes the pseudo-option
-	 `-' mean the end of options, but does not skip over it. */
+         it to the caller and pass it by.  This makes the pseudo-option
+         `-' mean the end of options, but does not skip over it. */
       if (temp[0] != '-' || temp[1] == '\0')
 	return EOF;
 
       /* We have found another option-ARGV-element.
-	 Start decoding its characters.  */
+         Start decoding its characters.  */
       nextchar = argv[sh_curopt = sh_optind] + 1;
       sh_charindex = 1;
     }
 
   /* Look at and handle the next option-character.  */
 
-  c = *nextchar++; sh_charindex++;
+  c = *nextchar++;
+  sh_charindex++;
   temp = strchr (optstring, c);
 
   sh_optopt = c;
@@ -173,7 +174,7 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
   if (nextchar == 0 || *nextchar == '\0')
     {
       sh_optind++;
-      nextchar = (char *)NULL;
+      nextchar = (char *) NULL;
     }
 
   if (sh_badopt = (temp == NULL || c == ':'))
@@ -207,7 +208,7 @@ sh_getopt (int argc, char *const *argv, const char *optstring)
 	/* We already incremented `sh_optind' once;
 	   increment it again when taking next ARGV-elt as argument.  */
 	sh_optarg = argv[sh_optind++];
-      nextchar = (char *)NULL;
+      nextchar = (char *) NULL;
     }
   return c;
 }
@@ -229,7 +230,7 @@ sh_getopt_alloc_istate ()
 {
   sh_getopt_state_t *ret;
 
-  ret = (sh_getopt_state_t *)xmalloc (sizeof (sh_getopt_state_t));
+  ret = (sh_getopt_state_t *) xmalloc (sizeof (sh_getopt_state_t));
   return ret;
 }
 
@@ -249,9 +250,9 @@ sh_getopt_save_istate (void)
   ret->gs_optarg = sh_optarg;
   ret->gs_optind = sh_optind;
   ret->gs_curopt = sh_curopt;
-  ret->gs_nextchar = nextchar;		/* XXX */
+  ret->gs_nextchar = nextchar;	/* XXX */
   ret->gs_charindex = sh_charindex;
-  ret->gs_flags = 0;			/* XXX for later use */
+  ret->gs_flags = 0;		/* XXX for later use */
 
   return ret;
 }
@@ -262,7 +263,7 @@ sh_getopt_restore_istate (sh_getopt_state_t *state)
   sh_optarg = state->gs_optarg;
   sh_optind = state->gs_optind;
   sh_curopt = state->gs_curopt;
-  nextchar = state->gs_nextchar;	/* XXX - probably not usable */
+  nextchar = state->gs_nextchar; /* XXX - probably not usable */
   sh_charindex = state->gs_charindex;
 
   sh_getopt_dispose_istate (state);
@@ -274,7 +275,7 @@ sh_getopt_debug_restore_state (char **argv)
 {
   if (nextchar && nextchar != argv[sh_curopt] + sh_charindex)
     {
-      itrace("sh_getopt_debug_restore_state: resetting nextchar");
+      itrace ("sh_getopt_debug_restore_state: resetting nextchar");
       nextchar = argv[sh_curopt] + sh_charindex;
     }
 }
@@ -356,4 +357,4 @@ main (int argc, char **argv)
   exit (0);
 }
 
-#endif /* TEST */
+#endif		/* TEST */

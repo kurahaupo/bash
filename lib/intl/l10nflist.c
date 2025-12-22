@@ -18,34 +18,34 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE	1
+#  define _GNU_SOURCE	1
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <string.h>
 
 #if defined _LIBC
-# include <argz.h>
+#  include <argz.h>
 #endif
 #include <ctype.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #if defined _WIN32 && !defined __CYGWIN__
-# include <wchar.h>
+#  include <wchar.h>
 #endif
 
 #include "loadinfo.h"
 
 /* On some strange systems still no definition of NULL is found.  Sigh!  */
 #ifndef NULL
-# if defined __STDC__ && __STDC__
-#  define NULL ((void *) 0)
-# else
-#  define NULL 0
-# endif
+#  if defined __STDC__ && __STDC__
+#    define NULL ((void *) 0)
+#  else
+#    define NULL 0
+#  endif
 #endif
 
 /* @@ end of prolog @@ */
@@ -54,20 +54,20 @@
 /* Rename the non ANSI C functions.  This is required by the standard
    because some ANSI C functions will require linking with this object
    file and the name space must not be polluted.  */
-# ifndef stpcpy
-#  define stpcpy(dest, src) __stpcpy(dest, src)
-# endif
+#  ifndef stpcpy
+#    define stpcpy(dest, src) __stpcpy(dest, src)
+#  endif
 #else
-# ifndef HAVE_STPCPY
+#  ifndef HAVE_STPCPY
 static char *stpcpy (char *dest, const char *src);
-# endif
+#  endif
 #endif
 
 #ifdef _LIBC
-# define IS_ABSOLUTE_FILE_NAME(P) ((P)[0] == '/')
-# define IS_RELATIVE_FILE_NAME(P) (! IS_ABSOLUTE_FILE_NAME (P))
+#  define IS_ABSOLUTE_FILE_NAME(P) ((P)[0] == '/')
+#  define IS_RELATIVE_FILE_NAME(P) (! IS_ABSOLUTE_FILE_NAME (P))
 #else
-# include "filename.h"
+#  include "filename.h"
 #endif
 
 /* Return number of bits set in X.  */
@@ -84,18 +84,16 @@ pop (int x)
   return x;
 }
 #endif
-
 
+
 struct loaded_l10nfile *
-_nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
-		    const char *dirlist, size_t dirlist_len,
+_nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list, const char *dirlist, size_t dirlist_len,
 #if defined _WIN32 && !defined __CYGWIN__
 		    const wchar_t *wdirlist, size_t wdirlist_len,
 #endif
 		    int mask, const char *language, const char *territory,
 		    const char *codeset, const char *normalized_codeset,
-		    const char *modifier,
-		    const char *filename, int do_allocate)
+		    const char *modifier, const char *filename, int do_allocate)
 {
   char *abs_filename;
 #if defined _WIN32 && !defined __CYGWIN__
@@ -126,9 +124,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 				     ? strlen (codeset) + 1 : 0)
 				  + ((mask & XPG_NORM_CODESET) != 0
 				     ? strlen (normalized_codeset) + 1 : 0)
-				  + ((mask & XPG_MODIFIER) != 0
-				     ? strlen (modifier) + 1 : 0)
-				  + 1 + strlen (filename) + 1);
+				  + ((mask & XPG_MODIFIER) != 0 ? strlen (modifier) + 1 : 0) + 1 + strlen (filename) + 1);
 
   if (abs_filename == NULL)
     return NULL;
@@ -182,16 +178,14 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
       /* Since dirlist_len == 0, just concatenate wdirlist and abs_filename.  */
       /* An upper bound for wcslen (mbstowcs (abs_filename)).  */
       size_t abs_filename_bound = mbstowcs (NULL, abs_filename, 0);
-      if (abs_filename_bound == (size_t)-1)
+      if (abs_filename_bound == (size_t) -1)
 	{
 	  free (abs_filename);
 	  return NULL;
 	}
 
       /* Allocate and fill abs_wfilename.  */
-      abs_wfilename =
-	(wchar_t *)
-	malloc ((wdirlist_len + abs_filename_bound + 1) * sizeof (wchar_t));
+      abs_wfilename = (wchar_t *) malloc ((wdirlist_len + abs_filename_bound + 1) * sizeof (wchar_t));
       if (abs_wfilename == NULL)
 	{
 	  free (abs_filename);
@@ -199,9 +193,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 	}
       wmemcpy (abs_wfilename, wdirlist, wdirlist_len - 1);
       abs_wfilename[wdirlist_len - 1] = L'/';
-      if (mbstowcs (abs_wfilename + wdirlist_len, abs_filename,
-		    abs_filename_bound + 1)
-	  > abs_filename_bound)
+      if (mbstowcs (abs_wfilename + wdirlist_len, abs_filename, abs_filename_bound + 1) > abs_filename_bound)
 	{
 	  free (abs_filename);
 	  free (abs_wfilename);
@@ -221,9 +213,9 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   for (retval = *l10nfile_list; retval != NULL; retval = retval->next)
     if (retval->filename != NULL
 #if defined _WIN32 && !defined __CYGWIN__
-        || retval->wfilename != NULL
+	|| retval->wfilename != NULL
 #endif
-       )
+      )
       {
 	int compare =
 #if defined _WIN32 && !defined __CYGWIN__
@@ -265,8 +257,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   retval =
     (struct loaded_l10nfile *)
     malloc (sizeof (*retval)
-	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
-	       * sizeof (struct loaded_l10nfile *)));
+	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0)) * sizeof (struct loaded_l10nfile *)));
   if (retval == NULL)
     {
       free (abs_filename);
@@ -285,9 +276,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      Setting retval->decided to 1 here means that retval does not
      correspond to a real file (dirlist_count > 1) or is not worth
      looking up (if an unnormalized codeset was specified).  */
-  retval->decided = (dirlist_count > 1
-		     || ((mask & XPG_CODESET) != 0
-			 && (mask & XPG_NORM_CODESET) != 0));
+  retval->decided = (dirlist_count > 1 || ((mask & XPG_CODESET) != 0 && (mask & XPG_NORM_CODESET) != 0));
   retval->data = NULL;
 
   retval->next = *lastp;
@@ -307,8 +296,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      first the modifier, then the territory, then the codeset, then the
      normalized_codeset.  */
   for (cnt = dirlist_count > 1 ? mask : mask - 1; cnt >= 0; --cnt)
-    if ((cnt & ~mask) == 0
-	&& !((cnt & XPG_CODESET) != 0 && (cnt & XPG_NORM_CODESET) != 0))
+    if ((cnt & ~mask) == 0 && !((cnt & XPG_CODESET) != 0 && (cnt & XPG_NORM_CODESET) != 0))
       {
 #ifdef _LIBC
 	if (dirlist_count > 1)
@@ -316,24 +304,19 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 	    /* Iterate over all elements of the DIRLIST.  */
 	    char *dir = NULL;
 
-	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
-		   != NULL)
+	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir)) != NULL)
 	      retval->successor[entries++]
 		= _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
-				      cnt, language, territory, codeset,
-				      normalized_codeset, modifier, filename,
-				      1);
+				      cnt, language, territory, codeset, normalized_codeset, modifier, filename, 1);
 	  }
 	else
 #endif
-	  retval->successor[entries++]
-	    = _nl_make_l10nflist (l10nfile_list,
-				  dirlist, dirlist_len,
+	  retval->successor[entries++] = _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len,
 #if defined _WIN32 && !defined __CYGWIN__
-				  wdirlist, wdirlist_len,
+							     wdirlist, wdirlist_len,
 #endif
-				  cnt, language, territory, codeset,
-				  normalized_codeset, modifier, filename, 1);
+							     cnt, language, territory, codeset,
+							     normalized_codeset, modifier, filename, 1);
       }
   retval->successor[entries] = NULL;
 

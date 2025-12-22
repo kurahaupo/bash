@@ -20,7 +20,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdlib.h>
@@ -31,11 +31,11 @@
 
 /* On some strange systems still no definition of NULL is found.  Sigh!  */
 #ifndef NULL
-# if defined __STDC__ && __STDC__
-#  define NULL ((void *) 0)
-# else
-#  define NULL 0
-# endif
+#  if defined __STDC__ && __STDC__
+#    define NULL ((void *) 0)
+#  else
+#    define NULL 0
+#  endif
 #endif
 
 /* @@ end of prolog @@ */
@@ -44,8 +44,7 @@ char *
 _nl_find_language (name)
      const char *name;
 {
-  while (name[0] != '\0' && name[0] != '_' && name[0] != '@'
-	 && name[0] != '+' && name[0] != ',')
+  while (name[0] != '\0' && name[0] != '_' && name[0] != '@' && name[0] != '+' && name[0] != ',')
     ++name;
 
   return (char *) name;
@@ -53,8 +52,7 @@ _nl_find_language (name)
 
 
 int
-_nl_explode_name (name, language, modifier, territory, codeset,
-		  normalized_codeset, special, sponsor, revision)
+_nl_explode_name (name, language, modifier, territory, codeset, normalized_codeset, special, sponsor, revision)
      char *name;
      const char **language;
      const char **modifier;
@@ -95,8 +93,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
       cp[0] = '\0';
       *territory = ++cp;
 
-      while (cp[0] != '\0' && cp[0] != '.' && cp[0] != '@'
-	     && cp[0] != '+' && cp[0] != ',' && cp[0] != '_')
+      while (cp[0] != '\0' && cp[0] != '.' && cp[0] != '@' && cp[0] != '+' && cp[0] != ',' && cp[0] != '_')
 	++cp;
 
       mask |= TERRITORY;
@@ -115,8 +112,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
 
 	  if (*codeset != cp && (*codeset)[0] != '\0')
 	    {
-	      *normalized_codeset = _nl_normalize_codeset (*codeset,
-							   cp - *codeset);
+	      *normalized_codeset = _nl_normalize_codeset (*codeset, cp - *codeset);
 	      if (strcmp (*codeset, *normalized_codeset) == 0)
 		free ((char *) *normalized_codeset);
 	      else
@@ -132,8 +128,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
       cp[0] = '\0';
       *modifier = ++cp;
 
-      while (syntax == cen && cp[0] != '\0' && cp[0] != '+'
-	     && cp[0] != ',' && cp[0] != '_')
+      while (syntax == cen && cp[0] != '\0' && cp[0] != '+' && cp[0] != ',' && cp[0] != '_')
 	++cp;
 
       mask |= XPG_MODIFIER | CEN_AUDIENCE;
@@ -145,7 +140,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
 
       if (cp[0] == '+')
 	{
- 	  /* Next is special application (CEN syntax).  */
+	  /* Next is special application (CEN syntax).  */
 	  cp[0] = '\0';
 	  *special = ++cp;
 
@@ -157,7 +152,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
 
       if (cp[0] == ',')
 	{
- 	  /* Next is sponsor (CEN syntax).  */
+	  /* Next is sponsor (CEN syntax).  */
 	  cp[0] = '\0';
 	  *sponsor = ++cp;
 
@@ -169,7 +164,7 @@ _nl_explode_name (name, language, modifier, territory, codeset,
 
       if (cp[0] == '_')
 	{
- 	  /* Next is revision (CEN syntax).  */
+	  /* Next is revision (CEN syntax).  */
 	  cp[0] = '\0';
 	  *revision = ++cp;
 

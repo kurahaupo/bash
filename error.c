@@ -33,7 +33,7 @@
 #include <errno.h>
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #include "bashansi.h"
 #include "bashintl.h"
@@ -52,10 +52,10 @@ extern int executing_line_number (void);
 #if defined (JOB_CONTROL)
 extern pid_t shell_pgrp;
 extern int give_terminal_to (pid_t, int);
-#endif /* JOB_CONTROL */
+#endif		/* JOB_CONTROL */
 
 #if defined (ARRAY_VARS)
-extern const char * const bash_badsub_errmsg;
+extern const char *const bash_badsub_errmsg;
 #endif
 
 static void error_prolog (int);
@@ -63,10 +63,10 @@ static void error_prolog (int);
 /* The current maintainer of the shell.  You change this in the
    Makefile. */
 #if !defined (MAINTAINER)
-#define MAINTAINER "bash-maintainers@gnu.org"
+#  define MAINTAINER "bash-maintainers@gnu.org"
 #endif
 
-const char * const the_current_maintainer = MAINTAINER;
+const char *const the_current_maintainer = MAINTAINER;
 
 int gnu_error_format = 0;
 
@@ -95,15 +95,14 @@ get_name_for_error (void)
   ARRAY *bash_source_a;
 #endif
 
-  name = (char *)NULL;
+  name = (char *) NULL;
   if (interactive_shell == 0)
     {
 #if defined (ARRAY_VARS)
       bash_source_v = find_variable ("BASH_SOURCE");
-      if (bash_source_v && array_p (bash_source_v) &&
-	  (bash_source_a = array_cell (bash_source_v)))
+      if (bash_source_v && array_p (bash_source_v) && (bash_source_a = array_cell (bash_source_v)))
 	name = array_reference (bash_source_a, 0);
-      if (name == 0 || *name == '\0')	/* XXX - was just name == 0 */
+      if (name == 0 || *name == '\0') /* XXX - was just name == 0 */
 #endif
 	name = dollar_vars[0];
     }
@@ -136,7 +135,7 @@ programming_error (const char *format, ...)
 
 #if defined (JOB_CONTROL)
   give_terminal_to (shell_pgrp, 0);
-#endif /* JOB_CONTROL */
+#endif		/* JOB_CONTROL */
 
   va_start (args, format);
 
@@ -333,21 +332,21 @@ strescape (const char *str)
   char *r, *result;
   unsigned char *s;
 
-  r = result = (char *)xmalloc (strlen (str) * 2 + 1);
+  r = result = (char *) xmalloc (strlen (str) * 2 + 1);
 
-  for (s = (unsigned char *)str; s && *s; s++)
+  for (s = (unsigned char *) str; s && *s; s++)
     {
       if (*s < ' ')
 	{
 	  *r++ = '^';
-	  *r++ = *s+64;
+	  *r++ = *s + 64;
 	}
       else if (*s == 127)
 	{
 	  *r++ = '^';
 	  *r++ = '?';
 	}
-     else
+      else
 	*r++ = *s;
     }
 
@@ -360,7 +359,7 @@ itrace (const char *format, ...)
 {
   va_list args;
 
-  fprintf(stderr, "TRACE: pid %ld: ", (long)getpid());
+  fprintf (stderr, "TRACE: pid %ld: ", (long) getpid ());
 
   va_start (args, format);
 
@@ -369,7 +368,7 @@ itrace (const char *format, ...)
 
   va_end (args);
 
-  fflush(stderr);
+  fflush (stderr);
 }
 
 /* A trace function for silent debugging -- doesn't require a control
@@ -378,17 +377,17 @@ void
 trace (const char *format, ...)
 {
   va_list args;
-  static FILE *tracefp = (FILE *)NULL;
+  static FILE *tracefp = (FILE *) NULL;
 
   if (tracefp == NULL)
-    tracefp = fopen("/tmp/bash-trace.log", "a+");
+    tracefp = fopen ("/tmp/bash-trace.log", "a+");
 
   if (tracefp == NULL)
     tracefp = stderr;
   else
-    fcntl (fileno (tracefp), F_SETFD, 1);     /* close-on-exec */
+    fcntl (fileno (tracefp), F_SETFD, 1); /* close-on-exec */
 
-  fprintf(tracefp, "TRACE: pid %ld: ", (long)getpid());
+  fprintf (tracefp, "TRACE: pid %ld: ", (long) getpid ());
 
   va_start (args, format);
 
@@ -397,10 +396,10 @@ trace (const char *format, ...)
 
   va_end (args);
 
-  fflush(tracefp);
+  fflush (tracefp);
 }
 
-#endif /* DEBUG */
+#endif		/* DEBUG */
 
 /* **************************************************************** */
 /*								    */
@@ -409,12 +408,12 @@ trace (const char *format, ...)
 /* **************************************************************** */
 
 
-static const char * const cmd_error_table[] = {
-	N_("unknown command error"),	/* CMDERR_DEFAULT */
-	N_("bad command type"),		/* CMDERR_BADTYPE */
-	N_("bad connector"),		/* CMDERR_BADCONN */
-	N_("bad jump"),			/* CMDERR_BADJUMP */
-	0
+static const char *const cmd_error_table[] = {
+  N_("unknown command error"),	/* CMDERR_DEFAULT */
+  N_("bad command type"),	/* CMDERR_BADTYPE */
+  N_("bad connector"),		/* CMDERR_BADCONN */
+  N_("bad jump"),		/* CMDERR_BADJUMP */
+  0
 };
 
 void

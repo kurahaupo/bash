@@ -56,7 +56,7 @@ extern unsigned long long strtoull (const char *, char **, int);
 #endif
 
 #ifdef strtoumax
-#undef strtoumax
+#  undef strtoumax
 #endif
 
 uintmax_t
@@ -64,8 +64,7 @@ strtoumax (const char *ptr, char **endptr, int base)
 {
 #if HAVE_UNSIGNED_LONG_LONG_INT
   verify (size_is_that_of_unsigned_long_or_unsigned_long_long,
-	  (sizeof (uintmax_t) == sizeof (unsigned long) ||
-	   sizeof (uintmax_t) == sizeof (unsigned long long)));
+	  (sizeof (uintmax_t) == sizeof (unsigned long) || sizeof (uintmax_t) == sizeof (unsigned long long)));
 
   if (sizeof (uintmax_t) != sizeof (unsigned long))
     return (strtoull (ptr, endptr, base));
@@ -77,31 +76,31 @@ strtoumax (const char *ptr, char **endptr, int base)
 }
 
 #ifdef TESTING
-# include <stdio.h>
+#  include <stdio.h>
 int
 main ()
 {
   char *p, *endptr;
   uintmax_t x;
-#if HAVE_UNSIGNED_LONG_LONG_INT
+#  if HAVE_UNSIGNED_LONG_LONG_INT
   unsigned long long y;
-#endif
+#  endif
   unsigned long z;
 
   printf ("sizeof uintmax_t: %d\n", sizeof (uintmax_t));
 
-#if HAVE_UNSIGNED_LONG_LONG_INT
+#  if HAVE_UNSIGNED_LONG_LONG_INT
   printf ("sizeof unsigned long long: %d\n", sizeof (unsigned long long));
-#endif
+#  endif
   printf ("sizeof unsigned long: %d\n", sizeof (unsigned long));
 
-  x = strtoumax("42", &endptr, 10);
-#if HAVE_LONG_LONG_INT
-  y = strtoull("42", &endptr, 10);
-#else
+  x = strtoumax ("42", &endptr, 10);
+#  if HAVE_LONG_LONG_INT
+  y = strtoull ("42", &endptr, 10);
+#  else
   y = 0;
-#endif
-  z = strtoul("42", &endptr, 10);
+#  endif
+  z = strtoul ("42", &endptr, 10);
 
   printf ("%llu %llu %lu\n", x, y, z);
 

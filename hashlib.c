@@ -64,17 +64,16 @@ hash_create (int buckets)
   HASH_TABLE *new_table;
   register int i;
 
-  new_table = (HASH_TABLE *)xmalloc (sizeof (HASH_TABLE));
+  new_table = (HASH_TABLE *) xmalloc (sizeof (HASH_TABLE));
   if (buckets == 0)
     buckets = DEFAULT_HASH_BUCKETS;
 
-  new_table->bucket_array =
-    (BUCKET_CONTENTS **)xmalloc (buckets * sizeof (BUCKET_CONTENTS *));
+  new_table->bucket_array = (BUCKET_CONTENTS **) xmalloc (buckets * sizeof (BUCKET_CONTENTS *));
   new_table->nbuckets = buckets;
   new_table->nentries = 0;
 
   for (i = 0; i < buckets; i++)
-    new_table->bucket_array[i] = (BUCKET_CONTENTS *)NULL;
+    new_table->bucket_array[i] = (BUCKET_CONTENTS *) NULL;
 
   return (new_table);
 }
@@ -82,7 +81,7 @@ hash_create (int buckets)
 int
 hash_size (HASH_TABLE *table)
 {
-  return (HASH_ENTRIES(table));
+  return (HASH_ENTRIES (table));
 }
 
 /* Copy a hash table bucket array. Call (*cpdata) to copy the data from
@@ -93,30 +92,29 @@ copy_bucket_array (BUCKET_CONTENTS *ba, sh_copy_func_t *cpdata)
   BUCKET_CONTENTS *new_bucket, *n, *e;
 
   if (ba == 0)
-    return ((BUCKET_CONTENTS *)0);
+    return ((BUCKET_CONTENTS *) 0);
 
-  for (n = (BUCKET_CONTENTS *)0, e = ba; e; e = e->next)
+  for (n = (BUCKET_CONTENTS *) 0, e = ba; e; e = e->next)
     {
       if (n == 0)
-        {
-          new_bucket = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
-          n = new_bucket;
-        }
+	{
+	  new_bucket = (BUCKET_CONTENTS *) xmalloc (sizeof (BUCKET_CONTENTS));
+	  n = new_bucket;
+	}
       else
-        {
-          n->next = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
-          n = n->next;
-        }
+	{
+	  n->next = (BUCKET_CONTENTS *) xmalloc (sizeof (BUCKET_CONTENTS));
+	  n = n->next;
+	}
 
       n->key = savestring (e->key);
-      n->data = e->data ? (cpdata ? (*cpdata) (e->data) : savestring (e->data))
-			: NULL;
+      n->data = e->data ? (cpdata ? (*cpdata) (e->data) : savestring (e->data)) : NULL;
       n->khash = e->khash;
       n->times_found = e->times_found;
-      n->next = (BUCKET_CONTENTS *)NULL;
+      n->next = (BUCKET_CONTENTS *) NULL;
     }
 
-  return new_bucket;  
+  return new_bucket;
 }
 
 static void
@@ -132,9 +130,9 @@ hash_rehash (HASH_TABLE *table, int nsize)
   old_bucket_array = table->bucket_array;
 
   table->nbuckets = nsize;
-  table->bucket_array = (BUCKET_CONTENTS **)xmalloc (table->nbuckets * sizeof (BUCKET_CONTENTS *));
+  table->bucket_array = (BUCKET_CONTENTS **) xmalloc (table->nbuckets * sizeof (BUCKET_CONTENTS *));
   for (i = 0; i < table->nbuckets; i++)
-    table->bucket_array[i] = (BUCKET_CONTENTS *)NULL;
+    table->bucket_array[i] = (BUCKET_CONTENTS *) NULL;
 
   for (j = 0; j < osize; j++)
     {
@@ -177,7 +175,7 @@ hash_copy (HASH_TABLE *table, sh_copy_func_t *cpdata)
   int i;
 
   if (table == 0)
-    return ((HASH_TABLE *)NULL);
+    return ((HASH_TABLE *) NULL);
 
   new_table = hash_create (table->nbuckets);
 
@@ -214,7 +212,7 @@ hash_string (const char *s)
       /* FNV-1a has the XOR first, traditional FNV-1 has the multiply first */
 
       /* was i *= FNV_PRIME */
-      i += (i<<1) + (i<<4) + (i<<7) + (i<<8) + (i<<24);
+      i += (i << 1) + (i << 4) + (i << 7) + (i << 8) + (i << 24);
       i ^= *s;
     }
 
@@ -242,7 +240,7 @@ hash_search (const char *string, HASH_TABLE *table, int flags)
   unsigned int hv;
 
   if (table == 0 || ((flags & HASH_CREATE) == 0 && HASH_ENTRIES (table) == 0))
-    return (BUCKET_CONTENTS *)NULL;
+    return (BUCKET_CONTENTS *) NULL;
 
   bucket = HASH_BUCKET (string, table, hv);
 
@@ -264,20 +262,20 @@ hash_search (const char *string, HASH_TABLE *table, int flags)
 	  bucket = HASH_BUCKET (string, table, hv);
 	}
 
-      list = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
+      list = (BUCKET_CONTENTS *) xmalloc (sizeof (BUCKET_CONTENTS));
       list->next = table->bucket_array[bucket];
       table->bucket_array[bucket] = list;
 
       list->data = NULL;
-      list->key = (char *)string;	/* XXX fix later */
+      list->key = (char *) string; /* XXX fix later */
       list->khash = hv;
       list->times_found = 0;
 
       table->nentries++;
       return (list);
     }
-      
-  return (BUCKET_CONTENTS *)NULL;
+
+  return (BUCKET_CONTENTS *) NULL;
 }
 
 /* Remove the item specified by STRING from the hash table TABLE.
@@ -291,10 +289,10 @@ hash_remove (const char *string, HASH_TABLE *table, int flags)
   unsigned int hv;
 
   if (table == 0 || HASH_ENTRIES (table) == 0)
-    return (BUCKET_CONTENTS *)NULL;
+    return (BUCKET_CONTENTS *) NULL;
 
   bucket = HASH_BUCKET (string, table, hv);
-  prev = (BUCKET_CONTENTS *)NULL;
+  prev = (BUCKET_CONTENTS *) NULL;
   for (temp = table->bucket_array[bucket]; temp; temp = temp->next)
     {
       if (hv == temp->khash && STREQ (temp->key, string))
@@ -324,8 +322,7 @@ hash_insert (char *string, HASH_TABLE *table, int flags)
   if (table == 0)
     table = hash_create (0);
 
-  item = (flags & HASH_NOSRCH) ? (BUCKET_CONTENTS *)NULL
-  			       : hash_search (string, table, 0);
+  item = (flags & HASH_NOSRCH) ? (BUCKET_CONTENTS *) NULL : hash_search (string, table, 0);
 
   if (item == 0)
     {
@@ -334,7 +331,7 @@ hash_insert (char *string, HASH_TABLE *table, int flags)
 
       bucket = HASH_BUCKET (string, table, hv);
 
-      item = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
+      item = (BUCKET_CONTENTS *) xmalloc (sizeof (BUCKET_CONTENTS));
       item->next = table->bucket_array[bucket];
       table->bucket_array[bucket] = item;
 
@@ -377,7 +374,7 @@ hash_flush (HASH_TABLE *table, sh_free_func_t *free_data)
 	  free (item->key);
 	  free (item);
 	}
-      table->bucket_array[i] = (BUCKET_CONTENTS *)NULL;
+      table->bucket_array[i] = (BUCKET_CONTENTS *) NULL;
     }
 
   table->nentries = 0;
@@ -440,12 +437,12 @@ hash_pstats (HASH_TABLE *table, char *name)
 #ifdef TEST_HASHING
 
 /* link with xmalloc.o and lib/malloc/libmalloc.a */
-#undef NULL
-#include <stdio.h>
+#  undef NULL
+#  include <stdio.h>
 
-#ifndef NULL
-#define NULL 0
-#endif
+#  ifndef NULL
+#    define NULL 0
+#  endif
 
 HASH_TABLE *table, *ntable;
 
@@ -461,13 +458,13 @@ signal_is_trapped (int s)
 void
 programming_error (const char *format, ...)
 {
-  abort();
+  abort ();
 }
 
 void
 fatal_error (const char *format, ...)
 {
-  abort();
+  abort ();
 }
 
 void
@@ -482,11 +479,11 @@ main (int c, char **v)
   int count = 0;
   BUCKET_CONTENTS *tt;
 
-#if defined (TEST_NBUCKETS)
+#  if defined (TEST_NBUCKETS)
   table = hash_create (TEST_NBUCKETS);
-#else
+#  else
   table = hash_create (0);
-#endif
+#  endif
 
   for (;;)
     {
@@ -510,11 +507,11 @@ main (int c, char **v)
 
   hash_pstats (table, "hash test");
 
-  ntable = hash_copy (table, (sh_string_func_t *)NULL);
-  hash_flush (table, (sh_free_func_t *)NULL);
+  ntable = hash_copy (table, (sh_string_func_t *) NULL);
+  hash_flush (table, (sh_free_func_t *) NULL);
   hash_pstats (ntable, "hash copy test");
 
   exit (0);
 }
 
-#endif /* TEST_HASHING */
+#endif		/* TEST_HASHING */

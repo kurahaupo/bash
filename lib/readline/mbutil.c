@@ -30,14 +30,14 @@
 #include "posixjmp.h"
 
 #if defined (HAVE_UNISTD_H)
-#  include <unistd.h>	   /* for _POSIX_VERSION */
-#endif /* HAVE_UNISTD_H */
+#  include <unistd.h>		/* for _POSIX_VERSION */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -48,7 +48,7 @@
 
 #if defined (TIOCSTAT_IN_SYS_IOCTL)
 #  include <sys/ioctl.h>
-#endif /* TIOCSTAT_IN_SYS_IOCTL */
+#endif		/* TIOCSTAT_IN_SYS_IOCTL */
 
 /* Some standard library routines. */
 #include "readline.h"
@@ -89,16 +89,16 @@ _rl_utf8_mblen (const char *s, size_t n)
   unsigned char c, c1, c2, c3;
 
   if (s == 0)
-    return (0);	/* no shift states */
+    return (0);			/* no shift states */
   if (n <= 0)
     return (-1);
 
-  c = (unsigned char)*s;
+  c = (unsigned char) *s;
   if (c < 0x80)
     return (c != 0);
   if (c >= 0xc2)
     {
-      c1 = (unsigned char)s[1];
+      c1 = (unsigned char) s[1];
       if (c < 0xe0)
 	{
 	  if (n == 1)
@@ -110,13 +110,11 @@ _rl_utf8_mblen (const char *s, size_t n)
 	{
 	  if (n == 1)
 	    return -2;
-	  if ((c1 ^ 0x80) < 0x40
-		&& (c >= 0xe1 || c1 >= 0xa0)
-		&& (c != 0xed || c1 < 0xa0))
+	  if ((c1 ^ 0x80) < 0x40 && (c >= 0xe1 || c1 >= 0xa0) && (c != 0xed || c1 < 0xa0))
 	    {
 	      if (n == 2)
 		return -2;
-	      c2 = (unsigned char)s[2];
+	      c2 = (unsigned char) s[2];
 	      if ((c2 ^ 0x80) < 0x40)
 		return 3;
 	    }
@@ -125,18 +123,16 @@ _rl_utf8_mblen (const char *s, size_t n)
 	{
 	  if (n == 1)
 	    return -2;
-	  if (((c1 ^ 0x80) < 0x40)
-		&& (c >= 0xf1 || c1 >= 0x90)
-		&& (c < 0xf4 || (c == 0xf4 && c1 < 0x90)))
+	  if (((c1 ^ 0x80) < 0x40) && (c >= 0xf1 || c1 >= 0x90) && (c < 0xf4 || (c == 0xf4 && c1 < 0x90)))
 	    {
 	      if (n == 2)
 		return -2;
-	      c2 = (unsigned char)s[2];
+	      c2 = (unsigned char) s[2];
 	      if ((c2 ^ 0x80) < 0x40)
 		{
 		  if (n == 3)
 		    return -2;
-		  c3 = (unsigned char)s[3];
+		  c3 = (unsigned char) s[3];
 		  if ((c3 ^ 0x80) < 0x40)
 		    return 4;
 		}
@@ -155,7 +151,7 @@ _rl_utf8_mbstrlen (const char *s)
 
   nc = 0;
   mb_cur_max = MB_CUR_MAX;
-  while (*s && (clen = (size_t)_rl_utf8_mblen(s, mb_cur_max)) != 0)
+  while (*s && (clen = (size_t) _rl_utf8_mblen (s, mb_cur_max)) != 0)
     {
       if (MB_INVALIDCH (clen))
 	clen = 1;
@@ -174,11 +170,11 @@ _rl_gen_mbstrlen (const char *s)
 
   nc = 0;
   mb_cur_max = MB_CUR_MAX;
-  while (*s && (clen = (f = _rl_is_basic (*s)) ? 1 : mbrlen(s, mb_cur_max, &mbs)) != 0)
+  while (*s && (clen = (f = _rl_is_basic (*s)) ? 1 : mbrlen (s, mb_cur_max, &mbs)) != 0)
     {
-      if (MB_INVALIDCH(clen))
+      if (MB_INVALIDCH (clen))
 	{
-	  clen = 1;     /* assume single byte */
+	  clen = 1;		/* assume single byte */
 	  mbs = mbsbak;
 	}
 
@@ -212,7 +208,7 @@ _rl_find_next_mbchar_internal (const char *string, int seed, int count, int find
 
   tmp = 0;
 
-  memset(&ps, 0, sizeof (mbstate_t));
+  memset (&ps, 0, sizeof (mbstate_t));
   if (seed < 0)
     seed = 0;
   if (count <= 0)
@@ -223,33 +219,33 @@ _rl_find_next_mbchar_internal (const char *string, int seed, int count, int find
      treat as a byte. */
   if (point == seed - 1)	/* invalid */
     return seed + 1;
-    
+
   /* if this is true, means that seed was not pointing to a byte indicating
      the beginning of a multibyte character.  Correct the point and consume
      one char. */
   if (seed < point)
     count--;
 
-  while (count > 0)  
+  while (count > 0)
     {
       len = strlen (string + point);
       if (len == 0)
 	break;
-      if (_rl_utf8locale && UTF8_SINGLEBYTE(string[point]))
+      if (_rl_utf8locale && UTF8_SINGLEBYTE (string[point]))
 	{
 	  tmp = 1;
 	  wc = (WCHAR_T) string[point];
-	  memset(&ps, 0, sizeof(mbstate_t));
+	  memset (&ps, 0, sizeof (mbstate_t));
 	}
       else
-	tmp = MBRTOWC (&wc, string+point, len, &ps);
-      if (MB_INVALIDCH ((size_t)tmp))
+	tmp = MBRTOWC (&wc, string + point, len, &ps);
+      if (MB_INVALIDCH ((size_t) tmp))
 	{
 	  /* invalid bytes. assume a byte represents a character */
 	  point++;
 	  count--;
 	  /* reset states. */
-	  memset(&ps, 0, sizeof(mbstate_t));
+	  memset (&ps, 0, sizeof (mbstate_t));
 	}
       else if (MB_NULLWCH (tmp))
 	break;			/* found wide '\0' */
@@ -310,24 +306,24 @@ _rl_find_prev_utf8char (const char *string, int seed, int find_non_zero)
 
   prev = seed - 1;
   while (prev >= 0)
-   {
-      b = (unsigned char)string[prev];
+    {
+      b = (unsigned char) string[prev];
       if (UTF8_SINGLEBYTE (b))
 	return (prev);
 
       save = prev;
 
       /* Move back until we're not in the middle of a multibyte char */
-#if 0
+#  if 0
       if (UTF8_MBCHAR (b))
 	{
-	  while (prev > 0 && (b = (unsigned char)string[--prev]) && UTF8_MBCHAR (b))
+	  while (prev > 0 && (b = (unsigned char) string[--prev]) && UTF8_MBCHAR (b))
 	    ;
 	}
-#else
-      while (prev > 0 && (b = (unsigned char)string[--prev]) && UTF8_MBFIRSTCHAR (b) == 0)
+#  else
+      while (prev > 0 && (b = (unsigned char) string[--prev]) && UTF8_MBFIRSTCHAR (b) == 0)
 	;
-#endif
+#  endif
 
       if (UTF8_MBFIRSTCHAR (b))
 	{
@@ -342,11 +338,11 @@ _rl_find_prev_utf8char (const char *string, int seed, int find_non_zero)
 	    return (prev);
 	}
       else
-	return (save);			/* invalid utf-8 multibyte sequence */
+	return (save);		/* invalid utf-8 multibyte sequence */
     }
 
   return ((prev < 0) ? 0 : prev);
-}  
+}
 
 /*static*/ int
 _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
@@ -359,9 +355,9 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
   if (_rl_utf8locale)
     return (_rl_find_prev_utf8char (string, seed, find_non_zero));
 
-  memset(&ps, 0, sizeof(mbstate_t));
-  length = strlen(string);
-  
+  memset (&ps, 0, sizeof (mbstate_t));
+  length = strlen (string);
+
   if (seed < 0)
     return 0;
   else if (length < seed)
@@ -370,15 +366,15 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
   prev = non_zero_prev = point = 0;
   while (point < seed)
     {
-      if (_rl_utf8locale && UTF8_SINGLEBYTE(string[point]))
+      if (_rl_utf8locale && UTF8_SINGLEBYTE (string[point]))
 	{
 	  tmp = 1;
 	  wc = (WCHAR_T) string[point];
-	  memset(&ps, 0, sizeof(mbstate_t));
+	  memset (&ps, 0, sizeof (mbstate_t));
 	}
       else
 	tmp = MBRTOWC (&wc, string + point, length - point, &ps);
-      if (MB_INVALIDCH ((size_t)tmp))
+      if (MB_INVALIDCH ((size_t) tmp))
 	{
 	  /* in this case, bytes are invalid or too short to compose
 	     multibyte char, so assume that the first byte represents
@@ -386,7 +382,7 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
 	  tmp = 1;
 	  /* clear the state of the byte sequence, because
 	     in this case effect of mbstate is undefined  */
-	  memset(&ps, 0, sizeof (mbstate_t));
+	  memset (&ps, 0, sizeof (mbstate_t));
 
 	  /* Since we're assuming that this byte represents a single
 	     non-zero-width character, don't forget about it. */
@@ -402,7 +398,7 @@ _rl_find_prev_mbchar_internal (const char *string, int seed, int find_non_zero)
 		prev = point;
 	    }
 	  else
-	    prev = point;  
+	    prev = point;
 	}
 
       point += tmp;
@@ -424,32 +420,32 @@ _rl_get_char_len (const char *src, mbstate_t *ps)
 
   /* Look at no more than MB_CUR_MAX characters */
   l = strlen (src);
-  if (_rl_utf8locale && l >= 0 && UTF8_SINGLEBYTE(*src))
+  if (_rl_utf8locale && l >= 0 && UTF8_SINGLEBYTE (*src))
     tmp = (*src != 0) ? 1 : 0;
   else
     {
       mb_cur_max = MB_CUR_MAX;
-      tmp = mbrlen(src, (l < mb_cur_max) ? l : mb_cur_max, ps);
+      tmp = mbrlen (src, (l < mb_cur_max) ? l : mb_cur_max, ps);
     }
-  if (tmp == (size_t)(-2))
+  if (tmp == (size_t) (-2))
     {
       /* too short to compose multibyte char */
       if (ps)
-	memset (ps, 0, sizeof(mbstate_t));
+	memset (ps, 0, sizeof (mbstate_t));
       return -2;
     }
-  else if (tmp == (size_t)(-1))
+  else if (tmp == (size_t) (-1))
     {
       /* invalid to compose multibyte char */
       /* initialize the conversion state */
       if (ps)
-	memset (ps, 0, sizeof(mbstate_t));
+	memset (ps, 0, sizeof (mbstate_t));
       return -1;
     }
-  else if (tmp == (size_t)0)
+  else if (tmp == (size_t) 0)
     return 0;
   else
-    return (int)tmp;
+    return (int) tmp;
 }
 
 /* compare the specified two characters. If the characters matched,
@@ -459,14 +455,12 @@ _rl_compare_chars (const char *buf1, int pos1, mbstate_t *ps1, const char *buf2,
 {
   int i, w1, w2;
 
-  if ((w1 = _rl_get_char_len (&buf1[pos1], ps1)) <= 0 || 
-	(w2 = _rl_get_char_len (&buf2[pos2], ps2)) <= 0 ||
-	(w1 != w2) ||
-	(buf1[pos1] != buf2[pos2]))
+  if ((w1 = _rl_get_char_len (&buf1[pos1], ps1)) <= 0 ||
+      (w2 = _rl_get_char_len (&buf2[pos2], ps2)) <= 0 || (w1 != w2) || (buf1[pos1] != buf2[pos2]))
     return 0;
 
   for (i = 1; i < w1; i++)
-    if (buf1[pos1+i] != buf2[pos2+i])
+    if (buf1[pos1 + i] != buf2[pos2 + i])
       return 0;
 
   return 1;
@@ -485,19 +479,19 @@ _rl_adjust_point (const char *string, int point, mbstate_t *ps)
 
   tmp = 0;
   pos = 0;
-  length = strlen(string);
+  length = strlen (string);
   if (point < 0)
     return -1;
   if (length < point)
     return -1;
-  
+
   while (pos < point)
     {
-      if (_rl_utf8locale && UTF8_SINGLEBYTE(string[pos]))
+      if (_rl_utf8locale && UTF8_SINGLEBYTE (string[pos]))
 	tmp = 1;
       else
 	tmp = mbrlen (string + pos, length - pos, ps);
-      if (MB_INVALIDCH ((size_t)tmp))
+      if (MB_INVALIDCH ((size_t) tmp))
 	{
 	  /* in this case, bytes are invalid or too short to compose
 	     multibyte char, so assume that the first byte represents
@@ -541,20 +535,20 @@ _rl_char_value (const char *buf, int ind)
 
   if (MB_LEN_MAX == 1 || rl_byte_oriented)
     return ((WCHAR_T) buf[ind]);
-  if (_rl_utf8locale && UTF8_SINGLEBYTE(buf[ind]))
+  if (_rl_utf8locale && UTF8_SINGLEBYTE (buf[ind]))
     return ((WCHAR_T) buf[ind]);
   l = strlen (buf);
   if (ind + 1 >= l)
     return ((WCHAR_T) buf[ind]);
   if (l < ind)			/* Sanity check */
-    l = strlen (buf+ind);
+    l = strlen (buf + ind);
   memset (&ps, 0, sizeof (mbstate_t));
   tmp = MBRTOWC (&wc, buf + ind, l - ind, &ps);
-  if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))  
+  if (MB_INVALIDCH (tmp) || MB_NULLWCH (tmp))
     return ((WCHAR_T) buf[ind]);
   return wc;
 }
-#endif /* HANDLE_MULTIBYTE */
+#endif		/* HANDLE_MULTIBYTE */
 
 /* Find next `count' characters started byte point of the specified seed.
    If flags is MB_FIND_NONZERO, we look for non-zero-width multibyte
@@ -600,14 +594,14 @@ _rl_mb_strcaseeqn (const char *s1, size_t l1, const char *s2, size_t l2, size_t 
 
   do
     {
-      v1 = MBRTOWC(&wc1, s1, l1, &ps1);
-      v2 = MBRTOWC(&wc2, s2, l2, &ps2);
+      v1 = MBRTOWC (&wc1, s1, l1, &ps1);
+      v2 = MBRTOWC (&wc2, s2, l2, &ps2);
       if (v1 == 0 && v2 == 0)
 	return 1;
-      else if (MB_INVALIDCH(v1) || MB_INVALIDCH(v2))
- 	{
- 	  int d;
- 	  d = _rl_to_lower (*s1) - _rl_to_lower (*s2);	/* do byte comparison */
+      else if (MB_INVALIDCH (v1) || MB_INVALIDCH (v2))
+	{
+	  int d;
+	  d = _rl_to_lower (*s1) - _rl_to_lower (*s2); /* do byte comparison */
 	  if ((flags & 1) && (*s1 == '-' || *s1 == '_') && (*s2 == '-' || *s2 == '_'))
 	    d = 0;		/* case insensitive character mapping */
 	  if (d != 0)
@@ -616,9 +610,9 @@ _rl_mb_strcaseeqn (const char *s1, size_t l1, const char *s2, size_t l2, size_t 
 	  s2++;
 	  n--;
 	  continue;
- 	}
-      wc1 = towlower(wc1);
-      wc2 = towlower(wc2);
+	}
+      wc1 = towlower (wc1);
+      wc2 = towlower (wc2);
       s1 += v1;
       s2 += v1;
       n -= v1;
@@ -643,18 +637,18 @@ _rl_mb_charcasecmp (const char *s1, mbstate_t *ps1, const char *s2, mbstate_t *p
   wchar_t wc1, wc2;
 
   d = MB_CUR_MAX;
-  v1 = MBRTOWC(&wc1, s1, d, ps1);
-  v2 = MBRTOWC(&wc2, s2, d, ps2);
+  v1 = MBRTOWC (&wc1, s1, d, ps1);
+  v2 = MBRTOWC (&wc2, s2, d, ps2);
   if (v1 == 0 && v2 == 0)
     return 1;
-  else if (MB_INVALIDCH(v1) || MB_INVALIDCH(v2))
+  else if (MB_INVALIDCH (v1) || MB_INVALIDCH (v2))
     {
       if ((flags & 1) && (*s1 == '-' || *s1 == '_') && (*s2 == '-' || *s2 == '_'))
 	return 1;
       return (_rl_to_lower (*s1) == _rl_to_lower (*s2));
     }
-  wc1 = towlower(wc1);
-  wc2 = towlower(wc2);
+  wc1 = towlower (wc1);
+  wc2 = towlower (wc2);
   if ((flags & 1) && (wc1 == L'-' || wc1 == L'_') && (wc2 == L'-' || wc2 == L'_'))
     return 1;
   return (wc1 == wc2);

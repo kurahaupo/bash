@@ -27,8 +27,8 @@
 #  else
 #    if defined (_SC_PAGE_SIZE)
 #      define getpagesize() sysconf(_SC_PAGE_SIZE)
-#    endif /* _SC_PAGE_SIZE */
-#  endif /* _SC_PAGESIZE */
+#    endif	/* _SC_PAGE_SIZE */
+#  endif	/* _SC_PAGESIZE */
 #endif
 
 #if !defined (getpagesize)
@@ -36,25 +36,25 @@
 #    include <sys/param.h>
 #  endif
 #  if defined (PAGESIZE)
-#     define getpagesize() PAGESIZE
-#  else /* !PAGESIZE */
+#    define getpagesize() PAGESIZE
+#  else		/* !PAGESIZE */
 #    if defined (EXEC_PAGESIZE)
 #      define getpagesize() EXEC_PAGESIZE
-#    else /* !EXEC_PAGESIZE */
+#    else	/* !EXEC_PAGESIZE */
 #      if defined (NBPG)
 #        if !defined (CLSIZE)
 #          define CLSIZE 1
-#        endif /* !CLSIZE */
+#        endif	/* !CLSIZE */
 #        define getpagesize() (NBPG * CLSIZE)
-#      else /* !NBPG */
+#      else	/* !NBPG */
 #        if defined (NBPC)
 #          define getpagesize() NBPC
-#        endif /* NBPC */
-#      endif /* !NBPG */
-#    endif /* !EXEC_PAGESIZE */
-#  endif /* !PAGESIZE */
-#endif /* !getpagesize */
+#        endif	/* NBPC */
+#      endif	/* !NBPG */
+#    endif	/* !EXEC_PAGESIZE */
+#  endif	/* !PAGESIZE */
+#endif		/* !getpagesize */
 
 #if !defined (getpagesize)
-#  define getpagesize() 4096  /* Just punt and use reasonable value */
+#  define getpagesize() 4096	/* Just punt and use reasonable value */
 #endif

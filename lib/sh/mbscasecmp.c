@@ -22,12 +22,12 @@
 
 #if !defined (HAVE_MBSCASECMP) && defined (HANDLE_MULTIBYTE)
 
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
+#  include <stdlib.h>
+#  include <stddef.h>
+#  include <string.h>
 
-#include <wchar.h>
-#include <wctype.h>
+#  include <wchar.h>
+#  include <wctype.h>
 
 /* Compare MBS1 and MBS2 without regard to case.  */
 int
@@ -52,21 +52,20 @@ mbscasecmp (const char *mbs1, const char *mbs2)
       else if (len2 == 0)
 	return 1;
       else if (len1 > 0 && len2 < 0)
-        return -1;
+	return -1;
       else if (len1 < 0 && len2 > 0)
-        return 1;
+	return 1;
       else if (len1 < 0 && len2 < 0)
 	{
 	  len1 = strlen (mbs1);
 	  len2 = strlen (mbs2);
 	  return (len1 == len2 ? memcmp (mbs1, mbs2, len1)
-			       : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1)
-						: (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
+		  : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1) : (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
 	}
 
       l1 = towlower (c1);
       l2 = towlower (c2);
- 
+
       mbs1 += len1;
       mbs2 += len2;
     }

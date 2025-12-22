@@ -34,9 +34,9 @@
 #include "shmbutil.h"
 
 #ifdef ESC
-#undef ESC
+#  undef ESC
 #endif
-#define ESC '\033'	/* ASCII */
+#define ESC '\033'		/* ASCII */
 
 /* Convert STRING by expanding the escape sequences specified by the
    ANSI C standard.  If SAWC is non-null, recognize `\c' and use that
@@ -61,18 +61,18 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 #endif
 
   if (string == 0 || *string == '\0')
-    return ((char *)0);
+    return ((char *) 0);
 
   mb_cur_max = locale_mb_cur_max;
 #if defined (HANDLE_MULTIBYTE)
-  temp = 4*len + 4;
+  temp = 4 * len + 4;
   if (temp < 12)
-    temp = 12;				/* ensure enough for eventual u32cesc */
-  ret = (char *)xmalloc (temp);
+    temp = 12;			/* ensure enough for eventual u32cesc */
+  ret = (char *) xmalloc (temp);
 #else
-  ret = (char *)xmalloc (2*len + 1);	/* 2*len for possible CTLESC */
+  ret = (char *) xmalloc (2 * len + 1);	/* 2*len for possible CTLESC */
 #endif
-  for (r = ret, s = string; s && *s; )
+  for (r = ret, s = string; s && *s;)
     {
       c = *s++;
       if (c != '\\' || *s == '\0')
@@ -86,7 +86,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 	    {
 	      clen = mbrtowc (&wc, s - 1, mb_cur_max, 0);
 	      if (MB_NULLWCH (clen))
-		break;			/* it apparently can happen */
+		break;		/* it apparently can happen */
 	      if (MB_INVALIDCH (clen))
 		clen = 1;
 	    }
@@ -99,17 +99,37 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 	{
 	  switch (c = *s++)
 	    {
-	    case 'a': c = '\a'; break;
-	    case 'v': c = '\v'; break;
-	    case 'b': c = '\b'; break;
-	    case 'e': case 'E':		/* ESC -- non-ANSI */
-	      c = ESC; break;
-	    case 'f': c = '\f'; break;
-	    case 'n': c = '\n'; break;
-	    case 'r': c = '\r'; break;
-	    case 't': c = '\t'; break;
-	    case '1': case '2': case '3':
-	    case '4': case '5': case '6':
+	    case 'a':
+	      c = '\a';
+	      break;
+	    case 'v':
+	      c = '\v';
+	      break;
+	    case 'b':
+	      c = '\b';
+	      break;
+	    case 'e':
+	    case 'E':		/* ESC -- non-ANSI */
+	      c = ESC;
+	      break;
+	    case 'f':
+	      c = '\f';
+	      break;
+	    case 'n':
+	      c = '\n';
+	      break;
+	    case 'r':
+	      c = '\r';
+	      break;
+	    case 't':
+	      c = '\t';
+	      break;
+	    case '1':
+	    case '2':
+	    case '3':
+	    case '4':
+	    case '5':
+	    case '6':
 	    case '7':
 #if 1
 	      if (flags & 1)
@@ -117,38 +137,38 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 		  *r++ = '\\';
 		  break;
 		}
-	    /*FALLTHROUGH*/
+	       /*FALLTHROUGH*/
 #endif
 	    case '0':
 	      /* If (FLAGS & 1), we're translating a string for echo -e (or
-		 the equivalent xpg_echo option), so we obey the SUSv3/
-		 POSIX-2001 requirement and accept 0-3 octal digits after
-		 a leading `0'. */
+	         the equivalent xpg_echo option), so we obey the SUSv3/
+	         POSIX-2001 requirement and accept 0-3 octal digits after
+	         a leading `0'. */
 	      temp = 2 + ((flags & 1) && (c == '0'));
 	      for (c -= '0'; ISOCTAL (*s) && temp--; s++)
 		c = (c * 8) + OCTVALUE (*s);
 	      c &= 0xFF;
 	      break;
-	    case 'x':			/* Hex digit -- non-ANSI */
+	    case 'x':		/* Hex digit -- non-ANSI */
 	      if ((flags & 2) && *s == '{')
 		{
-		  flags |= 16;		/* internal flag value */
+		  flags |= 16;	/* internal flag value */
 		  s++;
 		}
 	      /* Consume at least two hex characters */
-	      for (temp = 2, c = 0; ISXDIGIT ((unsigned char)*s) && temp--; s++)
+	      for (temp = 2, c = 0; ISXDIGIT ((unsigned char) *s) && temp--; s++)
 		c = (c * 16) + HEXVALUE (*s);
 	      /* DGK says that after a `\x{' ksh93 consumes ISXDIGIT chars
-		 until a non-xdigit or `}', so potentially more than two
-		 chars are consumed. */
+	         until a non-xdigit or `}', so potentially more than two
+	         chars are consumed. */
 	      if (flags & 16)
 		{
-		  for ( ; ISXDIGIT ((unsigned char)*s); s++)
+		  for (; ISXDIGIT ((unsigned char) *s); s++)
 		    c = (c * 16) + HEXVALUE (*s);
 		  flags &= ~16;
 		  if (*s == '}')
 		    s++;
-	        }
+		}
 	      /* \x followed by non-hex digits is passed through unchanged */
 	      else if (temp == 2)
 		{
@@ -160,15 +180,15 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 #if defined (HANDLE_MULTIBYTE)
 	    case 'u':
 	    case 'U':
-	      temp = (c == 'u') ? 4 : 8;	/* \uNNNN \UNNNNNNNN */
-	      for (v = 0; ISXDIGIT ((unsigned char)*s) && temp--; s++)
+	      temp = (c == 'u') ? 4 : 8; /* \uNNNN \UNNNNNNNN */
+	      for (v = 0; ISXDIGIT ((unsigned char) *s) && temp--; s++)
 		v = (v * 16) + HEXVALUE (*s);
 	      if (temp == ((c == 'u') ? 4 : 8))
 		{
 		  *r++ = '\\';	/* c remains unchanged */
 		  break;
 		}
-	      else if (v <= 0x7f)	/* <= 0x7f translates directly */
+	      else if (v <= 0x7f) /* <= 0x7f translates directly */
 		{
 		  c = v;
 		  break;
@@ -182,7 +202,9 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 #endif
 	    case '\\':
 	      break;
-	    case '\'': case '"': case '?':
+	    case '\'':
+	    case '"':
+	    case '?':
 	      if (flags & 1)
 		*r++ = '\\';
 	      break;
@@ -204,14 +226,13 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 		    s++;	/* Posix requires $'\c\\' do backslash escaping */
 		  else if ((flags & 2) && c == CTLESC && (*s == CTLESC || *s == CTLNUL))
 		    c = *s++;
- 		  c = TOCTRL(c);
+		  c = TOCTRL (c);
 		  break;
 		}
-		/*FALLTHROUGH*/
-	    default:
-		if ((flags & 4) == 0)
-		  *r++ = '\\';
-		break;
+	     /*FALLTHROUGH*/ default:
+	      if ((flags & 4) == 0)
+		*r++ = '\\';
+	      break;
 	    }
 	  if ((flags & 2) && (c == CTLESC || c == CTLNUL))
 	    *r++ = CTLESC;
@@ -230,7 +251,7 @@ char *
 ansic_quote (const char *str, int flags, int *rlen)
 {
   char *r, *ret;
-  const char  *s;
+  const char *s;
   unsigned char c;
 #if defined (HANDLE_MULTIBYTE)
   size_t clen;
@@ -240,9 +261,9 @@ ansic_quote (const char *str, int flags, int *rlen)
 #endif
 
   if (str == 0 || *str == 0)
-    return ((char *)0);
+    return ((char *) 0);
 
-  r = ret = (char *)xmalloc (4 * strlen (str) + 4);
+  r = ret = (char *) xmalloc (4 * strlen (str) + 4);
 
   *r++ = '$';
   *r++ = '\'';
@@ -251,21 +272,36 @@ ansic_quote (const char *str, int flags, int *rlen)
     {
       switch (c)
 	{
-	case ESC: c = 'E'; break;
-	case '\a': c = 'a'; break;
-	case '\v': c = 'v'; break;
-	case '\b': c = 'b'; break;
-	case '\f': c = 'f'; break;
-	case '\n': c = 'n'; break;
-	case '\r': c = 'r'; break;
-	case '\t': c = 't'; break;
+	case ESC:
+	  c = 'E';
+	  break;
+	case '\a':
+	  c = 'a';
+	  break;
+	case '\v':
+	  c = 'v';
+	  break;
+	case '\b':
+	  c = 'b';
+	  break;
+	case '\f':
+	  c = 'f';
+	  break;
+	case '\n':
+	  c = 'n';
+	  break;
+	case '\r':
+	  c = 'r';
+	  break;
+	case '\t':
+	  c = 't';
+	  break;
 	case '\\':
 	case '\'':
 	  break;
 	default:
 #if defined (HANDLE_MULTIBYTE)
-	  if ((locale_utf8locale && (c & 0x80)) ||
-	      (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
+	  if ((locale_utf8locale && (c & 0x80)) || (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
 	    {
 	      clen = mbrtowc (&wc, s, locale_mb_cur_max, &state);
 	      if (MB_NULLWCH (clen))
@@ -274,19 +310,19 @@ ansic_quote (const char *str, int flags, int *rlen)
 		INITIALIZE_MBSTATE;
 	      else if (iswprint (wc))
 		{
-		  for (b = 0; b < (int)clen; b++)
-		    *r++ = (unsigned char)s[b];
-		  s += clen - 1;	/* -1 because of the increment above */
+		  for (b = 0; b < (int) clen; b++)
+		    *r++ = (unsigned char) s[b];
+		  s += clen - 1; /* -1 because of the increment above */
 		  continue;
 		}
 	    }
 	  else
 #endif
-	    if (ISPRINT (c))
-	      {
-		*r++ = c;
-		continue;
-	      }
+	  if (ISPRINT (c))
+	    {
+	      *r++ = c;
+	      continue;
+	    }
 
 	  *r++ = '\\';
 	  *r++ = TOCHAR ((c >> 6) & 07);
@@ -318,14 +354,14 @@ ansic_wshouldquote (const char *string)
 
   slen = mbstowcs (wcstr, string, 0);
 
-  if (slen == (size_t)-1)
+  if (slen == (size_t) -1)
     return 1;
 
-  wcstr = (wchar_t *)xmalloc (sizeof (wchar_t) * (slen + 1));
+  wcstr = (wchar_t *) xmalloc (sizeof (wchar_t) * (slen + 1));
   mbstowcs (wcstr, string, slen + 1);
 
   for (wcs = wcstr; wcc = *wcs; wcs++)
-    if (iswprint(wcc) == 0)
+    if (iswprint (wcc) == 0)
       {
 	free (wcstr);
 	return 1;
@@ -349,8 +385,7 @@ ansic_shouldquote (const char *string)
   for (s = string; c = *s; s++)
     {
 #if defined (HANDLE_MULTIBYTE)
-      if ((locale_utf8locale && (c & 0x80)) ||
-	  (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
+      if ((locale_utf8locale && (c & 0x80)) || (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
 	return (ansic_wshouldquote (s));
 #endif
       if (ISPRINT (c) == 0)
@@ -369,14 +404,14 @@ ansiexpand (const char *string, int start, int end, size_t *lenp)
   int len;
   size_t tlen;
 
-  temp = (char *)xmalloc (end - start + 1);
-  for (tlen = 0, len = start; len < end; )
+  temp = (char *) xmalloc (end - start + 1);
+  for (tlen = 0, len = start; len < end;)
     temp[tlen++] = string[len++];
   temp[tlen] = '\0';
 
   if (*temp)
     {
-      t = ansicstr (temp, tlen, 2, (int *)NULL, lenp);
+      t = ansicstr (temp, tlen, 2, (int *) NULL, lenp);
       free (temp);
       return (t);
     }

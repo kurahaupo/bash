@@ -17,7 +17,7 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-                                 
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -32,13 +32,13 @@
 #include <stdio.h>
 
 int
-dprintf(int fd, const char *format, ...)
+dprintf (int fd, const char *format, ...)
 {
   FILE *fp;
   int fd2, rc, r2;
   va_list args;
 
-  if ((fd2 = dup(fd)) < 0)
+  if ((fd2 = dup (fd)) < 0)
     return -1;
   fp = fdopen (fd2, "w");
   if (fp == 0)
@@ -52,7 +52,7 @@ dprintf(int fd, const char *format, ...)
   fflush (fp);
   va_end (args);
 
-  r2 = fclose (fp);	/* check here */
+  r2 = fclose (fp);		/* check here */
 
   return rc;
-}           
+}

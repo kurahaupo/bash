@@ -34,7 +34,7 @@ savestring (const char *s)
 {
   char *ret;
 
-  ret = (char *)xmalloc (strlen (s) + 1);
+  ret = (char *) xmalloc (strlen (s) + 1);
   strcpy (ret, s);
   return ret;
 }

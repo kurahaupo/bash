@@ -22,52 +22,52 @@
 
 #if !defined (HAVE_GETCWD)
 
-#if !defined (__GNUC__) && !defined (HAVE_ALLOCA_H) && defined (_AIX)
-  #pragma alloca
-#endif /* _AIX && RISC6000 && !__GNUC__ */
+#  if !defined (__GNUC__) && !defined (HAVE_ALLOCA_H) && defined (_AIX)
+#    pragma alloca
+#  endif	/* _AIX && RISC6000 && !__GNUC__ */
 
-#if defined (__QNX__)
-#  undef HAVE_LSTAT
-#endif
+#  if defined (__QNX__)
+#    undef HAVE_LSTAT
+#  endif
 
-#include <bashtypes.h>
-#include <errno.h>
+#  include <bashtypes.h>
+#  include <errno.h>
 
-#if defined (HAVE_LIMITS_H)
-#  include <limits.h>
-#endif
+#  if defined (HAVE_LIMITS_H)
+#    include <limits.h>
+#  endif
 
-#if defined (HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
+#  if defined (HAVE_UNISTD_H)
+#    include <unistd.h>
+#  endif
 
-#include <posixdir.h>
-#include <posixstat.h>
-#include <maxpath.h>
-#include <memalloc.h>
+#  include <posixdir.h>
+#  include <posixstat.h>
+#  include <maxpath.h>
+#  include <memalloc.h>
 
-#include <bashansi.h>
+#  include <bashansi.h>
 
-#if !defined (D_FILENO_AVAILABLE)
-#  include "command.h"
-#  include "general.h"
-#  include "externs.h"
-#endif
+#  if !defined (D_FILENO_AVAILABLE)
+#    include "command.h"
+#    include "general.h"
+#    include "externs.h"
+#  endif
 
-#include <xmalloc.h>
+#  include <xmalloc.h>
 
-#if !defined (errno)
+#  if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#  endif	/* !errno */
 
-#if !defined (HAVE_LSTAT)
-#  define lstat stat
-#endif
+#  if !defined (HAVE_LSTAT)
+#    define lstat stat
+#  endif
 
 /* If the d_fileno member of a struct dirent doesn't return anything useful,
    we need to check inode number equivalence the hard way.  Return 1 if
    the inode corresponding to PATH/DIR is identical to THISINO. */
-#if !defined (D_FILENO_AVAILABLE)
+#  if !defined (D_FILENO_AVAILABLE)
 static int
 _path_checkino (const char *dotp, const char *name, ino_t thisino)
 {
@@ -86,8 +86,8 @@ _path_checkino (const char *dotp, const char *name, ino_t thisino)
   errno = e;
   return (st.st_ino == thisino);
 }
-#endif
-    
+#  endif
+
 /* Get the pathname of the current working directory,
    and put it in SIZE bytes of BUF.  Returns NULL if the
    directory couldn't be determined or SIZE was too small.
@@ -98,8 +98,7 @@ _path_checkino (const char *dotp, const char *name, ino_t thisino)
 char *
 getcwd (char *buf, size_t size)
 {
-  static const char dots[]
-    = "../../../../../../../../../../../../../../../../../../../../../../../\
+  static const char dots[] = "../../../../../../../../../../../../../../../../../../../../../../../\
 ../../../../../../../../../../../../../../../../../../../../../../../../../../\
 ../../../../../../../../../../../../../../../../../../../../../../../../../..";
   const char *dotp, *dotlist;
@@ -116,7 +115,7 @@ getcwd (char *buf, size_t size)
   if (buf != NULL && size == 0)
     {
       errno = EINVAL;
-      return ((char *)NULL);
+      return ((char *) NULL);
     }
 
   pathsize = sizeof (path);
@@ -125,12 +124,12 @@ getcwd (char *buf, size_t size)
   pathbuf = path;
 
   if (stat (".", &st) < 0)
-    return ((char *)NULL);
+    return ((char *) NULL);
   thisdev = st.st_dev;
   thisino = st.st_ino;
 
   if (stat ("/", &st) < 0)
-    return ((char *)NULL);
+    return ((char *) NULL);
   rootdev = st.st_dev;
   rootino = st.st_ino;
 
@@ -155,14 +154,14 @@ getcwd (char *buf, size_t size)
 	  char *new;
 	  if (dotlist == dots)
 	    {
-	      new = (char *)malloc (dotsize * 2 + 1);
+	      new = (char *) malloc (dotsize * 2 + 1);
 	      if (new == NULL)
 		goto lose;
 	      memcpy (new, dots, dotsize);
 	    }
 	  else
 	    {
-	      new = (char *)realloc ((PTR_T) dotlist, dotsize * 2 + 1);
+	      new = (char *) realloc ((PTR_T) dotlist, dotsize * 2 + 1);
 	      if (new == NULL)
 		goto lose;
 	    }
@@ -198,25 +197,21 @@ getcwd (char *buf, size_t size)
 	      break;
 	    }
 
-	  if (d->d_name[0] == '.' &&
-	      (d->d_name[1] == '\0' ||
-		(d->d_name[1] == '.' && d->d_name[2] == '\0')))
+	  if (d->d_name[0] == '.' && (d->d_name[1] == '\0' || (d->d_name[1] == '.' && d->d_name[2] == '\0')))
 	    continue;
-#if defined (D_FILENO_AVAILABLE)
+#  if defined (D_FILENO_AVAILABLE)
 	  if (mount_point || d->d_fileno == thisino)
-#else
+#  else
 	  if (mount_point || _path_checkino (dotp, d->d_name, thisino))
-#endif
+#  endif
 	    {
 	      char *name;
 
-	      namlen = D_NAMLEN(d);
-	      name = (char *)
-		alloca (dotlist + dotsize - dotp + 1 + namlen + 1);
+	      namlen = D_NAMLEN (d);
+	      name = (char *) alloca (dotlist + dotsize - dotp + 1 + namlen + 1);
 	      memcpy (name, dotp, dotlist + dotsize - dotp);
 	      name[dotlist + dotsize - dotp] = '/';
-	      memcpy (&name[dotlist + dotsize - dotp + 1],
-		      d->d_name, namlen + 1);
+	      memcpy (&name[dotlist + dotsize - dotp + 1], d->d_name, namlen + 1);
 	      if (lstat (name, &st) < 0)
 		saved_errno = errno;
 	      if (st.st_dev == thisdev && st.st_ino == thisino)
@@ -240,13 +235,13 @@ getcwd (char *buf, size_t size)
 
 	      if (pathbuf == path)
 		{
-		  new = (char *)malloc (pathsize * 2);
+		  new = (char *) malloc (pathsize * 2);
 		  if (!new)
 		    goto lose;
 		}
 	      else
 		{
-		  new = (char *)realloc ((PTR_T) pathbuf, (pathsize * 2));
+		  new = (char *) realloc ((PTR_T) pathbuf, (pathsize * 2));
 		  if (!new)
 		    goto lose;
 		  pathp = new + space;
@@ -267,7 +262,7 @@ getcwd (char *buf, size_t size)
       thisino = dotino;
     }
 
-  if (pathp == &path[sizeof(path) - 1])
+  if (pathp == &path[sizeof (path) - 1])
     *--pathp = '/';
 
   if (dotlist != dots)
@@ -290,7 +285,7 @@ getcwd (char *buf, size_t size)
 	  goto lose2;
       }
 
-    (void) memcpy((PTR_T) buf, (PTR_T) pathp, len);
+    (void) memcpy ((PTR_T) buf, (PTR_T) pathp, len);
   }
 
   if (pathbuf != path)
@@ -298,7 +293,7 @@ getcwd (char *buf, size_t size)
 
   return (buf);
 
- lose:
+lose:
   if ((dotlist != dots) && dotlist)
     {
       int e = errno;
@@ -306,25 +301,25 @@ getcwd (char *buf, size_t size)
       errno = e;
     }
 
- lose2:
+lose2:
   if ((pathbuf != path) && pathbuf)
     {
       int e = errno;
       free ((PTR_T) pathbuf);
       errno = e;
     }
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 
-#if defined (TEST)
-#  include <stdio.h>
+#  if defined (TEST)
+#    include <stdio.h>
 main (argc, argv)
      int argc;
      char **argv;
 {
   char b[PATH_MAX];
 
-  if (getcwd(b, sizeof(b)))
+  if (getcwd (b, sizeof (b)))
     {
       printf ("%s\n", b);
       exit (0);
@@ -335,5 +330,5 @@ main (argc, argv)
       exit (1);
     }
 }
-#endif /* TEST */
-#endif /* !HAVE_GETCWD */
+#  endif	/* TEST */
+#endif		/* !HAVE_GETCWD */

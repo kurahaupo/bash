@@ -40,9 +40,9 @@ inttostr (intmax_t i, char *buf, size_t len)
 char *
 itos (intmax_t i)
 {
-  char *p, lbuf[INT_STRLEN_BOUND(intmax_t) + 1];
+  char *p, lbuf[INT_STRLEN_BOUND (intmax_t) + 1];
 
-  p = fmtumax (i, 10, lbuf, sizeof(lbuf), 0);
+  p = fmtumax (i, 10, lbuf, sizeof (lbuf), 0);
   return (savestring (p));
 }
 
@@ -51,9 +51,9 @@ itos (intmax_t i)
 char *
 mitos (intmax_t i)
 {
-  char *p, lbuf[INT_STRLEN_BOUND(intmax_t) + 1];
+  char *p, lbuf[INT_STRLEN_BOUND (intmax_t) + 1];
 
-  p = fmtumax (i, 10, lbuf, sizeof(lbuf), 0);
+  p = fmtumax (i, 10, lbuf, sizeof (lbuf), 0);
   return (strdup (p));
 }
 
@@ -68,8 +68,8 @@ uinttostr (uintmax_t i, char *buf, size_t len)
 char *
 uitos (uintmax_t i)
 {
-  char *p, lbuf[INT_STRLEN_BOUND(uintmax_t) + 1];
+  char *p, lbuf[INT_STRLEN_BOUND (uintmax_t) + 1];
 
-  p = fmtumax (i, 10, lbuf, sizeof(lbuf), FL_UNSIGNED);
+  p = fmtumax (i, 10, lbuf, sizeof (lbuf), FL_UNSIGNED);
   return (savestring (p));
 }

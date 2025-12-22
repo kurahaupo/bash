@@ -45,7 +45,7 @@ printenv_builtin (WORD_LIST *list)
     {
       switch (opt)
 	{
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -56,7 +56,7 @@ printenv_builtin (WORD_LIST *list)
   /* printenv */
   if (list == 0)
     {
-      maybe_make_export_env ();		/* this allows minimal code */
+      maybe_make_export_env ();	/* this allows minimal code */
       for (envp = export_env; *envp; envp++)
 	printf ("%s\n", *envp);
       return (EXECUTION_SUCCESS);
@@ -72,22 +72,22 @@ printenv_builtin (WORD_LIST *list)
   else
     print_var_value (var, 0);
 
-  printf("\n");
+  printf ("\n");
   return (EXECUTION_SUCCESS);
 }
 
 char *printenv_doc[] = {
-	"Display environment.",
-	"",
-	"Print names and values of environment variables",
-	(char *)NULL
+  "Display environment.",
+  "",
+  "Print names and values of environment variables",
+  (char *) NULL
 };
 
 struct builtin printenv_struct = {
-	"printenv",
-	printenv_builtin,
-	BUILTIN_ENABLED,
-	printenv_doc,
-	"printenv [varname]",
-	0
+  "printenv",
+  printenv_builtin,
+  BUILTIN_ENABLED,
+  printenv_doc,
+  "printenv [varname]",
+  0
 };

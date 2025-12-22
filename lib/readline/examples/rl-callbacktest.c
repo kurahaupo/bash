@@ -37,8 +37,7 @@ const char *prompt = "rltest$ ";
 /* Handle SIGWINCH and window size changes when readline is not active and
    reading a character. */
 static void
-sighandler (int sig)
-{
+sighandler (int sig) {
   sigwinch_received = 1;
 }
 
@@ -52,11 +51,11 @@ cb_linehandler (char *line)
   if (line == NULL || strcmp (line, "exit") == 0)
     {
       if (line == 0)
-        printf ("\n");
+	printf ("\n");
       printf ("exit\n");
       /* This function needs to be called to reset the terminal settings,
-	 and calling it from the line handler keeps one extra prompt from
-	 being displayed. */
+         and calling it from the line handler keeps one extra prompt from
+         being displayed. */
       rl_callback_handler_remove ();
 
       running = 0;
@@ -84,7 +83,7 @@ main (int c, char **v)
      characters. */
   signal (SIGWINCH, sighandler);
 #endif
-  
+
   /* Install the line handler. */
   rl_callback_handler_install (prompt, cb_linehandler);
 
@@ -96,7 +95,7 @@ main (int c, char **v)
   while (running)
     {
       FD_ZERO (&fds);
-      FD_SET (fileno (rl_instream), &fds);    
+      FD_SET (fileno (rl_instream), &fds);
 
       r = select (FD_SETSIZE, &fds, NULL, NULL, NULL);
       if (r < 0 && errno != EINTR)

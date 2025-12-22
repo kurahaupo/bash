@@ -37,31 +37,31 @@
 char **
 strvec_create (size_t n)
 {
-  return ((char **)xreallocarray (NULL, n, sizeof (char *)));
+  return ((char **) xreallocarray (NULL, n, sizeof (char *)));
 }
 
 /* Allocate an array of strings with room for N members. */
 char **
 strvec_mcreate (size_t n)
 {
-  return ((char **)reallocarray (NULL, n, sizeof (char *)));
+  return ((char **) reallocarray (NULL, n, sizeof (char *)));
 }
 
 char **
 strvec_resize (char **array, size_t nsize)
 {
-  return ((char **)xreallocarray (array, nsize, sizeof (char *)));
+  return ((char **) xreallocarray (array, nsize, sizeof (char *)));
 }
 
 char **
 strvec_mresize (char **array, size_t nsize)
 {
-  return ((char **)reallocarray (array, nsize, sizeof (char *)));
+  return ((char **) reallocarray (array, nsize, sizeof (char *)));
 }
 
 /* Return the length of ARRAY, a NULL terminated array of char *. */
 size_t
-strvec_len (char * const *array)
+strvec_len (char *const *array)
 {
   register size_t i;
 
@@ -129,17 +129,17 @@ strvec_search (char **array, const char *name)
 
 /* Allocate and return a new copy of ARRAY and its contents. */
 char **
-strvec_copy (char * const *array)
+strvec_copy (char *const *array)
 {
   size_t i, len;
   char **ret;
 
   len = strvec_len (array);
 
-  ret = (char **)xmalloc ((len + 1) * sizeof (char *));
+  ret = (char **) xmalloc ((len + 1) * sizeof (char *));
   for (i = 0; array[i]; i++)
     ret[i] = savestring (array[i]);
-  ret[i] = (char *)NULL;
+  ret[i] = (char *) NULL;
 
   return (ret);
 }
@@ -154,9 +154,9 @@ strvec_posixcmp (char **s1, char **s2)
   int result;
 
 #if defined (HAVE_STRCOLL)
-   result = strcoll (*s1, *s2);
-   if (result != 0)
-     return result;
+  result = strcoll (*s1, *s2);
+  if (result != 0)
+    return result;
 #endif
 
   if ((result = **s1 - **s2) == 0)
@@ -171,15 +171,15 @@ int
 strvec_strcmp (char **s1, char **s2)
 {
 #if defined (HAVE_STRCOLL)
-   return (strcoll (*s1, *s2));
-#else /* !HAVE_STRCOLL */
+  return (strcoll (*s1, *s2));
+#else		/* !HAVE_STRCOLL */
   int result;
 
   if ((result = **s1 - **s2) == 0)
     result = strcmp (*s1, *s2);
 
   return (result);
-#endif /* !HAVE_STRCOLL */
+#endif		/* !HAVE_STRCOLL */
 }
 
 /* Sort ARRAY, a null terminated array of pointers to strings. */
@@ -187,9 +187,9 @@ void
 strvec_sort (char **array, int posix)
 {
   if (posix)
-    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *)strvec_posixcmp);
+    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *) strvec_posixcmp);
   else
-    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *)strvec_strcmp);
+    qsort (array, strvec_len (array), sizeof (char *), (QSFUNC *) strvec_strcmp);
 }
 
 /* Cons up a new array of words.  The words are taken from LIST,
@@ -206,14 +206,14 @@ strvec_from_word_list (WORD_LIST *list, int alloc, int starting_index, int *ip)
   size_t count;
   char **array;
 
-  count = list_length ((GENERIC_LIST *)list);
-  array = (char **)xmalloc ((1 + count + starting_index) * sizeof (char *));
+  count = list_length ((GENERIC_LIST *) list);
+  array = (char **) xmalloc ((1 + count + starting_index) * sizeof (char *));
 
   for (count = 0; count < starting_index; count++)
-    array[count] = (char *)NULL;
+    array[count] = (char *) NULL;
   for (count = starting_index; list; count++, list = list->next)
     array[count] = alloc ? savestring (list->word->word) : list->word->word;
-  array[count] = (char *)NULL;
+  array[count] = (char *) NULL;
 
   if (ip)
     *ip = count;
@@ -233,12 +233,12 @@ strvec_to_word_list (char **array, int alloc, int starting_index)
   size_t i, count;
 
   if (array == 0 || array[0] == 0)
-    return (WORD_LIST *)NULL;
+    return (WORD_LIST *) NULL;
 
   for (count = 0; array[count]; count++)
     ;
 
-  for (i = starting_index, list = (WORD_LIST *)NULL; i < count; i++)
+  for (i = starting_index, list = (WORD_LIST *) NULL; i < count; i++)
     {
       w = make_bare_word (alloc ? array[i] : "");
       if (alloc == 0)

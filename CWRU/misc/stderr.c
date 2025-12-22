@@ -1,12 +1,10 @@
 #include <stdio.h>
 
-main()
+main ()
 {
-	fprintf(stdout, "to stdout\n");
-	fprintf(stderr, "to stderr\n");
-	fprintf(stdout, "to stdout\n");
-	fprintf(stderr, "to stderr\n");
-	exit(0);
+  fprintf (stdout, "to stdout\n");
+  fprintf (stderr, "to stderr\n");
+  fprintf (stdout, "to stdout\n");
+  fprintf (stderr, "to stderr\n");
+  exit (0);
 }
-
-	

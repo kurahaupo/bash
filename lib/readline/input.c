@@ -42,17 +42,17 @@
 #include <fcntl.h>
 #if defined (HAVE_SYS_FILE_H)
 #  include <sys/file.h>
-#endif /* HAVE_SYS_FILE_H */
+#endif		/* HAVE_SYS_FILE_H */
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include <signal.h>
 
@@ -68,7 +68,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 /* System-specific feature definitions and include files. */
 #include "rldefs.h"
@@ -92,21 +92,21 @@ extern sigset_t _rl_orig_sigset;
 
 /* Non-null means it is a pointer to a function to run while waiting for
    character input. */
-rl_hook_func_t *rl_event_hook = (rl_hook_func_t *)NULL;
+rl_hook_func_t *rl_event_hook = (rl_hook_func_t *) NULL;
 
 /* A function to call if a read(2) is interrupted by a signal. */
-rl_hook_func_t *rl_signal_event_hook = (rl_hook_func_t *)NULL;
+rl_hook_func_t *rl_signal_event_hook = (rl_hook_func_t *) NULL;
 
 /* A function to call when readline times out after a time is specified. */
-rl_hook_func_t *rl_timeout_event_hook = (rl_hook_func_t *)NULL;
+rl_hook_func_t *rl_timeout_event_hook = (rl_hook_func_t *) NULL;
 
 /* A function to replace _rl_input_available for applications using the
    callback interface. */
-rl_hook_func_t *rl_input_available_hook = (rl_hook_func_t *)NULL;
+rl_hook_func_t *rl_input_available_hook = (rl_hook_func_t *) NULL;
 
 rl_getc_func_t *rl_getc_function = rl_getc;
 
-static int _keyboard_input_timeout = 100000;		/* 0.1 seconds; it's in usec */
+static int _keyboard_input_timeout = 100000; /* 0.1 seconds; it's in usec */
 
 static int ibuffer_space (void);
 static int rl_get_char (int *);
@@ -115,15 +115,15 @@ static int rl_gather_tyi (void);
 /* Windows isatty returns true for every character device, including the null
    device, so we need to perform additional checks. */
 #if defined (_WIN32) && !defined (__CYGWIN__)
-#include <io.h>
-#include <conio.h>
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
+#  include <io.h>
+#  include <conio.h>
+#  define WIN32_LEAN_AND_MEAN 1
+#  include <windows.h>
 
 int
 win32_isatty (int fd)
 {
-  if (_isatty(fd))
+  if (_isatty (fd))
     {
       HANDLE h;
       DWORD ignored;
@@ -140,7 +140,7 @@ win32_isatty (int fd)
   return 0;
 }
 
-#define isatty(x)	win32_isatty(x)
+#  define isatty(x)	win32_isatty(x)
 #endif
 
 /* Readline timeouts */
@@ -268,9 +268,9 @@ rl_gather_tyi (void)
     {
       result = (*rl_input_available_hook) ();
       if (result == 0)
-        result = -1;
+	result = -1;
       else
-        chars_avail = 1;
+	chars_avail = 1;
     }
 
 #if defined (HAVE_PSELECT) || defined (HAVE_SELECT)
@@ -281,14 +281,14 @@ rl_gather_tyi (void)
       FD_SET (tty, &readfds);
       FD_SET (tty, &exceptfds);
       USEC_TO_TIMEVAL (_keyboard_input_timeout, timeout);
-#if defined (RL_TIMEOUT_USE_SELECT)
-      result = _rl_timeout_select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout, NULL);
-#else
-      result = select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout);
-#endif
+#  if defined (RL_TIMEOUT_USE_SELECT)
+      result = _rl_timeout_select (tty + 1, &readfds, (fd_set *) NULL, &exceptfds, &timeout, NULL);
+#  else
+      result = select (tty + 1, &readfds, (fd_set *) NULL, &exceptfds, &timeout);
+#  endif
       if (result <= 0)
-	return 0;	/* Nothing to read. */
-      result = -1;	/* there is something, so check how many chars below */
+	return 0;		/* Nothing to read. */
+      result = -1;		/* there is something, so check how many chars below */
     }
 #endif
 
@@ -323,16 +323,16 @@ rl_gather_tyi (void)
 	  return (0);
 	}
     }
-#endif /* O_NDELAY */
+#endif		/* O_NDELAY */
 
 #if defined (__MINGW32__)
   /* Use getch/_kbhit to check for available console input, in the same way
      that we read it normally. */
-   if (result == -1)
-     {
-       chars_avail = isatty (tty) ? _kbhit () : 0;
-       result = 0;
-     }
+  if (result == -1)
+    {
+      chars_avail = isatty (tty) ? _kbhit () : 0;
+      result = 0;
+    }
 #endif
 
   /* If there's nothing available, don't waste time trying to read
@@ -359,7 +359,7 @@ rl_gather_tyi (void)
 	  RL_CHECK_SIGNALS ();
 	  k = (*rl_getc_function) (rl_instream);
 	  if (rl_stuff_char (k) == 0)
-	    break;			/* some problem; no more room */
+	    break;		/* some problem; no more room */
 	  if (k == NEWLINE || k == RETURN)
 	    break;
 	}
@@ -414,16 +414,16 @@ _rl_input_available (void)
   FD_SET (tty, &exceptfds);
   USEC_TO_TIMEVAL (_keyboard_input_timeout, timeout);
 #  if defined (RL_TIMEOUT_USE_SELECT)
-  return (_rl_timeout_select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout, NULL) > 0);
+  return (_rl_timeout_select (tty + 1, &readfds, (fd_set *) NULL, &exceptfds, &timeout, NULL) > 0);
 #  else
-  return (select (tty + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout) > 0);
+  return (select (tty + 1, &readfds, (fd_set *) NULL, &exceptfds, &timeout) > 0);
 #  endif
 #else
 
-#if defined (FIONREAD)
+#  if defined (FIONREAD)
   if (ioctl (tty, FIONREAD, &chars_avail) == 0)
     return (chars_avail);
-#endif
+#  endif
 
 #endif
 
@@ -439,15 +439,15 @@ int
 _rl_nchars_available ()
 {
   int chars_avail, fd, result;
-  
+
   chars_avail = 0;
-     
+
 #if defined (FIONREAD)
   fd = fileno (rl_instream);
-  errno = 0;    
-  result = ioctl (fd, FIONREAD, &chars_avail);    
-  if (result == -1 && errno == EIO)    
-    return -1;    
+  errno = 0;
+  result = ioctl (fd, FIONREAD, &chars_avail);
+  if (result == -1 && errno == EIO)
+    return -1;
 #endif
 
   return chars_avail;
@@ -466,17 +466,15 @@ _rl_input_queued (int t)
 
 void
 _rl_insert_typein (int c)
-{    	
+{
   int key, t, i;
   char *string;
 
   i = key = 0;
-  string = (char *)xmalloc (ibuffer_len + 1);
+  string = (char *) xmalloc (ibuffer_len + 1);
   string[i++] = (char) c;
 
-  while ((t = rl_get_char (&key)) &&
-	 _rl_keymap[key].type == ISFUNC &&
-	 _rl_keymap[key].function == rl_insert)
+  while ((t = rl_get_char (&key)) && _rl_keymap[key].type == ISFUNC && _rl_keymap[key].function == rl_insert)
     string[i++] = key;
 
   if (t)
@@ -558,7 +556,7 @@ reset_alarm ()
   timerclear (&it.it_value);
   setitimer (ITIMER_REAL, &it, NULL);
 }
-#  else /* !HAVE_SETITIMER */
+#  else		/* !HAVE_SETITIMER */
 #    if defined (__MINGW32_MAJOR_VERSION)
 /* mingw.org's MinGW doesn't have alarm(3).  */
 unsigned int
@@ -566,7 +564,7 @@ alarm (unsigned int seconds)
 {
   return 0;
 }
-#    endif /* __MINGW32_MAJOR_VERSION */
+#    endif	/* __MINGW32_MAJOR_VERSION */
 
 static int
 set_alarm (unsigned int *secs, unsigned int *usecs)
@@ -577,13 +575,14 @@ set_alarm (unsigned int *secs, unsigned int *usecs)
 
   return alarm (*secs);
 }
+
 static void
 reset_alarm ()
 {
   alarm (0);
 }
-#  endif /* !HAVE_SETITIMER */
-#endif /* RL_TIMEOUT_USE_SIGALRM */
+#  endif	/* !HAVE_SETITIMER */
+#endif		/* RL_TIMEOUT_USE_SIGALRM */
 
 /* Set a timeout which will be used for the next call of `readline
    ()'.  When (0, 0) are specified the timeout is cleared.  */
@@ -604,7 +603,7 @@ _rl_timeout_init (void)
   unsigned int secs, usecs;
 
   /* Clear the timeout state of the previous edit */
-  RL_UNSETSTATE(RL_STATE_TIMEOUT);
+  RL_UNSETSTATE (RL_STATE_TIMEOUT);
   timerclear (&timeout_point);
 
   /* Return 0 when timeout is unset. */
@@ -612,7 +611,7 @@ _rl_timeout_init (void)
     return 0;
 
   /* Return -1 on gettimeofday error. */
-  if (gettimeofday(&timeout_point, 0) != 0)
+  if (gettimeofday (&timeout_point, 0) != 0)
     {
       timerclear (&timeout_point);
       return -1;
@@ -657,14 +656,13 @@ rl_timeout_remaining (unsigned int *secs, unsigned int *usecs)
     }
 
   /* Return -1 on error. errno is set by gettimeofday. */
-  if (gettimeofday(&current_time, 0) != 0)
+  if (gettimeofday (&current_time, 0) != 0)
     return -1;
 
   /* Return 0 when timeout has already expired. */
   /* could use timercmp (&timeout_point, &current_time, <) here */
   if (current_time.tv_sec > timeout_point.tv_sec ||
-	(current_time.tv_sec == timeout_point.tv_sec &&
-	 current_time.tv_usec >= timeout_point.tv_usec))
+      (current_time.tv_sec == timeout_point.tv_sec && current_time.tv_usec >= timeout_point.tv_usec))
     return 0;
 
   if (secs && usecs)
@@ -685,15 +683,16 @@ rl_timeout_remaining (unsigned int *secs, unsigned int *usecs)
 
 #if defined (RL_TIMEOUT_USE_SELECT)
 int
-_rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout, const sigset_t *sigmask)
+_rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout,
+		    const sigset_t *sigmask)
 {
   int result;
-#if defined (HAVE_PSELECT)
+#  if defined (HAVE_PSELECT)
   struct timespec ts;
-#else
+#  else
   sigset_t origmask;
   struct timeval tv;
-#endif
+#  endif
   int tmout_status;
   struct timeval tmout;
   unsigned int sec, usec;
@@ -715,7 +714,7 @@ _rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptf
 	tmout_status = -1;
     }
 
-#if defined (HAVE_PSELECT)
+#  if defined (HAVE_PSELECT)
   if (timeout)
     {
       TIMEVAL_TO_TIMESPEC (timeout, &ts);
@@ -723,7 +722,7 @@ _rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptf
     }
   else
     result = pselect (nfds, readfds, writefds, exceptfds, NULL, sigmask);
-#else
+#  else
   if (sigmask)
     sigprocmask (SIG_SETMASK, sigmask, &origmask);
 
@@ -738,7 +737,7 @@ _rl_timeout_select (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptf
 
   if (sigmask)
     sigprocmask (SIG_SETMASK, &origmask, NULL);
-#endif
+#  endif
 
   if (tmout_status == 1 && result == 0)
     _rl_timeout_handle ();
@@ -753,7 +752,7 @@ _rl_timeout_handle ()
   if (rl_timeout_event_hook)
     (*rl_timeout_event_hook) ();
 
-  RL_SETSTATE(RL_STATE_TIMEOUT);
+  RL_SETSTATE (RL_STATE_TIMEOUT);
   _rl_abort_internal ();
 }
 
@@ -766,7 +765,7 @@ _rl_timeout_handle_sigalrm ()
 
   /* Reset `timeout_point' to the current time to ensure that later
      calls of `rl_timeout_pending ()' return 0 (timeout expired). */
-  if (gettimeofday(&timeout_point, 0) != 0)
+  if (gettimeofday (&timeout_point, 0) != 0)
     timerclear (&timeout_point);
 
   reset_alarm ();
@@ -775,6 +774,7 @@ _rl_timeout_handle_sigalrm ()
 #endif
   return -1;
 }
+
 /* **************************************************************** */
 /*								    */
 /*			     Character Input			    */
@@ -796,7 +796,7 @@ rl_read_key (void)
     {
       /* If input is coming from a macro, then use that. */
       if (c = _rl_next_macro_key ())
-	return ((unsigned char)c);
+	return ((unsigned char) c);
 
       /* If the user has an event function, then call it periodically. */
       if (rl_event_hook)
@@ -805,18 +805,18 @@ rl_read_key (void)
 	    {
 	      if (rl_get_char (&c) != 0)
 		break;
-		
-	      if ((r = rl_gather_tyi ()) < 0)	/* XXX - EIO */
+
+	      if ((r = rl_gather_tyi ()) < 0) /* XXX - EIO */
 		{
 		  rl_done = 1;
 		  RL_SETSTATE (RL_STATE_DONE);
 		  return (errno == EIO ? (RL_ISSTATE (RL_STATE_READCMD) ? READERR : EOF) : '\n');
 		}
-	      else if (r > 0)			/* read something */
+	      else if (r > 0)	/* read something */
 		continue;
 
 	      RL_CHECK_SIGNALS ();
-	      if (rl_done)		/* XXX - experimental */
+	      if (rl_done)	/* XXX - experimental */
 		return ('\n');
 	      (*rl_event_hook) ();
 	    }
@@ -860,11 +860,11 @@ rl_getc (FILE *stream)
       RL_CHECK_SIGNALS ();
 
       /* Do signal handling post-processing here, not just in callback mode
-	 now, because the signal cleanup can change some of the readline and
-	 callback state, and we need to either let the application have a
-	 chance to react or abort some current operation that gets cleaned
-	 up by rl_callback_sigcleanup() or another signal cleanup function.
-	 If not, we'll just run through the loop again. */
+         now, because the signal cleanup can change some of the readline and
+         callback state, and we need to either let the application have a
+         chance to react or abort some current operation that gets cleaned
+         up by rl_callback_sigcleanup() or another signal cleanup function.
+         If not, we'll just run through the loop again. */
       if (osig != 0)
 	goto postproc_signal;
 
@@ -884,32 +884,32 @@ rl_getc (FILE *stream)
       result = 0;
 #if defined (HAVE_PSELECT) || defined (HAVE_SELECT)
       /* At this point, if we have pselect, we're using select/pselect for the
-	 timeouts. We handled MinGW above. */
+         timeouts. We handled MinGW above. */
       FD_ZERO (&readfds);
       FD_SET (fd, &readfds);
 #  if defined (HANDLE_SIGNALS)
       result = _rl_timeout_select (fd + 1, &readfds, NULL, NULL, NULL, &_rl_orig_sigset);
 #  else
       sigemptyset (&empty_set);
-      sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &empty_set);
+      sigprocmask (SIG_BLOCK, (sigset_t *) NULL, &empty_set);
       result = _rl_timeout_select (fd + 1, &readfds, NULL, NULL, NULL, &empty_set);
-#  endif /* HANDLE_SIGNALS */
+#  endif	/* HANDLE_SIGNALS */
       if (result == 0)
-        _rl_timeout_handle ();		/* check the timeout */
+	_rl_timeout_handle ();	/* check the timeout */
 #endif
       if (result >= 0)
 	result = read (fd, &c, sizeof (unsigned char));
 
 /* fprintf(stderr, "rl_getc: read result = %d errno = %d _rl_caught_signal = %d\n", result, errno, _rl_caught_signal); */
       /* It is possible, though extremely unlikely, for read to both succeed
-	 (result == 1) and receive a signal (_rl_caught_signal != 0). We
-	 know we have a signal we're interested in, since readline's handler
-	 was called, so we want to handle it below and defer returning the
-	 character we read until the next time through the loop. */
+         (result == 1) and receive a signal (_rl_caught_signal != 0). We
+         know we have a signal we're interested in, since readline's handler
+         was called, so we want to handle it below and defer returning the
+         character we read until the next time through the loop. */
       if (result > 0 && _rl_caught_signal != 0)
 	{
-	  if (c > 0)	/* if result == 1 we assume that c is valid */
-	    savec = c;	/* one level of pushback */
+	  if (c > 0)		/* if result == 1 we assume that c is valid */
+	    savec = c;		/* one level of pushback */
 	  result = -1;
 	  errno = EINTR;
 	}
@@ -918,7 +918,7 @@ rl_getc (FILE *stream)
 	return (c);
 
       /* If zero characters are returned, then the file that we are
-	 reading from is empty!  Return EOF in that case. */
+         reading from is empty!  Return EOF in that case. */
       if (result == 0)
 	return (EOF);
 
@@ -956,11 +956,11 @@ rl_getc (FILE *stream)
       ostate = rl_readline_state;
 
       /* If the error that we received was EINTR, then try again,
-	 this is simply an interrupted system call to read ().  We allow
-	 the read to be interrupted if we caught SIGHUP, SIGTERM, or any
-	 of the other signals readline treats specially. If the
-	 application sets an event hook, call it for other signals.
-	 Otherwise (not EINTR), some error occurred, also signifying EOF. */
+         this is simply an interrupted system call to read ().  We allow
+         the read to be interrupted if we caught SIGHUP, SIGTERM, or any
+         of the other signals readline treats specially. If the
+         application sets an event hook, call it for other signals.
+         Otherwise (not EINTR), some error occurred, also signifying EOF. */
       if (errno != EINTR)
 	return (RL_ISSTATE (RL_STATE_READCMD) ? READERR : EOF);
       /* fatal signals of interest */
@@ -976,7 +976,7 @@ rl_getc (FILE *stream)
 #else
       else if (_rl_caught_signal == SIGINT)
 #endif
-        RL_CHECK_SIGNALS ();
+	RL_CHECK_SIGNALS ();
 #if defined (SIGTSTP)
       else if (_rl_caught_signal == SIGTSTP)
 	RL_CHECK_SIGNALS ();
@@ -985,27 +985,27 @@ rl_getc (FILE *stream)
 #if defined (SIGWINCH)
       else if (_rl_caught_signal == SIGWINCH)
 	RL_CHECK_SIGNALS ();
-#endif /* SIGWINCH */
+#endif		/* SIGWINCH */
 #if defined (SIGALRM)
       else if (_rl_caught_signal == SIGALRM
 #  if defined (SIGVTALRM)
-		|| _rl_caught_signal == SIGVTALRM
+	       || _rl_caught_signal == SIGVTALRM
 #  endif
-	      )
-        RL_CHECK_SIGNALS ();
-#endif  /* SIGALRM */
+	)
+	RL_CHECK_SIGNALS ();
+#endif		/* SIGALRM */
 
-postproc_signal:
+    postproc_signal:
       /* POSIX says read(2)/pselect(2)/select(2) don't return EINTR for any
-	 reason other than being interrupted by a signal, so we can safely
-	 call the application's signal event hook. */
+         reason other than being interrupted by a signal, so we can safely
+         call the application's signal event hook. */
       if (rl_signal_event_hook)
 	(*rl_signal_event_hook) ();
       /* If the application's SIGINT handler returns, make sure we abort out of
-	 searches and numeric arguments because we've freed necessary state. */
-      if (osig == SIGINT && (ostate & (RL_STATE_ISEARCH|RL_STATE_NSEARCH|RL_STATE_NUMERICARG|RL_STATE_MOREINPUT)))
-        /* just these cases for now */
-        _rl_abort_internal ();
+         searches and numeric arguments because we've freed necessary state. */
+      if (osig == SIGINT && (ostate & (RL_STATE_ISEARCH | RL_STATE_NSEARCH | RL_STATE_NUMERICARG | RL_STATE_MOREINPUT)))
+	/* just these cases for now */
+	_rl_abort_internal ();
     }
 }
 
@@ -1019,10 +1019,10 @@ _rl_read_mbchar (char *mbchar, int size)
   WCHAR_T wc;
   mbstate_t ps, ps_back;
 
-  memset(&ps, 0, sizeof (mbstate_t));
-  memset(&ps_back, 0, sizeof (mbstate_t));
+  memset (&ps, 0, sizeof (mbstate_t));
+  memset (&ps_back, 0, sizeof (mbstate_t));
 
-  mb_len = 0;  
+  mb_len = 0;
   while (mb_len < size)
     {
       c = (mb_len == 0) ? _rl_bracketed_read_key () : rl_read_key ();
@@ -1033,21 +1033,21 @@ _rl_read_mbchar (char *mbchar, int size)
       mbchar[mb_len++] = c;
 
       mbchar_bytes_length = MBRTOWC (&wc, mbchar, mb_len, &ps);
-      if (mbchar_bytes_length == (size_t)(-1))
-	break;		/* invalid byte sequence for the current locale */
-      else if (mbchar_bytes_length == (size_t)(-2))
+      if (mbchar_bytes_length == (size_t) (-1))
+	break;			/* invalid byte sequence for the current locale */
+      else if (mbchar_bytes_length == (size_t) (-2))
 	{
 	  /* shorted bytes */
 	  ps = ps_back;
 	  continue;
-	} 
+	}
       else if (mbchar_bytes_length == 0)
 	{
 	  mbchar[0] = '\0';	/* null wide character */
 	  mb_len = 1;
 	  break;
 	}
-      else if (mbchar_bytes_length > (size_t)(0))
+      else if (mbchar_bytes_length > (size_t) (0))
 	break;
     }
 
@@ -1068,7 +1068,7 @@ _rl_read_mbstring (int first, char *mb, int mlen)
   memset (mb, 0, mlen);
   for (i = 0; c >= 0 && i < mlen; i++)
     {
-      mb[i] = (char)c;
+      mb[i] = (char) c;
       memset (&ps, 0, sizeof (mbstate_t));
       n = _rl_get_char_len (mb, &ps);
       if (n == -2)
@@ -1083,4 +1083,4 @@ _rl_read_mbstring (int first, char *mb, int mlen)
     }
   return c;
 }
-#endif /* HANDLE_MULTIBYTE */
+#endif		/* HANDLE_MULTIBYTE */

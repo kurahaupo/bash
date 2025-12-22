@@ -22,18 +22,18 @@
 
 #if defined (USE_VFPRINTF_EMULATION)
 
-#include <stdio.h>
+#  include <stdio.h>
 
-#if !defined (NULL)
-#  define NULL 0
-#endif /* !NULL */
+#  if !defined (NULL)
+#    define NULL 0
+#  endif	/* !NULL */
 
 /*
  * Beware!  Don't trust the value returned by either of these functions; it
  * seems that pre-4.3-tahoe implementations of _doprnt () return the first
  * argument, i.e. a char *.
  */
-#include <varargs.h>
+#  include <varargs.h>
 
 int
 vfprintf (FILE *iop, char *fmt, va_list ap)
@@ -66,11 +66,11 @@ vsprintf (char *str, char *fmt, va_list ap)
   FILE f;
   int len;
 
-  f._flag = _IOWRT|_IOSTRG;
+  f._flag = _IOWRT | _IOSTRG;
   f._ptr = str;
   f._cnt = 32767;
   len = _doprnt (fmt, ap, &f);
   *f._ptr = 0;
   return (len);
 }
-#endif /* USE_VFPRINTF_EMULATION */
+#endif		/* USE_VFPRINTF_EMULATION */

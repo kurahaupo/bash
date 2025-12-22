@@ -22,52 +22,52 @@
 
 #if defined (HANDLE_MULTIBYTE)
 
-#include <stdc.h>
-#include <wchar.h>
-#include <bashansi.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <stdio.h>
-#include <limits.h>
-
-#if HAVE_ICONV
-#  include <iconv.h>
-#endif
-
-#if HAVE_LANGINFO_CODESET
-#  include <langinfo.h>
-#endif
-
-#include <xmalloc.h>
-
-#ifndef USHORT_MAX
-#  ifdef USHRT_MAX
-#    define USHORT_MAX USHRT_MAX
-#  else
-#    define USHORT_MAX ((unsigned short) ~(unsigned short)0)
+#  include <stdc.h>
+#  include <wchar.h>
+#  include <bashansi.h>
+#  ifdef HAVE_UNISTD_H
+#    include <unistd.h>
 #  endif
-#endif
+#  include <stdio.h>
+#  include <limits.h>
 
-#if !defined (STREQ)
-#  define STREQ(a, b) ((a)[0] == (b)[0] && strcmp ((a), (b)) == 0)
-#endif /* !STREQ */
+#  if HAVE_ICONV
+#    include <iconv.h>
+#  endif
 
-#if defined (HAVE_LOCALE_CHARSET)
+#  if HAVE_LANGINFO_CODESET
+#    include <langinfo.h>
+#  endif
+
+#  include <xmalloc.h>
+
+#  ifndef USHORT_MAX
+#    ifdef USHRT_MAX
+#      define USHORT_MAX USHRT_MAX
+#    else
+#      define USHORT_MAX ((unsigned short) ~(unsigned short)0)
+#    endif
+#  endif
+
+#  if !defined (STREQ)
+#    define STREQ(a, b) ((a)[0] == (b)[0] && strcmp ((a), (b)) == 0)
+#  endif	/* !STREQ */
+
+#  if defined (HAVE_LOCALE_CHARSET)
 extern const char *locale_charset (void);
-#else
+#  else
 extern char *get_locale_var (const char *);
-#endif
+#  endif
 
 extern int locale_utf8locale;
 
 static int u32init = 0;
 static int utf8locale = 0;
-#if defined (HAVE_ICONV)
+#  if defined (HAVE_ICONV)
 static iconv_t localconv;
-#endif
+#  endif
 
-#ifndef HAVE_LOCALE_CHARSET
+#  ifndef HAVE_LOCALE_CHARSET
 static char charsetbuf[40];
 
 static char *
@@ -84,7 +84,7 @@ stub_charset (void)
   s = strrchr (locale, '.');
   if (s)
     {
-      strncpy (charsetbuf, s+1, sizeof (charsetbuf) - 1);
+      strncpy (charsetbuf, s + 1, sizeof (charsetbuf) - 1);
       charsetbuf[sizeof (charsetbuf) - 1] = '\0';
       t = strchr (charsetbuf, '@');
       if (t)
@@ -95,18 +95,18 @@ stub_charset (void)
   charsetbuf[sizeof (charsetbuf) - 1] = '\0';
   return charsetbuf;
 }
-#endif
+#  endif
 
 void
 u32reset (void)
 {
-#if defined (HAVE_ICONV)
-  if (u32init && localconv != (iconv_t)-1)
+#  if defined (HAVE_ICONV)
+  if (u32init && localconv != (iconv_t) -1)
     {
       iconv_close (localconv);
-      localconv = (iconv_t)-1;
+      localconv = (iconv_t) -1;
     }
-#endif
+#  endif
   u32init = 0;
   utf8locale = 0;
 }
@@ -134,7 +134,7 @@ u32tochar (unsigned long x, char *s)
       s[3] = x & 0xFF;
     }
   s[l] = '\0';
-  return l;  
+  return l;
 }
 
 int
@@ -157,7 +157,7 @@ u32toutf8 (u_bits32_t wc, char *s)
 
   if (wc < 0x0080)
     {
-      s[0] = (char)wc;
+      s[0] = (char) wc;
       l = 1;
     }
   else if (wc < 0x0800)
@@ -178,7 +178,7 @@ u32toutf8 (u_bits32_t wc, char *s)
     {
       s[0] = (wc >> 18) | 0xf0;
       s[1] = ((wc >> 12) & 0x3f) | 0x80;
-      s[2] = ((wc >>  6) & 0x3f) | 0x80;
+      s[2] = ((wc >> 6) & 0x3f) | 0x80;
       s[3] = (wc & 0x3f) | 0x80;
       l = 4;
     }
@@ -188,7 +188,7 @@ u32toutf8 (u_bits32_t wc, char *s)
       s[0] = (wc >> 24) | 0xf8;
       s[1] = ((wc >> 18) & 0x3f) | 0x80;
       s[2] = ((wc >> 12) & 0x3f) | 0x80;
-      s[3] = ((wc >>  6) & 0x3f) | 0x80;
+      s[3] = ((wc >> 6) & 0x3f) | 0x80;
       s[4] = (wc & 0x3f) | 0x80;
       l = 5;
     }
@@ -198,7 +198,7 @@ u32toutf8 (u_bits32_t wc, char *s)
       s[1] = ((wc >> 24) & 0x3f) | 0x80;
       s[2] = ((wc >> 18) & 0x3f) | 0x80;
       s[3] = ((wc >> 12) & 0x3f) | 0x80;
-      s[4] = ((wc >>  6) & 0x3f) | 0x80;
+      s[4] = ((wc >> 6) & 0x3f) | 0x80;
       s[5] = (wc & 0x3f) | 0x80;
       l = 6;
     }
@@ -225,8 +225,8 @@ u32toutf16 (u_bits32_t c, wchar_t *s)
   else if (c >= 0x10000 && c <= 0x010ffff)
     {
       c -= 0x010000;
-      s[0] = (wchar_t)((c >> 10) + 0xd800);
-      s[1] = (wchar_t)((c & 0x3ff) + 0xdc00);
+      s[0] = (wchar_t) ((c >> 10) + 0xd800);
+      s[1] = (wchar_t) ((c & 0x3ff) + 0xdc00);
       l = 2;
     }
   s[l] = 0;
@@ -241,15 +241,15 @@ u32cconv (unsigned long c, char *s)
   wchar_t wc;
   wchar_t ws[3];
   int n;
-#if HAVE_ICONV
+#  if HAVE_ICONV
   const char *charset;
   char obuf[25], *optr;
   size_t obytesleft;
   const char *iptr;
   size_t sn;
-#endif
+#  endif
 
-#if __STDC_ISO_10646__
+#  if __STDC_ISO_10646__
   wc = c;
   if (sizeof (wchar_t) == 4 && c <= 0x7fffffff)
     n = wctomb (s, wc);
@@ -259,26 +259,26 @@ u32cconv (unsigned long c, char *s)
     n = -1;
   if (n != -1)
     return n;
-#endif
+#  endif
 
-#if HAVE_ICONV
+#  if HAVE_ICONV
   /* this is mostly from coreutils-8.5/lib/unicodeio.c but prefers nl_langinfo
      to be consistent with locale.c:locale_isutf8() */
   if (u32init == 0)
     {
       utf8locale = locale_utf8locale;
-      localconv = (iconv_t)-1;
+      localconv = (iconv_t) -1;
       if (utf8locale == 0)
 	{
-#if HAVE_LANGINFO_CODESET
+#    if HAVE_LANGINFO_CODESET
 	  charset = nl_langinfo (CODESET);
-#elif HAVE_LOCALE_CHARSET
+#    elif HAVE_LOCALE_CHARSET
 	  charset = locale_charset ();
-#else
+#    else
 	  charset = stub_charset ();
-#endif
+#    endif
 	  localconv = iconv_open (charset, "UTF-8");
-	  if (localconv == (iconv_t)-1)
+	  if (localconv == (iconv_t) -1)
 	    /* We assume ASCII when presented with an unknown encoding. */
 	    localconv = iconv_open ("ASCII", "UTF-8");
 	}
@@ -286,7 +286,7 @@ u32cconv (unsigned long c, char *s)
     }
 
   /* NL_LANGINFO and locale_charset used when setting locale_utf8locale */
-  
+
   /* If we have a UTF-8 locale, convert to UTF-8 and return converted value. */
   n = u32toutf8 (c, s);
   if (utf8locale)
@@ -295,9 +295,9 @@ u32cconv (unsigned long c, char *s)
   /* If the conversion is not supported, even the ASCII requested above, we
      bail now.  Currently we return the UTF-8 conversion.  We could return
      u32tocesc(). */
-  if (localconv == (iconv_t)-1)
+  if (localconv == (iconv_t) -1)
     return n;
-    
+
   optr = obuf;
   obytesleft = sizeof (obuf);
   iptr = s;
@@ -305,9 +305,9 @@ u32cconv (unsigned long c, char *s)
 
   iconv (localconv, NULL, NULL, NULL, NULL);
 
-  if (iconv (localconv, (ICONV_CONST char **)&iptr, &sn, &optr, &obytesleft) == (size_t)-1)
+  if (iconv (localconv, (ICONV_CONST char **) &iptr, &sn, &optr, &obytesleft) == (size_t) -1)
     {
-      /* You get ISO C99 escape sequences if iconv fails */      
+      /* You get ISO C99 escape sequences if iconv fails */
       n = u32tocesc (c, s);
       return n;
     }
@@ -318,7 +318,7 @@ u32cconv (unsigned long c, char *s)
      checking */
   strcpy (s, obuf);
   return (optr - obuf);
-#endif	/* HAVE_ICONV */
+#  endif	/* HAVE_ICONV */
 
   if (locale_utf8locale)
     n = u32toutf8 (c, s);
@@ -331,4 +331,4 @@ void
 u32reset (void)
 {
 }
-#endif /* HANDLE_MULTIBYTE */
+#endif		/* HANDLE_MULTIBYTE */

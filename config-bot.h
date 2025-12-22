@@ -103,7 +103,7 @@
 /* BANG_HISTORY requires HISTORY. */
 #if defined (BANG_HISTORY) && !defined (HISTORY)
 #  define HISTORY
-#endif /* BANG_HISTORY && !HISTORY */
+#endif		/* BANG_HISTORY && !HISTORY */
 
 #if defined (READLINE) && !defined (HISTORY)
 #  define HISTORY

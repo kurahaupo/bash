@@ -77,7 +77,7 @@ ln_builtin (WORD_LIST *list)
 	case 'n':
 	  flags |= LN_NOFOLLOW;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -90,24 +90,24 @@ ln_builtin (WORD_LIST *list)
       builtin_usage ();
       return (EX_USAGE);
     }
-    
-  linkfn = (flags & LN_SYMLINK) ? symlink : link;  
 
-  if (list->next == 0)			/* ln target, equivalent to ln target . */
+  linkfn = (flags & LN_SYMLINK) ? symlink : link;
+
+  if (list->next == 0)		/* ln target, equivalent to ln target . */
     return (dolink (list->word->word, ".", flags));
 
-  if (list->next->next == 0)		/* ln target source */
+  if (list->next->next == 0)	/* ln target source */
     return (dolink (list->word->word, list->next->word->word, flags));
 
   /* ln target1 target2 ... directory */
 
   /* find last argument: target directory, and make sure it's an existing
      directory. */
-  for (l = list; l->next; l = l->next)  
+  for (l = list; l->next; l = l->next)
     ;
   sdir = l->word->word;
 
-  if (stat(sdir, &sb) < 0)
+  if (stat (sdir, &sb) < 0)
     {
       builtin_error ("%s", sdir);
       return (EXECUTION_FAILURE);
@@ -121,7 +121,7 @@ ln_builtin (WORD_LIST *list)
 
   for (rval = EXECUTION_SUCCESS; list != l; list = list->next)
     rval += dolink (list->word->word, sdir, flags);
-  
+
   return rval;
 }
 
@@ -178,7 +178,7 @@ dolink (char *src, char *dst, int flags)
   /* If the destination is a directory, create the final filename by appending
      the basename of the source to the destination. */
   dst_path = 0;
-  if ((LSTAT_OR_STAT_IF((flags & LN_NOFOLLOW), dst, &dsb) == 0) && S_ISDIR (dsb.st_mode))
+  if ((LSTAT_OR_STAT_IF ((flags & LN_NOFOLLOW), dst, &dsb) == 0) && S_ISDIR (dsb.st_mode))
     {
       if ((p = strrchr (src, '/')) == 0)
 	p = src;
@@ -212,23 +212,23 @@ dolink (char *src, char *dst, int flags)
 }
 
 char *ln_doc[] = {
-	"Link files.",
-	"",
-	"Create a new directory entry with the same modes as the original",
-	"file.  The -f option means to unlink any existing file, permitting",
-	"the link to occur.  The -s option means to create a symbolic link.",
-	"By default, ln makes hard links.  Specifying -n or its synonym -h",
-	"causes ln to not resolve symlinks in the target file or directory.",
-	(char *)NULL
+  "Link files.",
+  "",
+  "Create a new directory entry with the same modes as the original",
+  "file.  The -f option means to unlink any existing file, permitting",
+  "the link to occur.  The -s option means to create a symbolic link.",
+  "By default, ln makes hard links.  Specifying -n or its synonym -h",
+  "causes ln to not resolve symlinks in the target file or directory.",
+  (char *) NULL
 };
 
 /* The standard structure describing a builtin command.  bash keeps an array
    of these structures. */
 struct builtin ln_struct = {
-	"ln",		/* builtin name */
-	ln_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,	/* initial flags for builtin */
-	ln_doc,		/* array of long documentation strings. */
-	"ln [-fhns] file1 [file2] OR ln [-fhns] file ... directory",	/* usage synopsis; becomes short_doc */
-	0			/* reserved for internal use */
+  "ln",				/* builtin name */
+  ln_builtin,			/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  ln_doc,			/* array of long documentation strings. */
+  "ln [-fhns] file1 [file2] OR ln [-fhns] file ... directory", /* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

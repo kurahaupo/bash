@@ -18,20 +18,19 @@
 
 #if HAVE_WORKING_USELOCALE && HAVE_NAMELESS_LOCALES
 
-# include <stddef.h>
-# include <locale.h>
+#  include <stddef.h>
+#  include <locale.h>
 
-# ifdef IN_LIBINTL
-#  include "lock.h"
-# else
-#  include "glthread/lock.h"
-# endif
+#  ifdef IN_LIBINTL
+#    include "lock.h"
+#  else
+#    include "glthread/lock.h"
+#  endif
 
-struct locale_categories_names
-  {
-    /* Locale category -> name (allocated with indefinite extent).  */
-    const char *category_name[6];
-  };
+struct locale_categories_names {
+  /* Locale category -> name (allocated with indefinite extent).  */
+  const char *category_name[6];
+};
 
 /* A hash table of fixed size.  Multiple threads can access it read-only
    simultaneously, but only one thread can insert into it or remove from it
@@ -48,26 +47,24 @@ struct locale_categories_names
    MUST NEVER CHANGE.  If you need to change the internal layout or the hash
    function, introduce versioning by appending a version suffix to the symbols
    at the linker level.  */
-# define locale_hash_function libintl_locale_hash_function
-# define locale_hash_table libintl_locale_hash_table
-# define locale_lock libintl_locale_lock
+#  define locale_hash_function libintl_locale_hash_function
+#  define locale_hash_table libintl_locale_hash_table
+#  define locale_lock libintl_locale_lock
 
 extern size_t _GL_ATTRIBUTE_CONST locale_hash_function (locale_t x);
 
 /* A node in a hash bucket collision list.  */
-struct locale_hash_node
-  {
-    struct locale_hash_node *next;
-    locale_t locale;
-    struct locale_categories_names names;
-  };
+struct locale_hash_node {
+  struct locale_hash_node *next;
+  locale_t locale;
+  struct locale_categories_names names;
+};
 
-# define LOCALE_HASH_TABLE_SIZE 101
-extern struct locale_hash_node * locale_hash_table[LOCALE_HASH_TABLE_SIZE];
+#  define LOCALE_HASH_TABLE_SIZE 101
+extern struct locale_hash_node *locale_hash_table[LOCALE_HASH_TABLE_SIZE];
 
 /* This lock protects the locale_hash_table against multiple simultaneous
    accesses (except that multiple simultaneous read accesses are allowed).  */
 
-gl_rwlock_define(extern, locale_lock)
-
+gl_rwlock_define (extern, locale_lock)
 #endif

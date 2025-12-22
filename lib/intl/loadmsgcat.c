@@ -18,11 +18,11 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE    1
+#  define _GNU_SOURCE    1
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <assert.h>
@@ -33,56 +33,56 @@
 #include <sys/stat.h>
 
 #ifdef __GNUC__
-# undef  alloca
-# define alloca __builtin_alloca
-# define HAVE_ALLOCA 1
+#  undef  alloca
+#  define alloca __builtin_alloca
+#  define HAVE_ALLOCA 1
 #else
-# ifdef _MSC_VER
-#  include <malloc.h>
-#  define alloca _alloca
-# else
-#  if defined HAVE_ALLOCA_H || defined _LIBC
-#   include <alloca.h>
+#  ifdef _MSC_VER
+#    include <malloc.h>
+#    define alloca _alloca
 #  else
-#   ifdef _AIX
- #pragma alloca
-#   else
-#    ifndef alloca
+#    if defined HAVE_ALLOCA_H || defined _LIBC
+#      include <alloca.h>
+#    else
+#      ifdef _AIX
+#        pragma alloca
+#      else
+#        ifndef alloca
 char *alloca ();
+#        endif
+#      endif
 #    endif
-#   endif
 #  endif
-# endif
 #endif
 
 #include <stdlib.h>
 #include <string.h>
 
 #if defined HAVE_UNISTD_H || defined _LIBC
-# include <unistd.h>
+#  include <unistd.h>
 #elif defined _WIN32 && !defined __CYGWIN__
-# include <io.h>
+#  include <io.h>
 #endif
 
 #ifdef _LIBC
-# include <langinfo.h>
-# include <locale.h>
+#  include <langinfo.h>
+#  include <locale.h>
 #endif
 
 #if (defined HAVE_MMAP && defined HAVE_MUNMAP && !defined DISALLOW_MMAP) \
     || (defined _LIBC && defined _POSIX_MAPPED_FILES)
-# include <sys/mman.h>
-# undef HAVE_MMAP
-# define HAVE_MMAP	1
+#  include <sys/mman.h>
+#  undef HAVE_MMAP
+#  define HAVE_MMAP	1
 #else
-# undef HAVE_MMAP
+#  undef HAVE_MMAP
 #endif
 
 #if defined HAVE_STDINT_H_WITH_UINTMAX || defined _LIBC
-# include <stdint.h>
+#  include <stdint.h>
 #endif
 #if defined HAVE_INTTYPES_H || defined _LIBC
-# include <inttypes.h>
+#  include <inttypes.h>
 #endif
 
 #include "gmo.h"
@@ -91,286 +91,286 @@ char *alloca ();
 #include "plural-exp.h"
 
 #ifdef _LIBC
-# include "../locale/localeinfo.h"
-# include <not-cancel.h>
+#  include "../locale/localeinfo.h"
+#  include <not-cancel.h>
 #endif
 
 /* Handle multi-threaded applications.  */
 #ifdef _LIBC
-# include <bits/libc-lock.h>
+#  include <bits/libc-lock.h>
 #else
-# include "lock.h"
+#  include "lock.h"
 #endif
 
 /* Provide fallback values for macros that ought to be defined in <inttypes.h>.
    Note that our fallback values need not be literal strings, because we don't
    use them with preprocessor string concatenation.  */
 #if !defined PRId8
-# define PRId8 "d"
+#  define PRId8 "d"
 #endif
 #if !defined PRIi8
-# define PRIi8 "i"
+#  define PRIi8 "i"
 #endif
 #if !defined PRIo8
-# define PRIo8 "o"
+#  define PRIo8 "o"
 #endif
 #if !defined PRIu8
-# define PRIu8 "u"
+#  define PRIu8 "u"
 #endif
 #if !defined PRIx8
-# define PRIx8 "x"
+#  define PRIx8 "x"
 #endif
 #if !defined PRIX8
-# define PRIX8 "X"
+#  define PRIX8 "X"
 #endif
 #if !defined PRId16
-# define PRId16 "d"
+#  define PRId16 "d"
 #endif
 #if !defined PRIi16
-# define PRIi16 "i"
+#  define PRIi16 "i"
 #endif
 #if !defined PRIo16
-# define PRIo16 "o"
+#  define PRIo16 "o"
 #endif
 #if !defined PRIu16
-# define PRIu16 "u"
+#  define PRIu16 "u"
 #endif
 #if !defined PRIx16
-# define PRIx16 "x"
+#  define PRIx16 "x"
 #endif
 #if !defined PRIX16
-# define PRIX16 "X"
+#  define PRIX16 "X"
 #endif
 #if !defined PRId32
-# define PRId32 "d"
+#  define PRId32 "d"
 #endif
 #if !defined PRIi32
-# define PRIi32 "i"
+#  define PRIi32 "i"
 #endif
 #if !defined PRIo32
-# define PRIo32 "o"
+#  define PRIo32 "o"
 #endif
 #if !defined PRIu32
-# define PRIu32 "u"
+#  define PRIu32 "u"
 #endif
 #if !defined PRIx32
-# define PRIx32 "x"
+#  define PRIx32 "x"
 #endif
 #if !defined PRIX32
-# define PRIX32 "X"
+#  define PRIX32 "X"
 #endif
 #if !defined PRId64
-# define PRId64 (sizeof (long) == 8 ? "ld" : "lld")
+#  define PRId64 (sizeof (long) == 8 ? "ld" : "lld")
 #endif
 #if !defined PRIi64
-# define PRIi64 (sizeof (long) == 8 ? "li" : "lli")
+#  define PRIi64 (sizeof (long) == 8 ? "li" : "lli")
 #endif
 #if !defined PRIo64
-# define PRIo64 (sizeof (long) == 8 ? "lo" : "llo")
+#  define PRIo64 (sizeof (long) == 8 ? "lo" : "llo")
 #endif
 #if !defined PRIu64
-# define PRIu64 (sizeof (long) == 8 ? "lu" : "llu")
+#  define PRIu64 (sizeof (long) == 8 ? "lu" : "llu")
 #endif
 #if !defined PRIx64
-# define PRIx64 (sizeof (long) == 8 ? "lx" : "llx")
+#  define PRIx64 (sizeof (long) == 8 ? "lx" : "llx")
 #endif
 #if !defined PRIX64
-# define PRIX64 (sizeof (long) == 8 ? "lX" : "llX")
+#  define PRIX64 (sizeof (long) == 8 ? "lX" : "llX")
 #endif
 #if !defined PRIdLEAST8
-# define PRIdLEAST8 "d"
+#  define PRIdLEAST8 "d"
 #endif
 #if !defined PRIiLEAST8
-# define PRIiLEAST8 "i"
+#  define PRIiLEAST8 "i"
 #endif
 #if !defined PRIoLEAST8
-# define PRIoLEAST8 "o"
+#  define PRIoLEAST8 "o"
 #endif
 #if !defined PRIuLEAST8
-# define PRIuLEAST8 "u"
+#  define PRIuLEAST8 "u"
 #endif
 #if !defined PRIxLEAST8
-# define PRIxLEAST8 "x"
+#  define PRIxLEAST8 "x"
 #endif
 #if !defined PRIXLEAST8
-# define PRIXLEAST8 "X"
+#  define PRIXLEAST8 "X"
 #endif
 #if !defined PRIdLEAST16
-# define PRIdLEAST16 "d"
+#  define PRIdLEAST16 "d"
 #endif
 #if !defined PRIiLEAST16
-# define PRIiLEAST16 "i"
+#  define PRIiLEAST16 "i"
 #endif
 #if !defined PRIoLEAST16
-# define PRIoLEAST16 "o"
+#  define PRIoLEAST16 "o"
 #endif
 #if !defined PRIuLEAST16
-# define PRIuLEAST16 "u"
+#  define PRIuLEAST16 "u"
 #endif
 #if !defined PRIxLEAST16
-# define PRIxLEAST16 "x"
+#  define PRIxLEAST16 "x"
 #endif
 #if !defined PRIXLEAST16
-# define PRIXLEAST16 "X"
+#  define PRIXLEAST16 "X"
 #endif
 #if !defined PRIdLEAST32
-# define PRIdLEAST32 "d"
+#  define PRIdLEAST32 "d"
 #endif
 #if !defined PRIiLEAST32
-# define PRIiLEAST32 "i"
+#  define PRIiLEAST32 "i"
 #endif
 #if !defined PRIoLEAST32
-# define PRIoLEAST32 "o"
+#  define PRIoLEAST32 "o"
 #endif
 #if !defined PRIuLEAST32
-# define PRIuLEAST32 "u"
+#  define PRIuLEAST32 "u"
 #endif
 #if !defined PRIxLEAST32
-# define PRIxLEAST32 "x"
+#  define PRIxLEAST32 "x"
 #endif
 #if !defined PRIXLEAST32
-# define PRIXLEAST32 "X"
+#  define PRIXLEAST32 "X"
 #endif
 #if !defined PRIdLEAST64
-# define PRIdLEAST64 PRId64
+#  define PRIdLEAST64 PRId64
 #endif
 #if !defined PRIiLEAST64
-# define PRIiLEAST64 PRIi64
+#  define PRIiLEAST64 PRIi64
 #endif
 #if !defined PRIoLEAST64
-# define PRIoLEAST64 PRIo64
+#  define PRIoLEAST64 PRIo64
 #endif
 #if !defined PRIuLEAST64
-# define PRIuLEAST64 PRIu64
+#  define PRIuLEAST64 PRIu64
 #endif
 #if !defined PRIxLEAST64
-# define PRIxLEAST64 PRIx64
+#  define PRIxLEAST64 PRIx64
 #endif
 #if !defined PRIXLEAST64
-# define PRIXLEAST64 PRIX64
+#  define PRIXLEAST64 PRIX64
 #endif
 #if !defined PRIdFAST8
-# define PRIdFAST8 "d"
+#  define PRIdFAST8 "d"
 #endif
 #if !defined PRIiFAST8
-# define PRIiFAST8 "i"
+#  define PRIiFAST8 "i"
 #endif
 #if !defined PRIoFAST8
-# define PRIoFAST8 "o"
+#  define PRIoFAST8 "o"
 #endif
 #if !defined PRIuFAST8
-# define PRIuFAST8 "u"
+#  define PRIuFAST8 "u"
 #endif
 #if !defined PRIxFAST8
-# define PRIxFAST8 "x"
+#  define PRIxFAST8 "x"
 #endif
 #if !defined PRIXFAST8
-# define PRIXFAST8 "X"
+#  define PRIXFAST8 "X"
 #endif
 #if !defined PRIdFAST16
-# define PRIdFAST16 "d"
+#  define PRIdFAST16 "d"
 #endif
 #if !defined PRIiFAST16
-# define PRIiFAST16 "i"
+#  define PRIiFAST16 "i"
 #endif
 #if !defined PRIoFAST16
-# define PRIoFAST16 "o"
+#  define PRIoFAST16 "o"
 #endif
 #if !defined PRIuFAST16
-# define PRIuFAST16 "u"
+#  define PRIuFAST16 "u"
 #endif
 #if !defined PRIxFAST16
-# define PRIxFAST16 "x"
+#  define PRIxFAST16 "x"
 #endif
 #if !defined PRIXFAST16
-# define PRIXFAST16 "X"
+#  define PRIXFAST16 "X"
 #endif
 #if !defined PRIdFAST32
-# define PRIdFAST32 "d"
+#  define PRIdFAST32 "d"
 #endif
 #if !defined PRIiFAST32
-# define PRIiFAST32 "i"
+#  define PRIiFAST32 "i"
 #endif
 #if !defined PRIoFAST32
-# define PRIoFAST32 "o"
+#  define PRIoFAST32 "o"
 #endif
 #if !defined PRIuFAST32
-# define PRIuFAST32 "u"
+#  define PRIuFAST32 "u"
 #endif
 #if !defined PRIxFAST32
-# define PRIxFAST32 "x"
+#  define PRIxFAST32 "x"
 #endif
 #if !defined PRIXFAST32
-# define PRIXFAST32 "X"
+#  define PRIXFAST32 "X"
 #endif
 #if !defined PRIdFAST64
-# define PRIdFAST64 PRId64
+#  define PRIdFAST64 PRId64
 #endif
 #if !defined PRIiFAST64
-# define PRIiFAST64 PRIi64
+#  define PRIiFAST64 PRIi64
 #endif
 #if !defined PRIoFAST64
-# define PRIoFAST64 PRIo64
+#  define PRIoFAST64 PRIo64
 #endif
 #if !defined PRIuFAST64
-# define PRIuFAST64 PRIu64
+#  define PRIuFAST64 PRIu64
 #endif
 #if !defined PRIxFAST64
-# define PRIxFAST64 PRIx64
+#  define PRIxFAST64 PRIx64
 #endif
 #if !defined PRIXFAST64
-# define PRIXFAST64 PRIX64
+#  define PRIXFAST64 PRIX64
 #endif
 #if !defined PRIdMAX
-# define PRIdMAX (sizeof (uintmax_t) == sizeof (long) ? "ld" : "lld")
+#  define PRIdMAX (sizeof (uintmax_t) == sizeof (long) ? "ld" : "lld")
 #endif
 #if !defined PRIiMAX
-# define PRIiMAX (sizeof (uintmax_t) == sizeof (long) ? "li" : "lli")
+#  define PRIiMAX (sizeof (uintmax_t) == sizeof (long) ? "li" : "lli")
 #endif
 #if !defined PRIoMAX
-# define PRIoMAX (sizeof (uintmax_t) == sizeof (long) ? "lo" : "llo")
+#  define PRIoMAX (sizeof (uintmax_t) == sizeof (long) ? "lo" : "llo")
 #endif
 #if !defined PRIuMAX
-# define PRIuMAX (sizeof (uintmax_t) == sizeof (long) ? "lu" : "llu")
+#  define PRIuMAX (sizeof (uintmax_t) == sizeof (long) ? "lu" : "llu")
 #endif
 #if !defined PRIxMAX
-# define PRIxMAX (sizeof (uintmax_t) == sizeof (long) ? "lx" : "llx")
+#  define PRIxMAX (sizeof (uintmax_t) == sizeof (long) ? "lx" : "llx")
 #endif
 #if !defined PRIXMAX
-# define PRIXMAX (sizeof (uintmax_t) == sizeof (long) ? "lX" : "llX")
+#  define PRIXMAX (sizeof (uintmax_t) == sizeof (long) ? "lX" : "llX")
 #endif
 #if !defined PRIdPTR
-# define PRIdPTR \
+#  define PRIdPTR \
   (sizeof (void *) == sizeof (long) ? "ld" : \
    sizeof (void *) == sizeof (int) ? "d" : \
    "lld")
 #endif
 #if !defined PRIiPTR
-# define PRIiPTR \
+#  define PRIiPTR \
   (sizeof (void *) == sizeof (long) ? "li" : \
    sizeof (void *) == sizeof (int) ? "i" : \
    "lli")
 #endif
 #if !defined PRIoPTR
-# define PRIoPTR \
+#  define PRIoPTR \
   (sizeof (void *) == sizeof (long) ? "lo" : \
    sizeof (void *) == sizeof (int) ? "o" : \
    "llo")
 #endif
 #if !defined PRIuPTR
-# define PRIuPTR \
+#  define PRIuPTR \
   (sizeof (void *) == sizeof (long) ? "lu" : \
    sizeof (void *) == sizeof (int) ? "u" : \
    "llu")
 #endif
 #if !defined PRIxPTR
-# define PRIxPTR \
+#  define PRIxPTR \
   (sizeof (void *) == sizeof (long) ? "lx" : \
    sizeof (void *) == sizeof (int) ? "x" : \
    "llx")
 #endif
 #if !defined PRIXPTR
-# define PRIXPTR \
+#  define PRIXPTR \
   (sizeof (void *) == sizeof (long) ? "lX" : \
    sizeof (void *) == sizeof (int) ? "X" : \
    "llX")
@@ -382,43 +382,43 @@ char *alloca ();
 /* Rename the non ISO C functions.  This is required by the standard
    because some ISO C functions will require linking with this object
    file and the name space must not be polluted.  */
-# define open(name, flags)	open_not_cancel_2 (name, flags)
-# define close(fd)		close_not_cancel_no_status (fd)
-# define read(fd, buf, n)	read_not_cancel (fd, buf, n)
-# define mmap(addr, len, prot, flags, fd, offset) \
+#  define open(name, flags)	open_not_cancel_2 (name, flags)
+#  define close(fd)		close_not_cancel_no_status (fd)
+#  define read(fd, buf, n)	read_not_cancel (fd, buf, n)
+#  define mmap(addr, len, prot, flags, fd, offset) \
   __mmap (addr, len, prot, flags, fd, offset)
-# define munmap(addr, len)	__munmap (addr, len)
+#  define munmap(addr, len)	__munmap (addr, len)
 #elif defined _WIN32 && !defined __CYGWIN__
 /* On native Windows, don't require linking with '-loldnames'.  */
-# define open _open
-# define read _read
-# define close _close
+#  define open _open
+#  define read _read
+#  define close _close
 #endif
 
 /* For those losing systems which don't have `alloca' we have to add
    some additional code emulating it.  */
 #ifdef HAVE_ALLOCA
-# define freea(p) /* nothing */
+#  define freea(p)		/* nothing */
 #else
-# define alloca(n) malloc (n)
-# define freea(p) free (p)
+#  define alloca(n) malloc (n)
+#  define freea(p) free (p)
 #endif
 
 /* For systems that distinguish between text and binary I/O.
    O_BINARY is usually declared in <fcntl.h>. */
 #if !defined O_BINARY && defined _O_BINARY
   /* For MSC-compatible compilers.  */
-# define O_BINARY _O_BINARY
-# define O_TEXT _O_TEXT
+#  define O_BINARY _O_BINARY
+#  define O_TEXT _O_TEXT
 #endif
 #ifdef __BEOS__
   /* BeOS 5 has O_BINARY and O_TEXT, but they have no effect.  */
-# undef O_BINARY
-# undef O_TEXT
+#  undef O_BINARY
+#  undef O_TEXT
 #endif
 /* On reasonable systems, binary I/O is the default.  */
 #ifndef O_BINARY
-# define O_BINARY 0
+#  define O_BINARY 0
 #endif
 
 
@@ -448,8 +448,7 @@ get_sysdep_segment_value (const char *name)
      data relocations cost startup time.  */
   if (name[0] == 'P' && name[1] == 'R' && name[2] == 'I')
     {
-      if (name[3] == 'd' || name[3] == 'i' || name[3] == 'o' || name[3] == 'u'
-	  || name[3] == 'x' || name[3] == 'X')
+      if (name[3] == 'd' || name[3] == 'i' || name[3] == 'o' || name[3] == 'u' || name[3] == 'x' || name[3] == 'X')
 	{
 	  if (name[4] == '8' && name[5] == '\0')
 	    {
@@ -515,8 +514,7 @@ get_sysdep_segment_value (const char *name)
 		return PRIX64;
 	      abort ();
 	    }
-	  if (name[4] == 'L' && name[5] == 'E' && name[6] == 'A'
-	      && name[7] == 'S' && name[8] == 'T')
+	  if (name[4] == 'L' && name[5] == 'E' && name[6] == 'A' && name[7] == 'S' && name[8] == 'T')
 	    {
 	      if (name[9] == '8' && name[10] == '\0')
 		{
@@ -583,8 +581,7 @@ get_sysdep_segment_value (const char *name)
 		  abort ();
 		}
 	    }
-	  if (name[4] == 'F' && name[5] == 'A' && name[6] == 'S'
-	      && name[7] == 'T')
+	  if (name[4] == 'F' && name[5] == 'A' && name[6] == 'S' && name[7] == 'T')
 	    {
 	      if (name[8] == '8' && name[9] == '\0')
 		{
@@ -651,8 +648,7 @@ get_sysdep_segment_value (const char *name)
 		  abort ();
 		}
 	    }
-	  if (name[4] == 'M' && name[5] == 'A' && name[6] == 'X'
-	      && name[7] == '\0')
+	  if (name[4] == 'M' && name[5] == 'A' && name[6] == 'X' && name[7] == '\0')
 	    {
 	      if (name[3] == 'd')
 		return PRIdMAX;
@@ -668,8 +664,7 @@ get_sysdep_segment_value (const char *name)
 		return PRIXMAX;
 	      abort ();
 	    }
-	  if (name[4] == 'P' && name[5] == 'T' && name[6] == 'R'
-	      && name[7] == '\0')
+	  if (name[4] == 'P' && name[5] == 'T' && name[6] == 'R' && name[7] == '\0')
 	    {
 	      if (name[3] == 'd')
 		return PRIdPTR;
@@ -694,8 +689,8 @@ get_sysdep_segment_value (const char *name)
     || ((__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)) \
         && !defined __UCLIBC__)
       /* The 'I' flag, in numeric format directives, replaces ASCII digits
-	 with the 'outdigits' defined in the LC_CTYPE locale facet.  This is
-	 used for Farsi (Persian), some Indic languages, and maybe Arabic.  */
+         with the 'outdigits' defined in the LC_CTYPE locale facet.  This is
+         used for Farsi (Persian), some Indic languages, and maybe Arabic.  */
       return "I";
 #else
       return "";
@@ -713,9 +708,8 @@ __libc_lock_define_initialized_recursive (static, lock);
 /* Load the message catalogs specified by FILENAME.  If it is no valid
    message catalog do nothing.  */
 void
-internal_function
-_nl_load_domain (struct loaded_l10nfile *domain_file,
-		 struct binding *domainbinding)
+  internal_function
+_nl_load_domain (struct loaded_l10nfile *domain_file, struct binding *domainbinding)
 {
   int fd = -1;
   size_t size;
@@ -738,13 +732,13 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
     {
       /* There are two possibilities:
 
-	 + this is the same thread calling again during this initialization
-	   via _nl_find_msg.  We have initialized everything this call needs.
+         + this is the same thread calling again during this initialization
+         via _nl_find_msg.  We have initialized everything this call needs.
 
-	 + this is another thread which tried to initialize this object.
-	   Not necessary anymore since if the lock is available this
-	   is finished.
-      */
+         + this is another thread which tried to initialize this object.
+         Not necessary anymore since if the lock is available this
+         is finished.
+       */
       goto done;
     }
 
@@ -764,7 +758,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       /* Try to open the addressed file.  */
       fd = open (domain_file->filename, O_RDONLY | O_BINARY);
       if (fd == -1)
-        goto out;
+	goto out;
     }
 #if defined _WIN32 && !defined __CYGWIN__
   else if (domain_file->wfilename != NULL)
@@ -772,7 +766,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       /* Try to open the addressed file.  */
       fd = _wopen (domain_file->wfilename, O_RDONLY | O_BINARY);
       if (fd == -1)
-        goto out;
+	goto out;
     }
 #endif
   else
@@ -781,20 +775,19 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
   /* We must know about the size of the file.  */
   if (
 #ifdef _LIBC
-      __builtin_expect (fstat64 (fd, &st) != 0, 0)
+       __builtin_expect (fstat64 (fd, &st) != 0, 0)
 #else
-      __builtin_expect (fstat (fd, &st) != 0, 0)
+       __builtin_expect (fstat (fd, &st) != 0, 0)
 #endif
-      || __builtin_expect ((size = (size_t) st.st_size) != st.st_size, 0)
-      || __builtin_expect (size < sizeof (struct mo_file_header), 0))
+       || __builtin_expect ((size = (size_t) st.st_size) != st.st_size, 0)
+       || __builtin_expect (size < sizeof (struct mo_file_header), 0))
     /* Something went wrong.  */
     goto out;
 
 #ifdef HAVE_MMAP
   /* Now we are ready to load the file.  If mmap() is available we try
      this first.  If not available or it failed we try to load it.  */
-  data = (struct mo_file_header *) mmap (NULL, size, PROT_READ,
-					 MAP_PRIVATE, fd, 0);
+  data = (struct mo_file_header *) mmap (NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
 
   if (__builtin_expect (data != MAP_FAILED, 1))
     {
@@ -829,7 +822,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 	      if (nb == -1 && errno == EINTR)
 		continue;
 #endif
-              free (data);
+	      free (data);
 	      goto out;
 	    }
 	  read_ptr += nb;
@@ -843,8 +836,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
   /* Using the magic number we can test whether it really is a message
      catalog file.  */
-  if (__builtin_expect (data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED,
-			0))
+  if (__builtin_expect (data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED, 0))
     {
       /* The magic number is wrong: not a message catalog file.  */
 #ifdef HAVE_MMAP
@@ -883,16 +875,11 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
     case 0:
     case 1:
       domain->nstrings = W (domain->must_swap, data->nstrings);
-      domain->orig_tab = (const struct string_desc *)
-	((char *) data + W (domain->must_swap, data->orig_tab_offset));
-      domain->trans_tab = (const struct string_desc *)
-	((char *) data + W (domain->must_swap, data->trans_tab_offset));
+      domain->orig_tab = (const struct string_desc *) ((char *) data + W (domain->must_swap, data->orig_tab_offset));
+      domain->trans_tab = (const struct string_desc *) ((char *) data + W (domain->must_swap, data->trans_tab_offset));
       domain->hash_size = W (domain->must_swap, data->hash_tab_size);
       domain->hash_tab =
-	(domain->hash_size > 2
-	 ? (const nls_uint32 *)
-	   ((char *) data + W (domain->must_swap, data->hash_tab_offset))
-	 : NULL);
+	(domain->hash_size > 2 ? (const nls_uint32 *) ((char *) data + W (domain->must_swap, data->hash_tab_offset)) : NULL);
       domain->must_swap_hash_tab = domain->must_swap;
 
       /* Now dispatch on the minor revision.  */
@@ -912,8 +899,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 	      /* This is invalid.  These minor revisions need a hash table.  */
 	      goto invalid;
 
-	    n_sysdep_strings =
-	      W (domain->must_swap, data->n_sysdep_strings);
+	    n_sysdep_strings = W (domain->must_swap, data->n_sysdep_strings);
 	    if (n_sysdep_strings > 0)
 	      {
 		nls_uint32 n_sysdep_segments;
@@ -930,21 +916,14 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 		unsigned int i, j;
 
 		/* Get the values of the system dependent segments.  */
-		n_sysdep_segments =
-		  W (domain->must_swap, data->n_sysdep_segments);
+		n_sysdep_segments = W (domain->must_swap, data->n_sysdep_segments);
 		sysdep_segments = (const struct sysdep_segment *)
-		  ((char *) data
-		   + W (domain->must_swap, data->sysdep_segments_offset));
-		sysdep_segment_values =
-		  (const char **)
-		  alloca (n_sysdep_segments * sizeof (const char *));
+		  ((char *) data + W (domain->must_swap, data->sysdep_segments_offset));
+		sysdep_segment_values = (const char **) alloca (n_sysdep_segments * sizeof (const char *));
 		for (i = 0; i < n_sysdep_segments; i++)
 		  {
-		    const char *name =
-		      (char *) data
-		      + W (domain->must_swap, sysdep_segments[i].offset);
-		    nls_uint32 namelen =
-		      W (domain->must_swap, sysdep_segments[i].length);
+		    const char *name = (char *) data + W (domain->must_swap, sysdep_segments[i].offset);
+		    nls_uint32 namelen = W (domain->must_swap, sysdep_segments[i].length);
 
 		    if (!(namelen > 0 && name[namelen - 1] == '\0'))
 		      {
@@ -955,12 +934,8 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 		    sysdep_segment_values[i] = get_sysdep_segment_value (name);
 		  }
 
-		orig_sysdep_tab = (const nls_uint32 *)
-		  ((char *) data
-		   + W (domain->must_swap, data->orig_sysdep_tab_offset));
-		trans_sysdep_tab = (const nls_uint32 *)
-		  ((char *) data
-		   + W (domain->must_swap, data->trans_sysdep_tab_offset));
+		orig_sysdep_tab = (const nls_uint32 *) ((char *) data + W (domain->must_swap, data->orig_sysdep_tab_offset));
+		trans_sysdep_tab = (const nls_uint32 *) ((char *) data + W (domain->must_swap, data->trans_sysdep_tab_offset));
 
 		/* Compute the amount of additional memory needed for the
 		   system dependent strings and the augmented hash table.
@@ -976,16 +951,11 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 		    for (j = 0; j < 2; j++)
 		      {
 			const struct sysdep_string *sysdep_string =
-			  (const struct sysdep_string *)
-			  ((char *) data
-			   + W (domain->must_swap,
-				j == 0
-				? orig_sysdep_tab[i]
-				: trans_sysdep_tab[i]));
+			  (const struct sysdep_string *) ((char *) data + W (domain->must_swap,
+									     j == 0
+									     ? orig_sysdep_tab[i] : trans_sysdep_tab[i]));
 			size_t need = 0;
-			const char *static_segments =
-			  (char *) data
-			  + W (domain->must_swap, sysdep_string->offset);
+			const char *static_segments = (char *) data + W (domain->must_swap, sysdep_string->offset);
 			const struct segment_pair *p = sysdep_string->segments;
 
 			if (W (domain->must_swap, p->sysdepref) != SEGMENTS_END)
@@ -1021,11 +991,9 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
 			/* The last static segment must end in a NUL.  */
 			{
-			  nls_uint32 segsize =
-			    W (domain->must_swap, p->segsize);
+			  nls_uint32 segsize = W (domain->must_swap, p->segsize);
 
-			  if (!(segsize > 0
-				&& static_segments[segsize - 1] == '\0'))
+			  if (!(segsize > 0 && static_segments[segsize - 1] == '\0'))
 			    {
 			      /* Invalid.  */
 			      freea (sysdep_segment_values);
@@ -1044,8 +1012,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 			memneed += needs[0] + needs[1];
 		      }
 		  }
-		memneed += 2 * n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
+		memneed += 2 * n_inmem_sysdep_strings * sizeof (struct sysdep_string_desc);
 
 		if (n_inmem_sysdep_strings > 0)
 		  {
@@ -1058,11 +1025,9 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
 		    domain->malloced = mem;
 		    inmem_orig_sysdep_tab = (struct sysdep_string_desc *) mem;
-		    mem += n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
+		    mem += n_inmem_sysdep_strings * sizeof (struct sysdep_string_desc);
 		    inmem_trans_sysdep_tab = (struct sysdep_string_desc *) mem;
-		    mem += n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
+		    mem += n_inmem_sysdep_strings * sizeof (struct sysdep_string_desc);
 		    inmem_hash_tab = (nls_uint32 *) mem;
 		    mem += domain->hash_size * sizeof (nls_uint32);
 
@@ -1075,30 +1040,24 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 			for (j = 0; j < 2; j++)
 			  {
 			    const struct sysdep_string *sysdep_string =
-			      (const struct sysdep_string *)
-			      ((char *) data
-			       + W (domain->must_swap,
-				    j == 0
-				    ? orig_sysdep_tab[i]
-				    : trans_sysdep_tab[i]));
-			    const struct segment_pair *p =
-			      sysdep_string->segments;
+			      (const struct sysdep_string *) ((char *) data + W (domain->must_swap,
+										 j == 0
+										 ? orig_sysdep_tab[i] : trans_sysdep_tab[i]));
+			    const struct segment_pair *p = sysdep_string->segments;
 
-			    if (W (domain->must_swap, p->sysdepref)
-				!= SEGMENTS_END)
+			    if (W (domain->must_swap, p->sysdepref) != SEGMENTS_END)
 			      for (;; p++)
 				{
 				  nls_uint32 sysdepref;
 
-				  sysdepref =
-				    W (domain->must_swap, p->sysdepref);
+				  sysdepref = W (domain->must_swap, p->sysdepref);
 				  if (sysdepref == SEGMENTS_END)
 				    break;
 
 				  if (sysdep_segment_values[sysdepref] == NULL)
 				    {
 				      /* This particular string pair is
-					 invalid.  */
+				         invalid.  */
 				      valid = 0;
 				      break;
 				    }
@@ -1113,34 +1072,24 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 			    for (j = 0; j < 2; j++)
 			      {
 				const struct sysdep_string *sysdep_string =
-				  (const struct sysdep_string *)
-				  ((char *) data
-				   + W (domain->must_swap,
-					j == 0
-					? orig_sysdep_tab[i]
-					: trans_sysdep_tab[i]));
-				const char *static_segments =
-				  (char *) data
-				  + W (domain->must_swap, sysdep_string->offset);
-				const struct segment_pair *p =
-				  sysdep_string->segments;
+				  (const struct sysdep_string *) ((char *) data + W (domain->must_swap,
+										     j == 0
+										     ? orig_sysdep_tab[i]
+										     : trans_sysdep_tab[i]));
+				const char *static_segments = (char *) data + W (domain->must_swap, sysdep_string->offset);
+				const struct segment_pair *p = sysdep_string->segments;
 
 				/* Concatenate the segments, and fill
 				   inmem_orig_sysdep_tab[k] (for j == 0) and
 				   inmem_trans_sysdep_tab[k] (for j == 1).  */
 
 				struct sysdep_string_desc *inmem_tab_entry =
-				  (j == 0
-				   ? inmem_orig_sysdep_tab
-				   : inmem_trans_sysdep_tab)
-				  + k;
+				  (j == 0 ? inmem_orig_sysdep_tab : inmem_trans_sysdep_tab) + k;
 
-				if (W (domain->must_swap, p->sysdepref)
-				    == SEGMENTS_END)
+				if (W (domain->must_swap, p->sysdepref) == SEGMENTS_END)
 				  {
 				    /* Only one static segment.  */
-				    inmem_tab_entry->length =
-				      W (domain->must_swap, p->segsize);
+				    inmem_tab_entry->length = W (domain->must_swap, p->segsize);
 				    inmem_tab_entry->pointer = static_segments;
 				  }
 				else
@@ -1149,10 +1098,8 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
 				    for (;; p++)
 				      {
-					nls_uint32 segsize =
-					  W (domain->must_swap, p->segsize);
-					nls_uint32 sysdepref =
-					  W (domain->must_swap, p->sysdepref);
+					nls_uint32 segsize = W (domain->must_swap, p->segsize);
+					nls_uint32 sysdepref = W (domain->must_swap, p->sysdepref);
 					size_t n;
 
 					if (segsize > 0)
@@ -1170,8 +1117,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 					mem += n;
 				      }
 
-				    inmem_tab_entry->length =
-				      mem - inmem_tab_entry->pointer;
+				    inmem_tab_entry->length = mem - inmem_tab_entry->pointer;
 				  }
 			      }
 
@@ -1183,15 +1129,13 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
 		    /* Compute the augmented hash table.  */
 		    for (i = 0; i < domain->hash_size; i++)
-		      inmem_hash_tab[i] =
-			W (domain->must_swap_hash_tab, domain->hash_tab[i]);
+		      inmem_hash_tab[i] = W (domain->must_swap_hash_tab, domain->hash_tab[i]);
 		    for (i = 0; i < n_inmem_sysdep_strings; i++)
 		      {
 			const char *msgid = inmem_orig_sysdep_tab[i].pointer;
 			nls_uint32 hash_val = __hash_string (msgid);
 			nls_uint32 idx = hash_val % domain->hash_size;
-			nls_uint32 incr =
-			  1 + (hash_val % (domain->hash_size - 2));
+			nls_uint32 incr = 1 + (hash_val % (domain->hash_size - 2));
 
 			for (;;)
 			  {
@@ -1262,8 +1206,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
   /* Get the header entry and look for a plural specification.  */
 #ifdef IN_LIBGLOCALE
-  nullentry =
-    _nl_find_msg (domain_file, domainbinding, NULL, "", &nullentrylen);
+  nullentry = _nl_find_msg (domain_file, domainbinding, NULL, "", &nullentrylen);
 #else
   nullentry = _nl_find_msg (domain_file, domainbinding, "", 0, &nullentrylen);
 #endif
@@ -1278,13 +1221,13 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
     }
   EXTRACT_PLURAL_EXPRESSION (nullentry, &domain->plural, &domain->nplurals);
 
- out:
+out:
   if (fd != -1)
     close (fd);
 
   domain_file->decided = 1;
 
- done:
+done:
 #ifdef _LIBC
   __libc_lock_unlock_recursive (lock);
 #else
@@ -1318,11 +1261,11 @@ _nl_unload_domain (struct loaded_domain *domain)
 
   free (domain->malloced);
 
-# ifdef _POSIX_MAPPED_FILES
+#  ifdef _POSIX_MAPPED_FILES
   if (domain->use_mmap)
     munmap ((caddr_t) domain->data, domain->mmap_size);
   else
-# endif	/* _POSIX_MAPPED_FILES */
+#  endif	/* _POSIX_MAPPED_FILES */
     free ((void *) domain->data);
 
   free (domain);

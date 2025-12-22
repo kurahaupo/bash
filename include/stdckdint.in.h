@@ -16,9 +16,9 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _GL_STDCKDINT_H
-#define _GL_STDCKDINT_H
+#  define _GL_STDCKDINT_H
 
-#include "intprops-internal.h"
+#  include "intprops-internal.h"
 
 /* Store into *R the low-order bits of A + B, A - B, A * B, respectively.
    Return 1 if the result overflows, 0 otherwise.
@@ -28,8 +28,8 @@
    These are like the standard macros introduced in C23, except that
    arguments should not have side effects.  */
 
-#define ckd_add(r, a, b) ((bool) _GL_INT_ADD_WRAPV (a, b, r))
-#define ckd_sub(r, a, b) ((bool) _GL_INT_SUBTRACT_WRAPV (a, b, r))
-#define ckd_mul(r, a, b) ((bool) _GL_INT_MULTIPLY_WRAPV (a, b, r))
+#  define ckd_add(r, a, b) ((bool) _GL_INT_ADD_WRAPV (a, b, r))
+#  define ckd_sub(r, a, b) ((bool) _GL_INT_SUBTRACT_WRAPV (a, b, r))
+#  define ckd_mul(r, a, b) ((bool) _GL_INT_MULTIPLY_WRAPV (a, b, r))
 
-#endif /* _GL_STDCKDINT_H */
+#endif		/* _GL_STDCKDINT_H */

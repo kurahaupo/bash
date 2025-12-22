@@ -17,14 +17,14 @@
    You should have received a copy of the GNU General Public License
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
-   
+
 #include <config.h>
 
 #if !defined (HAVE_STRCASECMP)
 
-#include <stdc.h>
-#include <bashansi.h>
-#include <chartypes.h>
+#  include <stdc.h>
+#  include <bashansi.h>
+#  include <chartypes.h>
 
 /* Compare at most COUNT characters from string1 to string2.  Case
    doesn't matter. */
@@ -67,7 +67,7 @@ strcasecmp (const char *string1, const char *string2)
   if (s1 == s2)
     return (0);
 
-  while ((r = TOLOWER ((unsigned char)*s1) - TOLOWER ((unsigned char)*s2)) == 0)
+  while ((r = TOLOWER ((unsigned char) *s1) - TOLOWER ((unsigned char) *s2)) == 0)
     {
       if (*s1++ == '\0')
 	return 0;
@@ -76,4 +76,4 @@ strcasecmp (const char *string1, const char *string2)
 
   return (r);
 }
-#endif /* !HAVE_STRCASECMP */
+#endif		/* !HAVE_STRCASECMP */

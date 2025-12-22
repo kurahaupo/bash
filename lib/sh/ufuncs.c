@@ -25,13 +25,13 @@
 #include "posixtime.h"
 
 #if defined (HAVE_UNISTD_H)
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 
 #include <errno.h>
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #include "quit.h"
 
@@ -57,7 +57,7 @@ falarm (unsigned int secs, unsigned int usecs)
   it.it_value.tv_sec = secs;
   it.it_value.tv_usec = usecs;
 
-  if (setitimer(ITIMER_REAL, &it, &oit) < 0)
+  if (setitimer (ITIMER_REAL, &it, &oit) < 0)
     return (-1);		/* XXX will be converted to unsigned */
 
   /* Backwards compatibility with alarm(3) */
@@ -79,7 +79,7 @@ falarm (unsigned int secs, unsigned int usecs)
     }
   return (alarm (secs));
 }
-#endif /* !HAVE_SETITIMER */
+#endif		/* !HAVE_SETITIMER */
 
 /* A version of sleep using fractional seconds and select.  I'd like to use
    `usleep', but it's already taken */
@@ -103,7 +103,7 @@ nsleep (unsigned int sec, unsigned int usec)
       req = rem;
     }
   return r;
-}	
+}
 #endif
 
 #if defined (HAVE_TIMEVAL) && (defined (HAVE_SELECT) || defined (HAVE_PSELECT))
@@ -131,15 +131,15 @@ ssleep (unsigned int sec, unsigned int usec)
   sigemptyset (&prevmask);
   tv.tv_sec = sec;
   tv.tv_usec = usec;
-#  endif /* !HAVE_PSELECT */
+#  endif	/* !HAVE_PSELECT */
 
   do
     {
 #  if defined (HAVE_PSELECT)
-      r = pselect(0, (fd_set *)0, (fd_set *)0, (fd_set *)0, &ts, &blocked_sigs);
+      r = pselect (0, (fd_set *) 0, (fd_set *) 0, (fd_set *) 0, &ts, &blocked_sigs);
 #  else
       sigprocmask (SIG_SETMASK, &blocked_sigs, &prevmask);
-      r = select(0, (fd_set *)0, (fd_set *)0, (fd_set *)0, &tv);
+      r = select (0, (fd_set *) 0, (fd_set *) 0, (fd_set *) 0, &tv);
       sigprocmask (SIG_SETMASK, &prevmask, NULL);
 #  endif
       e = errno;
@@ -155,22 +155,22 @@ ssleep (unsigned int sec, unsigned int usec)
 
 #if !defined (HAVE_SELECT)
 static int
-ancientsleep(unsigned int sec, unsigned int usec)
+ancientsleep (unsigned int sec, unsigned int usec)
 {
-  if (usec >= 500000)	/* round */
-   sec++;
-  return (sleep(sec));
+  if (usec >= 500000)		/* round */
+    sec++;
+  return (sleep (sec));
 }
 #endif
 
 int
-fsleep(unsigned int sec, unsigned int usec)
+fsleep (unsigned int sec, unsigned int usec)
 {
 #if defined (HAVE_NANOSLEEP)
   return (nsleep (sec, usec));
 #elif defined (HAVE_TIMEVAL) && (defined (HAVE_SELECT) || defined (HAVE_PSELECT))
   return (ssleep (sec, usec));
-#else /* !HAVE_TIMEVAL || !HAVE_SELECT */
+#else		/* !HAVE_TIMEVAL || !HAVE_SELECT */
   return (ancientsleep (sec, usec));
-#endif /* !HAVE_TIMEVAL || !HAVE_SELECT */
+#endif		/* !HAVE_TIMEVAL || !HAVE_SELECT */
 }

@@ -43,7 +43,7 @@ extern int errno;
 #endif
 
 #if defined (__CYGWIN__)
-#include <sys/cygwin.h>
+#  include <sys/cygwin.h>
 
 static inline int
 _is_cygdrive (char *path)
@@ -55,7 +55,7 @@ _is_cygdrive (char *path)
   /* If the path is the first part of a network path, treat it as
      existing. */
   if (path[0] == '/' && path[1] == '/' && !strchr (path + 2, '/'))
-    return 1; 
+    return 1;
   /* Otherwise check for /cygdrive prefix. */
   if (first_time)
     {
@@ -67,7 +67,7 @@ _is_cygdrive (char *path)
     }
   return !strcasecmp (path, user) || !strcasecmp (path, system);
 }
-#endif /* __CYGWIN__ */	
+#endif		/* __CYGWIN__ */
 
 /* Return 1 if PATH corresponds to a directory.  A function for debugging. */
 static int
@@ -110,11 +110,11 @@ sh_canonpath (char *path, int flags)
 
   /* POSIX.2 says to leave a leading `//' alone.  On cygwin, we skip over any
      leading `x:' (dos drive name). */
-  if (rooted = ROOTEDPATH(path))
+  if (rooted = ROOTEDPATH (path))
     {
       stub_char = DIRSEP;
 #if defined (__CYGWIN__)
-      base = (ISALPHA((unsigned char)result[0]) && result[1] == ':') ? result + 3 : result + 1;
+      base = (ISALPHA ((unsigned char) result[0]) && result[1] == ':') ? result + 3 : result + 1;
 #else
       base = result + 1;
 #endif
@@ -125,7 +125,7 @@ sh_canonpath (char *path, int flags)
     {
       stub_char = '.';
 #if defined (__CYGWIN__)
-      base = (ISALPHA((unsigned char)result[0]) && result[1] == ':') ? result + 2 : result;
+      base = (ISALPHA ((unsigned char) result[0]) && result[1] == ':') ? result + 2 : result;
 #else
       base = result;
 #endif
@@ -134,23 +134,23 @@ sh_canonpath (char *path, int flags)
 
   /*
    * invariants:
-   *	  base points to the portion of the path we want to modify
+   *      base points to the portion of the path we want to modify
    *      p points at beginning of path element we're considering.
    *      q points just past the last path element we wrote (no slash).
    *      dotdot points just past the point where .. cannot backtrack
-   *	  any further (no slash).
+   *      any further (no slash).
    */
   p = q = dotdot = base;
 
   while (*p)
     {
-      if (ISDIRSEP(p[0])) /* null element */
+      if (ISDIRSEP (p[0]))	/* null element */
 	p++;
-      else if(p[0] == '.' && PATHSEP(p[1]))	/* . and ./ */
-	p += 1; 	/* don't count the separator in case it is nul */
-      else if (p[0] == '.' && p[1] == '.' && PATHSEP(p[2])) /* .. and ../ */
+      else if (p[0] == '.' && PATHSEP (p[1])) /* . and ./ */
+	p += 1;			/* don't count the separator in case it is nul */
+      else if (p[0] == '.' && p[1] == '.' && PATHSEP (p[2])) /* .. and ../ */
 	{
-	  p += 2; /* skip `..' */
+	  p += 2;		/* skip `..' */
 	  if (q > dotdot)	/* can backtrack */
 	    {
 	      if (flags & PATH_CHECKDOTDOT)
@@ -165,12 +165,12 @@ sh_canonpath (char *path, int flags)
 		    {
 		      if ((flags & PATH_NOALLOC) == 0)
 			free (result);
-		      return ((char *)NULL);
+		      return ((char *) NULL);
 		    }
 		  *q = c;
 		}
 
-	      while (--q > dotdot && ISDIRSEP(*q) == 0)
+	      while (--q > dotdot && ISDIRSEP (*q) == 0)
 		;
 	    }
 	  else if (rooted == 0)
@@ -183,12 +183,12 @@ sh_canonpath (char *path, int flags)
 	      dotdot = q;
 	    }
 	}
-      else	/* real path element */
+      else			/* real path element */
 	{
 	  /* add separator if not at start of work portion of result */
 	  if (q != base)
 	    *q++ = DIRSEP;
-	  while (*p && (ISDIRSEP(*p) == 0))
+	  while (*p && (ISDIRSEP (*p) == 0))
 	    *q++ = *p++;
 	  /* Check here for a valid directory with _path_isdir. */
 	  if (flags & PATH_CHECKEXISTS)
@@ -196,14 +196,14 @@ sh_canonpath (char *path, int flags)
 	      char c;
 
 	      /* Make sure what we have so far corresponds to a valid
-		 path before we chop some of it off. */
+	         path before we chop some of it off. */
 	      c = *q;
 	      *q = '\0';
 	      if (_path_isdir (result) == 0)
 		{
 		  if ((flags & PATH_NOALLOC) == 0)
 		    free (result);
-		  return ((char *)NULL);
+		  return ((char *) NULL);
 		}
 	      *q = c;
 	    }
@@ -218,7 +218,7 @@ sh_canonpath (char *path, int flags)
   /* If the result starts with `//', but the original path does not, we
      can turn the // into /.  Because of how we set `base', this should never
      be true, but it's a sanity check. */
-  if (DOUBLE_SLASH(result) && double_slash_path == 0)
+  if (DOUBLE_SLASH (result) && double_slash_path == 0)
     {
       if (result[2] == '\0')	/* short-circuit for bare `//' */
 	result[1] = '\0';

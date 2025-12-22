@@ -55,20 +55,20 @@ static char *print_doc[] = {
   "Output the arguments.  The -f option means to use the argument as a",
   "format string as would be supplied to printf(1).  The rest of the",
   "options are as in ksh.",
-  (char *)NULL
+  (char *) NULL
 };
 
 struct builtin print_struct = {
-	"print",
-	print_builtin,
-	BUILTIN_ENABLED,
-	print_doc,
-	"print [-Rnprs] [-u unit] [-f format] [arguments]",
-	(char *)0
+  "print",
+  print_builtin,
+  BUILTIN_ENABLED,
+  print_doc,
+  "print [-Rnprs] [-u unit] [-f format] [arguments]",
+  (char *) 0
 };
 
 #ifndef ISOPTION
-#define ISOPTION(s, c)	(s[0] == '-' && s[2] == '\0' && s[1] == c)
+#  define ISOPTION(s, c)	(s[0] == '-' && s[2] == '\0' && s[1] == c)
 #endif
 
 int
@@ -107,9 +107,9 @@ print_builtin (WORD_LIST *list)
 	  sflag = 1;
 	  break;
 	case 'p':
-	  break;	/* NOP */
+	  break;		/* NOP */
 	case 'u':
-	  if (all_digits (list_optarg) && valid_number (list_optarg, &lfd) && lfd == (int)lfd)
+	  if (all_digits (list_optarg) && valid_number (list_optarg, &lfd) && lfd == (int) lfd)
 	    ofd = lfd;
 	  else
 	    {
@@ -121,7 +121,7 @@ print_builtin (WORD_LIST *list)
 	case 'f':
 	  pfmt = list_optarg;
 	  break;
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -141,7 +141,7 @@ opt_end:
       w = make_word (pfmt);
       nlist = make_word_list (w, list);
       r = printf_builtin (nlist);
-      nlist->next = (WORD_LIST *)NULL;
+      nlist->next = (WORD_LIST *) NULL;
       dispose_words (nlist);
       return (r);
     }
@@ -157,9 +157,9 @@ opt_end:
       if (nflag == 0)
 	fprintf (ofp, "\n");
       fflush (ofp);
-      return (0);	
+      return (0);
     }
-        
+
   r = printargs (list, ofp);
   if (r && nflag == 0)
     fprintf (ofp, "\n");
@@ -182,9 +182,9 @@ printargs (WORD_LIST *list, FILE *ofp)
 	fprintf (ofp, "%s", ostr);
       free (ostr);
       if (sawc)
-        return (0);
+	return (0);
       if (l->next)
-        fprintf (ofp, " ");
+	fprintf (ofp, " ");
     }
   return (1);
 }

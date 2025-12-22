@@ -22,11 +22,11 @@
 
 #if !defined (HAVE_MBSCMP) && defined (HANDLE_MULTIBYTE)
 
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
+#  include <stdlib.h>
+#  include <stddef.h>
+#  include <string.h>
 
-#include <wchar.h>
+#  include <wchar.h>
 
 extern int locale_utf8locale;
 
@@ -53,16 +53,15 @@ mbscmp (const char *mbs1, const char *mbs2)
       else if (len2 == 0)
 	return 1;
       else if (len1 > 0 && len2 < 0)
-        return -1;
+	return -1;
       else if (len1 < 0 && len2 > 0)
-        return 1;
+	return 1;
       else if (len1 < 0 && len2 < 0)
 	{
 	  len1 = strlen (mbs1);
 	  len2 = strlen (mbs2);
 	  return (len1 == len2 ? memcmp (mbs1, mbs2, len1)
-			       : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1)
-						: (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
+		  : ((len1 < len2) ? (memcmp (mbs1, mbs2, len1) > 0 ? 1 : -1) : (memcmp (mbs1, mbs2, len2) >= 0 ? 1 : -1)));
 	}
 
       mbs1 += len1;

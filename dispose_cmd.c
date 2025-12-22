@@ -51,10 +51,10 @@ dispose_command (COMMAND *command)
 	register FOR_COM *c;
 #if defined (SELECT_COMMAND)
 	if (command->type == cm_select)
-	  c = (FOR_COM *)command->value.Select;
+	  c = (FOR_COM *) command->value.Select;
 	else
 #endif
-	c = command->value.For;
+	  c = command->value.For;
 	dispose_word (c->name);
 	dispose_words (c->map_list);
 	dispose_command (c->action);
@@ -75,7 +75,7 @@ dispose_command (COMMAND *command)
 	free (c);
 	break;
       }
-#endif /* ARITH_FOR_COMMAND */
+#endif		/* ARITH_FOR_COMMAND */
 
     case cm_group:
       {
@@ -107,7 +107,7 @@ dispose_command (COMMAND *command)
 	c = command->value.Case;
 	dispose_word (c->word);
 
-	for (p = c->clauses; p; )
+	for (p = c->clauses; p;)
 	  {
 	    dispose_words (p->patterns);
 	    dispose_command (p->action);
@@ -175,7 +175,7 @@ dispose_command (COMMAND *command)
 	free (c);
 	break;
       }
-#endif /* DPAREN_ARITHMETIC */
+#endif		/* DPAREN_ARITHMETIC */
 
 #if defined (COND_COMMAND)
     case cm_cond:
@@ -186,7 +186,7 @@ dispose_command (COMMAND *command)
 	dispose_cond_node (c);
 	break;
       }
-#endif /* COND_COMMAND */
+#endif		/* COND_COMMAND */
 
     case cm_function_def:
       {
@@ -226,7 +226,7 @@ dispose_cond_node (COND_COM *cond)
       free (cond);
     }
 }
-#endif /* COND_COMMAND */
+#endif		/* COND_COMMAND */
 
 void
 dispose_function_def_contents (FUNCTION_DEF *c)
@@ -317,8 +317,7 @@ dispose_redirects (REDIRECT *list)
 	case r_reading_until:
 	case r_deblank_reading_until:
 	  free (t->here_doc_eof);
-	/*FALLTHROUGH*/
-	case r_reading_string:
+	 /*FALLTHROUGH*/ case r_reading_string:
 	case r_output_direction:
 	case r_input_direction:
 	case r_inputa_direction:

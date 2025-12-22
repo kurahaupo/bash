@@ -20,7 +20,7 @@
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdio.h>
@@ -29,12 +29,12 @@
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 /* Generic pointer type. */
 #ifndef PTR_T
 #  define PTR_T void *
-#endif /* PTR_T */
+#endif		/* PTR_T */
 
 /* **************************************************************** */
 /*								    */

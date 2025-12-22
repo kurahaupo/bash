@@ -19,7 +19,7 @@
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include "bashtypes.h"
@@ -38,10 +38,10 @@
 
 #if !defined (PTR_T)
 #  define PTR_T void *
-#endif /* !PTR_T */
+#endif		/* !PTR_T */
 
 #if HAVE_SBRK && !HAVE_DECL_SBRK
-extern char *sbrk();
+extern char *sbrk ();
 #endif
 
 #if HAVE_SBRK && defined (USING_BASH_MALLOC)
@@ -57,7 +57,7 @@ static size_t allocated;
 /* **************************************************************** */
 
 #if HAVE_SBRK && defined (USING_BASH_MALLOC)
-#define FINDBRK() \
+#  define FINDBRK() \
 do { \
   if (brkfound == 0) \
     { \
@@ -69,22 +69,23 @@ do { \
 static size_t
 findbrk (void)
 {
-  FINDBRK();
-  return (char *)sbrk (0) - (char *)lbreak;
+  FINDBRK ();
+  return (char *) sbrk (0) - (char *) lbreak;
 }
 #else
-#define FINDBRK()
+#  define FINDBRK()
 #endif
 
 static void
 allocerr (const char *func, size_t bytes)
 {
 #if HAVE_SBRK && defined (USING_BASH_MALLOC)
-      allocated = findbrk ();
-      fatal_error (_("%s: cannot allocate %lu bytes (%lu bytes allocated)"), func, (unsigned long)bytes, (unsigned long)allocated);
+  allocated = findbrk ();
+  fatal_error (_("%s: cannot allocate %lu bytes (%lu bytes allocated)"), func, (unsigned long) bytes,
+	       (unsigned long) allocated);
 #else
-      fatal_error (_("%s: cannot allocate %lu bytes"), func, (unsigned long)bytes);
-#endif /* !HAVE_SBRK */
+  fatal_error (_("%s: cannot allocate %lu bytes"), func, (unsigned long) bytes);
+#endif		/* !HAVE_SBRK */
 }
 
 /* Return a pointer to free()able block of memory large enough
@@ -97,10 +98,10 @@ xmalloc (size_t bytes)
 
 #if defined (DEBUG)
   if (bytes == 0)
-    internal_warning("xmalloc: size argument is 0");
+    internal_warning ("xmalloc: size argument is 0");
 #endif
 
-  FINDBRK();
+  FINDBRK ();
   temp = malloc (bytes);
 
   if (temp == 0)
@@ -116,10 +117,10 @@ xrealloc (PTR_T pointer, size_t bytes)
 
 #if defined (DEBUG)
   if (bytes == 0)
-    internal_warning("xrealloc: size argument is 0");
+    internal_warning ("xrealloc: size argument is 0");
 #endif
 
-  FINDBRK();
+  FINDBRK ();
   temp = pointer ? realloc (pointer, bytes) : malloc (bytes);
 
   if (temp == 0)
@@ -139,8 +140,8 @@ xreallocarray (PTR_T ptr, size_t nmemb, size_t size)
   size_t nbytes;
 
   if (ckd_mul (&nbytes, nmemb, size))
-    allocerr ("xreallocarray", (size_t)-1);
-	        
+    allocerr ("xreallocarray", (size_t) -1);
+
   return xrealloc (ptr, nbytes);
 }
 
@@ -154,17 +155,18 @@ xfree (PTR_T string)
 }
 
 #ifdef USING_BASH_MALLOC
-#include <malloc/shmalloc.h>
+#  include <malloc/shmalloc.h>
 
 static void
 sh_allocerr (const char *func, size_t bytes, char *file, int line)
 {
-#if HAVE_SBRK
-      allocated = findbrk ();
-      fatal_error (_("%s: %s:%d: cannot allocate %lu bytes (%lu bytes allocated)"), func, file, line, (unsigned long)bytes, (unsigned long)allocated);
-#else
-      fatal_error (_("%s: %s:%d: cannot allocate %lu bytes"), func, file, line, (unsigned long)bytes);
-#endif /* !HAVE_SBRK */
+#  if HAVE_SBRK
+  allocated = findbrk ();
+  fatal_error (_("%s: %s:%d: cannot allocate %lu bytes (%lu bytes allocated)"), func, file, line, (unsigned long) bytes,
+	       (unsigned long) allocated);
+#  else
+  fatal_error (_("%s: %s:%d: cannot allocate %lu bytes"), func, file, line, (unsigned long) bytes);
+#  endif	/* !HAVE_SBRK */
 }
 
 PTR_T
@@ -172,12 +174,12 @@ sh_xmalloc (size_t bytes, char *file, int line)
 {
   PTR_T temp;
 
-#if defined (DEBUG)
+#  if defined (DEBUG)
   if (bytes == 0)
-    internal_warning("xmalloc: %s:%d: size argument is 0", file, line);
-#endif
+    internal_warning ("xmalloc: %s:%d: size argument is 0", file, line);
+#  endif
 
-  FINDBRK();
+  FINDBRK ();
   temp = sh_malloc (bytes, file, line);
 
   if (temp == 0)
@@ -191,12 +193,12 @@ sh_xrealloc (PTR_T pointer, size_t bytes, char *file, int line)
 {
   PTR_T temp;
 
-#if defined (DEBUG)
+#  if defined (DEBUG)
   if (bytes == 0)
-    internal_warning("xrealloc: %s:%d: size argument is 0", file, line);
-#endif
+    internal_warning ("xrealloc: %s:%d: size argument is 0", file, line);
+#  endif
 
-  FINDBRK();
+  FINDBRK ();
   temp = pointer ? sh_realloc (pointer, bytes, file, line) : sh_malloc (bytes, file, line);
 
   if (temp == 0)
@@ -211,8 +213,8 @@ sh_xreallocarray (PTR_T ptr, size_t nmemb, size_t size, char *file, int line)
   size_t nbytes;
 
   if (ckd_mul (&nbytes, nmemb, size))
-    sh_allocerr ("xreallocarray", (size_t)-1, file, line);
-	        
+    sh_allocerr ("xreallocarray", (size_t) -1, file, line);
+
   return sh_xrealloc (ptr, nbytes, file, line);
 }
 

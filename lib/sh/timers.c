@@ -24,7 +24,7 @@
 #include "posixtime.h"
 
 #if defined (HAVE_UNISTD_H)
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 
 #if defined (HAVE_SELECT)
@@ -41,10 +41,10 @@
 #include <errno.h>
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #ifndef FREE
-#define FREE(s)  do { if (s) free (s); } while (0)
+#  define FREE(s)  do { if (s) free (s); } while (0)
 #endif
 
 #ifndef USEC_PER_SEC
@@ -77,7 +77,7 @@ shtimer_alloc (void)
 {
   sh_timer *t;
 
-  t = (sh_timer *)xmalloc (sizeof (sh_timer));
+  t = (sh_timer *) xmalloc (sizeof (sh_timer));
   shtimer_zero (t);
   return t;
 }
@@ -175,8 +175,7 @@ shtimer_chktimeout (sh_timer *t)
 
   if (gettimeofday (&now, 0) < 0)
     return 0;
-  r = ((now.tv_sec > t->tmout.tv_sec) ||
-	(now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec));
+  r = ((now.tv_sec > t->tmout.tv_sec) || (now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec));
 
   return r;
 }
@@ -189,9 +188,9 @@ shtimer_select (sh_timer *t)
   sigset_t blocked_sigs, prevmask;
   struct timeval now, tv;
   fd_set readfds;
-#if defined (HAVE_PSELECT)
+#  if defined (HAVE_PSELECT)
   struct timespec ts;
-#endif
+#  endif
 
   /* We don't want a SIGCHLD to interrupt this */
   sigemptyset (&blocked_sigs);
@@ -207,9 +206,8 @@ shtimer_select (sh_timer *t)
 	return -1;
     }
 
-  /* If the timer has already expired, return immediately */    
-  if ((now.tv_sec > t->tmout.tv_sec) ||
-	(now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec))
+  /* If the timer has already expired, return immediately */
+  if ((now.tv_sec > t->tmout.tv_sec) || (now.tv_sec == t->tmout.tv_sec && now.tv_usec >= t->tmout.tv_usec))
     {
       if (t->flags & SHTIMER_LONGJMP)
 	sh_longjmp (t->jmpenv, 1);
@@ -228,28 +226,28 @@ shtimer_select (sh_timer *t)
       tv.tv_usec += USEC_PER_SEC;
     }
 
-#if defined (HAVE_PSELECT)
+#  if defined (HAVE_PSELECT)
   ts.tv_sec = tv.tv_sec;
   ts.tv_nsec = tv.tv_usec * 1000;
-#else
+#  else
   sigemptyset (&prevmask);
-#endif /* !HAVE_PSELECT */
+#  endif	/* !HAVE_PSELECT */
 
   nfd = (t->fd >= 0) ? t->fd + 1 : 0;
   FD_ZERO (&readfds);
   if (t->fd >= 0)
     FD_SET (t->fd, &readfds);
 
-#if defined (HAVE_PSELECT)
-  r = pselect(nfd, &readfds, (fd_set *)0, (fd_set *)0, &ts, &blocked_sigs);
-#else
+#  if defined (HAVE_PSELECT)
+  r = pselect (nfd, &readfds, (fd_set *) 0, (fd_set *) 0, &ts, &blocked_sigs);
+#  else
   sigprocmask (SIG_SETMASK, &blocked_sigs, &prevmask);
-  r = select(nfd, &readfds, (fd_set *)0, (fd_set *)0, &tv);
+  r = select (nfd, &readfds, (fd_set *) 0, (fd_set *) 0, &tv);
   sigprocmask (SIG_SETMASK, &prevmask, NULL);
-#endif
+#  endif
 
   if (r < 0)
-    return r;		/* caller will handle */
+    return r;			/* caller will handle */
   else if (r == 0 && (t->flags & SHTIMER_LONGJMP))
     sh_longjmp (t->jmpenv, 1);
   else if (r == 0 && t->tm_handler)
@@ -257,7 +255,7 @@ shtimer_select (sh_timer *t)
   else
     return r;
 }
-#endif /* !HAVE_TIMEVAL || !HAVE_SELECT */
+#endif		/* !HAVE_TIMEVAL || !HAVE_SELECT */
 
 int
 shtimer_alrm (sh_timer *t)

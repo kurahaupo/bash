@@ -33,23 +33,23 @@
 #define SAFECHAR(c)   ((c) == ' ' || (c) == '\t')
 
 #ifndef RUBOUT
-#define RUBOUT 0x7f
+#  define RUBOUT 0x7f
 #endif
 
 #ifndef CTRL_CHAR
-#define CTRL_CHAR(c)	((c) < 0x20)
+#  define CTRL_CHAR(c)	((c) < 0x20)
 #endif
 
 #ifndef META_CHAR
-#define META_CHAR(c)	((c) > 0x7f && (c) <= UCHAR_MAX)
+#  define META_CHAR(c)	((c) > 0x7f && (c) <= UCHAR_MAX)
 #endif
 
 #ifndef UNCTRL
-#define UNCTRL(c)	(TOUPPER ((c) | 0x40))
+#  define UNCTRL(c)	(TOUPPER ((c) | 0x40))
 #endif
 
 #ifndef UNMETA
-#define UNMETA(c)	((c) & 0x7f)
+#  define UNMETA(c)	((c) & 0x7f)
 #endif
 
 int
@@ -102,11 +102,11 @@ sh_charvis (const char *s, size_t *sindp, size_t slen, char *ret, size_t *rindp)
     }
   else
     ret[ri++] = s[si++];
-  
+
   *sindp = si;
   *rindp = ri;
 
-  return si;    
+  return si;
 }
 
 /* Return a new string with `unsafe' non-graphical characters in S rendered
@@ -124,7 +124,7 @@ sh_strvis (const char *string)
     return 0;
   if (*string == '\0')
     {
-      if ((ret = (char *)malloc (1)) == 0)
+      if ((ret = (char *) malloc (1)) == 0)
 	return 0;
       ret[0] = '\0';
       return ret;
@@ -133,7 +133,7 @@ sh_strvis (const char *string)
   slen = strlen (string);
   retsize = 3 * slen + 1;
 
-  ret = (char *)malloc (retsize);
+  ret = (char *) malloc (retsize);
   if (ret == 0)
     return 0;
 

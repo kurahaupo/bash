@@ -30,7 +30,7 @@ template_builtin (WORD_LIST *list)
     {
       switch (opt)
 	{
-	CASE_HELPOPT;
+	  CASE_HELPOPT;
 	default:
 	  builtin_usage ();
 	  return (EX_USAGE);
@@ -56,17 +56,16 @@ template_builtin_unload (char *name)
 }
 
 char *template_doc[] = {
-	"Short description.",
-	""
-	"Longer description of builtin and usage.",
-	(char *)NULL
+  "Short description.",
+  "" "Longer description of builtin and usage.",
+  (char *) NULL
 };
 
 struct builtin template_struct = {
-	"template",			/* builtin name */
-	template_builtin,		/* function implementing the builtin */
-	BUILTIN_ENABLED,		/* initial flags for builtin */
-	template_doc,			/* array of long documentation strings. */
-	"template",			/* usage synopsis; becomes short_doc */
-	0				/* reserved for internal use */
+  "template",			/* builtin name */
+  template_builtin,		/* function implementing the builtin */
+  BUILTIN_ENABLED,		/* initial flags for builtin */
+  template_doc,			/* array of long documentation strings. */
+  "template",			/* usage synopsis; becomes short_doc */
+  0				/* reserved for internal use */
 };

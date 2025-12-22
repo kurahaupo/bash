@@ -31,13 +31,13 @@
 #include <fcntl.h>
 #if defined (HAVE_SYS_FILE_H)
 #  include <sys/file.h>
-#endif /* HAVE_SYS_FILE_H */
+#endif		/* HAVE_SYS_FILE_H */
 
 #include <signal.h>
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#endif		/* HAVE_UNISTD_H */
 
 #include "bashansi.h"
 
@@ -52,7 +52,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 #if !defined (O_NDELAY) && defined (O_NONBLOCK)
 #  define O_NDELAY O_NONBLOCK	/* Posix style */
@@ -81,7 +81,7 @@ input_avail (int fd)
   FD_SET (fd, &exceptfds);
   timeout.tv_sec = 0;
   timeout.tv_usec = 0;
-  result = select (fd + 1, &readfds, (fd_set *)NULL, &exceptfds, &timeout);
+  result = select (fd + 1, &readfds, (fd_set *) NULL, &exceptfds, &timeout);
   return ((result <= 0) ? 0 : 1);
 #endif
 
@@ -121,7 +121,7 @@ nchars_avail (int fd, int nchars)
   FD_SET (fd, &exceptfds);
 #endif
 #if defined (HAVE_SELECT) || defined (HAVE_PSELECT)
-  sigprocmask (SIG_BLOCK, (sigset_t *)NULL, &set);
+  sigprocmask (SIG_BLOCK, (sigset_t *) NULL, &set);
 #  ifdef SIGCHLD
   sigaddset (&set, SIGCHLD);
 #  endif
@@ -133,22 +133,22 @@ nchars_avail (int fd, int nchars)
       result = 0;
 #if defined (HAVE_PSELECT)
       /* XXX - use pselect(2) to block SIGCHLD atomically */
-      result = pselect (fd + 1, &readfds, (fd_set *)NULL, &exceptfds, (struct timespec *)NULL, &set);
+      result = pselect (fd + 1, &readfds, (fd_set *) NULL, &exceptfds, (struct timespec *) NULL, &set);
 #elif defined (HAVE_SELECT)
       sigprocmask (SIG_BLOCK, &set, &oset);
-      result = select (fd + 1, &readfds, (fd_set *)NULL, &exceptfds, (struct timeval *)NULL);
-      sigprocmask (SIG_BLOCK, &oset, (sigset_t *)NULL);
+      result = select (fd + 1, &readfds, (fd_set *) NULL, &exceptfds, (struct timeval *) NULL);
+      sigprocmask (SIG_BLOCK, &oset, (sigset_t *) NULL);
 #endif
       if (result < 0)
-        return -1;
+	return -1;
 
 #if defined (FIONREAD)
       errno = 0;
       result = ioctl (fd, FIONREAD, &chars_avail);
       if (result == -1 && errno == EIO)
-        return -1;
+	return -1;
       if (chars_avail >= nchars)
-        break;
+	break;
 #else
       break;
 #endif

@@ -30,42 +30,42 @@ INTERNAL_GLOB_PATTERN_P (const GCHAR *pattern)
   p = pattern;
   bopen = bsquote = 0;
 
-  while ((c = *p++) != L('\0'))
+  while ((c = *p++) != L ('\0'))
     switch (c)
       {
-      case L('?'):
-      case L('*'):
+      case L ('?'):
+      case L ('*'):
 	return 1;
 
-      case L('['):      /* Only accept an open brace if there is a close */
-	bopen++;        /* brace to match it.  Bracket expressions must be */
-	continue;       /* complete, according to Posix.2 */
-      case L(']'):
+      case L ('['):		/* Only accept an open brace if there is a close */
+	bopen++;		/* brace to match it.  Bracket expressions must be */
+	continue;		/* complete, according to Posix.2 */
+      case L (']'):
 	if (bopen)
 	  return 1;
 	continue;
 
-      case L('+'):         /* extended matching operators */
-      case L('@'):
-      case L('!'):
-	if (*p == L('('))  /*) */
+      case L ('+'):		/* extended matching operators */
+      case L ('@'):
+      case L ('!'):
+	if (*p == L ('('))	/*) */
 	  return 1;
 	continue;
 
-      case L('\\'):
+      case L ('\\'):
 	/* Don't let the pattern end in a backslash (GMATCH returns no match
 	   if the pattern ends in a backslash anyway), but otherwise note that 
 	   we have seen this, since the matching engine uses backslash as an
 	   escape character and it can be removed. We return 2 later if we
 	   have seen only backslash-escaped characters, so interested callers
 	   know they can shortcut and just dequote the pathname. */
-	if (*p != L('\0'))
+	if (*p != L ('\0'))
 	  {
 	    p++;
 	    bsquote = 1;
 	    continue;
 	  }
-	else 	/* (*p == L('\0')) */
+	else			/* (*p == L('\0')) */
 	  return 0;
       }
 

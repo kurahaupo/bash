@@ -21,9 +21,9 @@
 /* XXX THIS HAS BEEN MODIFIED FOR INCORPORATION INTO BASH XXX */
 
 #ifndef _SH_GETOPT_H
-#define _SH_GETOPT_H 1
+#  define _SH_GETOPT_H 1
 
-#include "stdc.h"
+#  include "stdc.h"
 
 /* For communication from `getopt' to the caller.
    When `getopt' finds an option that takes an argument,
@@ -61,8 +61,7 @@ extern int sh_badopt;
 
 extern int sh_getopt (int, char *const *, const char *);
 
-typedef struct sh_getopt_state
-{
+typedef struct sh_getopt_state {
   char *gs_optarg;
   int gs_optind;
   int gs_curopt;
@@ -81,4 +80,4 @@ extern void sh_getopt_restore_istate (sh_getopt_state_t *);
 
 extern void sh_getopt_reset (void);
 
-#endif /* _SH_GETOPT_H */
+#endif		/* _SH_GETOPT_H */

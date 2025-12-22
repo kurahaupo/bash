@@ -20,40 +20,40 @@
 
 /* Emacs config.h may rename various library functions such as malloc.  */
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 
-#ifdef HAVE_STDLIB_H 
-#  include <stdlib.h>
-#else
+#  ifdef HAVE_STDLIB_H
+#    include <stdlib.h>
+#  else
 extern char *getenv ();
 extern char *malloc ();
 extern char *realloc ();
-#endif
+#  endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#  ifdef HAVE_UNISTD_H
+#    include <unistd.h>
+#  endif
 
-#if defined (HAVE_STRING_H)
-#include <string.h>
-#endif
+#  if defined (HAVE_STRING_H)
+#    include <string.h>
+#  endif
 
-#else /* not HAVE_CONFIG_H */
+#else		/* not HAVE_CONFIG_H */
 
-#ifdef STDC_HEADERS
-#include <stdlib.h>
-#include <string.h>
-#else
+#  ifdef STDC_HEADERS
+#    include <stdlib.h>
+#    include <string.h>
+#  else
 char *malloc ();
 char *realloc ();
-#endif
+#  endif
 
-#endif /* not HAVE_CONFIG_H */
+#endif		/* not HAVE_CONFIG_H */
 
 #include "ltcap.h"
 
 #ifndef NULL
-#define NULL (char *) 0
+#  define NULL (char *) 0
 #endif
 
 #ifndef emacs
@@ -83,7 +83,7 @@ xrealloc (void *ptr, size_t size)
     memory_out ();
   return tem;
 }
-#endif /* not emacs */
+#endif		/* not emacs */
 
 /* Assuming STRING is the value of a termcap string entry
    containing `%' constructs to expand parameters,
@@ -117,8 +117,7 @@ __private_extern__ char *UP;
 
 static char tgoto_buf[50];
 
-__private_extern__
-char *
+__private_extern__ char *
 tgoto (char *cm, int hpos, int vpos)
 {
   int args[2];
@@ -200,7 +199,7 @@ tparam1 (char *string, char *outstring, int len, char *up, char *left, int *argp
 
 	    case 'C':
 	      /* For c-100: print quotient of value by 96, if nonzero,
-		 then do like %+.  */
+	         then do like %+.  */
 	      if (tem >= 96)
 		{
 		  *op++ = tem / 96;
@@ -245,12 +244,12 @@ tparam1 (char *string, char *outstring, int len, char *up, char *left, int *argp
 
 	    case 'a':		/* %a means arithmetic.  */
 	      /* Next character says what operation.
-		 Add or subtract either a constant or some other arg.  */
+	         Add or subtract either a constant or some other arg.  */
 	      /* First following character is + to add or - to subtract
-		 or = to assign.  */
+	         or = to assign.  */
 	      /* Next following char is 'p' and an arg spec
-		 (0100 plus position of that arg relative to this one)
-		 or 'c' and a constant stored in a character.  */
+	         (0100 plus position of that arg relative to this one)
+	         or 'c' and a constant stored in a character.  */
 	      tem = p[2] & 0177;
 	      if (p[1] == 'p')
 		tem = argp[tem - 0100];
@@ -269,8 +268,8 @@ tparam1 (char *string, char *outstring, int len, char *up, char *left, int *argp
 	      break;
 
 	    case 'i':		/* %i means add one to arg, */
-	      argp[0] ++;	/* and leave it to be output later.  */
-	      argp[1] ++;	/* Increment the following arg, too!  */
+	      argp[0]++;	/* and leave it to be output later.  */
+	      argp[1]++;	/* Increment the following arg, too!  */
 	      break;
 
 	    case '%':		/* %% means output %; no arg.  */
@@ -324,4 +323,4 @@ main (argc, argv)
   return 0;
 }
 
-#endif /* DEBUG */
+#endif		/* DEBUG */

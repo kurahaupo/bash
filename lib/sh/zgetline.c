@@ -72,10 +72,10 @@ zgetline (int fd, char **lineptr, size_t *n, int delim, int unbuffered_read)
 
   nr = 0;
   line = *lineptr;
-  
+
   while (1)
     {
-      retval = unbuffered_read ? zread (fd, &c, 1) : zreadc(fd, &c);
+      retval = unbuffered_read ? zread (fd, &c, 1) : zreadc (fd, &c);
 
       if (retval <= 0)
 	{

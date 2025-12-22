@@ -28,14 +28,14 @@
 #include <sys/types.h>
 
 #if defined (HAVE_UNISTD_H)
-#  include <unistd.h>           /* for _POSIX_VERSION */
-#endif /* HAVE_UNISTD_H */
+#  include <unistd.h>		/* for _POSIX_VERSION */
+#endif		/* HAVE_UNISTD_H */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include <stdio.h>
 
@@ -59,14 +59,14 @@
 
 /* The currently executing macro string.  If this is non-zero,
    then it is a malloc ()'ed string where input is coming from. */
-char *rl_executing_macro = (char *)NULL;
+char *rl_executing_macro = (char *) NULL;
 
 /* The offset in the above string to the next character to be read. */
 static int executing_macro_index;
 
 /* The current macro string being built.  Characters get stuffed
    in here by add_macro_char (). */
-static char *current_macro = (char *)NULL;
+static char *current_macro = (char *) NULL;
 
 /* The size of the buffer allocated to current_macro. */
 static size_t current_macro_size;
@@ -83,7 +83,7 @@ struct saved_macro {
 };
 
 /* The list of saved macros. */
-static struct saved_macro *macro_list = (struct saved_macro *)NULL;
+static struct saved_macro *macro_list = (struct saved_macro *) NULL;
 
 static int macro_level = 0;
 
@@ -100,12 +100,12 @@ _rl_with_macro_input (char *string)
     }
 
 #if 0
-  if (rl_executing_macro)		/* XXX - later */
+  if (rl_executing_macro)	/* XXX - later */
 #endif
     _rl_push_executing_macro ();
   rl_executing_macro = string;
   executing_macro_index = 0;
-  RL_SETSTATE(RL_STATE_MACROINPUT);
+  RL_SETSTATE (RL_STATE_MACROINPUT);
 }
 
 /* Return the next character available from a macro, or 0 if
@@ -126,8 +126,9 @@ _rl_next_macro_key (void)
 
 #if defined (READLINE_CALLBACKS)
   c = rl_executing_macro[executing_macro_index++];
-  if (RL_ISSTATE (RL_STATE_CALLBACK) && RL_ISSTATE (RL_STATE_READCMD|RL_STATE_MOREINPUT) && rl_executing_macro[executing_macro_index] == 0)
-      _rl_pop_executing_macro ();
+  if (RL_ISSTATE (RL_STATE_CALLBACK) && RL_ISSTATE (RL_STATE_READCMD | RL_STATE_MOREINPUT)
+      && rl_executing_macro[executing_macro_index] == 0)
+    _rl_pop_executing_macro ();
   return c;
 #else
   /* XXX - consider doing the same as the callback code, just not testing
@@ -167,7 +168,7 @@ _rl_push_executing_macro (void)
 {
   struct saved_macro *saver;
 
-  saver = (struct saved_macro *)xmalloc (sizeof (struct saved_macro));
+  saver = (struct saved_macro *) xmalloc (sizeof (struct saved_macro));
   saver->next = macro_list;
   saver->sindex = executing_macro_index;
   saver->string = rl_executing_macro;
@@ -185,7 +186,7 @@ _rl_pop_executing_macro (void)
   struct saved_macro *macro;
 
   FREE (rl_executing_macro);
-  rl_executing_macro = (char *)NULL;
+  rl_executing_macro = (char *) NULL;
   executing_macro_index = 0;
 
   if (macro_list)
@@ -200,7 +201,7 @@ _rl_pop_executing_macro (void)
   macro_level--;
 
   if (rl_executing_macro == 0)
-    RL_UNSETSTATE(RL_STATE_MACROINPUT);
+    RL_UNSETSTATE (RL_STATE_MACROINPUT);
 }
 
 /* Add a character to the macro being built. */
@@ -210,9 +211,9 @@ _rl_add_macro_char (int c)
   if (current_macro_index + 1 >= current_macro_size)
     {
       if (current_macro == 0)
-	current_macro = (char *)xmalloc (current_macro_size = 25);
+	current_macro = (char *) xmalloc (current_macro_size = 25);
       else
-	current_macro = (char *)xrealloc (current_macro, current_macro_size += 25);
+	current_macro = (char *) xrealloc (current_macro, current_macro_size += 25);
     }
 
   current_macro[current_macro_index++] = c;
@@ -233,7 +234,7 @@ _rl_kill_kbd_macro (void)
   rl_executing_macro = (char *) NULL;
   executing_macro_index = 0;
 
-  RL_UNSETSTATE(RL_STATE_MACRODEF);
+  RL_UNSETSTATE (RL_STATE_MACRODEF);
 }
 
 /* Begin defining a keyboard macro.
@@ -247,7 +248,7 @@ _rl_kill_kbd_macro (void)
 int
 rl_start_kbd_macro (int ignore1, int ignore2)
 {
-  if (RL_ISSTATE (RL_STATE_MACRODEF|RL_STATE_MACROINPUT))
+  if (RL_ISSTATE (RL_STATE_MACRODEF | RL_STATE_MACROINPUT))
     {
       _rl_abort_internal ();
       return 1;
@@ -261,7 +262,7 @@ rl_start_kbd_macro (int ignore1, int ignore2)
   else
     current_macro_index = 0;
 
-  RL_SETSTATE(RL_STATE_MACRODEF);
+  RL_SETSTATE (RL_STATE_MACRODEF);
   return 0;
 }
 
@@ -282,7 +283,7 @@ rl_end_kbd_macro (int count, int ignore)
     current_macro_index = 0;
   current_macro[current_macro_index] = '\0';
 
-  RL_UNSETSTATE(RL_STATE_MACRODEF);
+  RL_UNSETSTATE (RL_STATE_MACRODEF);
 
   return (rl_call_last_kbd_macro (--count, 0));
 }
@@ -298,7 +299,7 @@ rl_call_last_kbd_macro (int count, int ignore)
   if (RL_ISSTATE (RL_STATE_MACRODEF))
     {
       rl_ding ();		/* no recursive macros */
-      current_macro[--current_macro_index] = '\0';	/* erase this char */
+      current_macro[--current_macro_index] = '\0'; /* erase this char */
       return 0;
     }
 

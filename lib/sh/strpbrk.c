@@ -22,12 +22,12 @@
 */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #if !defined (HAVE_STRPBRK)
 
-#include <stdc.h>
+#  include <stdc.h>
 
 /* Find the first occurrence in S of any character in ACCEPT.  */
 char *

@@ -39,7 +39,7 @@
 #include <tilde/tilde.h>
 
 #if defined (READLINE)
-# include <readline/readline.h>
+#  include <readline/readline.h>
 #endif
 
 /* Values for flags word in struct _fileinfo */
@@ -59,7 +59,7 @@ typedef struct _fileinfo {
 } FILEINFO;
 
 /* The list of remembered mail files. */
-static FILEINFO **mailfiles = (FILEINFO **)NULL;
+static FILEINFO **mailfiles = (FILEINFO **) NULL;
 
 /* Number of mail files that we have. */
 static int mailfiles_count;
@@ -92,7 +92,7 @@ time_to_check_mail (void)
   intmax_t seconds;
 
 #if defined (READLINE)
-  if (RL_ISSTATE (RL_STATE_COMPLETING|RL_STATE_DISPATCHING))
+  if (RL_ISSTATE (RL_STATE_COMPLETING | RL_STATE_DISPATCHING))
     return (0);
 #endif
 
@@ -192,8 +192,7 @@ add_mail_file (char *file, const char *msg)
     }
 
   i = mailfiles_count++;
-  mailfiles = (FILEINFO **)xrealloc
-		(mailfiles, mailfiles_count * sizeof (FILEINFO *));
+  mailfiles = (FILEINFO **) xrealloc (mailfiles, mailfiles_count * sizeof (FILEINFO *));
 
   mailfiles[i] = alloc_mail_file (filename, msg);
   init_mail_file (i);
@@ -216,9 +215,9 @@ alloc_mail_file (char *filename, const char *msg)
 {
   FILEINFO *mf;
 
-  mf = (FILEINFO *)xmalloc (sizeof (FILEINFO));
+  mf = (FILEINFO *) xmalloc (sizeof (FILEINFO));
   mf->name = filename;
-  mf->msg = msg ? savestring (msg) : (char *)NULL;
+  mf->msg = msg ? savestring (msg) : (char *) NULL;
   mf->flags = 0;
 
   return mf;
@@ -245,7 +244,7 @@ free_mail_files (void)
     free (mailfiles);
 
   mailfiles_count = 0;
-  mailfiles = (FILEINFO **)NULL;
+  mailfiles = (FILEINFO **) NULL;
 }
 
 void
@@ -338,7 +337,7 @@ parse_mailpath_spec (char *str)
       if (*s == '?' || *s == '%')
 	return s;
     }
-  return ((char *)NULL);
+  return ((char *) NULL);
 }
 
 char *
@@ -348,13 +347,13 @@ make_default_mailpath (void)
   char *mp;
 
   get_current_user_info ();
-  mp = (char *)xmalloc (2 + sizeof (DEFAULT_MAIL_DIRECTORY) + strlen (current_user.user_name));
+  mp = (char *) xmalloc (2 + sizeof (DEFAULT_MAIL_DIRECTORY) + strlen (current_user.user_name));
   strcpy (mp, DEFAULT_MAIL_DIRECTORY);
-  mp[sizeof(DEFAULT_MAIL_DIRECTORY) - 1] = '/';
+  mp[sizeof (DEFAULT_MAIL_DIRECTORY) - 1] = '/';
   strcpy (mp + sizeof (DEFAULT_MAIL_DIRECTORY), current_user.user_name);
   return (mp);
 #else
-  return ((char *)NULL);
+  return ((char *) NULL);
 #endif
 }
 
@@ -374,7 +373,7 @@ remember_mail_dates (void)
   /* If no $MAILPATH, but $MAIL, use that as a single filename to check. */
   if (mailpaths == 0 && (mailpaths = get_string_value ("MAIL")))
     {
-      add_mail_file (mailpaths, (char *)NULL);
+      add_mail_file (mailpaths, (char *) NULL);
       return;
     }
 
@@ -383,7 +382,7 @@ remember_mail_dates (void)
       mailpaths = make_default_mailpath ();
       if (mailpaths)
 	{
-	  add_mail_file (mailpaths, (char *)NULL);
+	  add_mail_file (mailpaths, (char *) NULL);
 	  free (mailpaths);
 	}
       return;
@@ -431,7 +430,7 @@ check_mail (void)
 	{
 	  int file_is_bigger;
 
-	  use_user_notification = mailfiles[i]->msg != (char *)NULL;
+	  use_user_notification = mailfiles[i]->msg != (char *) NULL;
 	  message = mailfiles[i]->msg ? mailfiles[i]->msg : _("You have mail in $_");
 
 	  bind_variable ("_", current_mail_file, 0);

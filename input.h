@@ -19,55 +19,54 @@
 */
 
 #if !defined (_INPUT_H_)
-#define _INPUT_H_
+#  define _INPUT_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
-typedef int sh_cget_func_t (void);	/* sh_ivoidfunc_t */
-typedef int sh_cunget_func_t (int);	/* sh_intfunc_t */
+typedef int sh_cget_func_t (void); /* sh_ivoidfunc_t */
+typedef int sh_cunget_func_t (int); /* sh_intfunc_t */
 
-enum stream_type {st_none, st_stdin, st_stream, st_string, st_bstream};
+enum stream_type { st_none, st_stdin, st_stream, st_string, st_bstream };
 
 /* Possible values for b_flag. */
-#undef B_EOF
-#undef B_ERROR		/* There are some systems with this define */
-#undef B_UNBUFF
+#  undef B_EOF
+#  undef B_ERROR		/* There are some systems with this define */
+#  undef B_UNBUFF
 
-#define B_EOF		0x01
-#define B_ERROR		0x02
-#define B_UNBUFF	0x04
-#define B_WASBASHINPUT	0x08
-#define B_TEXT		0x10
-#define B_SHAREDBUF	0x20	/* shared input buffer */
+#  define B_EOF		0x01
+#  define B_ERROR		0x02
+#  define B_UNBUFF	0x04
+#  define B_WASBASHINPUT	0x08
+#  define B_TEXT		0x10
+#  define B_SHAREDBUF	0x20	/* shared input buffer */
 
 /* A buffered stream.  Like a FILE *, but with our own buffering and
    synchronization.  Look in input.c for the implementation. */
-typedef struct BSTREAM
-{
-  int	 b_fd;
-  char	*b_buffer;		/* The buffer that holds characters read. */
+typedef struct BSTREAM {
+  int b_fd;
+  char *b_buffer;		/* The buffer that holds characters read. */
   size_t b_size;		/* How big the buffer is. */
   size_t b_used;		/* How much of the buffer we're using, */
-  int	 b_flag;		/* Flag values. */
+  int b_flag;			/* Flag values. */
   size_t b_inputp;		/* The input pointer, index into b_buffer. */
 } BUFFERED_STREAM;
 
-#if 0
+#  if 0
 extern BUFFERED_STREAM **buffers;
-#endif
+#  endif
 
 extern int default_buffered_input;
 extern int bash_input_fd_changed;
 
-#undef beof
-#undef berror
+#  undef beof
+#  undef berror
 
-#define beof(bp)	(((bp)->b_flag & B_EOF) != 0)	
-#define berror(bp)	(((bp)->b_flag & B_ERROR) != 0)
+#  define beof(bp)	(((bp)->b_flag & B_EOF) != 0)
+#  define berror(bp)	(((bp)->b_flag & B_ERROR) != 0)
 
-#undef bclearerror
+#  undef bclearerror
 
-#define bclearerror(bp)	((bp)->b_flag &= ~(B_ERROR|B_EOF))
+#  define bclearerror(bp)	((bp)->b_flag &= ~(B_ERROR|B_EOF))
 
 typedef union {
   FILE *file;
@@ -128,4 +127,4 @@ extern int buffered_getchar (void);
 extern int buffered_ungetchar (int);
 extern void with_input_from_buffered_stream (int, char *);
 
-#endif /* _INPUT_H_ */
+#endif		/* _INPUT_H_ */

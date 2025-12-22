@@ -66,7 +66,7 @@ static unsigned char zpushbuf[ZPUSHSIZE];
 static unsigned char zbufchar;
 
 static inline int
-zbufpop(unsigned char *cp)
+zbufpop (unsigned char *cp)
 {
   if (zpushind == zpopind)
     return (0);
@@ -77,7 +77,7 @@ zbufpop(unsigned char *cp)
 }
 
 static inline int
-zbufpush(int c)
+zbufpush (int c)
 {
   if (zpushind == ZPUSHSIZE - 1)
     return 0;
@@ -100,7 +100,7 @@ zread (int fd, char *buf, size_t len)
 {
   ssize_t r;
 
-  check_signals ();	/* check for signals before a blocking read */
+  check_signals ();		/* check for signals before a blocking read */
 
   /* If we pushed chars back, return the oldest one immediately */
   if (zbufpop (&zbufchar))
@@ -111,8 +111,7 @@ zread (int fd, char *buf, size_t len)
 
   /* should generalize into a mechanism where different parts of the shell can
      `register' timeouts and have them checked here. */
-  while (((r = read_builtin_timeout (fd)) < 0 || (r = read (fd, buf, len)) < 0) &&
-	     errno == EINTR)
+  while (((r = read_builtin_timeout (fd)) < 0 || (r = read (fd, buf, len)) < 0) && errno == EINTR)
     {
       int t;
       t = errno;
@@ -122,7 +121,7 @@ zread (int fd, char *buf, size_t len)
 	{
 	  if (interrupt_state)
 	    zreset ();
-	  check_signals_and_traps ();	/* XXX - should it be check_signals()? */
+	  check_signals_and_traps (); /* XXX - should it be check_signals()? */
 	}
       else
 	check_signals ();
@@ -153,7 +152,7 @@ zreadretry (int fd, char *buf, size_t len)
       return 1;
     }
 
-  for (nintr = 0; ; )
+  for (nintr = 0;;)
     {
       r = read (fd, buf, len);
       if (r >= 0)
@@ -175,12 +174,12 @@ zreadintr (int fd, char *buf, size_t len)
   check_signals ();
 
   /* If we pushed chars back, return the oldest one immediately */
-  if (zbufpop (&zbufchar))  
-    {    
-      *buf = zbufchar;        
-      return 1;              
-    }                            
-        
+  if (zbufpop (&zbufchar))
+    {
+      *buf = zbufchar;
+      return 1;
+    }
+
   return (read (fd, buf, len));
 }
 
@@ -197,12 +196,12 @@ zreadc (int fd, char *cp)
   ssize_t nr;
 
   /* If we pushed chars back, return the oldest one immediately */
-  if (cp && zbufpop (&zbufchar))  
-    {    
-      *cp = zbufchar;        
-      return 1;              
-    }                            
-        
+  if (cp && zbufpop (&zbufchar))
+    {
+      *cp = zbufchar;
+      return 1;
+    }
+
   if (lind == lused || lused == 0)
     {
       nr = zread (fd, lbuf, sizeof (lbuf));
@@ -227,10 +226,10 @@ zreadcintr (int fd, char *cp)
   ssize_t nr;
 
   /* If we pushed chars back, return the oldest one immediately */
-  if (cp && zbufpop (&zbufchar))  
-    {    
-      *cp = zbufchar;        
-      return 1;              
+  if (cp && zbufpop (&zbufchar))
+    {
+      *cp = zbufchar;
+      return 1;
     }
 
   if (lind == lused || lused == 0)
@@ -257,10 +256,10 @@ zreadn (int fd, char *cp, size_t len)
   ssize_t nr;
 
   /* If we pushed chars back, return the oldest one immediately */
-  if (cp && zbufpop (&zbufchar))  
-    {    
-      *cp = zbufchar;        
-      return 1;              
+  if (cp && zbufpop (&zbufchar))
+    {
+      *cp = zbufchar;
+      return 1;
     }
 
   if (lind == lused || lused == 0)

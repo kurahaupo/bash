@@ -20,9 +20,9 @@
 */
 
 #if !defined (_RL_MBUTIL_H_)
-#define _RL_MBUTIL_H_
+#  define _RL_MBUTIL_H_
 
-#include "rlstdc.h"
+#  include "rlstdc.h"
 
 /************************************************/
 /* check multibyte capability for I18N code     */
@@ -31,10 +31,10 @@
 /* For platforms which support the ISO C amendment 1 functionality we
    support user defined character classes.  */
    /* Solaris 2.5 has a bug: <wchar.h> must be included before <wctype.h>.  */
-#if defined (HAVE_WCTYPE_H) && defined (HAVE_WCHAR_H) && defined (HAVE_LOCALE_H)
-#  include <wchar.h>
-#  include <wctype.h>
-#  if defined (HAVE_ISWCTYPE) && \
+#  if defined (HAVE_WCTYPE_H) && defined (HAVE_WCHAR_H) && defined (HAVE_LOCALE_H)
+#    include <wchar.h>
+#    include <wctype.h>
+#    if defined (HAVE_ISWCTYPE) && \
       defined (HAVE_ISWLOWER) && \
       defined (HAVE_ISWUPPER) && \
       defined (HAVE_MBSRTOWCS) && \
@@ -45,37 +45,37 @@
       defined (HAVE_WCHAR_T) && \
       defined (HAVE_WCWIDTH)
      /* system is supposed to support XPG5 */
-#    define HANDLE_MULTIBYTE      1
+#      define HANDLE_MULTIBYTE      1
+#    endif
 #  endif
-#endif
 
 /* If we don't want multibyte chars even on a system that supports them, let
    the configuring user turn multibyte support off. */
-#if defined (NO_MULTIBYTE_SUPPORT)
-#  undef HANDLE_MULTIBYTE
-#endif
+#  if defined (NO_MULTIBYTE_SUPPORT)
+#    undef HANDLE_MULTIBYTE
+#  endif
 
 /* Some systems, like BeOS, have multibyte encodings but lack mbstate_t.  */
-#if HANDLE_MULTIBYTE && !defined (HAVE_MBSTATE_T)
-#  define wcsrtombs(dest, src, len, ps) (wcsrtombs) (dest, src, len, 0)
-#  define mbsrtowcs(dest, src, len, ps) (mbsrtowcs) (dest, src, len, 0)
-#  define wcrtomb(s, wc, ps) (wcrtomb) (s, wc, 0)
-#  define mbrtowc(pwc, s, n, ps) (mbrtowc) (pwc, s, n, 0)
-#  define mbrlen(s, n, ps) (mbrlen) (s, n, 0)
-#  define mbstate_t int
-#endif
+#  if HANDLE_MULTIBYTE && !defined (HAVE_MBSTATE_T)
+#    define wcsrtombs(dest, src, len, ps) (wcsrtombs) (dest, src, len, 0)
+#    define mbsrtowcs(dest, src, len, ps) (mbsrtowcs) (dest, src, len, 0)
+#    define wcrtomb(s, wc, ps) (wcrtomb) (s, wc, 0)
+#    define mbrtowc(pwc, s, n, ps) (mbrtowc) (pwc, s, n, 0)
+#    define mbrlen(s, n, ps) (mbrlen) (s, n, 0)
+#    define mbstate_t int
+#  endif
 
 /* Make sure MB_LEN_MAX is at least 16 on systems that claim to be able to
    handle multibyte chars (some systems define MB_LEN_MAX as 1) */
-#ifdef HANDLE_MULTIBYTE
-#  include <limits.h>
-#  if defined(MB_LEN_MAX) && (MB_LEN_MAX < 16)
-#    undef MB_LEN_MAX
+#  ifdef HANDLE_MULTIBYTE
+#    include <limits.h>
+#    if defined(MB_LEN_MAX) && (MB_LEN_MAX < 16)
+#      undef MB_LEN_MAX
+#    endif
+#    if !defined (MB_LEN_MAX)
+#      define MB_LEN_MAX 16
+#    endif
 #  endif
-#  if !defined (MB_LEN_MAX)
-#    define MB_LEN_MAX 16
-#  endif
-#endif
 
 /************************************************/
 /* end of multibyte capability checks for I18N  */
@@ -84,15 +84,15 @@
 /*
  * wchar_t doesn't work for 32-bit values on Windows using MSVC
  */
-#ifdef WCHAR_T_BROKEN
-#  define WCHAR_T char32_t
-#  define MBRTOWC mbrtoc32
-#  define WCRTOMB c32rtomb
-#else	/* normal systems */
-#  define WCHAR_T wchar_t
-#  define MBRTOWC mbrtowc
-#  define WCRTOMB wcrtomb
-#endif
+#  ifdef WCHAR_T_BROKEN
+#    define WCHAR_T char32_t
+#    define MBRTOWC mbrtoc32
+#    define WCRTOMB c32rtomb
+#  else		/* normal systems */
+#    define WCHAR_T wchar_t
+#    define MBRTOWC mbrtowc
+#    define WCRTOMB wcrtomb
+#  endif
 
 /*
  * Flags for _rl_find_prev_mbchar and _rl_find_next_mbchar:
@@ -101,13 +101,13 @@
  * MB_FIND_NONZERO	find a non-zero-width multibyte character
  */
 
-#define MB_FIND_ANY	0x00
-#define MB_FIND_NONZERO	0x01
+#  define MB_FIND_ANY	0x00
+#  define MB_FIND_NONZERO	0x01
 
 extern int _rl_find_prev_mbchar (const char *, int, int);
 extern int _rl_find_next_mbchar (const char *, int, int, int);
 
-#ifdef HANDLE_MULTIBYTE
+#  ifdef HANDLE_MULTIBYTE
 
 extern size_t _rl_mbstrlen (const char *);
 
@@ -126,20 +126,20 @@ extern int _rl_walphabetic (WCHAR_T);
 extern int _rl_mb_strcaseeqn (const char *, size_t, const char *, size_t, size_t, int);
 extern int _rl_mb_charcasecmp (const char *, mbstate_t *, const char *, mbstate_t *, int);
 
-#define _rl_to_wupper(wc)	(iswlower (wc) ? towupper (wc) : (wc))
-#define _rl_to_wlower(wc)	(iswupper (wc) ? towlower (wc) : (wc))
+#    define _rl_to_wupper(wc)	(iswlower (wc) ? towupper (wc) : (wc))
+#    define _rl_to_wlower(wc)	(iswupper (wc) ? towlower (wc) : (wc))
 
-#define MB_NEXTCHAR(b,s,c,f) \
+#    define MB_NEXTCHAR(b,s,c,f) \
 	((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
 		? _rl_find_next_mbchar ((b), (s), (c), (f)) \
 		: ((s) + (c)))
-#define MB_PREVCHAR(b,s,f) \
+#    define MB_PREVCHAR(b,s,f) \
 	((MB_CUR_MAX > 1 && rl_byte_oriented == 0) \
 		? _rl_find_prev_mbchar ((b), (s), (f)) \
 		: ((s) - 1))
 
-#define MB_INVALIDCH(x)		((x) == (size_t)-1 || (x) == (size_t)-2)
-#define MB_NULLWCH(x)		((x) == 0)
+#    define MB_INVALIDCH(x)		((x) == (size_t)-1 || (x) == (size_t)-2)
+#    define MB_NULLWCH(x)		((x) == 0)
 
 /* Try and shortcut the printable ascii characters to cut down the number of
    calls to a libc wcwidth() */
@@ -148,26 +148,98 @@ _rl_wcwidth (WCHAR_T wc)
 {
   switch (wc)
     {
-    case L' ': case L'!': case L'"': case L'#': case L'%':
-    case L'&': case L'\'': case L'(': case L')': case L'*':
-    case L'+': case L',': case L'-': case L'.': case L'/':
-    case L'0': case L'1': case L'2': case L'3': case L'4':
-    case L'5': case L'6': case L'7': case L'8': case L'9':
-    case L':': case L';': case L'<': case L'=': case L'>':
+    case L' ':
+    case L'!':
+    case L'"':
+    case L'#':
+    case L'%':
+    case L'&':
+    case L'\'':
+    case L'(':
+    case L')':
+    case L'*':
+    case L'+':
+    case L',':
+    case L'-':
+    case L'.':
+    case L'/':
+    case L'0':
+    case L'1':
+    case L'2':
+    case L'3':
+    case L'4':
+    case L'5':
+    case L'6':
+    case L'7':
+    case L'8':
+    case L'9':
+    case L':':
+    case L';':
+    case L'<':
+    case L'=':
+    case L'>':
     case L'?':
-    case L'A': case L'B': case L'C': case L'D': case L'E':
-    case L'F': case L'G': case L'H': case L'I': case L'J':
-    case L'K': case L'L': case L'M': case L'N': case L'O':
-    case L'P': case L'Q': case L'R': case L'S': case L'T':
-    case L'U': case L'V': case L'W': case L'X': case L'Y':
+    case L'A':
+    case L'B':
+    case L'C':
+    case L'D':
+    case L'E':
+    case L'F':
+    case L'G':
+    case L'H':
+    case L'I':
+    case L'J':
+    case L'K':
+    case L'L':
+    case L'M':
+    case L'N':
+    case L'O':
+    case L'P':
+    case L'Q':
+    case L'R':
+    case L'S':
+    case L'T':
+    case L'U':
+    case L'V':
+    case L'W':
+    case L'X':
+    case L'Y':
     case L'Z':
-    case L'[': case L'\\': case L']': case L'^': case L'_':
-    case L'a': case L'b': case L'c': case L'd': case L'e':
-    case L'f': case L'g': case L'h': case L'i': case L'j':
-    case L'k': case L'l': case L'm': case L'n': case L'o':
-    case L'p': case L'q': case L'r': case L's': case L't':
-    case L'u': case L'v': case L'w': case L'x': case L'y':
-    case L'z': case L'{': case L'|': case L'}': case L'~':
+    case L'[':
+    case L'\\':
+    case L']':
+    case L'^':
+    case L'_':
+    case L'a':
+    case L'b':
+    case L'c':
+    case L'd':
+    case L'e':
+    case L'f':
+    case L'g':
+    case L'h':
+    case L'i':
+    case L'j':
+    case L'k':
+    case L'l':
+    case L'm':
+    case L'n':
+    case L'o':
+    case L'p':
+    case L'q':
+    case L'r':
+    case L's':
+    case L't':
+    case L'u':
+    case L'v':
+    case L'w':
+    case L'x':
+    case L'y':
+    case L'z':
+    case L'{':
+    case L'|':
+    case L'}':
+    case L'~':
       return 1;
     default:
       return wcwidth (wc);
@@ -175,70 +247,70 @@ _rl_wcwidth (WCHAR_T wc)
 }
 
 /* Unicode combining characters as of version 15.1 */
-#define UNICODE_COMBINING_CHAR(x) \
+#    define UNICODE_COMBINING_CHAR(x) \
 	(((x) >= 0x0300 && (x) <= 0x036F) || \
 	 ((x) >= 0x1AB0 && (x) <= 0x1AFF) || \
 	 ((x) >= 0x1DC0 && (x) <= 0x1DFF) || \
 	 ((x) >= 0x20D0 && (x) <= 0x20FF) || \
 	 ((x) >= 0xFE20 && (x) <= 0xFE2F))
 
-#if defined (WCWIDTH_BROKEN)
-#  define WCWIDTH(wc)	((_rl_utf8locale && UNICODE_COMBINING_CHAR((int)wc)) ? 0 : _rl_wcwidth(wc))
-#else
-#  define WCWIDTH(wc)	_rl_wcwidth(wc)
-#endif
+#    if defined (WCWIDTH_BROKEN)
+#      define WCWIDTH(wc)	((_rl_utf8locale && UNICODE_COMBINING_CHAR((int)wc)) ? 0 : _rl_wcwidth(wc))
+#    else
+#      define WCWIDTH(wc)	_rl_wcwidth(wc)
+#    endif
 
-#if defined (WCWIDTH_BROKEN)
-#  define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0 && iswcntrl(x) == 0)
-#else
-#  define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0)
-#endif
+#    if defined (WCWIDTH_BROKEN)
+#      define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0 && iswcntrl(x) == 0)
+#    else
+#      define IS_COMBINING_CHAR(x)	(WCWIDTH(x) == 0)
+#    endif
 
-#define IS_BASE_CHAR(x)		(iswgraph(x) && WCWIDTH(x) > 0)
+#    define IS_BASE_CHAR(x)		(iswgraph(x) && WCWIDTH(x) > 0)
 
-#define UTF8_SINGLEBYTE(c)	(((c) & 0x80) == 0)
-#define UTF8_MBFIRSTCHAR(c)	(((c) & 0xc0) == 0xc0)
-#define UTF8_MBCHAR(c)		(((c) & 0xc0) == 0x80)
+#    define UTF8_SINGLEBYTE(c)	(((c) & 0x80) == 0)
+#    define UTF8_MBFIRSTCHAR(c)	(((c) & 0xc0) == 0xc0)
+#    define UTF8_MBCHAR(c)		(((c) & 0xc0) == 0x80)
 
-#else /* !HANDLE_MULTIBYTE */
+#  else		/* !HANDLE_MULTIBYTE */
 
-#undef MB_LEN_MAX
-#undef MB_CUR_MAX
+#    undef MB_LEN_MAX
+#    undef MB_CUR_MAX
 
-#define MB_LEN_MAX	1
-#define MB_CUR_MAX	1
+#    define MB_LEN_MAX	1
+#    define MB_CUR_MAX	1
 
-#define _rl_find_prev_mbchar(b, i, f)		(((i) == 0) ? (i) : ((i) - 1))
-#define _rl_find_next_mbchar(b, i1, i2, f)	((i1) + (i2))
+#    define _rl_find_prev_mbchar(b, i, f)		(((i) == 0) ? (i) : ((i) - 1))
+#    define _rl_find_next_mbchar(b, i1, i2, f)	((i1) + (i2))
 
-#define _rl_char_value(buf,ind)	((buf)[(ind)])
+#    define _rl_char_value(buf,ind)	((buf)[(ind)])
 
-#define _rl_walphabetic(c)	(rl_alphabetic (c))
+#    define _rl_walphabetic(c)	(rl_alphabetic (c))
 
-#define _rl_to_wupper(c)	(_rl_to_upper (c))
-#define _rl_to_wlower(c)	(_rl_to_lower (c))
+#    define _rl_to_wupper(c)	(_rl_to_upper (c))
+#    define _rl_to_wlower(c)	(_rl_to_lower (c))
 
-#define MB_NEXTCHAR(b,s,c,f)	((s) + (c))
-#define MB_PREVCHAR(b,s,f)	((s) - 1)
+#    define MB_NEXTCHAR(b,s,c,f)	((s) + (c))
+#    define MB_PREVCHAR(b,s,f)	((s) - 1)
 
-#define MB_INVALIDCH(x)		(0)
-#define MB_NULLWCH(x)		(0)
+#    define MB_INVALIDCH(x)		(0)
+#    define MB_NULLWCH(x)		(0)
 
-#define UTF8_SINGLEBYTE(c)	(1)
+#    define UTF8_SINGLEBYTE(c)	(1)
 
-#if !defined (HAVE_WCHAR_T) && !defined (wchar_t)
-#  define wchar_t int
-#endif
+#    if !defined (HAVE_WCHAR_T) && !defined (wchar_t)
+#      define wchar_t int
+#    endif
 
-#endif /* !HANDLE_MULTIBYTE */
+#  endif	/* !HANDLE_MULTIBYTE */
 
 extern int rl_byte_oriented;
 
 /* Snagged from gnulib */
-#ifdef HANDLE_MULTIBYTE
-#ifdef __cplusplus
+#  ifdef HANDLE_MULTIBYTE
+#    ifdef __cplusplus
 extern "C" {
-#endif
+#    endif
 
 /* is_basic(c) tests whether the single-byte character c is
    - in the ISO C "basic character set" or is one of '@', '$', and '`'
@@ -249,7 +321,7 @@ extern "C" {
      <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap06.html>
      equally guarantees to be single-byte. */
 
-#if (' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
+#    if (' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
     && ('$' == 36) && ('%' == 37) && ('&' == 38) && ('\'' == 39) \
     && ('(' == 40) && (')' == 41) && ('*' == 42) && ('+' == 43) \
     && (',' == 44) && ('-' == 45) && ('.' == 46) && ('/' == 47) \
@@ -274,7 +346,7 @@ extern "C" {
     && ('x' == 120) && ('y' == 121) && ('z' == 122) && ('{' == 123) \
     && ('|' == 124) && ('}' == 125) && ('~' == 126)
 /* The character set is ISO-646, not EBCDIC. */
-# define IS_BASIC_ASCII 1
+#      define IS_BASIC_ASCII 1
 
 /* All locale encodings (see localcharset.h) map the characters 0x00..0x7F
    to U+0000..U+007F, like ASCII, except for
@@ -286,50 +358,124 @@ extern "C" {
    ISO C and POSIX guarantee to be single-byte.  Thus, locales with these
    encodings are not POSIX compliant.  And they are most likely not in use
    any more (as of 2023).  */
-# define _rl_is_basic(c) ((unsigned char) (c) < 0x80)
+#      define _rl_is_basic(c) ((unsigned char) (c) < 0x80)
 
-#else
+#    else
 
-static inline int
-_rl_is_basic (char c)
-{
-  switch (c)
-    {
-    case '\0':
-    case '\007': case '\010':
-    case '\t': case '\n': case '\v': case '\f': case '\r':
-    case ' ': case '!': case '"': case '#': case '$': case '%':
-    case '&': case '\'': case '(': case ')': case '*':
-    case '+': case ',': case '-': case '.': case '/':
-    case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '8': case '9':
-    case ':': case ';': case '<': case '=': case '>':
-    case '?': case '@':
-    case 'A': case 'B': case 'C': case 'D': case 'E':
-    case 'F': case 'G': case 'H': case 'I': case 'J':
-    case 'K': case 'L': case 'M': case 'N': case 'O':
-    case 'P': case 'Q': case 'R': case 'S': case 'T':
-    case 'U': case 'V': case 'W': case 'X': case 'Y':
-    case 'Z':
-    case '[': case '\\': case ']': case '^': case '_': case '`':
-    case 'a': case 'b': case 'c': case 'd': case 'e':
-    case 'f': case 'g': case 'h': case 'i': case 'j':
-    case 'k': case 'l': case 'm': case 'n': case 'o':
-    case 'p': case 'q': case 'r': case 's': case 't':
-    case 'u': case 'v': case 'w': case 'x': case 'y':
-    case 'z': case '{': case '|': case '}': case '~':
-      return 1;
-    default:
-      return 0;
-    }
+  static inline int
+    _rl_is_basic (char c) {
+    switch (c)
+      {
+      case '\0':
+      case '\007':
+      case '\010':
+      case '\t':
+      case '\n':
+      case '\v':
+      case '\f':
+      case '\r':
+      case ' ':
+      case '!':
+      case '"':
+      case '#':
+      case '$':
+      case '%':
+      case '&':
+      case '\'':
+      case '(':
+      case ')':
+      case '*':
+      case '+':
+      case ',':
+      case '-':
+      case '.':
+      case '/':
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case ':':
+      case ';':
+      case '<':
+      case '=':
+      case '>':
+      case '?':
+      case '@':
+      case 'A':
+      case 'B':
+      case 'C':
+      case 'D':
+      case 'E':
+      case 'F':
+      case 'G':
+      case 'H':
+      case 'I':
+      case 'J':
+      case 'K':
+      case 'L':
+      case 'M':
+      case 'N':
+      case 'O':
+      case 'P':
+      case 'Q':
+      case 'R':
+      case 'S':
+      case 'T':
+      case 'U':
+      case 'V':
+      case 'W':
+      case 'X':
+      case 'Y':
+      case 'Z':
+      case '[':
+      case '\\':
+      case ']':
+      case '^':
+      case '_':
+      case '`':
+      case 'a':
+      case 'b':
+      case 'c':
+      case 'd':
+      case 'e':
+      case 'f':
+      case 'g':
+      case 'h':
+      case 'i':
+      case 'j':
+      case 'k':
+      case 'l':
+      case 'm':
+      case 'n':
+      case 'o':
+      case 'p':
+      case 'q':
+      case 'r':
+      case 's':
+      case 't':
+      case 'u':
+      case 'v':
+      case 'w':
+      case 'x':
+      case 'y':
+      case 'z':
+      case '{':
+      case '|':
+      case '}':
+      case '~':
+	return 1;
+	default:return 0;
+      }
+  }
+#    endif
+#    ifdef __cplusplus
 }
-
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* HANDLE_MULTIBYTE */
-
-#endif /* _RL_MBUTIL_H_ */
+#    endif
+#  endif			/* HANDLE_MULTIBYTE */
+#endif				/* _RL_MBUTIL_H_ */

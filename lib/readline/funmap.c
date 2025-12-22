@@ -26,14 +26,14 @@
 #endif
 
 #if !defined (BUFSIZ)
-#include <stdio.h>
-#endif /* BUFSIZ */
+#  include <stdio.h>
+#endif		/* BUFSIZ */
 
 #if defined (HAVE_STDLIB_H)
 #  include <stdlib.h>
 #else
 #  include "ansi_stdlib.h"
-#endif /* HAVE_STDLIB_H */
+#endif		/* HAVE_STDLIB_H */
 
 #include "rlconf.h"
 #include "readline.h"
@@ -127,7 +127,7 @@ static const FUNMAP default_funmap[] = {
   { "print-last-kbd-macro", rl_print_last_kbd_macro },
   { "quoted-insert", rl_quoted_insert },
   { "re-read-init-file", rl_re_read_init_file },
-  { "redraw-current-line", rl_refresh_line},
+  { "redraw-current-line", rl_refresh_line },
   { "reverse-search-history", rl_reverse_search_history },
   { "revert-line", rl_revert_line },
   { "self-insert", rl_insert },
@@ -202,9 +202,9 @@ static const FUNMAP default_funmap[] = {
   { "vi-yank-arg", rl_vi_yank_arg },
   { "vi-yank-pop", rl_vi_yank_pop },
   { "vi-yank-to", rl_vi_yank_to },
-#endif /* VI_MODE */
+#endif		/* VI_MODE */
 
- {(char *)NULL, (rl_command_func_t *)NULL }
+  { (char *) NULL, (rl_command_func_t *) NULL }
 };
 
 int
@@ -213,14 +213,14 @@ rl_add_funmap_entry (const char *name, rl_command_func_t *function)
   if (funmap_entry + 2 >= funmap_size)
     {
       funmap_size += 64;
-      funmap = (FUNMAP **)xrealloc (funmap, funmap_size * sizeof (FUNMAP *));
+      funmap = (FUNMAP **) xrealloc (funmap, funmap_size * sizeof (FUNMAP *));
     }
-  
-  funmap[funmap_entry] = (FUNMAP *)xmalloc (sizeof (FUNMAP));
+
+  funmap[funmap_entry] = (FUNMAP *) xmalloc (sizeof (FUNMAP));
   funmap[funmap_entry]->name = name;
   funmap[funmap_entry]->function = function;
 
-  funmap[++funmap_entry] = (FUNMAP *)NULL;
+  funmap[++funmap_entry] = (FUNMAP *) NULL;
   return funmap_entry;
 }
 
@@ -254,19 +254,19 @@ rl_funmap_names (void)
   /* Make sure that the function map has been initialized. */
   rl_initialize_funmap ();
 
-  for (result_index = result_size = 0, result = (const char **)NULL; funmap[result_index]; result_index++)
+  for (result_index = result_size = 0, result = (const char **) NULL; funmap[result_index]; result_index++)
     {
       if (result_index + 2 > result_size)
 	{
 	  result_size += 20;
-	  result = (const char **)xrealloc (result, result_size * sizeof (char *));
+	  result = (const char **) xrealloc (result, result_size * sizeof (char *));
 	}
 
       result[result_index] = funmap[result_index]->name;
-      result[result_index + 1] = (char *)NULL;
+      result[result_index + 1] = (char *) NULL;
     }
 
   if (result)
-    qsort (result, result_index, sizeof (char *), (QSFUNC *)_rl_qsort_string_compare);
+    qsort (result, result_index, sizeof (char *), (QSFUNC *) _rl_qsort_string_compare);
   return (result);
 }

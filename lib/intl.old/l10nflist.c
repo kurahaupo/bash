@@ -23,17 +23,17 @@
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE	1
+#  define _GNU_SOURCE	1
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <string.h>
 
 #if defined _LIBC || defined HAVE_ARGZ_H
-# include <argz.h>
+#  include <argz.h>
 #endif
 #include <ctype.h>
 #include <sys/types.h>
@@ -43,11 +43,11 @@
 
 /* On some strange systems still no definition of NULL is found.  Sigh!  */
 #ifndef NULL
-# if defined __STDC__ && __STDC__
-#  define NULL ((void *) 0)
-# else
-#  define NULL 0
-# endif
+#  if defined __STDC__ && __STDC__
+#    define NULL ((void *) 0)
+#  else
+#    define NULL 0
+#  endif
 #endif
 
 /* @@ end of prolog @@ */
@@ -56,13 +56,13 @@
 /* Rename the non ANSI C functions.  This is required by the standard
    because some ANSI C functions will require linking with this object
    file and the name space must not be polluted.  */
-# ifndef stpcpy
-#  define stpcpy(dest, src) __stpcpy(dest, src)
-# endif
+#  ifndef stpcpy
+#    define stpcpy(dest, src) __stpcpy(dest, src)
+#  endif
 #else
-# ifndef HAVE_STPCPY
+#  ifndef HAVE_STPCPY
 static char *stpcpy (char *dest, const char *src);
-# endif
+#  endif
 #endif
 
 /* Pathname support.
@@ -72,15 +72,15 @@ static char *stpcpy (char *dest, const char *src);
  */
 #if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */
-# define ISSLASH(C) ((C) == '/' || (C) == '\\')
-# define HAS_DEVICE(P) \
+#  define ISSLASH(C) ((C) == '/' || (C) == '\\')
+#  define HAS_DEVICE(P) \
     ((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
      && (P)[1] == ':')
-# define IS_ABSOLUTE_PATH(P) (ISSLASH ((P)[0]) || HAS_DEVICE (P))
+#  define IS_ABSOLUTE_PATH(P) (ISSLASH ((P)[0]) || HAS_DEVICE (P))
 #else
   /* Unix */
-# define ISSLASH(C) ((C) == '/')
-# define IS_ABSOLUTE_PATH(P) ISSLASH ((P)[0])
+#  define ISSLASH(C) ((C) == '/')
+#  define IS_ABSOLUTE_PATH(P) ISSLASH ((P)[0])
 #endif
 
 /* Define function which are usually not available.  */
@@ -104,13 +104,14 @@ argz_count__ (argz, len)
     }
   return count;
 }
-# undef __argz_count
-# define __argz_count(argz, len) argz_count__ (argz, len)
+
+#  undef __argz_count
+#  define __argz_count(argz, len) argz_count__ (argz, len)
 #else
-# ifdef _LIBC
-#  define __argz_count(argz, len) INTUSE(__argz_count) (argz, len)
-# endif
-#endif	/* !_LIBC && !HAVE___ARGZ_COUNT */
+#  ifdef _LIBC
+#    define __argz_count(argz, len) INTUSE(__argz_count) (argz, len)
+#  endif
+#endif		/* !_LIBC && !HAVE___ARGZ_COUNT */
 
 #if !defined _LIBC && !defined HAVE___ARGZ_STRINGIFY
 /* Make '\0' separated arg vector ARGZ printable by converting all the '\0's
@@ -132,18 +133,18 @@ argz_stringify__ (argz, len, sep)
 	*argz++ = sep;
     }
 }
-# undef __argz_stringify
-# define __argz_stringify(argz, len, sep) argz_stringify__ (argz, len, sep)
+
+#  undef __argz_stringify
+#  define __argz_stringify(argz, len, sep) argz_stringify__ (argz, len, sep)
 #else
-# ifdef _LIBC
-#  define __argz_stringify(argz, len, sep) \
+#  ifdef _LIBC
+#    define __argz_stringify(argz, len, sep) \
   INTUSE(__argz_stringify) (argz, len, sep)
-# endif
-#endif	/* !_LIBC && !HAVE___ARGZ_STRINGIFY */
+#  endif
+#endif		/* !_LIBC && !HAVE___ARGZ_STRINGIFY */
 
 #if !defined _LIBC && !defined HAVE___ARGZ_NEXT
-static char *argz_next__ (char *argz, size_t argz_len,
-				  const char *entry);
+static char *argz_next__ (char *argz, size_t argz_len, const char *entry);
 
 static char *
 argz_next__ (argz, argz_len, entry)
@@ -154,19 +155,19 @@ argz_next__ (argz, argz_len, entry)
   if (entry)
     {
       if (entry < argz + argz_len)
-        entry = strchr (entry, '\0') + 1;
+	entry = strchr (entry, '\0') + 1;
 
       return entry >= argz + argz_len ? NULL : (char *) entry;
     }
+  else if (argz_len > 0)
+    return argz;
   else
-    if (argz_len > 0)
-      return argz;
-    else
-      return 0;
+    return 0;
 }
-# undef __argz_next
-# define __argz_next(argz, len, entry) argz_next__ (argz, len, entry)
-#endif	/* !_LIBC && !HAVE___ARGZ_NEXT */
+
+#  undef __argz_next
+#  define __argz_next(argz, len, entry) argz_next__ (argz, len, entry)
+#endif		/* !_LIBC && !HAVE___ARGZ_NEXT */
 
 
 /* Return number of bits set in X.  */
@@ -184,12 +185,11 @@ pop (x)
 
   return x;
 }
-
 
+
 struct loaded_l10nfile *
 _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
-		    territory, codeset, normalized_codeset, modifier, special,
-		    sponsor, revision, filename, do_allocate)
+		    territory, codeset, normalized_codeset, modifier, special, sponsor, revision, filename, do_allocate)
      struct loaded_l10nfile **l10nfile_list;
      const char *dirlist;
      size_t dirlist_len;
@@ -237,8 +237,7 @@ _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
 				     ? (1 + ((mask & CEN_SPONSOR) != 0
 					     ? strlen (sponsor) : 0)
 					+ ((mask & CEN_REVISION) != 0
-					   ? strlen (revision) + 1 : 0)) : 0)
-				  + 1 + strlen (filename) + 1);
+					   ? strlen (revision) + 1 : 0)) : 0) + 1 + strlen (filename) + 1);
 
   if (abs_filename == NULL)
     return NULL;
@@ -273,7 +272,7 @@ _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
   if ((mask & (XPG_MODIFIER | CEN_AUDIENCE)) != 0)
     {
       /* This component can be part of both syntaxes but has different
-	 leading characters.  For CEN we use `+', else `@'.  */
+         leading characters.  For CEN we use `+', else `@'.  */
       *cp++ = (mask & CEN_AUDIENCE) != 0 ? '+' : '@';
       cp = stpcpy (cp, modifier);
     }
@@ -329,8 +328,7 @@ _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
   retval =
     (struct loaded_l10nfile *)
     malloc (sizeof (*retval)
-	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
-	       * sizeof (struct loaded_l10nfile *)));
+	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0)) * sizeof (struct loaded_l10nfile *)));
   if (retval == NULL)
     {
       free (abs_filename);
@@ -343,9 +341,7 @@ _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
      Setting retval->decided to 1 here means that retval does not
      correspond to a real file (dirlist_count > 1) or is not worth
      looking up (if an unnormalized codeset was specified).  */
-  retval->decided = (dirlist_count > 1
-		     || ((mask & XPG_CODESET) != 0
-			 && (mask & XPG_NORM_CODESET) != 0));
+  retval->decided = (dirlist_count > 1 || ((mask & XPG_CODESET) != 0 && (mask & XPG_NORM_CODESET) != 0));
   retval->data = NULL;
 
   retval->next = *lastp;
@@ -374,20 +370,17 @@ _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len, mask, language,
 	    /* Iterate over all elements of the DIRLIST.  */
 	    char *dir = NULL;
 
-	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
-		   != NULL)
+	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir)) != NULL)
 	      retval->successor[entries++]
 		= _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
 				      cnt, language, territory, codeset,
-				      normalized_codeset, modifier, special,
-				      sponsor, revision, filename, 1);
+				      normalized_codeset, modifier, special, sponsor, revision, filename, 1);
 	  }
 	else
 	  retval->successor[entries++]
 	    = _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len,
 				  cnt, language, territory, codeset,
-				  normalized_codeset, modifier, special,
-				  sponsor, revision, filename, 1);
+				  normalized_codeset, modifier, special, sponsor, revision, filename, 1);
       }
   retval->successor[entries] = NULL;
 

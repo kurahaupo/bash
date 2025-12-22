@@ -35,12 +35,12 @@
 #        if defined (NBPG)
 #          if !defined (CLSIZE)
 #            define CLSIZE 1
-#          endif	/* !CLSIZE */
+#          endif/* !CLSIZE */
 #          define getpagesize() (NBPG * CLSIZE)
 #        else	/* !NBPG */
 #          if defined (NBPC)
 #            define getpagesize() NBPC
-#          endif	/* NBPC */
+#          endif/* NBPC */
 #        endif	/* !NBPG */
 #      endif	/* !EXEC_PAGESIZE */
 #    endif	/* !PAGESIZE */
@@ -50,7 +50,7 @@
 #    define getpagesize() 4096	/* Just punt and use reasonable value */
 #  endif
 
-#endif /* not HAVE_GETPAGESIZE */
+#endif		/* not HAVE_GETPAGESIZE */
 
 int
 main (int argc, char **argv)

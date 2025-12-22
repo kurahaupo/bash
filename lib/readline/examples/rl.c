@@ -34,8 +34,8 @@
 
 #ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-#else 
-extern void exit();
+#else
+extern void exit ();
 #endif
 
 #ifdef HAVE_LOCALE_H
@@ -64,17 +64,16 @@ set_deftext (void)
   if (deftext)
     {
       rl_insert_text (deftext);
-      deftext = (char *)NULL;
-      rl_startup_hook = (rl_hook_func_t *)NULL;
+      deftext = (char *) NULL;
+      rl_startup_hook = (rl_hook_func_t *) NULL;
     }
   return 0;
 }
 
 static void
-usage(void)
+usage (void)
 {
-  fprintf (stderr, "%s: usage: %s [-p prompt] [-u unit] [-d default] [-n nchars]\n",
-		progname, progname);
+  fprintf (stderr, "%s: usage: %s [-p prompt] [-u unit] [-d default] [-n nchars]\n", progname, progname);
 }
 
 int
@@ -85,7 +84,7 @@ main (int argc, char **argv)
   int opt, fd, nch;
   FILE *ifp;
 
-  progname = strrchr(argv[0], '/');
+  progname = strrchr (argv[0], '/');
   if (progname == 0)
     progname = argv[0];
   else
@@ -98,9 +97,9 @@ main (int argc, char **argv)
   /* defaults */
   prompt = "readline$ ";
   fd = nch = 0;
-  deftext = (char *)0;
+  deftext = (char *) 0;
 
-  while ((opt = getopt(argc, argv, "p:u:d:n:")) != EOF)
+  while ((opt = getopt (argc, argv, "p:u:d:n:")) != EOF)
     {
       switch (opt)
 	{
@@ -108,7 +107,7 @@ main (int argc, char **argv)
 	  prompt = optarg;
 	  break;
 	case 'u':
-	  fd = atoi(optarg);
+	  fd = atoi (optarg);
 	  if (fd < 0)
 	    {
 	      fprintf (stderr, "%s: bad file descriptor `%s'\n", progname, optarg);
@@ -119,7 +118,7 @@ main (int argc, char **argv)
 	  deftext = optarg;
 	  break;
 	case 'n':
-	  nch = atoi(optarg);
+	  nch = atoi (optarg);
 	  if (nch < 0)
 	    {
 	      fprintf (stderr, "%s: bad value for -n: `%s'\n", progname, optarg);

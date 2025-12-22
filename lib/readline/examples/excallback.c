@@ -37,18 +37,18 @@ Copyright (C) 1999 Jeff Solomon
 */
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 #include <stdlib.h>
 
 #include <stdio.h>
-#include <termios.h>	/* xxx - should make this more general */
+#include <termios.h>		/* xxx - should make this more general */
 
 #include <locale.h>
 
@@ -93,86 +93,96 @@ Copyright (C) 1999 Jeff Solomon
  * desired.
  */
 
-void process_line(char *line);
-int  change_prompt(int, int);
-char *get_prompt(void);
+void process_line (char *line);
+int change_prompt (int, int);
+char *get_prompt (void);
 
 int prompt = 1;
 char prompt_buf[40], line_buf[256];
 tcflag_t old_lflag;
-cc_t     old_vtime;
+cc_t old_vtime;
 struct termios term;
 
 int
-main(int c, char **v)
+main (int c, char **v)
 {
-    fd_set fds;
+  fd_set fds;
 
-    setlocale (LC_ALL, "");
+  setlocale (LC_ALL, "");
 
-    /* Adjust the terminal slightly before the handler is installed. Disable
-     * canonical mode processing and set the input character time flag to be
-     * non-blocking.
-     */
-    if( tcgetattr(STDIN_FILENO, &term) < 0 ) {
-        perror("tcgetattr");
-        exit(1);
+  /* Adjust the terminal slightly before the handler is installed. Disable
+   * canonical mode processing and set the input character time flag to be
+   * non-blocking.
+   */
+  if (tcgetattr (STDIN_FILENO, &term) < 0)
+    {
+      perror ("tcgetattr");
+      exit (1);
     }
-    old_lflag = term.c_lflag;
-    old_vtime = term.c_cc[VTIME];
-    term.c_lflag &= ~ICANON;
-    term.c_cc[VTIME] = 1;
-    /* COMMENT LINE BELOW - see above */
-    if( tcsetattr(STDIN_FILENO, TCSANOW, &term) < 0 ) {
-        perror("tcsetattr");
-        exit(1);
+  old_lflag = term.c_lflag;
+  old_vtime = term.c_cc[VTIME];
+  term.c_lflag &= ~ICANON;
+  term.c_cc[VTIME] = 1;
+  /* COMMENT LINE BELOW - see above */
+  if (tcsetattr (STDIN_FILENO, TCSANOW, &term) < 0)
+    {
+      perror ("tcsetattr");
+      exit (1);
     }
 
-    rl_add_defun("change-prompt", change_prompt, CTRL('t'));
-    rl_callback_handler_install(get_prompt(), process_line);
+  rl_add_defun ("change-prompt", change_prompt, CTRL ('t'));
+  rl_callback_handler_install (get_prompt (), process_line);
 
-    while(1) {
-      FD_ZERO(&fds);
-      FD_SET(fileno(stdin), &fds);
+  while (1)
+    {
+      FD_ZERO (&fds);
+      FD_SET (fileno (stdin), &fds);
 
-      if( select(FD_SETSIZE, &fds, NULL, NULL, NULL) < 0) {
-        perror("select");
-        exit(1);
-      }
+      if (select (FD_SETSIZE, &fds, NULL, NULL, NULL) < 0)
+	{
+	  perror ("select");
+	  exit (1);
+	}
 
-      if( FD_ISSET(fileno(stdin), &fds) ) {
-        rl_callback_read_char();
-      }
+      if (FD_ISSET (fileno (stdin), &fds))
+	{
+	  rl_callback_read_char ();
+	}
     }
 }
 
 void
-process_line(char *line)
+process_line (char *line)
 {
-  if( line == NULL ) {
-    fprintf(stderr, "\n", line);
+  if (line == NULL)
+    {
+      fprintf (stderr, "\n", line);
 
-    /* reset the old terminal setting before exiting */
-    term.c_lflag     = old_lflag;
-    term.c_cc[VTIME] = old_vtime;
-    if( tcsetattr(STDIN_FILENO, TCSANOW, &term) < 0 ) {
-        perror("tcsetattr");
-        exit(1);
+      /* reset the old terminal setting before exiting */
+      term.c_lflag = old_lflag;
+      term.c_cc[VTIME] = old_vtime;
+      if (tcsetattr (STDIN_FILENO, TCSANOW, &term) < 0)
+	{
+	  perror ("tcsetattr");
+	  exit (1);
+	}
+      exit (0);
     }
-    exit(0);
-  }
 
-  if( strcmp(line, "sleep") == 0 ) {
-    sleep(3);
-  } else {
-    fprintf(stderr, "|%s|\n", line);
-  }
+  if (strcmp (line, "sleep") == 0)
+    {
+      sleep (3);
+    }
+  else
+    {
+      fprintf (stderr, "|%s|\n", line);
+    }
 
   free (line);
 }
 
 int
-change_prompt(int count, int key)
+change_prompt (int count, int key)
 {
   /* toggle the prompt variable */
   prompt = !prompt;
@@ -182,10 +192,9 @@ change_prompt(int count, int key)
 }
 
 char *
-get_prompt(void)
+get_prompt (void)
 {
   /* The prompts can even be different lengths! */
-  sprintf(prompt_buf, "%s",
-    prompt ? "Hit ctrl-t to toggle prompt> " : "Pretty cool huh?> ");
+  sprintf (prompt_buf, "%s", prompt ? "Hit ctrl-t to toggle prompt> " : "Pretty cool huh?> ");
   return prompt_buf;
 }

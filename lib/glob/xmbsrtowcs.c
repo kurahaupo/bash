@@ -35,20 +35,20 @@
 
 #if HANDLE_MULTIBYTE
 
-#include <errno.h>
-#if !defined (errno)
+#  include <errno.h>
+#  if !defined (errno)
 extern int errno;
-#endif
+#  endif
 
-#define WSBUF_INC 32
+#  define WSBUF_INC 32
 
-#ifndef FREE
-#  define FREE(x)	do { if (x) free (x); } while (0)
-#endif
+#  ifndef FREE
+#    define FREE(x)	do { if (x) free (x); } while (0)
+#  endif
 
-#if ! HAVE_STRCHRNUL
+#  if ! HAVE_STRCHRNUL
 extern char *strchrnul (const char *, int);
-#endif
+#  endif
 
 /* On some locales (ex. ja_JP.sjis), mbsrtowc doesn't convert 0x5c to U<0x5c>.
    So, this function is made for converting 0x5c to U<0x5c>. */
@@ -67,7 +67,7 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
     {
       if (!local_state_use)
 	{
-	  memset (&local_state, '\0', sizeof(mbstate_t));
+	  memset (&local_state, '\0', sizeof (mbstate_t));
 	  local_state_use = 1;
 	}
       ps = &local_state;
@@ -82,8 +82,8 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
       mbstate_t psbuf;
 
       /* It doesn't matter if malloc fails here, since mbsrtowcs should do
-	 the right thing with a NULL first argument. */
-      wsbuf = (wchar_t *) malloc ((n + 1) * sizeof(wchar_t));
+         the right thing with a NULL first argument. */
+      wsbuf = (wchar_t *) malloc ((n + 1) * sizeof (wchar_t));
       mbs = *src;
       psbuf = *ps;
 
@@ -93,10 +93,10 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 	free (wsbuf);
       return wclength;
     }
-      
+
   for (wclength = 0; wclength < len; wclength++, dest++)
     {
-      if (mbsinit(ps))
+      if (mbsinit (ps))
 	{
 	  if (**src == '\0')
 	    {
@@ -110,20 +110,20 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 	      mblength = 1;
 	    }
 	  else
-	    mblength = mbrtowc(dest, *src, n, ps);
+	    mblength = mbrtowc (dest, *src, n, ps);
 	}
       else
-	mblength = mbrtowc(dest, *src, n, ps);
+	mblength = mbrtowc (dest, *src, n, ps);
 
       /* Cannot convert multibyte character to wide character. */
-      if (mblength == (size_t)-1 || mblength == (size_t)-2)
-	return (size_t)-1;
+      if (mblength == (size_t) -1 || mblength == (size_t) -2)
+	return (size_t) -1;
 
       *src += mblength;
       n -= mblength;
 
       /* The multibyte string  has  been  completely  converted,
-	 including  the terminating '\0'. */
+         including  the terminating '\0'. */
       if (*dest == L'\0')
 	{
 	  *src = NULL;
@@ -131,10 +131,10 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 	}
     }
 
-    return (wclength);
+  return (wclength);
 }
 
-#if HAVE_MBSNRTOWCS
+#  if HAVE_MBSNRTOWCS
 /* Convert a multibyte string SRC to a wide character string and store the
    result in *DESTP. Memory for the new wide character string is obtained
    with malloc.
@@ -145,18 +145,18 @@ xmbsrtowcs (wchar_t *dest, const char **src, size_t len, mbstate_t *pstate)
 static size_t
 xdupmbstowcs2 (wchar_t **destp, const char *src)
 {
-  const char *p;	/* Conversion start position of src */
-  wchar_t *wsbuf;	/* Buffer for wide characters. */
-  size_t wsbuf_size;	/* Size of WSBUF */
-  size_t wcnum;		/* Number of wide characters in WSBUF */
-  mbstate_t state;	/* Conversion State */
-  size_t n, wcslength;	/* Number of wide characters produced by the conversion. */
+  const char *p;		/* Conversion start position of src */
+  wchar_t *wsbuf;		/* Buffer for wide characters. */
+  size_t wsbuf_size;		/* Size of WSBUF */
+  size_t wcnum;			/* Number of wide characters in WSBUF */
+  mbstate_t state;		/* Conversion State */
+  size_t n, wcslength;		/* Number of wide characters produced by the conversion. */
   const char *end_or_backslash;
-  size_t nms;	/* Number of multibyte characters to convert at one time. */
+  size_t nms;			/* Number of multibyte characters to convert at one time. */
   mbstate_t tmp_state;
   const char *tmp_p;
 
-  memset (&state, '\0', sizeof(mbstate_t));
+  memset (&state, '\0', sizeof (mbstate_t));
 
   wsbuf_size = 0;
   wsbuf = NULL;
@@ -165,7 +165,7 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
   wcnum = 0;
   do
     {
-      end_or_backslash = strchrnul(p, '\\');
+      end_or_backslash = strchrnul (p, '\\');
       nms = end_or_backslash - p;
       if (*end_or_backslash == '\0')
 	nms++;
@@ -174,7 +174,7 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
       tmp_p = p;
       tmp_state = state;
 
-      if (nms == 0 && *p == '\\')	/* special initial case */
+      if (nms == 0 && *p == '\\') /* special initial case */
 	nms = wcslength = 1;
       else
 	wcslength = mbsnrtowcs (NULL, &tmp_p, nms, 0, &tmp_state);
@@ -187,19 +187,19 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
 	}
 
       /* Conversion failed. */
-      if (wcslength == (size_t)-1)
+      if (wcslength == (size_t) -1)
 	{
 	  free (wsbuf);
 	  *destp = NULL;
-	  return (size_t)-1;
+	  return (size_t) -1;
 	}
 
       /* Resize the buffer if it is not large enough. */
-      if (wsbuf_size < wcnum+wcslength+1)	/* 1 for the L'\0' or the potential L'\\' */
+      if (wsbuf_size < wcnum + wcslength + 1) /* 1 for the L'\0' or the potential L'\\' */
 	{
 	  wchar_t *wstmp;
 
-	  while (wsbuf_size < wcnum+wcslength+1) /* 1 for the L'\0' or the potential L'\\' */
+	  while (wsbuf_size < wcnum + wcslength + 1) /* 1 for the L'\0' or the potential L'\\' */
 	    wsbuf_size += WSBUF_INC;
 
 	  wstmp = (wchar_t *) realloc (wsbuf, wsbuf_size * sizeof (wchar_t));
@@ -207,14 +207,14 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
 	    {
 	      free (wsbuf);
 	      *destp = NULL;
-	      return (size_t)-1;
+	      return (size_t) -1;
 	    }
 	  wsbuf = wstmp;
 	}
 
       /* Perform the conversion. This is assumed to return 'wcslength'.
-	 It may set 'p' to NULL. */
-      n = mbsnrtowcs(wsbuf+wcnum, &p, nms, wsbuf_size-wcnum, &state);
+         It may set 'p' to NULL. */
+      n = mbsnrtowcs (wsbuf + wcnum, &p, nms, wsbuf_size - wcnum, &state);
 
       if (n == 0 && p == 0)
 	{
@@ -223,7 +223,7 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
 	}
 
       /* Compensate for taking single byte on wcs conversion failure above. */
-      if (wcslength == 1 && (n == 0 || n == (size_t)-1))
+      if (wcslength == 1 && (n == 0 || n == (size_t) -1))
 	{
 	  state = tmp_state;
 	  p = tmp_p;
@@ -232,11 +232,12 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
 	    break;
 	  else
 	    {
-	      wcnum++; p++;
+	      wcnum++;
+	      p++;
 	    }
 	}
       else
-        wcnum += wcslength;
+	wcnum += wcslength;
 
       if (mbsinit (&state) && (p != NULL) && (*p == '\\'))
 	{
@@ -251,7 +252,7 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
   /* Return the length of the wide character string, not including `\0'. */
   return wcnum;
 }
-#endif /* HAVE_MBSNRTOWCS */
+#  endif	/* HAVE_MBSNRTOWCS */
 
 /* Convert a multibyte string SRC to a wide character string and store the
    result in *DESTP. Memory for the new wide character string is obtained
@@ -268,13 +269,13 @@ xdupmbstowcs2 (wchar_t **destp, const char *src)
 size_t
 xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 {
-  const char *p;	/* Conversion start position of src */
-  wchar_t wc;		/* Created wide character by conversion */
-  wchar_t *wsbuf;	/* Buffer for wide characters. */
-  char **indices; 	/* Buffer for indices. */
-  size_t wsbuf_size;	/* Size of WSBUF */
-  size_t wcnum;		/* Number of wide characters in WSBUF */
-  mbstate_t state;	/* Conversion State */
+  const char *p;		/* Conversion start position of src */
+  wchar_t wc;			/* Created wide character by conversion */
+  wchar_t *wsbuf;		/* Buffer for wide characters. */
+  char **indices;		/* Buffer for indices. */
+  size_t wsbuf_size;		/* Size of WSBUF */
+  size_t wcnum;			/* Number of wide characters in WSBUF */
+  mbstate_t state;		/* Conversion State */
 
   /* In case SRC or DESP is NULL, conversion doesn't take place. */
   if (src == NULL || destp == NULL)
@@ -283,36 +284,36 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 	*destp = NULL;
       if (indicesp)
 	*indicesp = NULL;
-      return (size_t)-1;
+      return (size_t) -1;
     }
 
-#if HAVE_MBSNRTOWCS
+#  if HAVE_MBSNRTOWCS
   if (indicesp == NULL)
     return (xdupmbstowcs2 (destp, src));
-#endif
+#  endif
 
-  memset (&state, '\0', sizeof(mbstate_t));
+  memset (&state, '\0', sizeof (mbstate_t));
   wsbuf_size = WSBUF_INC;
 
-  wsbuf = (wchar_t *) malloc (wsbuf_size * sizeof(wchar_t));
+  wsbuf = (wchar_t *) malloc (wsbuf_size * sizeof (wchar_t));
   if (wsbuf == NULL)
     {
       *destp = NULL;
       if (indicesp)
-        *indicesp = NULL;
-      return (size_t)-1;
+	*indicesp = NULL;
+      return (size_t) -1;
     }
 
   indices = NULL;
   if (indicesp)
     {
-      indices = (char **) malloc (wsbuf_size * sizeof(char *));
+      indices = (char **) malloc (wsbuf_size * sizeof (char *));
       if (indices == NULL)
 	{
 	  free (wsbuf);
 	  *destp = NULL;
 	  *indicesp = NULL;
-	  return (size_t)-1;
+	  return (size_t) -1;
 	}
     }
 
@@ -320,7 +321,7 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
   wcnum = 0;
   do
     {
-      size_t mblength;	/* Byte length of one multibyte character. */
+      size_t mblength;		/* Byte length of one multibyte character. */
 
       if (mbsinit (&state))
 	{
@@ -335,10 +336,10 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 	      mblength = 1;
 	    }
 	  else
-	    mblength = mbrtowc(&wc, p, MB_LEN_MAX, &state);
+	    mblength = mbrtowc (&wc, p, MB_LEN_MAX, &state);
 	}
       else
-	mblength = mbrtowc(&wc, p, MB_LEN_MAX, &state);
+	mblength = mbrtowc (&wc, p, MB_LEN_MAX, &state);
 
       /* Conversion failed. */
       if (MB_INVALIDCH (mblength))
@@ -348,7 +349,7 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 	  *destp = NULL;
 	  if (indicesp)
 	    *indicesp = NULL;
-	  return (size_t)-1;
+	  return (size_t) -1;
 	}
 
       ++wcnum;
@@ -369,7 +370,7 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 	      *destp = NULL;
 	      if (indicesp)
 		*indicesp = NULL;
-	      return (size_t)-1;
+	      return (size_t) -1;
 	    }
 	  wsbuf = wstmp;
 
@@ -383,7 +384,7 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 		  *destp = NULL;
 		  if (indicesp)
 		    *indicesp = NULL;
-		  return (size_t)-1;
+		  return (size_t) -1;
 		}
 	      indices = idxtmp;
 	    }
@@ -391,7 +392,7 @@ xdupmbstowcs (wchar_t **destp, char ***indicesp, const char *src)
 
       wsbuf[wcnum - 1] = wc;
       if (indices)
-        indices[wcnum - 1] = (char *)p;
+	indices[wcnum - 1] = (char *) p;
       p += mblength;
     }
   while (MB_NULLWCH (wc) == 0);
@@ -416,13 +417,13 @@ size_t
 xwcsrtombs (char *dest, const wchar_t **srcp, size_t len, mbstate_t *ps)
 {
   const wchar_t *src;
-  size_t cur_max;			/* XXX - locale_cur_max */
+  size_t cur_max;		/* XXX - locale_cur_max */
   char buf[64], *destptr, *tmp_dest;
   unsigned char uc;
 
   cur_max = MB_CUR_MAX;
-  if (cur_max > sizeof (buf))		/* Holy cow. */
-    return (size_t)-1;
+  if (cur_max > sizeof (buf))	/* Holy cow. */
+    return (size_t) -1;
 
   src = *srcp;
 
@@ -440,13 +441,13 @@ xwcsrtombs (char *dest, const wchar_t **srcp, size_t len, mbstate_t *ps)
 	  tmp_dest = destptr;
 	  ret = wcrtomb (len >= cur_max ? destptr : buf, wc, ps);
 
-	  if (ret == (size_t)(-1))		/* XXX */
+	  if (ret == (size_t) (-1)) /* XXX */
 	    {
 	      /* Since this is used for globbing and other uses of filenames,
-		 treat invalid wide character sequences as bytes.  This is
-		 intended to be symmetric with xdupmbstowcs2. */
-handle_byte:
-	      destptr = tmp_dest;	/* in case wcrtomb modified it */
+	         treat invalid wide character sequences as bytes.  This is
+	         intended to be symmetric with xdupmbstowcs2. */
+	    handle_byte:
+	      destptr = tmp_dest; /* in case wcrtomb modified it */
 	      uc = wc;
 	      ret = 1;
 	      if (len >= cur_max)
@@ -457,7 +458,7 @@ handle_byte:
 		memset (ps, 0, sizeof (mbstate_t));
 	    }
 
-	  if (ret > cur_max)		/* Holy cow */
+	  if (ret > cur_max)	/* Holy cow */
 	    goto bad_input;
 
 	  if (len < ret)
@@ -481,7 +482,7 @@ handle_byte:
   else
     {
       /* Ignore dest and len, don't store *srcp at the end, and
-	 don't clobber *ps.  */
+         don't clobber *ps.  */
       mbstate_t state = *ps;
       size_t totalcount = 0;
 
@@ -493,7 +494,7 @@ handle_byte:
 	  wc = *src;
 	  ret = wcrtomb (buf, wc, &state);
 
-	  if (ret == (size_t)(-1))
+	  if (ret == (size_t) (-1))
 	    goto bad_input2;
 	  if (wc == 0)
 	    {
@@ -509,7 +510,7 @@ bad_input:
   *srcp = src;
 bad_input2:
   errno = EILSEQ;
-  return (size_t)(-1);
+  return (size_t) (-1);
 }
 
-#endif /* HANDLE_MULTIBYTE */
+#endif		/* HANDLE_MULTIBYTE */

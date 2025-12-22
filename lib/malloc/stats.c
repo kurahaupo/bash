@@ -26,13 +26,13 @@
 
 #ifdef MALLOC_STATS
 
-#include <stdio.h>
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-#include <string.h>
+#  include <stdio.h>
+#  ifdef HAVE_UNISTD_H
+#    include <unistd.h>
+#  endif
+#  include <string.h>
 
-#include "mstats.h"
+#  include "mstats.h"
 
 extern int malloc_free_blocks (int);
 
@@ -64,7 +64,7 @@ malloc_bucket_stats (int size)
   v.nsplit = _mstats.nsplit[size];
   v.ncoalesce = _mstats.ncoalesce[size];
 
-  v.nfree = malloc_free_blocks (size);	/* call back to malloc.c */
+  v.nfree = malloc_free_blocks (size); /* call back to malloc.c */
 
   return v;
 }
@@ -98,30 +98,28 @@ _print_malloc_stats (char *s, FILE *fp)
   unsigned long totused, totfree;
   struct bucket_stats v;
 
-  fprintf (fp, "Memory allocation statistics: %s\n    size\tfree\tin use\ttotal\tmorecore lesscore split\tcoalesce\n", s ? s : "");
+  fprintf (fp, "Memory allocation statistics: %s\n    size\tfree\tin use\ttotal\tmorecore lesscore split\tcoalesce\n",
+	   s ? s : "");
   for (i = totused = totfree = 0; i < NBUCKETS; i++)
     {
       v = malloc_bucket_stats (i);
       /* Show where the mmap threshold is; sizes greater than this use mmap to
-	 allocate and munmap to free (munmap shows up as lesscore). */
-      if (i == malloc_mmap_threshold+1)
+         allocate and munmap to free (munmap shows up as lesscore). */
+      if (i == malloc_mmap_threshold + 1)
 	fprintf (fp, "--------\n");
       if (v.nmal > 0)
-	fprintf (fp, "%8lu\t%4d\t%6d\t%5d%8d\t%8d %5d %8d\n", (unsigned long)v.blocksize, v.nfree, v.nused, v.nmal, v.nmorecore, v.nlesscore, v.nsplit, v.ncoalesce);
+	fprintf (fp, "%8lu\t%4d\t%6d\t%5d%8d\t%8d %5d %8d\n", (unsigned long) v.blocksize, v.nfree, v.nused, v.nmal,
+		 v.nmorecore, v.nlesscore, v.nsplit, v.ncoalesce);
       totfree += v.nfree * v.blocksize;
       totused += v.nused * v.blocksize;
     }
-  fprintf (fp, "\nTotal bytes in use: %lu, total bytes free: %lu\n",
-	   totused, totfree);
-  fprintf (fp, "\nTotal bytes requested by application: %lu\n", (unsigned long)_mstats.bytesreq);
+  fprintf (fp, "\nTotal bytes in use: %lu, total bytes free: %lu\n", totused, totfree);
+  fprintf (fp, "\nTotal bytes requested by application: %lu\n", (unsigned long) _mstats.bytesreq);
   fprintf (fp, "Total mallocs: %d, total frees: %d, total reallocs: %d (%d copies)\n",
 	   _mstats.nmal, _mstats.nfre, _mstats.nrealloc, _mstats.nrcopy);
-  fprintf (fp, "Total sbrks: %d, total bytes via sbrk: %d\n",
-  	   _mstats.nsbrk, _mstats.tsbrk);
-  fprintf (fp, "Total mmaps: %d, total bytes via mmap: %d\n",
-  	   _mstats.nmmap, _mstats.tmmap);
-  fprintf (fp, "Total blocks split: %d, total block coalesces: %d\n",
-  	   _mstats.tbsplit, _mstats.tbcoalesce);
+  fprintf (fp, "Total sbrks: %d, total bytes via sbrk: %d\n", _mstats.nsbrk, _mstats.tsbrk);
+  fprintf (fp, "Total mmaps: %d, total bytes via mmap: %d\n", _mstats.nmmap, _mstats.tmmap);
+  fprintf (fp, "Total blocks split: %d, total block coalesces: %d\n", _mstats.tbsplit, _mstats.tbcoalesce);
 }
 
 void
@@ -136,7 +134,7 @@ fprint_malloc_stats (char *s, FILE *fp)
   _print_malloc_stats (s, fp);
 }
 
-#define TRACEROOT "/var/tmp/maltrace/stats."
+#  define TRACEROOT "/var/tmp/maltrace/stats."
 
 void
 trace_malloc_stats (char *s, char *fn)
@@ -150,12 +148,12 @@ trace_malloc_stats (char *s, char *fn)
     {
       setvbuf (fp, mallbuf, _IOFBF, sizeof (mallbuf));
       _print_malloc_stats (s, fp);
-      fflush(fp);
-      fclose(fp);
+      fflush (fp);
+      fclose (fp);
     }
 }
 
-#endif /* MALLOC_STATS */
+#endif		/* MALLOC_STATS */
 
 #if defined (MALLOC_STATS) || defined (MALLOC_TRACE)
 FILE *
@@ -165,11 +163,11 @@ _imalloc_fopen (char *s, char *fn, char *def, char *defbuf, size_t defsiz)
   long l;
   FILE *fp;
 
-  l = (long)getpid ();
+  l = (long) getpid ();
   if (fn == 0)
     {
       sprintf (defbuf, "%s%ld", def, l);
-      fp = fopen(defbuf, "w");
+      fp = fopen (defbuf, "w");
     }
   else
     {
@@ -179,13 +177,13 @@ _imalloc_fopen (char *s, char *fn, char *def, char *defbuf, size_t defsiz)
 
       sprintf (pidbuf, "%ld", l);
       if ((strlen (pidbuf) + strlen (fn) + 2) >= sizeof (fname))
-	return ((FILE *)0);
-      for (sp = 0, p = fname, q = fn; *q; )
+	return ((FILE *) 0);
+      for (sp = 0, p = fname, q = fn; *q;)
 	{
 	  if (sp == 0 && *q == '%' && q[1] == 'p')
 	    {
 	      sp = 1;
-	      for (r = pidbuf; *r; )
+	      for (r = pidbuf; *r;)
 		*p++ = *r++;
 	      q += 2;
 	    }
@@ -198,4 +196,4 @@ _imalloc_fopen (char *s, char *fn, char *def, char *defbuf, size_t defsiz)
 
   return fp;
 }
-#endif /* MALLOC_STATS || MALLOC_TRACE */
+#endif		/* MALLOC_STATS || MALLOC_TRACE */

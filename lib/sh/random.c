@@ -91,12 +91,12 @@ genseed (void)
   u_bits32_t iv;
 
   gettimeofday (&tv, NULL);
-  iv = (uintptr_t)seedrand;		/* let the compiler truncate */
+  iv = (uintptr_t) seedrand;	/* let the compiler truncate */
   iv = tv.tv_sec ^ tv.tv_usec ^ getpid () ^ getppid () ^ current_user.uid ^ iv;
   return (iv);
 }
 
-#define BASH_RAND_MAX	32767		/* 0x7fff - 16 bits */
+#define BASH_RAND_MAX	32767	/* 0x7fff - 16 bits */
 
 /* Returns a pseudo-random number between 0 and 32767. */
 int
@@ -134,7 +134,7 @@ static int last_rand32;
 
 static int urandfd = -1;
 
-#define BASH_RAND32_MAX	0x7fffffff	/* 32 bits */
+#define BASH_RAND32_MAX	0x7fffffff /* 32 bits */
 
 /* Returns a 32-bit pseudo-random number between 0 and 4294967295. */
 static u_bits32_t
@@ -178,10 +178,10 @@ urandom_close (void)
 
 #if !defined (HAVE_GETRANDOM)
 /* Imperfect emulation of getrandom(2). */
-#ifndef GRND_NONBLOCK
-#  define GRND_NONBLOCK 1
-#  define GRND_RANDOM 2
-#endif
+#  ifndef GRND_NONBLOCK
+#    define GRND_NONBLOCK 1
+#    define GRND_RANDOM 2
+#  endif
 
 static ssize_t
 getrandom (void *buf, size_t len, unsigned int flags)
@@ -190,10 +190,10 @@ getrandom (void *buf, size_t len, unsigned int flags)
   ssize_t r;
   static int urand_unavail = 0;
 
-#if HAVE_GETENTROPY
+#  if HAVE_GETENTROPY
   r = getentropy (buf, len);
   return (r == 0) ? len : -1;
-#endif
+#  endif
 
   if (urandfd == -1 && urand_unavail == 0)
     {
@@ -214,13 +214,13 @@ getrandom (void *buf, size_t len, unsigned int flags)
   return -1;
 }
 #endif
-      
+
 u_bits32_t
 get_urandom32 (void)
 {
   u_bits32_t ret;
 
-  if (getrandom ((void *)&ret, sizeof (ret), GRND_NONBLOCK) == sizeof (ret))
+  if (getrandom ((void *) &ret, sizeof (ret), GRND_NONBLOCK) == sizeof (ret))
     return (last_rand32 = ret);
 
 #if defined (HAVE_ARC4RANDOM)

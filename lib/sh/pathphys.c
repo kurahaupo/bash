@@ -44,7 +44,7 @@
 
 #if !defined (errno)
 extern int errno;
-#endif /* !errno */
+#endif		/* !errno */
 
 extern char *get_working_directory (char *);
 
@@ -71,7 +71,7 @@ _path_readlink (char *path, char *buf, size_t bufsiz)
 char *
 sh_physpath (char *path, int flags)
 {
-  char tbuf[PATH_MAX+1], linkbuf[PATH_MAX+1];
+  char tbuf[PATH_MAX + 1], linkbuf[PATH_MAX + 1];
   char *result, *p, *q, *qsave, *qbase, *workpath;
   int double_slash_path, nlink;
   ssize_t r;
@@ -90,7 +90,7 @@ sh_physpath (char *path, int flags)
 #endif
 
   nlink = 0;
-  q = result = (char *)xmalloc (PATH_MAX + 1);
+  q = result = (char *) xmalloc (PATH_MAX + 1);
 
   /* Even if we get something longer than PATH_MAX, we might be able to
      shorten it, so we try. */
@@ -98,7 +98,7 @@ sh_physpath (char *path, int flags)
     workpath = savestring (path);
   else
     {
-      workpath = (char *)xmalloc (PATH_MAX + 1);
+      workpath = (char *) xmalloc (PATH_MAX + 1);
       strcpy (workpath, path);
     }
 
@@ -109,13 +109,13 @@ sh_physpath (char *path, int flags)
   double_slash_path = DOUBLE_SLASH (workpath);
   qbase += double_slash_path;
 
-  for (p = workpath; p < qbase; )
+  for (p = workpath; p < qbase;)
     *q++ = *p++;
   qbase = q;
 
   /*
    * invariants:
-   *	  qbase points to the portion of the result path we want to modify
+   *      qbase points to the portion of the result path we want to modify
    *      p points at beginning of path element we're considering.
    *      q points just past the last path element we wrote (no slash).
    *
@@ -124,26 +124,26 @@ sh_physpath (char *path, int flags)
 
   while (*p)
     {
-      if (ISDIRSEP(p[0])) /* null element */
+      if (ISDIRSEP (p[0]))	/* null element */
 	p++;
-      else if(p[0] == '.' && PATHSEP(p[1]))	/* . and ./ */
-	p += 1; 	/* don't count the separator in case it is nul */
-      else if (p[0] == '.' && p[1] == '.' && PATHSEP(p[2])) /* .. and ../ */
+      else if (p[0] == '.' && PATHSEP (p[1])) /* . and ./ */
+	p += 1;			/* don't count the separator in case it is nul */
+      else if (p[0] == '.' && p[1] == '.' && PATHSEP (p[2])) /* .. and ../ */
 	{
-	  p += 2; /* skip `..' */
+	  p += 2;		/* skip `..' */
 	  if (q > qbase)
 	    {
-	      while (--q > qbase && ISDIRSEP(*q) == 0)
+	      while (--q > qbase && ISDIRSEP (*q) == 0)
 		;
 	    }
 	}
-      else	/* real path element */
+      else			/* real path element */
 	{
 	  /* add separator if not at start of work portion of result */
 	  qsave = q;
 	  if (q != qbase)
 	    *q++ = DIRSEP;
-	  while (*p && (ISDIRSEP(*p) == 0))
+	  while (*p && (ISDIRSEP (*p) == 0))
 	    {
 	      if (q - result >= PATH_MAX)
 		{
@@ -154,14 +154,14 @@ sh_physpath (char *path, int flags)
 #endif
 		  goto error;
 		}
-		
+
 	      *q++ = *p++;
 	    }
 
 	  *q = '\0';
 
 	  r = _path_readlink (result, linkbuf, PATH_MAX);
-	  if (r < 0)	/* if errno == EINVAL, it's not a symlink */
+	  if (r < 0)		/* if errno == EINVAL, it's not a symlink */
 	    {
 	      if (errno != EINVAL)
 		goto error;
@@ -178,10 +178,10 @@ sh_physpath (char *path, int flags)
 #else
 	      errno = EINVAL;
 #endif
-error:
+	    error:
 	      free (result);
 	      free (workpath);
-	      return ((char *)NULL);
+	      return ((char *) NULL);
 	    }
 
 	  linkbuf[linklen] = '\0';
@@ -207,15 +207,15 @@ error:
 	  strcpy (tbuf + linklen, p);
 	  strcpy (workpath, tbuf);
 
-	  if (ABSPATH(linkbuf))
+	  if (ABSPATH (linkbuf))
 	    {
 	      q = result;
 	      /* Duplicating some code here... */
 	      qbase = workpath + 1;
 	      double_slash_path = DOUBLE_SLASH (workpath);
 	      qbase += double_slash_path;
-    
-	      for (p = workpath; p < qbase; )
+
+	      for (p = workpath; p < qbase;)
 		*q++ = *p++;
 	      qbase = q;
 	    }
@@ -233,7 +233,7 @@ error:
   /* If the result starts with `//', but the original path does not, we
      can turn the // into /.  Because of how we set `qbase', this should never
      be true, but it's a sanity check. */
-  if (DOUBLE_SLASH(result) && double_slash_path == 0)
+  if (DOUBLE_SLASH (result) && double_slash_path == 0)
     {
       if (result[2] == '\0')	/* short-circuit for bare `//' */
 	result[1] = '\0';
@@ -252,15 +252,15 @@ sh_realpath (const char *pathname, char *resolved)
   if (pathname == 0 || *pathname == '\0')
     {
       errno = (pathname == 0) ? EINVAL : ENOENT;
-      return ((char *)NULL);
+      return ((char *) NULL);
     }
 
   if (ABSPATH (pathname) == 0)
     {
       wd = get_working_directory ("sh_realpath");
       if (wd == 0)
-	return ((char *)NULL);
-      tdir = sh_makepath (wd, (char *)pathname, 0);
+	return ((char *) NULL);
+      tdir = sh_makepath (wd, (char *) pathname, 0);
       free (wd);
     }
   else

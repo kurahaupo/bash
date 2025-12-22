@@ -19,14 +19,14 @@
 */
 
 #if !defined (_FINDCMD_H_)
-#define _FINDCMD_H_
+#  define _FINDCMD_H_
 
-#include "stdc.h"
+#  include "stdc.h"
 
 /* Flags for search_for_command */
-#define CMDSRCH_HASH		0x01
-#define CMDSRCH_STDPATH		0x02
-#define CMDSRCH_TEMPENV		0x04
+#  define CMDSRCH_HASH		0x01
+#  define CMDSRCH_STDPATH		0x02
+#  define CMDSRCH_TEMPENV		0x04
 
 extern int file_status (const char *);
 extern int executable_file (const char *);
@@ -45,4 +45,4 @@ extern int dot_found_in_search;
 /* variables managed via shopt */
 extern int check_hashed_filenames;
 
-#endif /* _FINDCMD_H_ */
+#endif		/* _FINDCMD_H_ */

@@ -20,12 +20,12 @@
 */
 
 #ifndef _SH_MALLOC_H
-#define _SH_MALLOC_H
+#  define _SH_MALLOC_H
 
 /* Generic pointer type. */
-#ifndef PTR_T
-#  define PTR_T void *
-#endif /* PTR_T */
+#  ifndef PTR_T
+#    define PTR_T void *
+#  endif	/* PTR_T */
 
 extern PTR_T sh_malloc (size_t, const char *, int);
 extern PTR_T sh_realloc (PTR_T, size_t, const char *, int);
@@ -40,7 +40,7 @@ extern PTR_T sh_valloc (size_t, const char *, int);
 
 /* trace.c */
 extern int malloc_set_trace (int);
-extern void malloc_set_tracefp ();	/* full prototype requires stdio.h */
+extern void malloc_set_tracefp (); /* full prototype requires stdio.h */
 extern void malloc_set_tracefn (char *, char *);
 
 /* table.c */
@@ -50,7 +50,7 @@ extern int malloc_set_register (int);
 
 /* stats.c */
 extern void print_malloc_stats (char *);
-extern void fprint_malloc_stats ();	/* full prototype requires stdio.h */
+extern void fprint_malloc_stats (); /* full prototype requires stdio.h */
 extern void trace_malloc_stats (char *, char *);
 
 #endif

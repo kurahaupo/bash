@@ -22,18 +22,18 @@
 
 #if defined (HAVE_TIMES)
 
-#include <sys/types.h>
-#include <posixtime.h>
-#include <systimes.h>
+#  include <sys/types.h>
+#  include <posixtime.h>
+#  include <systimes.h>
 
-#include <stdio.h>
-#include <stdc.h>
+#  include <stdio.h>
+#  include <stdc.h>
 
-#include <bashintl.h>
+#  include <bashintl.h>
 
-#ifndef locale_decpoint
+#  ifndef locale_decpoint
 extern int locale_decpoint (void);
-#endif
+#  endif
 
 extern long get_clk_tck (void);
 
@@ -75,6 +75,6 @@ print_clock_t (FILE *fp, clock_t t)
   minutes = timestamp / 60;
   seconds = timestamp % 60;
 
-  fprintf (fp, "%ldm%d%c%03lds",  minutes, seconds, locale_decpoint(), seconds_fraction);
+  fprintf (fp, "%ldm%d%c%03lds", minutes, seconds, locale_decpoint (), seconds_fraction);
 }
-#endif /* HAVE_TIMES */
+#endif		/* HAVE_TIMES */

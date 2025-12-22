@@ -56,13 +56,13 @@ chmod_builtin (WORD_LIST *list)
   WORD_LIST *l;
 
   reset_internal_getopt ();
-  mode = (char *)NULL;
-  while ((opt = internal_getopt(list, "fhvRHLP")) != -1)
+  mode = (char *) NULL;
+  while ((opt = internal_getopt (list, "fhvRHLP")) != -1)
     switch (opt)
       {
 	CASE_HELPOPT;
-	default:
-	  return (EX_DISKFALLBACK);
+      default:
+	return (EX_DISKFALLBACK);
       }
   list = loptend;
 
@@ -82,7 +82,7 @@ chmod_builtin (WORD_LIST *list)
     }
 
   nmode = -1;
-  if (ISOCTAL (*mode))	/* octal number */
+  if (ISOCTAL (*mode))		/* octal number */
     {
       nmode = read_octal (mode);
       if (nmode < 0)
@@ -91,7 +91,7 @@ chmod_builtin (WORD_LIST *list)
 	  return (EXECUTION_FAILURE);
 	}
     }
-  else 				/* test for valid symbolic mode */
+  else				/* test for valid symbolic mode */
     {
       /* initial bits are a=rwx; the mode argument modifies them */
       lmode = parse_symbolic_mode (mode, ALLBITS);
@@ -134,23 +134,22 @@ chmod_builtin (WORD_LIST *list)
 }
 
 char *chmod_doc[] = {
-	"Change file mode bits.",
-	"",
-	"Change file mode bits.  Change the mode bits of files named as",
-	"arguments, in the order specified, as specified by MODE."
-	"The MODE argument may be an octal number or a symbolic mode like",
-	"that described in chmod(1).  If a symbolic mode is used, the",
-	"operations are interpreted relative to an initial mode of \"a=rwx\".",
-	"",
-	"The return value is 0 unless an error occurs.",
-	(char *)NULL
+  "Change file mode bits.",
+  "",
+  "Change file mode bits.  Change the mode bits of files named as",
+  "arguments, in the order specified, as specified by MODE." "The MODE argument may be an octal number or a symbolic mode like",
+  "that described in chmod(1).  If a symbolic mode is used, the",
+  "operations are interpreted relative to an initial mode of \"a=rwx\".",
+  "",
+  "The return value is 0 unless an error occurs.",
+  (char *) NULL
 };
 
 struct builtin chmod_struct = {
-	"chmod",
-	chmod_builtin,
-	BUILTIN_ENABLED,
-	chmod_doc,
-	"chmod [-R] mode file [file...]",
-	0
+  "chmod",
+  chmod_builtin,
+  BUILTIN_ENABLED,
+  chmod_doc,
+  "chmod [-R] mode file [file...]",
+  0
 };

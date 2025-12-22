@@ -56,16 +56,14 @@ extern long long strtoll (const char *, char **, int);
 #endif
 
 #ifdef strtoimax
-#undef strtoimax
+#  undef strtoimax
 #endif
 
 intmax_t
 strtoimax (const char *ptr, char **endptr, int base)
 {
 #if HAVE_LONG_LONG_INT
-  verify(size_is_that_of_long_or_long_long,
-	 (sizeof (intmax_t) == sizeof (long) ||
-	  sizeof (intmax_t) == sizeof (long long)));
+  verify (size_is_that_of_long_or_long_long, (sizeof (intmax_t) == sizeof (long) || sizeof (intmax_t) == sizeof (long long)));
 
   if (sizeof (intmax_t) != sizeof (long))
     return (strtoll (ptr, endptr, base));
@@ -77,31 +75,31 @@ strtoimax (const char *ptr, char **endptr, int base)
 }
 
 #ifdef TESTING
-# include <stdio.h>
+#  include <stdio.h>
 int
 main ()
 {
   char *p, *endptr;
   intmax_t x;
-#if HAVE_LONG_LONG_INT
+#  if HAVE_LONG_LONG_INT
   long long y;
-#endif
+#  endif
   long z;
-  
+
   printf ("sizeof intmax_t: %d\n", sizeof (intmax_t));
 
-#if HAVE_LONG_LONG_INT
+#  if HAVE_LONG_LONG_INT
   printf ("sizeof long long: %d\n", sizeof (long long));
-#endif
+#  endif
   printf ("sizeof long: %d\n", sizeof (long));
 
-  x = strtoimax("42", &endptr, 10);
-#if HAVE_LONG_LONG_INT
-  y = strtoll("42", &endptr, 10);
-#else
+  x = strtoimax ("42", &endptr, 10);
+#  if HAVE_LONG_LONG_INT
+  y = strtoll ("42", &endptr, 10);
+#  else
   y = -1;
-#endif
-  z = strtol("42", &endptr, 10);
+#  endif
+  z = strtol ("42", &endptr, 10);
 
   printf ("%lld %lld %ld\n", x, y, z);
 

@@ -17,7 +17,7 @@
 */
 
 #ifndef _TERMCAP_H
-#define _TERMCAP_H 1
+#  define _TERMCAP_H 1
 
 extern int tgetent (char *buffer, const char *termtype);
 
@@ -36,4 +36,4 @@ extern char *BC;
 
 extern char *tgoto (const char *cstring, int hpos, int vpos);
 
-#endif /* not _TERMCAP_H */
+#endif		/* not _TERMCAP_H */

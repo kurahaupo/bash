@@ -33,7 +33,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-   
+
 #include <locale.h>
 
 #ifndef errno
@@ -55,7 +55,7 @@ extern int errno;
 /* **************************************************************** */
 
 /* A static variable for holding the line. */
-static char *line_read = (char *)NULL;
+static char *line_read = (char *) NULL;
 
 /* Read a string, and return a pointer to it.  Returns NULL on EOF. */
 char *
@@ -66,7 +66,7 @@ rl_gets (void)
   if (line_read)
     {
       free (line_read);
-      line_read = (char *)NULL;
+      line_read = (char *) NULL;
     }
 
   /* Get a line from the user. */

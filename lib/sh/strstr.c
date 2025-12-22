@@ -28,11 +28,11 @@
  * Stephen R. van den Berg, berg@pool.informatik.rwth-aachen.de	*/
 
 #if HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #if defined _LIBC || defined HAVE_STRING_H
-# include <string.h>
+#  include <string.h>
 #endif
 #include <sys/types.h>
 
@@ -52,7 +52,7 @@ strstr (const char *phaystack, const char *pneedle)
   b = *needle;
   if (b != '\0')
     {
-      haystack--;				/* possible ANSI violation */
+      haystack--;		/* possible ANSI violation */
       do
 	{
 	  c = *++haystack;
@@ -68,8 +68,8 @@ strstr (const char *phaystack, const char *pneedle)
       goto jin;
 
       for (;;)
-        {
-          register chartype a;
+	{
+	  register chartype a;
 	  register const unsigned char *rhaystack, *rneedle;
 
 	  do
@@ -82,10 +82,11 @@ strstr (const char *phaystack, const char *pneedle)
 	      a = *++haystack;
 	      if (a == '\0')
 		goto ret0;
-shloop:;    }
-          while (a != b);
+	    shloop:;
+	    }
+	  while (a != b);
 
-jin:	  a = *++haystack;
+	jin:a = *++haystack;
 	  if (a == '\0')
 	    goto ret0;
 
@@ -112,14 +113,14 @@ jin:	  a = *++haystack;
 	      }
 	    while (*rhaystack == a);
 
-	  needle = rneedle;		   /* took the register-poor approach */
+	  needle = rneedle;	/* took the register-poor approach */
 
 	  if (a == '\0')
 	    break;
-        }
+	}
     }
 foundneedle:
-  return (char*) haystack;
+  return (char *) haystack;
 ret0:
   return 0;
 }

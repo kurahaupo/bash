@@ -22,61 +22,61 @@
 
 #if !HAVE_STRTOL
 
-#include <chartypes.h>
-#include <errno.h>
+#  include <chartypes.h>
+#  include <errno.h>
 
-#ifndef errno
+#  ifndef errno
 extern int errno;
-#endif
+#  endif
 
-#ifndef __set_errno
-#  define __set_errno(Val) errno = (Val)
-#endif
+#  ifndef __set_errno
+#    define __set_errno(Val) errno = (Val)
+#  endif
 
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
+#  ifdef HAVE_LIMITS_H
+#    include <limits.h>
+#  endif
 
-#include <typemax.h>
+#  include <typemax.h>
 
-#include <stdc.h>
-#include <bashansi.h>
+#  include <stdc.h>
+#  include <bashansi.h>
 
 /* Nonzero if we are defining `strtoul' or `strtoull', operating on
    unsigned integers.  */
-#ifndef UNSIGNED
-#  define UNSIGNED 0
-#  define INT LONG int
-#else
-#  define INT unsigned LONG int
-#endif
-
-#if UNSIGNED
-#  ifdef QUAD
-#    define strtol strtoull
+#  ifndef UNSIGNED
+#    define UNSIGNED 0
+#    define INT LONG int
 #  else
-#    define strtol strtoul
+#    define INT unsigned LONG int
 #  endif
-#else
-#  ifdef QUAD
-#    define strtol strtoll
+
+#  if UNSIGNED
+#    ifdef QUAD
+#      define strtol strtoull
+#    else
+#      define strtol strtoul
+#    endif
+#  else
+#    ifdef QUAD
+#      define strtol strtoll
+#    endif
 #  endif
-#endif
 
 /* If QUAD is defined, we are defining `strtoll' or `strtoull',
    operating on `long long ints.  */
 
-#ifdef QUAD
-#  define LONG long long
-#  define STRTOL_LONG_MIN LLONG_MIN
-#  define STRTOL_LONG_MAX LLONG_MAX
-#  define STRTOL_ULONG_MAX ULLONG_MAX
-#else	/* !QUAD */
-#  define LONG long
-#  define STRTOL_LONG_MIN LONG_MIN
-#  define STRTOL_LONG_MAX LONG_MAX
-#  define STRTOL_ULONG_MAX ULONG_MAX
-#endif
+#  ifdef QUAD
+#    define LONG long long
+#    define STRTOL_LONG_MIN LLONG_MIN
+#    define STRTOL_LONG_MAX LLONG_MAX
+#    define STRTOL_ULONG_MAX ULLONG_MAX
+#  else		/* !QUAD */
+#    define LONG long
+#    define STRTOL_LONG_MIN LONG_MIN
+#    define STRTOL_LONG_MAX LONG_MAX
+#    define STRTOL_ULONG_MAX ULONG_MAX
+#  endif
 
 /* Convert NPTR to an `unsigned long int' or `long int' in base BASE.
    If BASE is 0 the base is determined by the presence of a leading
@@ -106,7 +106,7 @@ strtol (const char *nptr, char **endptr, int base)
   save = s = nptr;
 
   /* Skip white space.  */
-  while (ISSPACE ((unsigned char)*s))
+  while (ISSPACE ((unsigned char) *s))
     ++s;
   if (*s == '\0')
     goto noconv;
@@ -150,7 +150,7 @@ strtol (const char *nptr, char **endptr, int base)
       unsigned long int j = 0;
       unsigned long int jmax = ULONG_MAX / base;
 
-      for (;c != '\0'; c = *++s)
+      for (; c != '\0'; c = *++s)
 	{
 	  if (s == end)
 	    break;
@@ -177,7 +177,7 @@ strtol (const char *nptr, char **endptr, int base)
       i = (unsigned LONG int) j;
     }
   else
-    for (;c != '\0'; c = *++s)
+    for (; c != '\0'; c = *++s)
       {
 	if (s == end)
 	  break;
@@ -209,24 +209,21 @@ strtol (const char *nptr, char **endptr, int base)
   if (endptr != NULL)
     *endptr = (char *) s;
 
-#if !UNSIGNED
+#  if !UNSIGNED
   /* Check for a value that is within the range of
      `unsigned LONG int', but outside the range of `LONG int'.  */
-  if (overflow == 0
-      && i > (negative
-	      ? -((unsigned LONG int) (STRTOL_LONG_MIN + 1)) + 1
-	      : (unsigned LONG int) STRTOL_LONG_MAX))
+  if (overflow == 0 && i > (negative ? -((unsigned LONG int) (STRTOL_LONG_MIN + 1)) + 1 : (unsigned LONG int) STRTOL_LONG_MAX))
     overflow = 1;
-#endif
+#  endif
 
   if (overflow)
     {
       __set_errno (ERANGE);
-#if UNSIGNED
+#  if UNSIGNED
       return STRTOL_ULONG_MAX;
-#else
+#  else
       return negative ? STRTOL_LONG_MIN : STRTOL_LONG_MAX;
-#endif
+#  endif
     }
 
   /* Return the result of the appropriate sign.  */
@@ -249,4 +246,4 @@ noconv:
   return 0L;
 }
 
-#endif /* !HAVE_STRTOL */
+#endif		/* !HAVE_STRTOL */

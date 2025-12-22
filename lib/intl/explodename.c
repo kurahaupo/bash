@@ -15,7 +15,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdlib.h>
@@ -26,11 +26,11 @@
 
 /* On some strange systems still no definition of NULL is found.  Sigh!  */
 #ifndef NULL
-# if defined __STDC__ && __STDC__
-#  define NULL ((void *) 0)
-# else
-#  define NULL 0
-# endif
+#  if defined __STDC__ && __STDC__
+#    define NULL ((void *) 0)
+#  else
+#    define NULL 0
+#  endif
 #endif
 
 /* @@ end of prolog @@ */
@@ -39,8 +39,7 @@
 int
 _nl_explode_name (char *name,
 		  const char **language, const char **modifier,
-		  const char **territory, const char **codeset,
-		  const char **normalized_codeset)
+		  const char **territory, const char **codeset, const char **normalized_codeset)
 {
   char *cp;
   int mask;
@@ -53,12 +52,12 @@ _nl_explode_name (char *name,
   /* Determine the individual parts of the locale name.
      Accept the XPG syntax
 
-             language[_territory][.codeset][@modifier]
+     language[_territory][.codeset][@modifier]
 
      On AIX systems, also accept the same syntax with an uppercased language,
      and a syntax similar to RFC 5646:
 
-             language[_script]_territory[.codeset]
+     language[_script]_territory[.codeset]
 
      where script is a four-letter code for a script, per ISO 15924.
    */
@@ -103,21 +102,20 @@ _nl_explode_name (char *name,
 	      *cp++ = '\0';
 
 	      /* Next is the script.  Translate the script to a modifier.
-		 We don't need to support all of ISO 15924 here, only those
-		 scripts that actually occur:
-		   Latn -> latin
-		   Cyrl -> cyrillic
-		   Guru -> gurmukhi
-		   Hans -> (omitted, redundant with the territory CN or SG)
-		   Hant -> (omitted, redundant with the territory TW or HK)  */
+	         We don't need to support all of ISO 15924 here, only those
+	         scripts that actually occur:
+	         Latn -> latin
+	         Cyrl -> cyrillic
+	         Guru -> gurmukhi
+	         Hans -> (omitted, redundant with the territory CN or SG)
+	         Hant -> (omitted, redundant with the territory TW or HK)  */
 	      if (strcmp (next, "Latn") == 0)
 		*modifier = "latin";
 	      else if (strcmp (next, "Cyrl") == 0)
 		*modifier = "cyrillic";
 	      else if (strcmp (next, "Guru") == 0)
 		*modifier = "gurmukhi";
-	      else if (!(strcmp (next, "Hans") == 0
-			 || strcmp (next, "Hant") == 0))
+	      else if (!(strcmp (next, "Hans") == 0 || strcmp (next, "Hant") == 0))
 		*modifier = next;
 	      if (*modifier != NULL && (*modifier)[0] != '\0')
 		mask |= XPG_MODIFIER;
@@ -148,8 +146,7 @@ _nl_explode_name (char *name,
 
 	  if (*codeset != cp && (*codeset)[0] != '\0')
 	    {
-	      *normalized_codeset = _nl_normalize_codeset (*codeset,
-							   cp - *codeset);
+	      *normalized_codeset = _nl_normalize_codeset (*codeset, cp - *codeset);
 	      if (*normalized_codeset == NULL)
 		return -1;
 	      else if (strcmp (*codeset, *normalized_codeset) == 0)

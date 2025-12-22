@@ -20,7 +20,7 @@
 */
 
 #if !defined (_STDC_H_)
-#define _STDC_H_
+#  define _STDC_H_
 
 /* Adapted from BSD /usr/include/sys/cdefs.h. */
 
@@ -28,62 +28,62 @@
    and traditional C compilers with something like this:
 	extern char *func PARAMS((char *, char *, int)); */
 
-#if !defined (PARAMS)
-#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus) || defined (PROTOTYPES)
-#    define PARAMS(protos) protos
-#  else 
-#    define PARAMS(protos) ()
+#  if !defined (PARAMS)
+#    if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus) || defined (PROTOTYPES)
+#      define PARAMS(protos) protos
+#    else
+#      define PARAMS(protos) ()
+#    endif
 #  endif
-#endif
 
 /* Fortify, at least, has trouble with this definition */
-#if defined (HAVE_STRINGIZE)
-#  define CPP_STRING(x) #x
-#else
-#  define CPP_STRING(x) "x"
-#endif
+#  if defined (HAVE_STRINGIZE)
+#    define CPP_STRING(x) #x
+#  else
+#    define CPP_STRING(x) "x"
+#  endif
 
-#if !defined (__STDC__)
+#  if !defined (__STDC__)
 
-#if defined (__GNUC__)		/* gcc with -traditional */
-#  if !defined (signed)
-#    define signed __signed
-#  endif
-#  if !defined (volatile)
-#    define volatile __volatile
-#  endif
-#  if !defined (restrict)
-#    define restrict __restrict
-#  endif
-#else /* !__GNUC__ */
-#  if !defined (inline)
-#    define inline
-#  endif
-#  if !defined (signed)
-#    define signed
-#  endif
-#  if !defined (volatile)
-#    define volatile
-#  endif
-#  if !defined (restrict)
-#    define restrict
-#  endif
-#endif /* !__GNUC__ */
+#    if defined (__GNUC__)	/* gcc with -traditional */
+#      if !defined (signed)
+#        define signed __signed
+#      endif
+#      if !defined (volatile)
+#        define volatile __volatile
+#      endif
+#      if !defined (restrict)
+#        define restrict __restrict
+#      endif
+#    else	/* !__GNUC__ */
+#      if !defined (inline)
+#        define inline
+#      endif
+#      if !defined (signed)
+#        define signed
+#      endif
+#      if !defined (volatile)
+#        define volatile
+#      endif
+#      if !defined (restrict)
+#        define restrict
+#      endif
+#    endif	/* !__GNUC__ */
 
-#endif /* !__STDC__ */
+#  endif	/* !__STDC__ */
 
-#ifndef __attribute__
-#  if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)
-#    define __attribute__(x)
+#  ifndef __attribute__
+#    if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8)
+#      define __attribute__(x)
+#    endif
 #  endif
-#endif
 
 /* For those situations when gcc handles inlining a particular function but
    other compilers complain. */
-#ifdef __GNUC__
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
+#  ifdef __GNUC__
+#    define INLINE inline
+#  else
+#    define INLINE
+#  endif
 
-#endif /* !_STDC_H_ */
+#endif		/* !_STDC_H_ */

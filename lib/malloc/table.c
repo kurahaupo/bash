@@ -39,18 +39,18 @@ extern int malloc_register;
 
 extern FILE *_imalloc_fopen (char *, char *, char *, char *, size_t);
 
-#define FIND_ALLOC	0x01	/* find slot for new allocation */
-#define FIND_EXIST	0x02	/* find slot for existing entry for free() or search */
+#  define FIND_ALLOC	0x01	/* find slot for new allocation */
+#  define FIND_EXIST	0x02	/* find slot for existing entry for free() or search */
 
 static int table_count = 0;
 static int table_allocated = 0;
-static int table_bucket_index = REG_TABLE_SIZE-1;
+static int table_bucket_index = REG_TABLE_SIZE - 1;
 static mr_table_t mem_table[REG_TABLE_SIZE];
 static mr_table_t mem_overflow;
 
-#ifndef STREQ
-#define STREQ(a, b) ((a)[0] == (b)[0] && strcmp(a, b) == 0)
-#endif
+#  ifndef STREQ
+#    define STREQ(a, b) ((a)[0] == (b)[0] && strcmp(a, b) == 0)
+#  endif
 
 static int location_table_index = 0;
 static int location_table_count = 0;
@@ -66,31 +66,31 @@ mt_hash (const PTR_T key)
   unsigned long x;
 
   /* set up the internal state */
-  a = 0x9e3779b9;	/* the golden ratio; an arbitrary value */
-  x = (unsigned long)key;		/* truncation is OK */
+  a = 0x9e3779b9;		/* the golden ratio; an arbitrary value */
+  x = (unsigned long) key;	/* truncation is OK */
   b = x >> 8;
-  c = x >> 3;				/* XXX - was >> 4 */
+  c = x >> 3;			/* XXX - was >> 4 */
 
-  HASH_MIX(a, b, c);
+  HASH_MIX (a, b, c);
   return c;
 }
 
-#if 0
+#  if 0
 static unsigned int
 which_bucket (PTR_T mem)
 {
-  return (mt_hash ((unsigned char *)mem) & (REG_TABLE_SIZE-1));
+  return (mt_hash ((unsigned char *) mem) & (REG_TABLE_SIZE - 1));
 }
 
-#else
-#define which_bucket(mem) (mt_hash ((unsigned char *)(mem)) & (REG_TABLE_SIZE-1));
+#  else
+#    define which_bucket(mem) (mt_hash ((unsigned char *)(mem)) & (REG_TABLE_SIZE-1));
 
-#define next_bucket()	((table_bucket_index + 1) & (REG_TABLE_SIZE-1))
-#define next_entry(mem)	((mem == mem_table + REG_TABLE_SIZE - 1) ? mem_table : ++mem)
+#    define next_bucket()	((table_bucket_index + 1) & (REG_TABLE_SIZE-1))
+#    define next_entry(mem)	((mem == mem_table + REG_TABLE_SIZE - 1) ? mem_table : ++mem)
 
-#define prev_bucket()	(table_bucket_index == 0 ? REG_TABLE_SIZE-1 : table_bucket_index-1)
-#define prev_entry(mem)	((mem == mem_table) ? mem_table + REG_TABLE_SIZE - 1 : mem - 1)
-#endif
+#    define prev_bucket()	(table_bucket_index == 0 ? REG_TABLE_SIZE-1 : table_bucket_index-1)
+#    define prev_entry(mem)	((mem == mem_table) ? mem_table + REG_TABLE_SIZE - 1 : mem - 1)
+#  endif
 
 static mr_table_t *
 find_entry (PTR_T mem, int flags)
@@ -105,13 +105,13 @@ find_entry (PTR_T mem, int flags)
   /* If we want to insert an allocation entry just use the next slot */
   if (flags & FIND_ALLOC)
     {
-      table_bucket_index = next_bucket();
+      table_bucket_index = next_bucket ();
       table_count++;
       tp = mem_table + table_bucket_index;
-      memset(tp, 0, sizeof (mr_table_t));	/* overwrite next existing entry */
+      memset (tp, 0, sizeof (mr_table_t)); /* overwrite next existing entry */
       return tp;
     }
-    
+
   tp = endp = mem_table + table_bucket_index;
 
   /* search for last allocation corresponding to MEM, return entry pointer */
@@ -124,10 +124,10 @@ find_entry (PTR_T mem, int flags)
 
       /* if we went all the way around and didn't find it, return NULL */
       if (tp == endp)
-        return ((mr_table_t *)NULL);
+	return ((mr_table_t *) NULL);
     }
 
-  return (mr_table_t *)NULL;
+  return (mr_table_t *) NULL;
 }
 
 mr_table_t *
@@ -145,11 +145,9 @@ mregister_describe_mem (PTR_T mem, FILE *fp)
   if (entry == 0)
     return;
   fprintf (fp, "malloc: %p: %s: last %s from %s:%d\n",
-  		mem,
-		(entry->flags & MT_ALLOC) ? "allocated" : "free",
-		(entry->flags & MT_ALLOC) ? "allocated" : "freed",
-		entry->file ? entry->file : "unknown",
-		entry->line);
+	   mem,
+	   (entry->flags & MT_ALLOC) ? "allocated" : "free",
+	   (entry->flags & MT_ALLOC) ? "allocated" : "freed", entry->file ? entry->file : "unknown", entry->line);
 }
 
 void
@@ -161,9 +159,9 @@ mregister_alloc (const char *tag, PTR_T mem, size_t size, const char *file, int 
 
   /* Block all signals in case we are executed from a signal handler. */
   blocked_sigs = 0;
-#ifdef SHELL
+#  ifdef SHELL
   if (running_trap || signal_is_trapped (SIGINT) || signal_is_trapped (SIGCHLD))
-#endif
+#  endif
     {
       _malloc_block_signals (&set, &oset);
       blocked_sigs = 1;
@@ -181,7 +179,7 @@ mregister_alloc (const char *tag, PTR_T mem, size_t size, const char *file, int 
 	_malloc_unblock_signals (&set, &oset);
       return;
     }
-  
+
   if (tentry->flags & MT_ALLOC)
     {
       /* oops.  bad bookkeeping. ignore for now */
@@ -212,9 +210,9 @@ mregister_free (PTR_T mem, int size, const char *file, int line)
 
   /* Block all signals in case we are executed from a signal handler. */
   blocked_sigs = 0;
-#ifdef SHELL
+#  ifdef SHELL
   if (running_trap || signal_is_trapped (SIGINT) || signal_is_trapped (SIGCHLD))
-#endif
+#  endif
     {
       _malloc_block_signals (&set, &oset);
       blocked_sigs = 1;
@@ -224,9 +222,9 @@ mregister_free (PTR_T mem, int size, const char *file, int line)
   if (tentry == 0)
     {
       /* oops.  not found. */
-#if 0
+#  if 0
       fprintf (stderr, "register_free: %p not in allocation table?\n", mem);
-#endif
+#  endif
       if (blocked_sigs)
 	_malloc_unblock_signals (&set, &oset);
       return;
@@ -236,7 +234,7 @@ mregister_free (PTR_T mem, int size, const char *file, int line)
       /* oops.  bad bookkeeping. ignore for now */
       fprintf (stderr, _("register_free: %p already in table as free?\n"), mem);
     }
-    	
+
   tentry->flags = MT_FREE;
   tentry->func = "free";
   tentry->file = file;
@@ -252,7 +250,7 @@ mregister_free (PTR_T mem, int size, const char *file, int line)
 
 /* If we ever add more flags, this will require changes. */
 static char *
-_entry_flags(int x)
+_entry_flags (int x)
 {
   if (x & MT_FREE)
     return "free";
@@ -263,7 +261,7 @@ _entry_flags(int x)
 }
 
 static void
-_register_dump_table(FILE *fp)
+_register_dump_table (FILE *fp)
 {
   register int i;
   mr_table_t entry;
@@ -273,19 +271,17 @@ _register_dump_table(FILE *fp)
       entry = mem_table[i];
       if (entry.mem)
 	fprintf (fp, "%s[%d] %p:%zu:%s:%s:%s:%d:%d:%d\n",
-						(i == table_bucket_index) ? "*" : "",
-						i,
-						entry.mem, entry.size,
-						_entry_flags(entry.flags),
-						entry.func ? entry.func : "unknown",
-						entry.file ? entry.file : "unknown",
-						entry.line,
-						entry.nalloc, entry.nfree);
+		 (i == table_bucket_index) ? "*" : "",
+		 i,
+		 entry.mem, entry.size,
+		 _entry_flags (entry.flags),
+		 entry.func ? entry.func : "unknown",
+		 entry.file ? entry.file : "unknown", entry.line, entry.nalloc, entry.nfree);
     }
 }
- 
+
 void
-mregister_dump_table(void)
+mregister_dump_table (void)
 {
   _register_dump_table (stderr);
 }
@@ -293,7 +289,7 @@ mregister_dump_table(void)
 void
 mregister_table_init (void)
 {
-  memset (mem_table, 0, sizeof(mr_table_t) * REG_TABLE_SIZE);
+  memset (mem_table, 0, sizeof (mr_table_t) * REG_TABLE_SIZE);
   memset (&mem_overflow, 0, sizeof (mr_table_t));
   table_count = 0;
 }
@@ -309,9 +305,9 @@ find_location_entry (const char *file, int line)
   for (tp = mlocation_table; tp <= endp; tp++)
     {
       if (tp->line == line && STREQ (file, tp->file))
-        return tp;
+	return tp;
     }
-  return (ma_table_t *)NULL;
+  return (ma_table_t *) NULL;
 }
 
 void
@@ -337,13 +333,13 @@ mlocation_register_alloc (const char *file, int line)
     {
       location_table_index++;
       if (location_table_index == REG_TABLE_SIZE)
-        location_table_index = 1;	/* slot 0 reserved */
+	location_table_index = 1; /* slot 0 reserved */
       lentry = mlocation_table + location_table_index;
       lentry->file = nfile;
       lentry->line = line;
       lentry->nalloc = 1;
       if (location_table_count < REG_TABLE_SIZE)
-	location_table_count++;		/* clamp at REG_TABLE_SIZE for now */
+	location_table_count++;	/* clamp at REG_TABLE_SIZE for now */
     }
   else
     lentry->nalloc++;
@@ -356,9 +352,7 @@ _location_dump_table (FILE *fp)
 
   endp = mlocation_table + location_table_count;
   for (tp = mlocation_table; tp < endp; tp++)
-    fprintf (fp, "%s:%d\t%d\n", tp->file ? tp->file : "unknown",
-				tp->line ? tp->line : 0,
-				tp->nalloc);
+    fprintf (fp, "%s:%d\t%d\n", tp->file ? tp->file : "unknown", tp->line ? tp->line : 0, tp->nalloc);
 }
 
 void
@@ -367,7 +361,7 @@ mlocation_dump_table (void)
   _location_dump_table (stderr);
 }
 
-#define LOCROOT "/var/tmp/maltrace/locations."
+#  define LOCROOT "/var/tmp/maltrace/locations."
 
 void
 mlocation_write_table (void)
@@ -375,9 +369,9 @@ mlocation_write_table (void)
   FILE *fp;
   char defname[sizeof (LOCROOT) + 64];
 
-  fp = _imalloc_fopen ((char *)NULL, (char *)NULL, LOCROOT, defname, sizeof (defname));
+  fp = _imalloc_fopen ((char *) NULL, (char *) NULL, LOCROOT, defname, sizeof (defname));
   if (fp == 0)
-    return;		/* XXX - no error message yet */
+    return;			/* XXX - no error message yet */
   _location_dump_table (fp);
   fclose (fp);
 }
@@ -386,13 +380,13 @@ void
 mlocation_table_init (void)
 {
   memset (mlocation_table, 0, sizeof (ma_table_t) * REG_TABLE_SIZE);
-  mlocation_table[0].file = "";		/* reserve slot 0 for unknown locations */
+  mlocation_table[0].file = "";	/* reserve slot 0 for unknown locations */
   mlocation_table[0].line = 0;
   mlocation_table[0].nalloc = 0;
   location_table_count = 1;
 }
 
-#endif /* MALLOC_REGISTER */
+#endif		/* MALLOC_REGISTER */
 
 int
 malloc_set_register (int n)
