@@ -2772,10 +2772,15 @@ VASNPRINTF (DCHAR_T *resultbuf, size_t *lengthp,
                         }
                     }
 #  if DCHAR_IS_TCHAR
-                  else if (has_width)
-#  else
-                  else
+                  else if (! has_width)
+                    {
+                      /* Use the entire string.  */
+                      arg_end = arg + local_wcslen (arg);
+                      /* The number of bytes doesn't matter.  */
+                      characters = 0;
+                    }
 #  endif
+                  else
                     {
                       /* Use the entire string, and count the number of
                          bytes.  */
@@ -2809,15 +2814,6 @@ VASNPRINTF (DCHAR_T *resultbuf, size_t *lengthp,
                           characters += count;
                         }
                     }
-#  if DCHAR_IS_TCHAR
-                  else
-                    {
-                      /* Use the entire string.  */
-                      arg_end = arg + local_wcslen (arg);
-                      /* The number of bytes doesn't matter.  */
-                      characters = 0;
-                    }
-#  endif
 
 #  if !DCHAR_IS_TCHAR
                   /* Convert the string into a piece of temporary memory.  */
