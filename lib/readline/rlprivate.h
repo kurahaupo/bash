@@ -588,6 +588,8 @@ extern int _rl_vi_ins_modestr_len;
 extern char *_rl_vi_cmd_mode_str;
 extern int _rl_vi_cmd_modestr_len;
 
+extern int _rl_echo_subst_rand_seed;
+
 /* isearch.c */
 extern char *_rl_isearch_terminators;
 

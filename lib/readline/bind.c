@@ -81,10 +81,14 @@ struct name_and_keymap {
 };
 
 typedef struct bool_var_def_s bool_var_def_t;
+typedef bool _rl_bgv_func_t (bool_var_def_t const *);
+typedef int _rl_bsv_func_t (bool_var_def_t const *, bool);
 struct bool_var_def_s {
   const char * const name;
   int *value;
   int flags;
+  _rl_bsv_func_t *set_func;
+  _rl_bgv_func_t *get_func;
 };
 
 typedef struct str_var_def_s str_var_def_t;
@@ -1900,6 +1904,14 @@ rl_parse_and_bind (char *string)
 #define V_SPECIAL	0x1
 #define V_DEPRECATED	0x02
 
+static _rl_bsv_func_t sv_echo_substition_auto;
+static _rl_bgv_func_t gv_echo_substition_none;
+static _rl_bsv_func_t sv_echo_substition_none;
+#if ! defined NOT_ASCII
+static _rl_bgv_func_t gv_echo_substition_rand;
+static _rl_bsv_func_t sv_echo_substition_rand;
+#endif
+
 static const bool_var_def_t boolean_varlist [] = {
   { "bind-tty-special-chars",	&_rl_bind_stty_chars,		0 },
   { "blink-matching-paren",	&rl_blink_matching_paren,	V_SPECIAL },
@@ -1913,6 +1925,11 @@ static const bool_var_def_t boolean_varlist [] = {
   { "convert-meta",		&_rl_convert_meta_chars_to_ascii, 0 },
   { "disable-completion",	&rl_inhibit_completion,		0 },
   { "echo-control-characters",	&_rl_echo_control_chars,	0 },
+  { "echo-substitution-auto",	NULL,				0, sv_echo_substition_auto },
+  { "echo-substitution-disabled", NULL,				0, sv_echo_substition_none, gv_echo_substition_none },
+#if ! defined NOT_ASCII
+  { "echo-substitution-random",	NULL,				0, sv_echo_substition_rand, gv_echo_substition_rand },
+#endif
   { "enable-active-region",	&_rl_enable_active_region,	0 },
   { "enable-bracketed-paste",	&_rl_enable_bracketed_paste,	V_SPECIAL },
   { "enable-keypad",		&_rl_enable_keypad,		0 },
@@ -2073,7 +2090,15 @@ rl_variable_bind (const char *name, const char *value)
   bool_var_def_t const *bvar = find_boolean_var (name);
   if (bvar)
     {
-      *bvar->value = bool_to_int (value);
+      bool v = bool_to_int (value);
+      if (bvar->set_func)
+	{
+	  int r = bvar->set_func (bvar, v);
+	  if (r != 0)
+	    _rl_init_file_error ("%s: could not set value to %d", name, v);
+	  return r;
+	}
+      *bvar->value = v;
       if (bvar->flags & V_SPECIAL)
 	hack_special_boolean_var (bvar);
       return 0;
@@ -2087,10 +2112,10 @@ rl_variable_bind (const char *name, const char *value)
       if (! svar->set_func)
 	return 0;
 
-      int v = svar->set_func (value);
-      if (v != 0)
+      int r = svar->set_func (value);	/* TODO: pass var def to each setfunc */
+      if (r != 0)
 	_rl_init_file_error ("%s: could not set value to `%s'", name, value);
-      return v;
+      return r;
     }
 
   _rl_init_file_error ("%s: unknown variable name", name);
@@ -2173,7 +2198,7 @@ sv_compwidth (const char *value)
 
 static char const *
 _rl_codepoint_to_utf8 (unsigned long c)
-2914{
+{
   /* Don't use unprintable chars */
   if (CTRL_CHAR (c) || c == RUBOUT)
     return NULL;
@@ -2212,44 +2237,68 @@ _rl_codepoint_to_utf8 (unsigned long c)
   return strdup (p);
 }
 
-static int
-sv_echo_substition (const char *value)
+static void
+sv_echo_substition_default (void)
 {
-  /* discard previous value, if any */
+  /* discard previous value, if any; initial segment for every other setter */
   if (_rl_echo_subst_str)
     free (_rl_echo_subst_str);
-
   _rl_echo_subst_str = NULL;
   _rl_echo_subst_len = 0;
   _rl_echo_subst_mode = _RL_ESM_NO_ECHO;
+}
+
+static int
+sv_echo_substition_none (bool_var_def_t const *var, bool val)
+{
+  sv_echo_substition_default ();
+  return 0;
+}
+
+static bool
+gv_echo_substition_none (bool_var_def_t const *var)
+{
+  return _rl_echo_subst_mode == _RL_ESM_NO_ECHO;
+}
+
+static int
+sv_echo_substition_auto (bool_var_def_t const *var, bool val)
+{
+  sv_echo_substition_default ();
+  if (val)
+    {
+      _rl_echo_subst_mode = _RL_ESM_ONE;
+      _rl_echo_subst_str = _rl_utf8locale ? "•" : "*"; /* "\u2022" */
+      _rl_echo_subst_len = strlen (_rl_echo_subst_str);
+      _rl_echo_subst_str = strdup (_rl_echo_subst_str);
+    }
+  return 0;
+}
+
+#if ! defined NOT_ASCII
+static int
+sv_echo_substition_rand (bool_var_def_t const *var, bool val)
+{
+  sv_echo_substition_default ();
+  if (val)
+    _rl_echo_subst_mode = _RL_ESM_RANDOM_ASCII;
+  return 0;
+}
+
+static bool
+gv_echo_substition_rand (bool_var_def_t const *var)
+{
+  return _rl_echo_subst_mode == _RL_ESM_RANDOM_ASCII;
+}
+#endif
+
+static int
+sv_echo_substition (const char *value)
+{
+  sv_echo_substition_default ();
 
   if (value == NULL || ! *value)
     return 0;
-
-  if (value[0] == ':' && isalpha (value[1]))
-    {
-      if (! strcmp (value, ":none"))
-        return 0;
-#ifndef NOT_ASCII
-      if (! strcmp (value, ":random"))
-	{
-	  _rl_echo_subst_mode = _RL_ESM_RANDOM_ASCII;
-	  return 0;
-	}
-#endif
-      if (! strcmp (value, ":auto"))
-        {
-	  if (_rl_utf8locale)
-	    value = "•";
-	  else
-	    value = "*";
-        }
-      else
-      /* All other values of the form
-	  COLON LETTER [ANYTHING...]
-	 are reserved for future use */
-      return -1;
-    }
 
   if (_rl_utf8locale && value[0] == 'U' && value[1] == '+')
     {
@@ -2263,10 +2312,11 @@ sv_echo_substition (const char *value)
 	return -1;
       _rl_echo_subst_mode = _RL_ESM_ONE;
       _rl_echo_subst_str = res;
+      _rl_echo_subst_len = strlen (_rl_echo_subst_str);
+      return 0;
     }
   else
     {
-      int mb = 0;
       size_t n = 0;
       const char *q = value;
       while (*q)
@@ -2275,12 +2325,10 @@ sv_echo_substition (const char *value)
 	  if (CTRL_CHAR (c) || c == RUBOUT)
 	    /* Try not to allow unprintable chars */
 	    return -1;
-          int l = _rl_utf8_skiplen (q);
-          if (l < 0)
-            return -1;
-          if (l > 1)
-            mb = 1; /* seen multi-byte */
-	  q += l;
+	  int l = _rl_utf8_skiplen (q);
+	  if (l < 0)
+	    return -1;
+	  q += l;	/* _rl_utf8_skiplen stops short of terminating NUL */
 	  ++n;
 	}
       if (n == 0)
@@ -2305,15 +2353,8 @@ gv_echo_substition (str_var_def_t const *)
       case _RL_ESM_ONE:
 	return _rl_echo_subst_str;
 
-      case _RL_ESM_RANDOM_ASCII:
-	return ":random";
-
-
-      case _RL_ESM_NO_ECHO:
-        return "";
-
       default:
-	return "*BROKEN*";
+        return NULL;
     }
 }
 
@@ -3196,15 +3237,21 @@ void
 rl_variable_dumper (int print_readably)
 {
   char *v;
+  int x;
 
   for (bool_var_def_t const *var = boolean_varlist; var->name; var++)
     {
+      x = var->get_func ?  var->get_func (var) :
+	  var->value    ? *var->value :
+			  -1;
+      if (x < 0)
+	continue;
       if (print_readably)
-        fprintf (rl_outstream, "set %s %s\n", var->name,
-			       *var->value ? "on" : "off");
+	fprintf (rl_outstream, "set %s %s\n", var->name,
+			       x ? "on" : "off");
       else
-        fprintf (rl_outstream, "%s is set to `%s'\n", var->name,
-			       *var->value ? "on" : "off");
+	fprintf (rl_outstream, "%s is set to `%s'\n", var->name,
+			       x ? "on" : "off");
     }
 
   for (str_var_def_t const *var = string_varlist; var->name; var++)

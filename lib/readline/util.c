@@ -566,14 +566,14 @@ _rl_utf8_skiplen (const char *p)
 {
   unsigned char c = *p;
   if (c == 0)
-    return 0; /* reached end of string */
+    return 0;	/* reached end of string */
   if ((c & 0x80) == 0)
-    return 1;
+    return 1;	/* ASCII is valid subset of UTF-8 */
   if (! _rl_utf8locale)
     return -1;	/* unsupported */
   if (c < 0xc2 || c > 0xfd)
-    return -1;
-  char *q = p+1;
+    return -1;	/* not valid bytes in UTF-8 */
+  const char *q = p+1;
   while ((c <<= 1) & 0x80)
     if ((*q++ & 0xc0) != 0x80)
       return -1;

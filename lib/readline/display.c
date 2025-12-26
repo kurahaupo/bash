@@ -803,6 +803,8 @@ _rl_optimize_redisplay (void)
 			_rl_last_c_pos > wrap_offset && \
 			o_cpos < prompt_last_invisible)
 
+int _rl_echo_subst_rand_seed;
+
 /* Basic redisplay algorithm.  See comments inline. */
 void
 rl_redisplay (void)
@@ -826,9 +828,11 @@ rl_redisplay (void)
 
   if (! _rl_echoing_p)
     {
-      if (_rl_echo_subst_str && ! *_rl_echo_subst_str &&
-	  _rl_echo_subst_mode != _RL_ESM_RANDOM_ASCII)
-	_rl_echo_subst_mode = _RL_ESM_NO_ECHO;
+      if (_rl_echo_subst_str && ! *_rl_echo_subst_str)
+#if ! defined NOT_ASCII
+	if (_rl_echo_subst_mode != _RL_ESM_RANDOM_ASCII)
+#endif
+	  _rl_echo_subst_mode = _RL_ESM_NO_ECHO;
       if (_rl_echo_subst_mode == _RL_ESM_NO_ECHO)
 	return;
     }
@@ -1124,11 +1128,13 @@ rl_redisplay (void)
 	    seq = NULL;
 	  CHECK_LPOS();
 	}
-#ifndef NOT_ASCII
+#if ! defined NOT_ASCII
       else if (echo_subst_mode == _RL_ESM_RANDOM_ASCII)
 	{
-	  /* Random printable ASCII */
-	  char c = rand() % ('~' - '!' + 1) + '!';
+	  /* Pseudo-random printable ASCII */
+	  if (_rl_echo_subst_rand_seed == 0)
+	    _rl_echo_subst_rand_seed = time (NULL);
+	  char c = (_rl_echo_subst_rand_seed + in * (9 - in / 3)) % ('~' - '!' + 1) + '!';
 	  if (! isgraph (c))
             /*NOTREACHED*/
 	    c = '#';

@@ -389,6 +389,9 @@ readline (const char *prompt)
   rl_set_signals ();
 #endif
 
+  /* Make echo-substitution-random different for each input requested */
+  _rl_echo_subst_rand_seed = 0;
+
   value = readline_internal ();
   if (rl_deprep_term_function)
     (*rl_deprep_term_function) ();
