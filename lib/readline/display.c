@@ -1116,7 +1116,7 @@ rl_redisplay (void)
 
       if (echo_subst_mode == _RL_ESM_SEQUENCE)
 	{
-	  /* Repeating fixed sequence characters */
+	  /* Repeating fixed sequence of characters */
 	  static char const *seq;
 	  if (in == 0 || !seq || !*seq)
 	    seq = _rl_echo_subst_str;

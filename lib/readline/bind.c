@@ -2243,6 +2243,7 @@ sv_echo_substition_default (void)
   /* discard previous value, if any; initial segment for every other setter */
   if (_rl_echo_subst_str)
     free (_rl_echo_subst_str);
+
   _rl_echo_subst_str = NULL;
   _rl_echo_subst_len = 0;
   _rl_echo_subst_mode = _RL_ESM_NO_ECHO;
@@ -2312,8 +2313,6 @@ sv_echo_substition (const char *value)
 	return -1;
       _rl_echo_subst_mode = _RL_ESM_ONE;
       _rl_echo_subst_str = res;
-      _rl_echo_subst_len = strlen (_rl_echo_subst_str);
-      return 0;
     }
   else
     {
@@ -2354,7 +2353,7 @@ gv_echo_substition (str_var_def_t const *)
 	return _rl_echo_subst_str;
 
       default:
-        return NULL;
+	return NULL;
     }
 }
 
