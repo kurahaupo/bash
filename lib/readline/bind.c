@@ -148,12 +148,14 @@ static int _rl_force_meta_prefix = 0;
 /* Do we want to force binding "\M-C" to the meta prefix (ESC-C)? */
 #define FORCE_META_PREFIX()	(_rl_force_meta_prefix > 0 ? 1 : _rl_convert_meta_chars_to_ascii)
 
-#define OP_EQ	1
-#define OP_NE	2
-#define OP_GT	3
-#define OP_GE	4
-#define OP_LT	5
-#define OP_LE	6
+enum _rl_op_cmp_t {
+  OP_EQ = 1,
+  OP_GT = 2,
+  OP_LT = 4,
+  OP_GE = OP_EQ | OP_GT,
+  OP_LE = OP_EQ | OP_LT,
+  OP_NE = OP_LT | OP_GT,
+};
 
 #define OPSTART(c)	((c) == '=' || (c) == '!' || (c) == '<' || (c) == '>')
 #define CMPSTART(c)	((c) == '=' || (c) == '!')
@@ -1197,45 +1199,39 @@ _rl_init_file_error (const char *format, ...)
 static int
 parse_comparison_op (const char *s, int *indp)
 {
-  int i, peekc, op;
+  int i, op;
 
-  if (OPSTART (s[*indp]) == 0)
-    return -1;
   i = *indp;
-  peekc = s[i] ? s[i+1] : 0;
-  op = -1;
+  if (s[i] == '=')
+    {
+      i++;
+      if (s[i] == '=')
+        i++;
+      *indp = i;
+      return OP_EQ;
+    }
+
+  if (!s[i])
+    return -1;
+
+  if (s[i] == '!' && s[i+1] == '=')
+    {
+      *indp = i + 2;
+      return OP_NE;
+    }
+
+  if (s[i] == '<')
+    op = OP_LT;
+  else if (s[i] == '>')
+    op = OP_GT;
+  else
+    return -1;
+  i++;
 
   if (s[i] == '=')
     {
-      op = OP_EQ;
-      if (peekc == '=')
-        i++;
+      op |= OP_EQ;
       i++;
-    }
-  else if (s[i] == '!' && peekc == '=')
-    {
-      op = OP_NE;
-      i += 2;
-    }
-  else if (s[i] == '<' && peekc == '=')
-    {
-      op = OP_LE;
-      i += 2;
-    }
-  else if (s[i] == '>' && peekc == '=')
-    {
-      op = OP_GE;
-      i += 2;
-    }
-  else if (s[i] == '<')
-    {
-      op = OP_LT;
-      i += 1;
-    }
-  else if (s[i] == '>')
-    {
-      op = OP_GT;
-      i += 1;
     }
 
   *indp = i;
