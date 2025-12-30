@@ -146,7 +146,7 @@ static int _rl_prefer_visible_bell = 1;
 static int _rl_force_meta_prefix = 0;
 
 /* Do we want to force binding "\M-C" to the meta prefix (ESC-C)? */
-#define FORCE_META_PREFIX()	(_rl_force_meta_prefix > 0 ? 1 : _rl_convert_meta_chars_to_ascii)
+static inline bool FORCE_META_PREFIX(void)	{ return _rl_force_meta_prefix > 0 || _rl_convert_meta_chars_to_ascii; }
 
 enum _rl_op_cmp_t {
   OP_EQ = 1,
@@ -157,8 +157,8 @@ enum _rl_op_cmp_t {
   OP_NE = OP_LT | OP_GT,
 };
 
-#define OPSTART(c)	((c) == '=' || (c) == '!' || (c) == '<' || (c) == '>')
-#define CMPSTART(c)	((c) == '=' || (c) == '!')
+static inline bool OPSTART(char c)	{ return c == '=' || c == '!' || c == '<' || c == '>'; }
+static inline bool CMPSTART(char c)	{ return c == '=' || c == '!'; }
 
 /* **************************************************************** */
 /*								    */
