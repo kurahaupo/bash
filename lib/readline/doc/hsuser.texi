@@ -154,7 +154,7 @@ history list and history file.
 @item fc
 @btindex fc
 @example
-@code{fc [-e @var{ename}] [-lnr] [@var{first}] [@var{last}]}
+@code{fc [-e @var{ename}] [-D] [-lnr] [@var{first}] [@var{last}]}
 @code{fc -s [@var{pat}=@var{rep}] [@var{command}]}
 @end example
 
@@ -191,6 +191,13 @@ value of the @env{FCEDIT} variable if set, or the value of the
 @env{EDITOR} variable if that is set, or @code{vi} if neither is set.
 When editing is complete, @code{fc} reads the file of edited commands
 and echoes and executes them.
+The @option{-D} option, if supplied,
+causes @code{fc} to remove the selected commands from the history
+list before executing the file of edited commands.
+@option{-D} is only active when @code{fc} is invoked in this way.
+It could be used if you make a typo in a command and want to fix it using
+an editor while removing the erroneous command from the history to
+avoid clutter.
 
 In the second form, @code{fc} re-executes @var{command} after
 replacing each instance of @var{pat} in the selected command with @var{rep}.

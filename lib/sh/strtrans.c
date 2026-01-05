@@ -130,7 +130,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 	      c &= 0xFF;
 	      break;
 	    case 'x':			/* Hex digit -- non-ANSI */
-	      if ((flags & 2) && *s == '{')
+	      if ((flags & 2) && *s == '{')	/* undocumented */
 		{
 		  flags |= 16;		/* internal flag value */
 		  s++;
@@ -143,8 +143,17 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 		 chars are consumed. */
 	      if (flags & 16)
 		{
+		  v = c;
 		  for ( ; ISXDIGIT ((unsigned char)*s); s++)
-		    c = (c * 16) + HEXVALUE (*s);
+		    {
+		      v = (v * 16) + HEXVALUE (*s);
+		      if (v > INT_MAX)		/* abandon on overflow */
+			{
+			  v &= INT_MAX;
+			  break;
+			}
+		    }
+		  c = v;
 		  flags &= ~16;
 		  if (*s == '}')
 		    s++;

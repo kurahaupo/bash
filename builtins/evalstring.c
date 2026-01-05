@@ -412,6 +412,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 			 protects installed by the string we're evaluating, so
 			 it will undo the current function scope. */
 		      dispose_command (command);
+		      currently_executing_command = NULL;
 		      discard_unwind_frame ("pe_dispose");
 		    }
 		  else
@@ -421,6 +422,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 	      goto out;
 
 	    case DISCARD:
+	    case REINIT:
 	      if (command)
 		run_unwind_frame ("pe_dispose");
 	      last_result = last_command_exit_value = EXECUTION_FAILURE; /* XXX */
@@ -490,6 +492,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 	      begin_unwind_frame ("pe_dispose");
 	      add_unwind_protect (uw_dispose_fd_bitmap, bitmap);
 	      add_unwind_protect (uw_dispose_command, command);	/* XXX */
+	      unwind_protect_pointer (currently_executing_command);
 
 	      global_command = (COMMAND *)NULL;
 
@@ -566,9 +569,8 @@ INTERNAL_DEBUG(("parse_and_execute: calling cat_file, parse_and_execute_level = 
 #endif
 		last_result = execute_command_internal
 				(command, 0, NO_PIPE, NO_PIPE, bitmap);
-	      dispose_command (command);
-	      dispose_fd_bitmap (bitmap);
-	      discard_unwind_frame ("pe_dispose");
+
+	      run_unwind_frame ("pe_dispose");
 
 	      /* If the global value didn't change, we restore what we had. */
 	      if (((subshell_environment & SUBSHELL_COMSUB) || executing_funsub) && local_alflag == expaliases_flag)
@@ -683,6 +685,7 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 	    case EXITPROG:
 	    case EXITBLTIN:
 	    case DISCARD:		/* XXX */
+	    case REINIT:
 	      if (command)
 		dispose_command (command);
 	      /* Remember to call longjmp (top_level) after the old

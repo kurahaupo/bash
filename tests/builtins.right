@@ -394,7 +394,7 @@ A star (*) next to a name means that the command is disabled.
  exit [n]                                typeset [-aAfFgiIlnrtux] name[=value>
  export [-fn] [name[=value] ...] or ex>  ulimit [-SHabcdefiklmnpqrstuvxPRT] [>
  false                                   umask [-p] [-S] [mode]
- fc [-e ename] [-lnr] [first] [last] o>  unalias [-a] name [name ...]
+ fc [-e ename] [-D] [-lnr] [first] [la>  unalias [-a] name [name ...]
  fg [job_spec]                           unset [-f] [-v] [-n] [name ...]
  for NAME [in WORDS ... ] ; do COMMAND>  until COMMANDS; do COMMANDS-2; done
  for (( exp1; exp2; exp3 )); do COMMAN>  variables - Names and meanings of so>
@@ -487,7 +487,7 @@ A star (*) next to a name means that the command is disabled.
  exit [n]                                typeset [-aAfFgiIlnrtux] name[=value>
  export [-fn] [name[=value] ...] or ex>  ulimit [-SHabcdefiklmnpqrstuvxPRT] [>
  false                                   umask [-p] [-S] [mode]
- fc [-e ename] [-lnr] [first] [last] o>  unalias [-a] name [name ...]
+ fc [-e ename] [-D] [-lnr] [first] [la>  unalias [-a] name [name ...]
  fg [job_spec]                           unset [-f] [-v] [-n] [name ...]
  for NAME [in WORDS ... ] ; do COMMAND>  until COMMANDS; do COMMANDS-2; done
  for (( exp1; exp2; exp3 )); do COMMAN>  variables - Names and meanings of so>

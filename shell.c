@@ -1397,6 +1397,7 @@ run_wordexp (char *words)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_wordexp", CMDERR_BADJUMP, code, 0);
@@ -1475,6 +1476,7 @@ run_one_command (char *command)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_one_command", CMDERR_BADJUMP, code, 0);

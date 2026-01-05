@@ -114,6 +114,7 @@ reader_loop (void)
 		 alone. */
 	      if (last_command_exit_value == 0)
 		set_exit_status (EXECUTION_FAILURE);
+	    case REINIT:
 	      if (subshell_environment)
 		{
 		  current_command = (COMMAND *)NULL;

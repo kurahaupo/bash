@@ -162,6 +162,10 @@ stream_setsize (size_t size)
 
 int bash_input_fd_changed;
 
+static inline int count_shared_buffers (BUFFERED_STREAM *);
+static inline void unshare_shared_buffers (BUFFERED_STREAM *);
+static inline void sync_shared_buffers (BUFFERED_STREAM *);;;;
+
 /* This provides a way to map from a file descriptor to the buffer
    associated with that file descriptor, rather than just the other
    way around.  This is needed so that buffers are managed properly
@@ -276,7 +280,13 @@ save_bash_input (int fd, int new_fd)
 	 descriptor?  Free up the buffer and report the error. */
       internal_error (_("save_bash_input: buffer already exists for new fd %d"), nfd);
       if (buffers[nfd]->b_flag & B_SHAREDBUF)
-	buffers[nfd]->b_buffer = (char *)NULL;
+	{
+	  /* If this buffer is shared by only one other buffered stream, mark
+	     it as no longer shared. */
+	  if (count_shared_buffers (buffers[nfd]) == 1)
+	    unshare_shared_buffers (buffers[nfd]);
+	  buffers[nfd]->b_buffer = (char *)NULL;
+	}
       free_buffered_stream (buffers[nfd]);
     }
 
@@ -362,6 +372,10 @@ duplicate_buffered_stream (int fd1, int fd2)
       /* If this buffer is shared with another fd, don't free the buffer */
       else if (buffers[fd2]->b_flag & B_SHAREDBUF)
 	{
+	  /* If this buffer is shared by only one other buffered stream, mark
+	     it as no longer shared. */
+	  if (count_shared_buffers (buffers[fd2]) == 1)
+	    unshare_shared_buffers (buffers[fd2]);
 	  buffers[fd2]->b_buffer = (char *)NULL;
 	  free_buffered_stream (buffers[fd2]);
 	}
@@ -380,7 +394,11 @@ duplicate_buffered_stream (int fd1, int fd2)
     }
 
   if (buffers[fd2] && (fd_is_bash_input (fd1) || (buffers[fd1] && (buffers[fd1]->b_flag & B_SHAREDBUF))))
-    buffers[fd2]->b_flag |= B_SHAREDBUF;
+    {
+      /* Make sure both buffered streams are marked as sharing an input buffer */
+      buffers[fd1]->b_flag |= B_SHAREDBUF;
+      buffers[fd2]->b_flag |= B_SHAREDBUF;
+    }
 
   return (fd2);
 }
@@ -446,11 +464,17 @@ close_buffered_stream (BUFFERED_STREAM *bp)
 {
   int fd;
 
-  if (!bp)
+  if (bp == NULL)
     return (0);
   fd = bp->b_fd;
   if (bp->b_flag & B_SHAREDBUF)
-    bp->b_buffer = (char *)NULL;
+    {
+      /* If this buffer is shared by only one other buffered stream, mark
+	 it as no longer shared. */
+      if (count_shared_buffers (buffers[fd]) == 1)
+	unshare_shared_buffers (buffers[fd]);
+      bp->b_buffer = (char *)NULL;
+    }
   free_buffered_stream (bp);
   return (close (fd));
 }
@@ -581,6 +605,49 @@ bufstream_ungetc(int c, BUFFERED_STREAM *bp)
   return (c);
 }
 
+/* Return the number of buffered streams sharing a buffer with BP */
+static inline int
+count_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+  int n;
+
+  n = 0;
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      n++;
+  return n;
+}
+
+/* Mark the buffered stream sharing a buffer with BP as no longer B_SHAREDBUF */
+static inline void
+unshare_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      {
+	buffers[i]->b_flag &= ~B_SHAREDBUF;
+	return;
+      }
+}
+
+/* Sync the input and read offsets on all buffered streams that share a buffer
+   with BP */
+static inline void
+sync_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      {
+	buffers[i]->b_used = bp->b_used;
+	buffers[i]->b_inputp = bp->b_inputp;
+      }
+}
+
 /* Seek backwards on file BFD to synchronize what we've read so far
    with the underlying file pointer. */
 int
@@ -596,6 +663,15 @@ sync_buffered_stream (int bfd)
   if (chars_left)
     lseek (bp->b_fd, -chars_left, SEEK_CUR);
   bp->b_used = bp->b_inputp = 0;
+
+  /* If we are sharing the buffer between buffered streams, we must have
+     duplicated the file descriptor and called duplicate_buffered_stream().
+     In this case, the buffers share the underlying fd and all of them
+     need to be updated to force a read on the next call, since we've changed
+     the file offset. */
+  if (bp->b_flag & B_SHAREDBUF)
+    sync_shared_buffers (bp);
+
   return (0);
 }
 

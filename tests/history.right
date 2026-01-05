@@ -2,7 +2,7 @@
 history: usage: history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]
 ./history.tests: line 21: history: cannot use more than one of -anrw
 ./history.tests: line 24: fc: -v: invalid option
-fc: usage: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]
+fc: usage: fc [-e ename] [-D] [-lnr] [first] [last] or fc -s [pat=rep] [command]
     1  for i in one two three; do echo $i; done
     2  /bin/sh -c 'echo this is $0'
     3  ls
@@ -403,3 +403,39 @@ EOF
 
 
     5  echo three
+	history10.sub
+    1  echo first
+    2  echo one
+    3  echo two
+    4  echo three
+    5  echo x
+    6  echo y
+    7  echo z
+    8  echo last
+echo one append
+one append
+echo two append
+two append
+echo three append
+three append
+    1  echo first
+    2  echo x
+    3  echo y
+    4  echo z
+    5  echo last
+    6  echo one append
+    7  echo two append
+    8  echo three append
+edit
+echo edit append
+edit append
+    1  echo first
+    2  echo x
+    3  echo y
+    4  echo z
+    5  echo last
+    6  echo one append
+    7  echo two append
+    8  echo three append
+    9  # simulate readline edit_and_execute_command
+   10  echo edit append

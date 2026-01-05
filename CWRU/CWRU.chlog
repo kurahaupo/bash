@@ -12373,3 +12373,77 @@ lib/readline/bind.c
 	- show-mode-in-prompt: add V_SPECIAL flag so hack_special_boolean_var()
 	  gets called and _rl_reset_prompt will be called when it's changed
 	  Report and fix from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+				   12/18
+				   -----
+bashjmp.h
+	- REINIT: new value for jump_to_top_level()
+
+eval.c,shell.c,builtins/evalstring.c
+	- handle REINIT as a longjmp to top_level value, same as DISCARD
+	  except it doesn't reset last_command_exit_value
+
+builtins/fc.def
+	- fc_builtin: new option -D. This removes the selected commands
+	  from the history list before calling fc_execute_file to execute
+	  the edited lines.
+	  Currently used by edit_and_execute_command to remove the partial
+	  history entry so it doesn't trip a HISTCONTROL entry of `ignoredups'
+	  if the partial history entry and the first line of the edited file
+	  happen to be the same. It could be used if you made a typo in a
+	  command and wanted to fix it in an editor without the old line
+	  cluttering up the history
+
+bashline.c
+	- edit_and_execute_command: change implementation so it acts more
+	  like an accept-line followed by command execution instead of a
+	  readline command that returns to editing the same line. The old
+	  behavior is present if the shell isn't running interactively or
+	  readline is getting input from a macro. The new behavior is to
+	  not save or restore any parser state, but reset the parser after
+	  parse_and_execute returns and jump_to_top_level (REINIT)
+	  Inspired by a report from William Pursell <william.r.pursell@gmail.com>
+
+doc/bash.1,doc/bashref.texi
+	- fc: documented new -D option
+
+				   12/19
+				   -----
+lib/sh/strtrans.c
+	- ansicstr: handle int overflow in \x{...} and break out of the loop
+	  if we overflow
+	  Fuzzing report from Александр Ушаков <anushakov@edu.hse.ru>
+
+				   12/23
+				   -----
+input.c
+	- duplicate_buffered_stream: if we are duplicating the current input
+	  buffered stream, make sure to mark both the current and new
+	  buffered streams as B_SHAREDBUF, since they both share the buffer
+	  and underlying file descriptor
+	- sync_shared_buffers: new function, after syncing the underlying
+	  file descriptor, if the buffered stream is marked B_SHAREDBUF, make
+	  sure to update b_used and b_inputp on other (saved) buffered streams
+	- sync_buffered_stream: call sync_shared_buffers
+	- count_shared_buffers: return a count of how many other buffered
+	  streams are sharing the same buffer with the buffered stream passed
+	  as an argument
+	- unshare_shared_buffers: unset the B_SHAREDBUF flag on the other
+	  buffered stream (the caller guarantees there is only 1) sharing a
+	  buffer with the buffered stream passed as an argument
+	- save_bash_input,duplicate_buffered_stream,close_buffered_stream:
+	  if the buffered stream we're going to free up is marked B_SHAREDBUF,
+	  count the number of buffered streams sharing the buffer, and
+	  if there is only one other buffered stream sharing it, unset the
+	  B_SHAREDBUF flag on that buffered stream
+
+	  From a fuzzing report from Александр Ушаков <anushakov@edu.hse.ru>
+
+builtins/evalstring.c
+	- parse_and_execute: save and restore currently_executing_command to
+	  avoid pointer aliasing problems with local COMMAND variable
+	  From a fuzzing report from Александр Ушаков <anushakov@edu.hse.ru>
+
+execute_cmd.c
+	- execute_command_internal: set currently_executing_command to NULL
+	  in places where we return from this function

@@ -943,17 +943,20 @@ edit_and_execute_command (int count, int c, int editing_mode, const char *edit_c
 {
   char *command, *metaval;
   int r, rrs, metaflag;
+  int reading_from_tty;
+  size_t clen;
   sh_parser_state_t ps;
 
   rrs = rl_readline_state;
   saved_command_line_count = current_command_line_count;
+
+  reading_from_tty = interactive && (bash_input.type != st_string) && (RL_ISSTATE (RL_STATE_MACROINPUT) == 0);
 
   /* Accept the current line. */
   rl_newline (1, c);
 
   if (rl_explicit_arg)
     {
-      size_t clen;
       /* 32 exceeds strlen (itos (INTMAX_MAX)) (19) */
       clen = strlen (edit_command) + 32;
       command = (char *)xmalloc (clen);
@@ -965,8 +968,6 @@ edit_and_execute_command (int count, int c, int editing_mode, const char *edit_c
 	 then call fc to operate on it.  We have to add a dummy command to
 	 the end of the history because fc ignores the last command (assumes
 	 it's supposed to deal with the command before the `fc'). */
-      /* This breaks down when using command-oriented history and are not
-	 finished with the command, so we should not ignore the last command */
       using_history ();
       current_command_line_count++;	/* for rl_newline above */
       bash_add_history (rl_line_buffer);
@@ -974,45 +975,73 @@ edit_and_execute_command (int count, int c, int editing_mode, const char *edit_c
       bash_add_history ("");
       history_lines_this_session++;
       using_history ();
-      command = savestring (edit_command);
+      /* XXX - hist_last_line_added = 1; ? */
+      /* +4 for -D */
+      clen = strlen (edit_command) + 4;
+      command = (char *)xmalloc (clen);
+      snprintf (command, clen, "%s -D", edit_command);
     }
 
-  metaval = rl_variable_value ("input-meta");
-  metaflag = RL_BOOLEAN_VARIABLE_VALUE (metaval);
-  
-  if (rl_deprep_term_function)
-    (*rl_deprep_term_function) ();
-  rl_clear_signals ();
-  save_parser_state (&ps);
-  parser_unset_string_list ();
+  /* save needed readline state */
+  if (reading_from_tty == 0)
+    {
+      metaval = rl_variable_value ("input-meta");
+      metaflag = RL_BOOLEAN_VARIABLE_VALUE (metaval);
+    }
+
+  rl_cleanup_after_signal ();
+
+  /* save needed bash state */
+  if (reading_from_tty == 0)
+    {
+      save_parser_state (&ps);
+      parser_unset_string_list ();	/* XXX */
+    }
+
   r = parse_and_execute (command, (editing_mode == VI_EDITING_MODE) ? "v" : "C-xC-e", SEVAL_NOHIST);
-  restore_parser_state (&ps);
 
-  /* if some kind of reset_parser was called, undo it. */
-  reset_readahead_token ();
+  /* restore needed bash state */ 
+  if (reading_from_tty == 0)
+    { 
+      restore_parser_state (&ps);
 
-  if (rl_prep_term_function)
-    (*rl_prep_term_function) (metaflag);
-  rl_set_signals ();
+      /* if some kind of reset_parser was called, undo it. */
+      reset_readahead_token ();
+      current_command_line_count = saved_command_line_count;
+    }
 
-  current_command_line_count = saved_command_line_count;
+  /* restore needed readline state */
+  if (reading_from_tty == 0)
+    {
+      if (rl_prep_term_function)
+	(*rl_prep_term_function) (metaflag);
+      rl_set_signals ();
 
-  /* Now erase the contents of the current line and undo the effects of the
-     rl_accept_line() above.  We don't even want to make the text we just
-     executed available for undoing. */
-  rl_line_buffer[0] = '\0';	/* XXX */
-  rl_point = rl_end = 0;
-  rl_done = 0;
-  rl_readline_state = rrs;
+      /* Now erase the contents of the current line and undo the effects of the
+	 rl_accept_line() above.  We don't even want to make the text we just
+	 executed available for undoing. */
+      rl_line_buffer[0] = '\0';	/* XXX */
+      rl_point = rl_end = 0;
+      rl_done = 0;
+      rl_readline_state = rrs;
 
 #if defined (VI_MODE)
-  if (editing_mode == VI_EDITING_MODE)
-    rl_vi_insertion_mode (1, c);
+      if (editing_mode == VI_EDITING_MODE)
+	rl_vi_insertion_mode (1, c);
 #endif
 
-  rl_forced_update_display ();
+      rl_forced_update_display ();
+      return r;
+    }
 
-  return r;
+  /* We are running interactively and reading from the keyboard. We need
+     to jump back to the top level after resetting enough state to read the
+     next command with readline. We call reset_parser() just in case. */
+  reset_parser ();
+  clear_shell_input_line ();	/* XXX - probably not necessary */
+  /* The prompt strings will be reset by prompt_again() */
+  
+  jump_to_top_level (REINIT);
 }
 
 #if defined (VI_MODE)

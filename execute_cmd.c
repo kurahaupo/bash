@@ -808,6 +808,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 		  jump_to_top_level (ERREXIT);
 		}
 
+	      currently_executing_command = (COMMAND *)NULL;
 	      return (last_command_exit_value);
 	    }
 	  else
@@ -816,6 +817,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 
 	      run_pending_traps ();
 
+	      currently_executing_command = (COMMAND *)NULL;
 	      /* Posix 2013 2.9.3.1: "the exit status of an asynchronous list
 		 shall be zero." */
 	      last_command_exit_value = 0;
@@ -903,6 +905,8 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 	      jump_to_top_level (ERREXIT);
 	    }
 	}
+
+      currently_executing_command = (COMMAND *)NULL;
       return (last_command_exit_value);
     }
 

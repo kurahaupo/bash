@@ -137,3 +137,4 @@ test_runsub ./history6.sub
 test_runsub ./history7.sub
 test_runsub ./history8.sub
 test_runsub ./history9.sub
+test_runsub ./history10.sub
