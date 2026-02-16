@@ -1,6 +1,6 @@
 /* execute_cmd.c -- Execute a COMMAND structure. */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -846,10 +846,13 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
     }
 #endif /* COMMAND_TIMING */
 
+  /* Is this a compound command with a redirection from stdin? POSIX interp
+     1913 makes it matter. There is an exception for 0<&0 or <&0 or equivalent
+     when in posix mode. */
   if (shell_control_structure (command->type) && command->redirects)
 {
     stdin_redirected = stdin_redirects (command->redirects);
-/*itrace("execute_command_internal: compound command with redirects: stdin_redirected = %d", stdin_redirected); */
+/*itrace("execute_command_internal: compound command with redirects: stdin_redirected = %d", stdin_redirected);*/
 }
 
 #if defined (PROCESS_SUBSTITUTION)
@@ -1677,13 +1680,13 @@ execute_in_subshell (COMMAND *command, int asynchronous, int pipe_in, int pipe_o
 
   if (user_subshell)
     {
-      subshell_environment = SUBSHELL_PAREN;	/* XXX */
+      subshell_environment = SUBSHELL_PAREN|SUBSHELL_IGNTRAP;	/* XXX */
       if (asynchronous)
 	subshell_environment |= SUBSHELL_ASYNC;
     }
   else
     {
-      subshell_environment = 0;			/* XXX */
+      subshell_environment = SUBSHELL_IGNTRAP;			/* XXX */
       if (asynchronous)
 	subshell_environment |= SUBSHELL_ASYNC;
       if (pipe_in != NO_PIPE || pipe_out != NO_PIPE)
@@ -1691,10 +1694,6 @@ execute_in_subshell (COMMAND *command, int asynchronous, int pipe_in, int pipe_o
       if (user_coproc)
 	subshell_environment |= SUBSHELL_COPROC;
     }
-
-  /* clear the exit trap before checking for fatal signals, but don't free
-     the trap command (see below). */
-  clear_exit_trap (0);
 
   QUIT;
   CHECK_TERMSIG;
@@ -4874,13 +4873,11 @@ run_builtin:
 	    {
 	      if ((cmdflags & CMD_STDIN_REDIR) &&
 		    pipe_in == NO_PIPE &&
-#if 0	/*TAG:bash-5.4 POSIX interp 1913 */
 		    /* POSIX interp 1913 says that the redirection of fd 0
-		       from /dev/null is unconditional. */
-		    (posixly_correct || stdin_redirects (simple_command->redirects) == 0))
-#else
+		       from /dev/null is performed unless the command has
+		       a redirection that's something like 0<&0 or <&0.
+		       See redir.c:stdin_redirection() for the details. */
 		    (stdin_redirects (simple_command->redirects) == 0))
-#endif
 		async_redirect_stdin ();
 	      setup_async_signals ();
 	    }
@@ -5915,15 +5912,15 @@ execute_disk_command (WORD_LIST *words, REDIRECT *redirects, char *command_line,
 	 in asynchronous children. */
       if (async)
 	{
+/*itrace("execute_disk_command: async = 1 cmd_stdin_redir = %d stdin_redirects (redirects) = %d",
+	(cmdflags & CMD_STDIN_REDIR), stdin_redirects (redirects));*/
 	  if ((cmdflags & CMD_STDIN_REDIR) &&
 		pipe_in == NO_PIPE &&
-#if 0	/*TAG:bash-5.4 POSIX interp 1913 */
 		/* POSIX interp 1913 says that the redirection of fd 0
-		   from /dev/null is unconditional. */
-		(posixly_correct || stdin_redirects (redirects) == 0))
-#else
+		   from /dev/null is performed unless the command has
+		   a redirection that's something like 0<&0 or <&0.
+		   See redir.c:stdin_redirection() for the details. */
 		(stdin_redirects (redirects) == 0))
-#endif
 	    async_redirect_stdin ();
 	  setup_async_signals ();
 	}

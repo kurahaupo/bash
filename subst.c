@@ -4,7 +4,7 @@
 /* ``Have a little faith, there's magic in the night.  You ain't a
      beauty, but, hey, you're alright.'' */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -6858,37 +6858,41 @@ read_comsub (int fd, int quoted, int flags, int *rflag)
       return (char *)NULL;
     }
 
-  /* Strip trailing newlines from the output of the command. */
-  if (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES))
+  /* Strip trailing newlines from the output of the command if 
+     FLAGS does not include PF_COMSUBNLS. */
+  if ((flags & PF_COMSUBNLS) == 0)
     {
-      while (istring_index > 0)
+      if (quoted & (Q_HERE_DOCUMENT|Q_DOUBLE_QUOTES))
 	{
-	  if (istring[istring_index - 1] == '\n')
+	  while (istring_index > 0)
 	    {
-	      --istring_index;
-
-	      /* If the newline was quoted, remove the quoting char. */
-	      if (istring[istring_index - 1] == CTLESC)
-		--istring_index;
-
-#ifdef __MSYS__
-	      if (istring_index > 0 && istring[istring_index - 1] == '\r')
+	      if (istring[istring_index - 1] == '\n')
 		{
 		  --istring_index;
 
-		  /* If the carriage return was quoted, remove the quoting char. */
-		  if (istring[istring_index - 1] == CTLESC)
+		  /* If the newline was quoted, remove the quoting char. */
+		  if (istring_index > 0 && istring[istring_index - 1] == CTLESC)
 		    --istring_index;
-		}
+
+#ifdef __MSYS__
+		  if (istring_index > 0 && istring[istring_index - 1] == '\r')
+		    {
+		      --istring_index;
+
+		      /* If the carriage return was quoted, remove the quoting char. */
+		      if (istring_index > 0 && istring[istring_index - 1] == CTLESC)
+			--istring_index;
+		    }
 #endif
+		}
+	      else
+		break;
 	    }
-	  else
-	    break;
+	  istring[istring_index] = '\0';
 	}
-      istring[istring_index] = '\0';
+      else
+	strip_trailing (istring, istring_index - 1, 1);
     }
-  else
-    strip_trailing (istring, istring_index - 1, 1);
 
   if (rflag)
     *rflag = tflag;
@@ -7012,7 +7016,7 @@ function_substitute (char *string, int quoted, int flags)
 {
   volatile int function_code;
   int valsub, stdout_valid, saveout, old_frozen;
-  int result, pflags, tflag, was_trap;
+  int result, pflags, tflag, xflags, was_trap;
   char *istring, *s;
   WORD_DESC *ret;
   SHELL_VAR *v;
@@ -7027,8 +7031,14 @@ function_substitute (char *string, int quoted, int flags)
   ARRAY *psa;
 #endif
 
+  xflags = flags;
   if (valsub = (string && *string == '|'))
     string++;
+  else if (string && *string == ';')
+    {
+      xflags |= PF_COMSUBNLS;
+      string++;
+    }
 
   /* In the case of no command to run, just return NULL. */
   for (s = string; s && *s && (shellblank (*s) || *s == '\n'); s++)
@@ -7050,6 +7060,7 @@ function_substitute (char *string, int quoted, int flags)
 	  sys_error ("%s", _("function_substitute: cannot open anonymous file for output"));
 	  exp_jump_to_top_level (DISCARD);		/* XXX */
 	}
+      afd = move_to_high_fd (afd, 1, -1);
     }
 
   gs = sh_getopt_save_istate ();
@@ -7072,6 +7083,7 @@ function_substitute (char *string, int quoted, int flags)
   unwind_protect_pointer (current_builtin);
   unwind_protect_pointer (currently_executing_command);
   unwind_protect_int (eof_encountered);
+  unwind_protect_int (stdin_redirected);
   add_unwind_protect (uw_pop_var_context, 0);
   add_unwind_protect (uw_maybe_restore_getopt_state, gs);
 
@@ -7143,10 +7155,8 @@ function_substitute (char *string, int quoted, int flags)
 	add_unwind_protect (uw_unbind_localvar, "REPLY");
     }
 
-#if 1	/* TAG:bash-5.3 myoga.murase@gmail.com 04/30/2024 */
   old_frozen = freeze_jobs_list (-1);
   add_unwind_protect (uw_lastpipe_cleanup, (void *) (intptr_t) old_frozen);
-#endif
 
 #if defined (JOB_CONTROL)
   unwind_protect_var (pipeline_pgrp);
@@ -7194,7 +7204,7 @@ function_substitute (char *string, int quoted, int flags)
       /* We call anonclose as part of the outer nofork unwind-protects */
       BLOCK_SIGNAL (SIGINT, set, oset);
       lseek (afd, 0, SEEK_SET);
-      istring = read_comsub (afd, quoted, flags, &tflag);
+      istring = read_comsub (afd, quoted, xflags, &tflag);
       UNBLOCK_SIGNAL (oset);
     }
   else
@@ -8768,7 +8778,7 @@ string_var_assignment (SHELL_VAR *v, char *s)
     sprintf (ret, "declare -%s %s", flags, v->name);	/* just attributes, unset */
   else if (i > 0)
     sprintf (ret, "declare -%s %s=%s", flags, v->name, val);	/* attributes, set */
-#if 1 /*TAG: bash-5.3 tentative */
+#if 1 /*TAG: bash-5.4 tentative */
   else if (i == 0 && val && local_p (v) && variable_context == v->context)
     sprintf (ret, "declare %s=%s", v->name, val);	/* set local variable at current scope */
   else if (i == 0 && val == 0 && local_p (v) && variable_context == v->context)
@@ -11595,7 +11605,11 @@ add_string:
 		goto add_character;
 	    }
 
+#if 0	/* TAG:bash-5.4 posix mode possibly */
+	  if (word->flags & (W_ASSIGNRHS|W_ASSIGNARG))
+#else
 	  if (word->flags & W_ASSIGNRHS)
+#endif
 	    tflag = 2;
 	  else if (word->flags & (W_ASSIGNMENT|W_TILDEEXP))
 	    tflag = 1;

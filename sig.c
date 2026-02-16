@@ -1,6 +1,6 @@
 /* sig.c - interface for shell signal handlers and signal initialization. */
 
-/* Copyright (C) 1994-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -644,7 +644,10 @@ termsig_handler (int sig)
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
 
-  run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
+  /* Don't run the exit trap if we're supposed to be ignoring traps in a
+     subshell environment. */
+  if ((subshell_environment & SUBSHELL_IGNTRAP) == 0)
+    run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
 
   kill_shell (sig);
 }

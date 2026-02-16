@@ -22,7 +22,9 @@ alias number="echo 123"
 
 echo ${ number; }
 echo $(( ${ number; } ))
+echo $(( "${; number; }" ))
 (( ${ number; } )) ; echo $?
+(( "${; number; }" )) ; echo $?
 
 set -o posix
 echo ${ number; }
@@ -36,11 +38,17 @@ shopt -s expand_aliases
 alias my_alias='echo $DATE'
 
 echo ${ eval my_alias; }
+echo ${; eval my_alias; }
 echo ${ my_alias; }
+echo ${; my_alias; }
+echo "${; my_alias; }"
 
 set -o posix
 echo ${ eval my_alias; }
+echo ${; eval my_alias; }
 echo ${	my_alias; }
+echo ${; my_alias; }
+echo "${; my_alias; }"
 set +o posix ; shopt -s expand_aliases
 
 alias e=echo
@@ -48,7 +56,9 @@ alias v='e 123'
 
 set -o posix
 echo ${ v; }
+echo "${; v; }"
 echo ${ echo before ; v; }
+echo "${; echo before ; v; }"
 echo ${	for f in 0; do
 echo in for
 done; v; }
@@ -58,8 +68,10 @@ alias let='let --'
 
 let '1 == 1'
 : ${ let '1 == 1'; }
+: "${; let '1 == 1'; }"
 
 set -o posix
 let '1 == 1'
 : ${ let '1 == 1'; }
+: "${; let '1 == 1'; }"
 set +o posix ; shopt -s expand_aliases

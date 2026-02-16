@@ -1,6 +1,6 @@
 /* variables.c -- Functions for hacking shell variables. */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -369,7 +369,8 @@ void
 initialize_shell_variables (char **env, int privmode)
 {
   char *name, *string, *temp_string;
-  int c, char_index, string_index, string_length, ro;
+  int c, ro;
+  size_t char_index, string_index, string_length;
   SHELL_VAR *temp_var;
 
   create_variable_tables ();
@@ -6288,18 +6289,21 @@ void
 sv_optind (const char *name)
 {
   SHELL_VAR *var;
-  char *tt;
+  char *t, *e;
   int s;
 
   var = find_variable ("OPTIND");
-  tt = var ? get_variable_value (var) : (char *)NULL;
+  t = var ? get_variable_value (var) : (char *)NULL;
 
   /* Assume that if var->context < variable_context and variable_context > 0
      then we are restoring the variables's previous state while returning
      from a function. */
-  if (tt && *tt)
+  if (t && *t)
     {
-      s = atoi (tt);
+      s = (int)strtol (t, &e, 10);
+
+      if (e == t || *e != '\0')
+	return;		/* non-numeric value is a no-op */
 
       /* According to POSIX, setting OPTIND=1 resets the internal state
 	 of getopt (). */
@@ -6314,10 +6318,19 @@ sv_optind (const char *name)
 void
 sv_opterr (const char *name)
 {
-  char *tt;
+  char *tt, *e;
+  int n;
 
   tt = get_string_value ("OPTERR");
-  sh_opterr = (tt && *tt) ? atoi (tt) : 1;
+  if (tt == 0 || *tt == 0)
+    n = 1;
+  else
+    {
+      n = (int)strtol (tt, &e, 10);
+      if (e == tt || *e != '\0')
+	n = 1;
+    }
+  sh_opterr = n;
 }
 
 void
@@ -6582,7 +6595,7 @@ sv_childmax (const char *name)
   int s;
 
   tt = get_string_value (name);
-  s = (tt && *tt) ? atoi (tt) : 0;
+  s = (tt && *tt) ? (int)strtol (tt, (char **)NULL, 10) : 0;
   set_maxchild (s);
 }
 #endif

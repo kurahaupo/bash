@@ -1,6 +1,6 @@
 /* parse.y - Yacc grammar for bash. */
 
-/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -4680,7 +4680,7 @@ INTERNAL_DEBUG(("current_token (%d) != shell_eof_token (%c)", current_token, she
       lastc = tcmd[retlen - 1];
       retlen++;
       ret = xmalloc (retlen + 4);
-      ret[0] = (dolbrace_spec == '|') ? '|' : ' ';
+      ret[0] = (dolbrace_spec == '|' || dolbrace_spec == ';') ? dolbrace_spec : ' ';
       strcpy (ret + 1, tcmd);		/* ( */
       if (was_newline)
 	ret[retlen++] = '\n';
@@ -4764,7 +4764,7 @@ xparse_dolparen (const char *base, char *string, size_t *indp, int flags)
   local_extglob = extended_glob;
 #endif
 
-  if (funsub && FUNSUB_CHAR (*string) && *string == '|')
+  if (funsub && FUNSUB_CHAR (*string) && (*string == '|' || *string == ';'))
     string++;
 
   token_to_read = funsub ? DOLBRACE : DOLPAREN;			/* let's trick the parser */

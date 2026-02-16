@@ -65,6 +65,8 @@ one two
 	comsub21.sub
 123
 123
+123
+0
 0
 123
 123
@@ -73,8 +75,21 @@ Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+
 123
+123
+
 before 123
+before
+123
+
 in for 123
 	comsub22.sub
 outside before: value
@@ -87,21 +102,29 @@ outside before: value
 	comsub23.sub
 .
 declare -a a=([0]="1" [1]="2" [2]="3" [3]="4")
+declare -a a=([0]="1" [1]="2" [2]="3" [3]=$'4\n')
 declare -- int="2"
 after here-doc: 1
 [1]-  Running                    sleep 1 &
 [2]+  Running                    sleep 1 &
 [1]-  Running                    sleep 1 &
 [2]+  Running                    sleep 1 &
+[1]-  Running                    sleep 1 &
+[2]+  Running                    sleep 1 &
+=
 17772 26794
 17772 26794
 we should try rhs
 comsub
 and
 funsub
+and
+newline funsub
+
 in here-documents
 after all they work here
 and work here
+and also here
 after for
 uname
 after arith for
@@ -196,6 +219,8 @@ AFTER
 unbalanced braces}}
 combined comsubs
 combined comsubs
+combined nostrip comsubs
+
 inside
 after: var = inside
 after: 42 var = inside
@@ -210,17 +235,67 @@ declare -- x=""
 a[${ unset x;}]
 declare -i x
 declare -- x=""
-./comsub27.sub: line 36: ${ unset x;}: arithmetic syntax error: operand expected (error token is "${ unset x;}")
+./comsub27.sub: line 50: ${ unset x;}: arithmetic syntax error: operand expected (error token is "${ unset x;}")
 declare -i x
 declare -- SECONDS=""
 declare -i SECONDS="0"
 declare -- x="0"
 declare -a x=([2]="a[]")
 declare -ai a=()
-./comsub27.sub: line 61: b[]: bad array subscript
-./comsub27.sub: line 61: b[]: bad array subscript
+./comsub27.sub: line 75: b[]: bad array subscript
+./comsub27.sub: line 75: b[]: bad array subscript
 declare -ai a=([0]="1" [1]="0" [2]="3")
 declare -Ai a=()
-./comsub27.sub: line 71: b[]: bad array subscript
-./comsub27.sub: line 71: b[]: bad array subscript
+./comsub27.sub: line 85: b[]: bad array subscript
+./comsub27.sub: line 85: b[]: bad array subscript
 declare -Ai a=([3]="0" [1]="0" )
+	comsub28.sub
+AAaa
+bb
+cc
+ddBB
+aa bb cc dd
+AAaa bb cc dd BB
+AAaa
+bb
+cc
+dd
+BB
+aa bb cc dd
+aa
+bb
+cc
+dd
+aa bb cc dd
+DDDDDaa bb cc dd EEEEE
+DDDDDaa
+bb
+cc
+ddEEEEE
+DDDDDaa
+bb
+cc
+dd
+EEEEE
+abcde
+abcde
+=two newlines
+
+=
+a
+nested
+
+b
+
+a
+nested
+b
+
+a
+nested
+
+b
+42
+
+42
+42

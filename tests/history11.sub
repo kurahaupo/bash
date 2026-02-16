@@ -1,0 +1,75 @@
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+: ${TMPDIR:=/tmp}
+
+set -o history
+HISTFILE=$TMPDIR/history-$$
+
+history -c
+
+echo one
+echo two
+echo three
+echo four
+echo five
+echo six
+echo seven
+echo eight
+echo nine
+echo ten
+
+history ; echo 
+
+history 2-4 ; echo
+
+history
+
+echo a
+echo b
+echo c
+echo d
+echo e
+
+history
+
+history 6--1; echo
+history -- -1 ; echo
+
+history 18-14
+history 14-18 ; echo
+
+history ; echo
+
+history -- -1-22
+history -- 22--2 ; echo
+
+history 16-40
+history 1-200
+history -- -20-50
+history 1--50
+history 5-0xaf
+
+history @42
+history -- -0xaf
+
+# out of range arguments are clamped at 0 and history_length, respectively
+history -d -2--1 # remove comment and this command
+history -- -200--1 ; echo
+history 567 ; echo
+
+history -- -1-20
+history -- 1--30
+
+unset HISTFILE
+exit 0

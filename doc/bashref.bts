@@ -16,7 +16,7 @@
 \entry{\code {cd}}{53}
 \entry{\code {command}}{63}
 \entry{\code {compgen}}{161}
-\entry{\code {complete}}{161}
+\entry{\code {complete}}{162}
 \entry{\code {compopt}}{165}
 \entry{\code {continue}}{54}
 \initial {D}
@@ -39,7 +39,7 @@
 \initial {H}
 \entry{\code {hash}}{56}
 \entry{\code {help}}{67}
-\entry{\code {history}}{169}
+\entry{\code {history}}{170}
 \initial {J}
 \entry{\code {jobs}}{127}
 \initial {K}

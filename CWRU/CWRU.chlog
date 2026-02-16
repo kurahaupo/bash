@@ -12447,3 +12447,230 @@ builtins/evalstring.c
 execute_cmd.c
 	- execute_command_internal: set currently_executing_command to NULL
 	  in places where we return from this function
+
+				   12/26
+				   -----
+builtins/history.def
+	- -H: new option, means to display history entries as they would be
+	  written to the history file, with timestamp information and without
+	  line numbers or `*'
+	- listing now takes a START-END range argument, so you can list a
+	  subset of the history list from START to END, with the format
+	  subject to the -H option. If START > END, list in reverse order.
+	  This moves history and fc functionality closer to convergence
+	- parse_range: new function, encapsulates parsing START-END history
+	  range specifiction; used by deletion and listing
+
+doc/bash.1,doc/bashref.texi
+	- history: update with a description of ranges, add description of -H;
+	  listing and deletion now reference range description
+
+				   12/30
+				   -----
+print_cmd.c
+	- print_case_clauses: reset was_heredoc to 0 after printing each case
+	  clause, since any here-document must have been associated with the
+	  command list following the pattern list and `)'
+	  Report from "Stan Marsh" <gazelle@xmission.com> back in May, 2025
+
+				   12/31
+				   -----
+doc/Makefile.in
+	- dvi: remove from default targets as per latest GNU coding standards
+
+redir.c
+	- stdin_redirection: now take the entire REDIRECT * as its argument,
+	  so we can do additional posix-mandated checking on redirections
+	  like 0<&0, to satisfy interp 1913
+	- stdin_redirection: if we are in posix mode, a redirection like
+	  0<&0 does not count as an explicit stdin redirection for the purpose
+	  of redirecting input from /dev/null, POSIX interp 1913
+
+doc/bash.1,doc/bashref.texi
+	- update the description of implicit redirection of stdin for async
+	  commands from /dev/null with the caveat that an explicit redirection
+	  of stdin overrides this
+	- update the posix mode section with info from interp 1913 about how
+	  <&0 doesn't count as an explicit redirection of stdin
+
+				 1/2/2026
+				 --------
+jobs.c
+	- notify_of_job_status: hold onto the job's exit status without printing
+	  a notification if the shell has started to run -c command and the
+	  job is in a () subshell or a compound command with pipe input;
+	  otherwise we get a spurious catch-all message
+
+				    1/5
+				    ---
+variables.c
+	- initialize_shell_variables: change string index and length variables
+	  to size_t
+	  Inspired by report from Marc Aurèle La France <tsi@tuyoix.net>
+
+jobs.c
+	- wait_for_background_pids: treat wait_for_single_pid returning > 256
+	  as an error, same as returning < 0, and check errno appropriately
+	  Report from Aleksey Covacevice <aleksey.covacevice@gmail.com>
+
+sig.c
+	- termsig_handler: don't try to run the exit trap if we're supposed
+	  to be ignoring traps (until they're reset) in a subshell
+	  environment
+
+				    1/7
+				    ---
+execute_cmd.c
+	- execute_in_subshell: set SUBSHELL_IGNTRAP before checking for any
+	  fatal signal instead of calling clear_exit_trap(); this modifies
+	  the change from 12/1
+
+				    1/9
+				    ---
+bashline.c
+	- shell_expand_line_internal: rename shell_expand_line(), takes an
+	  additional argument saying whether or not to quote the individual
+	  words in the expanded line (which changes how the line is split
+	  initially, since shell-expand-line treats the line as a single
+	  potentially-quoted word)
+	- shell_expand_line: call shell_expand_line_internal
+	- shell-expand-and-requote-line: new bindable command, splits the
+	  line into individual words like with programmable completion,
+	  expands each one, including word splitting, then quotes the
+	  resultant words if necessary to prevent subsequent expansion
+	- shell_expand_and_requote_line: calls shell_expand_line_internal
+	  with a third argument of 1 to force quoting
+	  From a proposal by Koichi Murase <myoga.murase@gmail.com> in 2/2024
+
+				   1/13
+				   ----
+builtins/history.def
+	- history_error: new function, prints an error message for history
+	  file read or write errors for a few values of errno (EACCES,
+	  EIO, ENOENT, EISDIR)
+	- history_builtin: call history_error as appropriate
+	  From a suggestion by Dan Jacobson <jidanni@jidanni.org>
+
+				   1/14
+				   ----
+parser.h
+	- FUNSUB_CHAR: expand definition to include `;'
+
+parse.y
+	- parse_comsub,xparse_dolparen: make sure to include `;' as a valid
+	  character that introduces a potential funsub
+
+command.h
+	- PF_COMSUBNLS: new flags value for command substitution, means to
+	  not strip trailing newlines from command substitution output
+
+subst.c
+	- read_comsub: inhibit trailing newline removal if the PF_COMSUBNLS
+	  flag is set in the FLAGS parameter
+	- function_substitute: set PF_COMSUBNLS in the flags passed to
+	  read_comsub if the first character of the command string is `;'
+
+doc/bash.1,doc/bashref.texi
+	- document new form of nofork command substitution that preserves
+	  trailing newlines
+
+tests/comsub21.sub,tests/comsub23.sub,tests/comsub26.sub,tests/comsub27.sub
+	- added tests for ${; command; }
+
+tests/comsub28.sub
+	- new file, contains basic tests for ${; command; }
+	  From a contribution by Kevin Pulo <kevin.pulo@mongodb.com>
+
+				   1/16
+				   ----
+lib/readline/complete.c
+	- _rl_internal_pager, get_y_or_n: readline's internal completions
+	  pager understands `f' as a synonym for ' ' and `d' to scroll by
+	  half the screen height, similar to `less'
+
+lib/readline/complete.c
+	- last_completion_nmatch: new variable, holds the number of matches
+	  returned by the last call to rl_complete, set to 0 or 1 as
+	  appropriate when we explicitly set last_completion_failed to 0 or 1
+	- rl_complete_internal: if the last completion attempt succeeded and
+	  returned multiple matches, but an immediate subsequent completion
+	  attempt returned a single match, insert the single match
+	  From a report by Adam Purkrt <adampurkrt78@gmail.com> in 5/2025
+
+				   1/22
+				   ----
+examples/loadables/jobid.c
+	- jobid: new builtin, like the NetBSD sh builtin
+
+subst.c
+	- function_substitute: unwind-protect stdin_redirected, in case the
+	  nofork comsub causes it to be set (since it can run with pipe input
+	  and output).
+	  From a report by Hany Salem <hanysalemtx@gmail.com>
+
+				   1/23
+				   ----
+subst.c
+	- function_substitute: dup the file descriptor returned by anonopen
+	  using move_to_high_fd to get it out of the way of user-accessible
+	  fds.
+	  Report from Stephane Chazelas <stephane@chazelas.org>
+
+lib/sh/shtty.c,include/shtty.h
+	- ttseteol, ttfd_seteol, tt_seteol: new functions to set the tty's
+	  EOL character to something other than a newline
+
+builtins/read.def
+	- read_builtin: if the `-d' option is supplied, neither `-n' nor `-N'
+	  is supplied, and the input is a tty, use tt_seteol to set the tty
+	  end-of-input-line delimiter to whatever the option argument is. This
+	  means we don't put the terminal into non-canonical mode and only
+	  issue one read(2) call. This also means that the normal canonical
+	  input processing (erase char, erase line, etc.) takes place. This
+	  will have to be revisited if the -d option is ever extended to
+	  multibyte characters. The behavior of a delimiter character that
+	  can appear as part of a multibyte character in some non-UTF-8
+	  locale needs to be tested as well.
+	- read_mbchar: handle unbuffered_read == 3 (read -d on a tty)
+	  From a suggestion by Robert Elz <kre@munnari.oz.au> back in 9/2025
+
+				   1/29
+				   ----
+general.c
+	- default_columns: use strtol and check the return values instead of
+	  using atoi on $COLUMNS
+
+variables.c
+	- sv_optind: use strtol and check the return values instead of using
+	  atoi on $OPTIND. This means that setting OPTIND to a non-numeric
+	  value is a no-op
+	- sv_opterr: use strtol and check the return values instead of using
+	  atoi on $OPTERR. This means that setting OPTERR to a non-numeric
+	  value sets sh_opterr to the default (1)
+	- sv_childmax: use strtol instead of atoi to convert $MAXCHILD. This
+	  means a conversion error is the same as 0
+
+eval.c
+	- read_command: use strtol and check the return values instead of using
+	  atoi on $TMOUT. This means that setting TMOUT to a non-numeric
+	  value is a no-op
+
+builtins/fc.def
+	- fc_gethnum: use strtol instead of using atoi on the numeric argument
+
+				   1/30
+				   ----
+array.c,array2.c
+	- array_subslice: return a string with the elements of an array between
+	  specified start and end indices, inclusive. A variant of
+	  array_subrange, but does not return a specified number of elements.
+	  Not used yet, but could be used for another array parameter
+	  expansion, like ksh93's array[s..e]
+
+				    2/5
+				    ---
+builtins/read.def
+	- read_builtin: if the delimiter happens to be _POSIX_VDISABLE, use
+	  the old character-at-a-time cbreak mode code path if we're reading
+	  from a tty
+	  Report from Martin D Kealey <martin@kurahaupo.gen.nz>

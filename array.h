@@ -87,6 +87,7 @@ extern ARRAY	*array_dequote_escapes (ARRAY *);
 extern ARRAY	*array_remove_quoted_nulls (ARRAY *);
 
 extern char	*array_subrange (ARRAY *, arrayind_t, arrayind_t, int, int, int);
+extern char	*array_subslice (ARRAY *, arrayind_t, arrayind_t, int, int, int);
 extern char	*array_patsub (ARRAY *, char *, char *, int);
 extern char	*array_modcase (ARRAY *, char *, int, int);
 

@@ -153,3 +153,4 @@ test_runsub ./comsub24.sub
 test_runsub ./comsub25.sub
 test_runsub ./comsub26.sub
 test_runsub ./comsub27.sub
+test_runsub ./comsub28.sub

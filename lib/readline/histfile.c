@@ -827,7 +827,8 @@ slow_write_error:
 
 /* Workhorse function for writing history.  Writes the last NELEMENT entries
    from the history list to FILENAME.  OVERWRITE is non-zero if you
-   wish to replace FILENAME with the entries. */
+   wish to replace FILENAME with the entries. Returns 0 if successful, or
+   errno if not. */
 static int
 history_do_write (const char *filename, int nelements, int overwrite)
 {

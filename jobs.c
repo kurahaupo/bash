@@ -3,7 +3,7 @@
 /* This file works with both POSIX and BSD systems.  It implements job
    control. */
 
-/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -2841,7 +2841,7 @@ wait_for_background_pids (int wflags, struct procstat *ps)
 	  ps->pid = pid;
 	  ps->status = (r < 0 || r > 256) ? 127 : r;
 	}
-      if (r == -1 && errno == ECHILD)
+      if ((r < 0 || r > 256) && errno == ECHILD)
 	{
 	  /* If we're mistaken about job state, compensate. */
 	  check_async = 0;
@@ -4603,6 +4603,14 @@ notify_of_job_status (int wanted)
 		((DEADJOB (job) && IS_FOREGROUND (job) == 0) || STOPPED (job)))
 	    continue;
 
+	  /* hang onto the status if the shell is running -c command and the
+	     command is running in a () subshell or a compound command with
+	     pipe input */
+	  else if (startup_state == 2 && (subshell_environment & (SUBSHELL_PAREN|SUBSHELL_PIPE)) &&
+		WIFSIGNALED (s) == 0 &&
+		((DEADJOB (job) && IS_FOREGROUND (job) == 0) || STOPPED (job)))
+	    continue;
+
 	  /* If job control is disabled, don't print the status messages.
 	     Mark dead jobs as notified so that they get cleaned up.  If
 	     startup_state == 2 and subshell_environment has the
@@ -4684,7 +4692,7 @@ notify_of_job_status (int wanted)
 	      /* XXX - this is a catch-all in case we missed a state */
 	      else
 {
-internal_debug("notify_of_job_status: catch-all setting J_NOTIFIED on job %d (%d), startup state = %d", job, jobs[job]->flags, startup_state);
+internal_debug("notify_of_job_status: catch-all setting J_NOTIFIED on job %d (%d), startup state = %d subshell_environment = %d", job, jobs[job]->flags, startup_state, subshell_environment);
 		jobs[job]->flags |= J_NOTIFIED;
 }
 	      break;

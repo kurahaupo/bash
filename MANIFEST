@@ -697,7 +697,6 @@ doc/article.ps	f
 doc/rose94.ps	f
 #doc/bash.ps		f
 #doc/bashref.ps	f
-doc/bashref.dvi	f
 doc/bash.0		f
 doc/bashbug.0		f
 doc/builtins.0	f
@@ -786,6 +785,7 @@ examples/loadables/getconf.c	f
 examples/loadables/fdflags.c	f
 examples/loadables/finfo.c	f
 examples/loadables/fltexpr.c	f
+examples/loadables/jobid.c	f
 examples/loadables/cat.c	f
 examples/loadables/chmod.c	f
 examples/loadables/csv.c	f
@@ -1086,6 +1086,7 @@ tests/comsub24.sub	f
 tests/comsub25.sub	f
 tests/comsub26.sub	f
 tests/comsub27.sub	f
+tests/comsub28.sub	f
 tests/comsub-eof.tests	f
 tests/comsub-eof0.sub	f
 tests/comsub-eof1.sub	f
@@ -1301,6 +1302,8 @@ tests/history7.sub	f
 tests/history8.sub	f
 tests/history9.sub	f
 tests/history10.sub	f
+tests/history11.sub	f
+tests/history12.sub	f
 tests/ifs.tests		f
 tests/ifs.right		f
 tests/ifs1.sub		f
@@ -1492,6 +1495,7 @@ tests/redir10.sub	f
 tests/redir11.sub	f
 tests/redir12.sub	f
 tests/redir13.in	f
+tests/redir14.sub	f
 tests/rhs-exp.tests	f
 tests/rhs-exp.right	f
 tests/rhs-exp1.sub	f

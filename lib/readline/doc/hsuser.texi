@@ -194,7 +194,7 @@ and echoes and executes them.
 The @option{-D} option, if supplied,
 causes @code{fc} to remove the selected commands from the history
 list before executing the file of edited commands.
-@option{-D} is only active when @code{fc} is invoked in this way.
+@option{-D} is only effective when @code{fc} is invoked in this way.
 It could be used if you make a typo in a command and want to fix it using
 an editor while removing the erroneous command from the history to
 avoid clutter.
@@ -221,17 +221,39 @@ is that of the re-executed command, unless
 @item history
 @btindex history
 @example
-history [@var{n}]
+history [-H] [@var{range}]
 history -c
-history -d @var{offset}
-history -d @var{start}-@var{end}
+history -d @var{range}
 history [-anrw] [@var{filename}]
-history -ps @var{arg}
+history -ps @var{arg} [@var{arg}@dots{}]
 @end example
 
-With no options, display the history list with numbers.
-Entries prefixed with a @samp{*} have been modified.
-An argument of @var{n} lists only the last @var{n} entries.
+With no options,
+or with the @option{-H} option,
+display the portion of the command history list
+specified by @var{range}, as described below.
+If @var{range} is not specified, display the entire history list.
+Without @option{-H}, display the list with command numbers, prefixing
+entries that have been modified with a @samp{*}.
+
+A
+@var{range}
+argument is specified in the form of a number @var{offset} or
+a range @var{start}-@var{end}.
+If @var{offset} is supplied, it references the history entry at
+position @var{offset} in the history list;
+when listing this displays the last @var{offset} entries.
+A negative @var{offset} counts back from the end of the history list,
+relative to one greater than the last history position.
+When listing, negative and positive @var{offset}s have identical results.
+@var{start} and @var{end}, if supplied, reference the portion of
+the history list beginning at position @var{start} through position
+@var{end}.
+If @var{start} or @var{end} are negative, they count back from the
+end of the history list.
+When listing, if @var{start} is greater than @var{end}, the history
+entries are displayed in reverse order from @var{end} to @var{start}.
+
 If the shell variable @env{HISTTIMEFORMAT} is set and not null,
 it is used as a format string for @code{strftime}(3) to display
 the time stamp associated with each displayed history entry.
@@ -245,20 +267,16 @@ Options, if supplied, have the following meanings:
 Clear the history list.
 This may be combined with the other options to replace the history list.
 
-@item -d @var{offset}
-Delete the history entry at position @var{offset}.
-If @var{offset} is positive, it should be specified as it appears when
-the history is displayed.
-If @var{offset} is negative, it is interpreted as relative to one greater
-than the last history position, so negative indices count back from the
-end of the history, and an index of @samp{-1} refers to the current
-@code{history -d} command.
+@item -d @var{range}
+Delete the history entries specified by @var{range}, as described above.
+An offset of @samp{-1} refers to the current @code{history -d} command.
 
-@item -d @var{start}-@var{end}
-Delete the range of history entries between positions @var{start} and
-@var{end}, inclusive.
-Positive and negative values for @var{start} and @var{end}
-are interpreted as described above.
+@item -H
+Display the selected history entries in the format that would be written
+to the history file,
+including any time stamp information as described below,
+without prefixing the entry with any line number or
+@samp{*}.
 
 @item -a
 Append the "new" history lines to the history file.

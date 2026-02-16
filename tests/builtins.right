@@ -363,7 +363,7 @@ Use `man -k' or `info' to find out more about commands not in this list.
 
 A star (*) next to a name means that the command is disabled.
 
- ! PIPELINE                              history [-c] [-d offset] [n] or hist>
+ ! PIPELINE                              history [-c] [-H] [-d range] [range]>
  job_spec [&]                            if COMMANDS; then COMMANDS; [ elif C>
  (( expression ))                        jobs [-lnprs] [jobspec ...] or jobs >
  . [-p path] filename [arguments]        kill [-s sigspec | -n signum | -sigs>
@@ -456,7 +456,7 @@ Use `man -k' or `info' to find out more about commands not in this list.
 
 A star (*) next to a name means that the command is disabled.
 
- ! PIPELINE                              history [-c] [-d offset] [n] or hist>
+ ! PIPELINE                              history [-c] [-H] [-d range] [range]>
  job_spec [&]                            if COMMANDS; then COMMANDS; [ elif C>
  (( expression ))                        jobs [-lnprs] [jobspec ...] or jobs >
  . [-p path] filename [arguments]        kill [-s sigspec | -n signum | -sigs>

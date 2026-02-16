@@ -224,3 +224,5 @@ test_runsub ./redir11.sub
 test_runsub ./redir12.sub
 
 ${THIS_SH} < ./redir13.in
+
+test_runsub ./redir14.sub

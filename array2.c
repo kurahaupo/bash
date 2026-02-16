@@ -9,7 +9,7 @@
  * chet@ins.cwru.edu
  */
 
-/* Copyright (C) 1997-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -46,6 +46,13 @@
 #include "builtins/common.h"
 
 #define ARRAY_MAX_DOUBLE	16777216
+
+#ifndef amin
+#  define amin(a, b)    ((a) < (b) ? (a) : (b))
+#endif
+#ifndef amax
+#  define amax(a, b)    ((a) > (b) ? (a) : (b))
+#endif          
 
 static ARRAY_ELEMENT **array_copy_elements (ARRAY *);
 static char *array_to_string_internal (ARRAY *, arrayind_t, arrayind_t, char *, int);
@@ -523,6 +530,48 @@ array_subrange (ARRAY *a, arrayind_t start, arrayind_t nelem, int starsub, int q
 			i++;
 	}
 
+	a2 = array_slice(a, s, e);
+
+	wl = array_to_word_list(a2);
+	array_dispose(a2);
+	if (wl == 0)
+		return (char *)NULL;
+	t = string_list_pos_params(starsub ? '*' : '@', wl, quoted, pflags);	/* XXX */
+	dispose_words(wl);
+
+	return t;
+}
+
+char *
+array_subslice (ARRAY *a, arrayind_t start, arrayind_t end, int starsub, int quoted, int pflags)
+{
+	ARRAY		*a2;
+	arrayind_t	s, e;
+	int		i;
+	char		*t;
+	WORD_LIST	*wl;
+
+	if (array_empty (a) || start > array_max_index(a))
+		return ((char *)NULL);
+
+	/*
+	 * Find element with index START.  If START corresponds to an unset
+	 * element (arrays can be sparse), use the first element whose index
+	 * is >= START.  If START is < 0, we count START indices back from
+	 * the end of A (not elements, even with sparse arrays -- START is an
+	 * index).
+	 */
+	for (s = start; s <= a->max_index && a->elements[s] == 0; s++)
+		;
+
+	if (s > a->max_index)
+		return ((char *)NULL);
+
+	/* Find the element with index END. If END corresponds to an unset
+	   element, use the first element whose index is <= END. If END is
+	   greater than max_index, use max_index*/
+	for (e = amin(end, a->max_index); e >= 0 && a->elements[e] == 0; e--)
+		;
 	a2 = array_slice(a, s, e);
 
 	wl = array_to_word_list(a2);
