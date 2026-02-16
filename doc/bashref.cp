@@ -70,7 +70,7 @@
 \entry{command expansion}{45}{command expansion}
 \entry{command execution}{46}{command execution}
 \entry{command search}{46}{command search}
-\entry{execution environment}{46}{execution environment}
+\entry{execution environment}{47}{execution environment}
 \entry{environment}{48}{environment}
 \entry{exit status}{48}{exit status}
 \entry{signal handling}{49}{signal handling}
@@ -99,8 +99,8 @@
 \entry{restricted shell}{115}{restricted shell}
 \entry{POSIX description}{116}{POSIX description}
 \entry{POSIX Mode}{117}{POSIX Mode}
-\entry{Compatibility Level}{121}{Compatibility Level}
-\entry{Compatibility Mode}{121}{Compatibility Mode}
+\entry{Compatibility Level}{122}{Compatibility Level}
+\entry{Compatibility Mode}{122}{Compatibility Mode}
 \entry{job control}{125}{job control}
 \entry{foreground}{125}{foreground}
 \entry{background}{125}{background}

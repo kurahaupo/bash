@@ -1,5 +1,5 @@
 ./history.tests: line 19: history: -x: invalid option
-history: usage: history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]
+history: usage: history [-c] [-H] [-d range] [range] or history -anrw [filename] or history -ps arg [arg...]
 ./history.tests: line 21: history: cannot use more than one of -anrw
 ./history.tests: line 24: fc: -v: invalid option
 fc: usage: fc [-e ename] [-D] [-lnr] [first] [last] or fc -s [pat=rep] [command]
@@ -439,3 +439,127 @@ edit append
     8  echo three append
     9  # simulate readline edit_and_execute_command
    10  echo edit append
+	history11.sub
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+    1  echo one
+    2  echo two
+    3  echo three
+    4  echo four
+    5  echo five
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+
+    2  echo two
+    3  echo three
+    4  echo four
+
+    1  echo one
+    2  echo two
+    3  echo three
+    4  echo four
+    5  echo five
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+a
+b
+c
+d
+e
+    1  echo one
+    2  echo two
+    3  echo three
+    4  echo four
+    5  echo five
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+   11  echo a
+   12  echo b
+   13  echo c
+   14  echo d
+   15  echo e
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+   11  echo a
+   12  echo b
+   13  echo c
+   14  echo d
+   15  echo e
+
+   15  echo e
+
+./history11.sub: line 49: history: 18: history position out of range
+./history11.sub: line 50: history: 18: history position out of range
+
+    1  echo one
+    2  echo two
+    3  echo three
+    4  echo four
+    5  echo five
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+   11  echo a
+   12  echo b
+   13  echo c
+   14  echo d
+   15  echo e
+
+./history11.sub: line 54: history: 22: history position out of range
+./history11.sub: line 55: history: 22: history position out of range
+
+./history11.sub: line 57: history: 16: history position out of range
+./history11.sub: line 58: history: 200: history position out of range
+./history11.sub: line 59: history: -20: history position out of range
+./history11.sub: line 60: history: -50: history position out of range
+./history11.sub: line 61: history: 5-0xaf: history position out of range
+./history11.sub: line 63: history: @42: numeric argument required
+./history11.sub: line 64: history: -0xaf: numeric argument required
+./history11.sub: line 68: history: -200: history position out of range
+
+    1  echo one
+    2  echo two
+    3  echo three
+    4  echo four
+    5  echo five
+    6  echo six
+    7  echo seven
+    8  echo eight
+    9  echo nine
+   10  echo ten
+   11  echo a
+   12  echo b
+   13  echo c
+   14  echo d
+
+./history11.sub: line 71: history: 20: history position out of range
+./history11.sub: line 72: history: -30: history position out of range
+	history12.sub
+./history12.sub: line 32: history: notthere: read error: No such file or directory
+./history12.sub: line 38: history: notthere: read error: Permission denied
+./history12.sub: line 40: history: .: read error: Is a directory
+./history12.sub: line 46: history: histdir: write error: Is a directory
+./history12.sub: line 47: history: histdir/notthere: write error: Permission denied
+./history12.sub: line 51: history: nodir/notthere: write error: No such file or directory

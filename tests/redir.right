@@ -195,3 +195,34 @@ after ERR trap: 1
 got error ERR
 ./redir12.sub: line 56: unreadable-file: Permission denied
 /tmp
+	redir14.sub
+standard 1 - <&0
+line 1
+line 2
+posix 1 - <&0
+standard 2 - 0<&0
+line 1
+line 2
+posix 2 - 0<&0
+standard 3 - subshell containing AND-OR list <&0
+line 1
+line 2
+posix 3 - subshell containing AND-OR list <&0
+standard - subshell with explicit redirection
+line 1
+line 2
+posix - subshell with explicit redirection
+line 1
+line 2
+standard 1 - compound command with AND-OR list with pipe input
+hello inpipe
+posix 1 - compound command with AND-OR list with pipe input
+hello inpipe
+standard 2 - simple command with AND-OR list with pipe input
+jello inpipe
+posix 2 - simple command with AND-OR list with pipe input
+jello inpipe
+standard 3 - subshell command with AND-OR list with pipe input
+hello inpipe
+posix 3 - subshell command with AND-OR list with pipe input
+hello inpipe

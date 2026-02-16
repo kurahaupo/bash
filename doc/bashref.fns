@@ -62,7 +62,7 @@
 \entry{\code {glob-list-expansions (C-x g)}}{157}
 \initial {H}
 \entry{\code {history-and-alias-expand-line ()}}{158}
-\entry{\code {history-expand-line (M-^)}}{157}
+\entry{\code {history-expand-line (M-^)}}{158}
 \entry{\code {history-search-backward ()}}{149}
 \entry{\code {history-search-forward ()}}{149}
 \entry{\code {history-substring-search-backward ()}}{149}
@@ -111,6 +111,7 @@
 \entry{\code {set-mark (C-@)}}{156}
 \entry{\code {shell-backward-kill-word ()}}{152}
 \entry{\code {shell-backward-word (M-C-b)}}{147}
+\entry{\code {shell-expand-and-requote-line ()}}{157}
 \entry{\code {shell-expand-line (M-C-e)}}{157}
 \entry{\code {shell-forward-word (M-C-f)}}{147}
 \entry{\code {shell-kill-word (M-C-d)}}{152}

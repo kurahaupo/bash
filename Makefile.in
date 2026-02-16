@@ -179,6 +179,10 @@ UBSAN_XLDFLAGS = -fsanitize=undefined -fsanitize=local-bounds -fsanitize=vptr
 GCOV_XCFLAGS = -fprofile-arcs -ftest-coverage
 GCOV_XLDFLAGS = -fprofile-arcs -ftest-coverage
 
+COVERAGE_XCFLAGS = -g --coverage -fprofile-arcs -ftest-coverage
+COVERAGE_XCLDAGS = -g --coverage -fprofile-arcs -ftest-coverage
+COVERAGE_OUT = doc/coverage
+
 # these need CC=clang
 LSAN_CC = clang
 LSAN_XCFLAGS = -fsanitize=leak -fno-common -fno-omit-frame-pointer -fno-optimize-sibling-calls
@@ -691,6 +695,33 @@ lsan-tests: lsan  $(TESTS_SUPPORT)
 profiling-tests:	${Program}
 	@test "X$$PROFILE_FLAGS" == "X" && { echo "profiling-tests: must be built with profiling enabled" >&2; exit 1; }
 	@${MAKE} $(BASH_MAKEFLAGS) tests TESTSCRIPT=run-gprof
+
+# from gnulib via groff
+init-coverage: clean
+	lcov --directory . --zerocounters
+
+coverage-tests: build-coverage $(TESTS_SUPPORT)
+	@-test -d tests || mkdir tests
+	@-test -d $(COVERAGE_OUT) || mkdir $(COVERAGE_OUT)
+	@cp $(TESTS_SUPPORT) tests
+	@( cd $(srcdir)/tests && \
+		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
+	
+build-coverage: init-coverage
+	$(MAKE) $(BASH_MAKEFLAGS) ADDON_CFLAGS='$(COVERAGE_XCFLAGS)' \
+		ADDON_LDFLAGS='$(COVERAGE_XLDFLAGS)'
+
+run-coverage: build-coverage coverage-tests
+	lcov --directory . --output-file $(COVERAGE_OUT)/$(PACKAGE).info --capture
+
+# external requirement: genhtml
+gen-coverage:
+	genhtml --output-directory $(COVERAGE_OUT) \
+		$(COVERAGE_OUT)/$(PACKAGE).info \
+		--frames --legend \
+		--title "$(PACKAGE_NAME)"
+
+coverage: init-coverage build-coverage gen-coverage
 
 version.h:  $(SOURCES) config.h Makefile patchlevel.h
 	$(SHELL) $(SUPPORT_SRC)mkversion.sh -b -S ${topdir} -s $(RELSTATUS) -d $(Version) -o newversion.h \

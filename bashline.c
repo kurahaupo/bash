@@ -1,6 +1,6 @@
 /* bashline.c -- Bash's interface to the readline library. */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -117,7 +117,9 @@ extern int tputs (const char *string, int nlines, int (*outx)(int));
 /* Forward declarations */
 
 /* Functions bound to keys in Readline for Bash users. */
+static int shell_expand_line_internal (int, int, int);
 static int shell_expand_line (int, int);
+static int shell_expand_and_requote_line (int, int);
 static int display_shell_version (int, int);
 
 static int bash_ignore_filenames (char **);
@@ -466,6 +468,7 @@ initialize_readline (void)
   /* Add bindable names before calling rl_initialize so they may be
      referenced in the various inputrc files. */
   rl_add_defun ("shell-expand-line", shell_expand_line, -1);
+  rl_add_defun ("shell-expand-and-requote-line", shell_expand_and_requote_line, -1);
 #ifdef BANG_HISTORY
   rl_add_defun ("history-expand-line", history_expand_line, -1);
   rl_add_defun ("magic-space", tcsh_magic_space, -1);
@@ -3005,11 +3008,12 @@ history_and_alias_expand_line (int count, int ignore)
 }
 
 /* History and alias expand the line, then perform the shell word
-   expansions by calling expand_string.  This can't use set_up_new_line()
-   because we want the variable expansions as a separate undo'able
-   set of operations. */
+   expansions by calling expand_word(). If QUOTE_WORDS is non-zero,
+   we single-quote the expanded words if they contain any shell
+   metacharacters. This can't use set_up_new_line() because we want
+   the variable expansions as a separate undoable set of operations. */
 static int
-shell_expand_line (int count, int ignore)
+shell_expand_line_internal (int count, int ignore, int quote_words)
 {
   char *new_line, *t;
   WORD_LIST *expanded_string;
@@ -3048,17 +3052,25 @@ shell_expand_line (int count, int ignore)
       /* If there is variable expansion to perform, do that as a separate
 	 operation to be undone. */
 
-#if 1
-      w = alloc_word_desc ();
-      w->word = savestring (rl_line_buffer);
-      w->flags = rl_explicit_arg ? (W_NOPROCSUB|W_NOCOMSUB) : 0;
-      expanded_string = expand_word (w, rl_explicit_arg ? Q_HERE_DOCUMENT : 0);
-      dispose_word (w);
-#else
-      new_line = savestring (rl_line_buffer);
-      expanded_string = expand_string (new_line, 0);
-      FREE (new_line);
-#endif
+      if (quote_words)
+	{
+	  WORD_LIST *wl;
+
+	  wl = split_at_delims (rl_line_buffer, strlen (rl_line_buffer), (char *)NULL, -1, 0, (int *)NULL, (int *)NULL);
+	  if (rl_explicit_arg)
+	    for (expanded_string = wl; expanded_string; expanded_string = expanded_string->next)
+	      expanded_string->word->flags |= (W_NOPROCSUB|W_NOCOMSUB);
+	  expanded_string = expand_words_shellexp (wl);
+	  dispose_words (wl);
+	}
+      else
+	{
+	  w = alloc_word_desc ();
+	  w->word = savestring (rl_line_buffer);
+	  w->flags = rl_explicit_arg ? (W_NOPROCSUB|W_NOCOMSUB) : 0;
+	  expanded_string = expand_word (w, rl_explicit_arg ? Q_HERE_DOCUMENT : 0);
+	  dispose_word (w);
+	}
 
       if (expanded_string == 0)
 	{
@@ -3066,13 +3078,48 @@ shell_expand_line (int count, int ignore)
 	  new_line[0] = '\0';
 	}
       else
+	new_line = string_list (expanded_string);
+
+      /* We do it this way so we can make the expansion and (optional)
+	 quoting separate undoable operations. */
+      maybe_make_readline_line (new_line);
+      free (new_line);      
+
+      /* If requested, we quote the expanded words if they need it. This uses
+	 split_at_delims in the same way that programmable completion does. */
+      if (quote_words)
 	{
+	  char *nword;
+	  WORD_LIST *wl;
+
+	  for (wl = expanded_string; wl; wl = wl->next)
+	    {
+	      t = wl->word->word;
+	      if (t == 0)
+		continue;	/* XXX skip empty words */
+	      nword = NULL;
+	      if (*t == 0)
+		nword = sh_single_quote (t);
+	      else if (ansic_shouldquote (t))
+		nword = ansic_quote (t, 0, (int *)0);
+	      else if (rl_explicit_arg || sh_contains_shell_metas (t))
+		nword = sh_single_quote (t);
+
+	      if (nword)
+		{
+		  free (t);
+		  wl->word->word = nword;
+		}
+	    }
+
 	  new_line = string_list (expanded_string);
-	  dispose_words (expanded_string);
+
+	  maybe_make_readline_line (new_line);
+	  free (new_line);
 	}
 
-      maybe_make_readline_line (new_line);
-      free (new_line);
+      if (expanded_string)
+	dispose_words (expanded_string);
 
       /* Place rl_point where we think it should go. */
       if (at_end)
@@ -3091,6 +3138,19 @@ shell_expand_line (int count, int ignore)
       return 1;
     }
 }
+
+static int
+shell_expand_line (int count, int ignore)
+{
+  return (shell_expand_line_internal (count, ignore, 0));
+}
+
+static int
+shell_expand_and_requote_line (int count, int ignore)
+{
+  return (shell_expand_line_internal (count, ignore, 1));
+}
+
 
 /* If FIGNORE is set, then don't match files with the given suffixes when
    completing filenames.  If only one of the possibilities has an acceptable

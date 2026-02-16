@@ -641,7 +641,7 @@ fc_gethnum (char *command, HIST_ENTRY **hlist, int mode)
 
   if (s && DIGIT(*s))
     {
-      n = atoi (s);
+      n = (int)strtol (s, (char **)NULL, 10);
       n *= sign;
 
       /* We want to return something that is an offset to HISTORY_BASE. */

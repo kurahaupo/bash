@@ -386,8 +386,11 @@ PARSE_SUBBRACKET (CHAR *p, int flags)
 
   type = *p;
 
-  /* POSIX allows a right bracket to appear in a collating symbol. */
-  while (*++p != L('\0') && SLASH_PATHNAME (*p) == 0 && (type != L('.') && *p == L(']')) == 0)
+  /* POSIX allows a right bracket to appear in a collating symbol. If we
+     want to allow it to appear in an equivalence class, uncomment the test
+     of TYPE against '=' below. */
+  while (*++p != L('\0') && SLASH_PATHNAME (*p) == 0 &&
+	(type != L('.') /*&& type != L('=')*/ && *p == L(']')) == 0)
     if (*p == type && p[1] == L(']'))
       return p;
   return NULL;

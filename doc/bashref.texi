@@ -14,7 +14,7 @@ This is Edition @value{EDITION}, last updated @value{UPDATED},
 of @cite{The GNU Bash Reference Manual},
 for @code{Bash}, Version @value{VERSION}.
 
-Copyright @copyright{} 1988--2025 Free Software Foundation, Inc.
+Copyright @copyright{} 1988--2026 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -914,8 +914,9 @@ and these are referred to as @dfn{asynchronous} commands.
 The shell does not wait for the command to finish, and the return
 status is 0 (true).
 When job control is not active (@pxref{Job Control}),
-the standard input for asynchronous commands, in the absence of any
-explicit redirections, is redirected from @code{/dev/null}.
+the standard input for asynchronous commands,
+in the absence of any explicit redirections involving the standard input,
+is redirected from @file{/dev/null}.
 
 Commands separated or terminated by 
 @samp{;} (or equivalent @code{newline})
@@ -2880,7 +2881,8 @@ which executes @var{command} in the current execution environment
 and captures its output, again with trailing newlines removed.
 
 The character @var{c} following the open brace must be a space, tab,
-newline, or @samp{|}, and the close brace must be in a position
+newline, @samp{|}, or @samp{;};
+and the close brace must be in a position
 where a reserved word may appear (i.e., preceded by a command terminator
 such as semicolon).
 Bash allows the close brace to be joined to the remaining characters in
@@ -2899,8 +2901,17 @@ function is executing, and the @code{return} builtin forces
 however, the rest of the execution environment,
 including the positional parameters, is shared with the caller.
 
-If the first character following the open brace
-is a @samp{|}, the construct expands to the
+If the first character following the open brace is a
+@samp{;},
+the construct behaves like the form above but
+preserves any trailing newlines in the output of @var{command}
+instead of removing them.
+This form is useful when the trailing newlines are significant
+and should not be stripped from the command's output.
+
+If the first character following the open brace is a
+@samp{|},
+the construct expands to the
 value of the @code{REPLY} shell variable after @var{command} executes,
 without removing any trailing newlines,
 and the standard output of @var{command} remains the same as in the
@@ -3867,7 +3878,8 @@ See the description of the @code{inherit_errexit} shell option
 in @sc{posix} mode.
 
 If a command is followed by a @samp{&} and job control is not active, the
-default standard input for the command is the empty file @file{/dev/null}.
+default standard input for the command is the empty file @file{/dev/null},
+unless the command has an explicit redirection involving the standard input.
 Otherwise, the invoked command inherits the file descriptors of the calling
 shell as modified by redirections.
 
@@ -9176,6 +9188,9 @@ directory to a non-writable directory other than @env{$HOME} after login,
 not allowing the restricted shell to execute shell scripts, and cleaning
 the environment of variables that cause some commands to modify their
 behavior (e.g., @env{VISUAL} or @env{PAGER}).
+When setting up a restricted environment like this, it's important not
+to install or allow symbolic links in the new current directory, since
+those could be used to circumvent restrictions on writing to files.
 
 Modern systems provide more secure ways to implement a restricted environment,
 such as @code{jails}, @code{zones}, or @code{containers}.
@@ -9240,7 +9255,8 @@ The Bash @dfn{posix mode} changes the Bash
 behavior in these areas so that it conforms more strictly
 to the standard.
 
-Starting Bash with the @option{--posix} command-line option or executing
+Starting Bash with the @option{--posix} or @option{-o posix}
+command-line option or executing
 @samp{set -o posix} while Bash is running will cause Bash to conform more
 closely to the @sc{posix} standard by changing the behavior to
 match that specified by @sc{posix} in areas where the Bash default differs.
@@ -9363,6 +9379,16 @@ This is also available with @samp{shopt -s checkhash}.
 Bash will not insert a command without the execute bit set into the
 command hash table, even if it returns it as a (last-ditch) result
 from a @env{$PATH} search.
+
+@item
+Normally, when job control is not enabled,
+the shell implicitly redirects the standard input of
+asynchronous commands from @file{/dev/null}.
+A redirection to the standard input in this command inhibits this
+implicit redirection.
+In @sc{posix} mode, a redirection that redirects file descriptor 0
+to itself (e.g., @samp{<&0}) does not count as a redirection that
+overrides the implicit redirection from @file{/dev/null}.
 
 @item
 The message printed by the job control code and builtins when a job

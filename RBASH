@@ -47,7 +47,10 @@ shell escapes are particularly vulnerable), changing the current
 directory to a non-writable directory other than ‘$HOME’ after login,
 not allowing the restricted shell to execute shell scripts, and cleaning
 the environment of variables that cause some commands to modify their
-behavior (e.g., ‘VISUAL’ or ‘PAGER’).
+behavior (e.g., ‘VISUAL’ or ‘PAGER’).  When setting up a restricted
+environment like this, it's important not to install or allow symbolic
+links in the new current directory, since those could be used to
+circumvent restrictions on writing to files.
 
 Modern systems provide more secure ways to implement a restricted
 environment, such as ‘jails’, ‘zones’, or ‘containers’.

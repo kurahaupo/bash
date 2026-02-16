@@ -31,8 +31,8 @@
 \entry{commands, shell}{9}
 \entry{commands, simple}{10}
 \entry{comments, shell}{9}
-\entry{Compatibility Level}{121}
-\entry{Compatibility Mode}{121}
+\entry{Compatibility Level}{122}
+\entry{Compatibility Mode}{122}
 \entry{completion builtins}{161}
 \entry{conditional arithmetic operator}{108}
 \entry{configuration}{175}
@@ -46,7 +46,7 @@
 \entry{environment}{48}
 \entry{evaluation, arithmetic}{107}
 \entry{event designators}{172}
-\entry{execution environment}{46}
+\entry{execution environment}{47}
 \entry{exit status}{3, 48}
 \entry{expansion}{25}
 \entry{expansion, arithmetic}{37}
