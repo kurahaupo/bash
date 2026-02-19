@@ -1,7 +1,7 @@
 /* parser.h -- Everything you wanted to know about the parser, but were
    afraid to ask. */
 
-/* Copyright (C) 1995-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1995-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -79,11 +79,7 @@ struct dstack {
 
 /* characters that can appear following ${ to introduce a nofork command
    substitution. */
-#if 0
-#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|' || (n) == '(')	/* ) */
-#else
-#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|')
-#endif
+#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|' || (n) == ';')
 
 /* variable declarations from parse.y */
 extern struct dstack dstack;

@@ -1,11 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/MacPorts 2024.70613_1) (preloaded format=pdfetex 2024.4.9)  25 AUG 2025 11:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/MacPorts 2025.74524_1) (preloaded format=etex 2025.9.16)  2 FEB 2026 15:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**\input /usr/local/src/bash/bash-20250822/doc/bashref.texi
-(/usr/local/src/bash/bash-20250822/doc/bashref.texi
-(/usr/local/src/bash/bash-20250822/doc/texinfo.tex
+**\nonstopmode \input /usr/local/src/bash/bash-20260130/doc/bashref.texi \input
+ /usr/local/src/bash/bash-20260130/doc/bashref.texi
+(/usr/local/src/bash/bash-20260130/doc/bashref.texi
+(/usr/local/src/bash/bash-20260130/doc/texinfo.tex
 Loading texinfo [version 2015-11-22.14]:
 \outerhsize=\dimen16
 \outervsize=\dimen17
@@ -161,28 +162,25 @@ This is `epsf.tex' v2.7.4 <14 February 2011>
 texinfo.tex: doing @include of version.texi
 
 
-(/usr/local/src/bash/bash-20250822/doc/version.texi) [1{/opt/local/var/db/texmf
-/fonts/map/pdftex/updmap/pdftex.map}] [2]
-(/usr/local/build/bash/bash-20250822/doc/bashref.toc [-1] [-2] [-3]) [-4]
-(/usr/local/build/bash/bash-20250822/doc/bashref.toc)
-(/usr/local/build/bash/bash-20250822/doc/bashref.toc) Chapter 1
+(/usr/local/src/bash/bash-20260130/doc/version.texi) [1] [2]
+(/usr/local/build/bash/bash-20260130/doc/bashref.toc [-1] [-2] [-3]) [-4]
+Chapter 1
 \openout0 = `bashref.toc'.
 
-
-(/usr/local/build/bash/bash-20250822/doc/bashref.aux)
+ (/usr/local/build/bash/bash-20260130/doc/bashref.aux)
 \openout1 = `bashref.aux'.
 
- [1] Chapter 2 [2]
+ [1] Chapter 2
+[2]
 @cpindfile=@write2
 \openout2 = `bashref.cp'.
 
-
-[3] Chapter 3 [4] [5] [6] [7]
+ [3] Chapter 3 [4] [5] [6] [7]
 @vrindfile=@write3
 \openout3 = `bashref.vr'.
 
  [8]
-Overfull \hbox (3.12749pt too wide) in paragraph at lines 743--744
+Overfull \hbox (3.12749pt too wide) in paragraph at lines 764--765
  @texttt coproc[]| 
 
 @hbox(9.34993+3.85005)x43.36464
@@ -194,7 +192,7 @@ Overfull \hbox (3.12749pt too wide) in paragraph at lines 743--744
 .etc.
 
 
-Overfull \hbox (3.12749pt too wide) in paragraph at lines 744--744
+Overfull \hbox (3.12749pt too wide) in paragraph at lines 765--765
  @texttt select[]| 
 
 @hbox(9.34993+3.85005)x43.36464
@@ -206,7 +204,7 @@ Overfull \hbox (3.12749pt too wide) in paragraph at lines 744--744
 .etc.
 
 
-Overfull \hbox (5.95723pt too wide) in paragraph at lines 744--745
+Overfull \hbox (5.95723pt too wide) in paragraph at lines 765--766
  @texttt function[]| 
 
 @hbox(9.34993+3.85005)x52.03227
@@ -221,17 +219,16 @@ Overfull \hbox (5.95723pt too wide) in paragraph at lines 744--745
 @rwindfile=@write4
 \openout4 = `bashref.rw'.
 
- [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20{/opt/local/share/texmf-t
-exlive/fonts/enc/dvips/cm-super/cm-super-t1.enc}] [21] [22] [23] [24]
-[25] [26] [27] [28] [29] [30] [31] [32] [33] [34] [35] [36] [37] [38] [39]
-[40] [41] [42] [43] [44] [45] [46] [47] [48] [49] [50] Chapter 4 [51]
+ [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23]
+[24] [25] [26] [27] [28] [29] [30] [31] [32] [33] [34] [35] [36] [37] [38]
+[39] [40] [41] [42] [43] [44] [45] [46] [47] [48] [49] [50] Chapter 4 [51]
 @btindfile=@write5
 \openout5 = `bashref.bt'.
 
- [52]
-[53] [54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64] [65] [66] [67]
-[68] [69] [70] [71] [72] [73]
-Overfull \hbox (38.26585pt too wide) in paragraph at lines 5899--5899
+
+[52] [53] [54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64] [65] [66]
+[67] [68] [69] [70] [71] [72] [73]
+Overfull \hbox (38.26585pt too wide) in paragraph at lines 5964--5964
  []@texttt set [-abefhkmnptuvxBCEHPT] [-o @textttsl option-name@texttt ] [--] [
 -] [@textttsl ar-gu-ment []@texttt ][] 
 
@@ -244,7 +241,7 @@ Overfull \hbox (38.26585pt too wide) in paragraph at lines 5899--5899
 .etc.
 
 
-Overfull \hbox (38.26585pt too wide) in paragraph at lines 5900--5900
+Overfull \hbox (38.26585pt too wide) in paragraph at lines 5965--5965
  []@texttt set [+abefhkmnptuvxBCEHPT] [+o @textttsl option-name@texttt ] [--] [
 -] [@textttsl ar-gu-ment []@texttt ][] 
 
@@ -264,9 +261,9 @@ Chapter 7 [124] [125] [126] [127] [128]
 texinfo.tex: doing @include of rluser.texi
 
 
-(/usr/local/src/bash/bash-20250822/lib/readline/doc/rluser.texi Chapter 8
+(/usr/local/src/bash/bash-20260130/lib/readline/doc/rluser.texi Chapter 8
 [129] [130] [131] [132] [133] [134] [135] [136] [137] [138] [139] [140]
-Underfull \hbox (badness 7540) in paragraph at lines 968--974
+Underfull \hbox (badness 7540) in paragraph at lines 969--975
  []@textrm In the ex-am-ple above, @textttsl C-u[] @textrm is bound to the func
 -tion
 
@@ -279,7 +276,7 @@ Underfull \hbox (badness 7540) in paragraph at lines 968--974
 .etc.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 968--974
+Underfull \hbox (badness 10000) in paragraph at lines 969--975
  @texttt universal-argument[]@textrm , @textttsl M-DEL[] @textrm is bound to th
 e func-tion
 
@@ -292,7 +289,7 @@ e func-tion
 .etc.
 
 [141] [142] [143] [144]
-Overfull \hbox (26.43913pt too wide) in paragraph at lines 1214--1214
+Overfull \hbox (26.43913pt too wide) in paragraph at lines 1215--1215
  []@texttt Meta-Control-h: backward-kill-word Text after the function name is i
 gnored[] 
 
@@ -313,10 +310,10 @@ gnored[]
 texinfo.tex: doing @include of hsuser.texi
 
 
-(/usr/local/src/bash/bash-20250822/lib/readline/doc/hsuser.texi Chapter 9
+(/usr/local/src/bash/bash-20260130/lib/readline/doc/hsuser.texi Chapter 9
 [167] [168] [169] [170] [171] [172] [173]) Chapter 10 [174] [175] [176]
 [177] [178]
-Underfull \hbox (badness 10000) in paragraph at lines 10703--10712
+Underfull \hbox (badness 10000) in paragraph at lines 10793--10802
 []@textrm All of the fol-low-ing op-tions ex-cept for `@texttt alt-array-implem
 entation[]@textrm '[],
 
@@ -329,7 +326,7 @@ entation[]@textrm '[],
 .etc.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 10703--10712
+Underfull \hbox (badness 10000) in paragraph at lines 10793--10802
 @textrm `@texttt disabled-builtins[]@textrm '[], `@texttt direxpand-default[]@t
 extrm '[], `@texttt strict-posix-default[]@textrm '[], and
 
@@ -346,37 +343,16 @@ extrm '[], `@texttt strict-posix-default[]@textrm '[], and
 texinfo.tex: doing @include of fdl.texi
 
 
-(/usr/local/src/bash/bash-20250822/doc/fdl.texi [192] [193] [194] [195]
+(/usr/local/src/bash/bash-20260130/doc/fdl.texi [192] [193] [194] [195]
 [196] [197] [198]) Appendix D [199] [200] [201] [202] [203] [204] [205]
 [206] [207] [208] ) 
 Here is how much of TeX's memory you used:
- 4116 strings out of 495840
- 47662 string characters out of 6171739
- 145158 words of memory out of 5000000
- 5048 multiletter control sequences out of 15000+600000
+ 3531 strings out of 495830
+ 40273 string characters out of 6171293
+ 88550 words of memory out of 5000000
+ 4884 multiletter control sequences out of 15000+600000
  34315 words of font info for 116 fonts, out of 8000000 for 9000
  701 hyphenation exceptions out of 8191
- 16i,6n,16p,331b,983s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/
-cm/cmbx12.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-csc10.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10
-.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb>
-</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/
-local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/local/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/local/share/t
-exmf-texlive/fonts/type1/public/amsfonts/cm/cmsl10.pfb></opt/local/share/texmf-
-texlive/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></opt/local/share/texmf-tex
-live/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive/
-fonts/type1/public/amsfonts/cm/cmti10.pfb></opt/local/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmtt10.pfb></opt/local/share/texmf-texlive/fonts/type
-1/public/amsfonts/cm/cmtt12.pfb></opt/local/share/texmf-texlive/fonts/type1/pub
-lic/amsfonts/cm/cmtt9.pfb></opt/local/share/texmf-texlive/fonts/type1/public/cm
--super/sfrm1095.pfb></opt/local/share/texmf-texlive/fonts/type1/public/cm-super
-/sfrm1440.pfb>
-Output written on bashref.pdf (214 pages, 857538 bytes).
-PDF statistics:
- 2948 PDF objects out of 2984 (max. 8388607)
- 2686 compressed objects within 27 object streams
- 342 named destinations out of 1000 (max. 500000)
- 1157 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16i,6n,16p,402b,942s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
+Output written on bashref.dvi (214 pages, 903700 bytes).

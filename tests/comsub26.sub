@@ -24,6 +24,7 @@ echo ${ echo unbalanced braces; }}}
 
 echo $(echo combined ${| REPLY=comsubs; })
 echo ${ echo $(echo combined ${| REPLY=comsubs; }); }
+echo "${; echo $(echo combined nostrip ${| REPLY=comsubs; }); }"
 
 var=outside
 echo ${ var=inside; echo $var; }

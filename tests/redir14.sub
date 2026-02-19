@@ -1,0 +1,47 @@
+: ${TMPDIR:=/tmp} ${THIS_SH:=./bash}
+TMPFILE=$TMPDIR/redir-in-$$
+
+trap 'rm -f $TMPFILE' 0
+
+cat >$TMPFILE <<EOF
+line 1
+line 2
+EOF
+
+export TMPFILE
+echo standard 1 - '<&0'
+${THIS_SH} -c 'exec < $TMPFILE ; cat <&0 & wait'
+echo posix 1 - '<&0'
+${THIS_SH} -o posix -c 'exec < $TMPFILE ; cat <&0 & wait'
+
+echo standard 2 - '0<&0'
+${THIS_SH} -c 'exec < $TMPFILE ; cat 0<&0 & wait'
+echo posix 2 - '0<&0'
+${THIS_SH} -o posix -c 'exec < $TMPFILE ; cat 0<&0 & wait'
+
+echo standard 3 - subshell containing AND-OR list '<&0'
+${THIS_SH} -c 'exec < $TMPFILE ; ( cat <&0 & wait )'
+echo posix 3 - subshell containing AND-OR list '<&0'
+${THIS_SH} -o posix -c 'exec < $TMPFILE ; ( cat <&0 & wait )'
+
+echo standard - subshell with explicit redirection
+${THIS_SH} -c '( cat <&0 & wait ) <$TMPFILE'
+echo posix - subshell with explicit redirection
+${THIS_SH} -o posix -c '( cat <&0 & wait ) <$TMPFILE'
+
+# pipeline input inhibits the implicit redirection from /dev/null; posix mode
+# does not make a difference -- POSIX interp 1913
+echo standard 1 - compound command with AND-OR list with pipe input
+${THIS_SH} -c 'echo "hello inpipe" | { cat 0<&0 & wait; }'
+echo posix 1 - compound command with AND-OR list with pipe input
+${THIS_SH} -o posix -c 'echo "hello inpipe" | { cat 0<&0 & wait; }'
+
+echo standard 2 - simple command with AND-OR list with pipe input
+${THIS_SH} -c 'echo "jello inpipe" | cat 0<&0 & wait'
+echo posix 2 - simple command with AND-OR list with pipe input
+${THIS_SH} -o posix -c 'echo "jello inpipe" | cat 0<&0 & wait'
+
+echo standard 3 - subshell command with AND-OR list with pipe input
+${THIS_SH} -c 'echo "hello inpipe" | ( cat <&0 & wait )'
+echo posix 3 - subshell command with AND-OR list with pipe input
+${THIS_SH} -o posix -c 'echo "hello inpipe" | ( cat <&0 & wait )'

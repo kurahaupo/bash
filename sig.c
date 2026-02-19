@@ -1,6 +1,6 @@
 /* sig.c - interface for shell signal handlers and signal initialization. */
 
-/* Copyright (C) 1994-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -33,6 +33,8 @@
 #include <signal.h>
 
 #include "bashintl.h"
+
+#define NEED_FPURGE_DECL
 
 #include "shell.h"
 #include "execute_cmd.h"
@@ -462,6 +464,10 @@ throw_to_top_level (void)
   unlink_fifo_list ();
 #endif /* PROCESS_SUBSTITUTION */
 
+  /* We don't want any more output after a SIGINT. */
+  if (interactive && print_newline)
+    fpurge (stdout);
+
   run_unwind_protects ();
   loop_level = continuing = breaking = funcnest = 0;
   interrupt_execution = retain_fifos = executing_funsub = 0;
@@ -638,7 +644,10 @@ termsig_handler (int sig)
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
 
-  run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
+  /* Don't run the exit trap if we're supposed to be ignoring traps in a
+     subshell environment. */
+  if ((subshell_environment & SUBSHELL_IGNTRAP) == 0)
+    run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
 
   kill_shell (sig);
 }

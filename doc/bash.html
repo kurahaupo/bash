@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.23.0 -->
-<!-- CreationDate: Sat Sep  6 15:33:53 2025 -->
+<!-- CreationDate: Thu Jan 29 13:25:46 2026 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -133,7 +133,7 @@ Bourne-Again SHell</p>
 
 
 <p style="margin-left:9%; margin-top: 1em">Bash is
-Copyright (C) 1989-2025 by the Free Software Foundation,
+Copyright (C) 1989-2026 by the Free Software Foundation,
 Inc.</p>
 
 <h2>DESCRIPTION
@@ -881,11 +881,17 @@ a semicolon to delimit commands.</p>
 
 <p style="margin-left:9%; margin-top: 1em">If a command is
 terminated by the control operator <b>&amp;</b>, the shell
-executes the command in the <i>background</i> in a subshell.
-The shell does not wait for the command to finish, and the
-return status is 0. These are referred to as
-<i>asynchronous</i> commands. Commands separated or
-terminated by <b>;</b> (or an equivalent
+executes the command asynchronously in a subshell. This is
+known as executing a command in the <i>background</i>, and
+these are referred to as <i>asynchronous</i> commands. The
+shell does not wait for the command to finish, and the
+return status is 0. When job control is not active, the
+standard input for asynchronous commands, in the absence of
+any explicit redirections involving the standard input, is
+redirected from <i>/dev/null</i>.</p>
+
+<p style="margin-left:9%; margin-top: 1em">Commands
+separated or terminated by <b>;</b> (or an equivalent
 <b>&lt;newline&gt;</b>) are executed sequentially; the shell
 waits for each command to terminate in turn.</p>
 
@@ -2903,7 +2909,10 @@ suffixes to ignore when performing filename completion (see
 <b><small>READLINE</small></b> below). A filename whose
 suffix matches one of the entries in
 <b><small>FIGNORE</small></b> is excluded from the list of
-matched filenames. A sample value is &ldquo;.o:~&rdquo;.</p>
+matched filenames. A sample value is &ldquo;.o:~&rdquo;.
+Since tilde expansion takes place after &ldquo;:&rdquo; in
+assignment statements, make sure to quote assignments
+appropriately to avoid it as appropriate.</p>
 
 <p style="margin-left:9%;"><b>FUNCNEST</b></p>
 
@@ -3733,6 +3742,10 @@ an index of &minus;1 references the last element.</p>
 assigning using the compound assignment syntax; see
 <b><small>PARAMETERS</small></b> above.</p>
 
+<p style="margin-left:9%; margin-top: 1em">If one of the
+word expansions in a compound array assignment unsets the
+variable, the results are unspecified.</p>
+
 <p style="margin-left:9%; margin-top: 1em">An array element
 is referenced using ${<i>name</i>[<i>subscript</i>]}. The
 braces are required to avoid conflicts with pathname
@@ -4053,7 +4066,7 @@ required when <i>parameter</i> is a positional parameter
 with more than one digit, or when <i>parameter</i> is
 followed by a character which is not to be interpreted as
 part of its name. The <i>parameter</i> is a shell parameter
-as described above <b>PARAMETERS</b>) or an array reference
+as described above (<b>PARAMETERS</b>) or an array reference
 (<b>Arrays</b>).</p>
 
 <p style="margin-left:9%; margin-top: 1em">If the first
@@ -4600,12 +4613,13 @@ removed.</p>
 
 <p style="margin-left:9%; margin-top: 1em">The character
 <i>c</i> following the open brace must be a space, tab,
-newline, or <b>|</b>, and the close brace must be in a
-position where a reserved word may appear (i.e., preceded by
-a command terminator such as semicolon). <b>Bash</b> allows
-the close brace to be joined to the remaining characters in
-the word without being followed by a shell metacharacter as
-a reserved word would usually require.</p>
+newline, &ldquo;|&rdquo;, or &ldquo;;&rdquo;; and the close
+brace must be in a position where a reserved word may appear
+(i.e., preceded by a command terminator such as semicolon).
+<b>Bash</b> allows the close brace to be joined to the
+remaining characters in the word without being followed by a
+shell metacharacter as a reserved word would usually
+require.</p>
 
 <p style="margin-left:9%; margin-top: 1em">Any side effects
 of <i>command</i> take effect immediately in the current
@@ -4622,7 +4636,15 @@ execution environment, including the positional parameters,
 is shared with the caller.</p>
 
 <p style="margin-left:9%; margin-top: 1em">If the first
-character following the open brace is a <b>|</b>, the
+character following the open brace is a &ldquo;;&rdquo;, the
+construct behaves like the form above but preserves any
+trailing newlines in the output of <i>command</i> instead of
+removing them. This form is useful when the trailing
+newlines are significant and should not be stripped from the
+command&rsquo;s output.</p>
+
+<p style="margin-left:9%; margin-top: 1em">If the first
+character following the open brace is a &ldquo;|&rdquo;, the
 construct expands to the value of the <b>REPLY</b> shell
 variable after <i>command</i> executes, without removing any
 trailing newlines, and the standard output of <i>command</i>
@@ -4922,12 +4944,20 @@ include it as the first character in the set.</p></td></tr>
 
 <p style="margin-left:27%; margin-top: 1em">The sorting
 order of characters in range expressions, and the characters
-included in the range, are determined by the current locale
-and the values of the <b><small>LC_COLLATE</small></b> or
-<b><small>LC_ALL</small></b> shell variables, if set. To
-obtain the traditional interpretation of range expressions,
-where <b>[a&minus;d]</b> is equivalent to <b>[abcd]</b>, set
-the value of the <b>LC_COLLATE</b> or <b>LC_ALL</b> shell
+included in the range, are determined by the collating
+sequence of the current locale and the values of the
+<b><small>LC_COLLATE</small></b> or
+<b><small>LC_ALL</small></b> shell variables, if set.</p>
+
+<p style="margin-left:27%; margin-top: 1em">For example, in
+the C locale, <b>[a&minus;d]</b> is equivalent to
+<b>[abcd]</b>. Many locales sort characters in dictionary
+order, and in these locales <b>[a&minus;d]</b> is typically
+not equivalent to <b>[abcd]</b>; it might be equivalent to
+<b>[aBbCcDd]</b> or <b>[aAbBcCd]</b>. To obtain the
+traditional interpretation of range expressions, where
+<b>[a&minus;d]</b> is equivalent to <b>[abcd]</b>, set the
+value of the <b>LC_COLLATE</b> or <b>LC_ALL</b> shell
 variables to <b>C</b>, or enable the <b>globasciiranges</b>
 shell option.</p>
 
@@ -6578,9 +6608,10 @@ in posix mode.</p>
 <p style="margin-left:9%; margin-top: 1em">If a command is
 followed by a <b>&amp;</b> and job control is not active,
 the default standard input for the command is the empty file
-<i>/dev/null</i>. Otherwise, the invoked command inherits
-the file descriptors of the calling shell as modified by
-redirections.</p>
+<i>/dev/null</i>, unless the command has an explicit
+redirection involving the standard input. Otherwise, the
+invoked command inherits the file descriptors of the calling
+shell as modified by redirections.</p>
 
 <h2>ENVIRONMENT
 <a name="ENVIRONMENT"></a>
@@ -6694,7 +6725,8 @@ not kill an interactive shell), and catches and handles
 <b><small>SIGINT</small></b> (so that the <b>wait</b>
 builtin is interruptible). When <b>bash</b> receives
 <b><small>SIGINT</small></b><small>,</small> it breaks out
-of any executing loops. In all cases, <b>bash</b> ignores
+of any executing loops and command lists. In all cases,
+<b>bash</b> ignores
 <b><small>SIGQUIT</small></b><small>.</small> If job control
 is in effect, <b>bash</b> ignores
 <b><small>SIGTTIN</small></b><small>,
@@ -7781,9 +7813,9 @@ with a statement of the form</p>
 <p style="margin-left:18%; margin-top: 1em"><b>set</b>
 <i>variable&minus;name value</i></p>
 
-<p style="margin-left:9%;">or using the <b>bind</b> builtin
-command (see <b><small>SHELL BUILTIN COMMANDS</small></b>
-below).</p>
+<p style="margin-left:9%; margin-top: 1em">or using the
+<b>bind</b> builtin command (see <b><small>SHELL BUILTIN
+COMMANDS</small></b> below).</p>
 
 <p style="margin-left:9%; margin-top: 1em">Except where
 noted, <b>readline</b> variables can take the values
@@ -8856,14 +8888,36 @@ facilities to extract the last word, as if the
 (M&minus;C&minus;e)</b></p>
 
 <p style="margin-left:18%;">Expand the line by performing
-shell word expansions. This performs alias and history
-expansion, <b>$</b>'<i>string</i>' and
+shell word expansions, treating the line as a single shell
+word. This performs alias and history expansion,
+<b>$</b>'<i>string</i>' and
 <b>$</b>&quot;<i>string</i>&quot; quoting, tilde expansion,
 parameter and variable expansion, arithmetic expansion,
 command and process substitution, word splitting, and quote
 removal. An explicit argument suppresses command and process
 substitution. See <b><small>HISTORY EXPANSION</small></b>
 below for a description of history expansion.</p>
+
+
+<p style="margin-left:9%;"><b>shell&minus;expand&minus;and&minus;requote&minus;line
+()</b></p>
+
+<p style="margin-left:18%;">Expand the line by performing
+shell word expansions, splitting the line into shell words
+in the same way as for programmable completion. This
+performs alias and history expansion,
+<b>$</b>'<i>string</i>' and
+<b>$</b>&quot;<i>string</i>&quot; quoting, tilde expansion,
+parameter and variable expansion, arithmetic expansion,
+command and process substitution, word splitting, and quote
+removal on each word, then quotes the resulting words if
+necessary to prevent further expansion. An explicit argument
+suppresses command and process substitution and quotes each
+resultant word. As usual, double-quoting a word will
+suppress word splitting. This can be useful when combined
+with suppressing command substitution, for instance, so the
+words in the command substitution aren&rsquo;t quoted
+individually.</p>
 
 
 <p style="margin-left:9%;"><b>history&minus;expand&minus;line
@@ -9863,7 +9917,7 @@ completion.</p>
 <p style="margin-left:9%; margin-top: 1em">The options
 supplied to <b>complete</b> and <b>compopt</b> can control
 how <b>readline</b> treats the completions. For instance,
-the <i>&minus;o fullquote</i> option tells <b>readline</b>
+the <b>&minus;o fullquote</b> option tells <b>readline</b>
 to quote the matches as if they were filenames. See the
 description of <b>complete</b> below for details.</p>
 
@@ -10521,7 +10575,14 @@ arguments beginning with <b>&minus;</b> without requiring
 but are not specified as accepting options interpret
 arguments beginning with <b>&minus;</b> as invalid options
 and require <b>&minus;&minus;</b> to prevent this
-interpretation. <b><br>
+interpretation.</p>
+
+<p style="margin-left:9%; margin-top: 1em">All builtins
+except <b>:</b>, <b>true</b>, <b>false</b>, <b>echo</b>, and
+<b>test</b>/<b>[</b> accept <b>&minus;&minus;help</b> as a
+special option. If <b>&minus;&minus;help</b> is supplied,
+these builtins output a help message and exit with a status
+of 0. <b><br>
 :</b> [<i>arguments</i>]</p>
 
 <p style="margin-left:18%;">No effect; the command does
@@ -12101,8 +12162,8 @@ The default for <b>BASH_LOADABLES_PATH</b> is
 system-dependent, and may include &ldquo;.&rdquo; to force a
 search of the current directory. The <b>&minus;d</b> option
 will delete a builtin previously loaded with
-<b>&minus;f</b>. If <i>&minus;s</i> is used with
-<i>&minus;f</i>, the new builtin becomes a
+<b>&minus;f</b>. If <b>&minus;s</b> is used with
+<b>&minus;f</b>, the new builtin becomes a
 <small>POSIX</small> special builtin.</p>
 
 <p style="margin-left:18%; margin-top: 1em">If no options
@@ -12209,8 +12270,8 @@ with a <i>name</i> that is not a function.</p>
 </table>
 
 <p style="margin-left:9%;"><b>fc</b> [<b>&minus;e</b>
-<i>ename</i>] [<b>&minus;lnr</b>] [<i>first</i>]
-[<i>last</i>] <b><br>
+<i>ename</i>] [<b>&minus;D</b>] [<b>&minus;lnr</b>]
+[<i>first</i>] [<i>last</i>] <b><br>
 fc &minus;s</b> [<i>pat</i>=<i>rep</i>] [<i>cmd</i>]</p>
 
 <p style="margin-left:18%;">The first form selects a range
@@ -12248,7 +12309,11 @@ variable, and the value of <b><small>EDITOR</small></b> if
 <b><small>FCEDIT</small></b> is not set. If neither variable
 is set, <b>fc</b> uses <i>vi.</i> When editing is complete,
 <b>fc</b> reads the file containing the edited commands and
-echoes and executes them.</p>
+echoes and executes them. The <b>&minus;D</b> option, if
+supplied, causes <b>fc</b> to remove the selected commands
+from the history list before executing the file of edited
+commands. <b>&minus;D</b> is only effective when <b>fc</b>
+is invoked in this way.</p>
 
 <p style="margin-left:18%; margin-top: 1em">In the second
 form, <b>fc</b> re-executes <i>command</i> after replacing
@@ -12463,23 +12528,44 @@ prints the descriptions of all matching help topics.</p>
 <p style="margin-left:18%; margin-top: 1em">The return
 status is 0 unless no command matches <i>pattern</i>.</p>
 
-<p style="margin-left:9%;"><b>history [</b><i>n</i><b>]
-<br>
+<p style="margin-left:9%;"><b>history [&minus;H]
+[</b><i>range</i><b>] <br>
 history &minus;c <br>
-history &minus;d</b> <i>offset</i> <b><br>
-history &minus;d</b> <i>start</i>-<i>end</i> <b><br>
+history &minus;d</b> <i>range</i> <b><br>
 history &minus;anrw</b> [<i>filename</i>] <b><br>
 history &minus;p</b> <i>arg</i> [<i>arg</i> ...] <b><br>
 history &minus;s</b> <i>arg</i> [<i>arg</i> ...]</p>
 
-<p style="margin-left:18%;">With no options, display the
-command history list with numbers. Entries prefixed with a
-<b>*</b> have been modified. An argument of <i>n</i> lists
-only the last <i>n</i> entries. If the shell variable
-<b><small>HISTTIMEFORMAT</small></b> is set and not null, it
-is used as a format string for <i>strftime</i>(3) to display
-the time stamp associated with each displayed history entry.
-If <b>history</b> uses
+<p style="margin-left:18%;">With no options, or with the
+<b>&minus;H</b> option, display the portion of the command
+history list specified by <i>range</i>, as described below.
+If <i>range</i> is not specified, display the entire history
+list. Without <b>&minus;H</b>, display the list with command
+numbers, prefixing entries that have been modified with a
+&ldquo;*&rdquo;.</p>
+
+<p style="margin-left:18%; margin-top: 1em">A <i>range</i>
+argument is specified in the form of a number <i>offset</i>
+or a range <i>start</i>&minus;<i>end</i>. If <i>offset</i>
+is supplied, it references the history entry at position
+<i>offset</i> in the history list; when listing this
+displays the last <i>offset</i> entries. A negative
+<i>offset</i> counts back from the end of the history list,
+relative to one greater than the last history position. When
+listing, negative and positive <i>offsets</i> have identical
+results. <i>start</i> and <i>end</i>, if supplied, reference
+the portion of the history list beginning at position
+<i>start</i> through position <i>end</i>. If <i>start</i> or
+<i>end</i> are negative, they count back from the end of the
+history list. When listing, if <i>start</i> is greater than
+<i>end</i>, the history entries are displayed in reverse
+order from <i>end</i> to <i>start</i>.</p>
+
+<p style="margin-left:18%; margin-top: 1em">If the shell
+variable <b><small>HISTTIMEFORMAT</small></b> is set and not
+null, it is used as a format string for <i>strftime</i>(3)
+to display the time stamp associated with each displayed
+history entry. If <b>history</b> uses
 <b><small>HISTTIMEFORMAT</small></b><small>,</small> it does
 not print an intervening space between the formatted time
 stamp and the history entry.</p>
@@ -12514,25 +12600,29 @@ list.</p> </td></tr>
 </table>
 
 <p style="margin-left:18%;"><b>&minus;d</b>
-<i>offset</i></p>
+<i>range</i></p>
 
-<p style="margin-left:27%;">Delete the history entry at
-position <i>offset</i>. If <i>offset</i> is negative, it is
-interpreted as relative to one greater than the last history
-position, so negative indices count back from the end of the
-history, and an index of &minus;1 refers to the current
-<b>history &minus;d</b> command.</p>
-
-<p style="margin-left:18%;"><b>&minus;d</b>
-<i>start</i>&minus;<i>end</i></p>
-
-<p style="margin-left:27%;">Delete the range of history
-entries between positions <i>start</i> and <i>end</i>,
-inclusive. Positive and negative values for <i>start</i> and
-<i>end</i> are interpreted as described above.</p>
+<p style="margin-left:27%;">Delete the history entries
+specified by <i>range</i>, as described above. An index of
+&minus;1 refers to the current <b>history &minus;d</b>
+command.</p>
 
 <table width="100%" border="0" rules="none" frame="void"
        cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="18%"></td>
+<td width="3%">
+
+
+<p><b>&minus;H</b></p></td>
+<td width="6%"></td>
+<td width="73%">
+
+
+<p>Display the selected history entries in the format that
+would be written to the history file, including any time
+stamp information as described below, without prefixing the
+entry with any line number or &ldquo;*&rdquo;.</p></td></tr>
 <tr valign="top" align="left">
 <td width="18%"></td>
 <td width="3%">
@@ -12993,7 +13083,7 @@ directory, &ldquo;popd &minus;1&rdquo; the next to last.</p></td></tr>
 
 <p style="margin-left:18%; margin-top: 1em">If the top
 element of the directory stack is modified, and the
-<i>&minus;n</i> option was not supplied, <b>popd</b> uses
+<b>&minus;n</b> option was not supplied, <b>popd</b> uses
 the <b>cd</b> builtin to change to the directory at the top
 of the stack. If the <b>cd</b> fails, <b>popd</b> returns a
 non-zero value.</p>
@@ -13113,14 +13203,33 @@ the leading character is a single or double quote, the value
 is the numeric value of the following character, using the
 current locale.</p>
 
+<p style="margin-left:18%; margin-top: 1em">Format
+specifiers may apply to the <i>n</i>th argument rather than
+the next sequential argument. In this case, the
+&rsquo;%&rsquo; in the format specifier is replaced by the
+sequence &ldquo;%<i>n</i>$&rdquo;, where <i>n</i> is a
+decimal integer greater than 0, giving the argument number
+to use as the operand. The format string should not mix
+numbered and unnumbered argument specifiers, though this is
+allowed. Unnumbered argument specifiers always refer to the
+next argument following the last argument consumed by an
+unnumbered specifier; numbered argument specifiers refer to
+absolute positions in the argument list.</p>
+
 <p style="margin-left:18%; margin-top: 1em">The
 <i>format</i> is reused as necessary to consume all of the
 <i>arguments</i>. If the <i>format</i> requires more
 <i>arguments</i> than are supplied, the extra format
 specifications behave as if a zero value or null string, as
-appropriate, had been supplied. The return value is zero on
-success, non-zero if an invalid option is supplied or a
-write or assignment error occurs.</p>
+appropriate, had been supplied. If <i>format</i> is reused,
+a numbered argument specifier &ldquo;%<i>n</i>$&rdquo;
+refers to the <i>n</i>th argument following the highest
+numbered argument consumed by the previous use of
+<i>format</i>.</p>
+
+<p style="margin-left:18%; margin-top: 1em">The return
+value is zero on success, non-zero if an invalid option is
+supplied or a write or assignment error occurs.</p>
 
 <p style="margin-left:9%;"><b>pushd</b> [<b>&minus;n</b>]
 [+<i>n</i>] [&minus;<i>n</i>] <b><br>
@@ -15552,7 +15661,8 @@ useful only when used with the <b>&minus;n</b> option.</p>
 <b>&minus;f</b> option, when job control is enabled, forces
 <b>wait</b> to wait for each <i>id</i> to terminate before
 returning its status, instead of returning when it changes
-status.</p>
+status. If there are no <i>id</i> arguments, <b>wait</b>
+waits until all background processes have terminated.</p>
 
 <p style="margin-left:18%; margin-top: 1em">If none of the
 <i>id</i>s specify one of the shell&rsquo;s active child
@@ -16268,21 +16378,21 @@ the script.</p>
 
 <p style="margin-left:9%; margin-top: 1em"><i>Bash
 Reference Manual</i>, Brian Fox and Chet Ramey <i><br>
-The Gnu Readline Library</i>, Brian Fox and Chet Ramey
+The GNU Readline Library</i>, Brian Fox and Chet Ramey
 <i><br>
-The Gnu History Library</i>, Brian Fox and Chet Ramey
-<i><br>
-Portable Operating System Interface (POSIX) Part 2: Shell
-and <br>
-Utilities</i>, IEEE &mdash;</p>
+The GNU History Library</i>, Brian Fox and Chet Ramey <br>
+POSIX.1-2024, The IEEE and The Open Group</p>
 
 
-<p style="margin-left:18%;">http://pubs.opengroup.org/onlinepubs/9799919799/</p>
+<p style="margin-left:18%;"><a href="https://pubs.opengroup.org/onlinepubs/9799919799/">https://pubs.opengroup.org/onlinepubs/9799919799/</a></p>
+
+<p style="margin-left:9%;">a description of posix mode</p>
 
 
-<p style="margin-left:9%;">http://tiswww.case.edu/~chet/bash/POSIX
-&mdash; a description of posix mode <i><br>
-sh</i>(1), <i>ksh</i>(1), <i>csh</i>(1) <i><br>
+<p style="margin-left:18%;"><a href="http://tiswww.case.edu/~chet/bash/POSIX">http://tiswww.case.edu/~chet/bash/POSIX</a></p>
+
+<p style="margin-left:9%;"><i>sh</i>(1), <i>ksh</i>(1),
+<i>csh</i>(1) <i><br>
 emacs</i>(1), <i>vi</i>(1) <i><br>
 readline</i>(3)</p>
 
@@ -16332,13 +16442,11 @@ initialization file</p>
 </h2>
 
 
-<p style="margin-left:9%; margin-top: 1em">Brian Fox, Free
-Software Foundation <br>
-bfox@gnu.org</p>
 
-<p style="margin-left:9%; margin-top: 1em">Chet Ramey, Case
-Western Reserve University <br>
-chet.ramey@case.edu</p>
+<p style="margin-left:9%; margin-top: 1em"><a href="mailto:bfox@gnu.org">Brian
+Fox, Free Software Foundation</a> <br>
+<a href="mailto:chet.ramey@case.edu">Chet Ramey, Case
+Western Reserve University</a></p>
 
 <h2>BUG REPORTS
 <a name="BUG REPORTS"></a>
@@ -16350,33 +16458,145 @@ bug in <b>bash</b>, you should report it. But first, you
 should make sure that it really is a bug, and that it
 appears in the latest version of <b>bash</b>. The latest
 version is always available from
-<i>ftp://ftp.gnu.org/pub/gnu/bash/</i> and
-<i>http://git.savannah.gnu.org/cgit/bash.git/snapshot/bash-master.tar.gz</i>.</p>
+<a href="ftp://ftp.gnu.org/pub/gnu/bash/">ftp://ftp.gnu.org/pub/gnu/bash/</a>
+and
+<a href="http://git.savannah.gnu.org/cgit/bash.git/snapshot/bash-master.tar.gz">http://git.savannah.gnu.org/cgit/bash.git/snapshot/bash-master.tar.gz</a>.</p>
 
 <p style="margin-left:9%; margin-top: 1em">Once you have
 determined that a bug actually exists, use the
 <i>bashbug</i> command to submit a bug report. If you have a
 fix, you are encouraged to mail that as well! You may send
-suggestions and &ldquo;philosophical&rdquo; bug reports to
-<i>bug-bash@gnu.org</i> or post them to the Usenet newsgroup
-<b>gnu.bash.bug</b>.</p>
+suggestions and &ldquo;philosophical&rdquo; bug reports, as
+well as comments and bug reports concerning this manual
+page, to to
+<a href="mailto:bug-bash@gnu.org">bug-bash@gnu.org</a>.</p>
 
-<p style="margin-left:9%; margin-top: 1em">ALL bug reports
-should include: <br>
-The version number of <b>bash</b> <br>
-The hardware and operating system <br>
-The compiler used to compile <br>
-A description of the bug behavior <br>
-A short script or &ldquo;recipe&rdquo; which exercises the
-bug</p>
+<p style="margin-left:9%; margin-top: 1em"><i>All</i> bug
+reports should include:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p>the version number of <b>bash</b> (&ldquo;echo
+$BASH_VERSION&rdquo;),</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p>the host platform and operating system (&ldquo;uname
+&minus;a&rdquo;),</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p>either</p></td>
+<td width="22%">
+</td></tr>
+</table>
+
+<p style="margin-left:14%; margin-top: 1em">(a)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="9%"></td>
+<td width="1%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">if you or an administrator built
+and installed <b>bash</b> from source, the name and version
+of the compiler used to build it, as reported by
+<b>bash</b>&rsquo;s &ldquo;configure&rdquo; script; or</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="9%">
+
+
+<p>(b)</p></td>
+<td width="1%"></td>
+<td width="81%">
+
+
+<p>if your site uses a distributor&rsquo;s <b>bash</b>
+package, the version of that package (for example,
+&ldquo;dpkg &minus;i bash&rdquo; or &ldquo;rpm &minus;qi
+bash&rdquo;),</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="9%">
+
+
+<p>&bull;</p></td>
+<td width="1%"></td>
+<td width="81%">
+</td></tr>
+</table>
+
+<p style="margin-left:12%; margin-top: 1em">a description
+of the behavior <b>bash</b> exhibited,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td width="2%"></td>
+<td width="87%">
+
+
+<p style="margin-top: 1em">a description of the behavior
+you expected from <b>bash</b>, and</p></td>
+<td width="1%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="87%">
+
+
+<p>a short shell script or &ldquo;recipe&rdquo; exercising
+the unexpected behavior.</p></td>
+<td width="1%">
+</td></tr>
+</table>
 
 <p style="margin-left:9%; margin-top: 1em"><i>bashbug</i>
 inserts the first three items automatically into the
 template it provides for filing a bug report.</p>
-
-<p style="margin-left:9%; margin-top: 1em">Comments and bug
-reports concerning this manual page should be directed to
-<i>chet.ramey@case.edu</i>.</p>
 
 <h2>BUGS
 <a name="BUGS"></a>
@@ -16387,8 +16607,9 @@ reports concerning this manual page should be directed to
 big and too slow.</p>
 
 <p style="margin-left:9%; margin-top: 1em">There are some
-subtle differences between <b>bash</b> and traditional
-versions of <b>sh</b>, mostly because of the
+subtle differences between <b>bash</b> and historical
+versions of <b>sh</b>, due mostly to <b>bash</b>&rsquo;s
+independent implementation and the evolution of the
 <small>POSIX</small> specification.</p>
 
 <p style="margin-left:9%; margin-top: 1em">Aliases are

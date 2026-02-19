@@ -791,6 +791,7 @@ print_case_clauses (PATTERN_LIST *clauses)
 	newline (";;&");
       else
 	newline (";;");
+      was_heredoc = 0;
       clauses = clauses->next;
     }
   indentation -= indentation_amount;

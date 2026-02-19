@@ -1,7 +1,7 @@
 /* uconvert - convert string representations of decimal numbers into whole
 	      number/fractional value pairs. */
 
-/* Copyright (C) 2008,2009,2020,2022 Free Software Foundation, Inc.
+/* Copyright (C) 2008,2009,2020-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -29,13 +29,21 @@
 #include <unistd.h>
 #endif
 
+#include <bashintl.h>
+#include <stdc.h>
+
 #include <stdio.h>
 #include "chartypes.h"
 
 #include "shell.h"
 #include "builtins.h"
 
-#define DECIMAL	'.'		/* XXX - should use locale */
+#ifndef locale_decpoint
+extern int locale_decpoint (void);
+#endif
+
+#define DECIMAL	'.'
+#define ISRADIX(c)	((c) == DECIMAL || (c) == locale_decpoint())
 
 #define RETURN(x) \
 do { \
@@ -76,7 +84,7 @@ uconvert(const char *s, long *ip, long *up, char **ep)
 
   for ( ; p && *p; p++)
     {
-      if (*p == DECIMAL)		/* decimal point */
+      if (ISRADIX (*p))		/* radix character */
 	break;
       if (DIGIT(*p) == 0)
 	RETURN(0);
@@ -86,7 +94,7 @@ uconvert(const char *s, long *ip, long *up, char **ep)
   if (p == 0 || *p == 0)	/* callers ensure p can never be 0; this is to shut up clang */
     RETURN(1);
 
-  if (*p == DECIMAL)
+  if (ISRADIX (*p))
     p++;
 
   /* Look for up to six digits past a decimal point. */

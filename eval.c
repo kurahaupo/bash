@@ -1,6 +1,6 @@
 /* eval.c -- reading and evaluating commands. */
 
-/* Copyright (C) 1996-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -114,6 +114,7 @@ reader_loop (void)
 		 alone. */
 	      if (last_command_exit_value == 0)
 		set_exit_status (EXECUTION_FAILURE);
+	    case REINIT:
 	      if (subshell_environment)
 		{
 		  current_command = (COMMAND *)NULL;
@@ -384,6 +385,7 @@ read_command (void)
   SHELL_VAR *tmout_var;
   int tmout_len, result;
   SigHandler *old_alrm;
+  char *t, *e;
 
   set_current_prompt_level (1);
   global_command = (COMMAND *)NULL;
@@ -399,8 +401,9 @@ read_command (void)
 
       if (tmout_var && var_isset (tmout_var))
 	{
-	  tmout_len = atoi (value_cell (tmout_var));
-	  if (tmout_len > 0)
+	  t = value_cell (tmout_var);
+	  tmout_len = (int)strtol (t, &e, 10);
+	  if (e != t && *e == '\0' && tmout_len > 0)
 	    {
 	      old_alrm = set_signal_handler (SIGALRM, alrm_catcher);
 	      alarm (tmout_len);

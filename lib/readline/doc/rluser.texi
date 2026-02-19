@@ -2065,13 +2065,33 @@ If a numeric argument is supplied, append a @samp{*} before
 pathname expansion.
 
 @item shell-expand-line (M-C-e)
-Expand the line by performing shell word expansions.  
+Expand the line by performing shell word expansions,
+treating the line as a single shell word.
 This performs alias and history expansion,
 $'@var{string}' and $"@var{string}" quoting,
 tilde expansion, parameter and variable expansion, arithmetic expansion,
 command and process substitution,
-word splitting, and quote removal.  
-An explicit argument suppresses command and process substitution.
+word splitting, and quote removal.
+An explicit argument suppresses command and process substitution and
+treats the line as if it were quoted as part of a here-document.
+
+@item shell-expand-and-requote-line ()
+Expand the line by performing shell word expansions,
+splitting the line into shell words in the same way as for
+programmable completion.
+This performs alias and history expansion,
+$'@var{string}' and $"@var{string}" quoting,
+tilde expansion, parameter and variable expansion, arithmetic expansion,
+command and process substitution,
+word splitting, and quote removal
+on each word, then quotes the resulting words if necessary to
+prevent further expansion.
+An explicit argument suppresses command and process substitution
+and quotes each resultant word.
+As usual, double-quoting a word will suppress word splitting.
+This can be useful when combined with suppressing command substitution,
+for instance, so the words in the command substitution aren't
+quoted individually.
 
 @item history-expand-line (M-^)
 Perform history expansion on the current line.

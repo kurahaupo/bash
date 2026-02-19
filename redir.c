@@ -97,7 +97,7 @@ static int add_undo_redirect (int, enum r_instruction, int);
 static int add_undo_close_redirect (int);
 static int add_undo_fd_redirect (int, int);
 static int expandable_redirection_filename (REDIRECT *);
-static int stdin_redirection (enum r_instruction, int);
+static int stdin_redirection (REDIRECT *);
 static int undoablefd (int);
 static int do_redirection_internal (REDIRECT *, int, char **);
 
@@ -522,7 +522,7 @@ use_tempfile:
   /* In an attempt to avoid races, we close the first fd only after opening
      the second. */
   /* Make the document really temporary.  Also make it the input. */
-  fd2 = open (filename, O_RDONLY|O_BINARY, 0600);
+  fd2 = open (filename, O_RDONLY|O_BINARY);
 
   if (fd2 < 0)
     {
@@ -729,16 +729,6 @@ redir_open (char *filename, int flags, int mode, enum r_instruction ri)
 	  errno = e;
 	}
       while (fd < 0 && errno == EINTR);
-
-#if 0	/* reportedly no longer needed */
-#if defined (AFS)
-      if ((fd < 0) && (errno == EACCES))
-	{
-	  fd = open (filename, flags & ~O_CREAT, mode);
-	  errno = EACCES;	/* restore errno */
-	}
-#endif /* AFS */
-#endif
     }
 
   return fd;
@@ -1398,9 +1388,9 @@ add_exec_redirect (REDIRECT *dummy_redirect)
 /* Return 1 if the redirection specified by RI and REDIRECTOR alters the
    standard input. */
 static int
-stdin_redirection (enum r_instruction ri, int redirector)
+stdin_redirection (REDIRECT *rp)
 {
-  switch (ri)
+  switch (rp->instruction)
     {
     case r_input_direction:
     case r_inputa_direction:
@@ -1410,9 +1400,16 @@ stdin_redirection (enum r_instruction ri, int redirector)
     case r_reading_string:
       return (1);
     case r_duplicating_input:
-    case r_duplicating_input_word:
     case r_close_this:
-      return (redirector == 0);
+      return (rp->redirector.dest == 0
+#if 1 /*TAG: bash-5.4 POSIX interp 1913 */
+		&& (posixly_correct == 0 || rp->redirectee.dest != 0)
+#endif
+		);
+    case r_duplicating_input_word:
+      /* we defer evaluation of this until later, so just return based on the
+	 destination for now. */
+      return (rp->redirector.dest == 0);
     case r_output_direction:
     case r_appending_to:
     case r_duplicating_output:
@@ -1430,7 +1427,10 @@ stdin_redirection (enum r_instruction ri, int redirector)
 }
 
 /* Return non-zero if any of the redirections in REDIRS alter the standard
-   input. */
+   input. The way we call this, to determine whether asynchronous commands
+   contain a redirection to standard input to inhibit the implicit redirection
+   from /dev/null, is subject to POSIX interp 1913, which carves out an
+   exception for things like 0<&0. */
 int
 stdin_redirects (REDIRECT *redirs)
 {
@@ -1439,7 +1439,7 @@ stdin_redirects (REDIRECT *redirs)
 
   for (n = 0, rp = redirs; rp; rp = rp->next)
     if ((rp->rflags & REDIR_VARASSIGN) == 0)
-      n += stdin_redirection (rp->instruction, rp->redirector.dest);
+      n += stdin_redirection (rp);
   return n;
 }
 /* bind_var_to_int handles array references */

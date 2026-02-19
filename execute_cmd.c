@@ -1,6 +1,6 @@
 /* execute_cmd.c -- Execute a COMMAND structure. */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -190,6 +190,7 @@ static int execute_coproc (COMMAND *, int, int, struct fd_bitmap *);
 
 static int execute_pipeline (COMMAND *, int, int, int, struct fd_bitmap *);
 
+static int execute_list (COMMAND *, int, int, int, struct fd_bitmap *);
 static int execute_connection (COMMAND *, int, int, int, struct fd_bitmap *);
 
 static int execute_intern_function (WORD_DESC *, FUNCTION_DEF *);
@@ -807,6 +808,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 		  jump_to_top_level (ERREXIT);
 		}
 
+	      currently_executing_command = (COMMAND *)NULL;
 	      return (last_command_exit_value);
 	    }
 	  else
@@ -815,6 +817,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 
 	      run_pending_traps ();
 
+	      currently_executing_command = (COMMAND *)NULL;
 	      /* Posix 2013 2.9.3.1: "the exit status of an asynchronous list
 		 shall be zero." */
 	      last_command_exit_value = 0;
@@ -843,10 +846,13 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
     }
 #endif /* COMMAND_TIMING */
 
+  /* Is this a compound command with a redirection from stdin? POSIX interp
+     1913 makes it matter. There is an exception for 0<&0 or <&0 or equivalent
+     when in posix mode. */
   if (shell_control_structure (command->type) && command->redirects)
 {
     stdin_redirected = stdin_redirects (command->redirects);
-/*itrace("execute_command_internal: compound command with redirects: stdin_redirected = %d", stdin_redirected); */
+/*itrace("execute_command_internal: compound command with redirects: stdin_redirected = %d", stdin_redirected);*/
 }
 
 #if defined (PROCESS_SUBSTITUTION)
@@ -902,6 +908,8 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 	      jump_to_top_level (ERREXIT);
 	    }
 	}
+
+      currently_executing_command = (COMMAND *)NULL;
       return (last_command_exit_value);
     }
 
@@ -1273,18 +1281,48 @@ extern int timeval_to_cpu (struct timeval *, struct timeval *, struct timeval *)
 #define BASH_TIMEFORMAT  "\nreal\t%3lR\nuser\t%3lU\nsys\t%3lS"
 
 static const int precs[] = { 0, 100000, 10000, 1000, 100, 10, 1 };
-static const int maxvals[] = { 1, 10, 100, 1000, 10000, 100000, 10000000 };
+static const int maxvals[] = { 1, 10, 100, 1000, 10000, 100000, 1000000 };
 
 /* Expand one `%'-prefixed escape sequence from a time format string. */
 /* SEC_FRACTION is in usecs. We normalize and round that based on the
   precision. */
-int
+static int
 mkfmt (char *buf, int prec, int lng, time_t sec, long sec_fraction)
 {
   time_t min;
   char abuf[INT_STRLEN_BOUND(time_t) + 1];
   int ind, aind;
 
+  /* We want to add a decimal point and PREC places after it if PREC is
+     nonzero.  PREC is not greater than 6.  SEC_FRACTION is between 0
+     and 999999 (microseconds). */
+  if (prec < 6)
+    {
+      /* We round here because we changed timeval_to_secs to return
+	 microseconds and normalized clock_t_to_secs's fractional return
+	 value to microseconds, deferring the work to be done to now.
+
+	 sec_fraction is in microseconds. Take the value, cut off what we
+	 don't want, round up if necessary, then convert back to
+	 microseconds. */
+      int frac, rest, maxval;
+
+      maxval = maxvals[6 - prec];
+      frac = sec_fraction / maxval;
+      rest = sec_fraction % maxval;
+
+      if (rest >= maxval/2)
+	frac++;
+
+      if (frac == maxvals[prec])
+	{
+	  sec++;
+	  sec_fraction = 0;
+	}
+      else
+	sec_fraction = frac * (1000000 / maxvals[prec]);
+    }
+  
   ind = 0;
   abuf[sizeof(abuf) - 1] = '\0';
 
@@ -1312,32 +1350,8 @@ mkfmt (char *buf, int prec, int lng, time_t sec, long sec_fraction)
   while (abuf[aind])
     buf[ind++] = abuf[aind++];
 
-  /* We want to add a decimal point and PREC places after it if PREC is
-     nonzero.  PREC is not greater than 6.  SEC_FRACTION is between 0
-     and 999999 (microseconds). */
-  if (prec != 0)
+  if (prec > 0)
     {
-      /* We round here because we changed timeval_to_secs to return
-	 microseconds and normalized clock_t_to_secs's fractional return
-	 value to microseconds, deferring the work to be done to now.
-
-	 sec_fraction is in microseconds. Take the value, cut off what we
-	 don't want, round up if necessary, then convert back to
-	 microseconds. */
-      if (prec != 6)
-	{
-	  int frac, rest, maxval;
-
-	  maxval = maxvals[6 - prec];
-	  frac = sec_fraction / maxval;
-	  rest = sec_fraction % maxval;
-
-	  if (rest >= maxval/2)
-	  frac++;
-
-	  sec_fraction = frac * (1000000 / maxvals[prec]);
-	}
-  
       buf[ind++] = locale_decpoint ();
       for (aind = 1; aind <= prec; aind++)
 	{
@@ -1408,7 +1422,7 @@ print_formatted_time (FILE *fp, char *format,
 	    cpu = 10000;
 #endif
 	  sum = cpu / 100;
-	  sum_frac = (cpu % 100) * 10;
+	  sum_frac = (cpu % 100) * 10000;	/* convert to microseconds */
 	  len = mkfmt (ts, 2, 0, sum, sum_frac);
 	  RESIZE_MALLOCED_BUFFER (str, sindex, len, ssize, 64);
 	  strcpy (str + sindex, ts);
@@ -1468,9 +1482,6 @@ time_command (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, str
 #if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
   struct timeval real, user, sys;
   struct timeval before, after;
-#  if defined (HAVE_STRUCT_TIMEZONE)
-  struct timezone dtz;				/* posix doesn't define this */
-#  endif
   struct rusage selfb, selfa, kidsb, kidsa;	/* a = after, b = before */
 #else
 #  if defined (HAVE_TIMES)
@@ -1479,64 +1490,60 @@ time_command (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, str
 #  endif
 #endif
 
-#if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
-#  if defined (HAVE_STRUCT_TIMEZONE)
-  gettimeofday (&before, &dtz);
-#  else
-  gettimeofday (&before, NULL);
-#  endif /* !HAVE_STRUCT_TIMEZONE */
-  getrusage (RUSAGE_SELF, &selfb);
-  getrusage (RUSAGE_CHILDREN, &kidsb);
-#else
-#  if defined (HAVE_TIMES)
-  tbefore = times (&before);
-#  endif
-#endif
-
-  old_subshell = subshell_environment;
-  posix_time = command && (command->flags & CMD_TIME_POSIX);
-
-  nullcmd = (command == 0) || (command->type == cm_simple && command->value.Simple->words == 0 && command->value.Simple->redirects == 0);
-  if (posixly_correct && nullcmd)
-    {
-#if defined (HAVE_GETRUSAGE)
-      selfb.ru_utime.tv_sec = kidsb.ru_utime.tv_sec = selfb.ru_stime.tv_sec = kidsb.ru_stime.tv_sec = 0;
-      selfb.ru_utime.tv_usec = kidsb.ru_utime.tv_usec = selfb.ru_stime.tv_usec = kidsb.ru_stime.tv_usec = 0;
-      before = shellstart;
-#else
-      before.tms_utime = before.tms_stime = before.tms_cutime = before.tms_cstime = 0;
-      tbefore = shell_start_time;
-#endif
-    }
-
   rv = EXECUTION_SUCCESS;		/* suppress uninitialized use warnings */
-  old_flags = command->flags;
-  COPY_PROCENV (top_level, save_top_level);
-  command->flags &= ~(CMD_TIME_PIPELINE|CMD_TIME_POSIX);
-  code = setjmp_nosigs (top_level);
-  if (code == NOT_JUMPED)
-    rv = execute_command_internal (command, asynchronous, pipe_in, pipe_out, fds_to_close);
-  COPY_PROCENV (save_top_level, top_level);
-
-  if (code == NOT_JUMPED)
-    command->flags = old_flags;
-
-  /* If we're jumping in a different subshell environment than we started,
-     don't bother printing timing stats, just keep longjmping back to the
-     original top level. */
-  if (code != NOT_JUMPED && subshell_environment && subshell_environment != old_subshell)
-    sh_longjmp (top_level, code);
 
   rs = us = ss = 0;
   rsf = usf = ssf = 0;
   cpu = 0;
 
+  code = 0;
+
+  old_subshell = subshell_environment;
+  posix_time = command && (command->flags & CMD_TIME_POSIX);
+  nullcmd = (command == 0) || (command->type == cm_simple && command->value.Simple->words == 0 && command->value.Simple->redirects == 0);
+
 #if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
-#  if defined (HAVE_STRUCT_TIMEZONE)
-  gettimeofday (&after, &dtz);
-#  else
+  getrusage (RUSAGE_SELF, &selfb);
+  getrusage (RUSAGE_CHILDREN, &kidsb);
+  gettimeofday (&before, NULL);
+#elif defined (HAVE_TIMES)
+  tbefore = times (&before);
+#endif
+
+  /* In posix mode, `time' without argument is equivalent to `times', but
+     obeys TIMEFORMAT. This is from POSIX interp 267 */
+  if (posixly_correct && nullcmd)
+    {
+#if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
+      selfb.ru_utime.tv_sec = kidsb.ru_utime.tv_sec = selfb.ru_stime.tv_sec = kidsb.ru_stime.tv_sec = 0;
+      selfb.ru_utime.tv_usec = kidsb.ru_utime.tv_usec = selfb.ru_stime.tv_usec = kidsb.ru_stime.tv_usec = 0;
+      before = shellstart;
+#elif defined (HAVE_TIMES)
+      before.tms_utime = before.tms_stime = before.tms_cutime = before.tms_cstime = 0;
+      tbefore = shell_start_time * get_clk_tck ();
+#endif
+    }
+  else
+    {
+      old_flags = command->flags;
+      COPY_PROCENV (top_level, save_top_level);
+      command->flags &= ~(CMD_TIME_PIPELINE|CMD_TIME_POSIX);
+      code = setjmp_nosigs (top_level);
+      if (code == NOT_JUMPED)
+	rv = execute_command_internal (command, asynchronous, pipe_in, pipe_out, fds_to_close);
+      COPY_PROCENV (save_top_level, top_level);
+      if (code == NOT_JUMPED)
+	command->flags = old_flags;
+
+      /* If we're jumping in a different subshell environment than we started,
+	 don't bother printing timing stats, just keep longjmping back to the
+	 original top level. */
+      if (code != NOT_JUMPED && subshell_environment && subshell_environment != old_subshell)
+	sh_longjmp (top_level, code);
+    }
+
+#if defined (HAVE_GETRUSAGE) && defined (HAVE_GETTIMEOFDAY)
   gettimeofday (&after, NULL);
-#  endif /* !HAVE_STRUCT_TIMEZONE */
   getrusage (RUSAGE_SELF, &selfa);
   getrusage (RUSAGE_CHILDREN, &kidsa);
 
@@ -1673,13 +1680,13 @@ execute_in_subshell (COMMAND *command, int asynchronous, int pipe_in, int pipe_o
 
   if (user_subshell)
     {
-      subshell_environment = SUBSHELL_PAREN;	/* XXX */
+      subshell_environment = SUBSHELL_PAREN|SUBSHELL_IGNTRAP;	/* XXX */
       if (asynchronous)
 	subshell_environment |= SUBSHELL_ASYNC;
     }
   else
     {
-      subshell_environment = 0;			/* XXX */
+      subshell_environment = SUBSHELL_IGNTRAP;			/* XXX */
       if (asynchronous)
 	subshell_environment |= SUBSHELL_ASYNC;
       if (pipe_in != NO_PIPE || pipe_out != NO_PIPE)
@@ -2842,6 +2849,45 @@ execute_pipeline (COMMAND *command, int asynchronous, int pipe_in, int pipe_out,
   return (exec_result);
 }
 
+/* This is a placeholder for future work */
+static int
+execute_list (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, struct fd_bitmap *fds_to_close)
+{
+  int ignore_return, invert, exec_result, n;
+  COMMAND *first, *second;
+
+  ignore_return = (command->flags & CMD_IGNORE_RETURN) != 0;
+  invert = (command->flags & CMD_INVERT_RETURN) != 0;
+    
+  interrupt_execution++; retain_fifos++;
+  QUIT;
+
+  first = command->value.Connection->first;
+  second = command->value.Connection->second;
+
+  if (ignore_return || invert)
+    {
+      if (first)
+	first->flags |= CMD_IGNORE_RETURN;
+      if (second)
+	second->flags |= CMD_IGNORE_RETURN;
+    }
+
+  exec_result = execute_command (first);
+
+  QUIT;
+#if defined (JOB_CONTROL)
+  if (command->value.Connection->connector == ';' && job_control && interactive && posixly_correct == 0)
+    notify_and_cleanup (-1);
+#endif
+  optimize_connection_fork (command);			/* XXX */
+  exec_result = execute_command_internal (second, asynchronous,
+					  pipe_in, pipe_out, fds_to_close);
+
+  interrupt_execution--; retain_fifos--;
+  return exec_result;
+}
+
 static int
 execute_connection (COMMAND *command, int asynchronous, int pipe_in, int pipe_out, struct fd_bitmap *fds_to_close)
 {
@@ -2898,34 +2944,7 @@ execute_connection (COMMAND *command, int asynchronous, int pipe_in, int pipe_ou
     /* Just call execute command on both sides. */
     case ';':
     case '\n':		/* special case, happens in command substitutions */
-      if (ignore_return || invert)
-	{
-	  if (command->value.Connection->first)
-	    command->value.Connection->first->flags |= CMD_IGNORE_RETURN;
-	  if (command->value.Connection->second)
-	    command->value.Connection->second->flags |= CMD_IGNORE_RETURN;
-	}
-      interrupt_execution++; retain_fifos++;
-      QUIT;
-
-#if 1
-      execute_command (command->value.Connection->first);
-#else
-      execute_command_internal (command->value.Connection->first,
-				  asynchronous, pipe_in, pipe_out,
-				  fds_to_close);
-#endif
-
-      QUIT;
-#if defined (JOB_CONTROL)
-      if (command->value.Connection->connector == ';' && job_control && interactive && posixly_correct == 0)
-        notify_and_cleanup (-1);
-#endif
-      optimize_connection_fork (command);			/* XXX */
-      exec_result = execute_command_internal (command->value.Connection->second,
-				      asynchronous, pipe_in, pipe_out,
-				      fds_to_close);
-      interrupt_execution--; retain_fifos--;
+      exec_result = execute_list (command, asynchronous, pipe_in, pipe_out, fds_to_close);
       break;
 
     case '|':
@@ -3029,6 +3048,7 @@ execute_for_command (FOR_COM *for_command)
 {
   WORD_LIST *releaser, *list;
   SHELL_VAR *v;
+  COMMAND *save_current;
   char *identifier;
   int retval, save_line_number;
 #if 0
@@ -3088,7 +3108,10 @@ execute_for_command (FOR_COM *for_command)
 	  the_printed_command_except_trap = savestring (the_printed_command);
 	}
 
+      save_current = currently_executing_command;
       retval = run_debug_trap ();
+      currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
       /* In debugging mode, if the DEBUG trap returns a non-zero status, we
 	 skip the command. */
@@ -3195,6 +3218,7 @@ eval_arith_for_expr (WORD_LIST *l, int *okp)
   intmax_t expresult;
   int r, eflag;
   char *expr, *temp;
+  COMMAND *save_current;
 
   expr = l->next ? string_list (l) : l->word->word;
   temp = expand_arith_string (expr, Q_DOUBLE_QUOTES|Q_ARITH);
@@ -3213,7 +3237,10 @@ eval_arith_for_expr (WORD_LIST *l, int *okp)
 	  the_printed_command_except_trap = savestring (the_printed_command);
 	}
 
+      save_current = currently_executing_command;
       r = run_debug_trap ();
+      currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
       /* In debugging mode, if the DEBUG trap returns a non-zero status, we
 	 skip the command. */
@@ -3473,7 +3500,7 @@ select_query (WORD_LIST *list, int list_len, char *prompt, int print_menu)
       executing_builtin = oe;
       if (r != EXECUTION_SUCCESS)
 	{
-	  putchar ('\n');
+	  fputc ('\n', stderr);
 	  return ((char *)NULL);
 	}
       repl_string = get_string_value ("REPLY");
@@ -3506,6 +3533,7 @@ execute_select_command (SELECT_COM *select_command)
   SHELL_VAR *v;
   char *identifier, *ps3_prompt, *selection;
   int retval, list_len, show_menu, save_line_number;
+  COMMAND *save_current;
 
   if (check_identifier (select_command->name, 1) == 0)
     {
@@ -3533,7 +3561,10 @@ execute_select_command (SELECT_COM *select_command)
       the_printed_command_except_trap = savestring (the_printed_command);
     }
 
+  save_current = currently_executing_command;
   retval = run_debug_trap ();
+  currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
   /* In debugging mode, if the DEBUG trap returns a non-zero status, we
      skip the command. */
@@ -3647,6 +3678,7 @@ execute_case_command (CASE_COM *case_command)
   PATTERN_LIST *clauses;
   char *word, *pattern;
   int retval, match, ignore_return, save_line_number, qflags;
+  COMMAND *save_current;
 
   save_line_number = line_number;
   line_number = case_command->line;
@@ -3664,7 +3696,10 @@ execute_case_command (CASE_COM *case_command)
       the_printed_command_except_trap = savestring (the_printed_command);
     }
 
+  save_current = currently_executing_command;
   retval = run_debug_trap();
+  currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
   /* In debugging mode, if the DEBUG trap returns a non-zero status, we
      skip the command. */
@@ -3884,6 +3919,7 @@ execute_arith_command (ARITH_COM *arith_command)
   intmax_t expresult;
   WORD_LIST *new;
   char *exp, *t;
+  COMMAND *save_current;
 
   expresult = 0;
 
@@ -3905,7 +3941,10 @@ execute_arith_command (ARITH_COM *arith_command)
   /* Run the debug trap before each arithmetic command, but do it after we
      update the line number information and before we expand the various
      words in the expression. */
+  save_current = currently_executing_command;
   retval = run_debug_trap ();
+  currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
   /* In debugging mode, if the DEBUG trap returns a non-zero status, we
      skip the command. */
@@ -4120,6 +4159,7 @@ static int
 execute_cond_command (COND_COM *cond_command)
 {
   int retval, save_line_number;
+  COMMAND *save_current;
 
   save_line_number = line_number;
 
@@ -4138,7 +4178,10 @@ execute_cond_command (COND_COM *cond_command)
 
   /* Run the debug trap before each conditional command, but do it after we
      update the line number information. */
+  save_current = currently_executing_command;
   retval = run_debug_trap ();
+  currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
   /* In debugging mode, if the DEBUG trap returns a non-zero status, we
      skip the command. */
@@ -4462,6 +4505,7 @@ execute_simple_command (SIMPLE_COM *simple_command, int pipe_in, int pipe_out, i
   pid_t old_last_async_pid;
   sh_builtin_func_t *builtin;
   SHELL_VAR *func;
+  COMMAND *save_current;
   volatile int old_builtin, old_command_builtin;
 
   result = EXECUTION_SUCCESS;
@@ -4491,7 +4535,10 @@ execute_simple_command (SIMPLE_COM *simple_command, int pipe_in, int pipe_out, i
 
   /* Run the debug trap before each simple command, but do it after we
      update the line number information. */
+  save_current = currently_executing_command;
   result = run_debug_trap ();
+  currently_executing_command = save_current;
+
 #if defined (DEBUGGER)
   /* In debugging mode, if the DEBUG trap returns a non-zero status, we
      skip the command. */
@@ -4826,13 +4873,11 @@ run_builtin:
 	    {
 	      if ((cmdflags & CMD_STDIN_REDIR) &&
 		    pipe_in == NO_PIPE &&
-#if 0	/*TAG:bash-5.4 POSIX interp 1913 */
 		    /* POSIX interp 1913 says that the redirection of fd 0
-		       from /dev/null is unconditional. */
-		    (posixly_correct || stdin_redirects (simple_command->redirects) == 0))
-#else
+		       from /dev/null is performed unless the command has
+		       a redirection that's something like 0<&0 or <&0.
+		       See redir.c:stdin_redirection() for the details. */
 		    (stdin_redirects (simple_command->redirects) == 0))
-#endif
 		async_redirect_stdin ();
 	      setup_async_signals ();
 	    }
@@ -5403,13 +5448,13 @@ execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap 
       showing_function_line = 1;
       save_current = currently_executing_command;
       result = run_debug_trap ();
+      currently_executing_command = save_current;
 #if defined (DEBUGGER)
       /* In debugging mode, if the DEBUG trap returns a non-zero status, we
 	 skip the command. */
       if (debugging_mode == 0 || result == EXECUTION_SUCCESS)
 	{
 	  showing_function_line = 0;
-	  currently_executing_command = save_current;
 	  result = execute_command_internal (fc, 0, NO_PIPE, NO_PIPE, fds_to_close);
 
 	  /* Run the RETURN trap in the function's context */
@@ -5418,7 +5463,6 @@ execute_function (SHELL_VAR *var, WORD_LIST *words, int flags, struct fd_bitmap 
 	  currently_executing_command = save_current;
 	}
 #else
-      currently_executing_command = save_current;
       result = execute_command_internal (fc, 0, NO_PIPE, NO_PIPE, fds_to_close);
 
       save_current = currently_executing_command;
@@ -5482,6 +5526,8 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 				      struct fd_bitmap *fds_to_close, int flags)
 {
   int result, r, funcvalue;
+  REDIRECT *saved_undo_list;
+  int has_exec_redirects;
 #if defined (JOB_CONTROL)
   int jobs_hack;
 
@@ -5537,11 +5583,35 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 
   do_piping (pipe_in, pipe_out);
 
-  if (do_redirections (redirects, RX_ACTIVE) != 0)
+  if (do_redirections (redirects, RX_ACTIVE|RX_UNDOABLE) != 0)
     exit (EXECUTION_FAILURE);
+
+  has_exec_redirects = (builtin == exec_builtin) && redirection_undo_list;
+  saved_undo_list = redirection_undo_list;
+
+  /* Calling the "exec" builtin changes redirections forever. */
+  if (builtin == exec_builtin)
+    {
+      /* let exec_builtin handle disposing redirection_undo_list */
+      saved_undo_list = exec_redirection_undo_list;
+      exec_redirection_undo_list = (REDIRECT *)NULL;
+    }
+  else
+    {
+      dispose_exec_redirects ();
+      redirection_undo_list = (REDIRECT *)NULL;
+    }
+
+  if (builtin && saved_undo_list)
+    {
+      begin_unwind_frame ("subshell-saved-redirects");
+      add_unwind_protect (uw_cleanup_redirects, (char *)saved_undo_list);
+    }
 
   if (builtin)
     {
+      int subshell_exit_value;
+
       /* Give builtins a place to jump back to on failure,
 	 so we don't go back up to main(). */
       result = setjmp_nosigs (top_level);
@@ -5553,13 +5623,13 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
         funcvalue = setjmp_nosigs (return_catch);
 
       if (result == EXITPROG || result == EXITBLTIN)
-	subshell_exit (last_command_exit_value);
+	subshell_exit_value = last_command_exit_value;
       else if (result == ERREXIT)
-	subshell_exit (last_command_exit_value ? last_command_exit_value : EXECUTION_FAILURE);
+	subshell_exit_value = last_command_exit_value ? last_command_exit_value : EXECUTION_FAILURE;
       else if (result)
-	subshell_exit (EXECUTION_FAILURE);
+	subshell_exit_value = EXECUTION_FAILURE;
       else if (funcvalue)
-	subshell_exit (return_catch_value);
+	subshell_exit_value = return_catch_value;
       else
 	{
 	  r = execute_builtin (builtin, words, flags, 1);
@@ -5575,8 +5645,26 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 	      r = execute_disk_command (words, (REDIRECT *)0, command_line,
 		  -1, -1, async, (struct fd_bitmap *)0, flags|CMD_NO_FORK);
 	    }
-	  subshell_exit (r);
+	  subshell_exit_value = r;
 	}
+
+      if (has_exec_redirects && redirection_undo_list)
+	{
+	  if (saved_undo_list)
+	    {
+	      dispose_redirects (saved_undo_list);
+	      discard_unwind_frame ("subshell-saved-redirects");
+	    }
+	  saved_undo_list = exec_redirection_undo_list = (REDIRECT *)NULL;
+	}
+      if (saved_undo_list)
+	{
+	  redirection_undo_list = signal_is_trapped (0) ? saved_undo_list : NULL;
+	  discard_unwind_frame ("subshell-saved-redirects");
+	}
+      undo_partial_redirects ();
+
+      subshell_exit (subshell_exit_value);
     }
   else
     {
@@ -5868,15 +5956,15 @@ execute_disk_command (WORD_LIST *words, REDIRECT *redirects, char *command_line,
 	 in asynchronous children. */
       if (async)
 	{
+/*itrace("execute_disk_command: async = 1 cmd_stdin_redir = %d stdin_redirects (redirects) = %d",
+	(cmdflags & CMD_STDIN_REDIR), stdin_redirects (redirects));*/
 	  if ((cmdflags & CMD_STDIN_REDIR) &&
 		pipe_in == NO_PIPE &&
-#if 0	/*TAG:bash-5.4 POSIX interp 1913 */
 		/* POSIX interp 1913 says that the redirection of fd 0
-		   from /dev/null is unconditional. */
-		(posixly_correct || stdin_redirects (redirects) == 0))
-#else
+		   from /dev/null is performed unless the command has
+		   a redirection that's something like 0<&0 or <&0.
+		   See redir.c:stdin_redirection() for the details. */
 		(stdin_redirects (redirects) == 0))
-#endif
 	    async_redirect_stdin ();
 	  setup_async_signals ();
 	}

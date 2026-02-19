@@ -39,7 +39,6 @@ m4		d
 po		d
 support		d
 tests		d
-tests/misc	d
 ABOUT-NLS	f
 ChangeLog	c CWRU/changelog
 CHANGES		f
@@ -697,7 +696,6 @@ doc/article.ps	f
 doc/rose94.ps	f
 #doc/bash.ps		f
 #doc/bashref.ps	f
-doc/bashref.dvi	f
 doc/bash.0		f
 doc/bashbug.0		f
 doc/builtins.0	f
@@ -735,7 +733,7 @@ support/signames.c	f
 support/siglen.c	f
 #support/bashbug.sh	f
 support/bashbug.sh.in	f
-support/man2html.c	f
+#support/man2html.c	f
 support/recho.c		f
 support/zecho.c		f
 support/xcase.c		f
@@ -786,6 +784,7 @@ examples/loadables/getconf.c	f
 examples/loadables/fdflags.c	f
 examples/loadables/finfo.c	f
 examples/loadables/fltexpr.c	f
+examples/loadables/jobid.c	f
 examples/loadables/cat.c	f
 examples/loadables/chmod.c	f
 examples/loadables/csv.c	f
@@ -863,9 +862,10 @@ examples/functions/login	f
 #examples/functions/mhfold	f
 #examples/functions/newdirstack.bsh	f
 examples/functions/notify.bash	f
+examples/functions/repeat	f
+examples/functions/repeat2	f
 #examples/functions/pathfuncs	f
 #examples/functions/recurse	f
-#examples/functions/repeat2	f
 #examples/functions/repeat3	f
 examples/functions/seq		f
 examples/functions/seq2		f
@@ -1084,6 +1084,8 @@ tests/comsub23.sub	f
 tests/comsub24.sub	f
 tests/comsub25.sub	f
 tests/comsub26.sub	f
+tests/comsub27.sub	f
+tests/comsub28.sub	f
 tests/comsub-eof.tests	f
 tests/comsub-eof0.sub	f
 tests/comsub-eof1.sub	f
@@ -1202,6 +1204,7 @@ tests/exp10.sub		f
 tests/exp11.sub		f
 tests/exp12.sub		f
 tests/exp13.sub		f
+tests/exp14.sub		f
 tests/exportfunc.tests	f
 tests/exportfunc.right	f
 tests/exportfunc1.sub	f
@@ -1297,6 +1300,9 @@ tests/history6.sub	f
 tests/history7.sub	f
 tests/history8.sub	f
 tests/history9.sub	f
+tests/history10.sub	f
+tests/history11.sub	f
+tests/history12.sub	f
 tests/ifs.tests		f
 tests/ifs.right		f
 tests/ifs1.sub		f
@@ -1388,6 +1394,7 @@ tests/new-exp13.sub	f
 tests/new-exp14.sub	f
 tests/new-exp15.sub	f
 tests/new-exp16.sub	f
+tests/new-exp17.sub	f
 tests/new-exp.right	f
 tests/nquote.tests	f
 tests/nquote.right	f
@@ -1439,6 +1446,7 @@ tests/printf4.sub	f
 tests/printf5.sub	f
 tests/printf6.sub	f
 tests/printf7.sub	f
+tests/printf8.sub	f
 tests/procsub.tests	f
 tests/procsub.right	f
 tests/procsub1.sub	f
@@ -1486,6 +1494,7 @@ tests/redir10.sub	f
 tests/redir11.sub	f
 tests/redir12.sub	f
 tests/redir13.in	f
+tests/redir14.sub	f
 tests/rhs-exp.tests	f
 tests/rhs-exp.right	f
 tests/rhs-exp1.sub	f
@@ -1667,19 +1676,6 @@ tests/vredir5.sub	f
 tests/vredir6.sub	f
 tests/vredir7.sub	f
 tests/vredir8.sub	f
-tests/misc/dev-tcp.tests	f
-tests/misc/perf-script	f
-tests/misc/perftest	f
-tests/misc/read-nchars.tests	f
-tests/misc/redir-t2.sh	f
-tests/misc/run-r2.sh	f
-tests/misc/sigint-1.sh		f
-tests/misc/sigint-2.sh		f
-tests/misc/sigint-3.sh		f
-tests/misc/sigint-4.sh		f
-tests/misc/test-minus-e.1	f
-tests/misc/test-minus-e.2	f
-tests/misc/wait-bg.tests	f
 #examples/scripts.v2/PERMISSION	f
 #examples/scripts.v2/README	f
 #examples/scripts.v2/arc2tarz	f

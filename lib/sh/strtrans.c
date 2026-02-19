@@ -55,7 +55,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
   const char *s;
   unsigned long v;
   size_t clen;
-  int mb_cur_max;
+  size_t mb_cur_max;
 #if defined (HANDLE_MULTIBYTE)
   wchar_t wc;
 #endif
@@ -63,7 +63,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
   if (string == 0 || *string == '\0')
     return ((char *)0);
 
-  mb_cur_max = MB_CUR_MAX;
+  mb_cur_max = locale_mb_cur_max;
 #if defined (HANDLE_MULTIBYTE)
   temp = 4*len + 4;
   if (temp < 12)
@@ -79,10 +79,14 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 	{
 	  clen = 1;
 #if defined (HANDLE_MULTIBYTE)
-	  if ((locale_utf8locale && (c & 0x80)) ||
-	      (locale_utf8locale == 0 && mb_cur_max > 0 && is_basic (c) == 0))
+	  /* We read an entire multibyte character at a time if we are in a
+	     locale where a backslash can possibly appear as part of a
+	     multibyte character. UTF-8 encodings prohibit this. */
+	  if (locale_utf8locale == 0 && mb_cur_max > 1 && is_basic (c) == 0)
 	    {
 	      clen = mbrtowc (&wc, s - 1, mb_cur_max, 0);
+	      if (MB_NULLWCH (clen))
+		break;			/* it apparently can happen */
 	      if (MB_INVALIDCH (clen))
 		clen = 1;
 	    }
@@ -126,7 +130,7 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 	      c &= 0xFF;
 	      break;
 	    case 'x':			/* Hex digit -- non-ANSI */
-	      if ((flags & 2) && *s == '{')
+	      if ((flags & 2) && *s == '{')	/* undocumented */
 		{
 		  flags |= 16;		/* internal flag value */
 		  s++;
@@ -139,8 +143,17 @@ ansicstr (const char *string, size_t len, int flags, int *sawc, size_t *rlen)
 		 chars are consumed. */
 	      if (flags & 16)
 		{
+		  v = c;
 		  for ( ; ISXDIGIT ((unsigned char)*s); s++)
-		    c = (c * 16) + HEXVALUE (*s);
+		    {
+		      v = (v * 16) + HEXVALUE (*s);
+		      if (v > INT_MAX)		/* abandon on overflow */
+			{
+			  v &= INT_MAX;
+			  break;
+			}
+		    }
+		  c = v;
 		  flags &= ~16;
 		  if (*s == '}')
 		    s++;
@@ -260,11 +273,12 @@ ansic_quote (const char *str, int flags, int *rlen)
 	  break;
 	default:
 #if defined (HANDLE_MULTIBYTE)
-	  if (is_basic (c) == 0)
+	  if ((locale_utf8locale && (c & 0x80)) ||
+	      (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
 	    {
-	      clen = mbrtowc (&wc, s, MB_CUR_MAX, &state);
-	      if (clen == 0)
-		break;
+	      clen = mbrtowc (&wc, s, locale_mb_cur_max, &state);
+	      if (MB_NULLWCH (clen))
+		goto quote_end;
 	      if (MB_INVALIDCH (clen))
 		INITIALIZE_MBSTATE;
 	      else if (iswprint (wc))
@@ -283,17 +297,18 @@ ansic_quote (const char *str, int flags, int *rlen)
 		continue;
 	      }
 
-	    *r++ = '\\';
-	    *r++ = TOCHAR ((c >> 6) & 07);
-	    *r++ = TOCHAR ((c >> 3) & 07);
-	    *r++ = TOCHAR (c & 07);
-	    continue;
+	  *r++ = '\\';
+	  *r++ = TOCHAR ((c >> 6) & 07);
+	  *r++ = TOCHAR ((c >> 3) & 07);
+	  *r++ = TOCHAR (c & 07);
+	  continue;
 	}
 
       *r++ = '\\';
       *r++ = c;
     }
 
+quote_end:
   *r++ = '\'';
   *r = '\0';
   if (rlen)
@@ -343,7 +358,8 @@ ansic_shouldquote (const char *string)
   for (s = string; c = *s; s++)
     {
 #if defined (HANDLE_MULTIBYTE)
-      if (is_basic (c) == 0)
+      if ((locale_utf8locale && (c & 0x80)) ||
+	  (locale_utf8locale == 0 && locale_mb_cur_max > 1 && is_basic (c) == 0))
 	return (ansic_wshouldquote (s));
 #endif
       if (ISPRINT (c) == 0)

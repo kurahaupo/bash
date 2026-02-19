@@ -5,7 +5,7 @@
 .\"	Case Western Reserve University
 .\"	chet.ramey@case.edu
 .\"
-.\"	Last Change: Sat Sep  6 15:27:27 EDT 2025
+.\"	Last Change: Wed Jan 14 15:46:08 EST 2026
 .\"
 .\" For bash_builtins, strip all but "SHELL BUILTIN COMMANDS" section
 .\" For rbash, strip all but "RESTRICTED SHELL" section
@@ -19,15 +19,17 @@
 .\" Ensure the macros/strings are initialized to avoid groff warnings.
 .ds zZ \" empty
 .ds zY \" empty
+.ds zX \" empty
 .if \n(zZ=1 .ig zZ
 .if \n(zY=1 .ig zY
-.TH BASH 1 "2025 September 6" "GNU Bash 5.3"
+.TH BASH 1 "2026 January 14" "GNU Bash 5.3"
 .\"
 .ie \n(.g \{\
 .ds ' \(aq
 .ds " \(dq
 .ds ^ \(ha
 .ds ~ \(ti
+.ds : \:\" hyphenless break point (e.g., for long file names and URLs)
 .\}
 .el \{\
 .ds ' '
@@ -35,6 +37,7 @@
 .ds " ""\" two adjacent quotes and no space before this comment
 .ds ^ ^
 .ds ~ ~
+.ds : \" empty
 .\}
 .
 .\" File Name macro.  This used to be `.PN', for Path Name,
@@ -63,6 +66,43 @@
 .  if n \%"\\$1"\\$2
 .\}
 ..
+.if \n(.g .ig zX
+.\" The following macro definitions are from groff's "an-ext.tmac".
+.
+.\" Prepare link text for mail/web hyperlinks.  `MT` and `UR` call this.
+.de mV
+.  ds mU \\$1\"
+..
+.\" Emit hyperlink.  The optional argument supplies trailing punctuation
+.\" after link text.  `ME` and `UE` call this.
+.de mQ
+.  mY
+.  nh
+<\\*(mU>\\$1
+.  hy \\n(mH
+.  rm mU
+..
+.\" Start URL.
+.\" .UR url
+.de UR
+.  mV \\$1
+..
+.\" End URL.
+.\" .UE [punctuation]
+.de UE
+.  mQ \\$1
+..
+.\" Start email address.
+.\" .MT address
+.de MT
+.  mV \\$1
+..
+.\" End email address.
+.\" .ME [punctuation]
+.de ME
+.  mQ \\$1
+..
+.zX
 .SH NAME
 bash \- GNU Bourne-Again SHell
 .SH SYNOPSIS
@@ -70,8 +110,8 @@ bash \- GNU Bourne-Again SHell
 [options]
 [command_string | file]
 .SH COPYRIGHT
-.if n Bash is Copyright (C) 1989-2025 by the Free Software Foundation, Inc.
-.if t Bash is Copyright \(co 1989-2025 by the Free Software Foundation, Inc.
+.if n Bash is Copyright (C) 1989-2026 by the Free Software Foundation, Inc.
+.if t Bash is Copyright \(co 1989-2026 by the Free Software Foundation, Inc.
 .SH DESCRIPTION
 .B Bash
 is a command language interpreter that
@@ -734,11 +774,18 @@ of a semicolon to delimit commands.
 .PP
 If a command is terminated by the control operator
 .BR & ,
-the shell executes the command in the \fIbackground\fP
+the shell executes the command asynchronously
 in a subshell.
+This is known as executing a command in the \fIbackground\fP,
+and these are referred to as \fIasynchronous\fP commands.
 The shell does not wait for the command to
 finish, and the return status is 0.
-These are referred to as \fIasynchronous\fP commands.
+When job control is not active,
+the standard input for asynchronous commands,
+in the absence of any explicit redirections involving the standard input,
+is redirected from
+.FN /dev/null .
+.PP
 Commands separated or terminated by
 .B ;
 (or an equivalent
@@ -2513,6 +2560,10 @@ A filename whose suffix matches one of the entries in
 is excluded from the list of matched filenames.
 A sample value is
 .Q .o:\*~ .
+Since tilde expansion takes place after
+.Q :
+in assignment statements,
+make sure to quote assignments appropriately to avoid it as appropriate.
 .TP
 .B FUNCNEST
 If set to a numeric value greater than 0, defines a maximum function
@@ -3265,6 +3316,9 @@ using the compound assignment syntax; see
 .B PARAMETERS
 above.
 .PP
+If one of the word expansions in a compound array assignment unsets the
+variable, the results are unspecified.
+.PP
 An array element is referenced using
 ${\fIname\fP[\fIsubscript\fP]}.
 The braces are required to avoid conflicts with pathname expansion.
@@ -3646,7 +3700,7 @@ or when
 is followed by a character which is not to be
 interpreted as part of its name.
 The \fIparameter\fP is a shell parameter as described above
-\fBPARAMETERS\fP) or an array reference (\fBArrays\fP).
+(\fBPARAMETERS\fP) or an array reference (\fBArrays\fP).
 .PD
 .PP
 If the first character of \fIparameter\fP is an exclamation point (\fB!\fP),
@@ -4167,7 +4221,11 @@ which executes \fIcommand\fP in the current execution environment
 and captures its output, again with trailing newlines removed.
 .PP
 The character \fIc\fP following the open brace must be a space, tab,
-newline, or \fB|\fP, and the close brace must be in a position
+newline,
+.Q | ,
+or
+.Q ; ;
+and the close brace must be in a position
 where a reserved word may appear (i.e., preceded by a command terminator
 such as semicolon).
 \fBBash\fP allows the close brace to be joined to the remaining characters in
@@ -4186,8 +4244,17 @@ function is executing, and the \fBreturn\fP builtin forces
 however, the rest of the execution environment,
 including the positional parameters, is shared with the caller.
 .PP
-If the first character following the open brace
-is a \fB|\fP, the construct expands to the
+If the first character following the open brace is a
+.Q ; ,
+the construct behaves like the form above but
+preserves any trailing newlines in the output of \fIcommand\fP
+instead of removing them.
+This form is useful when the trailing newlines are significant
+and should not be stripped from the command's output.
+.PP
+If the first character following the open brace is a
+.Q | ,
+the construct expands to the
 value of the \fBREPLY\fP shell variable after \fIcommand\fP executes,
 without removing any trailing newlines,
 and the standard output of \fIcommand\fP remains the same as in the
@@ -4544,13 +4611,27 @@ include it as the first character in the set.
 .IP
 The sorting order of characters in range expressions,
 and the characters included in the range,
-are determined by the current locale and the values of the
+are determined by the collating sequence of the
+current locale and the values of the
 .SM
 .B LC_COLLATE
 or
 .SM
 .B LC_ALL
 shell variables, if set.
+.IP
+For example, in the C locale,
+.B [a\-d]
+is equivalent to
+.BR [abcd] .
+Many locales sort characters in dictionary order, and in these locales
+.B [a\-d]
+is typically not equivalent to
+.BR [abcd] ;
+it might be equivalent to
+.B [aBbCcDd]
+or
+.BR [aAbBcCd] .
 To obtain the traditional interpretation of range expressions, where
 .B [a\-d]
 is equivalent to
@@ -5859,7 +5940,8 @@ for how to control this behavior when not in posix mode.
 .PP
 If a command is followed by a \fB&\fP and job control is not active, the
 default standard input for the command is the empty file
-.FN /dev/null .
+.FN /dev/null ,
+unless the command has an explicit redirection involving the standard input.
 Otherwise, the invoked command inherits the file descriptors of the calling
 shell as modified by redirections.
 .SH ENVIRONMENT
@@ -5977,7 +6059,7 @@ and catches and handles
 When \fBbash\fP receives
 .SM
 .BR SIGINT ,
-it breaks out of any executing loops.
+it breaks out of any executing loops and command lists.
 In all cases, \fBbash\fP ignores
 .SM
 .BR SIGQUIT .
@@ -6881,6 +6963,7 @@ file with a statement of the form
 .PP
 \fBset\fP \fIvariable\-name\fP \fIvalue\fP
 .RE
+.LP
 or using the \fBbind\fP builtin command (see
 .SM
 .B "SHELL BUILTIN COMMANDS"
@@ -7691,7 +7774,8 @@ last word, as if the
 history expansion had been specified.
 .TP
 .B shell\-expand\-line (M\-C\-e)
-Expand the line by performing shell word expansions.
+Expand the line by performing shell word expansions,
+treating the line as a single shell word.
 This performs alias and history expansion,
 \fB$\fP\*'\fIstring\fP\*' and \fB$\fP\*"\fIstring\fP\*" quoting,
 tilde expansion, parameter and variable expansion, arithmetic expansion,
@@ -7702,6 +7786,24 @@ See
 .SM
 .B "HISTORY EXPANSION"
 below for a description of history expansion.
+.TP
+.B shell\-expand\-and\-requote\-line ()
+Expand the line by performing shell word expansions,
+splitting the line into shell words in the same way as for
+programmable completion.
+This performs alias and history expansion,
+\fB$\fP\*'\fIstring\fP\*' and \fB$\fP\*"\fIstring\fP\*" quoting,
+tilde expansion, parameter and variable expansion, arithmetic expansion,
+command and process substitution,
+word splitting, and quote removal 
+on each word, then quotes the resulting words if necessary to
+prevent further expansion.
+An explicit argument suppresses command and process substitution 
+and quotes each resultant word.
+As usual, double-quoting a word will suppress word splitting.     
+This can be useful when combined with suppressing command substitution,
+for instance, so the words in the command substitution aren't
+quoted individually.
 .TP
 .B history\-expand\-line (M\-\*^)
 Perform history expansion on the current line.
@@ -8463,7 +8565,7 @@ programmable completion performs \fBreadline\fP's default completion.
 .PP
 The options supplied to \fBcomplete\fP and \fBcompopt\fP
 can control how \fBreadline\fP treats the completions.
-For instance, the \fI\-o fullquote\fP option tells \fBreadline\fP
+For instance, the \fB\-o fullquote\fP option tells \fBreadline\fP
 to quote the matches as if they were filenames.
 See the description of \fBcomplete\fP below
 for details.
@@ -9015,6 +9117,12 @@ and \fBshift\fP builtins accept and process arguments beginning with
 Other builtins that accept arguments but are not specified as accepting
 options interpret arguments beginning with \fB\-\fP as invalid options and
 require \fB\-\-\fP to prevent this interpretation.
+.PP
+All builtins except
+\fB:\fP, \fBtrue\fP, \fBfalse\fP, \fBecho\fP, and \fBtest\fP/\fB[\fP
+accept \fB\-\-help\fP as a special option.
+If \fB\-\-help\fP is supplied, these builtins output
+a help message and exit with a status of 0.
 .PP
 .PD 0
 .TP
@@ -10151,7 +10259,7 @@ to force a search of the current directory.
 The
 .B \-d
 option will delete a builtin previously loaded with \fB\-f\fP.
-If \fI\-s\fP is used with \fI\-f\fP, the new builtin becomes a
+If \fB\-s\fP is used with \fB\-f\fP, the new builtin becomes a
 .SM POSIX
 special builtin.
 .IP
@@ -10272,7 +10380,7 @@ that is not a function.
 \fBfalse\fP
 Does nothing; returns a non-zero status.
 .TP
-\fBfc\fP [\fB\-e\fP \fIename\fP] [\fB\-lnr\fP] [\fIfirst\fP] [\fIlast\fP]
+\fBfc\fP [\fB\-e\fP \fIename\fP] [\fB\-D\fP] [\fB\-lnr\fP] [\fIfirst\fP] [\fIlast\fP]
 .PD 0
 .TP
 \fBfc\fP \fB\-s\fP [\fIpat\fP=\fIrep\fP] [\fIcmd\fP]
@@ -10339,6 +10447,13 @@ If neither variable is set, \fBfc\fP uses
 .FN vi.
 When editing is complete, \fBfc\fP reads the file containing
 the edited commands and echoes and executes them.
+The
+.B \-D
+option, if supplied,
+causes \fBfc\fP to remove the selected commands from the history
+list before executing the file of edited commands.
+.B \-D
+is only effective when \fBfc\fP is invoked in this way.
 .IP
 In the second form, \fBfc\fP re-executes \fIcommand\fP
 after replacing each instance of \fIpat\fP with \fIrep\fP.
@@ -10585,14 +10700,12 @@ prints the descriptions of all matching help topics.
 The return status is 0 unless no command matches
 .IR pattern .
 .TP
-\fBhistory [\fIn\fP]
+\fBhistory [\fB\-H\fP] [\fIrange\fP]
 .PD 0
 .TP
 \fBhistory\fP \fB\-c\fP
 .TP
-\fBhistory \-d\fP \fIoffset\fP
-.TP
-\fBhistory \-d\fP \fIstart\fP-\fIend\fP
+\fBhistory \-d\fP \fIrange\fP
 .TP
 \fBhistory\fP \fB\-anrw\fP [\fIfilename\fP]
 .TP
@@ -10600,15 +10713,33 @@ The return status is 0 unless no command matches
 .TP
 \fBhistory\fP \fB\-s\fP \fIarg\fP [\fIarg\fP .\|.\|.]
 .PD
-With no options, display the command history list with numbers.
-Entries prefixed with a
-.B *
-have been modified.
-An argument of
-.I n
-lists only the last
-.I n
-entries.
+With no options,
+or with the \fB\-H\fP option,
+display the portion of the command history list
+specified by \fIrange\fP, as described below.
+If \fIrange\fP is not specified, display the entire history list.
+Without \fB\-H\fP, display the list with command numbers, prefixing
+entries that have been modified with a
+.Q "*" .
+.IP
+A
+.I range
+argument is specified in the form of a number \fIoffset\fP or
+a range \fIstart\fP\-\fIend\fP.
+If \fIoffset\fP is supplied, it references the history entry at
+position \fIoffset\fP in the history list;
+when listing this displays the last \fIoffset\fP entries.
+A negative \fIoffset\fP counts back from the end of the history list,
+relative to one greater than the last history position.
+When listing, negative and positive \fIoffsets\fP have identical results.
+\fIstart\fP and \fIend\fP, if supplied, reference the portion of
+the history list beginning at position \fIstart\fP through position
+\fIend\fP.
+If \fIstart\fP or \fIend\fP are negative, they count back from the
+end of the history list.
+When listing, if \fIstart\fP is greater than \fIend\fP, the history
+entries are displayed in reverse order from \fIend\fP to \fIstart\fP.
+.IP
 If the shell variable
 .SM
 .B HISTTIMEFORMAT
@@ -10642,18 +10773,16 @@ Options, if supplied, have the following meanings:
 Clear the history list by deleting all the entries.
 This can be used with the other options to replace the history list.
 .TP
-\fB\-d\fP \fIoffset\fP
-Delete the history entry at position \fIoffset\fP.
-If \fIoffset\fP is negative, it is interpreted as relative to one greater
-than the last history position, so negative indices count back from the
-end of the history, and an index of \-1 refers to the current
-\fBhistory \-d\fP command.
+\fB\-d\fP \fIrange\fP
+Delete the history entries specified by \fIrange\fP, as described above.
+An index of \-1 refers to the current \fBhistory \-d\fP command.
 .TP
-\fB\-d\fP \fIstart\fP\-\fIend\fP
-Delete the range of history entries between positions \fIstart\fP and
-\fIend\fP, inclusive.
-Positive and negative values for \fIstart\fP and \fIend\fP
-are interpreted as described above.
+\fB\-H\fP
+Display the selected history entries in the format that would be written
+to the history file,
+including any time stamp information as described below,
+without prefixing the entry with any line number or
+.Q "*" .
 .TP
 .B \-a
 Append the
@@ -10989,8 +11118,9 @@ the next to last.
 .PD
 .RE
 .IP
-If the top element of the directory stack is modified, and
-the \fI\-n\fP option was not supplied, \fBpopd\fP uses the \fBcd\fP
+If the top element of the directory stack is modified,
+and the \fB\-n\fP option was not supplied,
+\fBpopd\fP uses the \fBcd\fP
 builtin to change to the directory at the top of the stack.
 If the \fBcd\fP fails, \fBpopd\fP returns a non-zero value.
 .IP
@@ -11079,10 +11209,28 @@ except that a leading plus or minus sign is allowed, and if the leading
 character is a single or double quote, the value is the numeric value of
 the following character, using the current locale.
 .IP
+Format specifiers may apply to the \fIn\fPth argument rather than the next
+sequential argument.
+In this case, the '%' in the format specifier is replaced by the
+sequence
+.Q %\fIn\fP$ ,
+where \fIn\fP is a decimal integer greater than 0,
+giving the argument number to use as the operand.
+The format string should not mix numbered and unnumbered argument specifiers,
+though this is allowed.
+Unnumbered argument specifiers always refer to the next argument following
+the last argument consumed by an unnumbered specifier; numbered argument
+specifiers refer to absolute positions in the argument list.
+.IP
 The \fIformat\fP is reused as necessary to consume all of the \fIarguments\fP.
 If the \fIformat\fP requires more \fIarguments\fP than are supplied, the
 extra format specifications behave as if a zero value or null string, as
 appropriate, had been supplied.
+If \fIformat\fP is reused, a numbered argument specifier
+.Q %\fIn\fP$
+refers to the \fIn\fPth argument following the highest numbered argument
+consumed by the previous use of \fIformat\fP.
+.IP
 The return value is zero on success,
 non-zero if an invalid option is supplied or a write or assignment error
 occurs.
@@ -13426,14 +13574,17 @@ script.
 .TP
 \fIBash Reference Manual\fP, Brian Fox and Chet Ramey
 .TP
-\fIThe Gnu Readline Library\fP, Brian Fox and Chet Ramey
+\fIThe GNU Readline Library\fP, Brian Fox and Chet Ramey
 .TP
-\fIThe Gnu History Library\fP, Brian Fox and Chet Ramey
+\fIThe GNU History Library\fP, Brian Fox and Chet Ramey
 .TP
-\fIPortable Operating System Interface (POSIX) Part 2: Shell and Utilities\fP, IEEE \(em
-http://pubs.opengroup.org/onlinepubs/9799919799/
+POSIX.1-2024, The IEEE and The Open Group
+.UR https://pubs.opengroup.org/onlinepubs/9799919799/
+.UE
 .TP
-http://tiswww.case.edu/\*~chet/bash/POSIX \(em a description of posix mode
+a description of posix mode
+.UR http://tiswww.case.edu/\*~chet/bash/POSIX
+.UE
 .TP
 \fIsh\fP(1), \fIksh\fP(1), \fIcsh\fP(1)
 .TP
@@ -13467,14 +13618,14 @@ command history
 Individual \fIreadline\fP initialization file
 .PD
 .SH AUTHORS
+.MT bfox@\*:gnu\*:.org
 Brian Fox, Free Software Foundation
-.br
-bfox@gnu.org
+.ME
 .PP
+.MT chet\*:.ramey@\*:case\*:.edu
 Chet Ramey, Case Western Reserve University
-.br
-chet.ramey@case.edu
-.SH BUG REPORTS
+.ME
+.SH "BUG REPORTS"
 If you find a bug in
 .BR bash ,
 you should report it.  But first, you should
@@ -13482,8 +13633,12 @@ make sure that it really is a bug, and that it appears in the latest
 version of
 .BR bash .
 The latest version is always available from
-\fIftp://ftp.gnu.org/pub/gnu/bash/\fP and
-\fIhttp://git.savannah.gnu.org/cgit/bash.git/snapshot/bash-master.tar.gz\fP.
+.UR ftp://ftp.gnu.org/pub/gnu/bash/
+.UE
+and
+.UR http://\*:git\*:.savannah\*:.gnu\*:.org/\*:cgit/\*:bash\*:.git/\
+\*:snapshot/\*:bash\-master\*:.tar.\*:gz
+.UE .
 .PP
 Once you have determined that a bug actually exists, use the
 .I bashbug
@@ -13491,42 +13646,79 @@ command to submit a bug report.
 If you have a fix, you are encouraged to mail that as well!
 You may send suggestions and
 .Q philosophical
-bug reports to \fIbug-bash@gnu.org\fP or post them to the Usenet
-newsgroup
-.BR gnu.bash.bug .
+bug reports,
+as well as comments and bug reports concerning this manual page,
+to
+to
+.MT bug\-bash@\*:gnu\*:.org
+.ME .
 .PP
-ALL bug reports should include:
+.I All
+bug reports should include:
 .PP
 .PD 0
-.TP 20
-The version number of \fBbash\fP
-.TP
-The hardware and operating system
-.TP
-The compiler used to compile
-.TP
-A description of the bug behavior
-.TP
-A short script or \c
-.Q recipe " \c"
-which exercises the bug
+.IP \(bu 2n
+the version number of
+.B bash
+(\c
+.Q "echo $BASH_VERSION"\c
+),
+.IP \(bu
+the host platform and operating system
+(\c
+.Q "uname \-a"\c
+),
+.IP \(bu
+either
+.RS 4n
+.IP (a) 4n
+if you or an administrator built and installed
+.B bash
+from source,
+the name and version of the compiler used to build it,
+as reported by
+.BR bash 's
+.QN configure
+script;
+or
+.IP (b) 4n
+if your site uses a distributor's
+.B bash
+package,
+the version of that package
+(for example,
+.Q "dpkg \-i bash"
+or
+.Q "rpm \-qi bash"\c
+),
+.RE
+.IP \(bu
+a description of the behavior
+.B bash
+exhibited,
+.IP \(bu
+a description of the behavior you expected from
+.BR bash ,
+and
+.IP \(bu
+a short shell script or
+.Q recipe
+exercising the unexpected behavior.
 .PD
 .PP
 .I bashbug
 inserts the first three items automatically into the template
 it provides for filing a bug report.
-.PP
-Comments and bug reports concerning
-this manual page should be directed to
-.IR chet.ramey@case.edu .
 .SH BUGS
 It's too big and too slow.
 .PP
 There are some subtle differences between
 .B bash
-and traditional versions of
+and historical versions of
 .BR sh ,
-mostly because of the
+due mostly to
+.BR bash 's
+independent implementation and the evolution of the
 .SM POSIX
 specification.
 .PP

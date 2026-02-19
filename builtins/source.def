@@ -1,7 +1,7 @@
 This file is source.def, from which is created source.c.
 It implements the builtins "." and  "source" in Bash.
 
-Copyright (C) 1987-2024 Free Software Foundation, Inc.
+Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -28,8 +28,9 @@ Execute commands from a file in the current shell.
 Read and execute commands from FILENAME in the current shell. If the
 -p option is supplied, the PATH argument is treated as a colon-
 separated list of directories to search for FILENAME. If -p is not
-supplied, $PATH is searched to find FILENAME. If any ARGUMENTS are
-supplied, they become the positional parameters when FILENAME is executed.
+supplied, and the sourcepath shell option is enabled, 'source' searches
+$PATH to find FILENAME. If any ARGUMENTS are supplied, they become the
+positional parameters when FILENAME is executed.
 
 Exit Status:
 Returns the status of the last command executed in FILENAME; fails if
@@ -45,8 +46,9 @@ Execute commands from a file in the current shell.
 Read and execute commands from FILENAME in the current shell. If the
 -p option is supplied, the PATH argument is treated as a colon-
 separated list of directories to search for FILENAME. If -p is not
-supplied, $PATH is searched to find FILENAME. If any ARGUMENTS are
-supplied, they become the positional parameters when FILENAME is executed.
+supplied, and the sourcepath shell option is enabled, '.' searches
+$PATH to find FILENAME. If any ARGUMENTS are supplied, they become the
+positional parameters when FILENAME is executed.
 
 Exit Status:
 Returns the status of the last command executed in FILENAME; fails if

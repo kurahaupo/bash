@@ -154,8 +154,9 @@ BASHREF_FILES = $(srcdir)/bashref.texi $(srcdir)/fdl.texi $(srcdir)/version.texi
 #	$(RM) $@
 #	-${TEXI2PDF} $<
 
-all: info dvi text html pdf # $(MAN2HTML)
-nodvi: ps info text html
+all: info text html pdf # $(MAN2HTML)
+withdvi: pdf info text html dvi
+
 everything: all ps
 
 CREATED_PS = bash.ps bashref.ps

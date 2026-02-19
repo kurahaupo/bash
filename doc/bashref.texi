@@ -14,7 +14,7 @@ This is Edition @value{EDITION}, last updated @value{UPDATED},
 of @cite{The GNU Bash Reference Manual},
 for @code{Bash}, Version @value{VERSION}.
 
-Copyright @copyright{} 1988--2025 Free Software Foundation, Inc.
+Copyright @copyright{} 1988--2026 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -914,8 +914,9 @@ and these are referred to as @dfn{asynchronous} commands.
 The shell does not wait for the command to finish, and the return
 status is 0 (true).
 When job control is not active (@pxref{Job Control}),
-the standard input for asynchronous commands, in the absence of any
-explicit redirections, is redirected from @code{/dev/null}.
+the standard input for asynchronous commands,
+in the absence of any explicit redirections involving the standard input,
+is redirected from @file{/dev/null}.
 
 Commands separated or terminated by 
 @samp{;} (or equivalent @code{newline})
@@ -2306,7 +2307,7 @@ In each of the cases below, @var{word} is subject to tilde expansion,
 parameter expansion, command substitution, and arithmetic expansion.
 
 When not performing substring expansion, using the forms described
-below (e.g., @samp{:-}), Bash tests for a parameter that is unset or null.
+below (e.g., @samp{:@minus{}}), Bash tests for a parameter that is unset or null.
 Omitting the colon results in a test only for a parameter that is unset.
 Put another way, if the colon is included,
 the operator tests for both @var{parameter}'s existence and that its value
@@ -2444,7 +2445,7 @@ a number of characters, and the expansion is the characters between
 @var{offset} and that result.
 
 Note that a negative offset must be separated from the colon by at least
-one space to avoid being confused with the @samp{:-} expansion.
+one space to avoid being confused with the @samp{:@minus{}} expansion.
 
 Here are some examples illustrating substring expansion on parameters and
 subscripted arrays:
@@ -2880,7 +2881,8 @@ which executes @var{command} in the current execution environment
 and captures its output, again with trailing newlines removed.
 
 The character @var{c} following the open brace must be a space, tab,
-newline, or @samp{|}, and the close brace must be in a position
+newline, @samp{|}, or @samp{;};
+and the close brace must be in a position
 where a reserved word may appear (i.e., preceded by a command terminator
 such as semicolon).
 Bash allows the close brace to be joined to the remaining characters in
@@ -2899,8 +2901,17 @@ function is executing, and the @code{return} builtin forces
 however, the rest of the execution environment,
 including the positional parameters, is shared with the caller.
 
-If the first character following the open brace
-is a @samp{|}, the construct expands to the
+If the first character following the open brace is a
+@samp{;},
+the construct behaves like the form above but
+preserves any trailing newlines in the output of @var{command}
+instead of removing them.
+This form is useful when the trailing newlines are significant
+and should not be stripped from the command's output.
+
+If the first character following the open brace is a
+@samp{|},
+the construct expands to the
 value of the @code{REPLY} shell variable after @var{command} executes,
 without removing any trailing newlines,
 and the standard output of @var{command} remains the same as in the
@@ -3190,18 +3201,26 @@ character in the set.
 
 The sorting order of characters in range expressions,
 and the characters included in the range,
-are determined by the current locale and the values of the
+are determined by the collating sequence of the
+current locale and the values of the
 @env{LC_COLLATE} and @env{LC_ALL} shell variables, if set.
 
-For example, in the default C locale, @samp{[a-dx-z]} is equivalent to
+For example, in the default C locale,
+@samp{[a-dx-z]}
+is equivalent to
 @samp{[abcdxyz]}.
 Many locales sort characters in dictionary order, and in these locales
-@samp{[a-dx-z]} is typically not equivalent to @samp{[abcdxyz]};
-it might be equivalent to @samp{[aBbCcDdxYyZz]}, for example.
-To obtain
-the traditional interpretation of ranges in bracket expressions, you can
-force the use of the C locale by setting the @env{LC_COLLATE} or
-@env{LC_ALL} environment variable to the value @samp{C}, or enable the
+@samp{[a-dx-z]}
+is typically not equivalent to
+@samp{[abcdxyz]};
+it might be equivalent to
+@samp{[aBbCcDdxYyZz]}
+or
+@samp{[aAbBcCdxXyYz]}.
+To obtain the traditional interpretation of ranges in bracket expressions,
+you can force the use of the C locale by setting the
+@env{LC_COLLATE} or @env{LC_ALL}
+environment variables to the value @samp{C}, or enable the
 @code{globasciiranges} shell option.
 
 Within a bracket expression, @dfn{character classes} can be specified
@@ -3859,7 +3878,8 @@ See the description of the @code{inherit_errexit} shell option
 in @sc{posix} mode.
 
 If a command is followed by a @samp{&} and job control is not active, the
-default standard input for the command is the empty file @file{/dev/null}.
+default standard input for the command is the empty file @file{/dev/null},
+unless the command has an explicit redirection involving the standard input.
 Otherwise, the invoked command inherits the file descriptors of the calling
 shell as modified by redirections.
 
@@ -3965,7 +3985,8 @@ it ignores @code{SIGTERM}
 (so that @samp{kill 0} does not kill an interactive shell),
 and catches and handles @code{SIGINT}
 (so that the @code{wait} builtin is interruptible).
-When Bash receives a @code{SIGINT}, it breaks out of any executing loops.
+When Bash receives a @code{SIGINT},
+it breaks out of any executing loops and command lists.
 In all cases, Bash ignores @code{SIGQUIT}.
 If job control is in effect (@pxref{Job Control}), Bash
 ignores @code{SIGTTIN}, @code{SIGTTOU}, and @code{SIGTSTP}.
@@ -4186,6 +4207,12 @@ with @samp{-} without requiring @samp{--}.
 Other builtins that accept arguments but are not specified as accepting
 options interpret arguments beginning with @samp{-} as invalid options and
 require @samp{--} to prevent this interpretation.
+
+All builtins except
+@code{:}, @code{true}, @code{false}, @code{echo}, and @code{test}/@code{[}
+accept @samp{--help} as a special option.
+If @samp{--help} is supplied, these builtins output
+a help message and exit with a status of 0.  
 
 @node Bourne Shell Builtins
 @section Bourne Shell Builtins
@@ -5323,7 +5350,7 @@ special builtins.
 
 The @option{-f} option means to load the new builtin command @var{name}
 from shared object @var{filename}, on systems that support dynamic loading.
-If @var{filename} does not contain a slash.
+If @var{filename} does not contain a slash,
 Bash will use the value of the @env{BASH_LOADABLES_PATH} variable as a
 colon-separated list of directories in which to search for @var{filename}.
 The default for @env{BASH_LOADABLES_PATH} is system-dependent,
@@ -5558,10 +5585,28 @@ except that a leading plus or minus sign is allowed, and if the leading
 character is a single or double quote, the value is the numeric value of
 the following character, using the current locale.
 
+Format specifiers may apply to the @var{n}th argument rather than the next
+sequential argument.
+In this case, the @samp{%} in the format specifier is replaced by the
+sequence
+@samp{%@var{n}$},
+where @var{n} is a decimal integer greater than 0,
+giving the argument number to use as the operand.
+The format string should not mix numbered and unnumbered argument specifiers,
+though this is allowed.
+Unnumbered argument specifiers always refer to the next argument following
+the last argument consumed by an unnumbered specifier; numbered argument
+specifiers refer to absolute positions in the argument list.
+
 The @var{format} is reused as necessary to consume all of the @var{arguments}.
 If the @var{format} requires more @var{arguments} than are supplied, the
 extra format specifications behave as if a zero value or null string, as
 appropriate, had been supplied.
+If @var{format} is reused, a numbered argument specifier
+@samp{%@var{n}$}
+refers to the @var{n}th argument following the highest numbered argument
+consumed by the previous use of @var{format}.
+
 The return value is zero on success,
 non-zero if an invalid option is supplied or a write or assignment error
 occurs.
@@ -7160,8 +7205,13 @@ A colon-separated list of suffixes to ignore when performing
 filename completion.
 A filename whose suffix matches one of the entries in 
 @env{FIGNORE}
-is excluded from the list of matched filenames.  A sample
-value is @samp{.o:~}
+is excluded from the list of matched filenames.
+A sample value is
+@samp{.o:~}.
+Since tilde expansion takes place after
+@samp{:}
+in assignment statements,
+make sure to quote assignments appropriately to avoid it as appropriate.
 
 @item FUNCNAME
 An array variable containing the names of all shell functions
@@ -8741,6 +8791,9 @@ operator appends to an array variable when assigning
 using the compound assignment syntax; see
 @ref{Shell Parameters} above.
 
+If one of the word expansions in a compound array assignment unsets the
+variable, the results are unspecified.
+
 An array element is referenced using
 @code{$@{@var{name}[@var{subscript}]@}}.
 The braces are required to avoid
@@ -8918,8 +8971,9 @@ Remove the @var{N}th directory (counting from the right of the
 list printed by @code{dirs}), starting with zero, from the stack.
 @end table
 
-If the top element of the directory stack is modified, and
-the @option{-n} option was not supplied, @code{popd} uses the @code{cd}
+If the top element of the directory stack is modified,
+and the @option{-n} option was not supplied,
+@code{popd} uses the @code{cd}
 builtin to change to the directory at the top of the stack.
 If the @code{cd} fails, @code{popd} returns a non-zero value.
 
@@ -9044,7 +9098,7 @@ The character whose ASCII code is the octal value @var{nnn}.
 A backslash.
 @item \[
 Begin a sequence of non-printing characters.
-Thiss could be used to
+This could be used to
 embed a terminal control sequence into the prompt.
 @item \]
 End a sequence of non-printing characters.
@@ -9134,6 +9188,9 @@ directory to a non-writable directory other than @env{$HOME} after login,
 not allowing the restricted shell to execute shell scripts, and cleaning
 the environment of variables that cause some commands to modify their
 behavior (e.g., @env{VISUAL} or @env{PAGER}).
+When setting up a restricted environment like this, it's important not
+to install or allow symbolic links in the new current directory, since
+those could be used to circumvent restrictions on writing to files.
 
 Modern systems provide more secure ways to implement a restricted environment,
 such as @code{jails}, @code{zones}, or @code{containers}.
@@ -9198,7 +9255,8 @@ The Bash @dfn{posix mode} changes the Bash
 behavior in these areas so that it conforms more strictly
 to the standard.
 
-Starting Bash with the @option{--posix} command-line option or executing
+Starting Bash with the @option{--posix} or @option{-o posix}
+command-line option or executing
 @samp{set -o posix} while Bash is running will cause Bash to conform more
 closely to the @sc{posix} standard by changing the behavior to
 match that specified by @sc{posix} in areas where the Bash default differs.
@@ -9272,7 +9330,8 @@ builtins.
 
 @item
 Tilde expansion is only performed on assignments preceding a command
-name, rather than on all assignment statements on the line.
+name, rather than on all assignment statements on the line, unless
+the command is a declaration command.
 
 @item
 While variable indirection is available, it may not be applied to the
@@ -9321,6 +9380,16 @@ This is also available with @samp{shopt -s checkhash}.
 Bash will not insert a command without the execute bit set into the
 command hash table, even if it returns it as a (last-ditch) result
 from a @env{$PATH} search.
+
+@item
+Normally, when job control is not enabled,
+the shell implicitly redirects the standard input of
+asynchronous commands from @file{/dev/null}.
+A redirection to the standard input in this command inhibits this
+implicit redirection.
+In @sc{posix} mode, a redirection that redirects file descriptor 0
+to itself (e.g., @samp{<&0}) does not count as a redirection that
+overrides the implicit redirection from @file{/dev/null}.
 
 @item
 The message printed by the job control code and builtins when a job

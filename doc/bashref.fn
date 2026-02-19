@@ -107,7 +107,8 @@
 \entry{glob-expand-word (C-x *)}{157}{\code {glob-expand-word (C-x *)}}
 \entry{glob-list-expansions (C-x g)}{157}{\code {glob-list-expansions (C-x g)}}
 \entry{shell-expand-line (M-C-e)}{157}{\code {shell-expand-line (M-C-e)}}
-\entry{history-expand-line (M-^)}{157}{\code {history-expand-line (M-^)}}
+\entry{shell-expand-and-requote-line ()}{157}{\code {shell-expand-and-requote-line ()}}
+\entry{history-expand-line (M-^)}{158}{\code {history-expand-line (M-^)}}
 \entry{magic-space ()}{158}{\code {magic-space ()}}
 \entry{alias-expand-line ()}{158}{\code {alias-expand-line ()}}
 \entry{history-and-alias-expand-line ()}{158}{\code {history-and-alias-expand-line ()}}
