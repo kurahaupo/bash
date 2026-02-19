@@ -1,6 +1,6 @@
 /* variables.h -- data structures for shell variables. */
 
-/* Copyright (C) 1987-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -144,6 +144,11 @@ typedef struct _vlist {
 
 #define attmask_scope	0x0f00000
 
+/* Internal attributes used for variable state management. */
+#define att_assigning	0x1000000
+
+#define attmask_state	0xf000000
+
 #define exported_p(var)		((((var)->attributes) & (att_exported)))
 #define readonly_p(var)		((((var)->attributes) & (att_readonly)))
 #define array_p(var)		((((var)->attributes) & (att_array)))
@@ -167,6 +172,8 @@ typedef struct _vlist {
 
 #define tempvar_p(var)		((((var)->attributes) & (att_tempvar)))
 #define propagate_p(var)	((((var)->attributes) & (att_propagate)))
+
+#define assigning_p(var)	((((var)->attributes) & (att_assigning)))
 
 /* Variable names: lvalues */
 #define name_cell(var)		((var)->name)
@@ -238,6 +245,10 @@ typedef struct _vlist {
 /* Special value for nameref with invalid value for creation or assignment */
 extern SHELL_VAR nameref_invalid_value;
 #define INVALID_NAMEREF_VALUE	(void *)&nameref_invalid_value
+
+/* Assignment statements */
+#define ASSIGN_DISALLOWED(v, f) \
+  ((readonly_p (v) && (f&ASS_FORCE) == 0) || noassign_p (v))
 	
 /* Stuff for hacking variables. */
 typedef int sh_var_map_func_t (SHELL_VAR *);
@@ -371,6 +382,10 @@ extern void push_args (WORD_LIST *);
 extern void pop_args (void);
 extern void uw_pop_args (void *);
 
+#if defined (ARRAY_VARS)
+extern void push_source (ARRAY *, char *);
+#endif
+
 extern void adjust_shell_level (int);
 extern void non_unsettable (char *);
 extern void dispose_variable (SHELL_VAR *);
@@ -380,8 +395,11 @@ extern void dispose_builtin_env (void);
 extern void merge_temporary_env (void);
 extern void merge_function_temporary_env (void);
 extern void flush_temporary_env (void);
+extern HASH_TABLE *copy_temporary_env (void);
 extern void merge_builtin_env (void);
 extern void kill_all_local_variables (void);
+
+extern HASH_TABLE *copy_vartab (HASH_TABLE *);
 
 extern void set_var_read_only (char *);
 extern void set_func_read_only (const char *);

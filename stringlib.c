@@ -1,6 +1,6 @@
 /* stringlib.c - Miscellaneous string functions. */
 
-/* Copyright (C) 1996-2009,2022-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2009,2022-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -70,7 +70,9 @@ find_string_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
 
 /* Find TOKEN in ALIST, a list of string/int value pairs.  Return the
    corresponding string.  Allocates memory for the returned
-   string.  FLAGS is currently ignored, but reserved. */
+   string.  FLAGS == 0 means to allocate new memory, the existing
+   behavior. If FLAGS&1, we just return the token and expect the caller
+   to allocate new memory and save it, if necessary. */
 char *
 find_token_in_alist (int token, STRING_INT_ALIST *alist, int flags)
 {
@@ -79,7 +81,7 @@ find_token_in_alist (int token, STRING_INT_ALIST *alist, int flags)
   for (i = 0; alist[i].word; i++)
     {
       if (alist[i].token == token)
-        return (savestring (alist[i].word));
+        return (flags ? alist[i].word : savestring (alist[i].word));
     }
   return (NULL);
 }
@@ -115,9 +117,9 @@ find_index_in_alist (char *string, STRING_INT_ALIST *alist, int flags)
 /* Cons a new string from STRING starting at START and ending at END,
    not including END. */
 char *
-substring (const char *string, int start, int end)
+substring (const char *string, size_t start, size_t end)
 {
-  int len;
+  size_t len;
   char *result;
 
   len = end - start;

@@ -1,6 +1,6 @@
 /* version.c -- distribution and version numbers. */
 
-/* Copyright (C) 1989-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -18,11 +18,15 @@
    along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <config.h>
+/* assume C90/POSIX-1992 compilation environment if cross-compiling */
+
+#ifndef CROSS_COMPILING
+#  include <config.h>
+#else
+#  include <buildconf.h>
+#endif
 
 #include <stdio.h>
-
-#include "stdc.h"
 
 #include "version.h"
 #include "patchlevel.h"
@@ -43,10 +47,11 @@ const char * const release_status = (char *)0;
 #endif
 const char * const sccs_version = SCCSVERSION;
 
-const char * const bash_copyright = N_("Copyright (C) 2022 Free Software Foundation, Inc.");
+const char * const bash_copyright = N_("Copyright (C) 2025 Free Software Foundation, Inc.");
 const char * const bash_license = N_("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n");
 
 /* If == 31, shell compatible with bash-3.1, == 32 with bash-3.2, and so on */
+const int default_compatibility_level = DEFAULT_COMPAT_LEVEL;
 int shell_compatibility_level = DEFAULT_COMPAT_LEVEL;
 
 /* Functions for getting, setting, and displaying the shell version. */

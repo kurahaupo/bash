@@ -11,6 +11,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+. ./test-aux-functions
+#
 # These should all be safe
 LC_ALL=C
 LC_CTYPE=C
@@ -231,6 +233,8 @@ cd one two three
 ${THIS_SH} -c 'readonly PWD ; cd / ; echo $?' bash
 # or if OLDPWD is readonly
 ${THIS_SH} -c 'readonly OLDPWD ; cd / ; echo $?' bash
+# POSIX says to return >1 if -P and -e are supplied and an error occurs
+cd -Pe /notthere ; echo $?
 
 # various `source/.' errors
 .
@@ -265,6 +269,7 @@ read VAR < /dev/null
 # invalid file descriptor
 read -u XX < /dev/null
 read -u 42 < /dev/null
+read var <&- ; echo $?
 
 # same with mapfile
 mapfile -u XX A < /dev/null
@@ -348,28 +353,34 @@ readonly xx=5
 echo $((xx=5))
 echo $?
 
-${THIS_SH} ./errors1.sub
-${THIS_SH} ./errors2.sub
-${THIS_SH} ./errors3.sub
-${THIS_SH} ./errors4.sub
+test_runsub ./errors1.sub
+test_runsub ./errors2.sub
+test_runsub ./errors3.sub
+test_runsub ./errors4.sub
+printf '\terrors4.sub\n'
 ${THIS_SH} -o posix ./errors4.sub
 
-${THIS_SH} ./errors5.sub
+test_runsub ./errors5.sub
 
-${THIS_SH} ./errors6.sub
+test_runsub ./errors6.sub
+printf '\terrors6.sub\n'
 THIS_SH="${THIS_SH} -o posix" ${THIS_SH} ./errors6.sub
 
-${THIS_SH} ./errors7.sub
+test_runsub ./errors7.sub
+printf '\terrors7.sub\n'
 ${THIS_SH} -o posix ./errors7.sub
 
-${THIS_SH} ./errors8.sub
-${THIS_SH} ./errors9.sub
+test_runsub ./errors8.sub
+test_runsub ./errors9.sub
 
 # invalid numeric arguments and too many arguments
-${THIS_SH} ./errors10.sub
+test_runsub ./errors10.sub
 
 # invalid identifiers to readonly/export
-${THIS_SH} ./errors11.sub
+test_runsub ./errors11.sub
+
+# EOF when parsing compound commands
+test_runsub ./errors12.sub
 
 ${THIS_SH} -c 'return ; echo after return' bash
 ${THIS_SH} -o posix -c 'return ; echo after return' bash
@@ -385,10 +396,8 @@ ${THIS_SH} -o posix -c '. /nosuchfile ; echo after source' sh
 # but trap specifying a bad signal nunber is non-fatal
 ${THIS_SH} -o posix -c 'trap "echo bad" SIGNOSIG; echo after trap' sh
 
-# this must be last!
-# in posix mode, a function name must be a valid identifier
-# this can't go in posix2.tests, since it causes the shell to exit
-# immediately
+# in posix mode, this is no longer a fatal error
+# a function name does not have to be a valid identifier
 set -o posix
 function !! () { fc -s "$@" ; }
 set +o posix

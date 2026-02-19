@@ -172,10 +172,11 @@ privileged
 verbose
 vi
 xtrace
-autocd
 array_expand_once
 assoc_expand_once
+autocd
 balanced_case_parens
+bash_source_fullpath
 cdable_vars
 cdspell
 checkhash

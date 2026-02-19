@@ -1,0 +1,67 @@
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# tests of new funsub form that doesn't remove trailing newlines
+
+# basic tests
+# final newline removed
+echo "AA${ printf '%s\n' aa bb cc dd; }BB"
+
+# final newline not removed, newlines removed by word splitting
+echo ${;printf '%s\n' aa bb cc dd; }
+# final newline not removed, newlines removed by word splitting
+echo AA${;printf '%s\n' aa bb cc dd; }BB
+# final newline not removed, no newlines removed
+echo "AA${;printf '%s\n' aa bb cc dd; }BB"
+
+# return results from first printf, newlines removed by word splitting
+echo ${;printf '%s\n' aa bb cc dd; return; echo ee ff; }
+# return results from first printf, no newlines removed
+printf '%s' "${;printf '%s\n' aa bb cc dd; return; echo ee ff; }"
+
+# newlines removed by word splitting
+echo ${;printf '%s\n' aa bb cc dd
+	}
+# newlines removed by word splitting
+echo DDDDD${;
+	printf '%s\n' aa bb cc dd
+}EEEEE
+# newlines not removed by word splitting, final newline removed
+echo "DDDDD${
+	printf '%s\n' aa bb cc dd
+}EEEEE"
+# no newlines removed
+echo "DDDDD${;
+	printf '%s\n' aa bb cc dd
+}EEEEE"
+
+yy=${;:;}
+unset -v yy
+
+echo ${;( echo abcde ); }	# newlines removed by word splitting
+printf '%s' "${;( echo abcde ); }"	# no newlines removed
+
+# no newlines removed
+a==${; printf '%s' $'two newlines\n\n'; }=
+echo "$a"
+
+# no newlines removed
+echo "${;echo a ; echo "${;echo nested; }"; echo b; }"
+echo "${;echo a ; echo "${ echo nested; }"; echo b; }"
+echo "${ echo a ; echo "${;echo nested; }"; echo b; }"
+
+# no newlines removed
+echo "${;echo $(( 24+18 )); }"
+# no newlines removed, arith parsing handles it
+echo $(( "${;echo 24 + 18; }"))
+echo $(( "${;echo 14 + 18; }+" 10))

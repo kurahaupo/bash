@@ -1,6 +1,6 @@
 /* anonfile.c - open and close temporary files (anonymous and memory-backed if possible). */
 
-/* Copyright (C) 2023 Free Software Foundation, Inc.
+/* Copyright (C) 2023-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -25,7 +25,7 @@
 #endif
 #include <bashtypes.h>
 
-#if defined (HAVE_MEMFD_CREATE) || defined (HAVE_SHM_OPEN) || defined (HAVE_SHM_MKSTEMP)
+#if defined (HAVE_MEMFD_CREATE) || defined (HAVE_SHM_MKSTEMP)
 #  include <sys/mman.h>
 #endif
 #include <filecntl.h>
@@ -37,17 +37,11 @@
 
 static int anonunlink (const char *);
 
-#if defined (HAVE_SHM_OPEN)
-#ifndef O_NOFOLLOW
-#  define O_NOFOLLOW 0
+#if defined (HAVE_MEMFD_CREATE) && !defined (MFD_NOEXEC_SEAL)
+#  define MFD_NOEXEC_SEAL 0
 #endif
 
-static int
-anonshmunlink (const char *fn)
-{
-  return (shm_unlink (fn));
-}
-
+#if defined (HAVE_SHM_MKSTEMP)
 static int
 anonshmopen (const char *name, int flags, char **fn)
 {
@@ -58,33 +52,12 @@ anonshmopen (const char *name, int flags, char **fn)
   if (fn)
     *fn = 0;
 
-#if defined (HAVE_SHM_MKSTEMP)
   fname = savestring ("/shm-XXXXXXXXXX");
   fd = shm_mkstemp (fname);
-  if (fd < 0)
-    free (fname);
-#endif
-
-  if (fd < 0)
-    {
-      fname = sh_mktmpname (name, flags);
-      fd = shm_open (fname, O_RDWR|O_CREAT|O_EXCL|O_NOFOLLOW, 0600);
-    }
-
   if (fd < 0)
     {
       free (fname);
       return fd;
-    }
-
-  if (shm_unlink (fname) < 0)
-    {
-      int o;
-      o = errno;
-      free (fname);
-      close (fd);
-      errno = o;
-      return -1;
     }
 
   if (fn)
@@ -104,7 +77,7 @@ anonopen (const char *name, int flags, char **fn)
 
 #if defined (HAVE_MEMFD_CREATE)
   /* "Names do not affect the behavior of the file descriptor." */
-  fd = memfd_create ("anonopen", 0);
+  fd = memfd_create ("anonopen", MFD_NOEXEC_SEAL);
   if (fd >= 0)
     {
       if (fn)
@@ -118,7 +91,7 @@ anonopen (const char *name, int flags, char **fn)
   /* Heuristic */
   flag = (name && *name == '/') ? MT_TEMPLATE : MT_USETMPDIR;
 
-#if defined (HAVE_SHM_OPEN)
+#if defined (HAVE_SHM_MKSTEMP)
   fd = anonshmopen (name, flag, fn);
   if (fd >= 0)
     return fd;		/* anonshmopen sets *FN appropriately */

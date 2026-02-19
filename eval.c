@@ -1,6 +1,6 @@
 /* eval.c -- reading and evaluating commands. */
 
-/* Copyright (C) 1996-2022 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -48,6 +48,10 @@
 #  include "bashhist.h"
 #endif
 
+#if defined (JOB_CONTROL)
+#  include "jobs.h"
+#endif
+
 static void send_pwd_to_eterm (void);
 static sighandler alrm_catcher (int);
 
@@ -91,7 +95,11 @@ reader_loop (void)
 	    {
 	      /* Some kind of throw to top_level has occurred. */
 	    case ERREXIT:
-	      if (exit_immediately_on_error)
+	      /* POSIX says to exit on error "as if by executing the
+		 exit special built-in utility with no arguments," so we
+		 don't reset any local contexts and keep the execution
+		 context in a shell function if we were executing one. */
+	      if (exit_immediately_on_error && posixly_correct == 0)
 		reset_local_contexts ();	/* not in a function */
 	    case FORCE_EOF:
 	    case EXITPROG:
@@ -106,6 +114,7 @@ reader_loop (void)
 		 alone. */
 	      if (last_command_exit_value == 0)
 		set_exit_status (EXECUTION_FAILURE);
+	    case REINIT:
 	      if (subshell_environment)
 		{
 		  current_command = (COMMAND *)NULL;
@@ -157,7 +166,7 @@ reader_loop (void)
 
 		  old_eof = EOF_Reached;
 		  EOF_Reached = 0;
-		  ps0_string = decode_prompt_string (ps0_prompt);
+		  ps0_string = decode_prompt_string (ps0_prompt, 1);
 		  if (ps0_string && *ps0_string)
 		    {
 		      fprintf (stderr, "%s", ps0_string);
@@ -170,7 +179,7 @@ reader_loop (void)
 	      current_command_number++;
 
 	      executing = 1;
-	      stdin_redir = 0;
+	      stdin_redirected = 0;
 
 	      execute_command (current_command);
 
@@ -329,7 +338,7 @@ execute_prompt_command (void)
 int
 parse_command (void)
 {
-  int r;
+  int r, old_parsing;
 
   need_here_doc = 0;
   if ((parser_state & (PST_CMDSUBST|PST_FUNSUBST)) == 0)
@@ -343,6 +352,9 @@ parse_command (void)
      actually printed. */
   if (interactive && bash_input.type != st_string && parser_expanding_alias() == 0)
     {
+#if defined (JOB_CONTROL)
+      notify_and_cleanup (-1);
+#endif
 #if defined (READLINE)
       if (no_line_editing || (bash_input.type == st_stdin && parser_will_prompt ()))
 #endif
@@ -352,11 +364,14 @@ parse_command (void)
 	send_pwd_to_eterm ();	/* Yuck */
     }
 
+  old_parsing = parsing_command;
+  parsing_command = 1;
   current_command_line_count = 0;
   r = yyparse ();
 
   if (need_here_doc)
     gather_here_documents ();
+  parsing_command = old_parsing;
 
   return (r);
 }
@@ -370,6 +385,7 @@ read_command (void)
   SHELL_VAR *tmout_var;
   int tmout_len, result;
   SigHandler *old_alrm;
+  char *t, *e;
 
   set_current_prompt_level (1);
   global_command = (COMMAND *)NULL;
@@ -385,8 +401,9 @@ read_command (void)
 
       if (tmout_var && var_isset (tmout_var))
 	{
-	  tmout_len = atoi (value_cell (tmout_var));
-	  if (tmout_len > 0)
+	  t = value_cell (tmout_var);
+	  tmout_len = (int)strtol (t, &e, 10);
+	  if (e != t && *e == '\0' && tmout_len > 0)
 	    {
 	      old_alrm = set_signal_handler (SIGALRM, alrm_catcher);
 	      alarm (tmout_len);

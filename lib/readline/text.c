@@ -39,6 +39,7 @@
 #  include <locale.h>
 #endif
 
+#include <signal.h>
 #include <stdio.h>
 
 /* System-specific feature definitions and include files. */
@@ -993,7 +994,7 @@ rl_insert (int count, int c)
   n = (unsigned short)-2;
   while (_rl_optimize_typeahead &&
 	 rl_num_chars_to_read == 0 &&
-	 (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT) == 0) &&
+	 (RL_ISSTATE (RL_STATE_INPUTPENDING|RL_STATE_MACROINPUT|RL_STATE_MACRODEF) == 0) &&
 	 _rl_pushed_input_available () == 0 &&
 	 _rl_input_queued (0) &&
 	 (n = rl_read_key ()) > 0 &&
@@ -1047,7 +1048,7 @@ _rl_insert_next (int count)
   if (c < 0)
     return 1;
 
-  if (RL_ISSTATE (RL_STATE_MACRODEF))
+  if (RL_ISSTATE (RL_STATE_MACRODEF) && RL_ISSTATE (RL_STATE_MACROINPUT) == 0)
     _rl_add_macro_char (c);
 
 #if defined (HANDLE_SIGNALS)
@@ -1449,11 +1450,11 @@ rl_change_case (int count, int op)
   int start, next, end;
   int inword, nc, nop;
   WCHAR_T c;
+  unsigned char uc;
 #if defined (HANDLE_MULTIBYTE)
   WCHAR_T wc, nwc;
   char mb[MB_LEN_MAX+1];
-  int mlen;
-  size_t m;
+  size_t m, mlen;
   mbstate_t mps;
 #endif
 
@@ -1503,7 +1504,9 @@ rl_change_case (int count, int op)
 	 characters */
       if (MB_CUR_MAX == 1 || rl_byte_oriented)
 	{
-	  nc = (nop == UpCase) ? _rl_to_upper (c) : _rl_to_lower (c);
+change_singlebyte:
+	  uc = c;
+	  nc = (nop == UpCase) ? _rl_to_upper (uc) : _rl_to_lower (uc);
 	  rl_line_buffer[start] = nc;
 	}
 #if defined (HANDLE_MULTIBYTE)
@@ -1511,9 +1514,16 @@ rl_change_case (int count, int op)
 	{
 	  m = MBRTOWC (&wc, rl_line_buffer + start, end - start, &mps);
 	  if (MB_INVALIDCH (m))
-	    wc = (WCHAR_T)rl_line_buffer[start];
+	    {
+	      c = rl_line_buffer[start];
+	      next = start + 1;		/* potentially redundant */
+	      goto change_singlebyte;
+	    }
 	  else if (MB_NULLWCH (m))
-	    wc = L'\0';
+	    {
+	      start = next;	/* don't bother with null wide characters */
+	      continue;
+	    }
 	  nwc = (nop == UpCase) ? _rl_to_wupper (wc) : _rl_to_wlower (wc);
 	  if  (nwc != wc)	/*  just skip unchanged characters */
 	    {
@@ -1522,12 +1532,13 @@ rl_change_case (int count, int op)
 
 	      memset (&ts, 0, sizeof (mbstate_t));
 	      mlen = WCRTOMB (mb, nwc, &ts);
-	      if (mlen < 0)
+	      
+	      if (MB_INVALIDCH (mlen))
 		{
 		  nwc = wc;
 		  memset (&ts, 0, sizeof (mbstate_t));
 		  mlen = WCRTOMB (mb, nwc, &ts);
-		  if (mlen < 0)		/* should not happen */
+		  if (MB_INVALIDCH (mlen))		/* should not happen */
 		    strncpy (mb, rl_line_buffer + start, mlen = m);
 		}
 	      if (mlen > 0)
@@ -1776,12 +1787,16 @@ static int
 _rl_char_search (int count, int fdir, int bdir)
 {
   char mbchar[MB_LEN_MAX];
-  int mb_len;
+  int mb_len, i;
 
   mb_len = _rl_read_mbchar (mbchar, MB_LEN_MAX);
 
   if (mb_len <= 0)
     return 1;
+
+  if (RL_ISSTATE (RL_STATE_MACRODEF) && RL_ISSTATE (RL_STATE_MACROINPUT) == 0)
+    for (i = 0; i < mb_len; i++)
+      _rl_add_macro_char (mbchar[i]);
 
   if (count < 0)
     return (_rl_char_search_internal (-count, bdir, mbchar, mb_len));
@@ -1795,8 +1810,12 @@ _rl_char_search (int count, int fdir, int bdir)
   int c;
 
   c = _rl_bracketed_read_key ();
+
   if (c < 0)
     return 1;
+
+  if (RL_ISSTATE (RL_STATE_MACRODEF) && RL_ISSTATE (RL_STATE_MACROINPUT) == 0)
+    _rl_add_macro_char (c);
 
   if (count < 0)
     return (_rl_char_search_internal (-count, bdir, c));
@@ -2001,22 +2020,20 @@ _rl_readstr_init (int pchar, int flags)
 
   cxt = _rl_rscxt_alloc (flags);
 
-  rl_maybe_replace_line ();
   _rl_saved_line_for_readstr = _rl_alloc_saved_line ();
-
   rl_undo_list = 0;
 
   rl_line_buffer[0] = 0;
   rl_end = rl_point = 0;
 
   p = _rl_make_prompt_for_search (pchar ? pchar : '@');
-  cxt->flags |= READSTR_FREEPMT;
-  rl_message ("%s", p);
-  xfree (p);
 
   RL_SETSTATE (RL_STATE_READSTR);
-
+  cxt->flags |= READSTR_FREEPMT;
   _rl_rscxt = cxt;  
+
+  rl_message ("%s", p);
+  xfree (p);
 
   return cxt;
 }
@@ -2065,13 +2082,16 @@ _rl_readstr_getchar (_rl_readstr_cxt *cxt)
   RL_SETSTATE(RL_STATE_MOREINPUT);
   c = cxt->lastc = rl_read_key ();
   RL_UNSETSTATE(RL_STATE_MOREINPUT);
-	          
+
 #if defined (HANDLE_MULTIBYTE)
   /* This ends up with C (and LASTC) being set to the last byte of the
      multibyte character.  In most cases c == lastc == mb[0] */
   if (c >= 0 && MB_CUR_MAX > 1 && rl_byte_oriented == 0)
     c = cxt->lastc = _rl_read_mbstring (cxt->lastc, cxt->mb, MB_LEN_MAX);
 #endif
+
+  if (_rl_caught_signal == SIGINT)	/* XXX maybe more signals here */
+    c = -1;
 
   RL_CHECK_SIGNALS ();
   return c;
@@ -2315,6 +2335,8 @@ _rl_read_command_name ()
 
       if (c < 0)
 	{
+	  if (_rl_rscxt == 0)		/* signal */
+	    _rl_abort_internal ();
 	  _rl_readstr_restore (cxt);
 	  _rl_readstr_cleanup (cxt, r);
 	  return NULL;
@@ -2355,8 +2377,13 @@ rl_execute_named_command (int count, int key)
 
   command = _rl_read_command_name ();
   if (command == 0 || *command == '\0')
-    return 1;
-  if (func = rl_named_function (command))
+    {
+      free (command);
+      return 1;
+    }
+  func = rl_named_function (command);
+  free (command);
+  if (func)
     {
       int prev, ostate;
 
@@ -2375,6 +2402,5 @@ rl_execute_named_command (int count, int key)
       r = 1;
     }
 
-  free (command);
   return r;
 }

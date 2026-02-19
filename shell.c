@@ -1,6 +1,6 @@
 /* shell.c -- GNU's idea of the POSIX shell specification. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -134,6 +134,9 @@ char *current_host_name = (char *)NULL;
  */
 int login_shell = 0;
 
+/* Non-zero if this shell is being run by `su'. */
+int su_shell = 0;
+
 /* Non-zero means that at this moment, the shell is interactive.  In
    general, this means that the shell is at this moment reading input
    from the keyboard. */
@@ -170,6 +173,9 @@ int debugging_login_shell = 0;
 /* The environment that the shell passes to other commands. */
 char **shell_environment;
 
+/* Non-zero when we are parsing a command, managed by parse_command/parse_comsub */
+int parsing_command = 0;
+
 /* Non-zero when we are executing a top-level command. */
 int executing = 0;
 
@@ -201,9 +207,6 @@ static char *bashrc_file;
 
 /* Non-zero means to act more like the Bourne shell on startup. */
 static int act_like_sh;
-
-/* Non-zero if this shell is being run by `su'. */
-static int su_shell;
 
 /* Non-zero if we have already expanded and sourced $ENV. */
 static int sourced_env;
@@ -445,7 +448,7 @@ main (int argc, char **argv, char **env)
 
   /* Fix for the `infinite process creation' bug when running shell scripts
      from startup files on System V. */
-  login_shell = make_login_shell = 0;
+  login_shell = make_login_shell = su_shell = 0;
 
   /* If this shell has already been run, then reinitialize it to a
      vanilla state. */
@@ -668,6 +671,8 @@ main (int argc, char **argv, char **env)
     {
       change_flag ('i', FLAG_ON);
       interactive = 1;
+      if (forced_interactive == 0)
+	read_but_dont_execute = 0;
     }
 
 #if defined (RESTRICTED_SHELL)
@@ -985,10 +990,7 @@ exit_shell (int s)
   /* Clean up the terminal if we are in a state where it's been modified. */
 #if defined (READLINE)
   if (bash_readline_initialized && RL_ISSTATE (RL_STATE_TERMPREPPED) && rl_deprep_term_function)
-{
-itrace("exit_shell: calling rl_deprep_term_function");
     (*rl_deprep_term_function) ();
-}
 #endif
   if (read_tty_modified ())
     read_tty_cleanup ();
@@ -1310,14 +1312,14 @@ uidget (void)
   (void) getresuid (&current_user.uid, &current_user.euid, &current_user.saveuid);
 #else
   current_user.uid = getuid ();
-  current_user.euid = geteuid ();
+  current_user.euid = current_user.saveuid = geteuid ();
 #endif
 
 #if HAVE_SETRESGID
   (void) getresgid (&current_user.gid, &current_user.egid, &current_user.savegid);
 #else
   current_user.gid = getgid ();
-  current_user.egid = getegid ();
+  current_user.egid = current_user.savegid = getegid ();
 #endif
 
   if (current_user.uid != u)
@@ -1395,6 +1397,7 @@ run_wordexp (char *words)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_wordexp", CMDERR_BADJUMP, code, 0);
@@ -1473,6 +1476,7 @@ run_one_command (char *command)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_one_command", CMDERR_BADJUMP, code, 0);
@@ -1635,7 +1639,7 @@ open_shell_script (char *script_name)
   GET_ARRAY_FROM_VAR ("BASH_SOURCE", bash_source_v, bash_source_a);
   GET_ARRAY_FROM_VAR ("BASH_LINENO", bash_lineno_v, bash_lineno_a);
 
-  array_push (bash_source_a, filename);
+  push_source (bash_source_a, filename);
   if (bash_lineno_a)
     {
       t = itos (executing_line_number ());
@@ -1652,7 +1656,7 @@ open_shell_script (char *script_name)
 #endif
 
   /* Only do this with non-tty file descriptors we can seek on. */
-  if (fd_is_tty == 0 && (lseek (fd, 0L, 1) != -1))
+  if (fd_is_tty == 0 && (lseek (fd, 0L, SEEK_CUR) != -1))
     {
       /* Check to see if the `file' in `bash file' is a binary file
 	 according to the same tests done by execute_simple_command (),
@@ -1682,14 +1686,14 @@ open_shell_script (char *script_name)
 	}
       else if (sample_len > 0 && (check_binary_file (sample, sample_len)))
 	{
-	  internal_error (_("%s: cannot execute binary file"), filename);
+	  internal_error ("%s: %s", filename, _("cannot execute binary file"));
 #if defined (JOB_CONTROL)
 	  end_job_control ();	/* just in case we were run as bash -i script */
 #endif
 	  exit (EX_BINARY_FILE);
 	}
       /* Now rewind the file back to the beginning. */
-      lseek (fd, 0L, 0);
+      lseek (fd, 0L, SEEK_SET);
     }
 
   /* Open the script.  But try to move the file descriptor to a randomly
@@ -1736,9 +1740,24 @@ set_bash_input (void)
   if (interactive && no_line_editing == 0)
     with_input_from_stdin ();
   else if (interactive == 0)
-    with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+    {
+      errno = 0;
+      with_input_from_buffered_stream (default_buffered_input, dollar_vars[0]);
+      if (get_buffered_stream (default_buffered_input) == NULL)
+	{
+	  last_command_exit_value = EX_NOINPUT;
+	  if (errno != 0)
+	    sys_error ("%s", _("error creating buffered stream"));
+	  else
+	    report_error ("%s", _("error creating buffered stream"));
+	}
+    }
   else
-    with_input_from_stream (default_input, dollar_vars[0]);
+    {
+      with_input_from_stream (default_input, dollar_vars[0]);
+      if (forced_interactive && running_under_emacs && fd_ispipe (fileno (default_input)))
+	stream_setsize (1);
+    }
 }
 
 /* Close the current shell script input source and forget about it.  This is
@@ -1993,7 +2012,7 @@ shell_reinitialize (void)
   no_rc = no_profile = 1;
 
   /* Things that get 0. */
-  login_shell = make_login_shell = executing = 0;
+  login_shell = make_login_shell = su_shell = executing = 0;
   debugging = debugging_mode = 0;
   do_version = line_number = last_command_exit_value = 0;
   forced_interactive = interactive_shell = interactive = 0;

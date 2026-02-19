@@ -1,7 +1,7 @@
 This file is read.def, from which is created read.c.
 It implements the builtin "read" in Bash.
 
-Copyright (C) 1987-2023 Free Software Foundation, Inc.
+Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -122,7 +122,7 @@ struct ttsave
 #if defined (READLINE)
 static void uw_reset_attempted_completion_function (void *);
 static int set_itext (void);
-static char *edit_line (char *, char *, unsigned char, int);
+static char *edit_line (char *, char *, int, int);
 static void set_eol_delim (int);
 static void reset_eol_delim (void *);
 static void set_readline_timeout (sh_timer *t, time_t, long);
@@ -130,7 +130,7 @@ static void uw_bashline_reset_event_hook (void *);
 #endif
 static SHELL_VAR *bind_read_variable (char *, char *, int);
 #if defined (HANDLE_MULTIBYTE)
-static int read_mbchar (int, char *, int, int, int);
+static int read_mbchar (int, char *, int, int, int, int);
 #endif
 static void ttyrestore (struct ttsave *);
 static void uw_ttyrestore (void *);
@@ -142,7 +142,7 @@ static void uw_reset_timeout (void *);
 /* Try this to see what the rest of the shell can do with the information. */
 sh_timer *read_timeout;
 
-static int reading, tty_modified;
+static int reading, tty_modified, vdisable = -10;
 
 static struct ttsave termsave;
 
@@ -201,6 +201,43 @@ read_builtin_timeout (int fd)
 #endif
 }
 
+#if defined (READLINE)
+void
+reset_rl_instream (FILE *save_instream)
+{
+  fclose (rl_instream);
+  rl_instream = save_instream;
+}
+
+void
+uw_reset_rl_instream (void *fp)
+{
+  reset_rl_instream (fp);
+}
+#endif
+
+/* Check whether there is input on FD after setting the terminal settings to
+   what they would be if the read was actually performed. */
+static int
+check_read_input (int fd, int change_term)
+{
+  TTYSTRUCT ttattrs, ttset;
+  int r;
+
+  if (change_term)
+    {
+      ttgetattr (fd, &ttattrs);
+      ttset = ttattrs;
+      r = ttfd_onechar (fd, &ttset);
+      if (r < 0)
+	sh_ttyerror (1);
+    }
+  r = input_avail (fd);
+  if (change_term)
+    ttsetattr (fd, &ttattrs);
+  return r;
+}
+
 /* Read the value of the shell variables whose names follow.
    The reading is done from the current input stream, whatever
    that may be.  Successive words of the input line are assigned
@@ -212,7 +249,7 @@ read_builtin (WORD_LIST *list)
 {
   char *varname;
   int nr, pass_next, saw_escape, eof, opt, retval, code, print_ps2, nflag;
-  size_t size;
+  size_t input_string_size;
   volatile int i;
   int input_is_tty, input_is_pipe, unbuffered_read, skip_ctlesc, skip_ctlnul;
   int edit, use_bash_completion;
@@ -224,7 +261,7 @@ read_builtin (WORD_LIST *list)
   long ival, uval;
   intmax_t intval;
   char c;
-  unsigned char delim;
+  int delim;
   char *input_string, *orig_input_string, *ifs_chars, *prompt, *arrayname;
   char *e, *t, *t1, *ps2, *tofree;
   struct stat tsb;
@@ -242,7 +279,7 @@ read_builtin (WORD_LIST *list)
   FILE *save_instream;
 #endif
 
-  USE_VAR(size);
+  USE_VAR(input_string_size);
   USE_VAR(i);
   USE_VAR(pass_next);
   USE_VAR(print_ps2);
@@ -285,7 +322,8 @@ read_builtin (WORD_LIST *list)
 
   mb_cur_max = MB_CUR_MAX;
   tmsec = tmusec = 0;		/* no timeout */
-  nr = nchars = input_is_tty = input_is_pipe = unbuffered_read = have_timeout = 0;
+  nr = nchars = input_is_pipe = unbuffered_read = have_timeout = 0;
+  input_is_tty = -1;	/* not checked yet */
   delim = '\n';		/* read until newline */
   ignore_delim = nflag = 0;
 
@@ -340,7 +378,6 @@ read_builtin (WORD_LIST *list)
 	  break;
 	case 'N':
 	  ignore_delim = 1;
-	  delim = -1;
 	case 'n':
 	  nflag = 1;
 	  code = valid_number (list_optarg, &intval);
@@ -363,12 +400,12 @@ read_builtin (WORD_LIST *list)
 	    fd = intval;
 	  if (sh_validfd (fd) == 0)
 	    {
-	      builtin_error (_("%d: invalid file descriptor: %s"), fd, strerror (errno));
+	      builtin_error ("%d: %s: %s", fd, _("invalid file descriptor"), strerror (errno));
 	      return (EXECUTION_FAILURE);
 	    }
 	  break;
 	case 'd':
-	  delim = *list_optarg;
+	  delim = (unsigned char)*list_optarg;
 	  break;
 	CASE_HELPOPT;
 	default:
@@ -381,7 +418,14 @@ read_builtin (WORD_LIST *list)
   /* `read -t 0 var' tests whether input is available with select/FIONREAD,
      and fails if those are unavailable */
   if (have_timeout && tmsec == 0 && tmusec == 0)
-    return (input_avail (fd) ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
+    {
+      int ct;		/* change terminal settings */
+
+      /* XXX - revisit this now that bash doesn't change terminal settings if
+	 the delimiter is not a newline. */
+      ct = (nflag || delim != '\n') && isatty (fd);
+      return (check_read_input (fd, ct) ? EXECUTION_SUCCESS : EXECUTION_FAILURE);
+    }
 
   /* Convenience: check early whether or not the first of possibly several
      variable names is a valid identifier, and bail early if so. */
@@ -418,7 +462,7 @@ read_builtin (WORD_LIST *list)
   for (skip_ctlesc = skip_ctlnul = 0, e = ifs_chars; *e; e++)
     skip_ctlesc |= *e == CTLESC, skip_ctlnul |= *e == CTLNUL;
 
-  input_string = (char *)xmalloc (size = 112);	/* XXX was 128 */
+  input_string = (char *)xmalloc (input_string_size = 496);	/* XXX was 128 */
   input_string[0] = '\0';
 
   pass_next = 0;	/* Non-zero signifies last char was backslash. */
@@ -463,6 +507,7 @@ read_builtin (WORD_LIST *list)
 #else
   input_is_tty = 1;
 #endif
+
   if (input_is_tty == 0)
 #ifndef __CYGWIN__
     input_is_pipe = fd_ispipe (fd);
@@ -524,7 +569,8 @@ read_builtin (WORD_LIST *list)
 	     so we have to save input_string temporarily, run the unwind-
 	     protects, then restore input_string so we can use it later */
 	  orig_input_string = 0;
-	  input_string[i] = '\0';	/* make sure it's terminated */
+	  if (i >= 0)
+	    input_string[i] = '\0';	/* make sure it's terminated */
 	  if (i == 0)
 	    {
 	      t = (char *)xmalloc (1);
@@ -543,14 +589,25 @@ read_builtin (WORD_LIST *list)
       add_unwind_protect (uw_reset_timeout, NULL);
 #if defined (READLINE)
       if (edit)
-	{
-	  add_unwind_protect (uw_reset_attempted_completion_function, NULL);
-	  add_unwind_protect (uw_bashline_reset_event_hook, NULL);
-	  set_readline_timeout (read_timeout, tmsec, tmusec);
-	}
+	set_readline_timeout (read_timeout, tmsec, tmusec);
       else
 #endif
       shtimer_set (read_timeout, tmsec, tmusec);
+    }
+
+  /* Initialize this once, as needed, it's not going to change. */ 
+  if (vdisable == -10 && input_is_tty && delim != '\n')
+    {
+#if defined (_POSIX_VDISABLE)
+      vdisable = _POSIX_VDISABLE;
+#elif defined (_PC_VDISABLE) && defined (HAVE_PATHCONF)
+      errno = 0;
+      vdisable = pathconf("/dev/tty", _PC_VDISABLE);
+      if (vdisable == -1 && errno != 0)
+	vdisable = 0;		/* conservative assumption */
+#else
+      vdisable = 0;
+#endif
     }
 
   /* If we've been asked to read only NCHARS chars, or we're using some
@@ -576,14 +633,24 @@ read_builtin (WORD_LIST *list)
 #endif
       if (input_is_tty)
 	{
+	  int rc;
+
 	  /* ttsave() */
 	  termsave.fd = fd;
 	  ttgetattr (fd, &ttattrs);
 	  termsave.attrs = ttattrs;
 
-	  ttset = ttattrs;	  
-	  i = silent ? ttfd_cbreak (fd, &ttset) : ttfd_onechar (fd, &ttset);
-	  if (i < 0)
+	  ttset = ttattrs;
+
+	  if (nchars > 0 || delim == vdisable)
+	    rc = silent ? ttfd_cbreak (fd, &ttset) : ttfd_onechar (fd, &ttset);
+	  else		/* delim != '\n',_POSIX_VDISABLE */
+	    {
+	      rc = silent ? tt_setnoecho (&ttset) : 0;
+	      if (rc >= 0)
+		rc = ttfd_seteol (fd, &ttset, delim);
+	    }
+	  if (rc < 0)
 	    sh_ttyerror (1);
 	  tty_modified = 1;
 	  add_unwind_protect (uw_ttyrestore, &termsave);
@@ -599,8 +666,7 @@ read_builtin (WORD_LIST *list)
       termsave.attrs = ttattrs;
 
       ttset = ttattrs;
-      i = ttfd_noecho (fd, &ttset);			/* ttnoecho (); */
-      if (i < 0)
+      if (ttfd_noecho (fd, &ttset) < 0)
 	sh_ttyerror (1);
 
       tty_modified = 1;
@@ -613,12 +679,34 @@ read_builtin (WORD_LIST *list)
   save_instream = 0;
   if (edit && fd != 0)
     {
+      int fd2;
+      FILE *fp2;
+
+      if ((fd2 = dup (fd)) < 0 || (fp2 = fdopen (fd2, "r")) == 0)
+	{
+	  builtin_error ("%d: %s", fd, strerror (errno));
+	  if (fd2 >= 0)
+	    close (fd2);
+	  run_unwind_frame ("read_builtin");
+	  if (free_ifs)
+	    free (ifs_chars);
+	  return (EXECUTION_FAILURE);
+	}
+
       if (bash_readline_initialized == 0)
 	initialize_readline ();
 
-      unwind_protect_var (rl_instream);
       save_instream = rl_instream;
-      rl_instream = fdopen (fd, "r");	
+      rl_instream = fp2;
+      add_unwind_protect (uw_reset_rl_instream, save_instream);
+
+      fd = fd2;
+    }
+
+  if (edit)
+    {
+      add_unwind_protect (uw_reset_attempted_completion_function, NULL);
+      add_unwind_protect (uw_bashline_reset_event_hook, NULL);
     }
 #endif
 
@@ -630,12 +718,11 @@ read_builtin (WORD_LIST *list)
   /* These only matter if edit == 0 */
   if ((nchars > 0) && (input_is_tty == 0) && ignore_delim)	/* read -N */
     unbuffered_read = 2;
-#if 0
-  else if ((nchars > 0) || (delim != '\n') || input_is_pipe)
-#else
-  else if (((nchars > 0 || delim != '\n') && input_is_tty) || input_is_pipe)
+  else if ((nchars > 0 && input_is_tty) || input_is_pipe)	/* read -n */
     unbuffered_read = 1;
-#endif
+  else if (delim != '\n' && input_is_tty)			/* read -d */
+    unbuffered_read = (delim != vdisable) ? 3 : 1;
+
   if (prompt && edit == 0)
     {
       fprintf (stderr, "%s", prompt);
@@ -699,9 +786,11 @@ read_builtin (WORD_LIST *list)
       if (tmsec > 0 || tmusec > 0)
 	sigprocmask (SIG_SETMASK, &chldset, &prevset);
 #endif
-      if (unbuffered_read == 2)
+      if (unbuffered_read == 2)			/* read -N */
 	retval = posixly_correct ? zreadintr (fd, &c, 1) : zreadn (fd, &c, nchars - nr);
-      else if (unbuffered_read)
+      else if (unbuffered_read == 3)		/* read -d on a tty */
+	retval = posixly_correct ? zreadcintr (fd, &c) : zreadc (fd, &c);
+      else if (unbuffered_read)			/* read -n or input_is_pipe */
 	retval = posixly_correct ? zreadintr (fd, &c, 1) : zread (fd, &c, 1);
       else
 	retval = posixly_correct ? zreadcintr (fd, &c) : zreadc (fd, &c);
@@ -719,6 +808,7 @@ read_builtin (WORD_LIST *list)
 	  x = errno;
 	  if (retval < 0 && errno == EINTR)
 	    {
+	      ZRESET ();
 	      check_signals ();		/* in case we didn't call zread via zreadc */
 	      lastsig = LASTSIG();
 	      if (lastsig == 0)
@@ -737,6 +827,10 @@ read_builtin (WORD_LIST *list)
 	  break;
 	}
 
+      /* Even if read returns a partial buffer, if we got an interrupt we're
+	 going to throw it away. */
+      ZRESET();
+
       QUIT;		/* in case we didn't call check_signals() */
 #if defined (READLINE)
 	}
@@ -746,13 +840,16 @@ read_builtin (WORD_LIST *list)
 	check_read_timeout ();
 
       /* XXX -- use i + mb_cur_max (at least 4) for multibyte/read_mbchar */
-      if (i + (mb_cur_max > 4 ? mb_cur_max : 4) >= size)
+      if (i + (mb_cur_max > 4 ? mb_cur_max : 4) >= input_string_size)
 	{
 	  char *x;
-	  x = (char *)xrealloc (input_string, size += 128);
+	  x = (char *)xrealloc (input_string, input_string_size += 512);
 
-	  /* Only need to change unwind-protect if input_string changes */
+#if 0
+	  /* This is, in theory, undefined behavior, since input_string may
+	     have been freed. */
 	  if (x != input_string)
+#endif
 	    {
 	      input_string = x;
 	      remove_unwind_protect ();
@@ -792,7 +889,7 @@ read_builtin (WORD_LIST *list)
 	  continue;
 	}
 
-      if (ignore_delim == 0 && (unsigned char)c == delim)
+      if ((unsigned char)c == delim)
 	break;
 
       if (c == '\0' && delim != '\0')
@@ -806,7 +903,6 @@ read_builtin (WORD_LIST *list)
 
 add_char:
       input_string[i++] = c;
-      check_read_timeout ();
 
 #if defined (HANDLE_MULTIBYTE)
       /* XXX - what if C == 127? Can DEL introduce a multibyte sequence? */
@@ -833,7 +929,7 @@ add_char:
 	  else
 #  endif
 	  if (locale_utf8locale == 0 || ((c & 0x80) != 0))
-	    i += read_mbchar (fd, input_string, i, c, unbuffered_read);
+	    i += read_mbchar (fd, input_string, i, c, delim, unbuffered_read);
 	}
 #endif
 
@@ -841,6 +937,8 @@ add_char:
 
       if (nchars > 0 && nr >= nchars)
 	break;
+
+      check_read_timeout ();
     }
   /* Back up over trailing CTLESC if the input ends with an unescaped
      backslash */
@@ -854,7 +952,10 @@ add_char:
     saw_escape = 0;		/* Avoid dequoting bare CTLNUL */
 
   input_string[i] = '\0';
-  check_read_timeout ();
+  /* Don't check the timeout unless we didn't read anything and zread returned
+     EOF or error. */
+  if (i == 0 && retval <= 0)
+    check_read_timeout ();
 
 #if defined (READLINE)
   if (edit)
@@ -865,9 +966,11 @@ add_char:
     {
       t_errno = errno;
       if (errno != EINTR)
-	builtin_error (_("read error: %d: %s"), fd, strerror (errno));
+	builtin_error ("%d: %s: %s", fd, _("read error"), strerror (errno));
       run_unwind_frame ("read_builtin");
-      return ((t_errno != EINTR) ? EXECUTION_FAILURE : 128+lastsig);
+      if (free_ifs)
+	free (ifs_chars);
+      return ((t_errno != EINTR) ? EX_MISCERROR : 128+lastsig);
     }
 
   if (tmsec > 0 || tmusec > 0)
@@ -896,7 +999,7 @@ add_char:
 
 #if defined (READLINE)
   if (save_instream)
-    rl_instream = save_instream;	/* can't portably free it */
+    reset_rl_instream (save_instream);
 #endif
 
   discard_unwind_frame ("read_builtin");
@@ -916,6 +1019,8 @@ assign_vars:
       if (var == 0)
 	{
 	  free (input_string);
+	  if (free_ifs)
+	    free (ifs_chars);
 	  return EXECUTION_FAILURE;	/* readonly or noassign */
 	}
 
@@ -930,6 +1035,8 @@ assign_vars:
 	  dispose_words (alist);
 	}
       free (input_string);
+      if (free_ifs)
+	free (ifs_chars);
       return (retval);
     }
 #endif /* ARRAY_VARS */ 
@@ -960,12 +1067,14 @@ assign_vars:
 	}
       else
 	var = bind_variable ("REPLY", input_string, 0);
-      if (var == 0 || readonly_p (var) || noassign_p (var))
+      if (var == 0 || ASSIGN_DISALLOWED (var, 0))
 	retval = EX_MISCERROR;
       else
 	VUNSETATTR (var, att_invisible);
 
       free (input_string);
+      if (free_ifs)
+	free (ifs_chars);
       return (retval);
     }
 
@@ -990,6 +1099,8 @@ assign_vars:
 	{
 	  sh_invalidid (varname);
 	  free (orig_input_string);
+	  if (free_ifs)
+	    free (ifs_chars);
 	  return (EXECUTION_FAILURE);
 	}
 
@@ -1022,6 +1133,8 @@ assign_vars:
       if (var == 0)
 	{
 	  free (orig_input_string);
+	  if (free_ifs)
+	    free (ifs_chars);
 	  return (EX_MISCERROR);
 	}
 
@@ -1039,6 +1152,8 @@ assign_vars:
     {
       sh_invalidid (list->word->word);
       free (orig_input_string);
+      if (free_ifs)
+	free (ifs_chars);
       return (EXECUTION_FAILURE);
     }
 
@@ -1096,16 +1211,15 @@ bind_read_variable (char *name, char *value, int flags)
   SHELL_VAR *v;
 
   v = builtin_bind_variable (name, value, flags);
-  return (v == 0 ? v
-		 : ((readonly_p (v) || noassign_p (v)) ? (SHELL_VAR *)NULL : v));
+  return ((v == 0 || ASSIGN_DISALLOWED (v, 0)) ? (SHELL_VAR *)NULL : v);
 }
 
 #if defined (HANDLE_MULTIBYTE)
 static int
-read_mbchar (int fd, char *string, int ind, int ch, int unbuffered)
+read_mbchar (int fd, char *string, int ind, int ch, int delim, int unbuffered)
 {
   char mbchar[MB_LEN_MAX + 1];
-  int i, n, r;
+  int i, n, r, delim_ind;
   char c;
   size_t ret;
   mbstate_t ps, ps_back;
@@ -1113,7 +1227,8 @@ read_mbchar (int fd, char *string, int ind, int ch, int unbuffered)
 
   memset (&ps, '\0', sizeof (mbstate_t));
   memset (&ps_back, '\0', sizeof (mbstate_t));
-  
+
+  delim_ind = 0;
   mbchar[0] = ch;
   i = 1;
   for (n = 0; n <= MB_LEN_MAX; n++)
@@ -1127,17 +1242,37 @@ read_mbchar (int fd, char *string, int ind, int ch, int unbuffered)
 	  /* We don't want to be interrupted during a multibyte char read */
 	  if (unbuffered == 2)
 	    r = zreadn (fd, &c, 1);
+	  else if (unbuffered == 3)
+	    r = zreadc (fd, &c);
 	  else if (unbuffered)
 	    r = zread (fd, &c, 1);
 	  else
 	    r = zreadc (fd, &c);
 	  if (r <= 0)
 	    goto mbchar_return;
+	  if ((unsigned char)c == delim)
+	    delim_ind = i;
 	  mbchar[i++] = c;	
 	  continue;
 	}
-      else if (ret == (size_t)-1 || ret == (size_t)0 || ret > (size_t)0)
-	break;
+      else if (ret == (size_t)-1)
+	{
+	  /* If we read (i > 1) a delimiter character (delim_ind >= 1)
+	     that is a part of this invalid multibyte character, we can't
+	     just add it to the input string and treat it as a byte.
+	     We need to push it and everything we read after it back so a
+	     subsequent zread will pick it up. */
+	  if (i > 1 && delim_ind >= 1)
+	    {
+	      size_t j;
+	      for (j = delim_ind; j < i; j++)
+		zungetc ((unsigned char)mbchar[j]);
+	      i = delim_ind;
+	    }
+	  break;		/* invalid multibyte character */
+	}
+      else if (ret == (size_t)0 || ret > (size_t)0)
+	break;		/* valid multibyte character */
     }
 
 mbchar_return:
@@ -1213,7 +1348,7 @@ set_itext (void)
 }
 
 static char *
-edit_line (char *p, char *itext, unsigned char delim, int keep_completion_func)
+edit_line (char *p, char *itext, int delim, int keep_completion_func)
 {
   char *ret;
   size_t len;
@@ -1253,7 +1388,8 @@ edit_line (char *p, char *itext, unsigned char delim, int keep_completion_func)
 
   len = strlen (ret);
   ret = (char *)xrealloc (ret, len + 2);
-  ret[len++] = delim;
+  if (delim > 0)
+    ret[len++] = delim;
   ret[len] = '\0';
   return ret;
 }
@@ -1271,7 +1407,7 @@ static rl_command_func_t *old_delim_func;
 static int old_newline_ctype;
 static rl_command_func_t *old_newline_func;
 
-static unsigned char delim_char;
+static int delim_char;
 
 static void
 set_eol_delim (int c)
@@ -1282,19 +1418,21 @@ set_eol_delim (int c)
     initialize_readline ();
   cmap = rl_get_keymap ();
 
-  /* Save the old delimiter char binding */
+  /* Save the old newline binding and change it to self-insert */
   old_newline_ctype = cmap[RETURN].type;
   old_newline_func =  cmap[RETURN].function;
-  old_delim_ctype = cmap[c].type;
-  old_delim_func = cmap[c].function;
-
-  /* Change newline to self-insert */
   cmap[RETURN].type = ISFUNC;
   cmap[RETURN].function = rl_insert;
 
-  /* Bind the delimiter character to accept-line. */
-  cmap[c].type = ISFUNC;
-  cmap[c].function = rl_newline;
+  /* Save any binding to the delimiter and bind the delimiter to accept-line */
+  if (c >= 0)
+    {
+      old_delim_ctype = cmap[c].type;
+      old_delim_func = cmap[c].function;
+
+      cmap[c].type = ISFUNC;
+      cmap[c].function = rl_newline;
+    }
 
   delim_char = c;
 }
@@ -1309,7 +1447,10 @@ reset_eol_delim (void *ignore)
   cmap[RETURN].type = old_newline_ctype;
   cmap[RETURN].function = old_newline_func;
 
-  cmap[delim_char].type = old_delim_ctype;
-  cmap[delim_char].function = old_delim_func;
+  if (delim_char >= 0)
+    {
+      cmap[delim_char].type = old_delim_ctype;
+      cmap[delim_char].function = old_delim_func;
+    }
 }
 #endif

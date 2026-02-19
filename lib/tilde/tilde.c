@@ -1,6 +1,6 @@
 /* tilde.c -- Tilde expansion code (~/foo := $HOME/foo). */
 
-/* Copyright (C) 1988-2020,2023 Free Software Foundation, Inc.
+/* Copyright (C) 1988-2020,2023-2024 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
    for reading lines of text with interactive input and history editing.
@@ -185,10 +185,10 @@ tilde_expand (const char *string)
   size_t result_size, result_index;
 
   result_index = result_size = 0;
-  if (result = strchr (string, '~'))
+  if (strchr (string, '~'))
     result = (char *)xmalloc (result_size = (strlen (string) + 16));
   else
-    result = (char *)xmalloc (result_size = (strlen (string) + 1));
+    return (char *)strcpy ((char *)xmalloc (strlen (string) + 1), string);
 
   /* Scan through STRING expanding tildes as we come to them. */
   while (1)

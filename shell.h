@@ -1,6 +1,6 @@
 /* shell.h -- The data structures used by the shell */
 
-/* Copyright (C) 1993-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -75,6 +75,8 @@ extern int EOF_Reached;
 #define EX_DISKFALLBACK	262	/* fall back to disk command from builtin */
 #define EX_UTILERROR	263	/* Posix special builtin utility error */
 
+#define EX_HELPOPT	264
+
 /* Flag values that control parameter pattern substitution. */
 #define MATCH_ANY	0x000
 #define MATCH_BEG	0x001
@@ -96,7 +98,10 @@ extern WORD_LIST *rest_of_args;
 extern char *command_execution_string;
 
 extern int debugging_mode;
-extern int executing, login_shell;
+extern int executing;
+extern int login_shell;
+extern int su_shell;
+extern int parsing_command;
 extern int interactive, interactive_shell;
 extern int startup_state;
 extern int reading_shell_script;
@@ -107,6 +112,7 @@ extern int subshell_environment;
 extern int current_command_number;
 extern int indirection_level;
 extern int shell_compatibility_level;
+extern const int default_compatibility_level;
 extern int running_under_emacs;
 
 extern int pretty_print_mode;
@@ -175,6 +181,7 @@ typedef struct _sh_parser_state_t
   /* parsing state */
   int parser_state;
   int *token_state;
+  int parsing_command;
 
   char *token;
   size_t token_buffer_size;
@@ -213,6 +220,7 @@ typedef struct _sh_parser_state_t
 
   int esacs_needed;
   int expecting_in;
+  int incmd;
 
   /* structures affecting the parser */
   void *pushed_strings;
@@ -239,6 +247,10 @@ extern char *parser_remaining_input (void);
 
 extern sh_parser_state_t *save_parser_state (sh_parser_state_t *);
 extern void restore_parser_state (sh_parser_state_t *);
+extern void flush_parser_state (sh_parser_state_t *);
+extern void uw_restore_parser_state (void *);
+extern void exec_restore_parser_state (sh_parser_state_t *);
+extern void parser_unset_string_list (void);
 
 extern sh_input_line_state_t *save_input_line_state (sh_input_line_state_t *);
 extern void restore_input_line_state (sh_input_line_state_t *);

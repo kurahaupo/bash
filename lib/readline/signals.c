@@ -1,6 +1,6 @@
 /* signals.c -- signal handling support for readline. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
    for reading lines of text with interactive input and history editing.      
@@ -88,6 +88,7 @@ int rl_catch_sigwinch = 0;	/* for the readline state struct in readline.c */
 
 /* Private variables. */
 int volatile _rl_caught_signal = 0;	/* should be sig_atomic_t, but that requires including <signal.h> everywhere */
+int volatile _rl_handling_signal = 0;
 
 /* If non-zero, print characters corresponding to received signals as long as
    the user has indicated his desire to do so (_rl_echo_control_chars). */
@@ -133,6 +134,7 @@ _rl_signal_handler (int sig)
   if (sig == SIGWINCH)
     {
       RL_SETSTATE(RL_STATE_SIGHANDLER);
+      _rl_handling_signal = SIGWINCH;
 
       rl_resize_terminal ();
       /* XXX - experimental for now */
@@ -142,6 +144,7 @@ _rl_signal_handler (int sig)
       if (rl_signal_event_hook)
 	(*rl_signal_event_hook) ();
 
+      _rl_handling_signal = 0;
       RL_UNSETSTATE(RL_STATE_SIGHANDLER);
     }
   else
@@ -177,6 +180,7 @@ _rl_handle_signal (int sig)
 #endif /* !HAVE_POSIX_SIGNALS */
 
   RL_SETSTATE(RL_STATE_SIGHANDLER);
+  _rl_handling_signal = sig;
 
 #if !defined (HAVE_BSD_SIGNALS) && !defined (HAVE_POSIX_SIGNALS)
   /* Since the signal will not be blocked while we are in the signal
@@ -279,7 +283,7 @@ _rl_handle_signal (int sig)
 #if defined (HAVE_POSIX_SIGNALS)
       /* Unblock any signal(s) blocked above */
       if (block_sig)
-	sigprocmask (SIG_UNBLOCK, &oset, (sigset_t *)NULL);
+	sigprocmask (SIG_UNBLOCK, &set, &oset);
 #endif
 
       /* We don't have to bother unblocking the signal because we are not
@@ -301,6 +305,7 @@ _rl_handle_signal (int sig)
       rl_reset_after_signal ();      
     }
 
+  _rl_handling_signal = 0;
   RL_UNSETSTATE(RL_STATE_SIGHANDLER);
   SIGHANDLER_RETURN;
 }
@@ -667,11 +672,25 @@ _rl_block_sigint (void)
 void
 _rl_release_sigint (void)
 {
+  int osig, ostate;
+
   if (sigint_blocked == 0)
     return;
 
   sigint_blocked = 0;
-  RL_CHECK_SIGNALS ();
+  osig = _rl_caught_signal;
+  ostate = rl_readline_state;
+  if (RL_ISSTATE (RL_STATE_SIGHANDLER) == 0)
+    RL_CHECK_SIGNALS ();
+  /* These are basically all the places that call rl_message() */
+  if (osig == SIGINT && (ostate & (RL_STATE_ISEARCH|RL_STATE_NSEARCH|RL_STATE_NUMERICARG|RL_STATE_MOREINPUT|RL_STATE_READSTR)))
+    _rl_abort_internal ();
+}
+
+int
+_rl_sigint_blocked_p (void)
+{
+  return sigint_blocked;
 }
 
 /* Cause SIGWINCH to not be delivered until the corresponding call to
@@ -728,6 +747,12 @@ _rl_release_sigwinch (void)
 #endif /* SIGWINCH */
 
   sigwinch_blocked = 0;
+}
+
+int
+_rl_sigwinch_blocked_p (void)
+{
+  return sigwinch_blocked;
 }
 
 /* **************************************************************** */

@@ -1,7 +1,7 @@
 /* trap.c -- Not the trap command, but useful functions for manipulating
    those objects.  The trap command is in builtins/trap.def. */
 
-/* Copyright (C) 1987-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -387,6 +387,11 @@ run_pending_traps (void)
 	  if (sig == SIGINT)
 	    {
 	      pending_traps[sig] = 0;	/* XXX */
+	      /* _run_trap_internal saves and restores these, so want
+		 the original values. */
+	      running_trap = old_running;
+	      trap_return_context = old_context;
+	      /* XXX - bash_trapsig()? */
 	      /* We don't modify evalnest here, since run_interrupt_trap() calls
 		 _run_trap_internal, which does. */
 	      run_interrupt_trap (0);
@@ -462,6 +467,7 @@ run_pending_traps (void)
 	      trap_command = savestring (old_trap);
 
 	      save_parser_state (&pstate);
+	      parser_unset_string_list ();
 	      save_subst_varlist = subst_assign_varlist;
 	      subst_assign_varlist = 0;
 	      save_tempenv = temporary_env;
@@ -483,8 +489,13 @@ run_pending_traps (void)
 		}
 
 	      if (function_code == 0)
-	        /* XXX is x always last_command_exit_value? */
-		x = parse_and_execute (trap_command, "trap", SEVAL_NONINT|SEVAL_NOHIST|SEVAL_RESETLINE|SEVAL_NOOPTIMIZE);
+		{
+		  int pflags;
+		  pflags = interactive_shell ? SEVAL_NOTIFY : 0;
+		  pflags |= SEVAL_NONINT|SEVAL_NOHIST|SEVAL_RESETLINE|SEVAL_NOOPTIMIZE;
+		  /* XXX is x always last_command_exit_value? */
+		  x = parse_and_execute (trap_command, "trap", pflags);
+		}
 	      else
 		{
 		  parse_and_execute_cleanup (sig + 1);	/* XXX - could use -1 */
@@ -603,7 +614,11 @@ trap_handler (int sig)
       /* Set the event hook so readline will call it after the signal handlers
 	 finish executing, so if this interrupted character input we can get
 	 quick response. */
+#if 1
       if (RL_ISSTATE (RL_STATE_SIGHANDLER))
+#else
+      if (RL_ISSTATE (RL_STATE_SIGHANDLER) || RL_ISSTATE (RL_STATE_TERMPREPPED))
+#endif
         bashline_set_event_hook ();
 #endif
 
@@ -950,6 +965,7 @@ restore_default_signal (int sig)
       original_signals[sig] = SIG_DFL;	/* XXX */
       set_signal_handler (sig, SIG_DFL);
       change_signal (sig, (char *)DEFAULT_SIG);
+      sigmodes[sig] &= ~SIG_TRAPPED;	/* no longer trapped */
       return;
     }
     
@@ -1049,8 +1065,11 @@ run_exit_trap (void)
 
       if (code == 0 && function_code == 0)
 	{
+	  int pflags;
+	  pflags = interactive_shell ? SEVAL_NOTIFY : 0;
+	  pflags |= SEVAL_NONINT|SEVAL_NOHIST|SEVAL_RESETLINE|SEVAL_NOOPTIMIZE;
 	  reset_parser ();
-	  parse_and_execute (trap_command, "exit trap", SEVAL_NONINT|SEVAL_NOHIST|SEVAL_RESETLINE|SEVAL_NOOPTIMIZE);
+	  parse_and_execute (trap_command, "exit trap", pflags);
 	}
       else if (code == ERREXIT)
 	retval = last_command_exit_value;
@@ -1081,6 +1100,21 @@ run_trap_cleanup (int sig)
 {
   /* XXX - should we clean up trap_list[sig] == IMPOSSIBLE_TRAP_HANDLER? */
   sigmodes[sig] &= ~(SIG_INPROGRESS|SIG_CHANGED);
+}
+
+void
+clear_exit_trap (int freetrap)
+{
+  if (sigmodes[EXIT_TRAP] & SIG_TRAPPED)
+    {
+      sigmodes[EXIT_TRAP] &= ~SIG_TRAPPED;	/* XXX - SIG_INPROGRESS? */
+      if (freetrap)
+	{
+	  free_trap_command (EXIT_TRAP);
+	  trap_list[EXIT_TRAP] = (char *)NULL;
+	}
+    }
+
 }
 
 #define RECURSIVE_SIG(s) (SPECIAL_TRAP(s) == 0)
@@ -1143,6 +1177,8 @@ _run_trap_internal (int sig, char *tag)
 #endif
 
       save_parser_state (&pstate);
+      parser_unset_string_list ();
+
       save_subst_varlist = subst_assign_varlist;
       subst_assign_varlist = 0;
       save_tempenv = temporary_env;
@@ -1172,7 +1208,9 @@ _run_trap_internal (int sig, char *tag)
 	  function_code = setjmp_nosigs (return_catch);
 	}
 
-      flags = SEVAL_NONINT|SEVAL_NOHIST|SEVAL_NOOPTIMIZE;
+      /* XXX - reconsider this for DEBUG_TRAP, RETURN_TRAP, ERROR_TRAP? */
+      flags = interactive_shell ? SEVAL_NOTIFY : 0;
+      flags |= SEVAL_NONINT|SEVAL_NOHIST|SEVAL_NOOPTIMIZE;
       if (sig != DEBUG_TRAP && sig != RETURN_TRAP && sig != ERROR_TRAP)
 	flags |= SEVAL_RESETLINE;
       if (function_code == 0)
@@ -1276,10 +1314,12 @@ run_debug_trap (void)
       close_pgrp_pipe ();
       restore_pgrp_pipe (save_pipe);
 #  endif
-      if (pipeline_pgrp > 0 && ((subshell_environment & (SUBSHELL_ASYNC|SUBSHELL_PIPE)) == 0))
+      /* If the trap command gave the terminal to another process group,
+	 restore it. XXX - check running_in_background? */
+      if (job_control && pipeline_pgrp > 0 && ((subshell_environment & (SUBSHELL_ASYNC|SUBSHELL_PIPE)) == 0))
 	give_terminal_to (pipeline_pgrp, 1);
 
-      notify_and_cleanup ();
+      notify_and_cleanup (-1);
 #endif
       
 #if defined (DEBUGGER)

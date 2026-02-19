@@ -1,6 +1,6 @@
 /* error.h -- External declarations of functions appearing in error.c. */
 
-/* Copyright (C) 1993-2022 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -30,7 +30,7 @@ extern char *get_name_for_error (void);
 extern void file_error (const char *);
 
 /* Report a programmer's error, and abort.  Pass REASON, and ARG1 ... ARG5. */
-extern void programming_error (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
+extern void programming_error (const char *, ...) __attribute__((__format__ (printf, 1, 2))) __attribute__((__noreturn__));
 
 /* General error reporting.  Pass FORMAT and ARG1 ... ARG5. */
 extern void report_error (const char *, ...)  __attribute__((__format__ (printf, 1, 2)));
@@ -72,6 +72,8 @@ extern char *command_errstr (int);
 extern void err_badarraysub (const char *);
 extern void err_unboundvar (const char *);
 extern void err_readonly (const char *);
+
+extern void err_invalidid (const char *);
 
 #ifdef DEBUG
 #  define INTERNAL_DEBUG(x)	internal_debug x

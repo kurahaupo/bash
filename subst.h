@@ -45,7 +45,7 @@
 
 /* Flag values controlling how assignment statements are treated. */
 #define ASS_APPEND	0x0001	/* a+=b */
-#define ASS_MKLOCAL	0x0002
+#define ASS_MKLOCAL	0x0002	/* make a local variable */
 #define ASS_MKASSOC	0x0004
 #define ASS_MKGLOBAL	0x0008	/* force global assignment */
 #define ASS_NAMEREF	0x0010	/* assigning to nameref variable */
@@ -59,6 +59,7 @@
 #define ASS_ONEWORD	0x1000	/* don't check array subscripts, assume higher level has done that */
 #define ASS_NOTEMPENV	0x2000	/* don't assign into temporary environment */
 #define ASS_XTRACE	0x4000	/* print trace after compound assignment expansion */
+#define ASS_NOEXPORT	0x8000	/* don't export even if allexport is set */
 
 /* Flags for the string extraction functions. */
 #define SX_NOALLOC	0x0001	/* just skip; don't return substring */
@@ -274,6 +275,10 @@ extern char *getifs (void);
    don't do any splitting. */
 extern WORD_LIST *word_split (WORD_DESC *, char *);
 
+/* Expand and perform the assignment statements in SUBST_ASSIGN_VARLIST,
+   then clean up and dispose of it. */
+extern int expand_assignment_statements (char *, int);
+
 /* Take the list of words in LIST and do the various substitutions.  Return
    a new list of words which is the expanded list, and without things like
    variable assignments. */
@@ -308,7 +313,7 @@ extern int find_procsub_child (pid_t);
 extern void set_procsub_status (int, pid_t, int);
 
 extern void wait_procsubs (void);
-extern void reap_procsubs (void);
+extern void delete_procsubs (void);
 #endif
 
 extern WORD_LIST *list_string_with_quotes (char *);
@@ -335,6 +340,7 @@ extern char *cond_expand_word (WORD_DESC *, int);
 #define SD_HISTEXP	0x200	/* skip_to_delim during history expansion */
 #define SD_ARITHEXP	0x400	/* skip_to_delim during arithmetic expansion */
 #define SD_NOERROR	0x800	/* don't print error messages */
+#define SD_QUOTEDSTR	0x1000	/* skipping a part of a single- or double-quoted string */
 
 extern int skip_to_delim (const char *, int, const char *, int);
 

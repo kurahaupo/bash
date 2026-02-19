@@ -1,6 +1,6 @@
 /* histexpand.c -- history expansion. */
 
-/* Copyright (C) 1989-2021,2023 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2021,2023-2025 Free Software Foundation, Inc.
 
    This file contains the GNU History Library (History), a set of
    routines for managing the text of previously typed lines.
@@ -90,8 +90,7 @@ char history_subst_char = '^';
 
 /* During tokenization, if this character is seen as the first character
    of a word, then it, and all subsequent characters up to a newline are
-   ignored.  For a Bourne shell, this should be '#'.  Bash special cases
-   the interactive comment character to not be a comment delimiter. */
+   ignored.  For a Bourne shell, this should be '#'. */
 char history_comment_char = '\0';
 
 /* The list of characters which inhibit the expansion of text if found
@@ -142,7 +141,7 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
   register char c;
   HIST_ENTRY *entry;
   int which, sign, local_index, substring_okay;
-  _hist_search_func_t *search_func;
+  int search_flags, old_offset;
   char *temp;
 
   /* The event can be specified in a number of ways.
@@ -252,9 +251,10 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
 
   *caller_index = i;
 
+  old_offset = history_offset;		/* XXX */
 #define FAIL_SEARCH() \
   do { \
-    history_offset = history_length; xfree (temp) ; return (char *)NULL; \
+    history_offset = old_offset; xfree (temp) ; return (char *)NULL; \
   } while (0)
 
   /* If there is no search string, try to use the previous search string,
@@ -270,10 +270,10 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
         FAIL_SEARCH ();
     }
 
-  search_func = substring_okay ? history_search : history_search_prefix;
+  search_flags = substring_okay ? NON_ANCHORED_SEARCH : ANCHORED_SEARCH;
   while (1)
     {
-      local_index = (*search_func) (temp, -1);
+      local_index = _hs_history_search (temp, -1, -1, search_flags);
 
       if (local_index < 0)
 	FAIL_SEARCH ();
@@ -283,7 +283,7 @@ get_history_event (const char *string, int *caller_index, int delimiting_quote)
 	  entry = current_history ();
 	  if (entry == 0)
 	    FAIL_SEARCH ();
-	  history_offset = history_length;
+	  history_offset = old_offset;	/* XXX - was history_length */
 	
 	  /* If this was a substring search, then remember the
 	     string that we matched for word substitution. */
@@ -679,7 +679,7 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
 	case 's':
 	  {
 	    char *new_event;
-	    int delimiter, failed, si, l_temp, ws, we;
+	    int delimiter, failed, si, l_temp, we;
 
 	    if (c == 's')
 	      {
@@ -778,7 +778,6 @@ history_expand_internal (const char *string, int start, int qc, int *end_index_p
 		  {
 		    for (; temp[si] && fielddelim (temp[si]); si++)
 		      ;
-		    ws = si;
 		    we = history_tokenize_word (temp, si);
 		  }
 
@@ -1599,8 +1598,8 @@ get_word:
       /* Command and process substitution; shell extended globbing patterns */
       if (nestdelim == 0 && delimiter == 0 && member (string[i], "<>$!@?+*") && string[i+1] == '(') /*)*/
 	{
-	  i += 2;
-	  if (string[i] == 0)
+	  i++;			/* string[i] == '(' */ /*)*/
+	  if (string[i+1] == 0)
 	    break;		/* could just return i here */
 	  delimopen = '(';
 	  delimiter = ')';

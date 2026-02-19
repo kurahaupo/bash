@@ -1,7 +1,7 @@
 /* command.h -- The structures used internally to represent commands, and
    the extern declarations of the functions used to create them. */
 
-/* Copyright (C) 1993-2022 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -49,7 +49,7 @@ enum r_instruction {
   (ri == r_output_direction || ri == r_err_and_out)
 
 #define OUTPUT_REDIRECT(ri) \
-  (ri == r_output_direction || ri == r_input_output || ri == r_err_and_out || ri == r_append_err_and_out)
+  (ri == r_output_direction || ri == r_input_output || ri == r_err_and_out || ri == r_append_err_and_out || ri == r_output_force)
 
 #define INPUT_REDIRECT(ri) \
   (ri == r_input_direction || ri == r_inputa_direction || ri == r_input_output)
@@ -115,6 +115,7 @@ enum command_type { cm_for, cm_case, cm_while, cm_if, cm_simple, cm_select,
 #define PF_EXPANDRHS	0x20	/* same as W_EXPANDRHS */
 #define PF_ALLINDS	0x40	/* array, act as if [@] was supplied */
 #define PF_BACKQUOTE	0x80	/* differentiate `` from $() for command_substitute */
+#define PF_COMSUBNLS	0x100	/* for ${; ...; } and read_comsub() to not strip trailing newlines */
 
 /* Possible values for subshell_environment */
 #define SUBSHELL_ASYNC	0x01	/* subshell caused by `command &' */
@@ -126,6 +127,7 @@ enum command_type { cm_for, cm_case, cm_while, cm_if, cm_simple, cm_select,
 #define SUBSHELL_COPROC	0x40	/* subshell from a coproc pipeline */
 #define SUBSHELL_RESETTRAP 0x80	/* subshell needs to reset trap strings on first call to trap */
 #define SUBSHELL_IGNTRAP 0x100  /* subshell should reset trapped signals from trap_handler */
+#define SUBSHELL_RESETJOBS 0x200 /* subshell should clear the jobs list */
 
 /* A structure which represents a word. */
 typedef struct word_desc {
@@ -192,6 +194,7 @@ typedef struct element {
 #define CMD_LASTPIPE	    0x2000
 #define CMD_STDPATH	    0x4000	/* use standard path for command lookup */
 #define CMD_TRY_OPTIMIZING  0x8000	/* try to optimize this simple command */
+#define CMD_WANT_ERR_TRAP	0x10000
 
 /* What a command looks like. */
 typedef struct command {
@@ -366,6 +369,8 @@ typedef struct subshell_com {
 
 #define COPROC_RUNNING	0x01
 #define COPROC_DEAD	0x02
+#define COPROC_STOPPED	0x04
+#define COPROC_FOREGROUND	0x08	/* why would you want to do this? */
 
 typedef struct coproc {
   char *c_name;

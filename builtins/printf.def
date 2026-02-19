@@ -1,7 +1,7 @@
 This file is printf.def, from which is created printf.c.
 It implements the builtin "printf" in Bash.
 
-Copyright (C) 1997-2024 Free Software Foundation, Inc.
+Copyright (C) 1997-2025 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -70,6 +70,7 @@ $END
 
 #include <stdarg.h>
 
+#include <stdckdint.h>
 #include <stdio.h>
 #include <chartypes.h>
 
@@ -89,18 +90,6 @@ $END
 #include "bashgetopt.h"
 #include "common.h"
 
-#if defined (PRI_MACROS_BROKEN)
-#  undef PRIdMAX
-#endif
-
-#if !defined (PRIdMAX)
-#  if HAVE_LONG_LONG
-#    define PRIdMAX	"lld"
-#  else
-#    define PRIdMAX	"ld"
-#  endif
-#endif
-
 #if !defined (errno)
 extern int errno;
 #endif
@@ -111,6 +100,8 @@ extern int errno;
     { \
       QUIT; \
       retval = value; \
+      if (narg_argc != -1) \
+	free (narg_argv); \
       if (conv_bufsize > 4096 ) \
 	{ \
 	  free (conv_buf); \
@@ -122,7 +113,7 @@ extern int errno;
 	  SHELL_VAR *v; \
 	  v = builtin_bind_variable  (vname, vbuf, bindflags); \
 	  stupidly_hack_special_variables (vname); \
-	  if (v == 0 || readonly_p (v) || noassign_p (v)) \
+	  if (v == 0 || ASSIGN_DISALLOWED (v, 0)) \
 	    retval = EXECUTION_FAILURE; \
 	  if (vbsize > 4096) \
 	    { \
@@ -154,7 +145,7 @@ extern int errno;
     char b[2]; \
     tw++; \
     b[0] = c; b[1] = '\0'; \
-    if (vflag) \
+   if (vflag) \
       vbadd (b, 1); \
     else \
       putchar (c); \
@@ -178,8 +169,7 @@ extern int errno;
     if (nw < 0 || (vflag == 0 && ferror (stdout))) \
       { \
 	QUIT; \
-	if (vflag) \
-	  builtin_error ("%s", strerror (errno)); \
+	builtin_error ("%s", strerror (errno)); \
 	PRETURN (EXECUTION_FAILURE); \
       } \
     tw += nw; \
@@ -188,6 +178,11 @@ extern int errno;
 
 #define SKIP1 "#'-+ 0"
 #define LENMODS "hjlLtz"
+#define DIGITS "0123456789"
+
+#ifndef NL_ARGMAX
+#  define NL_ARGMAX		999
+#endif
 
 #ifndef TIMELEN_MAX
 #  define TIMELEN_MAX 128
@@ -203,16 +198,18 @@ extern int asprintf (char **, const char *, ...) __attribute__((__format__ (prin
 extern int vsnprintf (char *, size_t, const char *, va_list) __attribute__((__format__ (printf, 3, 0)));
 #endif
 
-static void printf_erange (char *);
-static int printstr (char *, char *, int, int, int);
+static inline void printf_erange (char *);
+static inline void report_erange (char *, char *);
+static int printstr (char *, char *, size_t, int, int);
 static int tescape (char *, char *, int *, int *);
-static char *bexpand (char *, int, int *, int *);
+static char *bexpand (char *, size_t, int *, size_t *);
 static char *vbadd (char *, int);
 static int vbprintf (const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 static char *mklong (char *, char *, size_t);
 static int getchr (void);
 static char *getstr (void);
-static int  getint (void);
+static int getint (int, int);
+static int getstar (char **, int);
 static intmax_t getintmax (void);
 static uintmax_t getuintmax (void);
 
@@ -220,11 +217,13 @@ static uintmax_t getuintmax (void);
 typedef long double floatmax_t;
 #  define USE_LONG_DOUBLE 1
 #  define FLOATMAX_CONV	"L"
+#  define FLOATMAX_CONVLEN 1
 #  define strtofltmax	strtold
 #else
 typedef double floatmax_t;
 #  define USE_LONG_DOUBLE 0
 #  define FLOATMAX_CONV	""
+#  define FLOATMAX_CONVLEN 0
 #  define strtofltmax	strtod
 #endif
 static double getdouble (void);
@@ -251,20 +250,67 @@ static char *vbuf, *vname;
 static size_t vbsize;
 static size_t vblen;
 
+/* printf format numbered argument support */
+static char **narg_argv;
+static int narg_argc;
+static int narg_maxind;
+static int narg_numind;		/* last numbered argument specification */
+static int narg_seqind;		/* only used when mixing numbered and unnumbered conversions */
+static int narg_base;		/* used on format reuse */
+static char *narg_arg;		/* argument corresponding to the numbered conversion spec */
+static int narg_convtype;	/* 1 = numbered, 0 = unnumbered */
+static int narg_convwarned;	/* want to minimize the warnings */
+static char *nfmt = 0;
+
 static intmax_t tw;
 
 static char *conv_buf;
 static size_t conv_bufsize;
 
-static inline int
-decodeprec (char *ps)
+static void
+init_numarg ()
 {
-  intmax_t mpr;
+  size_t len;
+  WORD_LIST *l;
 
-  mpr = *ps++ - '0';
-  while (DIGIT (*ps))
-    mpr = (mpr * 10) + (*ps++ - '0');
-  return (mpr < 0 || mpr > INT_MAX) ? INT_MAX : mpr;
+  len = list_length ((GENERIC_LIST *)orig_arglist);
+  narg_argv = (char **)xmalloc ((len + 2) * sizeof (char *));	/* +2 because we don't use 0 */
+
+  for (narg_argc = 1, l = orig_arglist; l; l = l->next)
+    narg_argv[narg_argc++] = l->word->word;
+
+  /* If we've processed some unnumbered conversion specifications before
+     we get the first numbered one, count those as "previous conversion
+     specifications that consumed an argument." */
+  for (narg_seqind = 0, l = orig_arglist; l != garglist; l = l->next)
+    narg_seqind++;
+
+  narg_argv[narg_argc] = NULL;
+  narg_maxind = narg_numind = narg_base = 0;
+  narg_arg = NULL;
+}
+  
+static inline int
+decodeint (char **str, int diagnose, int overflow_return)
+{
+  int pr, v;
+  char *ps;
+
+  ps = *str;
+  pr = *ps++ - '0';
+  v = 0;
+
+  /* use C23 macros to check overflow */
+  for (; DIGIT (*ps); ps++)
+    {
+      v |= ckd_mul (&pr, pr, 10);
+      v |= ckd_add (&pr, pr, *ps - '0');
+    }
+  if (v && diagnose)
+    report_erange (*str, ps);
+
+  *str = ps;
+  return (v ? overflow_return : pr);
 }
 
 int
@@ -272,7 +318,10 @@ printf_builtin (WORD_LIST *list)
 {
   int ch, fieldwidth, precision;
   int have_fieldwidth, have_precision, use_Lmod, altform, longform;
+  int moreargs;
   char convch, thisch, nextch, *format, *modstart, *precstart, *fmt, *start;
+  char *nptr, *origfmt;
+  size_t nargind;
 #if defined (HANDLE_MULTIBYTE)
   char mbch[25];		/* 25 > MB_LEN_MAX, plus can handle 4-byte UTF-8 and large Unicode characters*/
   int mbind, mblen, mb_cur_max;
@@ -283,6 +332,8 @@ printf_builtin (WORD_LIST *list)
 
   conversion_error = 0;
   vflag = 0;
+
+  narg_argc = -1;
 
   reset_internal_getopt ();
   while ((ch = internal_getopt (list, "v:")) != -1)
@@ -333,7 +384,7 @@ printf_builtin (WORD_LIST *list)
       SHELL_VAR *v;
       v = builtin_bind_variable (vname, "", 0);
       stupidly_hack_special_variables (vname);
-      return ((v == 0 || readonly_p (v) || noassign_p (v)) ? EXECUTION_FAILURE : EXECUTION_SUCCESS);
+      return ((v == 0 || ASSIGN_DISALLOWED (v, 0)) ? EXECUTION_FAILURE : EXECUTION_SUCCESS);
     }
 
   /* If the format string is empty after preprocessing, return immediately. */
@@ -348,15 +399,23 @@ printf_builtin (WORD_LIST *list)
 
   mb_cur_max = MB_CUR_MAX;
 
+  nfmt = xrealloc (nfmt, strlen (format) + 1);	/* XXX error checking */
+  nfmt[0] = '\0';
+
   /* Basic algorithm is to scan the format string for conversion
      specifications -- once one is found, find out if the field
      width or precision is a '*'; if it is, gather up value.  Note,
      format strings are reused as necessary to use up the provided
      arguments, arguments of zero/null string are provided to use
      up the format string. */
+
+  /* We only warn once, even if we reuse the format, and we only warn in
+     posix mode. */
+  narg_convwarned = !posixly_correct;
   do
     {
       tw = 0;
+
       /* find next format specification */
       for (fmt = format; *fmt; fmt++)
 	{
@@ -400,7 +459,9 @@ printf_builtin (WORD_LIST *list)
 	    }
 
 	  /* ASSERT(*fmt == '%') */
-	  start = fmt++;
+	  origfmt = fmt;			/* saved for format errors */
+	  nptr = start = nfmt;			/* we construct our own format string */
+	  *nptr++ = *fmt++;
 
 	  if (*fmt == '%')		/* %% prints a % */
 	    {
@@ -408,39 +469,117 @@ printf_builtin (WORD_LIST *list)
 	      continue;
 	    }
 
+	  narg_convtype = 0;
+	  /* Look for possible %N$ numbered conversion specifier. */
+	  /* "Conversions can be applied to the nth argument operand rather
+	      than to the next argument operand. In this case, the conversion
+	      specifier character '%' is replaced by the sequence "%n$",
+	      where n is a decimal integer in the range [1,{NL_ARGMAX}],
+	      giving the argument operand number. This feature provides for
+	      the definition of format strings that select arguments in an
+	      order appropriate to specific languages." */
+	  /* This leaves nargv_curind pointing to the argument corresponding
+	     to the numbered conversion spec or the next sequential one after
+	     having processed a numbered spec, so the advancearg() in the
+	     various code handling the conversion specifiers advances it. */
+	  /* We don't allow N$ for precision or field width at this time. */
+	  nargind = strspn (fmt, DIGITS);
+	  if (nargind > 0 && fmt[nargind] == '$')
+	    {
+	      char *ep;
+	      int narg, thisarg;
+
+	      if (garglist != orig_arglist && narg_convwarned == 0)
+		{
+		  builtin_warning ("%s", _("should not mix numbered and unnumbered conversions"));
+		  narg_convwarned = 1;
+		}
+	      if (narg_argc == -1)
+		init_numarg ();
+	      thisarg = (int)strtol (fmt, &ep, 10);
+	      /* "If it is a numbered argument conversion specification,
+		  printf should write a diagnostic message to standard error
+		  and exit with non-zero status" */
+	      if (thisarg <= 0 || thisarg >= narg_argc)
+		{
+		  /* We don't want to print this error message for numbered
+		     conversions exceeding the number of arguments  unless
+		     we are in posix mode, so we set narg_numind = narg_argc
+		     if we are not. */
+		  if (thisarg <= 0 || posixly_correct)
+		    {
+		      builtin_error (_("%d: numbered conversion out of range"), thisarg);
+		      PRETURN (EXECUTION_FAILURE);
+		    }
+		  thisarg = narg_argc;
+		}
+	      thisarg += narg_base;
+	      narg_numind = (thisarg < narg_argc) ? thisarg : narg_argc;
+	      if (narg_numind > narg_maxind)
+		narg_maxind = narg_numind;
+	      narg_arg = narg_argv[narg_numind];
+	      narg_convtype = 1;
+	      fmt += nargind + 1;
+	    }
+	  else if (narg_argc != -1)
+	    {
+	      int thisarg;
+
+	      if (narg_convwarned == 0)
+		{
+		  builtin_warning ("%s", _("should not mix numbered and unnumbered conversions"));
+		  narg_convwarned = 1;
+		}
+	      /* There is genuine incompatibility here between macOS/FreeBSD
+		 printf and coreutils printf.
+		 Given '%s %3$s %s\n' A B C D, coreutils printf treats the
+		 unnumbered coversion specs sequentially, so it echoes "A C B",
+		 then "D" on a new line.
+		 FreeBSD printf treats the next unnumbered specifier following
+		 a numbered specifier as numbered + 1, and prints "A C D".
+		 zsh and ksh93 are like coreutils; mksh is like FreeBSD.
+		 We follow coreutils here for now, but subject to change. */
+	      narg_arg = (narg_seqind < narg_argc) ? narg_argv[++narg_seqind] : NULL;
+	      if (narg_seqind > narg_maxind)
+		narg_maxind = narg_seqind;
+	    }
+
 	  /* Found format specification, skip to field width. We check for
 	     alternate form for possible later use. */
-	  for (; *fmt && strchr(SKIP1, *fmt); ++fmt)
-	    if (*fmt == '#')
-	      altform++;
+	  while (*fmt && strchr(SKIP1, *fmt))
+	    {
+	      if (*fmt == '#')
+		altform++;
+	      *nptr++ = *fmt++;		/* build format string */
+	    }
+	  *nptr = '\0';
 
 	  /* Skip optional field width. */
 	  if (*fmt == '*')
 	    {
-	      fmt++;
+	      *nptr++ = *fmt++;
 	      have_fieldwidth = 1;
-	      fieldwidth = getint ();
-	      /* Handle field with overflow by ignoring it. */
-	      if (fieldwidth == INT_MAX || fieldwidth == INT_MIN)
-		  fieldwidth = 0;
+	      /* Handle field with overflow by ignoring fieldwidth for now.
+		 getstar() prints a message. */
+	      fieldwidth = getstar (&fmt, 0);
 	    }
 	  else
 	    while (DIGIT (*fmt))
-	      fmt++;
+	      *nptr++ = *fmt++;
+	  *nptr = '\0';
 
 	  /* Skip optional '.' and precision */
 	  if (*fmt == '.')
 	    {
-	      ++fmt;
+	      *nptr++ = *fmt++;
 	      if (*fmt == '*')
 		{
-		  fmt++;
+		  *nptr++ = *fmt++;
 		  have_precision = 1;
-		  precision = getint ();
-		  /* Handle precision overflow by ignoring it. "A negative
-		     precision is treated as if it were missing." */
-		  if (precision == INT_MAX || precision == INT_MIN)
-		    precision = -1;
+		  /* Handle precision overflow by ignoring precision for now.
+		     getstar() prints a message.
+		     "A negative precision is treated as if it were missing." */
+		  precision = getstar (&fmt, -1);
 		}
 	      else
 		{
@@ -453,12 +592,13 @@ printf_builtin (WORD_LIST *list)
 #else
 		  if (*fmt == '-')
 #endif
-		    fmt++;
+		    *nptr++ = *fmt++;
 		  if (DIGIT (*fmt))
 		    precstart = fmt;
 		  while (DIGIT (*fmt))
-		    fmt++;
+		    *nptr++ = *fmt++;
 		}
+	      *nptr = '\0';
 	    }
 
 	  /* skip possible format modifiers */
@@ -468,7 +608,7 @@ printf_builtin (WORD_LIST *list)
 	    {
 	      use_Lmod |= USE_LONG_DOUBLE && *fmt == 'L';
 	      longform |= *fmt == 'l';
-	      fmt++;
+	      *nptr++ = *fmt++;
 	    }
 	    
 	  if (*fmt == 0)
@@ -476,6 +616,9 @@ printf_builtin (WORD_LIST *list)
 	      builtin_error (_("`%s': missing format character"), start);
 	      PRETURN (EXECUTION_FAILURE);
 	    }
+
+	  *nptr++ = *fmt;
+	  *nptr = '\0';
 
 	  convch = *fmt;
 	  thisch = modstart[0];
@@ -492,7 +635,7 @@ printf_builtin (WORD_LIST *list)
 		char p;
 
 #if defined (HANDLE_MULTIBYTE)
-		if (longform || convch == 'C')
+		if ((longform || convch == 'C') && locale_mb_cur_max > 1)
 		  {
 		    wchar_t wc, ws[2];
 		    int r;
@@ -522,7 +665,7 @@ printf_builtin (WORD_LIST *list)
 	      {
 		char *p;
 #if defined (HANDLE_MULTIBYTE)
-		if (longform || convch == 'S')
+		if ((longform || convch == 'S') && locale_mb_cur_max > 1)
 		  {
 		    wchar_t *wp;
 		    size_t slen;
@@ -537,6 +680,7 @@ printf_builtin (WORD_LIST *list)
 		  }
 #endif
 #if 0	/*TAG:bash-5.4*/
+		/* If altform, treat like %b */
 		if (altform == 0)
 #endif
 		  {
@@ -550,10 +694,12 @@ printf_builtin (WORD_LIST *list)
 	    case 'b':		/* expand escapes in argument */
 	      {
 		char *p, *xp;
-		int rlen, r;
+		size_t rlen;
+		int r;
 
 		p = getstr ();
-		ch = rlen = r = 0;
+		ch = r = 0;
+		rlen = 0;
 		xp = bexpand (p, strlen (p), &ch, &rlen);
 
 		if (xp)
@@ -593,11 +739,11 @@ printf_builtin (WORD_LIST *list)
 		      break;
 		    *t++ = *fmt++;
 		  }
-		*t = '\0';
-		if (*++fmt != 'T')
+		*t = '\0';	/*(*/
+		if (*fmt != ')' || *++fmt != 'T')
 		  {
 		    builtin_warning (_("`%c': invalid time format specification"), *fmt);
-		    fmt = start;
+		    fmt = origfmt;
 		    free (timefmt);
 		    PC (*fmt);
 		    continue;
@@ -610,7 +756,10 @@ printf_builtin (WORD_LIST *list)
 		  }
 		/* argument is seconds since the epoch with special -1 and -2 */
 		/* default argument is equivalent to -1; special case */
-		arg = garglist ? getintmax () : -1;
+		if (narg_argc != -1)
+		  arg = (narg_numind < narg_argc && narg_argv[narg_numind]) ? getintmax (): -1;
+		else
+		  arg = garglist ? getintmax () : -1;
 		if (arg == -1)
 		  secs = NOW;		/* roughly date +%s */
 		else if (arg == -2)
@@ -633,8 +782,8 @@ printf_builtin (WORD_LIST *list)
 		else
 		  timebuf[sizeof(timebuf) - 1] = '\0';
 		/* convert to %s format that preserves fieldwidth and precision */
-		modstart[0] = 's';
-		modstart[1] = '\0';
+		*nptr++ = 's';
+		*nptr = '\0';
 		r = printstr (start, timebuf, strlen (timebuf), fieldwidth, precision);	/* XXX - %s for now */
 		if (r < 0)
 		  PRETURN (EXECUTION_FAILURE);
@@ -672,7 +821,11 @@ printf_builtin (WORD_LIST *list)
 		if (convch == 'Q' && (have_precision || precstart))
 		  {
 		    if (precstart)
-		      precision = decodeprec (precstart);
+		      {
+			char *prec;
+			prec = precstart;
+		        precision = decodeint (&prec, 0, -1);
+		      }
 		    slen = strlen (p);
 		    /* printf precision works in bytes. */
 		    if (precision >= 0 && precision < slen)
@@ -691,8 +844,12 @@ printf_builtin (WORD_LIST *list)
 		    slen = strlen (xp);
 		    if (convch == 'Q')
 		      {
-			if (slen > precision)
-			  precision = slen;
+		        /* check for string length overflow when adjusting precision */
+			if (ckd_add (&precision, slen, 0))
+			  {
+			    builtin_error ("%%Q: %s %s", _("string length"), strerror (ERANGE));
+			    precision = -1;
+			  }
 		      }		    
 		    /* Use printstr to get fieldwidth and precision right. */
 		    r = printstr (start, xp, slen, fieldwidth, precision);
@@ -712,8 +869,8 @@ printf_builtin (WORD_LIST *list)
 		long p;
 		intmax_t pp;
 
-		p = pp = getintmax ();
-		if (p != pp)
+		pp = getintmax ();
+		if (pp < LONG_MIN || pp > LONG_MAX)
 		  {
 		    f = mklong (start, PRIdMAX, sizeof (PRIdMAX) - 2);
 		    PF (f, pp);
@@ -724,6 +881,7 @@ printf_builtin (WORD_LIST *list)
 		       in "long".  This also works around some long
 		       long and/or intmax_t library bugs in the common
 		       case, e.g. glibc 2.2 x86.  */
+		    p = pp;
 		    f = mklong (start, "l", 1);
 		    PF (f, p);
 		  }
@@ -771,7 +929,7 @@ printf_builtin (WORD_LIST *list)
 		    floatmax_t p;
 
 		    p = getfloatmax ();
-		    f = mklong (start, "L", 1);
+		    f = mklong (start, FLOATMAX_CONV, FLOATMAX_CONVLEN);
 		    PF (f, p);
 		  }
 		else		/* posixly_correct */
@@ -802,8 +960,44 @@ printf_builtin (WORD_LIST *list)
 	  /* PRETURN will print error message. */
 	  PRETURN (EXECUTION_FAILURE);
 	}
+
+      /* "The format operand shall be reused as often as necessary to satisfy
+	  the argument operands. If conversion specifications beginning with
+	  a "%n$" sequence are used, on format reuse the value of n shall
+	  refer to the nth argument operand following the highest numbered
+	  argument operand consumed by the previous use of the format operand." */
+      if (narg_argc != -1)
+	{
+	  /* If we consumed the last argument, we're done. */
+	  moreargs = (narg_numind < narg_argc) && (narg_maxind < narg_argc) && (narg_seqind < narg_argc);
+	  narg_base = narg_maxind;
+	  narg_maxind = 0;		/* need to recalculate this */
+	}
+      else
+	moreargs = garglist && garglist != list->next;
+
+      /* "on format reuse the value of n shall refer to the nth argument
+	  operand following the highest numbered argument operand consumed
+	  by the previous use of the format operand." */
+      /* This mess is to handle combining numbered and unnumbered conversion
+	 specifiers. */
+      if (moreargs && narg_argc != -1)
+	{
+	  /* If we decide to treat numbered and unnumbered specifiers with
+	     different counters. */
+	  if (garglist == 0 && orig_arglist != 0)
+	    moreargs = 0;
+	  /* I don't like this -- POSIX says "previous conversion specification
+	     that consumed an argument", not "highest-numbered argument
+	     processed" -- but this is what coreutils printf seems to do. */
+	  narg_seqind = narg_base;
+	  /* The second clause will be true if we processed the last
+	     argument (not necessarily all arguments). */
+	  if (narg_seqind >= narg_argc || (narg_base + 1) >= narg_argc)
+	    moreargs = 0;
+	}
     }
-  while (garglist && garglist != list->next);
+  while (moreargs);
 
   if (conversion_error)
     retval = EXECUTION_FAILURE;
@@ -811,11 +1005,22 @@ printf_builtin (WORD_LIST *list)
   PRETURN (retval);
 }
 
-static void
+static inline void
 printf_erange (char *s)
 {
-  builtin_error (_("%s: %s"), s, strerror(ERANGE));
+  builtin_error ("%s: %s", s, strerror(ERANGE));
   conversion_error = 1;
+}
+
+static inline void
+report_erange (char *s, char *e)
+{
+  unsigned char sc;
+
+  sc = *e;
+  *e = 0;
+  printf_erange (s);
+  *e = sc;
 }
 
 /* We duplicate a lot of what printf(3) does here. */
@@ -828,14 +1033,13 @@ printf_erange (char *s)
    Returns -1 on detectable write error, 0 otherwise. */
 
 static int
-printstr (char *fmt, char *string, int len, int fieldwidth, int precision)
+printstr (char *fmt, char *string, size_t len, int fieldwidth, int precision)
 {
 #if 0
   char *s;
 #endif
   int padlen, nc, ljust, i;
   int fw, pr;			/* fieldwidth and precision */
-  intmax_t mfw, mpr;
 
   if (string == 0)
     string = "";
@@ -848,8 +1052,6 @@ printstr (char *fmt, char *string, int len, int fieldwidth, int precision)
 
   ljust = fw = 0;
   pr = -1;
-  mfw = 0;
-  mpr = -1;
 
   /* skip flags */
   while (strchr (SKIP1, *fmt))
@@ -871,13 +1073,7 @@ printstr (char *fmt, char *string, int len, int fieldwidth, int precision)
 	}
     }
   else if (DIGIT (*fmt))
-    {
-      mfw = *fmt++ - '0';
-      while (DIGIT (*fmt))
-	mfw = (mfw * 10) + (*fmt++ - '0');
-      /* Error if fieldwidth > INT_MAX here? */
-      fw = (mfw < 0 || mfw > INT_MAX) ? INT_MAX : mfw;
-    }
+    fw = decodeint (&fmt, 1, 0);
 
   /* get precision, if present. doesn't handle negative precisions */
   if (*fmt == '.')
@@ -890,13 +1086,15 @@ printstr (char *fmt, char *string, int len, int fieldwidth, int precision)
 	}
       else if (DIGIT (*fmt))
 	{
-	  mpr = *fmt++ - '0';
-	  while (DIGIT (*fmt))
-	    mpr = (mpr * 10) + (*fmt++ - '0');
-	  /* Error if precision > INT_MAX here? */
-	  pr = (mpr < 0 || mpr > INT_MAX) ? INT_MAX : mpr;
-	  if (pr < precision && precision < INT_MAX)
-	    pr = precision;		/* XXX */
+	  pr = decodeint (&fmt, 1, -1);
+	  /* pr < precision means we adjusted precision in printf_builtin
+	     for the quoted string length (%Q), so we use the adjusted value */
+#if 1 /*TAG:bash-5.4 20250702 */
+	  if (pr >= 0 && pr < precision)
+#else
+	  if (pr < precision)
+#endif
+	    pr = precision;
 	}
       else
 	pr = 0;		/* "a null digit string is treated as zero" */
@@ -940,13 +1138,10 @@ printstr (char *fmt, char *string, int len, int fieldwidth, int precision)
 static int
 printwidestr (char *fmt, wchar_t *wstring, size_t len, int fieldwidth, int precision)
 {
-#if 0
   char *s;
-#endif
   char *string;
   int padlen, nc, ljust, i;
   int fw, pr;			/* fieldwidth and precision */
-  intmax_t mfw, mpr;
 
   if (wstring == 0)
     wstring = L"";
@@ -959,8 +1154,6 @@ printwidestr (char *fmt, wchar_t *wstring, size_t len, int fieldwidth, int preci
 
   ljust = fw = 0;
   pr = -1;
-  mfw = 0;
-  mpr = -1;
 
   /* skip flags */
   while (strchr (SKIP1, *fmt))
@@ -982,13 +1175,7 @@ printwidestr (char *fmt, wchar_t *wstring, size_t len, int fieldwidth, int preci
 	}
     }
   else if (DIGIT (*fmt))
-    {
-      mfw = *fmt++ - '0';
-      while (DIGIT (*fmt))
-	mfw = (mfw * 10) + (*fmt++ - '0');
-      /* Error if fieldwidth > INT_MAX here? */
-      fw = (mfw < 0 || mfw > INT_MAX) ? INT_MAX : mfw;
-    }
+    fw = decodeint (&fmt, 1, 0);
 
   /* get precision, if present. doesn't handle negative precisions */
   if (*fmt == '.')
@@ -1001,13 +1188,15 @@ printwidestr (char *fmt, wchar_t *wstring, size_t len, int fieldwidth, int preci
 	}
       else if (DIGIT (*fmt))
 	{
-	  mpr = *fmt++ - '0';
-	  while (DIGIT (*fmt))
-	    mpr = (mpr * 10) + (*fmt++ - '0');
-	  /* Error if precision > INT_MAX here? */
-	  pr = (mpr < 0 || mpr > INT_MAX) ? INT_MAX : mpr;
-	  if (pr < precision && precision < INT_MAX)
-	    pr = precision;		/* XXX */
+	  pr = decodeint (&fmt, 1, -1);
+	  /* pr < precision means we adjusted precision in printf_builtin
+	     for the quoted string length (%Q), so we use the adjusted value */
+#if 1 /*TAG:bash-5.4 20250702 */
+	  if (pr >= 0 && pr < precision)
+#else
+	  if (pr < precision)
+#endif
+	    pr = precision;
 	}
       else
 	pr = 0;		/* "a null digit string is treated as zero" */
@@ -1167,7 +1356,7 @@ tescape (char *estart, char *cp, int *lenp, int *sawc)
 }
 
 static char *
-bexpand (char *string, int len, int *sawc, int *lenp)
+bexpand (char *string, size_t len, int *sawc, size_t *lenp)
 {
   int temp, c;
   char *ret, *r, *s, *send;
@@ -1329,16 +1518,44 @@ mklong (char *str, char *modifiers, size_t mlen)
   return (conv_buf);
 }
 
+static inline char *
+getarg (void)
+{
+  if (narg_argc != -1)
+    return narg_arg;
+
+  return (garglist ? garglist->word->word : 0);
+}
+
+static inline void
+advancearg (void)
+{
+  if (narg_argc != -1)
+    {
+#if 0
+      /* see if we need to manage narg_seqind here or in printf_builtin */
+      if (narg_numind < narg_argc)
+	narg_numind++;
+#endif
+    }
+  else
+    garglist = garglist->next;
+}
+
 static int
 getchr (void)
 {
   int ret;
+  char *arg;
 
-  if (garglist == 0)
+  arg = getarg ();
+
+  if (arg == 0)
     return ('\0');
 
-  ret = (int)garglist->word->word[0];
-  garglist = garglist->next;
+  ret = (int)arg[0];
+
+  advancearg ();
   return ret;
 }
 
@@ -1347,85 +1564,137 @@ getstr (void)
 {
   char *ret;
 
-  if (garglist == 0)
+  ret = getarg ();
+  if (ret == 0)
     return ("");
 
-  ret = garglist->word->word;
-  garglist = garglist->next;
+  advancearg ();
   return ret;
 }
 
-/* Don't call getintmax here because it may consume an argument on error, and
-   we call this to get field width/precision arguments. */
-static int
-getint (void)
+/* POSIX.2 says ``...a diagnostic message shall be written to standard
+   error, and the utility shall not exit with a zero exit status, but
+   shall continue processing any remaining operands and shall write the
+   value accumulated at the time the error was detected to standard
+   output.'' */
+
+static inline void
+chk_converror (char *s, char *ep)
 {
-  intmax_t ret;
-  char *ep;
-
-  if (garglist == 0)
-    return (0);
-
-  if (garglist->word->word[0] == '\'' || garglist->word->word[0] == '"')
-    return asciicode ();
-
-  errno = 0;
-  ret = strtoimax (garglist->word->word, &ep, 0);
-
-  if (*ep)
+  if (*ep || ep == s)
     {
-      sh_invalidnum (garglist->word->word);
+      sh_invalidnum (s);
       conversion_error = 1;
     }
   else if (errno == ERANGE)
-    printf_erange (garglist->word->word);
-  else if (ret > INT_MAX)
+    printf_erange (s);
+}
+
+/* Don't call getintmax here because it may consume an argument on error, and
+   we call this to get field width/precision arguments. This is only called
+   by getstar() to get field width/precision values from arguments. It does
+   not call getarg() and it does not advance the argument with advancearg. */
+static int
+getint (int numberedconv, int overflow_retval)
+{
+  intmax_t ret;
+  char *ep, *arg;
+  int overflow;
+
+  /* XXX - check here that narg_numind < narg_argc and return null in that case? */
+  arg = (narg_argc != -1) ? (numberedconv ? narg_argv[narg_numind] : narg_argv[narg_seqind])
+			  : (garglist ? garglist->word->word : 0);
+
+  if (arg == 0)
+    return (0);
+
+  if (arg[0] == '\'' || arg[0] == '"')
+    return asciicode ();
+
+  errno = 0;
+  ret = strtoimax (arg, &ep, 0);
+  if (overflow = (errno == ERANGE) || (ret < INT_MIN || ret > INT_MAX))
+    errno = ERANGE;	/* force errno */
+
+  chk_converror (arg, ep);
+
+  return (overflow ? overflow_retval : (int)ret);
+}
+
+static int
+getstar (char **fmtp, int overflow_retval)
+{
+  int ret, numconv;
+  char *ep, **fp;
+  size_t l, ind;
+
+  fp = fmtp;
+
+  numconv = 0;
+  ep = *fp;
+  l = DIGIT (**fp) ? strspn (ep, DIGITS) : 0;
+  if (l > 0 && ep[l] == '$')
     {
-      printf_erange (garglist->word->word);
-      ret = INT_MAX;
+      if (narg_argc == -1)
+	return overflow_retval;
+      ind = decodeint (fp, 1, -1);
+      if (**fp == '$')
+	{
+	  ep = *fp + 1;
+	  fp = &ep;
+	}
+      *fmtp = *fp;
+      ind += narg_base;
+      if (ind > 0 && ind <= narg_argc)		/* can't have 0-based indices */
+	narg_numind = ind;
+      else
+	return overflow_retval;
+      numconv = 1;
+      if (narg_numind > narg_maxind)
+	narg_maxind = narg_numind;
     }
-  else if (ret < INT_MIN)
+  else if (narg_argc != -1)
     {
-      printf_erange (garglist->word->word);
-      ret = INT_MIN;
+      if (narg_convwarned == 0)
+	{
+          builtin_warning ("%s", _("should not mix numbered and unnumbered conversions"));
+	  narg_convwarned = 1;
+	}
+     /* We manage the sequential index here and in printf_builtin */
+     if (narg_seqind < narg_argc)
+	++narg_seqind;
+     if (narg_seqind > narg_maxind)
+	narg_maxind = narg_seqind;
     }
 
-  garglist = garglist->next;
-  return ((int)ret);
+  ret = getint (numconv, overflow_retval);
+
+  if (narg_argc == -1)
+    advancearg ();
+
+  return ret;
 }
 
 static intmax_t
 getintmax (void)
 {
   intmax_t ret;
-  char *ep;
+  char *ep, *arg;
 
-  if (garglist == 0)
+  arg = getarg ();
+
+  if (arg == 0)
     return (0);
 
-  if (garglist->word->word[0] == '\'' || garglist->word->word[0] == '"')
+  if (arg[0] == '\'' || arg[0] == '"')
     return asciicode ();
 
   errno = 0;
-  ret = strtoimax (garglist->word->word, &ep, 0);
+  ret = strtoimax (arg, &ep, 0);
 
-  if (*ep)
-    {
-      sh_invalidnum (garglist->word->word);
-      /* POSIX.2 says ``...a diagnostic message shall be written to standard
-	 error, and the utility shall not exit with a zero exit status, but
-	 shall continue processing any remaining operands and shall write the
-         value accumulated at the time the error was detected to standard
-	 output.''  Yecch. */
-#if 0
-      ret = 0;		/* return partially-converted value from strtoimax */
-#endif
-      conversion_error = 1;
-    }
-  else if (errno == ERANGE)
-    printf_erange (garglist->word->word);
+  chk_converror (arg, ep);
 
-  garglist = garglist->next;
+  advancearg ();
   return (ret);
 }
 
@@ -1433,30 +1702,22 @@ static uintmax_t
 getuintmax (void)
 {
   uintmax_t ret;
-  char *ep;
+  char *ep, *arg;
 
-  if (garglist == 0)
+  arg = getarg ();
+
+  if (arg == 0)
     return (0);
 
-  if (garglist->word->word[0] == '\'' || garglist->word->word[0] == '"')
+  if (arg[0] == '\'' || arg[0] == '"')
     return asciicode ();
 
   errno = 0;
-  ret = strtoumax (garglist->word->word, &ep, 0);
-  
-  if (*ep)
-    {
-      sh_invalidnum (garglist->word->word);
-#if 0
-      /* Same POSIX.2 conversion error requirements as getintmax(). */
-      ret = 0;
-#endif
-      conversion_error = 1;
-    }
-  else if (errno == ERANGE)
-    printf_erange (garglist->word->word);
+  ret = strtoumax (arg, &ep, 0);
 
-  garglist = garglist->next;
+  chk_converror (arg, ep);  
+
+  advancearg ();
   return (ret);
 }
 
@@ -1464,26 +1725,22 @@ static double
 getdouble (void)
 {
   double ret;
-  char *ep;
+  char *ep, *arg;
 
-  if (garglist == 0)
+  arg = getarg ();
+
+  if (arg == 0)
     return (0);
 
-  if (garglist->word->word[0] == '\'' || garglist->word->word[0] == '"')
+  if (arg[0] == '\'' || arg[0] == '"')
     return asciicode ();
 
   errno = 0;
-  ret = strtod (garglist->word->word, &ep);
+  ret = strtod (arg, &ep);
 
-  if (*ep)
-    {
-      sh_invalidnum (garglist->word->word);
-      conversion_error = 1;
-    }
-  else if (errno == ERANGE)
-    printf_erange (garglist->word->word);
+  chk_converror (arg, ep);
 
-  garglist = garglist->next;
+  advancearg ();
   return (ret);
 }
 
@@ -1491,30 +1748,22 @@ static floatmax_t
 getfloatmax (void)
 {
   floatmax_t ret;
-  char *ep;
+  char *ep, *arg;
 
-  if (garglist == 0)
+  arg = getarg ();
+
+  if (arg == 0)
     return (0);
 
-  if (garglist->word->word[0] == '\'' || garglist->word->word[0] == '"')
+  if (arg[0] == '\'' || arg[0] == '"')
     return asciicode ();
 
   errno = 0;
-  ret = strtofltmax (garglist->word->word, &ep);
+  ret = strtofltmax (arg, &ep);
 
-  if (*ep)
-    {
-      sh_invalidnum (garglist->word->word);
-#if 0
-      /* Same thing about POSIX.2 conversion error requirements. */
-      ret = 0;
-#endif
-      conversion_error = 1;
-    }
-  else if (errno == ERANGE)
-    printf_erange (garglist->word->word);
+  chk_converror (arg, ep);
 
-  garglist = garglist->next;
+  advancearg ();
   return (ret);
 }
 
@@ -1523,24 +1772,25 @@ static intmax_t
 asciicode (void)
 {
   register intmax_t ch;
+  char *arg;
 #if defined (HANDLE_MULTIBYTE)
   wchar_t wc;
-  size_t slen;
-  int mblength;
+  size_t slen, mblength;
 #endif
   DECLARE_MBSTATE;
 
+  arg = getarg ();
 #if defined (HANDLE_MULTIBYTE)
-  slen = strlen (garglist->word->word+1);
+  slen = strlen (arg+1);
   wc = 0;
-  mblength = mbrtowc (&wc, garglist->word->word+1, slen, &state);
-  if (mblength > 0)
+  mblength = mbrtowc (&wc, arg+1, slen, &state);
+  if (MB_INVALIDCH (mblength) == 0)
     ch = wc;		/* XXX */
   else
 #endif
-    ch = (unsigned char)garglist->word->word[1];
+    ch = (unsigned char)arg[1];
 
-  garglist = garglist->next;
+  advancearg ();
   return (ch);
 }
 
@@ -1551,16 +1801,18 @@ getwidestr (size_t *lenp)
   wchar_t *ws;
   const char *mbs;
   size_t slen, mblength;
+  char *arg;
   DECLARE_MBSTATE;
 
-  if (garglist == 0)
+  arg = getarg ();
+  if (arg == 0)
     {
       if (lenp)
 	*lenp = 0;
       return NULL;
     }
 
-  mbs = garglist->word->word;
+  mbs = arg;
   slen = strlen (mbs);
   ws = (wchar_t *)xmalloc ((slen + 1) * sizeof (wchar_t));
   mblength = mbsrtowcs (ws, &mbs, slen + 1, &state);
@@ -1571,13 +1823,13 @@ getwidestr (size_t *lenp)
     {
       int i;
       for (i = 0; i < slen; i++)
-	ws[i] = (wchar_t)garglist->word->word[i];
+	ws[i] = (wchar_t)arg[i];
       ws[slen] = L'\0';
       if (lenp)
 	*lenp = slen;
     }
 
-  garglist = garglist->next;
+  advancearg ();
   return (ws);
 }
 
@@ -1586,17 +1838,19 @@ getwidechar (void)
 {
   wchar_t wc;
   size_t slen, mblength;
+  char *arg;
   DECLARE_MBSTATE;
 
-  if (garglist == 0)
+  arg = getarg ();
+  if (arg == 0)
     return L'\0';
 
   wc = 0;
-  mblength = mbrtowc (&wc, garglist->word->word, locale_mb_cur_max, &state);
+  mblength = mbrtowc (&wc, arg, locale_mb_cur_max, &state);
   if (MB_INVALIDCH (mblength))
-    wc = (wchar_t)garglist->word->word[0];
+    wc = (wchar_t)arg[0];
 
-  garglist = garglist->next;
+  advancearg ();
   return (wc);
 }
 

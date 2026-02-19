@@ -1,7 +1,7 @@
 /* parser.h -- Everything you wanted to know about the parser, but were
    afraid to ask. */
 
-/* Copyright (C) 1995-2021 Free Software Foundation, Inc.
+/* Copyright (C) 1995-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -53,6 +53,7 @@
 #define PST_STRING	0x1000000	/* parsing a string to a command or word list */
 #define PST_CMDBLTIN	0x2000000	/* last token was the `command' builtin */
 #define PST_FUNSUBST	0x4000000	/* parsing a foreground command substitution */
+#define PST_FORCMD	0x8000000	/* parsing for command -- not used yet */
 
 /* Definition of the delimiter stack.  Needed by parse.y and bashhist.c. */
 struct dstack {
@@ -78,11 +79,7 @@ struct dstack {
 
 /* characters that can appear following ${ to introduce a nofork command
    substitution. */
-#if 0
-#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|' || (n) == '(')	/* ) */
-#else
-#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|')
-#endif
+#define FUNSUB_CHAR(n) ((n) == ' ' || (n) == '\t' || (n) == '\n' || (n) == '|' || (n) == ';')
 
 /* variable declarations from parse.y */
 extern struct dstack dstack;

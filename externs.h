@@ -1,7 +1,7 @@
 /* externs.h -- extern function declarations which do not appear in their
    own header file. */
 
-/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -27,7 +27,8 @@
 #include "stdc.h"
 
 /* Functions from expr.c. */
-#define EXP_EXPANDED	0x01
+#define EXP_EXPANDED	0x01	/* already expanded */
+#define EXP_QUOTED	0x02	/* expanded, needs internal quote removal, not used yet */
 
 extern intmax_t evalexp (const char *, int, int *);
 
@@ -128,7 +129,7 @@ extern void clear_shell_input_line (void);
 
 extern int handle_ignoreeof (int);
 
-extern char *decode_prompt_string (char *);
+extern char *decode_prompt_string (char *, int);
 
 extern int get_current_prompt_level (void);
 extern void set_current_prompt_level (int);
@@ -164,7 +165,7 @@ extern int find_string_in_alist (char *, STRING_INT_ALIST *, int);
 extern char *find_token_in_alist (int, STRING_INT_ALIST *, int);
 extern int find_index_in_alist (char *, STRING_INT_ALIST *, int);
 
-extern char *substring (const char *, int, int);
+extern char *substring (const char *, size_t, size_t);
 extern char *strsub (const char *, const char *, const char *, int);
 extern char *strcreplace (const char *, int, const char *, int);
 extern void strip_leading (char *);
@@ -308,8 +309,12 @@ extern int getdtablesize (void);
 #endif /* !HAVE_GETDTABLESIZE */
 
 #if !defined (HAVE_GETHOSTNAME)
-extern int gethostname (char *, int);
+extern int gethostname (char *, size_t);
 #endif /* !HAVE_GETHOSTNAME */
+
+#if !defined (HAVE_KILLPG)
+extern int killpg (pid_t, int);
+#endif /* !HAVE_KILLPG */
 
 extern int getmaxgroups (void);
 extern long getmaxchild (void);
@@ -332,6 +337,9 @@ extern void sbrand (unsigned long);		/* set bash random number generator. */
 extern void seedrand (void);			/* seed generator randomly */
 extern void seedrand32 (void);
 extern u_bits32_t get_urandom32 (void);
+
+/* declarations for functions defined in lib/sh/reallocarray.c */
+extern void *reallocarray (void *, size_t, size_t);
 
 /* declarations for functions defined in lib/sh/setlinebuf.c */
 #ifdef NEED_SH_SETLINEBUF_DECL
@@ -429,7 +437,7 @@ extern void strvec_flush (char **);
 extern void strvec_dispose (char **);
 extern int strvec_remove (char **, const char *);
 extern size_t strvec_len (char * const *);
-extern int strvec_search (char **, const char *);
+extern ptrdiff_t strvec_search (char **, const char *);
 extern char **strvec_copy (char * const *);
 extern int strvec_posixcmp (char **, char **);
 extern int strvec_strcmp (char **, char **);
@@ -534,7 +542,7 @@ extern size_t utf8_mbstrlen (const char *);
 
 /* declarations for functions defined in lib/sh/wcsnwidth.c */
 #if defined (HANDLE_MULTIBYTE)
-extern int wcsnwidth (const wchar_t *, size_t, int);
+extern int wcsnwidth (const wchar_t *, size_t, size_t);
 #endif
 
 /* declarations for functions defined in lib/sh/winsize.c */
@@ -547,7 +555,7 @@ extern int zcatfd (int, int, const char *);
 extern ssize_t zgetline (int, char **, size_t *, int, int);
 
 /* declarations for functions defined in lib/sh/zmapfd.c */
-extern int zmapfd (int, char **, const char *);
+extern ssize_t zmapfd (int, char **, const char *);
 
 /* declarations for functions defined in lib/sh/zread.c */
 extern ssize_t zread (int, char *, size_t);
@@ -556,6 +564,7 @@ extern ssize_t zreadintr (int, char *, size_t);
 extern ssize_t zreadc (int, char *);
 extern ssize_t zreadcintr (int, char *);
 extern ssize_t zreadn (int, char *, size_t);
+extern int zungetc (int);
 extern void zreset (void);
 extern void zsyncfd (int);
 

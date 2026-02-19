@@ -2,13 +2,13 @@ Compatibility with previous versions
 ====================================
 
 This document details the incompatibilities between this version of bash,
-bash-5.2, and the previous widely-available versions, bash-3.2 (which is
+bash-5.3, and the previous widely-available versions, bash-3.2 (which is
 still the `standard' version for Mac OS X), 4.2/4.3 (which are still
-standard on a few Linux distributions), and bash-4.4/bash-5.0/bash-5.1,
-the current widely-available versions.  These were discovered by users of
-bash-2.x through 5.x, so this list is not comprehensive.  Some of these
-incompatibilities occur between the current version and versions 2.0 and
-above. 
+standard on a few Linux distributions), and bash-4.4 and
+bash-5.0/bash-5.1/bash-5.2, the current widely-available versions.
+These were discovered by users of bash-2.x through 5.x, so this list is not
+comprehensive.  Some of these incompatibilities occur between the current
+version and versions 2.0 and above. 
 
 1.  Bash uses a new quoting syntax, $"...", to do locale-specific
     string translation.  Users who have relied on the (undocumented)
@@ -422,6 +422,20 @@ above.
     differently than previous versions, and differently depending on whether
     the array is indexed or associative.
 
+67. The `test' builtin in bash-5.3 treats parenthesized subexpressions when
+    given more than four arguments differently. It scans forward for a
+    closing paren and counts the number of arguments between the parens. If
+    there are four or fewer, it uses the posix test algorithm on the
+    subexpression.
+
+68. The bind builtin's -p and -P options treat any arguments remaining after
+    option processing as bindable command names for which to print any key
+    bindings.
+
+69. Interactive shells will notify the user of completed jobs while sourcing
+    a script. Newer versions defer notification until script execution
+    completes.
+
 Shell Compatibility Level
 =========================
 
@@ -506,10 +520,6 @@ compat42
 	  single quotes are not special within double-quoted word expansions
 
 compat43
-	- the shell does not print a warning message if an attempt is made to
-	  use a quoted compound assignment as an argument to declare
-	  (declare -a foo='(1 2)'). Later versions warn that this usage is
-	  deprecated.
 	- word expansion errors are considered non-fatal errors that cause the
 	  current command to fail, even in posix mode (the default behavior is
 	  to make them fatal errors that cause the shell to exit)
@@ -578,6 +588,14 @@ compat51 (set using BASH_COMPAT)
 	  expansion time if extglob hasn't been enabled by the time the
 	  command is executed.
 
+compat52 (set using BASH_COMPAT)
+	- the test builtin uses its historical algorithm for parsing
+	  expressions composed of five or more primaries.
+	- the -p and -P options to the bind builtin treat remaining arguments
+	  as bindable command names for which to print any key bindings
+	- interactive shells will notify the user of completed jobs while
+	  sourcing a script. Newer versions defer notification until script
+	  execution completes.
 -------------------------------------------------------------------------------
 
 Copying and distribution of this file, with or without modification,

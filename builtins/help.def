@@ -1,7 +1,7 @@
 This file is help.def, from which is created help.c.
 It implements the builtin "help" in Bash.
 
-Copyright (C) 1987-2023 Free Software Foundation, Inc.
+Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -58,7 +58,7 @@ $END
 #include <errno.h>
 
 #include <filecntl.h>
-#include <stddef.h>
+#include "../bashansi.h"
 
 #include "../bashintl.h"
 
@@ -91,9 +91,9 @@ static void show_longdoc (int);
 int
 help_builtin (WORD_LIST *list)
 {
-  register int i;
+  int i;
   char *pattern, *name;
-  int match_found, sflag, dflag, mflag, m, pass, this_found;
+  int match_found, sflag, dflag, mflag, m, pass, this_found, globpat;
   size_t plen;
 
   dflag = sflag = mflag = 0;
@@ -128,17 +128,14 @@ help_builtin (WORD_LIST *list)
 
   /* We should consider making `help bash' do something. */
 
-  if (glob_pattern_p (list->word->word) == 1)
-    {
-      printf ("%s", ngettext ("Shell commands matching keyword `", "Shell commands matching keywords `", (list->next ? 2 : 1)));
-      print_word_list (list, ", ");
-      printf ("%s", _("'\n\n"));
-    }
-
   for (match_found = 0, pattern = ""; list; list = list->next)
     {
       pattern = list->word->word;
       plen = strlen (pattern);
+
+      globpat = glob_pattern_p (pattern);
+      if (globpat)
+	printf (_("Shell commands matching pattern '%s':\n"), pattern);
 
       for (pass = 1, this_found = 0; pass < 3; pass++)
 	{
@@ -156,6 +153,8 @@ help_builtin (WORD_LIST *list)
 
 	      if (m)
 	        {
+		  if (globpat && this_found == 0)
+		    putchar ('\n');
 	          this_found = 1;
 	          match_found++;
 	          if (dflag)
@@ -178,15 +177,16 @@ help_builtin (WORD_LIST *list)
 	  if (pass == 1 && this_found == 1)
 	    break;
 	}
+      if (this_found == 0)
+	{
+	  if (globpat)
+	    builtin_error (_("no help topics match '%s'."), pattern);
+	  else
+	    builtin_error (_("no help topics match '%s'. Try 'help help', 'man -k %s', or 'info %s'."), pattern, pattern, pattern);
+	}
     }
 
-  if (match_found == 0)
-    {
-      builtin_error (_("no help topics match `%s'.  Try `help help' or `man -k %s' or `info %s'."), pattern, pattern, pattern);
-      return (EXECUTION_FAILURE);
-    }
-
-  return (sh_chkwrite (EXECUTION_SUCCESS));
+  return (match_found ? sh_chkwrite (EXECUTION_SUCCESS) : sh_chkwrite (EXECUTION_FAILURE));
 }
 
 void
@@ -211,7 +211,7 @@ open_helpfile (const char *name)
   fd = open (name, O_RDONLY);
   if (fd == -1)
     {
-      builtin_error (_("%s: cannot open: %s"), name, strerror (errno));
+      builtin_error ("%s: %s: %s", name, _("cannot open"), strerror (errno));
       return -1;
     }
   return fd;
@@ -245,7 +245,8 @@ show_longdoc (int i)
 static void
 show_desc (char *name, int i)
 {
-  register int j, r;
+  int j;
+  ssize_t r;
   char * const *doc, *line;
   int fd, usefile;
 
@@ -258,19 +259,22 @@ show_desc (char *name, int i)
       if (fd < 0)
 	return;
       r = zmapfd (fd, &line, doc[0]);
+      if (r < 0)
+	{
+	  builtin_error ("%s: %s: %s", doc[0], _("read error"), strerror (errno));
+	  free (line);
+	  line = (char *)NULL;
+	}
       close (fd);
-      /* XXX - handle errors if zmapfd returns < 0 */
     }
   else
     line = doc ? doc[0] : (char *)NULL;
 
   printf ("%s - ", name);
-  for (j = 0; line && line[j]; j++)
-    {
-      putchar (line[j]);
-      if (line[j] == '\n')
-	break;
-    }
+  /* Don't assume LINE ends with a newline. */
+  for (j = 0; line && line[j] && line[j] != '\n'; j++)
+    putchar (line[j]);
+  putchar ('\n');
   
   fflush (stdout);
 
@@ -283,6 +287,7 @@ static void
 show_manpage (char *name, int i)
 {
   register int j;
+  ssize_t r;
   char * const *doc;
   char *line;
   int fd, usefile;
@@ -295,7 +300,13 @@ show_manpage (char *name, int i)
       fd = open_helpfile (doc[0]);
       if (fd < 0)
 	return;
-      zmapfd (fd, &line, doc[0]);
+      r = zmapfd (fd, &line, doc[0]);
+      if (r < 0)
+	{
+	  builtin_error ("%s: %s: %s", doc[0], _("read error"), strerror (errno));
+	  free (line);
+	  line = (char *)NULL;
+	}
       close (fd);
     }
   else
@@ -310,6 +321,10 @@ show_manpage (char *name, int i)
       if (line[j] == '\n')
 	break;
     }
+  /* If the line doesn't end with a newline, e.g., if it's a loadable builtin,
+     add one. */
+  if (line[j] != '\n')
+    putchar ('\n');
   printf ("\n");
 
   /* SYNOPSIS */

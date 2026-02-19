@@ -3,7 +3,7 @@
 /* This file works under BSD, System V, minix, and Posix systems.  It does
    not implement job control. */
 
-/* Copyright (C) 1987-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -93,6 +93,9 @@ int check_window_size = CHECKWINSIZE_DEFAULT;
 /* We don't have job control. */
 int job_control = 0;
 
+/* and don't want job notifications */
+int want_job_notifications = 0;
+
 int running_in_background = 0;	/* can't tell without job control */
 
 /* STATUS and FLAGS are only valid if pid != NO_PID
@@ -123,7 +126,6 @@ static void alloc_pid_list (void);
 static int find_proc_slot (pid_t);
 static int find_index_by_pid (pid_t);
 static int find_status_by_pid (pid_t);
-static int process_exit_status (WAIT);
 static int find_termsig_by_pid (pid_t);
 static int get_termsig (WAIT);
 static void set_pid_status (pid_t, WAIT);
@@ -210,7 +212,7 @@ find_status_by_pid (pid_t pid)
   return (pid_list[i].status);
 }
 
-static int
+int
 process_exit_status (WAIT status)
 {
   if (WIFSIGNALED (status))
@@ -1011,7 +1013,7 @@ describe_pid (pid_t pid)
 }
 
 int
-freeze_jobs_list (void)
+freeze_jobs_list (int n)
 {
   return 0;
 }

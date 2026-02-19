@@ -9,7 +9,7 @@
    Unix snprintf implementation.
    derived from inetutils/libinetutils/snprintf.c Version 1.1
 
-   Copyright (C) 2001-2022 Free Software Foundation, Inc.
+   Copyright (C) 2001-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -94,9 +94,6 @@
 #  include <limits.h>
 #endif
 #include <bashansi.h>
-#ifdef HAVE_STDDEF_H
-#  include <stddef.h>
-#endif
 #include <chartypes.h>
 
 #ifdef HAVE_STDINT_H
@@ -912,8 +909,11 @@ wchars (struct DATA *p, wint_t wc)
   memset (&mbs, '\0', sizeof (mbstate_t));
   len = wcrtomb (lbuf, wc, &mbs);
   if (len == (size_t)-1)
-    /* conversion failed; bail now. */
-    return;
+    {
+      free (lbuf);
+      /* conversion failed; bail now. */
+      return;
+    }
   p->width -= len;
   l = lbuf;
   PUT_STRING (l, len, p);

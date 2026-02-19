@@ -1,6 +1,6 @@
 /* bashhist.c -- bash interface to the GNU history library. */
 
-/* Copyright (C) 1993-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -461,7 +461,7 @@ maybe_append_history (char *filename)
 	  fd = open (filename, O_WRONLY|O_CREAT, 0600);
 	  if (fd < 0)
 	    {
-	      builtin_error (_("%s: cannot create: %s"), filename, strerror (errno));
+	      builtin_error ("%s: %s: %s", filename, _("cannot create"), strerror (errno));
 	      return (EXECUTION_FAILURE);
 	    }
 	  close (fd);

@@ -1,6 +1,6 @@
 /* pcomplete.c - functions to generate lists of matches for programmable completion. */
 
-/* Copyright (C) 1999-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -73,10 +73,6 @@
 #define STRDUP(x)	((x) ? savestring (x) : (char *)NULL)
 
 typedef SHELL_VAR **SVFUNC (void);
-
-#ifndef HAVE_STRPBRK
-extern char *strpbrk (char *, char *);
-#endif
 
 extern STRING_INT_ALIST word_token_alist[];
 extern char *signal_names[];
@@ -1564,7 +1560,7 @@ programmable_completions (const char *cmd, const char *word,
 #endif
 
   lastcs = 0;
-  found = count = 0;
+  count = 0;
 
   pcomp_line = rl_line_buffer;
   pcomp_ind = rl_point;
@@ -1574,7 +1570,7 @@ programmable_completions (const char *cmd, const char *word,
 
   do
     {
-      retry = 0;
+      retry = found = 0;
 
       /* We look at the basename of CMD if the full command does not have
 	 an associated COMPSPEC. */

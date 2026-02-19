@@ -6,7 +6,7 @@
 /*								    */
 /* **************************************************************** */
 
-/* Copyright (C) 1987-2021,2023 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2021,2023,2025 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library (Readline), a library
    for reading lines of text with interactive input and history editing.      
@@ -153,10 +153,11 @@ rl_display_search (char *search_string, int flags, int where)
 {
   char *message;
   size_t msglen, searchlen;
+  unsigned char c;
 
   searchlen = (search_string && *search_string) ? strlen (search_string) : 0;
 
-  message = (char *)xmalloc (searchlen + 64);
+  message = (char *)xmalloc (searchlen * 2 + 64);
   msglen = 0;
 
 #if defined (NOTDEF)
@@ -186,8 +187,15 @@ rl_display_search (char *search_string, int flags, int where)
 
   if (search_string && *search_string)
     {
-      strcpy (message + msglen, search_string);
-      msglen += searchlen;
+      for ( ; c = *search_string; search_string++)
+	{
+	  if (CTRL_CHAR (c) || c == RUBOUT)
+	    {
+	      message[msglen++] = '^';
+	      c = CTRL_CHAR (c) ? UNCTRL (c) : '?';
+	    }
+	  message[msglen++] = c;
+	}
     }
   else
     _rl_optimize_redisplay ();
@@ -218,7 +226,7 @@ _rl_isearch_init (int direction)
 
   /* Create an array of pointers to the lines that we want to search. */
   hlist = history_list ();
-  rl_maybe_replace_line ();
+  _rl_maybe_replace_line (1);
   i = 0;
   if (hlist)
     for (i = 0; hlist[i]; i++);
@@ -319,7 +327,7 @@ _rl_search_getchar (_rl_search_cxt *cxt)
 
   /* Read a key and decide how to proceed. */
   RL_SETSTATE(RL_STATE_MOREINPUT);
-  c = cxt->lastc = rl_read_key ();
+  c = cxt->lastc = rl_read_key ();	/* XXX */
   RL_UNSETSTATE(RL_STATE_MOREINPUT);
 
 #if defined (HANDLE_MULTIBYTE)
@@ -742,10 +750,11 @@ opcode_dispatch:
     /* Add character to search string and continue search. */
     default:
 #if defined (HANDLE_MULTIBYTE)
-      wlen = (cxt->mb[0] == 0 || cxt->mb[1] == 0) ? 1 : RL_STRLEN (cxt->mb);
-#else
-      wlen = 1;
+      if (MB_CUR_MAX > 1 && rl_byte_oriented == 0)
+	wlen = (cxt->mb[0] == 0 || cxt->mb[1] == 0) ? 1 : RL_STRLEN (cxt->mb);
+      else
 #endif
+      wlen = 1;
       if (cxt->search_string_index + wlen + 1 >= cxt->search_string_size)
 	{
 	  cxt->search_string_size += 128;	/* 128 much greater than MB_CUR_MAX */
@@ -888,12 +897,14 @@ opcode_dispatch:
 int
 _rl_isearch_cleanup (_rl_search_cxt *cxt, int r)
 {
+  RL_UNSETSTATE(RL_STATE_ISEARCH);
+  if (cxt == 0)
+    return (r != 0);
+
+  _rl_iscxt = 0;
   if (r >= 0)
     _rl_isearch_fini (cxt);
   _rl_scxt_dispose (cxt, 0);
-  _rl_iscxt = 0;
-
-  RL_UNSETSTATE(RL_STATE_ISEARCH);
 
   return (r != 0);
 }

@@ -85,8 +85,8 @@ enable unset
 enable -n test worked
 enable -n test
 enable test worked
-./builtins.tests: line 126: enable: notbuiltin: not a shell builtin
-./builtins.tests: line 127: enable: test: not dynamically loaded
+./builtins.tests: line 128: enable: notbuiltin: not a shell builtin
+./builtins.tests: line 129: enable: test: not dynamically loaded
 specialname
 -specialname
 FOO=BAR
@@ -94,25 +94,34 @@ FOO=BAR
 hash: hash table empty
 0
 no-newline
+	source1.sub
 AVAR
 foo
+	source2.sub
 in source.sub2, calling return
 5
+	source3.sub
 a b c
+	source3.sub
 a b c
 x y z
 a b c
+	source4.sub
 a b c
 m n o p
+	source4.sub
 a b c
 m n o p
+	builtins1.sub
 /tmp/bash-dir-a
 /tmp/bash-dir-a
 /tmp/bash-dir-a
 /
+	source5.sub
 ./source5.sub: line 23: /tmp/source-notthere: No such file or directory
 after bad source 1
 ./source5.sub: line 30: /tmp/source-notthere: No such file or directory
+	source6.sub
 one - OK
 0
 0
@@ -122,6 +131,7 @@ three - OK
 0
 four - OK
 0
+	source7.sub
 abc
 def
 ghi
@@ -139,6 +149,21 @@ abc
 def
 ghi
 ok
+	source8.sub
+./source8.sub: line 40: improbable-filename: No such file or directory
+./source8.sub: line 41: improbable-filename: No such file or directory
+an improbable filename
+an improbable filename
+an improbable filename
+an improbable filename
+file in the current directory
+./source8.sub: line 55: .: cwd-filename: file not found
+file in the current directory
+bash: line 1: .: cwd-filename: file not found
+bash: line 1: .: cwd-filename: file not found
+file in the current directory
+file in the current directory
+	source1.sub
 AVAR
 foo
 foo
@@ -149,12 +174,13 @@ AVAR
 foo
 declare -x foo=""
 declare -x FOO="\$\$"
-./builtins.tests: line 239: declare: FOO: not found
+./builtins.tests: line 251: declare: FOO: not found
 declare -x FOO="\$\$"
 ok
 ok
-./builtins.tests: line 271: kill: 4096: invalid signal specification
+./builtins.tests: line 283: kill: 4096: invalid signal specification
 1
+	builtins2.sub
 a\n\n\nb
 a
 
@@ -162,9 +188,11 @@ a
 b
 -p
 a	b	c
+	builtins3.sub
 before: f = 4
 inside
 after: f = 8 bar = 4
+	builtins4.sub
 declare -a c
 declare -A d
 declare -a c=([0]="4")
@@ -175,6 +203,7 @@ declare -a c=([0]="1" [1]="2" [2]="3")
 declare -a c=([0]="1" [1]="2" [2]="3")
 unset
 unset
+	builtins5.sub
 assoc 1 unset
 array 1 unset
 assoc 2 unset
@@ -207,6 +236,7 @@ scalar: 0
 scalar: 1
 scalar: 0
 scalar: 0
+	builtins6.sub
 all set:
 one
 two
@@ -248,6 +278,7 @@ f2 ()
 funcs unset:
 one-two
 two-two
+	builtins7.sub
 bash: line 1: notthere: No such file or directory
 one
 bash: line 1: notthere: No such file or directory
@@ -284,6 +315,7 @@ type
 + command -p -- command -v type
 type
 + set +x
+	builtins8.sub
 u=rw,g=rx,o=rx
 u=r,g=rx,o=rx
 u=rwx,g=rwx,o=
@@ -302,6 +334,7 @@ u=rwx,g=rx,o=rx
 u=rwx,g=rx,o=rx
 u=rwx,g=rx,o=rx
 u=rwx,g=rx,o=x
+	builtins9.sub
 hash: hash table empty
 ./builtins9.sub: line 19: hash: notthere: not found
 1
@@ -320,7 +353,8 @@ builtin hash -p /nosuchdir/nosuchfile cat
 found
 ./builtins9.sub: line 52: hash: /: Is a directory
 builtin hash -p /nosuchfile cat
-./builtins10.sub: line 17: help: -x: invalid option
+	builtins10.sub
+./builtins10.sub: line 19: help: -x: invalid option
 help: usage: help [-dms] [pattern ...]
 These shell commands are defined internally.  Type `help' to see this list.
 Type `help name' to find out more about the function `name'.
@@ -329,10 +363,10 @@ Use `man -k' or `info' to find out more about commands not in this list.
 
 A star (*) next to a name means that the command is disabled.
 
- ! PIPELINE                              history [-c] [-d offset] [n] or hist>
+ ! PIPELINE                              history [-c] [-H] [-d range] [range]>
  job_spec [&]                            if COMMANDS; then COMMANDS; [ elif C>
  (( expression ))                        jobs [-lnprs] [jobspec ...] or jobs >
- . filename [arguments]                  kill [-s sigspec | -n signum | -sigs>
+ . [-p path] filename [arguments]        kill [-s sigspec | -n signum | -sigs>
  :                                       let arg [arg ...]
  [ arg... ]                              local [option] name[=value] ...
  [[ expression ]]                        logout [n]
@@ -349,7 +383,7 @@ A star (*) next to a name means that the command is disabled.
  complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o optio>
  compopt [-o|+o option] [-DEI] [name .>  shift [n]
  continue [n]                            shopt [-pqsu] [-o] [optname ...]
- coproc [NAME] command [redirections]    source filename [arguments]
+ coproc [NAME] command [redirections]    source [-p path] filename [argument>
  declare [-aAfFgiIlnrtux] [name[=value>  suspend [-f]
  dirs [-clpv] [+N] [-N]                  test [expr]
  disown [-h] [-ar] [jobspec ... | pid >  time [-p] pipeline
@@ -360,7 +394,7 @@ A star (*) next to a name means that the command is disabled.
  exit [n]                                typeset [-aAfFgiIlnrtux] name[=value>
  export [-fn] [name[=value] ...] or ex>  ulimit [-SHabcdefiklmnpqrstuvxPRT] [>
  false                                   umask [-p] [-S] [mode]
- fc [-e ename] [-lnr] [first] [last] o>  unalias [-a] name [name ...]
+ fc [-e ename] [-D] [-lnr] [first] [la>  unalias [-a] name [name ...]
  fg [job_spec]                           unset [-f] [-v] [-n] [name ...]
  for NAME [in WORDS ... ] ; do COMMAND>  until COMMANDS; do COMMANDS-2; done
  for (( exp1; exp2; exp3 )); do COMMAN>  variables - Names and meanings of so>
@@ -372,15 +406,15 @@ help: help [-dms] [pattern ...]
 shift - Shift positional parameters.
 shift: shift [n]
     Shift positional parameters.
-    
+
     Rename the positional parameters $N+1,$N+2 ... to $1,$2 ...  If N is
     not given, it is assumed to be 1.
-    
+
     Exit Status:
     Returns success unless N is negative or greater than $#.
 builtin: builtin [shell-builtin [arg ...]]
 shift: shift [n]
-Shell commands matching keyword `read*'
+Shell commands matching pattern 'read*':
 
 read: read [-Eers] [-a array] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name ...]
 readarray: readarray [-d delim] [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]
@@ -390,9 +424,9 @@ readarray: readarray [-d delim] [-n count] [-O origin] [-s count] [-t] [-u fd] [
 readonly: readonly [-aAf] [name[=value] ...] or readonly -p
 :: :
     Null command.
-    
+
     No effect; the command does nothing.
-    
+
     Exit Status:
     Always succeeds.
 NAME
@@ -403,9 +437,9 @@ SYNOPSIS
 
 DESCRIPTION
     Null command.
-    
+
     No effect; the command does nothing.
-    
+
     Exit Status:
     Always succeeds.
 
@@ -413,7 +447,7 @@ SEE ALSO
     bash(1)
 
 IMPLEMENTATION
-    Copyright (C) 2022 Free Software Foundation, Inc.
+    Copyright (C) 2025 Free Software Foundation, Inc.
 
 These shell commands are defined internally.  Type `help' to see this list.
 Type `help name' to find out more about the function `name'.
@@ -422,10 +456,10 @@ Use `man -k' or `info' to find out more about commands not in this list.
 
 A star (*) next to a name means that the command is disabled.
 
- ! PIPELINE                              history [-c] [-d offset] [n] or hist>
+ ! PIPELINE                              history [-c] [-H] [-d range] [range]>
  job_spec [&]                            if COMMANDS; then COMMANDS; [ elif C>
  (( expression ))                        jobs [-lnprs] [jobspec ...] or jobs >
- . filename [arguments]                  kill [-s sigspec | -n signum | -sigs>
+ . [-p path] filename [arguments]        kill [-s sigspec | -n signum | -sigs>
  :                                       let arg [arg ...]
  [ arg... ]                              local [option] name[=value] ...
  [[ expression ]]                        logout [n]
@@ -442,7 +476,7 @@ A star (*) next to a name means that the command is disabled.
  complete [-abcdefgjksuv] [-pr] [-DEI]>  set [-abefhkmnptuvxBCEHPT] [-o optio>
  compopt [-o|+o option] [-DEI] [name .>  shift [n]
  continue [n]                            shopt [-pqsu] [-o] [optname ...]
- coproc [NAME] command [redirections]    source filename [arguments]
+ coproc [NAME] command [redirections]    source [-p path] filename [argument>
  declare [-aAfFgiIlnrtux] [name[=value>  suspend [-f]
  dirs [-clpv] [+N] [-N]                  test [expr]
  disown [-h] [-ar] [jobspec ... | pid >  time [-p] pipeline
@@ -453,7 +487,7 @@ A star (*) next to a name means that the command is disabled.
  exit [n]                                typeset [-aAfFgiIlnrtux] name[=value>
  export [-fn] [name[=value] ...] or ex>  ulimit [-SHabcdefiklmnpqrstuvxPRT] [>
  false                                   umask [-p] [-S] [mode]
- fc [-e ename] [-lnr] [first] [last] o>  unalias [-a] name [name ...]
+ fc [-e ename] [-D] [-lnr] [first] [la>  unalias [-a] name [name ...]
  fg [job_spec]                           unset [-f] [-v] [-n] [name ...]
  for NAME [in WORDS ... ] ; do COMMAND>  until COMMANDS; do COMMANDS-2; done
  for (( exp1; exp2; exp3 )); do COMMAN>  variables - Names and meanings of so>
@@ -461,7 +495,10 @@ A star (*) next to a name means that the command is disabled.
  getopts optstring name [arg ...]        while COMMANDS; do COMMANDS-2; done
  hash [-lr] [-p pathname] [-dt] [name >  { COMMANDS ; }
  help [-dms] [pattern ...]
-./builtins10.sub: line 39: help: no help topics match `bash'.  Try `help help' or `man -k bash' or `info bash'.
+./builtins10.sub: line 41: help: no help topics match 'bash'. Try 'help help', 'man -k bash', or 'info bash'.
+Shell commands matching pattern 'ad*x':
+./builtins10.sub: line 44: help: no help topics match 'ad*x'.
+	builtins11.sub
 unlimited
 unlimited
 ./builtins11.sub: line 27: ulimit: +1999: invalid number
@@ -470,6 +507,7 @@ unlimited
 ./builtins11.sub: line 37: ulimit: -g: invalid option
 ulimit: usage: ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]
 ./builtins11.sub: line 39: ulimit: max user processes: cannot modify limit: Operation not permitted
+	builtins12.sub
 /tmp /bin
 /tmp /bin
 /bin /tmp
@@ -489,5 +527,5 @@ popd: usage: popd [-n] [+N | -N]
 ./builtins12.sub: line 36: popd: +8: directory stack index out of range
 /tmp /
 /
-./builtins.tests: line 322: exit: status: numeric argument required
+./builtins.tests: line 334: exit: status: numeric argument required
 after non-numeric arg to exit: 2

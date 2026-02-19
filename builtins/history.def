@@ -1,7 +1,7 @@
 This file is history.def, from which is created history.c.
 It implements the builtin "history" in Bash.
 
-Copyright (C) 1987-2023 Free Software Foundation, Inc.
+Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -23,16 +23,32 @@ $PRODUCES history.c
 $BUILTIN history
 $FUNCTION history_builtin
 $DEPENDS_ON HISTORY
-$SHORT_DOC history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]
+$SHORT_DOC history [-c] [-H] [-d range] [range] or history -anrw [filename] or history -ps arg [arg...]
 Display or manipulate the history list.
 
-Display the history list with line numbers, prefixing each modified
-entry with a `*'.  An argument of N lists only the last N entries.
+Without options, or if -H is supplied, display the portion of the
+history list specified by RANGE, as described below. If -H is not
+supplied, the list displays line numbers, prefixing each modified
+entry with a `*'.
+
+When listing or deleting history entries, RANGE is an argument of
+the form of a number OFFSET or a range START-END. If OFFSET is supplied,
+it references the history entry at position OFFSET; when listing, this
+displays the last OFFSET entries. A negative OFFSET is interpreted
+relative to one greater than the last history position, so negative
+OFFSETs count back from the end of the history list. START and END, if
+supplied, reference the portion of the history list beginning at position
+START through position END. Negative START and END count back from the
+end of the history list. When listing, if START is greater than END,
+the history entries are displayed in reverse order from START to END.
 
 Options:
   -c	clear the history list by deleting all of the entries
-  -d offset	delete the history entry at position OFFSET. Negative
-		offsets count back from the end of the history list
+  -d range	delete the history entries specified by RANGE. RANGE is
+		described above.
+  -H	display the selected history entries in the format that would
+  		be written to the history file, including any timestamp,
+  		without prefixing any line number or `*'.
 
   -a	append history lines from this session to the history file
   -n	read all history lines not already read from the history file
@@ -49,6 +65,8 @@ If FILENAME is given, it is used as the history file.  Otherwise,
 if HISTFILE has a value, that is used. If FILENAME is not supplied
 and HISTFILE is unset or null, the -a, -n, -r, and -w options have
 no effect and return success.
+
+The fc builtin also operates on the history list.
 
 If the HISTTIMEFORMAT variable is set and not null, its value is used
 as a format string for strftime(3) to print the time stamp associated
@@ -88,8 +106,11 @@ $END
 extern int errno;
 #endif
 
+static void history_error (const char *, int, int);
+
 static char *histtime (HIST_ENTRY *, const char *);
-static int display_history (WORD_LIST *);
+static int parse_range (char *, char *, int *, int *);
+static int display_history (WORD_LIST *, int);
 static void push_history (WORD_LIST *);
 static int expand_and_print_history (WORD_LIST *);
 
@@ -101,6 +122,7 @@ static int expand_and_print_history (WORD_LIST *);
 #define PFLAG	0x20
 #define CFLAG	0x40
 #define DFLAG	0x80
+#define HFLAG	0x100
 
 #ifndef TIMELEN_MAX
 #  define TIMELEN_MAX 128
@@ -115,7 +137,7 @@ history_builtin (WORD_LIST *list)
 
   flags = 0;
   reset_internal_getopt ();
-  while ((opt = internal_getopt (list, "acd:npsrw")) != -1)
+  while ((opt = internal_getopt (list, "acd:npsrwH")) != -1)
     {
       switch (opt)
 	{
@@ -145,6 +167,9 @@ history_builtin (WORD_LIST *list)
 #if defined (BANG_HISTORY)
 	  flags |= PFLAG;
 #endif
+	  break;
+	case 'H':
+	  flags |= HFLAG;
 	  break;
 	CASE_HELPOPT;
 	default:
@@ -185,37 +210,11 @@ history_builtin (WORD_LIST *list)
 #endif
   else if ((flags & DFLAG) && (range = strchr ((delete_arg[0] == '-') ? delete_arg + 1 : delete_arg, '-')))
     {
-      intmax_t delete_start, delete_end;
-      *range++ = '\0';
-      if (valid_number (delete_arg, &delete_start) == 0 || valid_number (range, &delete_end) == 0)
-	{
-	  range[-1] = '-';
-	  sh_erange (delete_arg, _("history position"));
-	  return (EXECUTION_FAILURE);
-	}
-      if (delete_arg[0] == '-' && delete_start < 0)
-	/* the_history[history_length] == 0x0, so this is correct */
-        delete_start += history_length;
-      /* numbers as displayed by display_history are offset by history_base */
-      else if (delete_start > 0)
-	delete_start -= history_base;
+      int delete_start, delete_end;
 
-      if (delete_start < 0 || delete_start >= history_length)
-	{
-	  sh_erange (delete_arg, _("history position"));
-	  return (EXECUTION_FAILURE);
-	}
+      if (parse_range (delete_arg, range, &delete_start, &delete_end) != 0)
+	return (EXECUTION_FAILURE);
 
-      if (range[0] == '-' && delete_end < 0)
-        delete_end += history_length;
-      else if (delete_end > 0)
-	delete_end -= history_base;
-
-      if (delete_end < 0 || delete_end >= history_length)
-	{
-	  sh_erange (range, _("history position"));
-	  return (EXECUTION_FAILURE);
-	}
       /* XXX - print error if end < start? */
       result = bash_delete_history_range (delete_start, delete_end);
       if (where_history () > history_length)
@@ -262,7 +261,7 @@ history_builtin (WORD_LIST *list)
     }
   else if ((flags & (AFLAG|RFLAG|NFLAG|WFLAG|CFLAG)) == 0)
     {
-      result = display_history (list);
+      result = display_history (list, flags);
       return (sh_chkwrite (result));
     }
 
@@ -280,7 +279,7 @@ history_builtin (WORD_LIST *list)
     }
 
 #if defined (RESTRICTED_SHELL)
-  if (restricted && strchr (filename, '/'))
+  if (restricted && absolute_program (filename))
     {
       sh_restricted (filename);
       return (EXECUTION_FAILURE);
@@ -290,12 +289,24 @@ history_builtin (WORD_LIST *list)
   if (flags & AFLAG)		/* Append session's history to file. */
     result = maybe_append_history (filename);
   else if (flags & WFLAG)	/* Write entire history. */
-    result = write_history (filename);
+    {
+      result = write_history (filename);
+      /* Report write errors from the history library. Right now we only
+	 report on missing files, an attempt to read a directory, or
+	 I/O and permission errors. */
+      if (result > 0)
+	history_error (filename, result, 0);
+    }
   else if (flags & RFLAG)	/* Read entire file. */
     {
       result = read_history (filename);
       history_lines_in_file = history_lines_read_from_file;
       /* history_lines_in_file = where_history () + history_base - 1; */
+      /* Report read errors from the history library. Right now we only
+	 report on missing files, an attempt to read a directory, or
+	 I/O and permission errors. */
+      if (result > 0)
+	history_error (filename, result, 1);
     }
   else if (flags & NFLAG)	/* Read `new' history from file. */
     {
@@ -305,6 +316,11 @@ history_builtin (WORD_LIST *list)
 
       using_history ();
       result = read_history_range (filename, history_lines_in_file, -1);
+      /* Report read errors from the history library. Right now we only
+	 report on missing files, an attempt to read a directory, or
+	 I/O and permission errors. */
+      if (result > 0)
+	history_error (filename, result, 1);
       using_history ();
 
       history_lines_in_file = history_lines_read_from_file;
@@ -326,6 +342,34 @@ history_builtin (WORD_LIST *list)
     }
 
   return (result ? EXECUTION_FAILURE : EXECUTION_SUCCESS);
+}
+
+/* Print an error message after a history file read or write error. R says
+   which kind of error (read or write). We only report on missing filenames,
+   attempts to read and write directories, I/O errors, and permission
+   errors. */
+static void
+history_error (const char *filename, int e, int r)
+{
+  switch (e)
+    {
+      case ENOENT:
+      case EIO:
+#if defined (EISDIR)
+      case EISDIR:
+#endif
+#if defined (EACCES)
+      case EACCES:
+#endif
+	if (r)
+	  builtin_error ("%s: %s: %s", filename, _("read error"), strerror (e));
+	else
+	  builtin_error ("%s: %s: %s", filename, _("write error"), strerror (e));
+	break;
+
+      default:
+	break;
+    }
 }
 
 /* Accessors for HIST_ENTRY lists that are called HLIST. */
@@ -351,49 +395,123 @@ histtime (HIST_ENTRY *hlist, const char *histtimefmt)
   return timestr;
 }
 
+/* Parse a range START-END into two offsets into the history list (offset by
+   history_base), return in *STARTP and *ENDP. Return 0 on success, non-zero
+   on failure. Negative START and END are offsets from history_length. */
 static int
-display_history (WORD_LIST *list)
+parse_range (char *arg, char *range, int *startp, int *endp)
 {
-  register int i;
+  intmax_t ls, le;
+
+  *range++ = '\0';
+  if (valid_number (arg, &ls) == 0 || valid_number (range, &le) == 0)
+    {
+      range[-1] = '-';	/* must point into ARG */
+      sh_erange (arg, _("history position"));
+      return (EXECUTION_FAILURE);
+    }
+  if (arg[0] == '-' && ls < 0)
+    ls += history_length;
+  else if (ls > 0)
+    ls -= history_base;
+  if (ls < 0 || ls >= history_length)
+    {
+      sh_erange (arg, _("history position"));
+      range[-1] = '-';	/* must point into ARG */
+      return (EXECUTION_FAILURE);
+    }
+  if (range[0] == '-' && le < 0)
+    le += history_length;
+  else if (le > 0)
+    le -= history_base;
+  if (le < 0 || le >= history_length)
+    {
+      sh_erange (range, _("history position"));
+      range[-1] = '-';	/* must point into ARG */
+      return (EXECUTION_FAILURE);
+    }
+
+  range[-1] = '-';
+  *startp = ls;
+  *endp = le;
+
+  return EXECUTION_SUCCESS;
+}
+
+static int
+display_history (WORD_LIST *list, int flags)
+{
+  int i, start, end, reverse;
   intmax_t limit;
   HIST_ENTRY **hlist;
-  char *histtimefmt, *timestr;
+  char *histtimefmt, *timestr, *range, *list_arg;
 
-  if (list)
+  reverse = 0;
+  if (list && list->word)
     {
-      if (get_numeric_arg (list, 0, &limit) == 0)
-	return (EX_USAGE);
+      list_arg = list->word->word;
+      range = strchr ((list_arg[0] == '-') ? list_arg + 1 : list_arg, '-');
+      if (range)
+	{
+	  if (parse_range (list_arg, range, &start, &end) != 0)
+	    return (EXECUTION_FAILURE);
+	  if (end < start)	/* end < start means to print in reverse order */
+	    {
+	      int t;
+	      t = end;
+	      end = start;
+	      start = t;
+	      reverse = 1;
+	    }
+	}
+      else
+	{
+	  if (get_numeric_arg (list, 0, &limit) == 0)
+	    return (EX_USAGE);
+	  if (limit < 0)
+	    limit = -limit;
 
-      if (limit < 0)
-	limit = -limit;
+	  start = (0 <= limit && limit < history_length) ? history_length - limit : 0;
+	  end = history_length - 1;
+	}
     }
   else
-    limit = -1;
+    {
+      start = 0;
+      end = history_length - 1;
+    }
 
   hlist = history_list ();
+  if (hlist == 0)
+    return (EXECUTION_SUCCESS);
 
-  if (hlist)
+  histtimefmt = get_string_value ("HISTTIMEFORMAT");
+
+  for (i = reverse ? end : start; reverse ? i >= start : i <= end; reverse ? i-- : i++)
     {
-      for (i = 0;  hlist[i]; i++)
-	;
+      QUIT;
 
-      if (0 <= limit && limit < i)
-	i -= limit;
-      else
-	i = 0;
-
-      histtimefmt = get_string_value ("HISTTIMEFORMAT");
-
-      while (hlist[i])
+      if (flags & HFLAG)
 	{
-	  QUIT;
-
+	  if (history_write_timestamps && hlist[i]->timestamp && hlist[i]->timestamp[0])
+	    printf ("%s\n", hlist[i]->timestamp);
+	  if (printf ("%s\n", histline (i)) < 0)
+	    {
+	      sh_wrerror ();
+	      break;
+	    }
+	}
+      else
+	{
 	  timestr = (histtimefmt && *histtimefmt) ? histtime (hlist[i], histtimefmt) : (char *)NULL;
-	  printf ("%5d%c %s%s\n", i + history_base,
-		  histdata(i) ? '*' : ' ',
-		  ((timestr && *timestr) ? timestr : ""),
-		  histline(i));
-	  i++;
+	  if (printf ("%5d%c %s%s\n", i + history_base,
+			histdata (i) ? '*' : ' ',
+			((timestr && *timestr) ? timestr : ""),
+			histline (i)) < 0)
+	    {
+	      sh_wrerror ();
+	      break;
+	    }
 	}
     }
 

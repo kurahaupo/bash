@@ -2,7 +2,7 @@
  * shtty.c -- abstract interface to the terminal, focusing on capabilities.
  */
 
-/* Copyright (C) 1999, 2022 Free Software Foundation, Inc.
+/* Copyright (C) 1999, 2022-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -307,4 +307,33 @@ ttcbreak (void)
     return -1;
   tt = ttin;
   return (ttfd_cbreak (0, &tt));
+}
+
+int
+tt_seteol (TTYSTRUCT *ttp, int c)
+{
+#if defined (TERMIOS_TTY_DRIVER) || defined (TERMIO_TTY_DRIVER)
+  ttp->c_cc[VEOL] = c;
+#endif
+
+  return 0;
+}
+
+int
+ttfd_seteol (int fd, TTYSTRUCT *ttp, int c)
+{
+  if (tt_seteol (ttp, c) < 0)
+    return -1;
+  return (ttsetattr (fd, ttp));
+}
+
+int
+ttseteol (int c)
+{
+  TTYSTRUCT tt;
+
+  if (ttsaved == 0)
+    return -1;
+  tt = ttin;
+  return (ttfd_seteol (0, &tt, c));
 }

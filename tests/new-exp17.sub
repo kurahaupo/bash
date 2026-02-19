@@ -1,0 +1,68 @@
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# address issues with patsub_replacement, quoting `&', and BASH_COMPAT <= 42
+
+# unquoted pattern substitutions with unquoted pattern and replacement strings
+# will still perform matching and replacement even if BASH_COMPAT == 42
+
+s="a < b"
+
+echo unquoted word expansion with quoted pattern and replacement
+echo '4.2: 4.2, a &lt; b'
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t=${s//'<'/'&lt;'}
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done
+
+echo double-quoted word expansion with quoted pattern and replacement
+echo "4.2: 4.2, a '&lt;' b"
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t="${s//'<'/'&lt;'}"
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done
+
+echo unquoted word expansion with unquoted pattern and replacement
+echo '4.2: 4.2, a &lt; b'
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t=${s//</&lt;}
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done
+
+# XXX - this is iffy but difficult to distinguish internally
+echo double-quoted word expansion with unquoted pattern and replacement
+echo '4.2: 4.2, a &lt; b'
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t="${s//</&lt;}"
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done
+
+echo unquoted word expansion with backslash-quoted '&'
+echo '4.2: 4.2, a &lt; b'
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t=${s//</\&lt;}
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done
+
+echo double-quoted word expansion with backslash-quoted '&'
+echo '4.2: 4.2, a \&lt; b'
+for ver in 4.2 5.2; do
+  BASH_COMPAT=$ver # ignored for bash version less than 5.0
+  t="${s//</\&lt;}"
+  echo "${BASH_VERSINFO[0]}.${BASH_VERSINFO[1]}: $BASH_COMPAT, $t"
+done

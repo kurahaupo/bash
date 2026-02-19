@@ -1,5 +1,11 @@
 # don't push out -i
 -i
+tests/-i
+builtins/-i
+CWRU/-i
+CWRU/old-changelogs/-i
+lib/readline/-i
+doc/-i
 
 *.save
 .DS_Store
@@ -17,6 +23,7 @@
 .*~
 
 config.h
+buildconf.h
 config.status
 config.cache
 config.log
@@ -70,6 +77,7 @@ support/bashbug.sh
 lsignames.h
 pathnames.h
 signames.h
+stdckdint.h
 version.h
 syntax.c
 stamp-h
@@ -147,18 +155,23 @@ lib/readline/doc/rluserman.tp
 lib/readline/doc/rluserman.vr
 lib/readline/doc/rluserman.vrs
 
+doc/oldbash.texi
+doc/newbash.texi
+
 # example loadable builtins
 
 examples/loadables/accept
 examples/loadables/asort
 examples/loadables/basename
 examples/loadables/cat
+examples/loadables/chmod
 examples/loadables/csv
 examples/loadables/cut
 examples/loadables/dirname
 examples/loadables/dsv
 examples/loadables/fdflags
 examples/loadables/finfo
+examples/loadables/fltexpr
 examples/loadables/getconf
 examples/loadables/head
 examples/loadables/hello
@@ -176,6 +189,7 @@ examples/loadables/print
 examples/loadables/printenv
 examples/loadables/push
 examples/loadables/pushd
+examples/loadables/pushd.c
 examples/loadables/realpath
 examples/loadables/rm
 examples/loadables/rmdir

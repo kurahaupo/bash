@@ -1,6 +1,6 @@
 /* general.c -- Stuff that is used by all files. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -63,7 +63,7 @@ extern int errno;
 #endif
 
 static char *bash_special_tilde_expansions (char *);
-static int unquoted_tilde_word (const char *);
+static int unquoted_tilde_word (const char *, int);
 static void initialize_group_array (void);
 
 /* A standard error message to use when getcwd() returns NULL. */
@@ -170,15 +170,17 @@ set_posix_options (const char *bitmap)
 
 #if defined (RLIMTYPE)
 RLIMTYPE
-string_to_rlimtype (char *s)
+string_to_rlimtype (const char *string, char **ep)
 {
   RLIMTYPE ret;
   int neg;
+  const char *s;
 
   ret = 0;
   neg = 0;
+  s = string;
   /* ulimit_builtin doesn't allow leading whitespace or an optional
-     leading `+' or `-'. */
+     leading `+' or `-', so the caller has to check. */
   while (s && *s && whitespace (*s))
     s++;
   if (s && (*s == '-' || *s == '+'))
@@ -188,6 +190,8 @@ string_to_rlimtype (char *s)
     }
   for ( ; s && *s && DIGIT (*s); s++)
     ret = (ret * 10) + TODIGIT (*s);
+  if (ep)
+    *ep = (char *)s;
   return (neg ? -ret : ret);
 }
 
@@ -353,12 +357,12 @@ check_identifier (WORD_DESC *word, int check_word)
 {
   if (word->flags & (W_HASDOLLAR|W_QUOTED))	/* XXX - HASDOLLAR? */
     {
-      internal_error (_("`%s': not a valid identifier"), word->word);
+      err_invalidid (word->word);
       return (0);
     }
   else if (check_word && (all_digits (word->word) || valid_identifier (word->word) == 0))
     {
-      internal_error (_("`%s': not a valid identifier"), word->word);
+      err_invalidid (word->word);
       return (0);
     }
   else
@@ -426,31 +430,63 @@ valid_function_name (const char *name, int flags)
 
 /* Return 1 if this is an identifier that can be used as a function name
    when declaring a function. We don't allow `$' for historical reasons.
-   We allow quotes (for now), slashes, and pretty much everything else.
-   If FLAGS is non-zero (it's usually posixly_correct), we check the name
-   for additional posix restrictions using valid_function_name(). We pass
-   flags|2 to valid_function_name to suppress the check for an assignment
-   word, since we want to allow those here. */
+   We don't allow quotes (for now), but we allow slashes and pretty much
+   everything else.
+   If (FLAGS&4) is non-zero, we check that the name is not one of the POSIX
+   special builtins (this is the shell enforcing a POSIX application
+   requirement). We allow reserved words, even though it's unlikely anyone
+   would use them.
+   If (FLAGS&1) is non-zero (it's usually set by the caller from
+   posixly_correct), we check the name for additional posix restrictions
+   using valid_function_name().
+   We pass flags|2 to valid_function_name to suppress the check for an
+   assignment word, since we want to allow those here. */
 int
 valid_function_word (WORD_DESC *word, int flags)
 {
   char *name;
 
   name = word->word;
-  if ((word->flags & W_HASDOLLAR))		/* allow quotes for now */
+#if 0	/*TAG: bash-5.4 */
+  if (word->flags & W_HASDOLLAR)		/* allow quotes for now */
+#else
+  if (word->flags & (W_HASDOLLAR|W_QUOTED))	/* don't allow quotes for now */
+#endif
     {
-      internal_error (_("`%s': not a valid identifier"), name);
+      err_invalidid (name);
       return (0);
     }
-  /* POSIX interpretation 383 */
-  if (flags && find_special_builtin (name))
+
+#if 0	/*TAG: bash-5.4 kre@munnari.oz.au 6/11/2025 */
+  if (word->flags & W_QUOTED)
+    {
+      char *newname;
+
+      /* We perform quote removal on the function name identical to that
+         performed on a quoted delimiter in a here-document. */
+      newname = string_quote_removal (name, 0);
+      if (newname == 0)
+	{
+	  err_invalidid (name);
+	  return (0);
+	}
+      free (word->word);
+      word->word = name = newname;
+      word->flags &= ~W_QUOTED;
+    }
+#endif
+  
+  /* POSIX interpretation 383 -- this is an application requirement, but the
+     shell should enforce it rather than allow a script to define a function
+     that will never be called. */
+  if ((flags & 4) && find_special_builtin (name))
     {
       internal_error (_("`%s': is a special builtin"), name);
       return (0);
     }
-  if (flags && valid_function_name (name, flags|2) == 0)
+  if ((flags & 1) && valid_function_name (name, flags|2) == 0)
     {
-      internal_error (_("`%s': not a valid identifier"), name);
+      err_invalidid (name);
       return (0);
     }
   return 1;
@@ -830,7 +866,7 @@ absolute_program (const char *string)
   return ((char *)mbschr (string, '/') != (char *)NULL);
 #else
   return ((char *)mbschr (string, '/') != (char *)NULL ||
-	  (char *)mbschr (string, '\\') != (char *)NULL)
+	  (char *)mbschr (string, '\\') != (char *)NULL);
 #endif
 }
 
@@ -1148,7 +1184,7 @@ tilde_initialize (void)
 #define TILDE_END(c)	((c) == '\0' || (c) == '/' || (c) == ':')
 
 static int
-unquoted_tilde_word (const char *s)
+unquoted_tilde_word (const char *s, int flags)
 {
   const char *r;
 
@@ -1202,10 +1238,11 @@ bash_tilde_find_word (const char *s, int flags, size_t *lenp)
 }
     
 /* Tilde-expand S by running it through the tilde expansion library.
-   ASSIGN_P is 1 if this is a variable assignment, so the alternate
-   tilde prefixes should be enabled (`=~' and `:~', see above).  If
-   ASSIGN_P is 2, we are expanding the rhs of an assignment statement,
-   so `=~' is not valid. */
+   ASSIGN_P is 1 if this is a variable assignment, or a word for which
+   tilde expansion is being forced, so the alternate tilde prefixes should
+   be enabled (`=~' and `:~', see above). If ASSIGN_P is 2, we are expanding
+   the rhs of an assignment statement, so `=~' is not valid.
+   ASSIGN_P is 0 for all other words. */
 char *
 bash_tilde_expand (const char *s, int assign_p)
 {
@@ -1217,7 +1254,20 @@ bash_tilde_expand (const char *s, int assign_p)
   if (assign_p == 2)
     tilde_additional_suffixes = bash_tilde_suffixes2;
 
-  r = (*s == '~') ? unquoted_tilde_word (s) : 1;
+  /*TAG:bash-5.4 posix mode possibly */
+  /* XXX - in posix mode, if assign_p is 0 (an ordinary word, not an
+     assignment), we shouldn't tilde expand a tilde followed by a colon.
+     To do this, we need to assign tilde_additional_suffixes = (char **)NULL,
+     and change unquoted_tilde_word to pay attention to assign_p (if it's
+     0 && posixly_correct, don't accept `:' as the end of a tilde prefix).
+     Behavior varies widely, but many posix shells don't perform tilde
+     expansion in `echo ~:'. */
+  /* If we don't do this, remove the sentence from the Tilde Expansion section
+     of the man page and texinfo manual saying we do. */
+  if (assign_p == 0 && posixly_correct)
+    tilde_additional_suffixes = (char **)NULL;
+
+  r = (*s == '~') ? unquoted_tilde_word (s, assign_p) : 1;
   ret = r ? tilde_expand (s) : savestring (s);
 
   QUIT;
@@ -1423,15 +1473,15 @@ conf_standard_path (void)
 int
 default_columns (void)
 {
-  char *v;
+  char *v, *e;
   int c;
 
   c = -1;
   v = get_string_value ("COLUMNS");
   if (v && *v)
     {
-      c = atoi (v);
-      if (c > 0)
+      c = (int)strtol (v, &e, 10);
+      if (e != v && *e == '\0' && c > 0)
 	return c;
     }
 

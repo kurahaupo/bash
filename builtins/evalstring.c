@@ -1,6 +1,6 @@
 /* evalstring.c - evaluate a string as one or more shell commands. */
 
-/* Copyright (C) 1996-2023 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -109,6 +109,7 @@ should_optimize_fork (COMMAND *command, int subshell)
       command->type == cm_simple &&
       signal_is_trapped (EXIT_TRAP) == 0 &&
       signal_is_trapped (ERROR_TRAP) == 0 &&
+      (variable_context == 0 || signal_is_trapped (RETURN_TRAP) == 0) &&
       any_signals_trapped () < 0 &&
       (subshell || (command->redirects == 0 && command->value.Simple->redirects == 0)) &&
       ((command->flags & CMD_TIME_PIPELINE) == 0) &&
@@ -137,7 +138,7 @@ should_suppress_fork (COMMAND *command)
 int
 can_optimize_connection (COMMAND *command)
 {
-  return (*bash_input.location.string == '\0' &&
+  return ((bash_input.type != st_string || *bash_input.location.string == '\0') &&
 	  parser_expanding_alias () == 0 &&
 	  (command->value.Connection->connector == AND_AND || command->value.Connection->connector == OR_OR || command->value.Connection->connector == ';') &&
 	  command->value.Connection->second->type == cm_simple);
@@ -187,11 +188,11 @@ optimize_shell_function (COMMAND *command)
       fc->flags |= CMD_NO_FORK;
       fc->value.Simple->flags |= CMD_NO_FORK;
     }
-  else if (fc->type == cm_connection && can_optimize_connection (fc) && should_suppress_fork (fc->value.Connection->second))
+  else if (fc->type == cm_connection && can_optimize_connection (fc))
     {
-      fc->value.Connection->second->flags |= CMD_NO_FORK;
-      fc->value.Connection->second->value.Simple->flags |= CMD_NO_FORK;
-    }  
+      fc->value.Connection->second->flags |= CMD_TRY_OPTIMIZING;
+      fc->value.Connection->second->value.Simple->flags |= CMD_TRY_OPTIMIZING;
+    }
 }
 
 int
@@ -247,6 +248,8 @@ parse_prologue (char *string, int flags, char *tag)
   unwind_protect_int (builtin_ignoring_errexit);
   if (flags & (SEVAL_NONINT|SEVAL_INTERACT))
     unwind_protect_int (interactive);
+  if (flags & SEVAL_NOTIFY)
+    unwind_protect_int (want_job_notifications);
 
 #if defined (HISTORY)
   if (parse_and_execute_level == 0)
@@ -281,6 +284,9 @@ parse_prologue (char *string, int flags, char *tag)
   if (flags & (SEVAL_NONINT|SEVAL_INTERACT))
     interactive = (flags & SEVAL_NONINT) ? 0 : 1;
 
+  if (flags & SEVAL_NOTIFY)
+    want_job_notifications = 1;
+
 #if defined (HISTORY)
   if (flags & SEVAL_NOHIST)
     bash_history_disable ();
@@ -302,6 +308,7 @@ parse_prologue (char *string, int flags, char *tag)
    	(flags & SEVAL_RESETLINE) -> reset line_number to 1
    	(flags & SEVAL_NOHISTEXP) -> history_expansion_inhibited -> 1
    	(flags & SEVAL_NOOPTIMIZE) -> don't try to turn on optimizing flags
+   	(flags & SEVAL_NOTIFY) -> print job status notifications
 */
 
 int
@@ -334,10 +341,10 @@ parse_and_execute (char *string, const char *from_file, int flags)
   if (parser_expanding_alias ())
     /* push current shell_input_line */
     parser_save_alias ();
-  
+
   if (lreset == 0)
     line_number--;
-    
+
   indirection_level++;
 
   code = should_jump_to_top_level = 0;
@@ -405,6 +412,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 			 protects installed by the string we're evaluating, so
 			 it will undo the current function scope. */
 		      dispose_command (command);
+		      currently_executing_command = NULL;
 		      discard_unwind_frame ("pe_dispose");
 		    }
 		  else
@@ -414,11 +422,12 @@ parse_and_execute (char *string, const char *from_file, int flags)
 	      goto out;
 
 	    case DISCARD:
+	    case REINIT:
 	      if (command)
 		run_unwind_frame ("pe_dispose");
 	      last_result = last_command_exit_value = EXECUTION_FAILURE; /* XXX */
 	      set_pipestatus_from_exit (last_command_exit_value);
-	      
+
 	      if (subshell_environment)
 		{
 		  should_jump_to_top_level = 1;
@@ -483,6 +492,7 @@ parse_and_execute (char *string, const char *from_file, int flags)
 	      begin_unwind_frame ("pe_dispose");
 	      add_unwind_protect (uw_dispose_fd_bitmap, bitmap);
 	      add_unwind_protect (uw_dispose_command, command);	/* XXX */
+	      unwind_protect_pointer (currently_executing_command);
 
 	      global_command = (COMMAND *)NULL;
 
@@ -541,6 +551,9 @@ parse_and_execute (char *string, const char *from_file, int flags)
 	      if ((subshell_environment & SUBSHELL_COMSUB) || executing_funsub)
 		expand_aliases = expaliases_flag;
 
+	      /* This functionality is now implemented as part of
+		 subst.c:command_substitute(). */
+#if 0
 	      /* See if this is a candidate for $( <file ). */
 	      if (startup_state == 2 &&
 		  (subshell_environment & SUBSHELL_COMSUB) &&
@@ -548,15 +561,16 @@ parse_and_execute (char *string, const char *from_file, int flags)
 		  can_optimize_cat_file (command))
 		{
 		  int r;
+INTERNAL_DEBUG(("parse_and_execute: calling cat_file, parse_and_execute_level = %d", parse_and_execute_level));
 		  r = cat_file (command->value.Simple->redirects);
 		  last_result = (r < 0) ? EXECUTION_FAILURE : EXECUTION_SUCCESS;
 		}
 	      else
+#endif
 		last_result = execute_command_internal
 				(command, 0, NO_PIPE, NO_PIPE, bitmap);
-	      dispose_command (command);
-	      dispose_fd_bitmap (bitmap);
-	      discard_unwind_frame ("pe_dispose");
+
+	      run_unwind_frame ("pe_dispose");
 
 	      /* If the global value didn't change, we restore what we had. */
 	      if (((subshell_environment & SUBSHELL_COMSUB) || executing_funsub) && local_alflag == expaliases_flag)
@@ -671,6 +685,7 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 	    case EXITPROG:
 	    case EXITBLTIN:
 	    case DISCARD:		/* XXX */
+	    case REINIT:
 	      if (command)
 		dispose_command (command);
 	      /* Remember to call longjmp (top_level) after the old
@@ -686,7 +701,7 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 	      break;
 	    }
 	}
-	  
+
       if (parse_command () == 0)
 	{
 	  if (cmdp)
@@ -694,6 +709,10 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 	  else
 	    dispose_command (global_command);
 	  global_command = (COMMAND *)NULL;
+	  /* Presumably this is an error if we haven't consumed the
+	     entire string, but we let the caller deal with it. */
+	  if (flags & SEVAL_ONECMD)
+	    break;
 	}
       else
 	{
@@ -709,7 +728,8 @@ parse_string (char *string, const char *from_file, int flags, COMMAND **cmdp, ch
 
       if (current_token == yacc_EOF || current_token == shell_eof_token)
 	{
-	  if (current_token == shell_eof_token)
+	  /* check for EOFTOKEN out of paranoia */
+	  if ((parser_state & PST_EOFTOKEN) && (current_token == shell_eof_token))
 	    rewind_input_string ();
 	  break;
 	}
@@ -728,10 +748,10 @@ out:
      us, after doing cleanup */
   if (should_jump_to_top_level)
     {
-      if (parse_and_execute_level == 0)
-	top_level_cleanup ();
       if (code == DISCARD)
 	return -DISCARD;
+      if (parse_and_execute_level == 0)
+	top_level_cleanup ();
       jump_to_top_level (code);
     }
 
@@ -844,6 +864,6 @@ evalstring (char *string, const char *from_file, int flags)
 	  sh_longjmp (return_catch, 1);
 	}
     }
-    
+
   return (r);
 }

@@ -14,6 +14,26 @@
 LC_ALL=C
 LC_NUMERIC=C
 
+: ${TMPDIR:=/tmp}
+TMPF=$TMPDIR/printf-oflow-$RANDOM
+
+. ./test-aux-functions
+
+printf_overflow ()
+{
+        local r;
+
+        line=$1 ; shift
+        rm -f "$TMPF"
+        printf "$@"  2>$TMPF
+        r=$?
+        if [ ! -s "$TMPF" ]; then
+                echo "printf.tests: $line: expected overflow error output to stderr" >&2
+        fi
+        rm -f "$TMPF"
+        return $r
+}
+
 # these should output error messages -- the format is required
 printf
 printf --
@@ -361,15 +381,21 @@ printf '%Q\n'
 TOOBIG=9223372036854775825
 TOOSMALL=-9223372036854775815
 
-printf '%d\n' "$TOOBIG"
-printf '%d\n' "$TOOSMALL"
+printf_overflow $LINENO '%d\n' "$TOOBIG"
+printf_overflow $LINENO '%d\n' "$TOOSMALL"
+
+# arguments that are not completely converted generate warning messages
+printf '%d\n' +
+printf '%d\n' z
+printf '%d\n' ''
 
 # tests variable assignment with -v
-${THIS_SH} ./printf1.sub
-${THIS_SH} ./printf2.sub
-${THIS_SH} ./printf3.sub
-${THIS_SH} ./printf4.sub
-${THIS_SH} ./printf5.sub
+test_runsub ./printf1.sub
+test_runsub ./printf2.sub
+test_runsub ./printf3.sub
+test_runsub ./printf4.sub
+test_runsub ./printf5.sub
 # multibyte characters with %ls/%S and %lc/%C
-${THIS_SH} ./printf6.sub
-${THIS_SH} ./printf7.sub
+test_runsub ./printf6.sub
+test_runsub ./printf7.sub
+test_runsub ./printf8.sub

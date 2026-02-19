@@ -1,6 +1,6 @@
 /* execute_cmd.h - functions from execute_cmd.c. */
 
-/* Copyright (C) 1993-2017,2022 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2017,2022-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -59,7 +59,7 @@ extern int executing_command_builtin;
 extern int funcnest, funcnest_max;
 extern int evalnest, evalnest_max;
 extern int sourcenest, sourcenest_max;
-extern int stdin_redir;
+extern int stdin_redirected;
 extern int line_number_for_err_trap;
 
 extern char *the_printed_command_except_trap;
@@ -105,7 +105,10 @@ extern void coproc_fdclose (struct coproc *, int);
 extern void coproc_checkfd (struct coproc *, int);
 extern void coproc_fdchk (int);
 
-extern void coproc_pidchk (pid_t, int);
+#if defined _POSIXWAIT_H_
+extern void coproc_pidchk (pid_t, WAIT);
+extern void coproc_setstate (pid_t, WAIT);
+#endif
 
 extern void coproc_fdsave (struct coproc *);
 extern void coproc_fdrestore (struct coproc *);
@@ -130,5 +133,7 @@ extern void bind_lastarg (char *);
 
 extern void uw_dispose_fd_bitmap (void *);
 extern void uw_close (void *);
+
+extern void init_notfound_str (void);
 
 #endif /* _EXECUTE_CMD_H_ */

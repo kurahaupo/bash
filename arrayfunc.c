@@ -1,6 +1,6 @@
 /* arrayfunc.c -- High-level array functions used by other parts of the shell. */
 
-/* Copyright (C) 2001-2024 Free Software Foundation, Inc.
+/* Copyright (C) 2001-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -102,6 +102,11 @@ convert_var_to_array (SHELL_VAR *var)
   /* Since namerefs can't be array variables, turn off nameref attribute */
   VUNSETATTR (var, att_nameref);
 
+  /* Temporary environment variables can't be array variables */
+/* itrace("convert_var_to_array: turning off att_tempvar for %s", var->name);*/
+  VUNSETATTR (var, att_tempvar);
+
+  stupidly_hack_special_variables (var->name);
   return var;
 }
 
@@ -139,6 +144,11 @@ convert_var_to_assoc (SHELL_VAR *var)
   /* Since namerefs can't be array variables, turn off nameref attribute */
   VUNSETATTR (var, att_nameref);
 
+  /* Temporary environment variables can't be array variables */
+/*itrace("convert_var_to_assoc: turning off att_tempvar for %s", var->name);*/
+  VUNSETATTR (var, att_tempvar);
+
+  stupidly_hack_special_variables (var->name);
   return var;
 }
 
@@ -193,7 +203,13 @@ make_array_variable_value (SHELL_VAR *entry, arrayind_t ind, const char *key, co
       dispose_variable (dentry);
     }
   else
-    newval = make_variable_value (entry, value, flags);
+    {
+      if (entry)
+	VSETATTR (entry, att_assigning);
+      newval = make_variable_value (entry, value, flags);
+      if (entry)
+	VUNSETATTR (entry, att_assigning);
+    }
 
   return newval;
 }
@@ -217,7 +233,7 @@ bind_assoc_var_internal (SHELL_VAR *entry, HASH_TABLE *hash, char *key, const ch
       (*entry->assign_func) (entry, newval, 0, key);
       FREE (key);
     }
-  else
+  else if (assoc_p (entry))
     assoc_insert (hash, key, newval);
 
   FREE (newval);
@@ -241,7 +257,7 @@ bind_array_var_internal (SHELL_VAR *entry, arrayind_t ind, char *key, const char
     (*entry->assign_func) (entry, newval, ind, key);
   else if (assoc_p (entry))
     assoc_insert (assoc_cell (entry), key, newval);
-  else
+  else if (array_p (entry))
     array_insert (array_cell (entry), ind, newval);
   FREE (newval);
 
@@ -276,7 +292,7 @@ bind_array_variable (const char *name, arrayind_t ind, const char *value, int fl
     }
   if (entry == (SHELL_VAR *) 0)
     entry = make_new_array_variable (name);
-  else if ((readonly_p (entry) && (flags&ASS_FORCE) == 0) || noassign_p (entry))
+  else if (ASSIGN_DISALLOWED (entry, flags))
     {
       if (readonly_p (entry))
 	err_readonly (name);
@@ -298,7 +314,7 @@ bind_array_element (SHELL_VAR *entry, arrayind_t ind, char *value, int flags)
 SHELL_VAR *
 bind_assoc_variable (SHELL_VAR *entry, const char *name, char *key, const char *value, int flags)
 {
-  if ((readonly_p (entry) && (flags&ASS_FORCE) == 0) || noassign_p (entry))
+  if (ASSIGN_DISALLOWED (entry, flags))
     {
       if (readonly_p (entry))
 	err_readonly (name);
@@ -406,6 +422,9 @@ assign_array_element_internal (SHELL_VAR *entry, const char *name, char *vname,
       if (estatep)
 	nkey = savestring (akey);	/* assoc_insert/assoc_replace frees akey */
       entry = bind_assoc_variable (entry, vname, akey, value, flags);
+      /* If we didn't perform the assignment, free the key we allocated */
+      if (entry == 0 || (ASSIGN_DISALLOWED (entry, flags)))
+	FREE (akey);
       if (estatep)
 	{
 	  estatep->type = ARRAY_ASSOC;
@@ -419,7 +438,11 @@ assign_array_element_internal (SHELL_VAR *entry, const char *name, char *vname,
       int avflags;
 
       avflags = convert_assign_flags_to_arrayval_flags (flags);
+      if (entry)
+	VSETATTR (entry, att_assigning);
       ind = array_expand_index (entry, sub, sublen, avflags);
+      if (entry)
+	VUNSETATTR (entry, att_assigning);
       /* negative subscripts to indexed arrays count back from end */
       if (entry && ind < 0)
 	ind = (array_p (entry) ? array_max_index (array_cell (entry)) : 0) + 1 + ind;
@@ -476,7 +499,7 @@ find_or_make_array_variable (const char *name, int flags)
 
   if (var == 0)
     var = (flags & 2) ? make_new_assoc_variable (name) : make_new_array_variable (name);
-  else if ((flags & 1) && (readonly_p (var) || noassign_p (var)))
+  else if ((flags & 1) && ASSIGN_DISALLOWED(var, 0))
     {
       if (readonly_p (var))
 	err_readonly (name);
@@ -733,6 +756,7 @@ assign_compound_array_list (SHELL_VAR *var, WORD_LIST *nlist, int flags)
 	  var_setassoc (var, nhash);
 	  assoc_dispose (h);
 	}
+      VSETATTR(var, att_assoc);		/* paranoia; could have been unset */
       return 1;		/* XXX - check return value */
     }
 #endif
@@ -913,7 +937,7 @@ assign_array_var_from_string (SHELL_VAR *var, char *value, int flags)
     return var;
 
   nlist = expand_compound_array_assignment (var, value, flags);
-  /* This is were we set ASS_NOEXPAND and ASS_ONEWORD if we need to, since
+  /* This is where we set ASS_NOEXPAND and ASS_ONEWORD if we need to, since
      expand_compound_array_assignment performs word expansions. Honors
      array_expand_once; allows @ and * as associative array keys. */
   aflags = flags | (array_expand_once ? ASS_NOEXPAND : 0) | ASS_ALLOWALLSUB;
@@ -1359,8 +1383,7 @@ array_expand_index (SHELL_VAR *var, const char *s, int len, int flags)
   exp = (char *)xmalloc (len);
   strncpy (exp, s, len - 1);
   exp[len - 1] = '\0';
-#if 1	/* TAG: bash-5.3 */
-#if 0
+#if 0	/* XXX - not dependent on compatibility mode for now */
   if (shell_compatibility_level <= 52 || (flags & AV_NOEXPAND) == 0)
 #else
   if ((flags & AV_NOEXPAND) == 0)
@@ -1368,9 +1391,6 @@ array_expand_index (SHELL_VAR *var, const char *s, int len, int flags)
     t = expand_arith_string (exp, Q_DOUBLE_QUOTES|Q_ARITH|Q_ARRAYSUB);	/* XXX - Q_ARRAYSUB for future use */
   else
     t = exp;
-#else
-  t = expand_arith_string (exp, Q_DOUBLE_QUOTES|Q_ARITH|Q_ARRAYSUB);	/* XXX - Q_ARRAYSUB for future use */
-#endif
   savecmd = this_command_name;
   this_command_name = (char *)NULL;
   eflag = (shell_compatibility_level > 51) ? 0 : EXP_EXPANDED;

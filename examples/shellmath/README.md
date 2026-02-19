@@ -1,5 +1,5 @@
 # Shellmath
-Introducing decimal arithmetic libraries for the Bash shell, because
+Introducing floating-point arithmetic libraries for the Bash shell, because
 they said it couldn't be done... and because:
 
 .
@@ -90,7 +90,7 @@ script is exercising the shellmath arithmetic subroutines 31 times.___)
 The comment header in `faster_e_demo.sh` explains the optimization and shows
 how to put this faster version to work for you.
 
-## Runtime efficiency competitive with awk and bc
+## Competitive with awk and bc in runtime efficiency
 The file `timingData.txt` captures the results of some timing experiments that compare 
 `shellmath` against the GNU versions of the calculators `awk` and `bc`. The experiments
 exercised each of the arithmetic operations and captured the results in a shell variable.
@@ -164,3 +164,5 @@ You can run your floating-point calculations directly in Bash!
 
 ## Please see also:
 [A short discussion on arbitrary precision and shellmath](https://github.com/clarity20/shellmath/wiki/Shellmath-and-arbitrary-precision-arithmetic)
+
+-- Michael Wood

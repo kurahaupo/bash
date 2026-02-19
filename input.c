@@ -60,16 +60,22 @@ extern int errno;
 extern void termsig_handler (int);
 
 /* Functions to handle reading input on systems that don't restart read(2)
-   if a signal is received. */
+   if a signal is received. This is a very minimal buffered input system
+   without synchronization, intended to read from the file descriptor
+   associated with a stdio stream. stream_setsize(size) allows the caller/
+   user to set the amount read with each call to read(2). */
 
-static char localbuf[1024];
-static int local_index = 0, local_bufused = 0;
+#define LOCALBUF_BUFSIZE 1024
+static char localbuf[LOCALBUF_BUFSIZE];
+static size_t local_index = 0;
+static ssize_t local_bufused = 0;
+static size_t read_bufsize = LOCALBUF_BUFSIZE;
 
 /* Posix and USG systems do not guarantee to restart read () if it is
    interrupted by a signal.  We do the read ourselves, and restart it
    if it returns EINTR. */
 int
-getc_with_restart (FILE *stream)
+stream_getc (FILE *stream)
 {
   unsigned char uc;
 
@@ -83,7 +89,7 @@ getc_with_restart (FILE *stream)
 	  QUIT;
 	  run_pending_traps ();
 
-	  local_bufused = read (fileno (stream), localbuf, sizeof(localbuf));
+	  local_bufused = read (fileno (stream), localbuf, read_bufsize);
 	  if (local_bufused > 0)
 	    break;
 	  else if (local_bufused == 0)
@@ -116,12 +122,21 @@ getc_with_restart (FILE *stream)
 }
 
 int
-ungetc_with_restart (int c, FILE *stream)
+stream_ungetc (int c, FILE *stream)
 {
   if (local_index == 0 || c == EOF)
     return EOF;
   localbuf[--local_index] = c;
   return c;
+}
+
+size_t
+stream_setsize (size_t size)
+{
+  size_t o;
+  o = read_bufsize;
+  read_bufsize = size;
+  return o;
 }
 
 /* A facility similar to stdio, but input-only. */
@@ -146,6 +161,10 @@ ungetc_with_restart (int c, FILE *stream)
 #define min(a, b)	((a) > (b) ? (b) : (a))
 
 int bash_input_fd_changed;
+
+static inline int count_shared_buffers (BUFFERED_STREAM *);
+static inline void unshare_shared_buffers (BUFFERED_STREAM *);
+static inline void sync_shared_buffers (BUFFERED_STREAM *);;;;
 
 /* This provides a way to map from a file descriptor to the buffer
    associated with that file descriptor, rather than just the other
@@ -261,7 +280,13 @@ save_bash_input (int fd, int new_fd)
 	 descriptor?  Free up the buffer and report the error. */
       internal_error (_("save_bash_input: buffer already exists for new fd %d"), nfd);
       if (buffers[nfd]->b_flag & B_SHAREDBUF)
-	buffers[nfd]->b_buffer = (char *)NULL;
+	{
+	  /* If this buffer is shared by only one other buffered stream, mark
+	     it as no longer shared. */
+	  if (count_shared_buffers (buffers[nfd]) == 1)
+	    unshare_shared_buffers (buffers[nfd]);
+	  buffers[nfd]->b_buffer = (char *)NULL;
+	}
       free_buffered_stream (buffers[nfd]);
     }
 
@@ -302,10 +327,15 @@ save_bash_input (int fd, int new_fd)
 int
 check_bash_input (int fd)
 {
+  int nfd;
+
   if (fd_is_bash_input (fd))
     {
       if (fd > 0)
-	return ((save_bash_input (fd, -1) == -1) ? -1 : 0);
+	{
+	  nfd = save_bash_input (fd, -1);	/* allocates new fd */
+	  return (nfd);
+	}
       else if (fd == 0)
         return ((sync_buffered_stream (fd) == -1) ? -1 : 0);
     }
@@ -342,6 +372,10 @@ duplicate_buffered_stream (int fd1, int fd2)
       /* If this buffer is shared with another fd, don't free the buffer */
       else if (buffers[fd2]->b_flag & B_SHAREDBUF)
 	{
+	  /* If this buffer is shared by only one other buffered stream, mark
+	     it as no longer shared. */
+	  if (count_shared_buffers (buffers[fd2]) == 1)
+	    unshare_shared_buffers (buffers[fd2]);
 	  buffers[fd2]->b_buffer = (char *)NULL;
 	  free_buffered_stream (buffers[fd2]);
 	}
@@ -360,7 +394,11 @@ duplicate_buffered_stream (int fd1, int fd2)
     }
 
   if (buffers[fd2] && (fd_is_bash_input (fd1) || (buffers[fd1] && (buffers[fd1]->b_flag & B_SHAREDBUF))))
-    buffers[fd2]->b_flag |= B_SHAREDBUF;
+    {
+      /* Make sure both buffered streams are marked as sharing an input buffer */
+      buffers[fd1]->b_flag |= B_SHAREDBUF;
+      buffers[fd2]->b_flag |= B_SHAREDBUF;
+    }
 
   return (fd2);
 }
@@ -426,11 +464,17 @@ close_buffered_stream (BUFFERED_STREAM *bp)
 {
   int fd;
 
-  if (!bp)
+  if (bp == NULL)
     return (0);
   fd = bp->b_fd;
   if (bp->b_flag & B_SHAREDBUF)
-    bp->b_buffer = (char *)NULL;
+    {
+      /* If this buffer is shared by only one other buffered stream, mark
+	 it as no longer shared. */
+      if (count_shared_buffers (buffers[fd]) == 1)
+	unshare_shared_buffers (buffers[fd]);
+      bp->b_buffer = (char *)NULL;
+    }
   free_buffered_stream (bp);
   return (close (fd));
 }
@@ -490,33 +534,53 @@ b_fill_buffer (BUFFERED_STREAM *bp)
   if (bp->b_flag & B_ERROR)	/* try making read errors `sticky' */
     return EOF;
 
-  /* In an environment where text and binary files are treated differently,
-     compensate for lseek() on text files returning an offset different from
-     the count of characters read() returns.  Text-mode streams have to be
-     treated as unbuffered. */
-  if ((bp->b_flag & (B_TEXT | B_UNBUFF)) == B_TEXT)
+  while (1)			/* loop to handle non-blocking fds */
     {
-      o = lseek (bp->b_fd, 0, SEEK_CUR);
-      nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
-      if (nr > 0 && nr < lseek (bp->b_fd, 0, SEEK_CUR) - o)
+      /* In an environment where text and binary files are treated differently,
+	 compensate for lseek() on text files returning an offset different from
+	 the count of characters read() returns.  Text-mode streams have to be
+	 treated as unbuffered. */
+      if ((bp->b_flag & (B_TEXT | B_UNBUFF)) == B_TEXT)
 	{
-	  lseek (bp->b_fd, o, SEEK_SET);
-	  bp->b_flag |= B_UNBUFF;
-	  bp->b_size = 1;
+	  o = lseek (bp->b_fd, 0, SEEK_CUR);
 	  nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
+	  if (nr > 0 && nr < lseek (bp->b_fd, 0, SEEK_CUR) - o)
+	    {
+	      lseek (bp->b_fd, o, SEEK_SET);
+	      bp->b_flag |= B_UNBUFF;
+	      bp->b_size = 1;
+	      nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
+	    }
 	}
-    }
-  else
-    nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
-  if (nr <= 0)
-    {
+      else
+	nr = zread (bp->b_fd, bp->b_buffer, bp->b_size);
+
+      if (nr > 0)
+ 	break;
+
       bp->b_used = bp->b_inputp = 0;
       bp->b_buffer[0] = 0;
+
       if (nr == 0)
-	bp->b_flag |= B_EOF;
+	{
+	  bp->b_flag |= B_EOF;
+	  return (EOF);
+	}
+      else if (errno == X_EAGAIN || errno == X_EWOULDBLOCK)
+	{
+	  if (sh_unset_nodelay_mode (bp->b_fd) < 0)
+	    {
+	      sys_error (_("cannot reset nodelay mode for fd %d"), bp->b_fd);
+	      bp->b_flag |= B_ERROR;
+	      return (EOF);
+	    }
+	  continue;
+	}
       else
-	bp->b_flag |= B_ERROR;
-      return (EOF);
+	{
+	  bp->b_flag |= B_ERROR;
+	  return (EOF);
+	}
     }
 
   bp->b_used = nr;
@@ -541,6 +605,49 @@ bufstream_ungetc(int c, BUFFERED_STREAM *bp)
   return (c);
 }
 
+/* Return the number of buffered streams sharing a buffer with BP */
+static inline int
+count_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+  int n;
+
+  n = 0;
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      n++;
+  return n;
+}
+
+/* Mark the buffered stream sharing a buffer with BP as no longer B_SHAREDBUF */
+static inline void
+unshare_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      {
+	buffers[i]->b_flag &= ~B_SHAREDBUF;
+	return;
+      }
+}
+
+/* Sync the input and read offsets on all buffered streams that share a buffer
+   with BP */
+static inline void
+sync_shared_buffers (BUFFERED_STREAM *bp)
+{
+  size_t i;
+
+  for (i = 0; i < nbuffers; i++)
+    if (buffers[i] && (buffers[i]->b_flag & B_SHAREDBUF) && buffers[i] != bp && buffers[i]->b_buffer == bp->b_buffer)
+      {
+	buffers[i]->b_used = bp->b_used;
+	buffers[i]->b_inputp = bp->b_inputp;
+      }
+}
+
 /* Seek backwards on file BFD to synchronize what we've read so far
    with the underlying file pointer. */
 int
@@ -556,6 +663,15 @@ sync_buffered_stream (int bfd)
   if (chars_left)
     lseek (bp->b_fd, -chars_left, SEEK_CUR);
   bp->b_used = bp->b_inputp = 0;
+
+  /* If we are sharing the buffer between buffered streams, we must have
+     duplicated the file descriptor and called duplicate_buffered_stream().
+     In this case, the buffers share the underlying fd and all of them
+     need to be updated to force a read on the next call, since we've changed
+     the file offset. */
+  if (bp->b_flag & B_SHAREDBUF)
+    sync_shared_buffers (bp);
+
   return (0);
 }
 

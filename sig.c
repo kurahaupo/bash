@@ -1,6 +1,6 @@
 /* sig.c - interface for shell signal handlers and signal initialization. */
 
-/* Copyright (C) 1994-2022 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -24,7 +24,7 @@
 
 #if defined (HAVE_UNISTD_H)
 #  ifdef _MINIX
-initialize_shell_signals (#    include <sys/types.h>
+#    include <sys/types.h>
 #  endif
 #  include <unistd.h>
 #endif
@@ -33,6 +33,8 @@ initialize_shell_signals (#    include <sys/types.h>
 #include <signal.h>
 
 #include "bashintl.h"
+
+#define NEED_FPURGE_DECL
 
 #include "shell.h"
 #include "execute_cmd.h"
@@ -462,11 +464,17 @@ throw_to_top_level (void)
   unlink_fifo_list ();
 #endif /* PROCESS_SUBSTITUTION */
 
+  /* We don't want any more output after a SIGINT. */
+  if (interactive && print_newline)
+    fpurge (stdout);
+
   run_unwind_protects ();
   loop_level = continuing = breaking = funcnest = 0;
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
   variable_context = 0;
+
+  executing = parsing_command = 0;
 
   if (interactive && print_newline)
     {
@@ -572,8 +580,9 @@ termsig_sighandler (int sig)
   /* Set the event hook so readline will call it after the signal handlers
      finish executing, so if this interrupted character input we can get
      quick response.  If readline is active or has modified the terminal we
-     need to set this no matter what the signal is, though the check for
-     RL_STATE_TERMPREPPED is possibly redundant. */
+     need to set this no matter what the signal is; the check for
+     RL_STATE_TERMPREPPED is to handle the cases where we get a terminating
+     signal that readline *doesn't* handle while readline is executing. */
   if (RL_ISSTATE (RL_STATE_SIGHANDLER) || RL_ISSTATE (RL_STATE_TERMPREPPED))
     bashline_set_event_hook ();
   else if (RL_ISSTATE (RL_STATE_COMPLETING|RL_STATE_DISPATCHING))
@@ -595,7 +604,7 @@ termsig_handler (int sig)
   handling_termsig = terminating_signal;	/* for termsig_sighandler */
   terminating_signal = 0;	/* keep macro from re-testing true. */
 
-  if (builtin_catch_sigpipe)
+  if (sig == SIGPIPE && builtin_catch_sigpipe)
     sigpipe_handler (sig);
 
   /* I don't believe this condition ever tests true. */
@@ -635,7 +644,10 @@ termsig_handler (int sig)
   interrupt_execution = retain_fifos = executing_funsub = 0;
   comsub_ignore_return = return_catch_flag = wait_intr_flag = 0;
 
-  run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
+  /* Don't run the exit trap if we're supposed to be ignoring traps in a
+     subshell environment. */
+  if ((subshell_environment & SUBSHELL_IGNTRAP) == 0)
+    run_exit_trap ();	/* XXX - run exit trap possibly in signal context? */
 
   kill_shell (sig);
 }

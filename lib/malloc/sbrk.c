@@ -1,4 +1,4 @@
-/* Copyright (C) 2023 Free Software Foundation, Inc.
+/* Copyright (C) 2023-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -25,7 +25,7 @@ static void *initialbrk;
 static void *curbrk;
 
 static int
-brkinit (void)
+initbrk (void)
 {
   if (initialbrk == 0)
     {
