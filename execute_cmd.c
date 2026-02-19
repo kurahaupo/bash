@@ -5526,6 +5526,8 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 				      struct fd_bitmap *fds_to_close, int flags)
 {
   int result, r, funcvalue;
+  REDIRECT *saved_undo_list;
+  int has_exec_redirects;
 #if defined (JOB_CONTROL)
   int jobs_hack;
 
@@ -5581,11 +5583,35 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 
   do_piping (pipe_in, pipe_out);
 
-  if (do_redirections (redirects, RX_ACTIVE) != 0)
+  if (do_redirections (redirects, RX_ACTIVE|RX_UNDOABLE) != 0)
     exit (EXECUTION_FAILURE);
+
+  has_exec_redirects = (builtin == exec_builtin) && redirection_undo_list;
+  saved_undo_list = redirection_undo_list;
+
+  /* Calling the "exec" builtin changes redirections forever. */
+  if (builtin == exec_builtin)
+    {
+      /* let exec_builtin handle disposing redirection_undo_list */
+      saved_undo_list = exec_redirection_undo_list;
+      exec_redirection_undo_list = (REDIRECT *)NULL;
+    }
+  else
+    {
+      dispose_exec_redirects ();
+      redirection_undo_list = (REDIRECT *)NULL;
+    }
+
+  if (builtin && saved_undo_list)
+    {
+      begin_unwind_frame ("subshell-saved-redirects");
+      add_unwind_protect (uw_cleanup_redirects, (char *)saved_undo_list);
+    }
 
   if (builtin)
     {
+      int subshell_exit_value;
+
       /* Give builtins a place to jump back to on failure,
 	 so we don't go back up to main(). */
       result = setjmp_nosigs (top_level);
@@ -5597,13 +5623,13 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
         funcvalue = setjmp_nosigs (return_catch);
 
       if (result == EXITPROG || result == EXITBLTIN)
-	subshell_exit (last_command_exit_value);
+	subshell_exit_value = last_command_exit_value;
       else if (result == ERREXIT)
-	subshell_exit (last_command_exit_value ? last_command_exit_value : EXECUTION_FAILURE);
+	subshell_exit_value = last_command_exit_value ? last_command_exit_value : EXECUTION_FAILURE;
       else if (result)
-	subshell_exit (EXECUTION_FAILURE);
+	subshell_exit_value = EXECUTION_FAILURE;
       else if (funcvalue)
-	subshell_exit (return_catch_value);
+	subshell_exit_value = return_catch_value;
       else
 	{
 	  r = execute_builtin (builtin, words, flags, 1);
@@ -5619,8 +5645,26 @@ execute_subshell_builtin_or_function (WORD_LIST *words, REDIRECT *redirects,
 	      r = execute_disk_command (words, (REDIRECT *)0, command_line,
 		  -1, -1, async, (struct fd_bitmap *)0, flags|CMD_NO_FORK);
 	    }
-	  subshell_exit (r);
+	  subshell_exit_value = r;
 	}
+
+      if (has_exec_redirects && redirection_undo_list)
+	{
+	  if (saved_undo_list)
+	    {
+	      dispose_redirects (saved_undo_list);
+	      discard_unwind_frame ("subshell-saved-redirects");
+	    }
+	  saved_undo_list = exec_redirection_undo_list = (REDIRECT *)NULL;
+	}
+      if (saved_undo_list)
+	{
+	  redirection_undo_list = signal_is_trapped (0) ? saved_undo_list : NULL;
+	  discard_unwind_frame ("subshell-saved-redirects");
+	}
+      undo_partial_redirects ();
+
+      subshell_exit (subshell_exit_value);
     }
   else
     {

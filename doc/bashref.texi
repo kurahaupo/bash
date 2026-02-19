@@ -9330,7 +9330,8 @@ builtins.
 
 @item
 Tilde expansion is only performed on assignments preceding a command
-name, rather than on all assignment statements on the line.
+name, rather than on all assignment statements on the line, unless
+the command is a declaration command.
 
 @item
 While variable indirection is available, it may not be applied to the

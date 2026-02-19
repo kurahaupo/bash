@@ -1264,6 +1264,9 @@ bash_tilde_expand (const char *s, int assign_p)
      expansion in `echo ~:'. */
   /* If we don't do this, remove the sentence from the Tilde Expansion section
      of the man page and texinfo manual saying we do. */
+  if (assign_p == 0 && posixly_correct)
+    tilde_additional_suffixes = (char **)NULL;
+
   r = (*s == '~') ? unquoted_tilde_word (s, assign_p) : 1;
   ret = r ? tilde_expand (s) : savestring (s);
 

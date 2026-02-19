@@ -39,7 +39,6 @@ m4		d
 po		d
 support		d
 tests		d
-tests/misc	d
 ABOUT-NLS	f
 ChangeLog	c CWRU/changelog
 CHANGES		f
@@ -1677,19 +1676,6 @@ tests/vredir5.sub	f
 tests/vredir6.sub	f
 tests/vredir7.sub	f
 tests/vredir8.sub	f
-tests/misc/dev-tcp.tests	f
-tests/misc/perf-script	f
-tests/misc/perftest	f
-tests/misc/read-nchars.tests	f
-tests/misc/redir-t2.sh	f
-tests/misc/run-r2.sh	f
-tests/misc/sigint-1.sh		f
-tests/misc/sigint-2.sh		f
-tests/misc/sigint-3.sh		f
-tests/misc/sigint-4.sh		f
-tests/misc/test-minus-e.1	f
-tests/misc/test-minus-e.2	f
-tests/misc/wait-bg.tests	f
 #examples/scripts.v2/PERMISSION	f
 #examples/scripts.v2/README	f
 #examples/scripts.v2/arc2tarz	f

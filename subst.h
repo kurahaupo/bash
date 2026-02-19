@@ -275,6 +275,10 @@ extern char *getifs (void);
    don't do any splitting. */
 extern WORD_LIST *word_split (WORD_DESC *, char *);
 
+/* Expand and perform the assignment statements in SUBST_ASSIGN_VARLIST,
+   then clean up and dispose of it. */
+extern int expand_assignment_statements (char *, int);
+
 /* Take the list of words in LIST and do the various substitutions.  Return
    a new list of words which is the expanded list, and without things like
    variable assignments. */

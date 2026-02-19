@@ -2392,12 +2392,14 @@ skip_to_delim (const char *string, int start, const char *delims, int flags)
 /* Skip to the history expansion character (delims[0]), paying attention to
    quoted strings and command and process substitution.  This is a stripped-
    down version of skip_to_delims.  The essential difference is that this
-   resets the quoting state when starting a command substitution */
+   resets the quoting state when starting a command substitution, since we
+   want to perform history expansion before performing any word expansions,
+   including command substitution. */
 int
 skip_to_histexp (const char *string, int start, const char *delims, int flags)
 {
   int pass_next, backq, dquote, c, oldjmp;
-  int histexp_comsub, histexp_backq, old_dquote;
+  int histexp_comsub, histexp_backq, old_dquote, paren_count, incase;
   size_t i, slen;
   DECLARE_MBSTATE;
 
@@ -2407,6 +2409,7 @@ skip_to_histexp (const char *string, int start, const char *delims, int flags)
     no_longjmp_on_fatal_error = 1;
 
   histexp_comsub = histexp_backq = old_dquote = 0;
+  paren_count = incase = 0;
 
   i = start;
   pass_next = backq = dquote = 0;
@@ -2483,12 +2486,42 @@ skip_to_histexp (const char *string, int start, const char *delims, int flags)
 	  i += 2;
 	  histexp_comsub++;
 	  old_dquote = dquote;
+	  paren_count++;
 	  dquote = 0;
         }
       else if (histexp_comsub && c == RPAREN)
 	{
-	  histexp_comsub--;
-	  dquote = old_dquote;
+	  /* we don't check for LPAREN, so case word in (pat) and
+	     case word in pat) both work */
+	  if (incase == 0)
+	    paren_count--;
+
+	  if (paren_count == 0)
+	    {
+	      histexp_comsub--;
+	      dquote = old_dquote;
+	    }
+	  i++;
+	  continue;
+	}
+      else if (histexp_comsub && c == 'c' &&
+	      (i == 0) || shellbreak (string[i-1]) &&	/* incomplete reserved word eligibility test */
+	      (i <= slen - 4) &&
+	      string[i+1] == 'a' && string[i+2] == 's' && string[i+3] == 'e' &&
+	      (shellblank (string[i+4]) || string[i+4] == '\0'))
+	{
+	  /* Very rudimentary detection of case statement. */
+	  incase++;
+	  i++;
+	  continue;
+	}
+      else if (histexp_comsub && c == 'e' &&
+	      (i == 0) || shellbreak (string[i-1]) &&	/* incomplete reserved word eligibility test */
+	      (i <= slen - 4) &&
+	      string[i+1] == 's' && string[i+2] == 'a' && string[i+3] == 'c' &&
+	      (shellbreak (string[i+4]) || string[i+4] == '\0'))
+	{
+	  incase--;
 	  i++;
 	  continue;
 	}
@@ -13331,6 +13364,18 @@ do_assignment_statements (WORD_LIST *varlist, char *command, int is_nullcmd)
   return (tempenv_assign_error);
 }
 
+int
+expand_assignment_statements (char *command, int isnull)
+{
+  int r;
+
+  r = do_assignment_statements (subst_assign_varlist, command, isnull);
+  dispose_words (subst_assign_varlist);
+  subst_assign_varlist = (WORD_LIST *)NULL;
+
+  return r;
+}
+
 /* The workhorse for expand_words () and expand_words_no_vars ().
    First arg is LIST, a WORD_LIST of words.
    Second arg EFLAGS is a flags word controlling which expansions are
@@ -13360,10 +13405,7 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
       if (new_list == 0)
 	{
 	  if (subst_assign_varlist)
-	    do_assignment_statements (subst_assign_varlist, (char *)NULL, 1);
-	    
-	  dispose_words (subst_assign_varlist);
-	  subst_assign_varlist = (WORD_LIST *)NULL;
+	    expand_assignment_statements ((char *)NULL, 1);
 
 	  return ((WORD_LIST *)NULL);
 	}
@@ -13397,12 +13439,7 @@ expand_word_list_internal (WORD_LIST *list, int eflags)
     }
 
   if ((eflags & WEXP_VARASSIGN) && subst_assign_varlist)
-    {
-      do_assignment_statements (subst_assign_varlist, (new_list && new_list->word) ? new_list->word->word : (char *)NULL, new_list == 0);
-
-      dispose_words (subst_assign_varlist);
-      subst_assign_varlist = (WORD_LIST *)NULL;
-    }
+    expand_assignment_statements ((new_list && new_list->word) ? new_list->word->word : (char *)NULL, new_list == 0);
 
   return (new_list);
 }
