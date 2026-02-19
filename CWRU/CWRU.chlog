@@ -12674,3 +12674,50 @@ builtins/read.def
 	  the old character-at-a-time cbreak mode code path if we're reading
 	  from a tty
 	  Report from Martin D Kealey <martin@kurahaupo.gen.nz>
+
+general.c
+	- bash_tilde_expand,unquoted_tilde_word: now take a flags argument
+	  (assign_p) saying whether or not this word is part of an
+	  assignment statement; changed callers
+	- bash_tilde_expand: in posix mode, a colon only terminates a
+	  tilde expansion in an assignment statement, so `~:' should not
+	  be expanded to ${HOME}:. Bash still does the tilde expansion in
+	  `bash mode'.
+	  "A tilde-prefix in an assignment is terminated by the first
+	  unquoted <colon> or <slash>, or the end of the assignment word."
+
+				   2/10
+				   ----
+lib/tilde/tilde.c
+	- tilde_expand: don't bother with the return value from strchr(); we
+	  don't need it and C23 complains; short-circuit with the equivalent
+	  of savestring() if there is no tilde
+	  From a report by Rudi Heitbaum <rudi@heitbaum.com>
+
+				   2/12
+				   ----
+subst.c
+	- skip_to_histexp: apply a heuristic while parsing $() command
+	  substitutions so a right paren in a case statement doesn't
+	  prematurely close the command substitution and reset the quoting
+	  state. We do this via a very rudimentary check for `case' and
+	  another for `esac', and do not close the command substitution
+	  if we get a right paren while between the two
+	  Inspired by a report from Jason Wilkes <letshaveanadventure@gmail.com>
+
+				   2/15
+				   ----
+execute_cmd.c
+	- execute_subshell_builtin_or_function: after executing the command(s)
+	  and before running the EXIT trap, undo any redirections from the
+	  last command so the exit trap runs in an environment without those
+	  redirections. This makes builtins run in a subshell more like those
+	  run in the shell's execution environment
+
+subst.c,subst.h
+	- expand_assignment_statements: new function, expand and perform the
+	  assignment statements in SUBST_ASSIGN_VARLIST, then clean up and
+	  dispose of it
+	- expand_words: call expand_assignment_statements instead of
+	  do_assignment_statements, remove some duplicate code
+

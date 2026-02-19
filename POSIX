@@ -98,7 +98,8 @@ The following list is what's changed when POSIX mode is in effect:
      builtins.
 
   12. Tilde expansion is only performed on assignments preceding a
-     command name, rather than on all assignment statements on the line.
+     command name, rather than on all assignment statements on the line,
+     unless the command is a declaration command.
 
   13. While variable indirection is available, it may not be applied to
      the ‘#’ and ‘?’ special parameters.
