@@ -1,12 +1,14 @@
-echo "warning: two of these tests will fail if your OS does not support" >&2
-echo "         named pipes or the /dev/fd filesystem.  If the tests of the" >&2
-echo "         process substitution mechanism fail, please do not consider" >&2
-echo "         this a test failure" >&2
-echo >&2
-echo "         if you have exported variables beginning with the string _Q," >&2
-echo "         ‘diff’ output may be generated.  If so, please do not consider" >&2
-echo "         this a test failure" >&2
-echo >&2
+{
+echo "${CSTART}warning${CEND}: two of these tests will fail if your OS does not support"
+echo "${TAB} named pipes or the /dev/fd filesystem. If the tests of the"
+echo "${TAB} process substitution mechanism fail, please do not consider"
+echo "${TAB} this a test failure"
+echo
+echo "${CSTART}warning${CEND}: if you have exported variables beginning with the string ‘_Q’,"
+echo "${TAB} ‘diff’ output may be generated. If so, please do not consider"
+echo "${TAB} this a test failure"
+echo
+} >&2
 
 ${THIS_SH} ./new-exp.tests 2>&1 | grep -v '^expect' > ${BASH_TSTOUT}
 diff ${BASH_TSTOUT} new-exp.right && rm -f ${BASH_TSTOUT}

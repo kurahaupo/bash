@@ -19,27 +19,29 @@ unset LC_ALL
 ErrorCnt=0
 TestCnt=0
 
+. ./test-aux-functions
+
 localewarn()
 {
-	echo "unicode1.sub: warning: you do not have the $1 locale installed;" >&2
-	echo "unicode1.sub:          that will cause some of these tests to be skipped." >&2
-	echo >&2
+  echo "${CSTART}warning (unicode1.sub)${CEND}: you do not have the $1 locale installed;"
+  echo "${TAB}${TAB}        that will cause some of these tests to be skipped."
+  echo
 }
 
 function TestCodePage {
-    local TargetCharset="${1:?Missing Test charset}"
-    local EChar RChar Uval x
-    local -n Array=${2:?Missing Array Name}
-    for x in "${!Array[@]}"; do
-	let TestCnt+=1
-	EChar=${Array[$x]}
-	printf -v UVal '\\U%08x' "${x}"
-	LC_CTYPE=${TargetCharset} printf -v RChar "${UVal}" 2>/dev/null
-	if [ "${EChar}" != "${RChar}" ]; then
-	  let ErrorCnt+=1
-	  printf "%s: Error Encoding U+%08X [ \"%q\" != \"%q\" ]\n" "${TargetCharset}" "${x}" "${EChar}" "${RChar}"
-	fi
-    done
+  local TargetCharset="${1:?Missing Test charset}"
+  local EChar RChar Uval x
+  local -n Array=${2:?Missing Array Name}
+  for x in "${!Array[@]}" ; do
+    let TestCnt+=1
+    EChar=${Array[$x]}
+    printf -v UVal '\\U%08x' "${x}"
+    LC_CTYPE=${TargetCharset} printf -v RChar "${UVal}" 2>/dev/null
+    if [ "${EChar}" != "${RChar}" ]; then
+      let ErrorCnt+=1
+      printf "%s: Error Encoding U+%08X [ \"%q\" != \"%q\" ]\n" "${TargetCharset}" "${x}" "${EChar}" "${RChar}"
+    fi
+  done
 }
 
 
@@ -99,11 +101,11 @@ fr_FR_ISO_8859_1=(
 )
 
 # this locale causes problems all over the place
-if locale -a | grep -i '^fr_FR\.ISO8859.*1$' >/dev/null ; then
-	TestCodePage fr_FR.ISO8859-1 fr_FR_ISO_8859_1
+FR_LOCALE=$(locale -a | grep -i '^fr_FR\.ISO8859-1' | sed 1q)
+if [ -n "$FR_LOCALE" ]; then
+	TestCodePage ${FR_LOCALE} fr_FR_ISO_8859_1
 else
 	localewarn fr_FR.ISO8859-1
-
 fi
 
 zh_TW_BIG5=(
@@ -119,8 +121,8 @@ zh_TW_BIG5=(
 )
 
 # this locale causes problems all over the place
-if locale -a | grep -i '^zh_TW\.big5' >/dev/null ; then
-	TestCodePage zh_TW.BIG5 zh_TW_BIG5
+if [ -n "$ZH_LOCALE" ]; then
+	TestCodePage $ZH_LOCALE zh_TW_BIG5
 else
 	localewarn zh_TW.BIG5
 fi
@@ -597,13 +599,15 @@ C_UTF_8=(
  [0x70000045]=$'\375\260\200\200\201\205' [0x70000046]=$'\375\260\200\200\201\206' [0x70000047]=$'\375\260\200\200\201\207' [0x70000048]=$'\375\260\200\200\201\210' [0x70000049]=$'\375\260\200\200\201\211'
  [0x7000004a]=$'\375\260\200\200\201\212' [0x7000004b]=$'\375\260\200\200\201\213' [0x7000004c]=$'\375\260\200\200\201\214' [0x7000004d]=$'\375\260\200\200\201\215' [0x7000004e]=$'\375\260\200\200\201\216'
 
-
-
  )
+
+
 TestCodePage en_US.UTF-8 C_UTF_8
 
+echo "Failed ${ErrorCnt} Unicode tests"
 if [ ${ErrorCnt} -gt 0 ]; then
-  echo "Failed ${ErrorCnt} of ${TestCnt} Unicode tests"
-else
-  echo "Passed all ${TestCnt} Unicode tests"
+  echo "Passed $(( ${TestCnt} - ${ErrorCnt} )) of ${TestCnt} Unicode tests"
 fi
+
+exit ${ErrorCnt}
+# vim: set syntax=sh :

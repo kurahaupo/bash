@@ -35,13 +35,13 @@
 \entry{logout}{68}{\code {logout}}
 \entry{mapfile}{68}{\code {mapfile}}
 \entry{printf}{68}{\code {printf}}
-\entry{read}{69}{\code {read}}
+\entry{read}{70}{\code {read}}
 \entry{readarray}{71}{\code {readarray}}
-\entry{source}{71}{\code {source}}
-\entry{type}{71}{\code {type}}
+\entry{source}{72}{\code {source}}
+\entry{type}{72}{\code {type}}
 \entry{typeset}{72}{\code {typeset}}
 \entry{ulimit}{72}{\code {ulimit}}
-\entry{unalias}{73}{\code {unalias}}
+\entry{unalias}{74}{\code {unalias}}
 \entry{set}{74}{\code {set}}
 \entry{shopt}{78}{\code {shopt}}
 \entry{dirs}{112}{\code {dirs}}
@@ -55,7 +55,7 @@
 \entry{disown}{128}{\code {disown}}
 \entry{suspend}{128}{\code {suspend}}
 \entry{compgen}{161}{\code {compgen}}
-\entry{complete}{161}{\code {complete}}
+\entry{complete}{162}{\code {complete}}
 \entry{compopt}{165}{\code {compopt}}
 \entry{fc}{169}{\code {fc}}
-\entry{history}{169}{\code {history}}
+\entry{history}{170}{\code {history}}

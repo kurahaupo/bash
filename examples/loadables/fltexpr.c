@@ -1588,7 +1588,7 @@ readtok (void)
       lasttok = curtok;
       curtok = STR;
     }
-  else if (DIGIT(c))
+  else if (DIGIT (c) || (c == locale_decpoint () && DIGIT (*cp)))
     {
       /* Let strtod figure out where to end the floating-point value and let
 	 the parser figure out what's valid. */
@@ -1607,6 +1607,10 @@ readtok (void)
 	c = GEQ;
       else if ((c == LT) && (c1 == EQ))
 	c = LEQ;
+      else if ((c == '&') && (c1 == '&'))
+	c = LAND;
+      else if ((c == '|') && (c1 == '|'))
+	c = LOR;
       else if ((c == '*') && (c1 == '*'))
 	c = POWER;
       else if ((c == '-' || c == '+') && c1 == c && curtok == STR)
@@ -1744,10 +1748,14 @@ fltexpr_builtin_unload (char *s)
 
 char *fltexpr_doc[] =
 {
-  "Evaluate floating-point arithmetic expression.",
+  "Evaluate a floating-point arithmetic expression.",
   "",
   "Evaluate EXPRESSION as a floating-point arithmetic expression and,",
   "if the -p option is supplied, print the value to the standard output.",
+  "",
+  "Operators and precedence are similar to the let builtin (bitwise",
+  "operators and the modulus operator are not available). Calculations",
+  "are performed using C double-precision floating point values.",
   "",
   "Exit Status:",
   "If the EXPRESSION evaluates to 0, the return status is 1; 0 otherwise.",

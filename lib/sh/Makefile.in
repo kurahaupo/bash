@@ -831,7 +831,6 @@ reallocarray.o: $(topdir)/bashansi.h
 reallocarray.o: $(topdir)/config-bot.h
 reallocarray.o: $(topdir)/config-top.h
 reallocarray.o: ../../config.h
-reallocarray.o: ../../stdckdint.h
 rename.o: $(srcdir)/rename.c
 rename.o: $(topdir)/config-bot.h
 rename.o: $(topdir)/config-top.h
@@ -1040,7 +1039,6 @@ stringvec.o: $(topdir)/variables.h
 stringvec.o: $(topdir)/xmalloc.h
 stringvec.o: ../../config.h
 stringvec.o: ../../pathnames.h
-stringvec.o: ../../stdckdint.h
 strlcpy.o: $(srcdir)/strlcpy.c
 strlcpy.o: $(topdir)/bashansi.h
 strlcpy.o: $(topdir)/config-bot.h

@@ -19,14 +19,14 @@ argv[1] = <>
 argv[1] = <>
 aa,bb
 JOBaa bb cc ddCONTROL
-./comsub2.tests: line 68: p: command not found
+./comsub2.tests: line 69: p: command not found
 NOTFOUND
-./comsub2.tests: line 75: p: command not found
-./comsub2.tests: line 75: p: command not found
+./comsub2.tests: line 76: p: command not found
+./comsub2.tests: line 76: p: command not found
 expand_aliases      	off
 expand_aliases      	off
 outside:
-./comsub2.tests: line 79: alias: p: not found
+./comsub2.tests: line 80: alias: p: not found
 alias e='echo inside redefine'
 expand_aliases      	off
 1
@@ -34,7 +34,7 @@ expand_aliases      	on
 2
 expand_aliases      	on
 outside:
-./comsub2.tests: line 89: alias: p: not found
+./comsub2.tests: line 90: alias: p: not found
 expand_aliases      	on
 1
 xx
@@ -62,8 +62,11 @@ one two
 42
 42
 42
+	comsub21.sub
 123
 123
+123
+0
 0
 123
 123
@@ -72,9 +75,23 @@ Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
 Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+Mon Aug 29 20:03:02 EDT 2022
+
 123
+123
+
 before 123
+before
+123
+
 in for 123
+	comsub22.sub
 outside before: value
 inside before: value
 inside after: funsub
@@ -82,28 +99,38 @@ inside: after false xxx
 outside after: funsub
 =====posix mode=====
 outside before: value
+	comsub23.sub
 .
 declare -a a=([0]="1" [1]="2" [2]="3" [3]="4")
+declare -a a=([0]="1" [1]="2" [2]="3" [3]=$'4\n')
 declare -- int="2"
 after here-doc: 1
 [1]-  Running                    sleep 1 &
 [2]+  Running                    sleep 1 &
 [1]-  Running                    sleep 1 &
 [2]+  Running                    sleep 1 &
+[1]-  Running                    sleep 1 &
+[2]+  Running                    sleep 1 &
+=
 17772 26794
 17772 26794
 we should try rhs
 comsub
 and
 funsub
+and
+newline funsub
+
 in here-documents
 after all they work here
 and work here
+and also here
 after for
 uname
 after arith for
 1) a[${ break;}]
 #? after select
+	comsub24.sub
 a b c == 1 2 3
  == 1 2 3
 before return
@@ -115,6 +142,7 @@ declare -- IFS=" "
 *???
 *???
 yyy zzzz
+	comsub25.sub
 argv[1] = <AA^ABB>
 argv[1] = <AA^OBB>
 argv[1] = <AA^?BB>
@@ -178,6 +206,7 @@ argv[1] = <AA>
 argv[2] = <BB>
 argv[1] = <AA BB>
 argv[1] = <AA BB>
+	comsub26.sub
 inside1-inside2-outside
 BEFOREAA
 BB
@@ -190,8 +219,83 @@ AFTER
 unbalanced braces}}
 combined comsubs
 combined comsubs
+combined nostrip comsubs
+
 inside
 after: var = inside
 after: 42 var = inside
 var=inside 42
 after: 0 var = inside
+	comsub27.sub
+declare -- x="0"
+declare -- x="a[]"
+declare -- x="a[]"
+declare -- x=""
+declare -- x=""
+a[${ unset x;}]
+declare -i x
+declare -- x=""
+./comsub27.sub: line 50: ${ unset x;}: arithmetic syntax error: operand expected (error token is "${ unset x;}")
+declare -i x
+declare -- SECONDS=""
+declare -i SECONDS="0"
+declare -- x="0"
+declare -a x=([2]="a[]")
+declare -ai a=()
+./comsub27.sub: line 75: b[]: bad array subscript
+./comsub27.sub: line 75: b[]: bad array subscript
+declare -ai a=([0]="1" [1]="0" [2]="3")
+declare -Ai a=()
+./comsub27.sub: line 85: b[]: bad array subscript
+./comsub27.sub: line 85: b[]: bad array subscript
+declare -Ai a=([3]="0" [1]="0" )
+	comsub28.sub
+AAaa
+bb
+cc
+ddBB
+aa bb cc dd
+AAaa bb cc dd BB
+AAaa
+bb
+cc
+dd
+BB
+aa bb cc dd
+aa
+bb
+cc
+dd
+aa bb cc dd
+DDDDDaa bb cc dd EEEEE
+DDDDDaa
+bb
+cc
+ddEEEEE
+DDDDDaa
+bb
+cc
+dd
+EEEEE
+abcde
+abcde
+=two newlines
+
+=
+a
+nested
+
+b
+
+a
+nested
+b
+
+a
+nested
+
+b
+42
+
+42
+42

@@ -46,6 +46,7 @@ extern void assoc_remove (HASH_TABLE *, const char *);
 extern char *assoc_reference (HASH_TABLE *, const char *);
 
 extern char *assoc_subrange (HASH_TABLE *, arrayind_t, arrayind_t, int, int, int);
+extern char *assoc_subslice (HASH_TABLE *, char *, char *, int, int, int);
 extern char *assoc_patsub (HASH_TABLE *, char *, char *, int);
 extern char *assoc_modcase (HASH_TABLE *, char *, int, int);
 

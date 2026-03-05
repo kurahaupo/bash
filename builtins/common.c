@@ -164,7 +164,7 @@ no_options (WORD_LIST *list)
       if (opt == GETOPT_HELP)
 	{
 	  builtin_help ();
-	  return (2);
+	  return (EX_HELPOPT);
 	}
       builtin_usage ();
       return (1);
@@ -1052,7 +1052,7 @@ builtin_arrayref_flags (WORD_DESC *w, int baseflags)
 
 #  if 0
   /* This is a little sketchier but handles quoted arguments. */
-  if (array_expand_once && (t =  strchr (w->word, '[')) && t[strlen(t) - 1] == ']')
+  if (array_expand_once && (t = strchr (w->word, '[')) && t[strlen(t) - 1] == ']')
     vflags |= VA_ONEWORD|VA_NOEXPAND;
 #  endif
 

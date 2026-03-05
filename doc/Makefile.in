@@ -67,7 +67,7 @@ RL_LIBDIR = $(topdir)/lib/readline
 MAKEINFO    = makeinfo
 TEXI2DVI    = ${SUPPORT_SRCDIR}/texi2dvi
 TEXI2HTML   = ${SUPPORT_SRCDIR}/texi2html
-MAN2HTML    = ../support/man2html
+MAN2HTML    = ${GROFF} -Thtml -man
 HTMLPOST    = ${srcdir}/htmlpost.sh
 QUIETPS	    = #set this to -q to shut up dvips
 PAPERSIZE   = letter	# change to a4 for A4-size paper
@@ -153,9 +153,10 @@ BASHREF_FILES = $(srcdir)/bashref.texi $(srcdir)/fdl.texi $(srcdir)/version.texi
 #	- ${TEXI2PDF} $<
 
 .PHONY: all
-all: info dvi text html pdf $(MAN2HTML)
-.PHONY: nodvi
-nodvi: ps info text html
+all: info text html pdf # $(MAN2HTML)
+.PHONY: withdvi
+withdvi: pdf info text html dvi
+
 .PHONY: everything
 everything: all ps
 
@@ -231,9 +232,6 @@ rose94.pdf: rose94.ps
 
 OTHER_DOCS = $(srcdir)/FAQ $(srcdir)/INTRO
 OTHER_INSTALLED_DOCS = FAQ INTRO
-
-$(MAN2HTML): ${topdir}/support/man2html.c
-	- cd ../support && $(MAKE) $(BASH_MAKEFLAGS) man2html
 
 .PHONY: mostlyclean
 mostlyclean:

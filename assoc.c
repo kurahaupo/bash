@@ -278,6 +278,58 @@ assoc_subrange (HASH_TABLE *hash, arrayind_t start, arrayind_t nelem, int starsu
   return (ret);
 }
 
+/*
+ * Return a string whose elements are the members of array H beginning at
+ * the element with key START and ending with key END.
+ * Order is non-deterministic and determined by walking the hash table
+ * from beginning to end (assoc_to_word_list()).
+ * If START isn't found, this starts at the beginning of the list created
+ * from the hash table.
+ * If END isn't found, this returns START.
+ * If neither START nor END is found, this returns the first entry in the list.
+ * These semantics are compatible with the ksh93 ${assoc[k1..k2]} expansion.
+ */
+char *
+assoc_subslice (HASH_TABLE *hash, char *start, char *end, int starsub, int quoted, int pflags)
+{
+  WORD_LIST *l, *save, *h, *t;
+  int i, j;
+  char *ret;
+
+  if (assoc_empty (hash))
+    return ((char *)NULL);
+
+  save = l = assoc_to_word_list (hash);
+  if (save == 0)
+    return ((char *)NULL);
+
+  for (h = l; h; h = h->next)
+    if (STREQ (start, h->word->word))
+      break;
+
+  if (h == 0)		/* XXX could return NULL here */
+    h = l;
+
+  for (t = h; t; t = t->next)
+    if (STREQ (end, t->word->word))
+      break;
+
+  /* XXX could leave it set to the last element by leaving t = 0 and not
+     messing around with t->next below */
+  if (t == 0)
+    t = h;
+
+  l = t->next;
+  t->next = (WORD_LIST *)NULL;
+
+  ret = string_list_pos_params (starsub ? '*' : '@', h, quoted, pflags);
+
+  t->next = l;
+
+  dispose_words (save);
+  return (ret);
+}
+
 /* Substitute REP for each match of PAT in each element of hash table H,
    qualified by FLAGS to say what kind of quoting to do. */
 char *

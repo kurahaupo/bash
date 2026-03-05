@@ -1827,7 +1827,6 @@ printf.o: $(topdir)/variables.h
 printf.o: $(topdir)/xmalloc.h
 printf.o: ../config.h
 printf.o: ../pathnames.h
-printf.o: ../stdckdint.h
 psize-posix.o: $(srcdir)/psize-posix.c
 psize.o: $(srcdir)/psize.c
 psize.o: $(topdir)/config-bot.h

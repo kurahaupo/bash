@@ -109,17 +109,17 @@ cat_main (int argc, char **argv)
   if (argc == 1)
     return (fcopy (0, "standard input"));
 
-  for (i = 1; i < argc; i++)
+  for (i = 1, r = 0; i < argc; i++)
     {
       QUIT;
       if (argv[i][0] == '-' && argv[i][1] == '\0')
-        {
-          fd = 0;
-          closefd = 0;
-        }
+	{
+	  fd = 0;
+	  closefd = 0;
+	}
       else
 	{
-	  fd = open (argv[i], O_RDONLY, 0666);
+	  fd = open (argv[i], O_RDONLY);
 	  if (fd < 0)
 	    {
 	      s = strerror (errno);
@@ -128,7 +128,7 @@ cat_main (int argc, char **argv)
 	      write_str (2, ": ");
 	      write_str (2, s);
 	      write_str (2, "\n");
-	      r = 1;
+	      r++;
 	      continue;
 	    }
 	  closefd = 1;

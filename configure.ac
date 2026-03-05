@@ -5,7 +5,7 @@ dnl report bugs to chet.ramey@case.edu
 dnl
 dnl Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 1987-2025 Free Software Foundation, Inc.
+# Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -782,6 +782,8 @@ m4_include([m4/host-cpu-c-abi.m4])
 
 m4_include([m4/c-bool.m4])
 m4_include([m4/d-type.m4])
+
+m4_include([m4/environ.m4])
 
 dnl C compiler characteristics
 AC_C_CONST

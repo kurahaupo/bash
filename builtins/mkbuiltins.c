@@ -53,6 +53,7 @@
 
 #include "../bashansi.h"
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -365,6 +366,8 @@ main (int argc, char **argv)
 
   if (include_filename == NULL)
     include_filename = extern_filename;
+  if (include_filename == 0)
+    include_filename = "builtext.h";
 
   if (verbose)
     {
@@ -681,7 +684,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
   if (stat (filename, &finfo) == -1)
     file_error (filename);
 
-  fd = open (filename, O_RDONLY, 0666);
+  fd = open (filename, O_RDONLY);
 
   if (fd == -1)
     file_error (filename);
@@ -835,7 +838,7 @@ free_defs (DEF_FILE *defs)
 
   if (defs->builtins)
     {
-      void *builtin;
+      BUILTIN_DESC *builtin;
 
       for (int i = 0; builtin = defs->builtins->descs[i]; i++)
 	{
@@ -946,7 +949,7 @@ builtin_handler (char const*self, DEF_FILE *defs, char const*arg)
 int
 function_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -968,7 +971,7 @@ function_handler (char const*self, DEF_FILE *defs, char const*arg)
 int
 docname_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -985,7 +988,7 @@ docname_handler (char const*self, DEF_FILE *defs, char const*arg)
 int
 short_doc_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
-  register BUILTIN_DESC *builtin;
+  BUILTIN_DESC *builtin;
 
   builtin = current_builtin (self, defs);
 
@@ -1009,7 +1012,7 @@ comment_handler (char const*self, DEF_FILE *defs, char const*arg)
 int
 depends_on_handler (char const*self, DEF_FILE *defs, char const*arg)
 {
-  register BUILTIN_DESC *builtin = current_builtin (self, defs);
+  BUILTIN_DESC *builtin = current_builtin (self, defs);
   char const*dependent = get_arg (self, defs, arg);
 
   if (! builtin->dependencies)
@@ -1186,7 +1189,7 @@ char const structfile_header[] =
   "/* This file is manufactured by ./mkbuiltins, and should not be\n"
   "   edited by hand.  See the source to mkbuiltins for details. */\n"
   "\n"
-  "/* Copyright (C) 1987-2022 Free Software Foundation, Inc.\n"
+  "/* Copyright (C) 1987-2025 Free Software Foundation, Inc.\n"
   "\n"
   "   This file is part of GNU Bash, the Bourne Again SHell.\n"
   "\n"
@@ -1278,7 +1281,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
   /* Write out the information. */
   if (defs->builtins)
     {
-      register BUILTIN_DESC *builtin;
+      BUILTIN_DESC *builtin;
 
       for (int i = 0; i < defs->builtins->array.length; i++)
 	{
@@ -1419,7 +1422,7 @@ write_dummy_declarations (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 void
 write_ifdefs (FILE *stream, char const*const*defines)
 {
-  register int i;
+  int i;
 
   if (!stream)
     return;
@@ -1448,7 +1451,7 @@ write_ifdefs (FILE *stream, char const*const*defines)
 void
 write_endifs (FILE *stream, char const*const*defines)
 {
-  register int i;
+  int i;
 
   if (!stream)
     return;
@@ -1473,7 +1476,7 @@ write_endifs (FILE *stream, char const*const*defines)
 void
 write_documentation (FILE *stream, char const*const*documentation, int indentation, int flags)
 {
-  if (stream == 0)
+  if (stream == NULL)
     return;
 
   bool as_initialiser = flags & AS_INITIALISER;
@@ -1482,27 +1485,25 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
 
   if (as_initialiser || as_helpfile)
     {
-      fprintf (stream, "\n#if defined HELP_BUILTIN\n");	/* "}" */
-      if (as_helpfile)
-        fprintf (stream, "= \"");
-      else
-        {
-          fprintf (stream,  "= N_(\"");
-          if (!(documentation && documentation[0] && documentation[0][0]))
-            fprintf (stream, " ");		/* avoid empty string, which translates specially. */
-        }
+      fprintf (stream, "\n#if defined HELP_BUILTIN\n");
+      if (! as_helpfile)
+	fprintf (stream, "N_(");
     }
 
-  int base_indent = as_initialiser && !as_helpfile ? BASE_INDENT : 0;
+  int base_indent = as_initialiser && ! as_helpfile ? BASE_INDENT : 0;
+  int full_indent = indentation + base_indent;
 
   char const*line;
   for (int i = 0; documentation && (line = documentation[i]); i++)
     {
+      bool first_line = i == 0;
+      bool last_line = documentation[i+1] == 0;
+
       /* Allow #ifdef's to be written out verbatim, but don't put them into
 	 separate help files. */
       if (*line == '#')
 	{
-	  if (as_initialiser && !as_helpfile)
+	  if (as_initialiser && ! as_helpfile)
 	    fprintf (stream, "%s\n", line);
 	  continue;
 	}
@@ -1510,12 +1511,9 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
       if (indentation && line[0] != 0)
         fprintf (stream, "%.*s", indentation, "");
 
-      /* Don't indent the first line, because of how the help builtin works. */
-      if (i == 0)
-	indentation += base_indent;
-
       if (as_initialiser)
 	{
+	  fputc ('"', stream);
 	  for (int j = 0; line[j]; j++)
 	    {
 	      switch (line[j])
@@ -1524,15 +1522,15 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
 		case '"':
 		  fputc ('\\', stream);
 		  break;
-
 		}
 	      fputc (line[j], stream);
 	    }
 
-	  /* closing right paren for gettext */
-	  if (documentation[i+1])
-	    /* don't add extra newline after last line */
-	    fprintf (stream, "\\n\"\n\"");
+	  if (! last_line)
+	    fprintf (stream, "\\n");
+	  fputc ('"', stream);
+	  if (! last_line)
+	    fputc ('\n', stream);
 	}
       else if (texinfo)
 	{
@@ -1543,24 +1541,24 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
 		case '@':
 		case '{':
 		case '}':
-		  fprintf (stream, "@%c", line[j]);
+		  fputc ('@', stream);
 		  break;
-
-		default:
-		  fprintf (stream, "%c", line[j]);
 		}
+	      fputc (line[j], stream);
 	    }
-	  fprintf (stream, "\n");
+	  fputc ('\n', stream);
 	}
       else
-	fprintf (stream, "%s\n", line);
+	fprintf (stream, "%*.0s%s\n", indentation, "", line);
+
+      /* Don't indent the first line, because of how the help builtin works. */
+      indentation = full_indent;
     }
 
-  if (as_initialiser || as_helpfile)
+  if (as_initialiser)
     {
-      fprintf (stream, "\"");
-      if (!as_helpfile)
-        fprintf (stream, ")");
+      if (! as_helpfile)
+	fputc (')', stream);
       fprintf (stream, "\n#endif /* HELP_BUILTIN */\n;\n");
     }
 }

@@ -1,6 +1,6 @@
 /* general.c -- Stuff that is used by all files. */
 
-/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -63,7 +63,7 @@ extern int errno;
 #endif
 
 static char *bash_special_tilde_expansions (char *);
-static int unquoted_tilde_word (const char *);
+static int unquoted_tilde_word (const char *, int);
 static void initialize_group_array (void);
 
 /* A standard error message to use when getcwd() returns NULL. */
@@ -456,6 +456,26 @@ valid_function_word (WORD_DESC *word, int flags)
       err_invalidid (name);
       return (0);
     }
+
+#if 0	/*TAG: bash-5.4 kre@munnari.oz.au 6/11/2025 */
+  if (word->flags & W_QUOTED)
+    {
+      char *newname;
+
+      /* We perform quote removal on the function name identical to that
+         performed on a quoted delimiter in a here-document. */
+      newname = string_quote_removal (name, 0);
+      if (newname == 0)
+	{
+	  err_invalidid (name);
+	  return (0);
+	}
+      free (word->word);
+      word->word = name = newname;
+      word->flags &= ~W_QUOTED;
+    }
+#endif
+  
   /* POSIX interpretation 383 -- this is an application requirement, but the
      shell should enforce it rather than allow a script to define a function
      that will never be called. */
@@ -1160,7 +1180,7 @@ tilde_initialize (void)
 #define TILDE_END(c)	((c) == '\0' || (c) == '/' || (c) == ':')
 
 static int
-unquoted_tilde_word (const char *s)
+unquoted_tilde_word (const char *s, int flags)
 {
   const char *r;
 
@@ -1214,10 +1234,11 @@ bash_tilde_find_word (const char *s, int flags, size_t *lenp)
 }
 
 /* Tilde-expand S by running it through the tilde expansion library.
-   ASSIGN_P is 1 if this is a variable assignment, so the alternate
-   tilde prefixes should be enabled (`=~' and `:~', see above).  If
-   ASSIGN_P is 2, we are expanding the rhs of an assignment statement,
-   so `=~' is not valid. */
+   ASSIGN_P is 1 if this is a variable assignment, or a word for which
+   tilde expansion is being forced, so the alternate tilde prefixes should
+   be enabled (`=~' and `:~', see above). If ASSIGN_P is 2, we are expanding
+   the rhs of an assignment statement, so `=~' is not valid.
+   ASSIGN_P is 0 for all other words. */
 char *
 bash_tilde_expand (const char *s, int assign_p)
 {
@@ -1229,7 +1250,20 @@ bash_tilde_expand (const char *s, int assign_p)
   if (assign_p == 2)
     tilde_additional_suffixes = bash_tilde_suffixes2;
 
-  r = (*s == '~') ? unquoted_tilde_word (s) : 1;
+  /*TAG:bash-5.4 posix mode possibly */
+  /* XXX - in posix mode, if assign_p is 0 (an ordinary word, not an
+     assignment), we shouldn't tilde expand a tilde followed by a colon.
+     To do this, we need to assign tilde_additional_suffixes = (char **)NULL,
+     and change unquoted_tilde_word to pay attention to assign_p (if it's
+     0 && posixly_correct, don't accept `:' as the end of a tilde prefix).
+     Behavior varies widely, but many posix shells don't perform tilde
+     expansion in `echo ~:'. */
+  /* If we don't do this, remove the sentence from the Tilde Expansion section
+     of the man page and texinfo manual saying we do. */
+  if (assign_p == 0 && posixly_correct)
+    tilde_additional_suffixes = (char **)NULL;
+
+  r = (*s == '~') ? unquoted_tilde_word (s, assign_p) : 1;
   ret = r ? tilde_expand (s) : savestring (s);
 
   QUIT;
@@ -1435,15 +1469,15 @@ conf_standard_path (void)
 int
 default_columns (void)
 {
-  char *v;
+  char *v, *e;
   int c;
 
   c = -1;
   v = get_string_value ("COLUMNS");
   if (v && *v)
     {
-      c = atoi (v);
-      if (c > 0)
+      c = (int)strtol (v, &e, 10);
+      if (e != v && *e == '\0' && c > 0)
 	return c;
     }
 

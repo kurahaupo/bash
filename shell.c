@@ -1672,6 +1672,7 @@ run_wordexp (char *words)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_wordexp", CMDERR_BADJUMP, code, 0);
@@ -1750,6 +1751,7 @@ run_one_command (char *command)
 	case EXITBLTIN:
 	  return last_command_exit_value;
 	case DISCARD:
+	case REINIT:
 	  return last_command_exit_value = 1;
 	default:
 	  command_error ("run_one_command", CMDERR_BADJUMP, code, 0);
@@ -1929,7 +1931,7 @@ open_shell_script (char *script_name)
 #endif
 
   /* Only do this with non-tty file descriptors we can seek on. */
-  if (fd_is_tty == 0 && (lseek (fd, 0L, 1) != -1))
+  if (fd_is_tty == 0 && (lseek (fd, 0L, SEEK_CUR) != -1))
     {
       /* Check to see if the `file' in `bash file' is a binary file
 	 according to the same tests done by execute_simple_command (),
@@ -1966,7 +1968,7 @@ open_shell_script (char *script_name)
 	  exit (EX_BINARY_FILE);
 	}
       /* Now rewind the file back to the beginning. */
-      lseek (fd, 0L, 0);
+      lseek (fd, 0L, SEEK_SET);
     }
 
   /* Open the script.  But try to move the file descriptor to a randomly
@@ -2026,7 +2028,11 @@ set_bash_input (void)
 	}
     }
   else
-    with_input_from_stream (default_input, dollar_vars[0]);
+    {
+      with_input_from_stream (default_input, dollar_vars[0]);
+      if (forced_interactive && running_under_emacs && fd_ispipe (fileno (default_input)))
+	stream_setsize (1);
+    }
 }
 
 /* Close the current shell script input source and forget about it.  This is

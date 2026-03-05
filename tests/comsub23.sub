@@ -16,7 +16,8 @@
 
 # make sure parsing is right within conditional commands
 [[ ${ echo -n "[${ echo -n foo; }]" ; } == '[foo]' ]] || echo bad 1
-[[ "${ echo -n "[${ echo -n foo; }]" ; }" == '[foo]' ]] || echo bad 1
+[[ "${ echo "[${ echo foo; }]" ; }" == '[foo]' ]] || echo bad 2
+[[ "${; echo -n "[${; echo -n foo; }]" ; }" == '[foo]' ]] || echo bad 3
 
 # mix multiple calls to parse_and_execute
 got=$(eval 'x=${ for i in test; do case $i in test) echo .;; esac; done; }' ; echo $x)
@@ -24,6 +25,9 @@ echo $got
 
 # mix compound assignment and nofork command substitution
 : ${ a=(1 2 3 ${ echo 4;} ); }
+declare -p a
+unset a
+: ${;a=(1 2 3 "${;echo 4;}" ); }	# array element contains newline
 declare -p a
 unset a
 
@@ -55,6 +59,9 @@ printf '%s\n' "$jl1"
 jl2=${ jobs; }
 printf '%s\n' "$jl2"
 
+jl3=${; jobs; }
+printf '%s=\n' "$jl3"
+
 # nofork command substitution doesn't affect the shell's random number sequence
 RANDOM=42
 echo $RANDOM ${ echo $RANDOM; }
@@ -69,6 +76,8 @@ we should try rhs
 ${word-$(echo comsub)}
 and
 ${word-${ echo funsub; }}
+and
+${word-${; echo newline funsub; }}
 in here-documents
 EOF
 
@@ -77,10 +86,12 @@ exec 4<&-
 
 echo after all they ${word-$(echo work here)}
 echo and ${word-${ echo work here; }}
+echo and ${word-${; echo -n also here; }}
 
 unset x
 
-set -- 'a[${ break;}]'
+# now two null strings as the positional parameters
+set -- 'a[${ break;}]' 'a[${; break;}]'
 declare -n x
 
 for x do :; done

@@ -1,6 +1,6 @@
 /* subst.h -- Names of externally visible functions in subst.c. */
 
-/* Copyright (C) 1993-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1993-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -59,7 +59,7 @@
 #  define ASS_ONEWORD		0x1000	/* don't check array subscripts, assume higher level has done that */
 #  define ASS_NOTEMPENV		0x2000	/* don't assign into temporary environment */
 #  define ASS_XTRACE		0x4000	/* print trace after compound assignment expansion */
-#  define ASS_NOMARK		0x8000	/* ignore `set -a` */
+#  define ASS_NOEXPORT		0x8000	/* don't export even if allexport is set */
 
 /* Flags for the string extraction functions. */
 #  define SX_NOALLOC		0x0001	/* just skip; don't return substring */
@@ -275,6 +275,10 @@ extern char *getifs (void);
    don't do any splitting. */
 extern WORD_LIST *word_split (WORD_DESC *, char *);
 
+/* Expand and perform the assignment statements in SUBST_ASSIGN_VARLIST,
+   then clean up and dispose of it. */
+extern int expand_assignment_statements (char *, int);
+
 /* Take the list of words in LIST and do the various substitutions.  Return
    a new list of words which is the expanded list, and without things like
    variable assignments. */
@@ -324,18 +328,19 @@ extern char *cond_expand_word (WORD_DESC *, int);
 #  endif
 
 /* Flags for skip_to_delim */
-#  define SD_NOJMP		0x001	/* don't longjmp on fatal error. */
-#  define SD_INVERT		0x002	/* look for chars NOT in passed set */
-#  define SD_NOQUOTEDELIM	0x004	/* don't let single or double quotes act as delimiters */
-#  define SD_NOSKIPCMD		0x008	/* don't skip over $(, <(, or >( command/process substitution; parse them as commands */
-#  define SD_EXTGLOB		0x010	/* skip over extended globbing patterns if appropriate */
-#  define SD_IGNOREQUOTE	0x020	/* single and double quotes are not special */
-#  define SD_GLOB		0x040	/* skip over glob patterns like bracket expressions */
-#  define SD_NOPROCSUB		0x080	/* don't parse process substitutions as commands */
-#  define SD_COMPLETE		0x100	/* skip_to_delim during completion */
-#  define SD_HISTEXP		0x200	/* skip_to_delim during history expansion */
-#  define SD_ARITHEXP		0x400	/* skip_to_delim during arithmetic expansion */
-#  define SD_NOERROR		0x800	/* don't print error messages */
+#  define SD_NOJMP		0x0001	/* don't longjmp on fatal error. */
+#  define SD_INVERT		0x0002	/* look for chars NOT in passed set */
+#  define SD_NOQUOTEDELIM	0x0004	/* don't let single or double quotes act as delimiters */
+#  define SD_NOSKIPCMD		0x0008	/* don't skip over $(, <(, or >( command/process substitution; parse them as commands */
+#  define SD_EXTGLOB		0x0010	/* skip over extended globbing patterns if appropriate */
+#  define SD_IGNOREQUOTE	0x0020	/* single and double quotes are not special */
+#  define SD_GLOB		0x0040	/* skip over glob patterns like bracket expressions */
+#  define SD_NOPROCSUB		0x0080	/* don't parse process substitutions as commands */
+#  define SD_COMPLETE		0x0100	/* skip_to_delim during completion */
+#  define SD_HISTEXP		0x0200	/* skip_to_delim during history expansion */
+#  define SD_ARITHEXP		0x0400	/* skip_to_delim during arithmetic expansion */
+#  define SD_NOERROR		0x0800	/* don't print error messages */
+#  define SD_QUOTEDSTR		0x1000	/* skipping a part of a single- or double-quoted string */
 
 extern int skip_to_delim (const char *, int, const char *, int);
 

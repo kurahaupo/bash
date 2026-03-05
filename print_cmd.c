@@ -794,6 +794,7 @@ print_case_clauses (PATTERN_LIST *clauses)
 	newline (";;&");
       else
 	newline (";;");
+      was_heredoc = 0;
       clauses = clauses->next;
     }
   indentation -= indentation_amount;
@@ -845,7 +846,7 @@ print_if_command (IF_COM *if_command)
   semicolon ();
   if (was_heredoc)
     {
-      indent (indentation_amount);
+      indent (indentation);
       cprintf ("then\n");
       was_heredoc = 0;
     }

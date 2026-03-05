@@ -439,6 +439,10 @@ int rl_sort_completion_matches = 1;
 /* Local variable states what happened during the last completion attempt. */
 static int completion_changed_buffer;
 static int last_completion_failed = 0;
+static int last_completion_nmatch = 0;
+
+/* Does the vector of possible completions M contain a single match? */
+#define ONEMATCH(m)	((m) && (m)[0] && (m)[1] == 0)
 
 /* The result of the query to the user about displaying completion matches */
 static int completion_y_or_n;
@@ -480,6 +484,7 @@ int
 rl_possible_completions (int ignore, int invoking_key)
 {
   last_completion_failed = 0;
+  last_completion_nmatch = 1;
   rl_completion_invoking_key = invoking_key;
   return (rl_complete_internal ('?'));
 }
@@ -611,6 +616,10 @@ get_y_or_n (int for_pager)
 	return (2);
       if (for_pager && (c == 'q' || c == 'Q'))
 	return (0);
+      if (for_pager && c == 'f')	/* synonym for ' ' like less */
+	return (1);
+      if (for_pager && c == 'd')
+	return (3);
       rl_ding ();
     }
 }
@@ -628,6 +637,12 @@ _rl_internal_pager (int lines)
     return -1;
   else if (i == 2)
     return (lines - 1);
+  else if (i == 3)
+    {
+      int n;
+      n = _rl_screenheight / 2;
+      return (lines > n) ? (lines - n) : -1;
+    }
   else
     return 0;
 }
@@ -1542,8 +1557,7 @@ postprocess_matches (char ***matchesp, int matching_filenames)
      munge the array, deleting matches as it desires. */
   if (rl_ignore_some_completions_function && matching_filenames)
     {
-      for (nmatch = 1; matches[nmatch]; nmatch++)
-	;
+      nmatch = vector_len (matches);
       (void)(*rl_ignore_some_completions_function) (matches);
       if (matches == 0 || matches[0] == 0)
 	{
@@ -1554,8 +1568,7 @@ postprocess_matches (char ***matchesp, int matching_filenames)
       else
 	{
 	  /* If we removed some matches, recompute the common prefix. */
-	  for (i = 1; matches[i]; i++)
-	    ;
+	  i = vector_len (matches);
 	  if (i > 1 && i < nmatch)
 	    {
 	      t = matches[0];
@@ -2074,12 +2087,13 @@ rl_complete_internal (int what_to_do)
   int start, end, delimiter, found_quote, i, nontrivial_lcd, do_display;
   char *text, *saved_line_buffer;
   char quote_char;
-  int tlen, mlen, saved_last_completion_failed;
+  int tlen, mlen, saved_last_completion_failed, saved_last_completion_nmatch;
   complete_sigcleanarg_t cleanarg;	/* state to clean up on signal */
 
   RL_SETSTATE(RL_STATE_COMPLETING);
 
   saved_last_completion_failed = last_completion_failed;
+  saved_last_completion_nmatch = last_completion_nmatch;
 
   set_completion_defaults (what_to_do);
 
@@ -2132,6 +2146,7 @@ rl_complete_internal (int what_to_do)
       FREE (saved_line_buffer);
       completion_changed_buffer = 0;
       last_completion_failed = 1;
+      last_completion_nmatch = 0;
       RL_UNSETSTATE(RL_STATE_COMPLETING);
       _rl_reset_completion_state ();
       return (0);
@@ -2148,6 +2163,7 @@ rl_complete_internal (int what_to_do)
       FREE (saved_line_buffer);
       completion_changed_buffer = 0;
       last_completion_failed = 1;
+      last_completion_nmatch = 0;
       RL_UNSETSTATE(RL_STATE_COMPLETING);
       _rl_reset_completion_state ();
       return (0);
@@ -2155,6 +2171,7 @@ rl_complete_internal (int what_to_do)
 
   if (matches && matches[0] && *matches[0])
     last_completion_failed = 0;
+  last_completion_nmatch = vector_len (matches);
 
   do_display = 0;
 
@@ -2215,12 +2232,21 @@ rl_complete_internal (int what_to_do)
     case '?':
       /* Let's try to insert a single match here if the last completion failed
 	 but this attempt returned a single match. */
-      if (saved_last_completion_failed && matches[0] && *matches[0] && matches[1] == 0)
+      if (saved_last_completion_failed && ONEMATCH (matches))
 	{
 	  insert_match (matches[0], start, matches[1] ? MULT_MATCH : SINGLE_MATCH, &quote_char);
 	  append_to_match (matches[0], delimiter, quote_char, nontrivial_lcd);
 	  break;
 	}
+      /* Or if the last completion succeeded but returned multiple matches and
+	 this attempt returned a single match. */
+      if (saved_last_completion_failed == 0 && saved_last_completion_nmatch > 1 && ONEMATCH (matches))
+	{
+	  insert_match (matches[0], start, matches[1] ? MULT_MATCH : SINGLE_MATCH, &quote_char);
+	  append_to_match (matches[0], delimiter, quote_char, nontrivial_lcd);
+	  break;
+	}
+
       /*FALLTHROUGH*/
 
     case '%':			/* used by menu_complete */

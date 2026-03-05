@@ -3,7 +3,7 @@
 /* This file works with both POSIX and BSD systems.  It implements job
    control. */
 
-/* Copyright (C) 1989-2025 Free Software Foundation, Inc.
+/* Copyright (C) 1989-2026 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -2355,7 +2355,7 @@ make_child (char *command, int flags)
 	break;
       forksleep <<= 1;
 
-      if (interrupt_state)
+      if (interrupt_state)	/* XXX - and terminating_signal? */
 	break;
       sigprocmask (SIG_SETMASK, &set, (sigset_t *) NULL);
     }
@@ -2520,9 +2520,11 @@ make_child (char *command, int flags)
 	 been reused. */
       delete_old_job (pid);
 
-      /* Perform the check for pid reuse unconditionally.  Some systems reuse
-	 PIDs before giving a process CHILD_MAX/_SC_CHILD_MAX unique ones. */
-      bgp_delete (pid);		/* new process, discard any saved status */
+      /* Perform the check for background pid reuse unconditionally.
+	 Some systems reuse PIDs before giving a process
+	 CHILD_MAX/_SC_CHILD_MAX unique ones. */
+      if (async_p)
+	bgp_delete (pid);	/* new background process, discard any saved status */
 
       last_made_pid = pid;
 
@@ -2831,7 +2833,7 @@ no_child:
 
 /* Wait for all of the background processes started by this shell to finish. */
 int
-wait_for_background_pids (struct procstat *ps)
+wait_for_background_pids (int wflags, struct procstat *ps)
 {
   register int i, r;
   int any_stopped, check_async, njobs;
@@ -2871,13 +2873,13 @@ wait_for_background_pids (struct procstat *ps)
       UNBLOCK_CHILD (oset);
       QUIT;
       errno = 0;		/* XXX */
-      r = wait_for_single_pid (pid, JWAIT_PERROR);
+      r = wait_for_single_pid (pid, JWAIT_PERROR|wflags);
       if (ps)
 	{
 	  ps->pid = pid;
 	  ps->status = (r < 0 || r > 256) ? 127 : r;
 	}
-      if (r == -1 && errno == ECHILD)
+      if ((r < 0 || r > 256) && errno == ECHILD)
 	{
 	  /* If we're mistaken about job state, compensate. */
 	  check_async = 0;
@@ -4639,6 +4641,14 @@ notify_of_job_status (int wanted)
 		   ((DEADJOB (job) && IS_FOREGROUND (job) == 0) || STOPPED (job)))
 	    continue;
 
+	  /* hang onto the status if the shell is running -c command and the
+	     command is running in a () subshell or a compound command with
+	     pipe input */
+	  else if (startup_state == 2 && (subshell_environment & (SUBSHELL_PAREN|SUBSHELL_PIPE)) &&
+		WIFSIGNALED (s) == 0 &&
+		((DEADJOB (job) && IS_FOREGROUND (job) == 0) || STOPPED (job)))
+	    continue;
+
 	  /* If job control is disabled, don't print the status messages.
 	     Mark dead jobs as notified so that they get cleaned up.  If
 	     startup_state == 2 and subshell_environment has the
@@ -4720,7 +4730,8 @@ notify_of_job_status (int wanted)
 	      /* XXX - this is a catch-all in case we missed a state */
 	      else
 		{
-		  internal_debug ("notify_of_job_status: catch-all setting J_NOTIFIED on job %d (%d), startup state = %d", job, jobs[job]->flags, startup_state);
+		  internal_debug ("notify_of_job_status: catch-all setting J_NOTIFIED on job %d (%d), startup state = %d subshell_environment = %d",
+				  job, jobs[job]->flags, startup_state, subshell_environment);
 		  jobs[job]->flags |= J_NOTIFIED;
 		}
 	      break;

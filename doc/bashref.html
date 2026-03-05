@@ -4,13 +4,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <!-- This text is a brief description of the features that are present in
-the Bash shell (version 5.3, 7 August 2025).
+the Bash shell (version 5.3, 14 January 2026).
 
-This is Edition 5.3, last updated 7 August 2025,
+This is Edition 5.3, last updated 14 January 2026,
 of The GNU Bash Reference Manual,
 for Bash, Version 5.3.
 
-Copyright © 1988-2025 Free Software Foundation, Inc.
+Copyright © 1988-2026 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -77,10 +77,10 @@ Next: <a href="#Introduction" accesskey="n" rel="next">Introduction</a>, Previou
 <h1 class="top" id="Bash-Features-1"><span>Bash Features<a class="copiable-link" href="#Bash-Features-1"> &para;</a></span></h1>
 
 <p>This text is a brief description of the features that are present in
-the Bash shell (version 5.3, 7 August 2025).
+the Bash shell (version 5.3, 14 January 2026).
 The Bash home page is <a class="url" href="http://www.gnu.org/software/bash/">http://www.gnu.org/software/bash/</a>.
 </p>
-<p>This is Edition 5.3, last updated 7 August 2025,
+<p>This is Edition 5.3, last updated 14 January 2026,
 of <cite class="cite">The GNU Bash Reference Manual</cite>,
 for <code class="code">Bash</code>, Version 5.3.
 </p>
@@ -552,9 +552,9 @@ The Bourne shell is
 the traditional Unix shell originally written by Stephen Bourne.
 All of the Bourne shell builtin commands are available in Bash, and
 the rules for evaluation and quoting are taken from the <small class="sc">POSIX</small>
-specification for the &lsquo;standard&rsquo; Unix shell.
+specification for the &ldquo;standard&rdquo; Unix shell.
 </p>
-<p>This chapter briefly summarizes the shell&rsquo;s &lsquo;building blocks&rsquo;:
+<p>This chapter briefly summarizes the shell&rsquo;s &ldquo;building blocks&rdquo;:
 commands, control structures, shell functions, shell <i class="i">parameters</i>,
 shell expansions,
 <i class="i">redirections</i>, which are a way to direct input and output from
@@ -1033,8 +1033,23 @@ Next: <a href="#Simple-Commands" accesskey="n" rel="next">Simple Commands</a>, U
 <p>Reserved words are words that have special meaning to the shell.
 They are used to begin and end the shell&rsquo;s compound commands.
 </p>
-<p>The following words are recognized as reserved when unquoted and
-the first word of a command (see below for exceptions):
+<p>Reserved words are recognized as reserved when unquoted and either
+</p>
+<ul class="itemize mark-bullet">
+<li>the first word of a command;
+</li><li>the first word following a reserved word
+other than <code class="code">case</code>, <code class="code">for</code>, <code class="code">select</code>, or <code class="code">in</code>;
+</li><li>the third word of a <code class="code">case</code> command
+(only <code class="code">in</code> is valid);
+</li><li>the third word of a <code class="code">for</code> or <code class="code">select</code>
+command (only <code class="code">in</code> and <code class="code">do</code> are valid);
+</li><li>following a control operator.
+</li></ul>
+
+<p>The shell will also recognize reserved words where the syntax of a command
+specifically requires the reserved word as the only correct token.
+</p>
+<p>The following are reserved words:
 </p>
 <table class="multitable">
 <tbody><tr><td width="10%"><code class="code">if</code></td><td width="10%"><code class="code">then</code></td><td width="10%"><code class="code">elif</code></td><td width="10%"><code class="code">else</code></td><td width="12%"><code class="code">fi</code></td><td width="10%"><code class="code">time</code></td></tr>
@@ -1044,11 +1059,6 @@ the first word of a command (see below for exceptions):
 </tbody>
 </table>
 
-<p><code class="code">in</code> is recognized as a reserved word if it is the third word of a
-<code class="code">case</code> or <code class="code">select</code> command.
-<code class="code">in</code> and <code class="code">do</code> are recognized as reserved
-words if they are the third word in a <code class="code">for</code> command.
-</p>
 <hr>
 </div>
 <div class="subsection-level-extent" id="Simple-Commands">
@@ -1166,10 +1176,37 @@ Next: <a href="#Compound-Commands" accesskey="n" rel="next">Compound Commands</a
 <h4 class="subsection" id="Lists-of-Commands"><span>3.2.4 Lists of Commands<a class="copiable-link" href="#Lists-of-Commands"> &para;</a></span></h4>
 <a class="index-entry-id" id="index-commands_002c-lists"></a>
 
-<p>A <code class="code">list</code> is a sequence of one or more pipelines separated by one
-of the operators &lsquo;<samp class="samp">;</samp>&rsquo;, &lsquo;<samp class="samp">&amp;</samp>&rsquo;, &lsquo;<samp class="samp">&amp;&amp;</samp>&rsquo;, or &lsquo;<samp class="samp">||</samp>&rsquo;,
-and optionally terminated by one of &lsquo;<samp class="samp">;</samp>&rsquo;, &lsquo;<samp class="samp">&amp;</samp>&rsquo;, or a
-<code class="code">newline</code>.
+<p>A <code class="code">list</code> is a sequence of one or more <small class="sc">AND</small> or <small class="sc">OR</small> lists
+separated by one of the operators
+&lsquo;<samp class="samp">;</samp>&rsquo; or &lsquo;<samp class="samp">&amp;</samp>&rsquo;, or a <code class="code">newline</code>,
+and optionally terminated by one of those three characters.
+</p>
+<p><small class="sc">AND</small> and <small class="sc">OR</small> lists are sequences of one or more pipelines
+separated by the control operators &lsquo;<samp class="samp">&amp;&amp;</samp>&rsquo; and &lsquo;<samp class="samp">||</samp>&rsquo;,
+respectively.
+<small class="sc">AND</small> and <small class="sc">OR</small> lists are executed with left associativity.
+</p>
+<p>An <small class="sc">AND</small> list has the form
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">command1</var> &amp;&amp; <var class="var">command2</var>
+</pre></div>
+
+<p><var class="var">command2</var> is executed if, and only if, <var class="var">command1</var>
+returns an exit status of zero (success).
+</p>
+<p>An <small class="sc">OR</small> list has the form
+</p>
+<div class="example">
+<pre class="example-preformatted"><var class="var">command1</var> || <var class="var">command2</var>
+</pre></div>
+
+<p><var class="var">command2</var> is executed if, and only if, <var class="var">command1</var>
+returns a non-zero exit status.
+</p>
+<p>The return status of
+<small class="sc">AND</small> and <small class="sc">OR</small> lists is the exit status of the last command
+executed in the list.
 </p>
 <p>Of these list operators, &lsquo;<samp class="samp">&amp;&amp;</samp>&rsquo; and &lsquo;<samp class="samp">||</samp>&rsquo;
 have equal precedence, followed by &lsquo;<samp class="samp">;</samp>&rsquo; and &lsquo;<samp class="samp">&amp;</samp>&rsquo;,
@@ -1185,37 +1222,16 @@ and these are referred to as <em class="dfn">asynchronous</em> commands.
 The shell does not wait for the command to finish, and the return
 status is 0 (true).
 When job control is not active (see <a class="pxref" href="#Job-Control">Job Control</a>),
-the standard input for asynchronous commands, in the absence of any
-explicit redirections, is redirected from <code class="code">/dev/null</code>.
+the standard input for asynchronous commands,
+in the absence of any explicit redirections involving the standard input,
+is redirected from <samp class="file">/dev/null</samp>.
 </p>
-<p>Commands separated by a &lsquo;<samp class="samp">;</samp>&rsquo; are executed sequentially; the shell
-waits for each command to terminate in turn.
-The return status is the exit status of the last command executed.
+<p>Commands separated or terminated by
+&lsquo;<samp class="samp">;</samp>&rsquo; (or equivalent <code class="code">newline</code>)
+are executed sequentially; the shell waits for each
+command to terminate in turn.
 </p>
-<p><small class="sc">AND</small> and <small class="sc">OR</small> lists are sequences of one or more pipelines
-separated by the control operators &lsquo;<samp class="samp">&amp;&amp;</samp>&rsquo; and &lsquo;<samp class="samp">||</samp>&rsquo;,
-respectively.
-<small class="sc">AND</small> and <small class="sc">OR</small> lists are executed with left associativity.
-</p>
-<p>An <small class="sc">AND</small> list has the form
-</p><div class="example">
-<pre class="example-preformatted"><var class="var">command1</var> &amp;&amp; <var class="var">command2</var>
-</pre></div>
-
-<p><var class="var">command2</var> is executed if, and only if, <var class="var">command1</var>
-returns an exit status of zero (success).
-</p>
-<p>An <small class="sc">OR</small> list has the form
-</p><div class="example">
-<pre class="example-preformatted"><var class="var">command1</var> || <var class="var">command2</var>
-</pre></div>
-
-<p><var class="var">command2</var> is executed if, and only if, <var class="var">command1</var>
-returns a non-zero exit status.
-</p>
-<p>The return status of
-<small class="sc">AND</small> and <small class="sc">OR</small> lists is the exit status of the last command
-executed in the list.
+<p>The return status of a list is the exit status of the last command executed.
 </p>
 <hr>
 </div>
@@ -1387,26 +1403,24 @@ the first <var class="var">pattern</var> that matches <var class="var">word</var
 proceeding from the first pattern to the last.
 The match is performed according
 to the rules described below in <a class="ref" href="#Pattern-Matching">Pattern Matching</a>.
-If the <code class="code">nocasematch</code> shell option
-(see the description of <code class="code">shopt</code> in <a class="ref" href="#The-Shopt-Builtin">The Shopt Builtin</a>)
-is enabled, the match is performed without regard to the case
-of alphabetic characters.
-The &lsquo;<samp class="samp">|</samp>&rsquo; is used to separate multiple patterns in a pattern list,
-and the &lsquo;<samp class="samp">)</samp>&rsquo; operator terminates the pattern list.
-A pattern list and an associated <var class="var">command-list</var> is known
-as a <var class="var">clause</var>.
-</p>
-<p>Each clause must be terminated with &lsquo;<samp class="samp">;;</samp>&rsquo;, &lsquo;<samp class="samp">;&amp;</samp>&rsquo;, or &lsquo;<samp class="samp">;;&amp;</samp>&rsquo;.
 The <var class="var">word</var> undergoes tilde expansion, parameter expansion, command
 substitution, process substitution, arithmetic expansion, and quote removal
 (see <a class="pxref" href="#Shell-Parameter-Expansion">Shell Parameter Expansion</a>)
 before the shell attempts to match the pattern.
-Each <var class="var">pattern</var> undergoes tilde expansion, parameter expansion,
+Each <var class="var">pattern</var> examined undergoes tilde expansion, parameter expansion,
 command substitution, arithmetic expansion, process substitution, and
 quote removal.
+If the <code class="code">nocasematch</code> shell option
+(see the description of <code class="code">shopt</code> in <a class="ref" href="#The-Shopt-Builtin">The Shopt Builtin</a>)
+is enabled, the match is performed without regard to the case
+of alphabetic characters.
 </p>
-<p>There may be an arbitrary number of <code class="code">case</code> clauses, each terminated
-by a &lsquo;<samp class="samp">;;</samp>&rsquo;, &lsquo;<samp class="samp">;&amp;</samp>&rsquo;, or &lsquo;<samp class="samp">;;&amp;</samp>&rsquo;.
+<p>A pattern list is a set of one or more patterns separated by &lsquo;<samp class="samp">|</samp>&rsquo;,
+and terminated by the &lsquo;<samp class="samp">)</samp>&rsquo; operator.
+A case <var class="var">clause</var> is a pattern list and an associated <var class="var">command-list</var>,
+terminated by &lsquo;<samp class="samp">;;</samp>&rsquo;, &lsquo;<samp class="samp">;&amp;</samp>&rsquo;, or &lsquo;<samp class="samp">;;&amp;</samp>&rsquo;.
+The terminator is optional for the last clause preceding <code class="code">esac</code>.
+There may be an arbitrary number of <code class="code">case</code> clauses.
 The first pattern that matches determines the
 command-list that is executed.
 It&rsquo;s a common idiom to use &lsquo;<samp class="samp">*</samp>&rsquo; as the final pattern to define the
@@ -1428,11 +1442,13 @@ echo &quot; legs.&quot;
 </pre></div>
 
 
-<p>If the &lsquo;<samp class="samp">;;</samp>&rsquo; operator is used, the <code class="code">case</code> command completes
-after the first pattern match.
-Using &lsquo;<samp class="samp">;&amp;</samp>&rsquo;  in place of &lsquo;<samp class="samp">;;</samp>&rsquo; causes execution to continue with
+<p>When a match is found, <code class="code">case</code> executes
+the corresponding <var class="var">command-list</var>.
+If the &lsquo;<samp class="samp">;;</samp>&rsquo; operator terminates the case clause,
+the <code class="code">case</code> command completes after the first pattern match.
+Using the &lsquo;<samp class="samp">;&amp;</samp>&rsquo; terminator continues execution with
 the <var class="var">command-list</var> associated with the next clause, if any.
-Using &lsquo;<samp class="samp">;;&amp;</samp>&rsquo; in place of &lsquo;<samp class="samp">;;</samp>&rsquo; causes the shell to test the patterns
+Using the &lsquo;<samp class="samp">;;&amp;</samp>&rsquo; terminator causes the shell to test the pattern list
 in the next clause, if any, and execute any associated <var class="var">command-list</var>
 if the match succeeds,
 continuing the case statement execution as if the pattern list had not matched.
@@ -2690,7 +2706,7 @@ introduce indirection.
 parameter expansion, command substitution, and arithmetic expansion.
 </p>
 <p>When not performing substring expansion, using the forms described
-below (e.g., &lsquo;<samp class="samp">:-</samp>&rsquo;), Bash tests for a parameter that is unset or null.
+below (e.g., &lsquo;<samp class="samp">:&minus;</samp>&rsquo;), Bash tests for a parameter that is unset or null.
 Omitting the colon results in a test only for a parameter that is unset.
 Put another way, if the colon is included,
 the operator tests for both <var class="var">parameter</var>&rsquo;s existence and that its value
@@ -2829,7 +2845,7 @@ a number of characters, and the expansion is the characters between
 <var class="var">offset</var> and that result.
 </p>
 <p>Note that a negative offset must be separated from the colon by at least
-one space to avoid being confused with the &lsquo;<samp class="samp">:-</samp>&rsquo; expansion.
+one space to avoid being confused with the &lsquo;<samp class="samp">:&minus;</samp>&rsquo; expansion.
 </p>
 <p>Here are some examples illustrating substring expansion on parameters and
 subscripted arrays:
@@ -3278,7 +3294,8 @@ the parentheses make up the command; none are treated specially.
 and captures its output, again with trailing newlines removed.
 </p>
 <p>The character <var class="var">c</var> following the open brace must be a space, tab,
-newline, or &lsquo;<samp class="samp">|</samp>&rsquo;, and the close brace must be in a position
+newline, &lsquo;<samp class="samp">|</samp>&rsquo;, or &lsquo;<samp class="samp">;</samp>&rsquo;;
+and the close brace must be in a position
 where a reserved word may appear (i.e., preceded by a command terminator
 such as semicolon).
 Bash allows the close brace to be joined to the remaining characters in
@@ -3297,8 +3314,17 @@ function is executing, and the <code class="code">return</code> builtin forces
 however, the rest of the execution environment,
 including the positional parameters, is shared with the caller.
 </p>
-<p>If the first character following the open brace
-is a &lsquo;<samp class="samp">|</samp>&rsquo;, the construct expands to the
+<p>If the first character following the open brace is a
+&lsquo;<samp class="samp">;</samp>&rsquo;,
+the construct behaves like the form above but
+preserves any trailing newlines in the output of <var class="var">command</var>
+instead of removing them.
+This form is useful when the trailing newlines are significant
+and should not be stripped from the command&rsquo;s output.
+</p>
+<p>If the first character following the open brace is a
+&lsquo;<samp class="samp">|</samp>&rsquo;,
+the construct expands to the
 value of the <code class="code">REPLY</code> shell variable after <var class="var">command</var> executes,
 without removing any trailing newlines,
 and the standard output of <var class="var">command</var> remains the same as in the
@@ -3616,18 +3642,26 @@ character in the set.
 </p>
 <p>The sorting order of characters in range expressions,
 and the characters included in the range,
-are determined by the current locale and the values of the
+are determined by the collating sequence of the
+current locale and the values of the
 <code class="env">LC_COLLATE</code> and <code class="env">LC_ALL</code> shell variables, if set.
 </p>
-<p>For example, in the default C locale, &lsquo;<samp class="samp">[a-dx-z]</samp>&rsquo; is equivalent to
+<p>For example, in the default C locale,
+&lsquo;<samp class="samp">[a-dx-z]</samp>&rsquo;
+is equivalent to
 &lsquo;<samp class="samp">[abcdxyz]</samp>&rsquo;.
 Many locales sort characters in dictionary order, and in these locales
-&lsquo;<samp class="samp">[a-dx-z]</samp>&rsquo; is typically not equivalent to &lsquo;<samp class="samp">[abcdxyz]</samp>&rsquo;;
-it might be equivalent to &lsquo;<samp class="samp">[aBbCcDdxYyZz]</samp>&rsquo;, for example.
-To obtain
-the traditional interpretation of ranges in bracket expressions, you can
-force the use of the C locale by setting the <code class="env">LC_COLLATE</code> or
-<code class="env">LC_ALL</code> environment variable to the value &lsquo;<samp class="samp">C</samp>&rsquo;, or enable the
+&lsquo;<samp class="samp">[a-dx-z]</samp>&rsquo;
+is typically not equivalent to
+&lsquo;<samp class="samp">[abcdxyz]</samp>&rsquo;;
+it might be equivalent to
+&lsquo;<samp class="samp">[aBbCcDdxYyZz]</samp>&rsquo;
+or
+&lsquo;<samp class="samp">[aAbBcCdxXyYz]</samp>&rsquo;.
+To obtain the traditional interpretation of ranges in bracket expressions,
+you can force the use of the C locale by setting the
+<code class="env">LC_COLLATE</code> or <code class="env">LC_ALL</code>
+environment variables to the value &lsquo;<samp class="samp">C</samp>&rsquo;, or enable the
 <code class="code">globasciiranges</code> shell option.
 </p>
 <p>Within a bracket expression, <em class="dfn">character classes</em> can be specified
@@ -4009,14 +4043,14 @@ and &lsquo;<samp class="samp">\</samp>&rsquo; must be used to quote the characte
 however, double quote characters have no special meaning.
 </p>
 <p>If the redirection operator is &lsquo;<samp class="samp">&lt;&lt;-</samp>&rsquo;,
-the shell strips leading tab characters are stripped from input lines
+the shell strips leading tab characters from input lines
 and the line containing <var class="var">delimiter</var>.
 This allows here-documents within shell scripts to be indented in a
 natural fashion.
 </p>
-<p>If the delimiter is not quoted, the
+<p>If the delimiter is not quoted, the shell treats the
 <code class="code">\&lt;newline&gt;</code>
-sequence is treated as a line continuation: the two lines are joined
+sequence as a line continuation: the two lines are joined
 and the backslash-newline is removed.
 This happens while reading the here-document, before the check for
 the ending delimiter, so joined lines can form the end delimiter.
@@ -4325,7 +4359,8 @@ See the description of the <code class="code">inherit_errexit</code> shell optio
 in <small class="sc">POSIX</small> mode.
 </p>
 <p>If a command is followed by a &lsquo;<samp class="samp">&amp;</samp>&rsquo; and job control is not active, the
-default standard input for the command is the empty file <samp class="file">/dev/null</samp>.
+default standard input for the command is the empty file <samp class="file">/dev/null</samp>,
+unless the command has an explicit redirection involving the standard input.
 Otherwise, the invoked command inherits the file descriptors of the calling
 shell as modified by redirections.
 </p>
@@ -4449,7 +4484,8 @@ it ignores <code class="code">SIGTERM</code>
 (so that &lsquo;<samp class="samp">kill 0</samp>&rsquo; does not kill an interactive shell),
 and catches and handles <code class="code">SIGINT</code>
 (so that the <code class="code">wait</code> builtin is interruptible).
-When Bash receives a <code class="code">SIGINT</code>, it breaks out of any executing loops.
+When Bash receives a <code class="code">SIGINT</code>,
+it breaks out of any executing loops and command lists.
 In all cases, Bash ignores <code class="code">SIGQUIT</code>.
 If job control is in effect (see <a class="pxref" href="#Job-Control">Job Control</a>), Bash
 ignores <code class="code">SIGTTIN</code>, <code class="code">SIGTTOU</code>, and <code class="code">SIGTSTP</code>.
@@ -4671,6 +4707,12 @@ with &lsquo;<samp class="samp">-</samp>&rsquo; without requiring &lsquo;<samp cl
 Other builtins that accept arguments but are not specified as accepting
 options interpret arguments beginning with &lsquo;<samp class="samp">-</samp>&rsquo; as invalid options and
 require &lsquo;<samp class="samp">--</samp>&rsquo; to prevent this interpretation.
+</p>
+<p>All builtins except
+<code class="code">:</code>, <code class="code">true</code>, <code class="code">false</code>, <code class="code">echo</code>, and <code class="code">test</code>/<code class="code">[</code>
+accept &lsquo;<samp class="samp">--help</samp>&rsquo; as a special option.
+If &lsquo;<samp class="samp">--help</samp>&rsquo; is supplied, these builtins output
+a help message and exit with a status of 0.
 </p>
 <ul class="mini-toc">
 <li><a href="#Bourne-Shell-Builtins" accesskey="1">Bourne Shell Builtins</a></li>
@@ -5862,7 +5904,7 @@ special builtins.
 </p>
 <p>The <samp class="option">-f</samp> option means to load the new builtin command <var class="var">name</var>
 from shared object <var class="var">filename</var>, on systems that support dynamic loading.
-If <var class="var">filename</var> does not contain a slash.
+If <var class="var">filename</var> does not contain a slash,
 Bash will use the value of the <code class="env">BASH_LOADABLES_PATH</code> variable as a
 colon-separated list of directories in which to search for <var class="var">filename</var>.
 The default for <code class="env">BASH_LOADABLES_PATH</code> is system-dependent,
@@ -6106,11 +6148,29 @@ except that a leading plus or minus sign is allowed, and if the leading
 character is a single or double quote, the value is the numeric value of
 the following character, using the current locale.
 </p>
+<p>Format specifiers may apply to the <var class="var">n</var>th argument rather than the next
+sequential argument.
+In this case, the &lsquo;<samp class="samp">%</samp>&rsquo; in the format specifier is replaced by the
+sequence
+&lsquo;<samp class="samp">%<var class="var">n</var>$</samp>&rsquo;,
+where <var class="var">n</var> is a decimal integer greater than 0,
+giving the argument number to use as the operand.
+The format string should not mix numbered and unnumbered argument specifiers,
+though this is allowed.
+Unnumbered argument specifiers always refer to the next argument following
+the last argument consumed by an unnumbered specifier; numbered argument
+specifiers refer to absolute positions in the argument list.
+</p>
 <p>The <var class="var">format</var> is reused as necessary to consume all of the <var class="var">arguments</var>.
 If the <var class="var">format</var> requires more <var class="var">arguments</var> than are supplied, the
 extra format specifications behave as if a zero value or null string, as
 appropriate, had been supplied.
-The return value is zero on success,
+If <var class="var">format</var> is reused, a numbered argument specifier
+&lsquo;<samp class="samp">%<var class="var">n</var>$</samp>&rsquo;
+refers to the <var class="var">n</var>th argument following the highest numbered argument
+consumed by the previous use of <var class="var">format</var>.
+</p>
+<p>The return value is zero on success,
 non-zero if an invalid option is supplied or a write or assignment error
 occurs.
 </p>
@@ -7934,8 +7994,13 @@ option.
 filename completion.
 A filename whose suffix matches one of the entries in
 <code class="env">FIGNORE</code>
-is excluded from the list of matched filenames.  A sample
-value is &lsquo;<samp class="samp">.o:~</samp>&rsquo;
+is excluded from the list of matched filenames.
+A sample value is
+&lsquo;<samp class="samp">.o:~</samp>&rsquo;.
+Since tilde expansion takes place after
+&lsquo;<samp class="samp">:</samp>&rsquo;
+in assignment statements,
+make sure to quote assignments appropriately to avoid it as appropriate.
 </p>
 </dd>
 <dt><a id="index-FUNCNAME"></a><span><code class="code">FUNCNAME</code><a class="copiable-link" href="#index-FUNCNAME"> &para;</a></span></dt>
@@ -9686,6 +9751,9 @@ operator appends to an array variable when assigning
 using the compound assignment syntax; see
 <a class="ref" href="#Shell-Parameters">Shell Parameters</a> above.
 </p>
+<p>If one of the word expansions in a compound array assignment unsets the
+variable, the results are unspecified.
+</p>
 <p>An array element is referenced using
 <code class="code">${<var class="var">name</var>[<var class="var">subscript</var>]}</code>.
 The braces are required to avoid
@@ -9880,8 +9948,9 @@ list printed by <code class="code">dirs</code>), starting with zero, from the st
 </p></dd>
 </dl>
 
-<p>If the top element of the directory stack is modified, and
-the <samp class="option">-n</samp> option was not supplied, <code class="code">popd</code> uses the <code class="code">cd</code>
+<p>If the top element of the directory stack is modified,
+and the <samp class="option">-n</samp> option was not supplied,
+<code class="code">popd</code> uses the <code class="code">cd</code>
 builtin to change to the directory at the top of the stack.
 If the <code class="code">cd</code> fails, <code class="code">popd</code> returns a non-zero value.
 </p>
@@ -10043,7 +10112,7 @@ with <code class="env">$HOME</code> abbreviated with a tilde
 </p></dd>
 <dt><code class="code">\[</code></dt>
 <dd><p>Begin a sequence of non-printing characters.
-Thiss could be used to
+This could be used to
 embed a terminal control sequence into the prompt.
 </p></dd>
 <dt><code class="code">\]</code></dt>
@@ -10126,6 +10195,9 @@ directory to a non-writable directory other than <code class="env">$HOME</code> 
 not allowing the restricted shell to execute shell scripts, and cleaning
 the environment of variables that cause some commands to modify their
 behavior (e.g., <code class="env">VISUAL</code> or <code class="env">PAGER</code>).
+When setting up a restricted environment like this, it&rsquo;s important not
+to install or allow symbolic links in the new current directory, since
+those could be used to circumvent restrictions on writing to files.
 </p>
 <p>Modern systems provide more secure ways to implement a restricted environment,
 such as <code class="code">jails</code>, <code class="code">zones</code>, or <code class="code">containers</code>.
@@ -10203,7 +10275,8 @@ The Bash <em class="dfn">posix mode</em> changes the Bash
 behavior in these areas so that it conforms more strictly
 to the standard.
 </p>
-<p>Starting Bash with the <samp class="option">--posix</samp> command-line option or executing
+<p>Starting Bash with the <samp class="option">--posix</samp> or <samp class="option">-o posix</samp>
+command-line option or executing
 &lsquo;<samp class="samp">set -o posix</samp>&rsquo; while Bash is running will cause Bash to conform more
 closely to the <small class="sc">POSIX</small> standard by changing the behavior to
 match that specified by <small class="sc">POSIX</small> in areas where the Bash default differs.
@@ -10299,11 +10372,20 @@ This is also available with &lsquo;<samp class="samp">shopt -s checkhash</samp>&
 command hash table, even if it returns it as a (last-ditch) result
 from a <code class="env">$PATH</code> search.
 
-</li><li> The message printed by the job control code and builtins when a job
-exits with a non-zero status is &lsquo;Done(status)&rsquo;.
+</li><li> Normally, when job control is not enabled,
+the shell implicitly redirects the standard input of
+asynchronous commands from <samp class="file">/dev/null</samp>.
+A redirection to the standard input in this command inhibits this
+implicit redirection.
+In <small class="sc">POSIX</small> mode, a redirection that redirects file descriptor 0
+to itself (e.g., &lsquo;<samp class="samp">&lt;&amp;0</samp>&rsquo;) does not count as a redirection that
+overrides the implicit redirection from <samp class="file">/dev/null</samp>.
 
 </li><li> The message printed by the job control code and builtins when a job
-is stopped is &lsquo;Stopped(<var class="var">signame</var>)&rsquo;, where <var class="var">signame</var> is, for
+exits with a non-zero status is &ldquo;Done(status)&rdquo;.
+
+</li><li> The message printed by the job control code and builtins when a job
+is stopped is &ldquo;Stopped(<var class="var">signame</var>)&rdquo;, where <var class="var">signame</var> is, for
 example, <code class="code">SIGTSTP</code>.
 
 </li><li> If the shell is interactive, Bash does not perform job notifications
@@ -11111,6 +11193,8 @@ This is useful only when used with the <samp class="option">-n</samp> option.
 <p>Supplying the <samp class="option">-f</samp> option, when job control is enabled,
 forces <code class="code">wait</code> to wait for each <var class="var">id</var> to terminate before
 returning its status, instead of returning when it changes status.
+If there are no <var class="var">id</var> arguments,
+<code class="code">wait</code> waits until all background processes have terminated.
 </p>
 <p>If none of the <var class="var">id</var>s specify one of the shell&rsquo;s an active child
 processes, the return status is 127.
@@ -11261,11 +11345,11 @@ Next: <a href="#Readline-Interaction" accesskey="n" rel="next">Readline Interact
 <p>The following paragraphs use Emacs style to
 describe the notation used to represent keystrokes.
 </p>
-<p>The text <kbd class="kbd">C-k</kbd> is read as &lsquo;Control-K&rsquo; and describes the character
+<p>The text <kbd class="kbd">C-k</kbd> is read as &ldquo;Control-K&rdquo; and describes the character
 produced when the <kbd class="key">k</kbd> key is pressed while the Control key
 is depressed.
 </p>
-<p>The text <kbd class="kbd">M-k</kbd> is read as &lsquo;Meta-K&rsquo; and describes the character
+<p>The text <kbd class="kbd">M-k</kbd> is read as &ldquo;Meta-K&rdquo; and describes the character
 produced when the Meta key (if you have one) is depressed, and the <kbd class="key">k</kbd>
 key is pressed (a <em class="dfn">meta character</em>), then both are released.
 The Meta key is labeled <kbd class="key">ALT</kbd> or <kbd class="key">Option</kbd> on many keyboards.
@@ -11296,7 +11380,7 @@ you can make <kbd class="kbd">M-key</kbd> key bindings you specify
 (see <code class="code">Key Bindings</code> in <a class="ref" href="#Readline-Init-File-Syntax">Readline Init File Syntax</a>)
 do the same thing by setting the <code class="code">force-meta-prefix</code> variable.
 </p>
-<p>The text <kbd class="kbd">M-C-k</kbd> is read as &lsquo;Meta-Control-k&rsquo; and describes the
+<p>The text <kbd class="kbd">M-C-k</kbd> is read as &ldquo;Meta-Control-k&rdquo; and describes the
 character produced by metafying <kbd class="kbd">C-k</kbd>.
 </p>
 <p>In addition, several keys have their own names.
@@ -11365,10 +11449,10 @@ and then correct your mistake.
 Afterwards, you can move the cursor to the right with <kbd class="kbd">C-f</kbd>.
 </p>
 <p>When you add text in the middle of a line, you will notice that characters
-to the right of the cursor are &lsquo;pushed over&rsquo; to make room for the text
+to the right of the cursor are &ldquo;pushed over&rdquo; to make room for the text
 that you have inserted.
 Likewise, when you delete text behind the cursor,
-characters to the right of the cursor are &lsquo;pulled back&rsquo; to fill in the
+characters to the right of the cursor are &ldquo;pulled back&rdquo; to fill in the
 blank space created by the removal of the text.
 These are the bare
 essentials for editing the text of an input line:
@@ -11453,9 +11537,9 @@ Next: <a href="#Readline-Arguments" accesskey="n" rel="next">Readline Arguments<
 <p><em class="dfn">Killing</em> text means to delete the text from the line, but to save
 it away for later use, usually by <em class="dfn">yanking</em> (re-inserting)
 it back into the line.
-(&lsquo;Cut&rsquo; and &lsquo;paste&rsquo; are more recent jargon for &lsquo;kill&rsquo; and &lsquo;yank&rsquo;.)
+(&ldquo;Cut&rdquo; and &ldquo;paste&rdquo; are more recent jargon for &ldquo;kill&rdquo; and &ldquo;yank&rdquo;.)
 </p>
-<p>If the description for a command says that it &lsquo;kills&rsquo; text, then you can
+<p>If the description for a command says that it &ldquo;kills&rdquo; text, then you can
 be sure that you can get the text back in a different (or the same)
 place later.
 </p>
@@ -11528,9 +11612,10 @@ act in a backward direction.
 For example, to kill text back to the
 start of the line, you might type &lsquo;<samp class="samp">M-- C-k</samp>&rsquo;.
 </p>
-<p>The general way to pass numeric arguments to a command is to type meta
-digits before the command.
-If the first &lsquo;digit&rsquo; typed is a minus
+<p>The general way to pass numeric arguments to a command is to type
+the Meta key and then digits (&ldquo;meta digits&rdquo;)
+before the command.
+If the first &ldquo;digit&rdquo; typed is a minus
 sign (&lsquo;<samp class="samp">-</samp>&rsquo;), then the sign of the argument will be negative.
 Once you have typed one meta digit to get the argument started, you can
 type the remainder of the digits, and then the command.
@@ -12704,12 +12789,12 @@ to its original state.
 </p>
 </dd>
 <dt><a id="index-previous_002dhistory-_0028C_002dp_0029"></a><span><code class="code">previous-history (C-p)</code><a class="copiable-link" href="#index-previous_002dhistory-_0028C_002dp_0029"> &para;</a></span></dt>
-<dd><p>Move &lsquo;back&rsquo; through the history list, fetching the previous command.
+<dd><p>Move &ldquo;back&rdquo; through the history list, fetching the previous command.
 This may also be bound to the up arrow key on some keyboards.
 </p>
 </dd>
 <dt><a id="index-next_002dhistory-_0028C_002dn_0029"></a><span><code class="code">next-history (C-n)</code><a class="copiable-link" href="#index-next_002dhistory-_0028C_002dn_0029"> &para;</a></span></dt>
-<dd><p>Move &lsquo;forward&rsquo; through the history list, fetching the next command.
+<dd><p>Move &ldquo;forward&rdquo; through the history list, fetching the next command.
 This may also be bound to the down arrow key on some keyboards.
 </p>
 </dd>
@@ -12723,28 +12808,29 @@ being entered.
 </p>
 </dd>
 <dt><a id="index-reverse_002dsearch_002dhistory-_0028C_002dr_0029"></a><span><code class="code">reverse-search-history (C-r)</code><a class="copiable-link" href="#index-reverse_002dsearch_002dhistory-_0028C_002dr_0029"> &para;</a></span></dt>
-<dd><p>Search backward starting at the current line and moving &lsquo;up&rsquo; through
+<dd><p>Search backward starting at the current line and moving &ldquo;up&rdquo; through
 the history as necessary.
 This is an incremental search.
 This command sets the region to the matched text and activates the region.
 </p>
 </dd>
 <dt><a id="index-forward_002dsearch_002dhistory-_0028C_002ds_0029"></a><span><code class="code">forward-search-history (C-s)</code><a class="copiable-link" href="#index-forward_002dsearch_002dhistory-_0028C_002ds_0029"> &para;</a></span></dt>
-<dd><p>Search forward starting at the current line and moving &lsquo;down&rsquo; through
+<dd><p>Search forward starting at the current line and moving &ldquo;down&rdquo; through
 the history as necessary.
 This is an incremental search.
 This command sets the region to the matched text and activates the region.
 </p>
 </dd>
 <dt><a id="index-non_002dincremental_002dreverse_002dsearch_002dhistory-_0028M_002dp_0029"></a><span><code class="code">non-incremental-reverse-search-history (M-p)</code><a class="copiable-link" href="#index-non_002dincremental_002dreverse_002dsearch_002dhistory-_0028M_002dp_0029"> &para;</a></span></dt>
-<dd><p>Search backward starting at the current line and moving &lsquo;up&rsquo;
-through the history as necessary using a non-incremental search
+<dd><p>Search backward starting at the current line and moving &ldquo;up&rdquo;
+</p>
+<p>through the history as necessary using a non-incremental search
 for a string supplied by the user.
 The search string may match anywhere in a history line.
 </p>
 </dd>
 <dt><a id="index-non_002dincremental_002dforward_002dsearch_002dhistory-_0028M_002dn_0029"></a><span><code class="code">non-incremental-forward-search-history (M-n)</code><a class="copiable-link" href="#index-non_002dincremental_002dforward_002dsearch_002dhistory-_0028M_002dn_0029"> &para;</a></span></dt>
-<dd><p>Search forward starting at the current line and moving &lsquo;down&rsquo;
+<dd><p>Search forward starting at the current line and moving &ldquo;down&rdquo;
 through the history as necessary using a non-incremental search
 for a string supplied by the user.
 The search string may match anywhere in a history line.
@@ -13445,13 +13531,34 @@ pathname expansion.
 </p>
 </dd>
 <dt><a id="index-shell_002dexpand_002dline-_0028M_002dC_002de_0029"></a><span><code class="code">shell-expand-line (M-C-e)</code><a class="copiable-link" href="#index-shell_002dexpand_002dline-_0028M_002dC_002de_0029"> &para;</a></span></dt>
-<dd><p>Expand the line by performing shell word expansions.
+<dd><p>Expand the line by performing shell word expansions,
+treating the line as a single shell word.
 This performs alias and history expansion,
 $&rsquo;<var class="var">string</var>&rsquo; and $&quot;<var class="var">string</var>&quot; quoting,
 tilde expansion, parameter and variable expansion, arithmetic expansion,
 command and process substitution,
 word splitting, and quote removal.
-An explicit argument suppresses command and process substitution.
+An explicit argument suppresses command and process substitution and
+treats the line as if it were quoted as part of a here-document.
+</p>
+</dd>
+<dt><a id="index-shell_002dexpand_002dand_002drequote_002dline-_0028_0029"></a><span><code class="code">shell-expand-and-requote-line ()</code><a class="copiable-link" href="#index-shell_002dexpand_002dand_002drequote_002dline-_0028_0029"> &para;</a></span></dt>
+<dd><p>Expand the line by performing shell word expansions,
+splitting the line into shell words in the same way as for
+programmable completion.
+This performs alias and history expansion,
+$&rsquo;<var class="var">string</var>&rsquo; and $&quot;<var class="var">string</var>&quot; quoting,
+tilde expansion, parameter and variable expansion, arithmetic expansion,
+command and process substitution,
+word splitting, and quote removal
+on each word, then quotes the resulting words if necessary to
+prevent further expansion.
+An explicit argument suppresses command and process substitution
+and quotes each resultant word.
+As usual, double-quoting a word will suppress word splitting.
+This can be useful when combined with suppressing command substitution,
+for instance, so the words in the command substitution aren&rsquo;t
+quoted individually.
 </p>
 </dd>
 <dt><a id="index-history_002dexpand_002dline-_0028M_002d_005e_0029"></a><span><code class="code">history-expand-line (M-^)</code><a class="copiable-link" href="#index-history_002dexpand_002dline-_0028M_002d_005e_0029"> &para;</a></span></dt>
@@ -13514,8 +13621,8 @@ editing modes,
 The Readline default is <code class="code">emacs</code> mode.
 </p>
 <p>When you enter a line in <code class="code">vi</code> mode, you are already placed in
-&lsquo;insertion&rsquo; mode, as if you had typed an &lsquo;<samp class="samp">i</samp>&rsquo;.  Pressing <kbd class="key">ESC</kbd>
-switches you into &lsquo;command&rsquo; mode, where you can edit the text of the
+&ldquo;insertion&rdquo; mode, as if you had typed an &lsquo;<samp class="samp">i</samp>&rsquo;.  Pressing <kbd class="key">ESC</kbd>
+switches you into &ldquo;command&rdquo; mode, where you can edit the text of the
 line with the standard <code class="code">vi</code> movement keys, move to previous
 history lines with &lsquo;<samp class="samp">k</samp>&rsquo; and subsequent lines with &lsquo;<samp class="samp">j</samp>&rsquo;, and
 so forth.
@@ -14371,7 +14478,7 @@ history list and history file.
 <dl class="table">
 <dt><a id="index-fc"></a><span><code class="code">fc</code><a class="copiable-link" href="#index-fc"> &para;</a></span></dt>
 <dd><div class="example">
-<pre class="example-preformatted"><code class="code">fc [-e <var class="var">ename</var>] [-lnr] [<var class="var">first</var>] [<var class="var">last</var>]</code>
+<pre class="example-preformatted"><code class="code">fc [-e <var class="var">ename</var>] [-D] [-lnr] [<var class="var">first</var>] [<var class="var">last</var>]</code>
 <code class="code">fc -s [<var class="var">pat</var>=<var class="var">rep</var>] [<var class="var">command</var>]</code>
 </pre></div>
 
@@ -14408,6 +14515,13 @@ value of the <code class="env">FCEDIT</code> variable if set, or the value of th
 <code class="env">EDITOR</code> variable if that is set, or <code class="code">vi</code> if neither is set.
 When editing is complete, <code class="code">fc</code> reads the file of edited commands
 and echoes and executes them.
+The <samp class="option">-D</samp> option, if supplied,
+causes <code class="code">fc</code> to remove the selected commands from the history
+list before executing the file of edited commands.
+<samp class="option">-D</samp> is only effective when <code class="code">fc</code> is invoked in this way.
+It could be used if you make a typo in a command and want to fix it using
+an editor while removing the erroneous command from the history to
+avoid clutter.
 </p>
 <p>In the second form, <code class="code">fc</code> re-executes <var class="var">command</var> after
 replacing each instance of <var class="var">pat</var> in the selected command with <var class="var">rep</var>.
@@ -14431,18 +14545,40 @@ is that of the re-executed command, unless
 </dd>
 <dt><a id="index-history"></a><span><code class="code">history</code><a class="copiable-link" href="#index-history"> &para;</a></span></dt>
 <dd><div class="example">
-<pre class="example-preformatted">history [<var class="var">n</var>]
+<pre class="example-preformatted">history [-H] [<var class="var">range</var>]
 history -c
-history -d <var class="var">offset</var>
-history -d <var class="var">start</var>-<var class="var">end</var>
+history -d <var class="var">range</var>
 history [-anrw] [<var class="var">filename</var>]
-history -ps <var class="var">arg</var>
+history -ps <var class="var">arg</var> [<var class="var">arg</var>...]
 </pre></div>
 
-<p>With no options, display the history list with numbers.
-Entries prefixed with a &lsquo;<samp class="samp">*</samp>&rsquo; have been modified.
-An argument of <var class="var">n</var> lists only the last <var class="var">n</var> entries.
-If the shell variable <code class="env">HISTTIMEFORMAT</code> is set and not null,
+<p>With no options,
+or with the <samp class="option">-H</samp> option,
+display the portion of the command history list
+specified by <var class="var">range</var>, as described below.
+If <var class="var">range</var> is not specified, display the entire history list.
+Without <samp class="option">-H</samp>, display the list with command numbers, prefixing
+entries that have been modified with a &lsquo;<samp class="samp">*</samp>&rsquo;.
+</p>
+<p>A
+<var class="var">range</var>
+argument is specified in the form of a number <var class="var">offset</var> or
+a range <var class="var">start</var>-<var class="var">end</var>.
+If <var class="var">offset</var> is supplied, it references the history entry at
+position <var class="var">offset</var> in the history list;
+when listing this displays the last <var class="var">offset</var> entries.
+A negative <var class="var">offset</var> counts back from the end of the history list,
+relative to one greater than the last history position.
+When listing, negative and positive <var class="var">offset</var>s have identical results.
+<var class="var">start</var> and <var class="var">end</var>, if supplied, reference the portion of
+the history list beginning at position <var class="var">start</var> through position
+<var class="var">end</var>.
+If <var class="var">start</var> or <var class="var">end</var> are negative, they count back from the
+end of the history list.
+When listing, if <var class="var">start</var> is greater than <var class="var">end</var>, the history
+entries are displayed in reverse order from <var class="var">end</var> to <var class="var">start</var>.
+</p>
+<p>If the shell variable <code class="env">HISTTIMEFORMAT</code> is set and not null,
 it is used as a format string for <code class="code">strftime</code>(3) to display
 the time stamp associated with each displayed history entry.
 If <code class="code">history</code> uses <code class="env">HISTTIMEFORMAT</code>, it does not print an
@@ -14456,21 +14592,17 @@ intervening space between the formatted time stamp and the history entry.
 This may be combined with the other options to replace the history list.
 </p>
 </dd>
-<dt><code class="code">-d <var class="var">offset</var></code></dt>
-<dd><p>Delete the history entry at position <var class="var">offset</var>.
-If <var class="var">offset</var> is positive, it should be specified as it appears when
-the history is displayed.
-If <var class="var">offset</var> is negative, it is interpreted as relative to one greater
-than the last history position, so negative indices count back from the
-end of the history, and an index of &lsquo;<samp class="samp">-1</samp>&rsquo; refers to the current
-<code class="code">history -d</code> command.
+<dt><code class="code">-d <var class="var">range</var></code></dt>
+<dd><p>Delete the history entries specified by <var class="var">range</var>, as described above.
+An offset of &lsquo;<samp class="samp">-1</samp>&rsquo; refers to the current <code class="code">history -d</code> command.
 </p>
 </dd>
-<dt><code class="code">-d <var class="var">start</var>-<var class="var">end</var></code></dt>
-<dd><p>Delete the range of history entries between positions <var class="var">start</var> and
-<var class="var">end</var>, inclusive.
-Positive and negative values for <var class="var">start</var> and <var class="var">end</var>
-are interpreted as described above.
+<dt><code class="code">-H</code></dt>
+<dd><p>Display the selected history entries in the format that would be written
+to the history file,
+including any time stamp information as described below,
+without prefixing the entry with any line number or
+&lsquo;<samp class="samp">*</samp>&rsquo;.
 </p>
 </dd>
 <dt><code class="code">-a</code></dt>
@@ -15640,7 +15772,7 @@ The latest released version of Bash is always available for FTP from
 <code class="code">bashbug</code> command to submit a bug report or use the form at the
 <a class="uref" href="https://savannah.gnu.org/projects/bash/">Bash project page</a>.
 If you have a fix, you are encouraged to submit that as well!
-Suggestions and &lsquo;philosophical&rsquo; bug reports may be mailed
+Suggestions and &ldquo;philosophical&rdquo; bug reports may be mailed
 to <a class="email" href="mailto:bug-bash@gnu.org">bug-bash@gnu.org</a> or <a class="email" href="mailto:help-bash@gnu.org">help-bash@gnu.org</a>.
 </p>
 <p>All bug reports should include:
@@ -15649,7 +15781,7 @@ to <a class="email" href="mailto:bug-bash@gnu.org">bug-bash@gnu.org</a> or <a cl
 </li><li>The hardware and operating system.
 </li><li>The compiler used to compile Bash.
 </li><li>A description of the bug behavior.
-</li><li>A short script or &lsquo;recipe&rsquo; which exercises the bug and may be used
+</li><li>A short script or &ldquo;recipe&rdquo; which exercises the bug and may be used
 to reproduce it.
 </li></ul>
 
@@ -17512,6 +17644,7 @@ Next: <a href="#Concept-Index" accesskey="n" rel="next">Concept Index</a>, Previ
 <tr><td></td><td class="printindex-index-entry"><a href="#index-set_002dmark-_0028C_002d_0040_0029"><code>set-mark (C-@)</code></a></td><td class="printindex-index-section"><a href="#Miscellaneous-Commands">Miscellaneous Commands</a></td></tr>
 <tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dbackward_002dkill_002dword-_0028_0029"><code>shell-backward-kill-word ()</code></a></td><td class="printindex-index-section"><a href="#Commands-For-Killing">Commands For Killing</a></td></tr>
 <tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dbackward_002dword-_0028M_002dC_002db_0029"><code>shell-backward-word (M-C-b)</code></a></td><td class="printindex-index-section"><a href="#Commands-For-Moving">Commands For Moving</a></td></tr>
+<tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dexpand_002dand_002drequote_002dline-_0028_0029"><code>shell-expand-and-requote-line ()</code></a></td><td class="printindex-index-section"><a href="#Miscellaneous-Commands">Miscellaneous Commands</a></td></tr>
 <tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dexpand_002dline-_0028M_002dC_002de_0029"><code>shell-expand-line (M-C-e)</code></a></td><td class="printindex-index-section"><a href="#Miscellaneous-Commands">Miscellaneous Commands</a></td></tr>
 <tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dforward_002dword-_0028M_002dC_002df_0029"><code>shell-forward-word (M-C-f)</code></a></td><td class="printindex-index-section"><a href="#Commands-For-Moving">Commands For Moving</a></td></tr>
 <tr><td></td><td class="printindex-index-entry"><a href="#index-shell_002dkill_002dword-_0028M_002dC_002dd_0029"><code>shell-kill-word (M-C-d)</code></a></td><td class="printindex-index-section"><a href="#Commands-For-Killing">Commands For Killing</a></td></tr>

@@ -1,7 +1,7 @@
 /* trap.c -- Not the trap command, but useful functions for manipulating
    those objects.  The trap command is in builtins/trap.def. */
 
-/* Copyright (C) 1987-2024 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2025 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -965,6 +965,7 @@ restore_default_signal (int sig)
       original_signals[sig] = SIG_DFL;	/* XXX */
       set_signal_handler (sig, SIG_DFL);
       change_signal (sig, (char *)DEFAULT_SIG);
+      sigmodes[sig] &= ~SIG_TRAPPED;	/* no longer trapped */
       return;
     }
 
@@ -1099,6 +1100,21 @@ run_trap_cleanup (int sig)
 {
   /* XXX - should we clean up trap_list[sig] == IMPOSSIBLE_TRAP_HANDLER? */
   sigmodes[sig] &= ~(SIG_INPROGRESS|SIG_CHANGED);
+}
+
+void
+clear_exit_trap (int freetrap)
+{
+  if (sigmodes[EXIT_TRAP] & SIG_TRAPPED)
+    {
+      sigmodes[EXIT_TRAP] &= ~SIG_TRAPPED;	/* XXX - SIG_INPROGRESS? */
+      if (freetrap)
+	{
+	  free_trap_command (EXIT_TRAP);
+	  trap_list[EXIT_TRAP] = (char *)NULL;
+	}
+    }
+
 }
 
 #define RECURSIVE_SIG(s) (SPECIAL_TRAP(s) == 0)

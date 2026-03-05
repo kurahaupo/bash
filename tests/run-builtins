@@ -1,7 +1,9 @@
-echo "warning: some of these tests may fail if process substitution has not" >&2
-echo "         been compiled into the shell or if the OS does not provide" >&2
-echo "         /dev/fd." >&2
-echo >&2
+{
+echo "${CSTART}warning${CEND}: some of these tests may fail if process substitution has not"
+echo "${TAB} been compiled into the shell or if the OS does not provide"
+echo "${TAB} /dev/fd."
+echo
+} >&2
 
 ${THIS_SH} ./builtins.tests > ${BASH_TSTOUT} 2>&1
 diff ${BASH_TSTOUT} builtins.right && rm -f ${BASH_TSTOUT}

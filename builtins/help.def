@@ -127,7 +127,7 @@ help_builtin (WORD_LIST *list)
       return (EXECUTION_SUCCESS);
     }
 
-  /* We should consider making `help bash' do something. */
+  /* We should consider making ‘help bash’ do something. */
 
   if (glob_pattern_p (list->word->word) == 1)
     {
@@ -136,14 +136,18 @@ help_builtin (WORD_LIST *list)
       printf ("%s", _("'\n\n"));
     }
 
-  char *pattern = "";
-  int match_found = 0;
+  bool match_found = false;
   for (; list; list = list->next)
     {
-      pattern = list->word->word;
+      char *pattern = list->word->word;
       size_t plen = strlen (pattern);
 
-      for (int pass = 1, bool this_found = 0; pass < 3; pass++)
+      int globpat = glob_pattern_p (pattern);
+      if (globpat)
+	printf (_("Shell commands matching pattern '%s':\n"), pattern);
+
+      bool this_found = false;
+      for (int pass = 1; pass < 3; pass++)
 	{
 	  char *name;
 	  for (int i = 0; name = (char*) shell_builtins[i].name; i++)
@@ -156,6 +160,8 @@ help_builtin (WORD_LIST *list)
 			      strmatch (pattern, name, FNMATCH_EXTFLAG) != FNM_NOMATCH
 			    : strncmp (pattern, name, plen) == 0)
 		{
+		  if (globpat && !this_found)
+		    putchar ('\n');
 		  this_found = true;
 		  match_found++;
 		  if (dflag)
@@ -171,22 +177,23 @@ help_builtin (WORD_LIST *list)
 
 		  printf ("%s: %s\n", name, _(shell_builtins[i].short_doc));
 
-		  if (sflag == 0)
+		  if (! sflag)
 		    show_longdoc (i);
 		}
 	    }
 	  if (pass == 1 && this_found)
 	    break;
 	}
+      if (! this_found)
+	{
+	  if (globpat)
+	    builtin_error (_("no help topics match '%s'."), pattern);
+	  else
+	    builtin_error (_("no help topics match '%s'. Try 'help help', 'man -k %s', or 'info %s'."), pattern, pattern, pattern);
+	}
     }
 
-  if (match_found == 0)
-    {
-      builtin_error (_("no help topics match `%s'.  Try `help help' or `man -k %s' or `info %s'."), pattern, pattern, pattern);
-      return (EXECUTION_FAILURE);
-    }
-
-  return (sh_chkwrite (EXECUTION_SUCCESS));
+  return (match_found ? sh_chkwrite (EXECUTION_SUCCESS) : sh_chkwrite (EXECUTION_FAILURE));
 }
 
 void
@@ -195,7 +202,7 @@ builtin_help (void)
   int ind;
 
   current_builtin = builtin_address_internal (this_command_name, 0);
-  if (current_builtin == 0)
+  if (current_builtin == NULL)
     return;
 
   ind = current_builtin - shell_builtins;

@@ -1,7 +1,7 @@
 #
 # Simple makefile for the sample loadable builtins
 #
-# Copyright (C) 1996-2022 Free Software Foundation, Inc.
+# Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 PACKAGE = @PACKAGE_NAME@
 VERSION = @PACKAGE_VERSION@
 
-# Include some boilerplate Gnu makefile definitions.
+# Include some boilerplate GNU makefile definitions.
 prefix = @prefix@
 
 exec_prefix = @exec_prefix@
@@ -116,7 +116,7 @@ MKDEP_CSOURCES = $(srcdir)/*.c # *.c
 ALLPROG = print truefalse sleep finfo logname basename dirname fdflags \
 	  tty pathchk tee head mkdir rmdir mkfifo mktemp printenv id whoami \
 	  uname sync push ln unlink realpath strftime mypid setpgid seq rm \
-	  accept csv dsv cut stat getconf kv strptime chmod fltexpr
+	  accept csv dsv cut stat getconf kv strptime chmod fltexpr jobid
 OTHERPROG = necho hello cat pushd asort fltexpr
 
 SUBDIRS = perl
@@ -273,6 +273,9 @@ asort: asort.o
 fltexpr:	fltexpr.o
 	$(SHOBJ_LD) $(SHOBJ_LDFLAGS) $(SHOBJ_XLDFLAGS) -o $@ fltexpr.o $(SHOBJ_LIBS) -lm
 
+jobid:	jobid.o
+	$(SHOBJ_LD) $(SHOBJ_LDFLAGS) $(SHOBJ_XLDFLAGS) -o $@ jobid.o $(SHOBJ_LIBS)
+
 
 # pushd is a special case.  We use the same source that the builtin version
 # uses, with special compilation options.
@@ -349,7 +352,7 @@ OBJS = print.o truefalse.o accept.o sleep.o finfo.o getconf.o logname.o \
        basename.o dirname.o tty.o pathchk.o tee.o head.o rmdir.o necho.o \
        hello.o cat.o csv.o dsv.o kv.o cut.o printenv.o id.o whoami.o uname.o \
        sync.o push.o mkdir.o mktemp.o realpath.o strftime.o setpgid.o stat.o \
-       fdflags.o seq.o asort.o strptime.o chmod.o
+       fdflags.o seq.o asort.o strptime.o chmod.o fltexpr.o jobid.o
 
 ${OBJS}: ../../config.h
 
@@ -370,7 +373,7 @@ accept.o: $(BASHINCDIR)/chartypes.h
 accept.o: $(BASHINCDIR)/maxpath.h
 accept.o: $(BASHINCDIR)/ocache.h
 accept.o: $(BASHINCDIR)/posixjmp.h
-#accept.o: $(BASHINCDIR)/stdc.h
+accept.o: $(BASHINCDIR)/stdc.h
 accept.o: $(BASHINCDIR)/typemax.h
 accept.o: $(BASHINCDIR)/unlocked-io.h
 accept.o: $(srcdir)/accept.c
@@ -382,7 +385,6 @@ accept.o: $(topdir)/assoc.h
 accept.o: $(topdir)/bashansi.h
 accept.o: $(topdir)/bashjmp.h
 accept.o: $(topdir)/bashtypes.h
-accept.o: $(topdir)/builtins.h
 accept.o: $(topdir)/builtins/bashgetopt.h
 accept.o: $(topdir)/builtins/common.h
 accept.o: $(topdir)/command.h
@@ -403,6 +405,7 @@ accept.o: $(topdir)/syntax.h
 accept.o: $(topdir)/unwind_prot.h
 accept.o: $(topdir)/variables.h
 accept.o: $(topdir)/xmalloc.h
+accept.o: ../../builtins.h
 accept.o: ../../config.h
 accept.o: ../../pathnames.h
 asort.o: $(BASHINCDIR)/chartypes.h
@@ -419,7 +422,6 @@ asort.o: $(topdir)/assoc.h
 asort.o: $(topdir)/bashansi.h
 asort.o: $(topdir)/bashjmp.h
 asort.o: $(topdir)/bashtypes.h
-asort.o: $(topdir)/builtins.h
 asort.o: $(topdir)/builtins/bashgetopt.h
 asort.o: $(topdir)/builtins/common.h
 asort.o: $(topdir)/command.h
@@ -440,13 +442,14 @@ asort.o: $(topdir)/syntax.h
 asort.o: $(topdir)/unwind_prot.h
 asort.o: $(topdir)/variables.h
 asort.o: $(topdir)/xmalloc.h
+asort.o: ../../builtins.h
 asort.o: ../../config.h
 asort.o: ../../pathnames.h
 basename.o: $(BASHINCDIR)/chartypes.h
 basename.o: $(BASHINCDIR)/maxpath.h
 basename.o: $(BASHINCDIR)/ocache.h
 basename.o: $(BASHINCDIR)/posixjmp.h
-#basename.o: $(BASHINCDIR)/stdc.h
+basename.o: $(BASHINCDIR)/stdc.h
 basename.o: $(BASHINCDIR)/unlocked-io.h
 basename.o: $(srcdir)/basename.c
 basename.o: $(topdir)/alias.h
@@ -456,7 +459,6 @@ basename.o: $(topdir)/assoc.h
 basename.o: $(topdir)/bashansi.h
 basename.o: $(topdir)/bashjmp.h
 basename.o: $(topdir)/bashtypes.h
-basename.o: $(topdir)/builtins.h
 basename.o: $(topdir)/builtins/bashgetopt.h
 basename.o: $(topdir)/builtins/common.h
 basename.o: $(topdir)/command.h
@@ -477,13 +479,14 @@ basename.o: $(topdir)/syntax.h
 basename.o: $(topdir)/unwind_prot.h
 basename.o: $(topdir)/variables.h
 basename.o: $(topdir)/xmalloc.h
+basename.o: ../../builtins.h
 basename.o: ../../config.h
 basename.o: ../../pathnames.h
 bcat.o: $(BASHINCDIR)/chartypes.h
 bcat.o: $(BASHINCDIR)/maxpath.h
 bcat.o: $(BASHINCDIR)/ocache.h
 bcat.o: $(BASHINCDIR)/posixjmp.h
-#bcat.o: $(BASHINCDIR)/stdc.h
+bcat.o: $(BASHINCDIR)/stdc.h
 bcat.o: $(BASHINCDIR)/unlocked-io.h
 bcat.o: $(srcdir)/bcat.c
 bcat.o: $(topdir)/alias.h
@@ -493,7 +496,6 @@ bcat.o: $(topdir)/assoc.h
 bcat.o: $(topdir)/bashansi.h
 bcat.o: $(topdir)/bashjmp.h
 bcat.o: $(topdir)/bashtypes.h
-bcat.o: $(topdir)/builtins.h
 bcat.o: $(topdir)/command.h
 bcat.o: $(topdir)/config-bot.h
 bcat.o: $(topdir)/config-top.h
@@ -512,13 +514,14 @@ bcat.o: $(topdir)/syntax.h
 bcat.o: $(topdir)/unwind_prot.h
 bcat.o: $(topdir)/variables.h
 bcat.o: $(topdir)/xmalloc.h
+bcat.o: ../../builtins.h
 bcat.o: ../../config.h
 bcat.o: ../../pathnames.h
 cat.o: $(BASHINCDIR)/chartypes.h
 cat.o: $(BASHINCDIR)/maxpath.h
 cat.o: $(BASHINCDIR)/ocache.h
 cat.o: $(BASHINCDIR)/posixjmp.h
-#cat.o: $(BASHINCDIR)/stdc.h
+cat.o: $(BASHINCDIR)/stdc.h
 cat.o: $(BASHINCDIR)/unlocked-io.h
 cat.o: $(srcdir)/cat.c
 cat.o: $(topdir)/alias.h
@@ -528,7 +531,6 @@ cat.o: $(topdir)/assoc.h
 cat.o: $(topdir)/bashansi.h
 cat.o: $(topdir)/bashjmp.h
 cat.o: $(topdir)/bashtypes.h
-cat.o: $(topdir)/builtins.h
 cat.o: $(topdir)/command.h
 cat.o: $(topdir)/config-bot.h
 cat.o: $(topdir)/config-top.h
@@ -547,13 +549,52 @@ cat.o: $(topdir)/syntax.h
 cat.o: $(topdir)/unwind_prot.h
 cat.o: $(topdir)/variables.h
 cat.o: $(topdir)/xmalloc.h
+cat.o: ../../builtins.h
 cat.o: ../../config.h
 cat.o: ../../pathnames.h
+chmod.o: $(BASHINCDIR)/chartypes.h
+chmod.o: $(BASHINCDIR)/maxpath.h
+chmod.o: $(BASHINCDIR)/ocache.h
+chmod.o: $(BASHINCDIR)/posixjmp.h
+chmod.o: $(BASHINCDIR)/posixstat.h
+chmod.o: $(BASHINCDIR)/stdc.h
+chmod.o: $(BASHINCDIR)/unlocked-io.h
+chmod.o: $(srcdir)/chmod.c
+chmod.o: $(topdir)/alias.h
+chmod.o: $(topdir)/array.h
+chmod.o: $(topdir)/arrayfunc.h
+chmod.o: $(topdir)/assoc.h
+chmod.o: $(topdir)/bashansi.h
+chmod.o: $(topdir)/bashjmp.h
+chmod.o: $(topdir)/bashtypes.h
+chmod.o: $(topdir)/builtins/bashgetopt.h
+chmod.o: $(topdir)/builtins/common.h
+chmod.o: $(topdir)/command.h
+chmod.o: $(topdir)/config-bot.h
+chmod.o: $(topdir)/config-top.h
+chmod.o: $(topdir)/conftypes.h
+chmod.o: $(topdir)/dispose_cmd.h
+chmod.o: $(topdir)/error.h
+chmod.o: $(topdir)/externs.h
+chmod.o: $(topdir)/general.h
+chmod.o: $(topdir)/hashlib.h
+chmod.o: $(topdir)/make_cmd.h
+chmod.o: $(topdir)/quit.h
+chmod.o: $(topdir)/shell.h
+chmod.o: $(topdir)/sig.h
+chmod.o: $(topdir)/subst.h
+chmod.o: $(topdir)/syntax.h
+chmod.o: $(topdir)/unwind_prot.h
+chmod.o: $(topdir)/variables.h
+chmod.o: $(topdir)/xmalloc.h
+chmod.o: ../../builtins.h
+chmod.o: ../../config.h
+chmod.o: ../../pathnames.h
 csv.o: $(BASHINCDIR)/chartypes.h
 csv.o: $(BASHINCDIR)/maxpath.h
 csv.o: $(BASHINCDIR)/ocache.h
 csv.o: $(BASHINCDIR)/posixjmp.h
-#csv.o: $(BASHINCDIR)/stdc.h
+csv.o: $(BASHINCDIR)/stdc.h
 csv.o: $(BASHINCDIR)/unlocked-io.h
 csv.o: $(srcdir)/csv.c
 csv.o: $(srcdir)/loadables.h
@@ -564,7 +605,6 @@ csv.o: $(topdir)/assoc.h
 csv.o: $(topdir)/bashansi.h
 csv.o: $(topdir)/bashjmp.h
 csv.o: $(topdir)/bashtypes.h
-csv.o: $(topdir)/builtins.h
 csv.o: $(topdir)/builtins/bashgetopt.h
 csv.o: $(topdir)/builtins/common.h
 csv.o: $(topdir)/command.h
@@ -585,6 +625,7 @@ csv.o: $(topdir)/syntax.h
 csv.o: $(topdir)/unwind_prot.h
 csv.o: $(topdir)/variables.h
 csv.o: $(topdir)/xmalloc.h
+csv.o: ../../builtins.h
 csv.o: ../../config.h
 csv.o: ../../pathnames.h
 cut.o: $(BASHINCDIR)/chartypes.h
@@ -604,7 +645,6 @@ cut.o: $(topdir)/assoc.h
 cut.o: $(topdir)/bashansi.h
 cut.o: $(topdir)/bashjmp.h
 cut.o: $(topdir)/bashtypes.h
-cut.o: $(topdir)/builtins.h
 cut.o: $(topdir)/builtins/bashgetopt.h
 cut.o: $(topdir)/builtins/common.h
 cut.o: $(topdir)/command.h
@@ -625,13 +665,14 @@ cut.o: $(topdir)/syntax.h
 cut.o: $(topdir)/unwind_prot.h
 cut.o: $(topdir)/variables.h
 cut.o: $(topdir)/xmalloc.h
+cut.o: ../../builtins.h
 cut.o: ../../config.h
 cut.o: ../../pathnames.h
 dirname.o: $(BASHINCDIR)/chartypes.h
 dirname.o: $(BASHINCDIR)/maxpath.h
 dirname.o: $(BASHINCDIR)/ocache.h
 dirname.o: $(BASHINCDIR)/posixjmp.h
-#dirname.o: $(BASHINCDIR)/stdc.h
+dirname.o: $(BASHINCDIR)/stdc.h
 dirname.o: $(BASHINCDIR)/unlocked-io.h
 dirname.o: $(srcdir)/dirname.c
 dirname.o: $(topdir)/alias.h
@@ -641,7 +682,6 @@ dirname.o: $(topdir)/assoc.h
 dirname.o: $(topdir)/bashansi.h
 dirname.o: $(topdir)/bashjmp.h
 dirname.o: $(topdir)/bashtypes.h
-dirname.o: $(topdir)/builtins.h
 dirname.o: $(topdir)/builtins/bashgetopt.h
 dirname.o: $(topdir)/builtins/common.h
 dirname.o: $(topdir)/command.h
@@ -662,13 +702,14 @@ dirname.o: $(topdir)/syntax.h
 dirname.o: $(topdir)/unwind_prot.h
 dirname.o: $(topdir)/variables.h
 dirname.o: $(topdir)/xmalloc.h
+dirname.o: ../../builtins.h
 dirname.o: ../../config.h
 dirname.o: ../../pathnames.h
 dsv.o: $(BASHINCDIR)/chartypes.h
 dsv.o: $(BASHINCDIR)/maxpath.h
 dsv.o: $(BASHINCDIR)/ocache.h
 dsv.o: $(BASHINCDIR)/posixjmp.h
-#dsv.o: $(BASHINCDIR)/stdc.h
+dsv.o: $(BASHINCDIR)/stdc.h
 dsv.o: $(BASHINCDIR)/unlocked-io.h
 dsv.o: $(srcdir)/dsv.c
 dsv.o: $(srcdir)/loadables.h
@@ -679,7 +720,6 @@ dsv.o: $(topdir)/assoc.h
 dsv.o: $(topdir)/bashansi.h
 dsv.o: $(topdir)/bashjmp.h
 dsv.o: $(topdir)/bashtypes.h
-dsv.o: $(topdir)/builtins.h
 dsv.o: $(topdir)/builtins/bashgetopt.h
 dsv.o: $(topdir)/builtins/common.h
 dsv.o: $(topdir)/command.h
@@ -700,13 +740,14 @@ dsv.o: $(topdir)/syntax.h
 dsv.o: $(topdir)/unwind_prot.h
 dsv.o: $(topdir)/variables.h
 dsv.o: $(topdir)/xmalloc.h
+dsv.o: ../../builtins.h
 dsv.o: ../../config.h
 dsv.o: ../../pathnames.h
 fdflags.o: $(BASHINCDIR)/chartypes.h
 fdflags.o: $(BASHINCDIR)/maxpath.h
 fdflags.o: $(BASHINCDIR)/ocache.h
 fdflags.o: $(BASHINCDIR)/posixjmp.h
-#fdflags.o: $(BASHINCDIR)/stdc.h
+fdflags.o: $(BASHINCDIR)/stdc.h
 fdflags.o: $(BASHINCDIR)/unlocked-io.h
 fdflags.o: $(srcdir)/fdflags.c
 fdflags.o: $(srcdir)/loadables.h
@@ -717,7 +758,6 @@ fdflags.o: $(topdir)/assoc.h
 fdflags.o: $(topdir)/bashansi.h
 fdflags.o: $(topdir)/bashjmp.h
 fdflags.o: $(topdir)/bashtypes.h
-fdflags.o: $(topdir)/builtins.h
 fdflags.o: $(topdir)/builtins/bashgetopt.h
 fdflags.o: $(topdir)/builtins/common.h
 fdflags.o: $(topdir)/command.h
@@ -738,9 +778,10 @@ fdflags.o: $(topdir)/syntax.h
 fdflags.o: $(topdir)/unwind_prot.h
 fdflags.o: $(topdir)/variables.h
 fdflags.o: $(topdir)/xmalloc.h
+fdflags.o: ../../builtins.h
 fdflags.o: ../../config.h
 fdflags.o: ../../pathnames.h
-#finfo.o: $(BASHINCDIR)/ansi_stdlib.h
+finfo.o: $(BASHINCDIR)/ansi_stdlib.h
 finfo.o: $(BASHINCDIR)/chartypes.h
 finfo.o: $(BASHINCDIR)/maxpath.h
 finfo.o: $(BASHINCDIR)/ocache.h
@@ -757,9 +798,8 @@ finfo.o: $(topdir)/assoc.h
 finfo.o: $(topdir)/bashansi.h
 finfo.o: $(topdir)/bashjmp.h
 finfo.o: $(topdir)/bashtypes.h
-finfo.o: $(topdir)/builtins.h
 finfo.o: $(topdir)/builtins/common.h
-#finfo.o: $(topdir)/builtins/getopt.h
+finfo.o: $(topdir)/builtins/getopt.h
 finfo.o: $(topdir)/command.h
 finfo.o: $(topdir)/config-bot.h
 finfo.o: $(topdir)/config-top.h
@@ -778,14 +818,57 @@ finfo.o: $(topdir)/syntax.h
 finfo.o: $(topdir)/unwind_prot.h
 finfo.o: $(topdir)/variables.h
 finfo.o: $(topdir)/xmalloc.h
+finfo.o: ../../builtins.h
 finfo.o: ../../config.h
 finfo.o: ../../pathnames.h
+fltexpr.o: $(BASHINCDIR)/chartypes.h
+fltexpr.o: $(BASHINCDIR)/gettext.h
+fltexpr.o: $(BASHINCDIR)/maxpath.h
+fltexpr.o: $(BASHINCDIR)/ocache.h
+fltexpr.o: $(BASHINCDIR)/posixjmp.h
+fltexpr.o: $(BASHINCDIR)/stdc.h
+fltexpr.o: $(BASHINCDIR)/typemax.h
+fltexpr.o: $(BASHINCDIR)/unlocked-io.h
+fltexpr.o: $(srcdir)/fltexpr.c
+fltexpr.o: $(srcdir)/loadables.h
+fltexpr.o: $(topdir)/alias.h
+fltexpr.o: $(topdir)/array.h
+fltexpr.o: $(topdir)/arrayfunc.h
+fltexpr.o: $(topdir)/assoc.h
+fltexpr.o: $(topdir)/bashansi.h
+fltexpr.o: $(topdir)/bashintl.h
+fltexpr.o: $(topdir)/bashjmp.h
+fltexpr.o: $(topdir)/bashtypes.h
+fltexpr.o: $(topdir)/builtins/bashgetopt.h
+fltexpr.o: $(topdir)/builtins/common.h
+fltexpr.o: $(topdir)/command.h
+fltexpr.o: $(topdir)/config-bot.h
+fltexpr.o: $(topdir)/config-top.h
+fltexpr.o: $(topdir)/conftypes.h
+fltexpr.o: $(topdir)/dispose_cmd.h
+fltexpr.o: $(topdir)/error.h
+fltexpr.o: $(topdir)/execute_cmd.h
+fltexpr.o: $(topdir)/externs.h
+fltexpr.o: $(topdir)/flags.h
+fltexpr.o: $(topdir)/general.h
+fltexpr.o: $(topdir)/hashlib.h
+fltexpr.o: $(topdir)/make_cmd.h
+fltexpr.o: $(topdir)/quit.h
+fltexpr.o: $(topdir)/shell.h
+fltexpr.o: $(topdir)/sig.h
+fltexpr.o: $(topdir)/subst.h
+fltexpr.o: $(topdir)/syntax.h
+fltexpr.o: $(topdir)/unwind_prot.h
+fltexpr.o: $(topdir)/variables.h
+fltexpr.o: $(topdir)/xmalloc.h
+fltexpr.o: ../../builtins.h
+fltexpr.o: ../../config.h
+fltexpr.o: ../../pathnames.h
 getconf.o: $(BASHINCDIR)/chartypes.h
-getconf.o: $(BASHINCDIR)/gettext.h
 getconf.o: $(BASHINCDIR)/maxpath.h
 getconf.o: $(BASHINCDIR)/ocache.h
 getconf.o: $(BASHINCDIR)/posixjmp.h
-#getconf.o: $(BASHINCDIR)/stdc.h
+getconf.o: $(BASHINCDIR)/stdc.h
 getconf.o: $(BASHINCDIR)/typemax.h
 getconf.o: $(BASHINCDIR)/unlocked-io.h
 getconf.o: $(srcdir)/getconf.c
@@ -798,7 +881,6 @@ getconf.o: $(topdir)/assoc.h
 getconf.o: $(topdir)/bashansi.h
 getconf.o: $(topdir)/bashjmp.h
 getconf.o: $(topdir)/bashtypes.h
-getconf.o: $(topdir)/builtins.h
 getconf.o: $(topdir)/builtins/bashgetopt.h
 getconf.o: $(topdir)/builtins/common.h
 getconf.o: $(topdir)/command.h
@@ -819,6 +901,7 @@ getconf.o: $(topdir)/syntax.h
 getconf.o: $(topdir)/unwind_prot.h
 getconf.o: $(topdir)/variables.h
 getconf.o: $(topdir)/xmalloc.h
+getconf.o: ../../builtins.h
 getconf.o: ../../config.h
 getconf.o: ../../pathnames.h
 head.o: $(BASHINCDIR)/chartypes.h
@@ -827,7 +910,7 @@ head.o: $(BASHINCDIR)/maxpath.h
 head.o: $(BASHINCDIR)/ocache.h
 head.o: $(BASHINCDIR)/posixjmp.h
 head.o: $(BASHINCDIR)/posixstat.h
-#head.o: $(BASHINCDIR)/stdc.h
+head.o: $(BASHINCDIR)/stdc.h
 head.o: $(BASHINCDIR)/unlocked-io.h
 head.o: $(srcdir)/head.c
 head.o: $(topdir)/alias.h
@@ -837,7 +920,6 @@ head.o: $(topdir)/assoc.h
 head.o: $(topdir)/bashansi.h
 head.o: $(topdir)/bashjmp.h
 head.o: $(topdir)/bashtypes.h
-head.o: $(topdir)/builtins.h
 head.o: $(topdir)/builtins/bashgetopt.h
 head.o: $(topdir)/builtins/common.h
 head.o: $(topdir)/command.h
@@ -858,13 +940,14 @@ head.o: $(topdir)/syntax.h
 head.o: $(topdir)/unwind_prot.h
 head.o: $(topdir)/variables.h
 head.o: $(topdir)/xmalloc.h
+head.o: ../../builtins.h
 head.o: ../../config.h
 head.o: ../../pathnames.h
 hello.o: $(BASHINCDIR)/chartypes.h
 hello.o: $(BASHINCDIR)/maxpath.h
 hello.o: $(BASHINCDIR)/ocache.h
 hello.o: $(BASHINCDIR)/posixjmp.h
-#hello.o: $(BASHINCDIR)/stdc.h
+hello.o: $(BASHINCDIR)/stdc.h
 hello.o: $(BASHINCDIR)/unlocked-io.h
 hello.o: $(srcdir)/hello.c
 hello.o: $(srcdir)/loadables.h
@@ -875,7 +958,6 @@ hello.o: $(topdir)/assoc.h
 hello.o: $(topdir)/bashansi.h
 hello.o: $(topdir)/bashjmp.h
 hello.o: $(topdir)/bashtypes.h
-hello.o: $(topdir)/builtins.h
 hello.o: $(topdir)/builtins/bashgetopt.h
 hello.o: $(topdir)/builtins/common.h
 hello.o: $(topdir)/command.h
@@ -896,6 +978,7 @@ hello.o: $(topdir)/syntax.h
 hello.o: $(topdir)/unwind_prot.h
 hello.o: $(topdir)/variables.h
 hello.o: $(topdir)/xmalloc.h
+hello.o: ../../builtins.h
 hello.o: ../../config.h
 hello.o: ../../pathnames.h
 id.o: $(BASHINCDIR)/chartypes.h
@@ -912,7 +995,6 @@ id.o: $(topdir)/assoc.h
 id.o: $(topdir)/bashansi.h
 id.o: $(topdir)/bashjmp.h
 id.o: $(topdir)/bashtypes.h
-id.o: $(topdir)/builtins.h
 id.o: $(topdir)/builtins/bashgetopt.h
 id.o: $(topdir)/builtins/common.h
 id.o: $(topdir)/command.h
@@ -933,6 +1015,7 @@ id.o: $(topdir)/syntax.h
 id.o: $(topdir)/unwind_prot.h
 id.o: $(topdir)/variables.h
 id.o: $(topdir)/xmalloc.h
+id.o: ../../builtins.h
 id.o: ../../config.h
 id.o: ../../pathnames.h
 is_prime.o: $(BASHINCDIR)/chartypes.h
@@ -951,7 +1034,6 @@ is_prime.o: $(topdir)/bashansi.h
 is_prime.o: $(topdir)/bashintl.h
 is_prime.o: $(topdir)/bashjmp.h
 is_prime.o: $(topdir)/bashtypes.h
-is_prime.o: $(topdir)/builtins.h
 is_prime.o: $(topdir)/builtins/bashgetopt.h
 is_prime.o: $(topdir)/builtins/common.h
 is_prime.o: $(topdir)/command.h
@@ -965,7 +1047,6 @@ is_prime.o: $(topdir)/general.h
 is_prime.o: $(topdir)/hashlib.h
 is_prime.o: $(topdir)/make_cmd.h
 is_prime.o: $(topdir)/options.h
-is_prime.o: $(topdir)/pathnames.h
 is_prime.o: $(topdir)/quit.h
 is_prime.o: $(topdir)/shell.h
 is_prime.o: $(topdir)/sig.h
@@ -974,13 +1055,57 @@ is_prime.o: $(topdir)/syntax.h
 is_prime.o: $(topdir)/unwind_prot.h
 is_prime.o: $(topdir)/variables.h
 is_prime.o: $(topdir)/xmalloc.h
+is_prime.o: ../../builtins.h
 is_prime.o: ../../config.h
+is_prime.o: ../../pathnames.h
+jobid.o: $(BASHINCDIR)/chartypes.h
+jobid.o: $(BASHINCDIR)/maxpath.h
+jobid.o: $(BASHINCDIR)/ocache.h
+jobid.o: $(BASHINCDIR)/posixjmp.h
+jobid.o: $(BASHINCDIR)/posixwait.h
+jobid.o: $(BASHINCDIR)/stdc.h
+jobid.o: $(BASHINCDIR)/unlocked-io.h
+jobid.o: $(srcdir)/jobid.c
+jobid.o: $(srcdir)/loadables.h
+jobid.o: $(topdir)/alias.h
+jobid.o: $(topdir)/array.h
+jobid.o: $(topdir)/arrayfunc.h
+jobid.o: $(topdir)/assoc.h
+jobid.o: $(topdir)/bashansi.h
+jobid.o: $(topdir)/bashjmp.h
+jobid.o: $(topdir)/bashtypes.h
+jobid.o: $(topdir)/builtins/bashgetopt.h
+jobid.o: $(topdir)/builtins/common.h
+jobid.o: $(topdir)/command.h
+jobid.o: $(topdir)/config-bot.h
+jobid.o: $(topdir)/config-top.h
+jobid.o: $(topdir)/conftypes.h
+jobid.o: $(topdir)/dispose_cmd.h
+jobid.o: $(topdir)/error.h
+jobid.o: $(topdir)/execute_cmd.h
+jobid.o: $(topdir)/externs.h
+jobid.o: $(topdir)/general.h
+jobid.o: $(topdir)/hashlib.h
+jobid.o: $(topdir)/jobs.h
+jobid.o: $(topdir)/make_cmd.h
+jobid.o: $(topdir)/quit.h
+jobid.o: $(topdir)/shell.h
+jobid.o: $(topdir)/sig.h
+jobid.o: $(topdir)/siglist.h
+jobid.o: $(topdir)/subst.h
+jobid.o: $(topdir)/syntax.h
+jobid.o: $(topdir)/unwind_prot.h
+jobid.o: $(topdir)/variables.h
+jobid.o: $(topdir)/xmalloc.h
+jobid.o: ../../builtins.h
+jobid.o: ../../config.h
+jobid.o: ../../pathnames.h
 kv.o: $(BASHINCDIR)/chartypes.h
 kv.o: $(BASHINCDIR)/maxpath.h
 kv.o: $(BASHINCDIR)/ocache.h
 kv.o: $(BASHINCDIR)/posixjmp.h
 kv.o: $(BASHINCDIR)/posixstat.h
-#kv.o: $(BASHINCDIR)/stdc.h
+kv.o: $(BASHINCDIR)/stdc.h
 kv.o: $(BASHINCDIR)/unlocked-io.h
 kv.o: $(srcdir)/kv.c
 kv.o: $(srcdir)/loadables.h
@@ -991,7 +1116,6 @@ kv.o: $(topdir)/assoc.h
 kv.o: $(topdir)/bashansi.h
 kv.o: $(topdir)/bashjmp.h
 kv.o: $(topdir)/bashtypes.h
-kv.o: $(topdir)/builtins.h
 kv.o: $(topdir)/builtins/bashgetopt.h
 kv.o: $(topdir)/builtins/common.h
 kv.o: $(topdir)/command.h
@@ -1012,6 +1136,7 @@ kv.o: $(topdir)/syntax.h
 kv.o: $(topdir)/unwind_prot.h
 kv.o: $(topdir)/variables.h
 kv.o: $(topdir)/xmalloc.h
+kv.o: ../../builtins.h
 kv.o: ../../config.h
 kv.o: ../../pathnames.h
 lcut.o: $(BASHINCDIR)/chartypes.h
@@ -1031,7 +1156,6 @@ lcut.o: $(topdir)/assoc.h
 lcut.o: $(topdir)/bashansi.h
 lcut.o: $(topdir)/bashjmp.h
 lcut.o: $(topdir)/bashtypes.h
-lcut.o: $(topdir)/builtins.h
 lcut.o: $(topdir)/builtins/bashgetopt.h
 lcut.o: $(topdir)/builtins/common.h
 lcut.o: $(topdir)/command.h
@@ -1052,6 +1176,7 @@ lcut.o: $(topdir)/syntax.h
 lcut.o: $(topdir)/unwind_prot.h
 lcut.o: $(topdir)/variables.h
 lcut.o: $(topdir)/xmalloc.h
+lcut.o: ../../builtins.h
 lcut.o: ../../config.h
 lcut.o: ../../pathnames.h
 ln.o: $(BASHINCDIR)/chartypes.h
@@ -1059,7 +1184,7 @@ ln.o: $(BASHINCDIR)/maxpath.h
 ln.o: $(BASHINCDIR)/ocache.h
 ln.o: $(BASHINCDIR)/posixjmp.h
 ln.o: $(BASHINCDIR)/posixstat.h
-#ln.o: $(BASHINCDIR)/stdc.h
+ln.o: $(BASHINCDIR)/stdc.h
 ln.o: $(BASHINCDIR)/unlocked-io.h
 ln.o: $(srcdir)/ln.c
 ln.o: $(topdir)/alias.h
@@ -1069,7 +1194,6 @@ ln.o: $(topdir)/assoc.h
 ln.o: $(topdir)/bashansi.h
 ln.o: $(topdir)/bashjmp.h
 ln.o: $(topdir)/bashtypes.h
-ln.o: $(topdir)/builtins.h
 ln.o: $(topdir)/builtins/bashgetopt.h
 ln.o: $(topdir)/builtins/common.h
 ln.o: $(topdir)/command.h
@@ -1090,13 +1214,14 @@ ln.o: $(topdir)/syntax.h
 ln.o: $(topdir)/unwind_prot.h
 ln.o: $(topdir)/variables.h
 ln.o: $(topdir)/xmalloc.h
+ln.o: ../../builtins.h
 ln.o: ../../config.h
 ln.o: ../../pathnames.h
 logname.o: $(BASHINCDIR)/chartypes.h
 logname.o: $(BASHINCDIR)/maxpath.h
 logname.o: $(BASHINCDIR)/ocache.h
 logname.o: $(BASHINCDIR)/posixjmp.h
-#logname.o: $(BASHINCDIR)/stdc.h
+logname.o: $(BASHINCDIR)/stdc.h
 logname.o: $(BASHINCDIR)/unlocked-io.h
 logname.o: $(srcdir)/logname.c
 logname.o: $(topdir)/alias.h
@@ -1106,7 +1231,6 @@ logname.o: $(topdir)/assoc.h
 logname.o: $(topdir)/bashansi.h
 logname.o: $(topdir)/bashjmp.h
 logname.o: $(topdir)/bashtypes.h
-logname.o: $(topdir)/builtins.h
 logname.o: $(topdir)/builtins/common.h
 logname.o: $(topdir)/command.h
 logname.o: $(topdir)/config-bot.h
@@ -1126,6 +1250,7 @@ logname.o: $(topdir)/syntax.h
 logname.o: $(topdir)/unwind_prot.h
 logname.o: $(topdir)/variables.h
 logname.o: $(topdir)/xmalloc.h
+logname.o: ../../builtins.h
 logname.o: ../../config.h
 logname.o: ../../pathnames.h
 mkdir.o: $(BASHINCDIR)/chartypes.h
@@ -1133,7 +1258,7 @@ mkdir.o: $(BASHINCDIR)/maxpath.h
 mkdir.o: $(BASHINCDIR)/ocache.h
 mkdir.o: $(BASHINCDIR)/posixjmp.h
 mkdir.o: $(BASHINCDIR)/posixstat.h
-#mkdir.o: $(BASHINCDIR)/stdc.h
+mkdir.o: $(BASHINCDIR)/stdc.h
 mkdir.o: $(BASHINCDIR)/unlocked-io.h
 mkdir.o: $(srcdir)/mkdir.c
 mkdir.o: $(topdir)/alias.h
@@ -1143,7 +1268,6 @@ mkdir.o: $(topdir)/assoc.h
 mkdir.o: $(topdir)/bashansi.h
 mkdir.o: $(topdir)/bashjmp.h
 mkdir.o: $(topdir)/bashtypes.h
-mkdir.o: $(topdir)/builtins.h
 mkdir.o: $(topdir)/builtins/bashgetopt.h
 mkdir.o: $(topdir)/builtins/common.h
 mkdir.o: $(topdir)/command.h
@@ -1164,6 +1288,7 @@ mkdir.o: $(topdir)/syntax.h
 mkdir.o: $(topdir)/unwind_prot.h
 mkdir.o: $(topdir)/variables.h
 mkdir.o: $(topdir)/xmalloc.h
+mkdir.o: ../../builtins.h
 mkdir.o: ../../config.h
 mkdir.o: ../../pathnames.h
 mkfifo.o: $(BASHINCDIR)/chartypes.h
@@ -1171,7 +1296,7 @@ mkfifo.o: $(BASHINCDIR)/maxpath.h
 mkfifo.o: $(BASHINCDIR)/ocache.h
 mkfifo.o: $(BASHINCDIR)/posixjmp.h
 mkfifo.o: $(BASHINCDIR)/posixstat.h
-#mkfifo.o: $(BASHINCDIR)/stdc.h
+mkfifo.o: $(BASHINCDIR)/stdc.h
 mkfifo.o: $(BASHINCDIR)/unlocked-io.h
 mkfifo.o: $(srcdir)/mkfifo.c
 mkfifo.o: $(topdir)/alias.h
@@ -1181,7 +1306,6 @@ mkfifo.o: $(topdir)/assoc.h
 mkfifo.o: $(topdir)/bashansi.h
 mkfifo.o: $(topdir)/bashjmp.h
 mkfifo.o: $(topdir)/bashtypes.h
-mkfifo.o: $(topdir)/builtins.h
 mkfifo.o: $(topdir)/builtins/bashgetopt.h
 mkfifo.o: $(topdir)/builtins/common.h
 mkfifo.o: $(topdir)/command.h
@@ -1202,13 +1326,14 @@ mkfifo.o: $(topdir)/syntax.h
 mkfifo.o: $(topdir)/unwind_prot.h
 mkfifo.o: $(topdir)/variables.h
 mkfifo.o: $(topdir)/xmalloc.h
+mkfifo.o: ../../builtins.h
 mkfifo.o: ../../config.h
 mkfifo.o: ../../pathnames.h
 mktemp.o: $(BASHINCDIR)/chartypes.h
 mktemp.o: $(BASHINCDIR)/maxpath.h
 mktemp.o: $(BASHINCDIR)/ocache.h
 mktemp.o: $(BASHINCDIR)/posixjmp.h
-#mktemp.o: $(BASHINCDIR)/stdc.h
+mktemp.o: $(BASHINCDIR)/stdc.h
 mktemp.o: $(BASHINCDIR)/unlocked-io.h
 mktemp.o: $(srcdir)/loadables.h
 mktemp.o: $(srcdir)/mktemp.c
@@ -1219,7 +1344,6 @@ mktemp.o: $(topdir)/assoc.h
 mktemp.o: $(topdir)/bashansi.h
 mktemp.o: $(topdir)/bashjmp.h
 mktemp.o: $(topdir)/bashtypes.h
-mktemp.o: $(topdir)/builtins.h
 mktemp.o: $(topdir)/builtins/bashgetopt.h
 mktemp.o: $(topdir)/builtins/common.h
 mktemp.o: $(topdir)/command.h
@@ -1240,13 +1364,14 @@ mktemp.o: $(topdir)/syntax.h
 mktemp.o: $(topdir)/unwind_prot.h
 mktemp.o: $(topdir)/variables.h
 mktemp.o: $(topdir)/xmalloc.h
+mktemp.o: ../../builtins.h
 mktemp.o: ../../config.h
 mktemp.o: ../../pathnames.h
 mypid.o: $(BASHINCDIR)/chartypes.h
 mypid.o: $(BASHINCDIR)/maxpath.h
 mypid.o: $(BASHINCDIR)/ocache.h
 mypid.o: $(BASHINCDIR)/posixjmp.h
-#mypid.o: $(BASHINCDIR)/stdc.h
+mypid.o: $(BASHINCDIR)/stdc.h
 mypid.o: $(BASHINCDIR)/unlocked-io.h
 mypid.o: $(srcdir)/mypid.c
 mypid.o: $(topdir)/alias.h
@@ -1256,7 +1381,6 @@ mypid.o: $(topdir)/assoc.h
 mypid.o: $(topdir)/bashansi.h
 mypid.o: $(topdir)/bashjmp.h
 mypid.o: $(topdir)/bashtypes.h
-mypid.o: $(topdir)/builtins.h
 mypid.o: $(topdir)/command.h
 mypid.o: $(topdir)/config-bot.h
 mypid.o: $(topdir)/config-top.h
@@ -1275,13 +1399,14 @@ mypid.o: $(topdir)/syntax.h
 mypid.o: $(topdir)/unwind_prot.h
 mypid.o: $(topdir)/variables.h
 mypid.o: $(topdir)/xmalloc.h
+mypid.o: ../../builtins.h
 mypid.o: ../../config.h
 mypid.o: ../../pathnames.h
 necho.o: $(BASHINCDIR)/chartypes.h
 necho.o: $(BASHINCDIR)/maxpath.h
 necho.o: $(BASHINCDIR)/ocache.h
 necho.o: $(BASHINCDIR)/posixjmp.h
-#necho.o: $(BASHINCDIR)/stdc.h
+necho.o: $(BASHINCDIR)/stdc.h
 necho.o: $(BASHINCDIR)/unlocked-io.h
 necho.o: $(srcdir)/necho.c
 necho.o: $(topdir)/alias.h
@@ -1291,7 +1416,6 @@ necho.o: $(topdir)/assoc.h
 necho.o: $(topdir)/bashansi.h
 necho.o: $(topdir)/bashjmp.h
 necho.o: $(topdir)/bashtypes.h
-necho.o: $(topdir)/builtins.h
 necho.o: $(topdir)/command.h
 necho.o: $(topdir)/config-bot.h
 necho.o: $(topdir)/config-top.h
@@ -1310,14 +1434,55 @@ necho.o: $(topdir)/syntax.h
 necho.o: $(topdir)/unwind_prot.h
 necho.o: $(topdir)/variables.h
 necho.o: $(topdir)/xmalloc.h
+necho.o: ../../builtins.h
 necho.o: ../../config.h
 necho.o: ../../pathnames.h
+ocut.o: $(BASHINCDIR)/chartypes.h
+ocut.o: $(BASHINCDIR)/maxpath.h
+ocut.o: $(BASHINCDIR)/ocache.h
+ocut.o: $(BASHINCDIR)/posixjmp.h
+ocut.o: $(BASHINCDIR)/shmbchar.h
+ocut.o: $(BASHINCDIR)/shmbutil.h
+ocut.o: $(BASHINCDIR)/stdc.h
+ocut.o: $(BASHINCDIR)/unlocked-io.h
+ocut.o: $(srcdir)/loadables.h
+ocut.o: $(srcdir)/ocut.c
+ocut.o: $(topdir)/alias.h
+ocut.o: $(topdir)/array.h
+ocut.o: $(topdir)/arrayfunc.h
+ocut.o: $(topdir)/assoc.h
+ocut.o: $(topdir)/bashansi.h
+ocut.o: $(topdir)/bashjmp.h
+ocut.o: $(topdir)/bashtypes.h
+ocut.o: $(topdir)/builtins/bashgetopt.h
+ocut.o: $(topdir)/builtins/common.h
+ocut.o: $(topdir)/command.h
+ocut.o: $(topdir)/config-bot.h
+ocut.o: $(topdir)/config-top.h
+ocut.o: $(topdir)/conftypes.h
+ocut.o: $(topdir)/dispose_cmd.h
+ocut.o: $(topdir)/error.h
+ocut.o: $(topdir)/externs.h
+ocut.o: $(topdir)/general.h
+ocut.o: $(topdir)/hashlib.h
+ocut.o: $(topdir)/make_cmd.h
+ocut.o: $(topdir)/quit.h
+ocut.o: $(topdir)/shell.h
+ocut.o: $(topdir)/sig.h
+ocut.o: $(topdir)/subst.h
+ocut.o: $(topdir)/syntax.h
+ocut.o: $(topdir)/unwind_prot.h
+ocut.o: $(topdir)/variables.h
+ocut.o: $(topdir)/xmalloc.h
+ocut.o: ../../builtins.h
+ocut.o: ../../config.h
+ocut.o: ../../pathnames.h
 pathchk.o: $(BASHINCDIR)/chartypes.h
 pathchk.o: $(BASHINCDIR)/maxpath.h
 pathchk.o: $(BASHINCDIR)/ocache.h
 pathchk.o: $(BASHINCDIR)/posixjmp.h
 pathchk.o: $(BASHINCDIR)/posixstat.h
-#pathchk.o: $(BASHINCDIR)/stdc.h
+pathchk.o: $(BASHINCDIR)/stdc.h
 pathchk.o: $(BASHINCDIR)/unlocked-io.h
 pathchk.o: $(srcdir)/pathchk.c
 pathchk.o: $(topdir)/alias.h
@@ -1327,7 +1492,6 @@ pathchk.o: $(topdir)/assoc.h
 pathchk.o: $(topdir)/bashansi.h
 pathchk.o: $(topdir)/bashjmp.h
 pathchk.o: $(topdir)/bashtypes.h
-pathchk.o: $(topdir)/builtins.h
 pathchk.o: $(topdir)/builtins/bashgetopt.h
 pathchk.o: $(topdir)/builtins/common.h
 pathchk.o: $(topdir)/command.h
@@ -1348,9 +1512,10 @@ pathchk.o: $(topdir)/syntax.h
 pathchk.o: $(topdir)/unwind_prot.h
 pathchk.o: $(topdir)/variables.h
 pathchk.o: $(topdir)/xmalloc.h
+pathchk.o: ../../builtins.h
 pathchk.o: ../../config.h
 pathchk.o: ../../pathnames.h
-#print.o: $(BASHINCDIR)/ansi_stdlib.h
+print.o: $(BASHINCDIR)/ansi_stdlib.h
 print.o: $(BASHINCDIR)/chartypes.h
 print.o: $(BASHINCDIR)/maxpath.h
 print.o: $(BASHINCDIR)/ocache.h
@@ -1365,8 +1530,8 @@ print.o: $(topdir)/assoc.h
 print.o: $(topdir)/bashansi.h
 print.o: $(topdir)/bashjmp.h
 print.o: $(topdir)/bashtypes.h
-print.o: $(topdir)/builtins.h
 print.o: $(topdir)/builtins/bashgetopt.h
+print.o: $(topdir)/builtins/builtext.h
 print.o: $(topdir)/builtins/common.h
 print.o: $(topdir)/command.h
 print.o: $(topdir)/config-bot.h
@@ -1386,14 +1551,14 @@ print.o: $(topdir)/syntax.h
 print.o: $(topdir)/unwind_prot.h
 print.o: $(topdir)/variables.h
 print.o: $(topdir)/xmalloc.h
-print.o: ../../builtins/builtext.h
+print.o: ../../builtins.h
 print.o: ../../config.h
 print.o: ../../pathnames.h
 printenv.o: $(BASHINCDIR)/chartypes.h
 printenv.o: $(BASHINCDIR)/maxpath.h
 printenv.o: $(BASHINCDIR)/ocache.h
 printenv.o: $(BASHINCDIR)/posixjmp.h
-#printenv.o: $(BASHINCDIR)/stdc.h
+printenv.o: $(BASHINCDIR)/stdc.h
 printenv.o: $(BASHINCDIR)/unlocked-io.h
 printenv.o: $(srcdir)/printenv.c
 printenv.o: $(topdir)/alias.h
@@ -1403,7 +1568,6 @@ printenv.o: $(topdir)/assoc.h
 printenv.o: $(topdir)/bashansi.h
 printenv.o: $(topdir)/bashjmp.h
 printenv.o: $(topdir)/bashtypes.h
-printenv.o: $(topdir)/builtins.h
 printenv.o: $(topdir)/builtins/bashgetopt.h
 printenv.o: $(topdir)/builtins/common.h
 printenv.o: $(topdir)/command.h
@@ -1424,6 +1588,7 @@ printenv.o: $(topdir)/syntax.h
 printenv.o: $(topdir)/unwind_prot.h
 printenv.o: $(topdir)/variables.h
 printenv.o: $(topdir)/xmalloc.h
+printenv.o: ../../builtins.h
 printenv.o: ../../config.h
 printenv.o: ../../pathnames.h
 push.o: $(BASHINCDIR)/chartypes.h
@@ -1431,7 +1596,7 @@ push.o: $(BASHINCDIR)/maxpath.h
 push.o: $(BASHINCDIR)/ocache.h
 push.o: $(BASHINCDIR)/posixjmp.h
 push.o: $(BASHINCDIR)/posixwait.h
-#push.o: $(BASHINCDIR)/stdc.h
+push.o: $(BASHINCDIR)/stdc.h
 push.o: $(BASHINCDIR)/unlocked-io.h
 push.o: $(srcdir)/push.c
 push.o: $(topdir)/alias.h
@@ -1441,7 +1606,6 @@ push.o: $(topdir)/assoc.h
 push.o: $(topdir)/bashansi.h
 push.o: $(topdir)/bashjmp.h
 push.o: $(topdir)/bashtypes.h
-push.o: $(topdir)/builtins.h
 push.o: $(topdir)/builtins/bashgetopt.h
 push.o: $(topdir)/builtins/common.h
 push.o: $(topdir)/command.h
@@ -1450,6 +1614,7 @@ push.o: $(topdir)/config-top.h
 push.o: $(topdir)/conftypes.h
 push.o: $(topdir)/dispose_cmd.h
 push.o: $(topdir)/error.h
+push.o: $(topdir)/execute_cmd.h
 push.o: $(topdir)/externs.h
 push.o: $(topdir)/general.h
 push.o: $(topdir)/hashlib.h
@@ -1464,13 +1629,14 @@ push.o: $(topdir)/syntax.h
 push.o: $(topdir)/unwind_prot.h
 push.o: $(topdir)/variables.h
 push.o: $(topdir)/xmalloc.h
+push.o: ../../builtins.h
 push.o: ../../config.h
 push.o: ../../pathnames.h
 realpath.o: $(BASHINCDIR)/chartypes.h
 realpath.o: $(BASHINCDIR)/maxpath.h
 realpath.o: $(BASHINCDIR)/ocache.h
 realpath.o: $(BASHINCDIR)/posixjmp.h
-#realpath.o: $(BASHINCDIR)/stdc.h
+realpath.o: $(BASHINCDIR)/stdc.h
 realpath.o: $(BASHINCDIR)/unlocked-io.h
 realpath.o: $(srcdir)/realpath.c
 realpath.o: $(topdir)/alias.h
@@ -1480,7 +1646,6 @@ realpath.o: $(topdir)/assoc.h
 realpath.o: $(topdir)/bashansi.h
 realpath.o: $(topdir)/bashjmp.h
 realpath.o: $(topdir)/bashtypes.h
-realpath.o: $(topdir)/builtins.h
 realpath.o: $(topdir)/builtins/bashgetopt.h
 realpath.o: $(topdir)/builtins/common.h
 realpath.o: $(topdir)/command.h
@@ -1501,13 +1666,14 @@ realpath.o: $(topdir)/syntax.h
 realpath.o: $(topdir)/unwind_prot.h
 realpath.o: $(topdir)/variables.h
 realpath.o: $(topdir)/xmalloc.h
+realpath.o: ../../builtins.h
 realpath.o: ../../config.h
 realpath.o: ../../pathnames.h
 rm.o: $(BASHINCDIR)/chartypes.h
 rm.o: $(BASHINCDIR)/maxpath.h
 rm.o: $(BASHINCDIR)/ocache.h
 rm.o: $(BASHINCDIR)/posixjmp.h
-#rm.o: $(BASHINCDIR)/stdc.h
+rm.o: $(BASHINCDIR)/stdc.h
 rm.o: $(BASHINCDIR)/unlocked-io.h
 rm.o: $(srcdir)/rm.c
 rm.o: $(topdir)/alias.h
@@ -1517,7 +1683,6 @@ rm.o: $(topdir)/assoc.h
 rm.o: $(topdir)/bashansi.h
 rm.o: $(topdir)/bashjmp.h
 rm.o: $(topdir)/bashtypes.h
-rm.o: $(topdir)/builtins.h
 rm.o: $(topdir)/builtins/bashgetopt.h
 rm.o: $(topdir)/builtins/common.h
 rm.o: $(topdir)/command.h
@@ -1538,13 +1703,14 @@ rm.o: $(topdir)/syntax.h
 rm.o: $(topdir)/unwind_prot.h
 rm.o: $(topdir)/variables.h
 rm.o: $(topdir)/xmalloc.h
+rm.o: ../../builtins.h
 rm.o: ../../config.h
 rm.o: ../../pathnames.h
 rmdir.o: $(BASHINCDIR)/chartypes.h
 rmdir.o: $(BASHINCDIR)/maxpath.h
 rmdir.o: $(BASHINCDIR)/ocache.h
 rmdir.o: $(BASHINCDIR)/posixjmp.h
-#rmdir.o: $(BASHINCDIR)/stdc.h
+rmdir.o: $(BASHINCDIR)/stdc.h
 rmdir.o: $(BASHINCDIR)/unlocked-io.h
 rmdir.o: $(srcdir)/rmdir.c
 rmdir.o: $(topdir)/alias.h
@@ -1554,7 +1720,6 @@ rmdir.o: $(topdir)/assoc.h
 rmdir.o: $(topdir)/bashansi.h
 rmdir.o: $(topdir)/bashjmp.h
 rmdir.o: $(topdir)/bashtypes.h
-rmdir.o: $(topdir)/builtins.h
 rmdir.o: $(topdir)/builtins/common.h
 rmdir.o: $(topdir)/command.h
 rmdir.o: $(topdir)/config-bot.h
@@ -1574,6 +1739,7 @@ rmdir.o: $(topdir)/syntax.h
 rmdir.o: $(topdir)/unwind_prot.h
 rmdir.o: $(topdir)/variables.h
 rmdir.o: $(topdir)/xmalloc.h
+rmdir.o: ../../builtins.h
 rmdir.o: ../../config.h
 rmdir.o: ../../pathnames.h
 seq.o: $(BASHINCDIR)/chartypes.h
@@ -1581,7 +1747,7 @@ seq.o: $(BASHINCDIR)/gettext.h
 seq.o: $(BASHINCDIR)/maxpath.h
 seq.o: $(BASHINCDIR)/ocache.h
 seq.o: $(BASHINCDIR)/posixjmp.h
-#seq.o: $(BASHINCDIR)/stdc.h
+seq.o: $(BASHINCDIR)/stdc.h
 seq.o: $(BASHINCDIR)/unlocked-io.h
 seq.o: $(srcdir)/loadables.h
 seq.o: $(srcdir)/seq.c
@@ -1593,7 +1759,6 @@ seq.o: $(topdir)/bashansi.h
 seq.o: $(topdir)/bashintl.h
 seq.o: $(topdir)/bashjmp.h
 seq.o: $(topdir)/bashtypes.h
-seq.o: $(topdir)/builtins.h
 seq.o: $(topdir)/builtins/bashgetopt.h
 seq.o: $(topdir)/builtins/common.h
 seq.o: $(topdir)/command.h
@@ -1614,6 +1779,7 @@ seq.o: $(topdir)/syntax.h
 seq.o: $(topdir)/unwind_prot.h
 seq.o: $(topdir)/variables.h
 seq.o: $(topdir)/xmalloc.h
+seq.o: ../../builtins.h
 seq.o: ../../config.h
 seq.o: ../../pathnames.h
 setpgid.o: $(BASHINCDIR)/chartypes.h
@@ -1621,7 +1787,7 @@ setpgid.o: $(BASHINCDIR)/maxpath.h
 setpgid.o: $(BASHINCDIR)/ocache.h
 setpgid.o: $(BASHINCDIR)/posixjmp.h
 setpgid.o: $(BASHINCDIR)/posixtime.h
-#setpgid.o: $(BASHINCDIR)/stdc.h
+setpgid.o: $(BASHINCDIR)/stdc.h
 setpgid.o: $(BASHINCDIR)/unlocked-io.h
 setpgid.o: $(srcdir)/setpgid.c
 setpgid.o: $(topdir)/alias.h
@@ -1631,7 +1797,6 @@ setpgid.o: $(topdir)/assoc.h
 setpgid.o: $(topdir)/bashansi.h
 setpgid.o: $(topdir)/bashjmp.h
 setpgid.o: $(topdir)/bashtypes.h
-setpgid.o: $(topdir)/builtins.h
 setpgid.o: $(topdir)/builtins/bashgetopt.h
 setpgid.o: $(topdir)/builtins/common.h
 setpgid.o: $(topdir)/command.h
@@ -1652,13 +1817,14 @@ setpgid.o: $(topdir)/syntax.h
 setpgid.o: $(topdir)/unwind_prot.h
 setpgid.o: $(topdir)/variables.h
 setpgid.o: $(topdir)/xmalloc.h
+setpgid.o: ../../builtins.h
 setpgid.o: ../../config.h
 setpgid.o: ../../pathnames.h
 sleep.o: $(BASHINCDIR)/chartypes.h
 sleep.o: $(BASHINCDIR)/maxpath.h
 sleep.o: $(BASHINCDIR)/ocache.h
 sleep.o: $(BASHINCDIR)/posixjmp.h
-#sleep.o: $(BASHINCDIR)/stdc.h
+sleep.o: $(BASHINCDIR)/stdc.h
 sleep.o: $(BASHINCDIR)/unlocked-io.h
 sleep.o: $(srcdir)/loadables.h
 sleep.o: $(srcdir)/sleep.c
@@ -1669,7 +1835,6 @@ sleep.o: $(topdir)/assoc.h
 sleep.o: $(topdir)/bashansi.h
 sleep.o: $(topdir)/bashjmp.h
 sleep.o: $(topdir)/bashtypes.h
-sleep.o: $(topdir)/builtins.h
 sleep.o: $(topdir)/builtins/bashgetopt.h
 sleep.o: $(topdir)/builtins/common.h
 sleep.o: $(topdir)/command.h
@@ -1690,6 +1855,7 @@ sleep.o: $(topdir)/syntax.h
 sleep.o: $(topdir)/unwind_prot.h
 sleep.o: $(topdir)/variables.h
 sleep.o: $(topdir)/xmalloc.h
+sleep.o: ../../builtins.h
 sleep.o: ../../config.h
 sleep.o: ../../pathnames.h
 stat.o: $(BASHINCDIR)/chartypes.h
@@ -1698,7 +1864,7 @@ stat.o: $(BASHINCDIR)/ocache.h
 stat.o: $(BASHINCDIR)/posixjmp.h
 stat.o: $(BASHINCDIR)/posixstat.h
 stat.o: $(BASHINCDIR)/posixtime.h
-#stat.o: $(BASHINCDIR)/stdc.h
+stat.o: $(BASHINCDIR)/stdc.h
 stat.o: $(BASHINCDIR)/unlocked-io.h
 stat.o: $(srcdir)/stat.c
 stat.o: $(topdir)/alias.h
@@ -1708,7 +1874,6 @@ stat.o: $(topdir)/assoc.h
 stat.o: $(topdir)/bashansi.h
 stat.o: $(topdir)/bashjmp.h
 stat.o: $(topdir)/bashtypes.h
-stat.o: $(topdir)/builtins.h
 stat.o: $(topdir)/builtins/bashgetopt.h
 stat.o: $(topdir)/builtins/common.h
 stat.o: $(topdir)/command.h
@@ -1729,6 +1894,7 @@ stat.o: $(topdir)/syntax.h
 stat.o: $(topdir)/unwind_prot.h
 stat.o: $(topdir)/variables.h
 stat.o: $(topdir)/xmalloc.h
+stat.o: ../../builtins.h
 stat.o: ../../config.h
 stat.o: ../../pathnames.h
 strftime.o: $(BASHINCDIR)/chartypes.h
@@ -1736,7 +1902,7 @@ strftime.o: $(BASHINCDIR)/maxpath.h
 strftime.o: $(BASHINCDIR)/ocache.h
 strftime.o: $(BASHINCDIR)/posixjmp.h
 strftime.o: $(BASHINCDIR)/posixtime.h
-#strftime.o: $(BASHINCDIR)/stdc.h
+strftime.o: $(BASHINCDIR)/stdc.h
 strftime.o: $(BASHINCDIR)/unlocked-io.h
 strftime.o: $(srcdir)/strftime.c
 strftime.o: $(topdir)/alias.h
@@ -1746,7 +1912,6 @@ strftime.o: $(topdir)/assoc.h
 strftime.o: $(topdir)/bashansi.h
 strftime.o: $(topdir)/bashjmp.h
 strftime.o: $(topdir)/bashtypes.h
-strftime.o: $(topdir)/builtins.h
 strftime.o: $(topdir)/builtins/bashgetopt.h
 strftime.o: $(topdir)/builtins/common.h
 strftime.o: $(topdir)/command.h
@@ -1767,6 +1932,7 @@ strftime.o: $(topdir)/syntax.h
 strftime.o: $(topdir)/unwind_prot.h
 strftime.o: $(topdir)/variables.h
 strftime.o: $(topdir)/xmalloc.h
+strftime.o: ../../builtins.h
 strftime.o: ../../config.h
 strftime.o: ../../pathnames.h
 strptime.o: $(BASHINCDIR)/chartypes.h
@@ -1774,7 +1940,7 @@ strptime.o: $(BASHINCDIR)/maxpath.h
 strptime.o: $(BASHINCDIR)/ocache.h
 strptime.o: $(BASHINCDIR)/posixjmp.h
 strptime.o: $(BASHINCDIR)/posixtime.h
-#strptime.o: $(BASHINCDIR)/stdc.h
+strptime.o: $(BASHINCDIR)/stdc.h
 strptime.o: $(BASHINCDIR)/unlocked-io.h
 strptime.o: $(srcdir)/strptime.c
 strptime.o: $(topdir)/alias.h
@@ -1784,7 +1950,6 @@ strptime.o: $(topdir)/assoc.h
 strptime.o: $(topdir)/bashansi.h
 strptime.o: $(topdir)/bashjmp.h
 strptime.o: $(topdir)/bashtypes.h
-strptime.o: $(topdir)/builtins.h
 strptime.o: $(topdir)/builtins/bashgetopt.h
 strptime.o: $(topdir)/builtins/common.h
 strptime.o: $(topdir)/command.h
@@ -1805,13 +1970,14 @@ strptime.o: $(topdir)/syntax.h
 strptime.o: $(topdir)/unwind_prot.h
 strptime.o: $(topdir)/variables.h
 strptime.o: $(topdir)/xmalloc.h
+strptime.o: ../../builtins.h
 strptime.o: ../../config.h
 strptime.o: ../../pathnames.h
 sync.o: $(BASHINCDIR)/chartypes.h
 sync.o: $(BASHINCDIR)/maxpath.h
 sync.o: $(BASHINCDIR)/ocache.h
 sync.o: $(BASHINCDIR)/posixjmp.h
-#sync.o: $(BASHINCDIR)/stdc.h
+sync.o: $(BASHINCDIR)/stdc.h
 sync.o: $(BASHINCDIR)/unlocked-io.h
 sync.o: $(srcdir)/sync.c
 sync.o: $(topdir)/alias.h
@@ -1821,7 +1987,6 @@ sync.o: $(topdir)/assoc.h
 sync.o: $(topdir)/bashansi.h
 sync.o: $(topdir)/bashjmp.h
 sync.o: $(topdir)/bashtypes.h
-sync.o: $(topdir)/builtins.h
 sync.o: $(topdir)/builtins/bashgetopt.h
 sync.o: $(topdir)/builtins/common.h
 sync.o: $(topdir)/command.h
@@ -1842,6 +2007,7 @@ sync.o: $(topdir)/syntax.h
 sync.o: $(topdir)/unwind_prot.h
 sync.o: $(topdir)/variables.h
 sync.o: $(topdir)/xmalloc.h
+sync.o: ../../builtins.h
 sync.o: ../../config.h
 sync.o: ../../pathnames.h
 tee.o: $(BASHINCDIR)/chartypes.h
@@ -1850,7 +2016,7 @@ tee.o: $(BASHINCDIR)/maxpath.h
 tee.o: $(BASHINCDIR)/ocache.h
 tee.o: $(BASHINCDIR)/posixjmp.h
 tee.o: $(BASHINCDIR)/posixstat.h
-#tee.o: $(BASHINCDIR)/stdc.h
+tee.o: $(BASHINCDIR)/stdc.h
 tee.o: $(BASHINCDIR)/unlocked-io.h
 tee.o: $(srcdir)/tee.c
 tee.o: $(topdir)/alias.h
@@ -1860,7 +2026,6 @@ tee.o: $(topdir)/assoc.h
 tee.o: $(topdir)/bashansi.h
 tee.o: $(topdir)/bashjmp.h
 tee.o: $(topdir)/bashtypes.h
-tee.o: $(topdir)/builtins.h
 tee.o: $(topdir)/builtins/bashgetopt.h
 tee.o: $(topdir)/builtins/common.h
 tee.o: $(topdir)/command.h
@@ -1881,13 +2046,14 @@ tee.o: $(topdir)/syntax.h
 tee.o: $(topdir)/unwind_prot.h
 tee.o: $(topdir)/variables.h
 tee.o: $(topdir)/xmalloc.h
+tee.o: ../../builtins.h
 tee.o: ../../config.h
 tee.o: ../../pathnames.h
 template.o: $(BASHINCDIR)/chartypes.h
 template.o: $(BASHINCDIR)/maxpath.h
 template.o: $(BASHINCDIR)/ocache.h
 template.o: $(BASHINCDIR)/posixjmp.h
-#template.o: $(BASHINCDIR)/stdc.h
+template.o: $(BASHINCDIR)/stdc.h
 template.o: $(BASHINCDIR)/unlocked-io.h
 template.o: $(srcdir)/loadables.h
 template.o: $(srcdir)/template.c
@@ -1898,7 +2064,6 @@ template.o: $(topdir)/assoc.h
 template.o: $(topdir)/bashansi.h
 template.o: $(topdir)/bashjmp.h
 template.o: $(topdir)/bashtypes.h
-template.o: $(topdir)/builtins.h
 template.o: $(topdir)/builtins/bashgetopt.h
 template.o: $(topdir)/builtins/common.h
 template.o: $(topdir)/command.h
@@ -1919,6 +2084,7 @@ template.o: $(topdir)/syntax.h
 template.o: $(topdir)/unwind_prot.h
 template.o: $(topdir)/variables.h
 template.o: $(topdir)/xmalloc.h
+template.o: ../../builtins.h
 template.o: ../../config.h
 template.o: ../../pathnames.h
 truefalse.o: $(BASHINCDIR)/chartypes.h
@@ -1935,7 +2101,6 @@ truefalse.o: $(topdir)/assoc.h
 truefalse.o: $(topdir)/bashansi.h
 truefalse.o: $(topdir)/bashjmp.h
 truefalse.o: $(topdir)/bashtypes.h
-truefalse.o: $(topdir)/builtins.h
 truefalse.o: $(topdir)/builtins/common.h
 truefalse.o: $(topdir)/command.h
 truefalse.o: $(topdir)/config-bot.h
@@ -1955,13 +2120,14 @@ truefalse.o: $(topdir)/syntax.h
 truefalse.o: $(topdir)/unwind_prot.h
 truefalse.o: $(topdir)/variables.h
 truefalse.o: $(topdir)/xmalloc.h
+truefalse.o: ../../builtins.h
 truefalse.o: ../../config.h
 truefalse.o: ../../pathnames.h
 tty.o: $(BASHINCDIR)/chartypes.h
 tty.o: $(BASHINCDIR)/maxpath.h
 tty.o: $(BASHINCDIR)/ocache.h
 tty.o: $(BASHINCDIR)/posixjmp.h
-#tty.o: $(BASHINCDIR)/stdc.h
+tty.o: $(BASHINCDIR)/stdc.h
 tty.o: $(BASHINCDIR)/unlocked-io.h
 tty.o: $(srcdir)/tty.c
 tty.o: $(topdir)/alias.h
@@ -1971,7 +2137,6 @@ tty.o: $(topdir)/assoc.h
 tty.o: $(topdir)/bashansi.h
 tty.o: $(topdir)/bashjmp.h
 tty.o: $(topdir)/bashtypes.h
-tty.o: $(topdir)/builtins.h
 tty.o: $(topdir)/builtins/bashgetopt.h
 tty.o: $(topdir)/builtins/common.h
 tty.o: $(topdir)/command.h
@@ -1992,13 +2157,14 @@ tty.o: $(topdir)/syntax.h
 tty.o: $(topdir)/unwind_prot.h
 tty.o: $(topdir)/variables.h
 tty.o: $(topdir)/xmalloc.h
+tty.o: ../../builtins.h
 tty.o: ../../config.h
 tty.o: ../../pathnames.h
 uname.o: $(BASHINCDIR)/chartypes.h
 uname.o: $(BASHINCDIR)/maxpath.h
 uname.o: $(BASHINCDIR)/ocache.h
 uname.o: $(BASHINCDIR)/posixjmp.h
-#uname.o: $(BASHINCDIR)/stdc.h
+uname.o: $(BASHINCDIR)/stdc.h
 uname.o: $(BASHINCDIR)/unlocked-io.h
 uname.o: $(srcdir)/uname.c
 uname.o: $(topdir)/alias.h
@@ -2008,7 +2174,6 @@ uname.o: $(topdir)/assoc.h
 uname.o: $(topdir)/bashansi.h
 uname.o: $(topdir)/bashjmp.h
 uname.o: $(topdir)/bashtypes.h
-uname.o: $(topdir)/builtins.h
 uname.o: $(topdir)/builtins/bashgetopt.h
 uname.o: $(topdir)/builtins/common.h
 uname.o: $(topdir)/command.h
@@ -2029,13 +2194,14 @@ uname.o: $(topdir)/syntax.h
 uname.o: $(topdir)/unwind_prot.h
 uname.o: $(topdir)/variables.h
 uname.o: $(topdir)/xmalloc.h
+uname.o: ../../builtins.h
 uname.o: ../../config.h
 uname.o: ../../pathnames.h
 unlink.o: $(BASHINCDIR)/chartypes.h
 unlink.o: $(BASHINCDIR)/maxpath.h
 unlink.o: $(BASHINCDIR)/ocache.h
 unlink.o: $(BASHINCDIR)/posixjmp.h
-#unlink.o: $(BASHINCDIR)/stdc.h
+unlink.o: $(BASHINCDIR)/stdc.h
 unlink.o: $(BASHINCDIR)/unlocked-io.h
 unlink.o: $(srcdir)/unlink.c
 unlink.o: $(topdir)/alias.h
@@ -2045,7 +2211,6 @@ unlink.o: $(topdir)/assoc.h
 unlink.o: $(topdir)/bashansi.h
 unlink.o: $(topdir)/bashjmp.h
 unlink.o: $(topdir)/bashtypes.h
-unlink.o: $(topdir)/builtins.h
 unlink.o: $(topdir)/builtins/common.h
 unlink.o: $(topdir)/command.h
 unlink.o: $(topdir)/config-bot.h
@@ -2065,13 +2230,14 @@ unlink.o: $(topdir)/syntax.h
 unlink.o: $(topdir)/unwind_prot.h
 unlink.o: $(topdir)/variables.h
 unlink.o: $(topdir)/xmalloc.h
+unlink.o: ../../builtins.h
 unlink.o: ../../config.h
 unlink.o: ../../pathnames.h
 whoami.o: $(BASHINCDIR)/chartypes.h
 whoami.o: $(BASHINCDIR)/maxpath.h
 whoami.o: $(BASHINCDIR)/ocache.h
 whoami.o: $(BASHINCDIR)/posixjmp.h
-#whoami.o: $(BASHINCDIR)/stdc.h
+whoami.o: $(BASHINCDIR)/stdc.h
 whoami.o: $(BASHINCDIR)/unlocked-io.h
 whoami.o: $(srcdir)/whoami.c
 whoami.o: $(topdir)/alias.h
@@ -2081,7 +2247,6 @@ whoami.o: $(topdir)/assoc.h
 whoami.o: $(topdir)/bashansi.h
 whoami.o: $(topdir)/bashjmp.h
 whoami.o: $(topdir)/bashtypes.h
-whoami.o: $(topdir)/builtins.h
 whoami.o: $(topdir)/builtins/bashgetopt.h
 whoami.o: $(topdir)/builtins/common.h
 whoami.o: $(topdir)/command.h
@@ -2102,6 +2267,7 @@ whoami.o: $(topdir)/syntax.h
 whoami.o: $(topdir)/unwind_prot.h
 whoami.o: $(topdir)/variables.h
 whoami.o: $(topdir)/xmalloc.h
+whoami.o: ../../builtins.h
 whoami.o: ../../config.h
 whoami.o: ../../pathnames.h
 
@@ -2119,7 +2285,6 @@ perl/bperl.o: $(topdir)/assoc.h
 perl/bperl.o: $(topdir)/bashansi.h
 perl/bperl.o: $(topdir)/bashjmp.h
 perl/bperl.o: $(topdir)/bashtypes.h
-perl/bperl.o: $(topdir)/builtins.h
 perl/bperl.o: $(topdir)/builtins/common.h
 perl/bperl.o: $(topdir)/command.h
 perl/bperl.o: $(topdir)/config-bot.h
@@ -2139,6 +2304,7 @@ perl/bperl.o: $(topdir)/syntax.h
 perl/bperl.o: $(topdir)/unwind_prot.h
 perl/bperl.o: $(topdir)/variables.h
 perl/bperl.o: $(topdir)/xmalloc.h
+perl/bperl.o: ../../builtins.h
 perl/bperl.o: ../../config.h
 perl/bperl.o: ../../pathnames.h
 perl/iperl.o: $(srcdir)/perl/iperl.c
