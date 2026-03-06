@@ -1215,7 +1215,7 @@ coverage-tests: build-coverage $(TESTS_SUPPORT)
 	@cp $(TESTS_SUPPORT) tests
 	@( cd $(srcdir)/tests && \
 		BUILD_DIR=$(BUILD_DIR) PATH=$(BUILD_DIR)/tests:$$PATH THIS_SH=$(THIS_SH) $(SHELL) ${TESTSCRIPT} )
-	
+
 build-coverage: init-coverage
 	$(MAKE) $(BASH_MAKEFLAGS) ADDON_CFLAGS='$(COVERAGE_XCFLAGS)' \
 		ADDON_LDFLAGS='$(COVERAGE_XLDFLAGS)'
@@ -1644,7 +1644,7 @@ hashtest: hashlib.c
 	$(CC) -DTEST_HASHING $(CCFLAGS) $(TEST_NBUCKETS) -o $@ $(srcdir)/hashlib.c xmalloc.o $(INTL_LIB) $(MALLOC_LIBRARY)
 
 .PHONY: depends depend
-depends depend:
+depends depend: builtins/builtext.h builtins/pipesize.h signames.h version.h
 	./config.status
 	$(SHELL) $(MKDEP) $(MKDEP_OPTS) -- $(MKDEP_CFLAGS) $(MKDEP_CSOURCES)
 	@ for mf in $(CREATED_CODE_MAKEFILES) ; do \
