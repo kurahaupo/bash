@@ -276,9 +276,8 @@ show_longdoc (int i)
 /* Show first line of a string.
    Return beginning of next line, if any */
 static char const *
-show_first_line (char const *r)
+show_first_line (char const *doc)
 {
-  char const *p = *r;
   char const *e = strchr (doc, '\n');
   if (e)
     {
@@ -332,7 +331,7 @@ show_manpage (char *name, int i)
     {
       if (*doc != '\n')	/* don't indent empty lines */
 	printf ("%*s", BASE_INDENT, " ");
-      show_first_line (&doc);
+      show_first_line (doc);
     }
 
   putchar ('\n');

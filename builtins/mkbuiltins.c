@@ -1303,7 +1303,7 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
 		    fprintf (externfile, "extern int %s (WORD_LIST *);\n",
 			     builtin->function);
 
-		  fprintf (externfile, "extern char const* const %s_doc[];\n",
+		  fprintf (externfile, "extern char const %s_doc[];\n",
 			   document_name (builtin));
 		}
 
@@ -1379,7 +1379,6 @@ write_longdocs (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 
       /* Write the long documentation strings. */
       char const *dname = document_name (builtin);
-      fprintf (stream, "char const* const %s_doc[] =", dname);
 
       if (separate_helpfiles)
 	{
@@ -1389,7 +1388,11 @@ write_longdocs (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 	  xfree (p);
 	}
       else
-	write_documentation (stream, builtin->longdoc->strings, 0, AS_INITIALISER);
+	{
+	  fprintf (stream, "char const %s_doc[]", dname);
+	  write_documentation (stream, builtin->longdoc->strings, 0, AS_INITIALISER);
+	  fprintf (stream, ";\n");
+	}
 
       if (builtin->dependencies)
 	write_endifs (stream, builtin->dependencies->strings);
@@ -1486,6 +1489,8 @@ write_documentation (FILE *stream, char const*const*documentation, int indentati
   if (as_initialiser || as_helpfile)
     {
       fprintf (stream, "\n#if defined HELP_BUILTIN\n");
+      if (as_initialiser)
+	fprintf (stream, " = ");
       if (! as_helpfile)
 	fprintf (stream, "N_(");
     }
