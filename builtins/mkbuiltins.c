@@ -84,14 +84,14 @@ bool only_documentation = false;
 bool inhibit_production = false;
 
 /* Non-zero means to not add functions (xxx_builtin) to the members of the
-   produced `struct builtin []' */
+   produced ‘struct builtin []’ */
 bool inhibit_functions = false;
 
 /* Non-zero means to produce separate help files for each builtin, named by
-   the builtin name, in `./helpfiles'. */
+   the builtin name, in ‘./helpfiles’. */
 bool separate_helpfiles = false;
 
-/* Non-zero means to create single C strings for each `longdoc', with
+/* Non-zero means to create single C strings for each ‘longdoc’, with
    embedded newlines, for ease of translation. */
 //#define single_longdoc_strings true
 
@@ -175,7 +175,7 @@ typedef struct {
 /* The array of all builtins encountered during execution of this code. */
 BUILTIN_DESC_ARRAY *saved_builtins = NULL;
 
-/* The Posix.2 so-called `special' builtins. */
+/* The Posix.2 so-called ‘special’ builtins. */
 char const*special_builtins[] =
 {
   ":", ".", "source", "break", "continue", "eval", "exec", "exit",
@@ -205,7 +205,7 @@ char const*posix_builtins[] =
 };
 
 /* The builtin commands that can take array references as arguments and pay
-   attention to `array_expand_once'. These are the ones that don't assign
+   attention to ‘array_expand_once’. These are the ones that don't assign
    values, but need to avoid double expansions. */
 char const*arrayvar_builtins[] =
 {
@@ -306,11 +306,11 @@ main (int argc, char **argv)
         {
           if (! arg[1])
             {
-              /* `--` terminates options */
+              /* ‘--’ terminates options */
               ++arg_index;
               break;
             }
-          /* allow any long option to start with either - or -- */
+          /* allow any long option to start with either ‘-’ or ‘--’ */
           ++arg;
         }
 
@@ -1418,7 +1418,7 @@ write_dummy_declarations (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
    in order to allow compilation of the code that will follow.
    STREAM is the stream to write the information to,
    DEFINES is a null terminated array of define names.
-   If a define is preceded by an `!', then the sense of the test is
+   If a define is preceded by an ‘!’, then the sense of the test is
    reversed. */
 void
 write_ifdefs (FILE *stream, char const*const*defines)
