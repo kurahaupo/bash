@@ -3542,7 +3542,7 @@ bind_function (const char *name, COMMAND *value)
 
   VSETATTR (entry, att_function);
 
-  if (mark_modified_vars)	/* TODO: decide whether to check for ASS_NOMARK, and if so, how to accept `flags` */
+  if (mark_modified_vars)	/* TODO: decide whether to check for ASS_NOEXPORT, and if so, how to accept `flags` */
     VSETATTR (entry, att_exported);
 
   VUNSETATTR (entry, att_invisible);	/* Just to be sure */
