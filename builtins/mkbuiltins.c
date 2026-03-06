@@ -121,6 +121,7 @@ enum {
   ACT_STRING = 1,
   ACT_BIDESC,
 };
+
 /* Here is a structure for manipulating arrays of data. */
 typedef struct {
   union {
@@ -1268,7 +1269,7 @@ write_file_footers (FILE *structfile, FILE *externfile)
   if (structfile)
     {
       fprintf (structfile, "  {0}\n"
-			    "};\n");
+			   "};\n");
       fprintf (structfile, "%s\n", structfile_footer);
     }
 }
