@@ -1123,7 +1123,7 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 	/* XXX - this is something to watch out for if there are problems
 	   when the shell is compiled without job control.  Don't worry about
 	   whether or not last_made_pid == last_pid; already_making_children
-	   tells u.s whether or not there are unwaited-for children to wait
+	   tells us whether or not there are unwaited-for children to wait
 	   for and reap. */
 	if (already_making_children && pipe_out == NO_PIPE)
 	  {
