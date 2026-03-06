@@ -19,6 +19,7 @@
 */
 
 #include <sys/types.h>
+#include <string.h>
 
 #include "bashintl.h"
 #include "error.h"
@@ -846,13 +847,13 @@ get_options_from_env (char const *varname, accessor_t why, opt_test_func_t *filt
   #ifdef DEBUG
   if (DEBUG_TRACE)
     {
-      quiet = false;
-
       fprintf (stderr, "get_options_from_env (varname=%s, accessor=%s(%#x), filter=%p, verbosity=%s) ... ",
 	       varname,
 	       ac_to_desc(why), AccessorC(why),
 	       (void*) filter,
 	       quiet ? "QUIET" : "REPORT_ERRORS");
+
+      quiet = false;
     }
   #endif
 
