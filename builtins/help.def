@@ -96,9 +96,7 @@ help_builtin (WORD_LIST *list)
   bool mflag = false;
 
   reset_internal_getopt ();
-  {
-  int i;
-  while ((i = internal_getopt (list, "dms")) != -1)
+  for (int i; (i = internal_getopt (list, "dms")) != -1;)
     {
       switch (i)
 	{
@@ -117,7 +115,6 @@ help_builtin (WORD_LIST *list)
 	  return (EX_USAGE);
 	}
     }
-  }
   list = loptend;
 
   if (list == 0)
