@@ -1281,11 +1281,9 @@ write_builtins (DEF_FILE *defs, FILE *structfile, FILE *externfile)
   /* Write out the information. */
   if (defs->builtins)
     {
-      BUILTIN_DESC *builtin;
-
       for (int i = 0; i < defs->builtins->array.length; i++)
 	{
-	  builtin = (BUILTIN_DESC *)defs->builtins->descs[i];
+	  BUILTIN_DESC *builtin = (BUILTIN_DESC *)defs->builtins->descs[i];
 
 	  /* Write out any #ifdefs that may be there. */
 	  if (!only_documentation)
@@ -1425,14 +1423,12 @@ write_dummy_declarations (FILE *stream, BUILTIN_DESC_ARRAY *builtins)
 void
 write_ifdefs (FILE *stream, char const*const*defines)
 {
-  int i;
-
   if (!stream)
     return;
 
   fprintf (stream, "#if ");
 
-  for (i = 0; defines[i]; i++)
+  for (int i = 0; defines[i]; i++)
     {
       char const*def = defines[i];
 
@@ -1454,14 +1450,12 @@ write_ifdefs (FILE *stream, char const*const*defines)
 void
 write_endifs (FILE *stream, char const*const*defines)
 {
-  int i;
-
   if (!stream)
     return;
 
   fprintf (stream, "#endif /* ");
 
-  for (i = 0; defines[i]; i++)
+  for (int i = 0; defines[i]; i++)
     {
       fprintf (stream, "%s", defines[i]);
 
