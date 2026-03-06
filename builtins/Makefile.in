@@ -304,12 +304,55 @@ OFILES		= \
 
 
 CREATED_FILES	= \
+		  alias.c \
+		  bind.c \
+		  break.c \
 		  builtext.h \
+		  builtin.c \
 		  builtins.c \
+		  caller.c \
+		  cd.c \
+		  colon.c \
+		  command.c \
+		  complete.c \
+		  declare.c \
+		  echo.c \
+		  enable.c \
+		  eval.c \
+		  exec.c \
+		  exit.c \
+		  fc.c \
+		  fg_bg.c \
+		  getopts.c \
+		  hash.c \
+		  help.c \
+		  history.c \
+		  jobs.c \
+		  kill.c \
+		  let.c \
+		  mapfile.c \
 		  pipesize.h \
+		  printf.c \
 		  psize.aux \
+		  pushd.c \
+		  read.c \
+		  reserved.c \
+		  return.c \
+		  set.c \
+		  setattr.c \
+		  shift.c \
+		  shopt.c \
+		  source.c \
+		  suspend.c \
+		  test.c \
+		  times.c \
 		  tmpbuiltins.c \
 		  tmpbuiltins.h \
+		  trap.c \
+		  type.c \
+		  ulimit.c \
+		  umask.c \
+		  wait.c \
 
 
 CREATED_OBJECTS	= \
