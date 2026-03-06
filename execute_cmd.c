@@ -1150,40 +1150,39 @@ execute_command_internal (COMMAND *command, int asynchronous, int pipe_in, int p
 		 pipelines) to be waited for twice. */
 	      exec_result = wait_for (last_made_pid, 0);
 	  }
+
+	/* 2009/02/13 -- pipeline failure is processed elsewhere.  This handles
+	   only the failure of a simple command. We don't want to run the error
+	   trap if the command run by the `command' builtin fails; we want to
+	   defer that until the command builtin itself returns failure. */
+	/* 2020/07/14 -- this changes with how the command builtin is handled */
+	/* XXX - what happens if a function is called that sets the ERR trap
+	   then returns a non-zero exit status? Have to check here using
+	   ERROR_TRAP_SET() instead of relying on was_error_trap */
+	if (was_error_trap && want_to_run_error_trap && exec_result != EXECUTION_SUCCESS)
+	  {
+	    last_command_exit_value = exec_result;
+	    line_number = line_number_for_err_trap;
+	    run_error_trap ();
+	    line_number = save_line_number;
+	  }
+
+	if (ignore_return == 0 && invert == 0 &&
+	    ((posixly_correct && interactive == 0 && special_builtin_failed) ||
+	     (exit_immediately_on_error && pipe_in == NO_PIPE && pipe_out == NO_PIPE && exec_result != EXECUTION_SUCCESS)))
+	  {
+	    last_command_exit_value = exec_result;
+	    run_pending_traps ();
+
+	    /* Undo redirections before running exit trap on the way out of
+	       set -e. Report by Mark Farrell 5/19/2014 */
+	    if (exit_immediately_on_error && signal_is_trapped (0) &&
+		unwind_protect_tag_on_stack ("saved-redirects"))
+	      run_unwind_frame ("saved-redirects");
+
+	    jump_to_top_level (ERREXIT);
+	  }
       }
-
-      /* 2009/02/13 -- pipeline failure is processed elsewhere.  This handles
-	 only the failure of a simple command. We don't want to run the error
-	 trap if the command run by the `command' builtin fails; we want to
-	 defer that until the command builtin itself returns failure. */
-      /* 2020/07/14 -- this changes with how the command builtin is handled */
-      /* XXX - what happens if a function is called that sets the ERR trap
-	 then returns a non-zero exit status? Have to check here using
-	 ERROR_TRAP_SET() instead of relying on was_error_trap */
-      if (was_error_trap && want_to_run_error_trap && exec_result != EXECUTION_SUCCESS)
-	{
-	  last_command_exit_value = exec_result;
-	  line_number = line_number_for_err_trap;
-	  run_error_trap ();
-	  line_number = save_line_number;
-	}
-
-      if (ignore_return == 0 && invert == 0 &&
-	  ((posixly_correct && interactive == 0 && special_builtin_failed) ||
-	   (exit_immediately_on_error && pipe_in == NO_PIPE && pipe_out == NO_PIPE && exec_result != EXECUTION_SUCCESS)))
-	{
-	  last_command_exit_value = exec_result;
-	  run_pending_traps ();
-
-	  /* Undo redirections before running exit trap on the way out of
-	     set -e. Report by Mark Farrell 5/19/2014 */
-	  if (exit_immediately_on_error && signal_is_trapped (0) &&
-	      unwind_protect_tag_on_stack ("saved-redirects"))
-	    run_unwind_frame ("saved-redirects");
-
-	  jump_to_top_level (ERREXIT);
-	}
-
       break;
 
     case cm_for:
