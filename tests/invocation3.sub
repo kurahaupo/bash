@@ -22,4 +22,3 @@ EOF
 ${THIS_SH} --pretty-print $SCRIPT
 
 rm -f $SCRIPT
-	

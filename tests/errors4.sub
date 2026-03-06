@@ -20,7 +20,7 @@ for num in 1 2 3 4 5; do
 		var=bar
 	fi
 	echo $num
-done 
+done
 echo after readonly assignment
 
 # can't have the variable in a for command be readonly
@@ -33,7 +33,7 @@ for f in 1 2 3 4; do readonly f; done ; echo after for readonly assignment)
 (set -o posix
 for var in 1 2 3 4; do echo $var; done; echo after posix for readonly variable)
 
-# same with select 
+# same with select
 select var in 1 2 3; do echo $REPLY; done <<<1
 
 (set -o posix

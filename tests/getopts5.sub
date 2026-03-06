@@ -18,7 +18,7 @@ getop () {
     local OPTIND=1
     local OPTERR=1
 
-    echo getop: OPTERR=$OPTERR    
+    echo getop: OPTERR=$OPTERR
     while getopts ab arg "$@"; do
 	case $arg in
 	    a)
@@ -48,7 +48,6 @@ while getopts ab arg; do
 	    echo b here
 	    ;;
 	:|?|*)
-	    
 	    echo something else here
 	    ;;
     esac

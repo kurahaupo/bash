@@ -32,7 +32,7 @@ unset var
 unset -f f
 
 f()
-{	
+{
 	local -n ref=var
 	local -a ref=([1]=)
 	ref=([2]=)

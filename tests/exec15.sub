@@ -23,7 +23,7 @@ trap 'rm -rf "$TDIR"' EXIT
 
 cd "$TDIR" &&
 {
-	touch archive install test; 
+	touch archive install test;
 	echo "$CMD" > s
 	echo '( echo "1 start" ; . "$TDIR/sub2"  ; echo "1 done" ; exit 42 )' >sub1
 	echo 'echo "2 start" && env echo sub3' >sub2

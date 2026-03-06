@@ -58,7 +58,7 @@ unset ref
 declare ref=
 declare -p ref ${!ref} var
 
-unset ref 
+unset ref
 declare ref+=
 declare -p ref ${!ref} var
 

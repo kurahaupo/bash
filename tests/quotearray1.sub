@@ -116,16 +116,16 @@ echo $?
 unset aa key
 
 declare -A assoc
-    
+
 mytest ()
 {
         assoc["$1"]=123
         [[ -v assoc["$1"] ]]
         printf '[[ -v assoc[%s] ]]; $?=%s\n' "$1" "$?"
 }
-    
-mytest 'a' 
-mytest '"' 
+
+mytest 'a'
+mytest '"'
 declare -p assoc
 unset -v assoc
 unset -f mytest

@@ -48,7 +48,7 @@ unset a b c
 
 export alpha=$'\u3b1'
 
-printf -v v 'A%sB' "$alpha" 
+printf -v v 'A%sB' "$alpha"
 recho "$v"
 IFS=$alpha read a b c <<<"$v"
 recho "$a"

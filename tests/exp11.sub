@@ -75,7 +75,7 @@ set -- 1 2
 A=( 1 2 )
 IFS=
 
-a=$* 
+a=$*
 recho "$a"
 b=${*@E}
 recho "$b"

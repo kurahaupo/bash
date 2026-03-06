@@ -31,8 +31,8 @@ bar)	if false
 # this tripped up ubsan
 x()
 {
-    case y in         
-        z)    
+    case y in
+        z)
             if (! false); then
               foo=bar
             fi

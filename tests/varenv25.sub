@@ -21,7 +21,7 @@ declare -a array
 init_vars ()
 {
   readonly string="foo"  readonly int=100  readonly array=(1 2)
-  # Print the (hopefully) readonly variables 
+  # Print the (hopefully) readonly variables
   echo inside init_vars acting on previous scope
   local -p string int array
 }

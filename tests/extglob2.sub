@@ -28,4 +28,4 @@ case "${a//@(?aa)}" in
 *)		echo bad 4;;
 esac
 
-exit 0 
+exit 0

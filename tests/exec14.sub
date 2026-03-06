@@ -29,8 +29,8 @@ export binecho
 
 : ${THIS_SH:=./bash} ${TMPDIR:=/var/tmp}
 
-${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$' 
-${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ ; $binecho done' 
+${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$'
+${THIS_SH} -c 'trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ ; $binecho done'
 
 ( trap "echo WORKS && rm $TMPDIR/x$$" EXIT && touch $TMPDIR/x$$ )
 

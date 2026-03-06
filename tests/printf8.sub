@@ -60,7 +60,7 @@ printf =='%3$*2$.*1$s==\n'  2 4 678 3 5 78
 printf =='%3$*2$.*1$s==\n'  2 4 678 3 5 789
 printf =='%3$*2$.*1$s==\n'  2 4 678 3 5 7890
 
-printf =='%3$*.*2$s==\n'  4 2 6  
+printf =='%3$*.*2$s==\n'  4 2 6
 printf =='%3$*.*2$s==\n'  4 2 67
 printf =='%3$*.*2$s==\n'  4 2 678
 
@@ -73,7 +73,7 @@ printf =='%2$*1$.*1$s==\n'  2 456 3 456
 printf =='%2$*1$.*1$s==\n'  2 456 3 4567
 
 # someday I may take out this warning
-printf '%s %s %999$s\n' 1 2 3 4 5 6 7 8 
+printf '%s %s %999$s\n' 1 2 3 4 5 6 7 8
 echo
 printf '%s %s %999$s\n'  A B C D E F G H
 echo

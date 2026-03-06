@@ -27,16 +27,16 @@ echo ${string/abc/$notthere}
 echo "${string/abc/$notthere}"
 echo "${string/abc/"$notthere"}"
 
-echo ${string//?/\$\'&\' } 
+echo ${string//?/\$\'&\' }
 
 shopt -s patsub_replacement
 
-echo ${string//?/\$\'&\' } 
+echo ${string//?/\$\'&\' }
 
-echo ${string//?/& } 
+echo ${string//?/& }
 echo "${string//?/& }"
 
-echo ${string//?/\& } 
+echo ${string//?/\& }
 echo "${string//?/\& }"
 echo ${string//?/"& "}
 echo ${string//?/"\& "}

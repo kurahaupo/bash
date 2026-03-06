@@ -36,7 +36,7 @@ outer()
 echo main: ${res-unset}
 outer set
 echo main: after first call: ${res-unset}
-outer dontset 
+outer dontset
 echo main: after second call: ${res-unset}
 
 unset -f outer inner

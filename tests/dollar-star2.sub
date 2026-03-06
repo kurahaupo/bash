@@ -19,7 +19,7 @@ x=$*
 y="$*"
 
 recho "$x"
-recho "$y" 
+recho "$y"
 
 IFS=$' \t\n'
 
