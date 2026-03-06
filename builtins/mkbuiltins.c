@@ -631,6 +631,9 @@ extern mk_handler_func_t depends_on_handler;
 extern mk_handler_func_t produces_handler;
 extern mk_handler_func_t end_handler;
 extern mk_handler_func_t docname_handler;
+extern mk_handler_func_t break_handler;
+extern mk_handler_func_t ifdef_handler;
+extern mk_handler_func_t endif_handler;
 
 HANDLER_ENTRY handlers[] = {
   { "BUILTIN", builtin_handler },
@@ -642,6 +645,10 @@ HANDLER_ENTRY handlers[] = {
   { "DEPENDS_ON", depends_on_handler },
   { "PRODUCES", produces_handler },
   { "END", end_handler },
+  { "", break_handler },		/* bare ‘$’; break a long string into multiple translation units */
+  { "BREAK", break_handler },		/* break a long string into multiple translation units */
+  { "IFDEF", ifdef_handler },		/* start of $ifdef … $endif pair */
+  { "ENDIF", endif_handler },		/* end of $ifdef … $endif pair */
   {0}
 };
 
@@ -1009,6 +1016,27 @@ comment_handler (char const*self, DEF_FILE *defs, char const*arg)
   return (0);
 }
 
+/* How to handle the bare ‘$’ directive; break a long string into multiple translation units. */
+int
+break_handler (char const*self, DEF_FILE *defs, char const*arg)
+{
+  return (0);
+}
+
+/* How to handle the $IFDEF directive. */
+int
+ifdef_handler (char const*self, DEF_FILE *defs, char const*arg)
+{
+  return (0);
+}
+
+/* How to handle the $ENDIF directive. */
+int
+endif_handler (char const*self, DEF_FILE *defs, char const*arg)
+{
+  return (0);
+}
+
 /* How to handle the $DEPENDS_ON directive. */
 int
 depends_on_handler (char const*self, DEF_FILE *defs, char const*arg)
@@ -1272,6 +1300,25 @@ write_file_footers (FILE *structfile, FILE *externfile)
 			   "};\n");
       fprintf (structfile, "%s\n", structfile_footer);
     }
+}
+
+static bool
+first_seen (char const *str)
+{
+  static uint8_t seen_flags[1 << 16 >> 3];
+  uint16_t x = 0x9876;
+  for (;*str;++str)
+    {
+      uint_fast32_t v = x ^ *str;
+      v *= 0x10091;
+      v >>= 3;
+      x = v;
+    }
+  uint8_t *p = &seen_flags[x >> 3];
+  uint8_t m = 1 << (x & 7);
+  bool r = *p & m;
+  *p |= m;
+  return r;
 }
 
 /* Write out the information accumulated in DEFS to
