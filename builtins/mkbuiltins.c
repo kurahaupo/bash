@@ -754,7 +754,7 @@ extract_info (char *filename, FILE *structfile, FILE *externfile)
 
 	  if (!handler)
 	    {
-	      line_error (defs, "Unknown directive `%s'", directive, "");
+	      line_error (defs, "Unknown directive ‘%s’", directive, "");
 	      xfree (directive);
 	      continue;
 	    }
@@ -1216,7 +1216,7 @@ char const structfile_header[] =
   "   Functions which need to look at only the simple commands (e.g.\n"
   "   the enable_builtin ()), should ignore entries where\n"
   "   (array[i].function == NULL).  Such entries are for\n"
-  "   the list of shell reserved control structures, like `if' and `while'.\n"
+  "   the list of shell reserved control structures, like ‘if’ and ‘while’.\n"
   "   The end of the list is denoted with a NULL name field. */\n"
   "\n"
   "/* TRANSLATORS: Please do not translate command names in descriptions */\n"
